@@ -68,10 +68,9 @@ namespace MapleServer2.PacketHandlers.Login {
             var skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
             packet.Skip(2);
-            var Equips = new Dictionary<ItemSlot, Item>();
+            var equipSlots = new Dictionary<ItemSlot, Item>();
 
             logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {jobCode}");
-            //var newCharacter = Player.NewCharacter(gender, jobType, name);
             int equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
             {
@@ -88,41 +87,41 @@ namespace MapleServer2.PacketHandlers.Login {
                 {
                     case ItemSlot.HR: // Hair
                         packet.Skip(56); // Hair Position
-                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.FA: // Face
-                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.FD: // Face Decoration
                         packet.Skip(16);
-                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.CL: // Clothes
                         // Assign CL
-                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.PA: // Pants
                         // Assign PA
-                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.SH: //Shoes
                         // Assign SH
-                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)));
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)));
+                        equipSlots.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)));
                         break;
                 }
                 logger.Info($" > {type} - id: {id}, color: {equipColor}, colorIndex: {colorIndex}");
             }
             packet.ReadInt(); // const? (4)
-
+            var player = Player.NewCharacter(gender, jobCode, name, skinColor, equipSlots);
             // OnSuccess
             //SendOp.CHAR_MAX_COUNT;
             session.Send(CharacterListPacket.SetMax(2, 3));
             //SendOp.CHARACTER_LIST //(New char only. This will append)
-            //session.Send(CharacterListPacket.AppendEntry();
+            session.Send(CharacterListPacket.AppendEntry(player));
             // OnFailure, forcing failure here while debugging
             //session.Send(ResponseCharCreatePacket.NameTaken());
 

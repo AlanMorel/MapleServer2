@@ -121,15 +121,20 @@ namespace MapleServer2.Types {
             var player = new Player
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                MapId = 2000062,
                 Name = name,
                 Gender = gender,
                 jobType = jobType,
                 Level = 1,
-                MapId = 2000062,
+                Motto = "Motto",
+                HomeName = "HomeName",
+                Coord = CoordF.From(2850, 2550, 1800),
                 Stats = new PlayerStats(),
                 SkinColor = skinColor,
                 Equips = (Dictionary<ItemSlot, Item>)equips,
-        };
+                GameOptions = new GameOptions(),
+                Mesos = 1000,
+            };
             return player;
         }
     }
