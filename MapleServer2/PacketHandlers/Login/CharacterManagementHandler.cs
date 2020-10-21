@@ -119,7 +119,7 @@ namespace MapleServer2.PacketHandlers.Login {
             var player = Player.NewCharacter(gender, jobCode, name, skinColor, equipSlots);
             // OnSuccess
             //SendOp.CHAR_MAX_COUNT;
-            session.Send(CharacterListPacket.SetMax(2, 3));
+            session.Send(CharacterListPacket.SetMax(2, 4));
             //SendOp.CHARACTER_LIST //(New char only. This will append)
             session.Send(CharacterListPacket.AppendEntry(player));
             // OnFailure, forcing failure here while debugging

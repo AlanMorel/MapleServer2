@@ -118,6 +118,14 @@ namespace MapleServer2.Types {
 
         public static Player NewCharacter(byte gender, Job jobType, string name, SkinColor skinColor, object equips)
         {
+            PlayerStats stats = PlayerStats.Default();
+            stats.Hp = new PlayerStat(1000, 0, 1000);
+            stats.CurrentHp = new PlayerStat(0, 1000, 0);
+            stats.Spirit = new PlayerStat(100, 100, 100);
+            stats.Stamina = new PlayerStat(120, 120, 120);
+            stats.AtkSpd = new PlayerStat(120, 100, 130);
+            stats.MoveSpd = new PlayerStat(110, 100, 150);
+            stats.JumpHeight = new PlayerStat(110, 100, 130);
             var player = new Player
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -125,11 +133,11 @@ namespace MapleServer2.Types {
                 Name = name,
                 Gender = gender,
                 jobType = jobType,
-                Level = 1,
+                Level = 60,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800),
-                Stats = new PlayerStats(),
+                Stats = stats,
                 SkinColor = skinColor,
                 Equips = (Dictionary<ItemSlot, Item>)equips,
                 GameOptions = new GameOptions(),
