@@ -1105,11 +1105,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj",
+      "projectUniqueName": "H:\\GitHub MS2\\MapleServer2\\Maple2.Sql\\Maple2.Sql.csproj",
       "projectName": "Maple2.Sql",
-      "projectPath": "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj",
+      "projectPath": "H:\\GitHub MS2\\MapleServer2\\Maple2.Sql\\Maple2.Sql.csproj",
       "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
-      "outputPath": "H:\\MapleServer2Login-master\\Maple2.Sql\\obj\\",
+      "outputPath": "H:\\GitHub MS2\\MapleServer2\\Maple2.Sql\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",

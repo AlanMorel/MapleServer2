@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "H:\\MapleServer2Login-master\\MaplePacketLib2\\MaplePacketLib2.csproj": {}
+    "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj": {}
   },
   "projects": {
-    "H:\\MapleServer2Login-master\\MaplePacketLib2\\MaplePacketLib2.csproj": {
+    "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\MapleServer2Login-master\\MaplePacketLib2\\MaplePacketLib2.csproj",
+        "projectUniqueName": "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj",
         "projectName": "MaplePacketLib2",
-        "projectPath": "H:\\MapleServer2Login-master\\MaplePacketLib2\\MaplePacketLib2.csproj",
+        "projectPath": "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj",
         "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
-        "outputPath": "H:\\MapleServer2Login-master\\MaplePacketLib2\\obj\\",
+        "outputPath": "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",

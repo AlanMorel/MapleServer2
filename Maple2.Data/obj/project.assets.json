@@ -1211,11 +1211,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\MapleServer2Login-master\\Maple2.Data\\Maple2.Data.csproj",
+      "projectUniqueName": "H:\\GitHub MS2\\MapleServer2\\Maple2.Data\\Maple2.Data.csproj",
       "projectName": "Maple2.Data",
-      "projectPath": "H:\\MapleServer2Login-master\\Maple2.Data\\Maple2.Data.csproj",
+      "projectPath": "H:\\GitHub MS2\\MapleServer2\\Maple2.Data\\Maple2.Data.csproj",
       "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
-      "outputPath": "H:\\MapleServer2Login-master\\Maple2.Data\\obj\\",
+      "outputPath": "H:\\GitHub MS2\\MapleServer2\\Maple2.Data\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -1231,11 +1231,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj": {
-              "projectPath": "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj"
+            "H:\\GitHub MS2\\MapleServer2\\Maple2.Sql\\Maple2.Sql.csproj": {
+              "projectPath": "H:\\GitHub MS2\\MapleServer2\\Maple2.Sql\\Maple2.Sql.csproj"
             },
-            "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj": {
-              "projectPath": "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj"
+            "H:\\GitHub MS2\\MapleServer2\\Maple2Storage\\Maple2Storage.csproj": {
+              "projectPath": "H:\\GitHub MS2\\MapleServer2\\Maple2Storage\\Maple2Storage.csproj"
             }
           }
         }
