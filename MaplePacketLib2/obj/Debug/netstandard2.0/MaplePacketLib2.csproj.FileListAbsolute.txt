@@ -1,0 +1,33 @@
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.deps.json
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.dll
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.pdb
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csprojAssemblyReference.cache
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfoInputs.cache
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csproj.CoreCompileInputs.cache
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
+E:\MS2Server\MapleServer2Login\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.deps.json
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csprojAssemblyReference.cache
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfoInputs.cache
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\MS2 Server\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.deps.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csprojAssemblyReference.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfoInputs.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.deps.json
+H:\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\MapleServer2Login-master\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csprojAssemblyReference.cache
+H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfoInputs.cache
+H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
+H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb

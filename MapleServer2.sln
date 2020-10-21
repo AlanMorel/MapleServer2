@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapleServer2", "MapleServer2\MapleServer2.csproj", "{75C6A294-BB12-4003-A3D8-F5472DBE1ACD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaplePacketLib2", "MaplePacketLib2\MaplePacketLib2.csproj", "{7B4D0AF3-870E-417A-B44F-8FFD10F8F9CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameDataParser", "GameDataParser\GameDataParser.csproj", "{F8B5FDA0-836D-423F-86D7-0C58E7A1CA53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2Storage", "Maple2Storage\Maple2Storage.csproj", "{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2.Sql", "Maple2.Sql\Maple2.Sql.csproj", "{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2.Data", "Maple2.Data\Maple2.Data.csproj", "{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75C6A294-BB12-4003-A3D8-F5472DBE1ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C6A294-BB12-4003-A3D8-F5472DBE1ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C6A294-BB12-4003-A3D8-F5472DBE1ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C6A294-BB12-4003-A3D8-F5472DBE1ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B4D0AF3-870E-417A-B44F-8FFD10F8F9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B4D0AF3-870E-417A-B44F-8FFD10F8F9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B4D0AF3-870E-417A-B44F-8FFD10F8F9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B5FDA0-836D-423F-86D7-0C58E7A1CA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B5FDA0-836D-423F-86D7-0C58E7A1CA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B5FDA0-836D-423F-86D7-0C58E7A1CA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {916C0D22-565A-4BB2-B94D-D1CC2926E3A3}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,10 @@
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.deps.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.csprojAssemblyReference.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfoInputs.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfo.cs
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.pdb

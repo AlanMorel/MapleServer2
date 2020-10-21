@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "restore": {
+    "H:\\MapleServer2Login-master\\GameDataParser\\GameDataParser.csproj": {}
+  },
+  "projects": {
+    "H:\\MapleServer2Login-master\\GameDataParser\\GameDataParser.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "H:\\MapleServer2Login-master\\GameDataParser\\GameDataParser.csproj",
+        "projectName": "GameDataParser",
+        "projectPath": "H:\\MapleServer2Login-master\\GameDataParser\\GameDataParser.csproj",
+        "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
+        "outputPath": "H:\\MapleServer2Login-master\\GameDataParser\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj": {
+                "projectPath": "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "DotNetZip": {
+              "target": "Package",
+              "version": "[1.13.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj",
+        "projectName": "Maple2Storage",
+        "projectPath": "H:\\MapleServer2Login-master\\Maple2Storage\\Maple2Storage.csproj",
+        "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
+        "outputPath": "H:\\MapleServer2Login-master\\Maple2Storage\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "protobuf-net": {
+              "target": "Package",
+              "version": "[2.4.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

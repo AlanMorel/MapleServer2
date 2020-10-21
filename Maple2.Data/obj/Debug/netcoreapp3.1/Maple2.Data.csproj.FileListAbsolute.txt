@@ -1,0 +1,12 @@
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.csprojAssemblyReference.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.AssemblyInfoInputs.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.AssemblyInfo.cs
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Data.deps.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Data.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Sql.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Sql.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.csproj.CopyComplete

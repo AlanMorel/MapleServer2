@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj": {}
+  },
+  "projects": {
+    "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj",
+        "projectName": "Maple2.Sql",
+        "projectPath": "H:\\MapleServer2Login-master\\Maple2.Sql\\Maple2.Sql.csproj",
+        "packagesPath": "C:\\Users\\Rafamod\\.nuget\\packages\\",
+        "outputPath": "H:\\MapleServer2Login-master\\Maple2.Sql\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Rafamod\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

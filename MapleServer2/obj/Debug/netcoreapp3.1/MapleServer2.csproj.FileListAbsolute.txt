@@ -1,0 +1,128 @@
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.csprojAssemblyReference.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.AssemblyInfoInputs.cache
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.AssemblyInfo.cs
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.exe
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\nlog.config
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.deps.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.runtimeconfig.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.runtimeconfig.dev.json
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Autofac.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\NLog.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\NLog.Extensions.Logging.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\protobuf-net.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\ICSharpCode.SharpZipLib.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.ServiceModel.Primitives.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.ServiceModel.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netstandard2.0\System.Private.ServiceModel.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Private.ServiceModel.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MaplePacketLib2.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MaplePacketLib2.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.csproj.CopyComplete
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.pdb
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Google.Protobuf.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Compression.LZ4.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Compression.LZ4.Streams.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Hash.xxHash.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MySql.Data.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Ubiety.Dns.Core.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Zstandard.Net.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Renci.SshNet.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\SshNet.Security.Cryptography.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.exe
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\nlog.config
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.deps.json
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.runtimeconfig.json
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.runtimeconfig.dev.json
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MapleServer2.pdb
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Autofac.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Google.Protobuf.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Compression.LZ4.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Compression.LZ4.Streams.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\K4os.Hash.xxHash.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MySql.Data.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Ubiety.Dns.Core.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Zstandard.Net.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\NLog.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\NLog.Extensions.Logging.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\protobuf-net.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\ICSharpCode.SharpZipLib.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Renci.SshNet.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\SshNet.Security.Cryptography.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.ServiceModel.Primitives.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.ServiceModel.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Windows.Extensions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netstandard2.0\System.Private.ServiceModel.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Private.ServiceModel.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MaplePacketLib2.dll
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\MapleServer2Login-master\MapleServer2\bin\Debug\netcoreapp3.1\MaplePacketLib2.pdb
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.csprojAssemblyReference.cache
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.AssemblyInfoInputs.cache
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.AssemblyInfo.cs
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.csproj.CopyComplete
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.dll
+H:\MapleServer2Login-master\MapleServer2\obj\Debug\netcoreapp3.1\MapleServer2.pdb

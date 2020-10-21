@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "s23lPu6Lvalk3aKSE9iHJw9hx5zNrRjhmZ0kQ2p4WuslR9PxZbBNeFhDj6bgmycKnvg3jJPV2fiK9dwSrMsW0w==",
+  "success": true,
+  "projectFilePath": "E:\\MS2Server\\MapleServer2Login\\MaplePacketLib2\\MaplePacketLib2.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Revilo\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\Revilo\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
