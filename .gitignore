@@ -1,3 +1,13 @@
 bin/
 obj/
 .vs/
+Maple2.Data/obj/
+Maple2.Data/bin/
+Maple2.Sql/obj/
+Maple2.Sql/bin/
+Maple2Storage/obj/
+Maple2Storage/bin/
+MaplePacketLib2/obj/
+MaplePacketLib2/bin/
+GameDataParser/bin/
+GameDataParser/obj/
