@@ -13,7 +13,7 @@ using MapleServer2.Database;
 //--------------------------------------------//
 //--------------------------------------------//
 
-
+    
 
 //--------------------------------------------//
 //--------------------------------------------//
@@ -27,15 +27,9 @@ namespace MapleServer2 {
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
             logger.Info($"Connecting to the Database...");
 
-            // Connection to DB
-            DBConnect dBConnect = new DBConnect();
-            logger.Info($"Connecting Success! Getting MapID: {dBConnect.Select()}");
-
-
-
-            // Testing stuff
 
             #region Container
+
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
             var loginServer = loginScope.Resolve<LoginServer>();
@@ -65,7 +59,6 @@ namespace MapleServer2 {
                             logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
                         }
-
                         break;
                     case "resolve":
                         PacketStructureResolver resolver = PacketStructureResolver.Parse(input[1]);
@@ -78,8 +71,6 @@ namespace MapleServer2 {
             }
             #endregion
         }
-
-        // Testing Stuff outside of a main arg
 
         #region Session
         private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer) {

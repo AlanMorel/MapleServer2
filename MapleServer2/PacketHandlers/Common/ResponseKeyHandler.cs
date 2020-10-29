@@ -30,7 +30,7 @@ namespace MapleServer2.PacketHandlers.Common {
             HandleCommon(session, packet);
 
             session.InitPlayer(accountStorage.GetCharacter(authData.CharacterId));
-
+            
             //session.Send(0x27, 0x01); // Meret market related...?
 
             session.Send(PacketWriter.Of(SendOp.LOGIN_REQUIRED)

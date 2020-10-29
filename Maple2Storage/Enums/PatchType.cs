@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Enums {
+﻿namespace Maple2Storage.Enums {
     public enum PatchType : byte {
         Delete = 0,
         Patch = 1,

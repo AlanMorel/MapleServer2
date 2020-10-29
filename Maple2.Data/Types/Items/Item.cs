@@ -7,7 +7,6 @@ namespace Maple2.Data.Types.Items {
         public InventoryType InventoryType { get; }
         public EquipSlot[] EquipSlots { get; }
         public int SlotMax { get; }
-
         private EquipSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : EquipSlot.NONE;
         public bool IsMeso => MapleId > 90000000 && MapleId < 90000004;
         public bool IsStamina => MapleId == 90000010;
@@ -15,8 +14,11 @@ namespace Maple2.Data.Types.Items {
                                 || DefaultEquipSlot == EquipSlot.ER
                                 || DefaultEquipSlot == EquipSlot.FA
                                 || DefaultEquipSlot == EquipSlot.FD;
+        public bool IsTemplate;
+        public bool CanRepackage;
+        public int Id;
+        public long Uid;
 
-        public long Id;
         public int MapleId { get; protected set; }
         public short Slot;
         public EquipSlot EquippedSlot =>
@@ -33,20 +35,28 @@ namespace Maple2.Data.Types.Items {
         public long UnlockTime;
         public short GlamourForgeCount;
         public int Enchants;
+
         // EnchantExp (10000 = 100%) for Peachy
         public int EnchantExp;
         public bool CanRepack;
         public int Charges;
         public int TradeCount;
-
         public ItemStats Stats;
-        // This is marked readonly to prevent invalid assignment
+
+        // For friendship badges
+        public long PairedCharacterId;
+        public string PairedCharacterName;
+
         public ItemAppearance Appearance { get; private set; }
-        public ItemTransfer Transfer;
+        public TransferFlag Transfer;
         public ItemSockets Sockets;
-        public ItemCoupleInfo CoupleInfo;
+        //public ItemCoupleInfo CoupleInfo;
+        public Character Owner;
+        public byte AppearanceFlag;
+        public EquipColor Color;
+
         // Unknown, this was always default
-        public readonly ItemBinding Binding = new ItemBinding();
+        //public readonly ItemBinding Binding = new ItemBinding();
 
         public Item(int mapleId, InventoryType inventoryType, EquipSlot[] equipSlots, int slotMax) {
             this.MapleId = mapleId;
@@ -61,15 +71,31 @@ namespace Maple2.Data.Types.Items {
             };
         }
 
+
+        // Getting a single Item
+        public Item(int id)
+        {
+            this.Id = id;
+            this.InventoryType = ItemMetadataStorage.GetTab(id);
+            //this.EquippedSlot = ItemMetadataStorage.GetSlot(id);
+            this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
+            this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
+            this.Slot = Convert.ToInt16(ItemMetadataStorage.GetSlot(id));
+            this.Amount = 1;
+            this.Stats = new ItemStats();
+            this.CanRepackage = true; // If false, item becomes untradable
+        }
+
         // Transfer and CoupleInfo are immutable, so don't need deep copy
         public virtual Item Clone() {
             var clone = (Item) this.MemberwiseClone();
-            clone.Stats = new ItemStats(Stats);
-            clone.Appearance = Appearance.Clone();
+            clone.Stats = new ItemStats();
+            //clone.Appearance = Appearance.Clone();
             clone.Sockets = new ItemSockets(Sockets);
 
             return clone;
         }
+
 
         // TODO: this is a temporary hacky solution
         // Make sure item is gemstone or lapenshard
@@ -79,7 +105,6 @@ namespace Maple2.Data.Types.Items {
                 MapleId++;
             }
         }
-
         public bool TrySplit(int amount, out Item splitItem) {
             if (this.Amount <= amount) {
                 splitItem = null;
@@ -93,14 +118,12 @@ namespace Maple2.Data.Types.Items {
             splitItem.Id = 0;
             return true;
         }
-
         public bool CanStack(Item item) {
             return MapleId == item.MapleId
                    && Amount < SlotMax
                    && Rarity == item.Rarity
                    && Transfer.Equals(item.Transfer);
         }
-
         public int CompareTo(Item other) {
             if (ReferenceEquals(null, other)) return 1;
 

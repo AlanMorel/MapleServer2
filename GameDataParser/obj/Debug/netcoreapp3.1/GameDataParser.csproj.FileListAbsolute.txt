@@ -23,3 +23,28 @@ C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\GameDataParser\
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.csproj.CopyComplete
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.dll
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.pdb
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.exe
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.deps.json
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.runtimeconfig.json
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.runtimeconfig.dev.json
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\GameDataParser.pdb
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\DotNetZip.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\protobuf-net.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\System.ServiceModel.Primitives.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\System.ServiceModel.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netstandard2.0\System.Private.ServiceModel.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Private.ServiceModel.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.csprojAssemblyReference.cache
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.Resources.resources
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.csproj.GenerateResource.cache
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.AssemblyInfoInputs.cache
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.AssemblyInfo.cs
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.csproj.CopyComplete
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.dll
+H:\GitHub MS2\MapleServer2\GameDataParser\obj\Debug\netcoreapp3.1\GameDataParser.pdb

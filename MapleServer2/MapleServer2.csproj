@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Maple2.Data\Maple2.Data.csproj" />
       <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
       <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
     </ItemGroup>

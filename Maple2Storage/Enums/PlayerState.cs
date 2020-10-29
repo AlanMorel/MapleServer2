@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Enums {
+﻿namespace Maple2Storage.Enums {
     public enum PlayerState {
         None = 0,
         Idle = 1,

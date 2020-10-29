@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MaplePacketLib2.Tools {
-    public class PacketWriter : Packet {
+    public class PacketWriter : Packet, IByteWriter{
         private const int DEFAULT_SIZE = 64;
 
         public int Remaining => Buffer.Length - Length;

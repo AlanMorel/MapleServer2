@@ -20,7 +20,7 @@ namespace Maple2.Data.Types.Items {
         }
 
         public override byte[] SerializeExtraBytes() {
-            var writer = new ByteWriter();
+            var writer = new PacketWriter();
             writer.WriteInt(MusicId);
             writer.WriteInt(Instrument);
             writer.WriteUnicodeString(Title);
@@ -31,13 +31,13 @@ namespace Maple2.Data.Types.Items {
         }
 
         public override void DeserializeExtraBytes(byte[] bytes) {
-            var packet = new ByteReader(bytes);
+            var packet = new PacketReader(bytes);
             MusicId = packet.ReadInt();
             Instrument = packet.ReadInt();
             Title = packet.ReadUnicodeString();
             Author = packet.ReadUnicodeString();
             AuthorId = packet.ReadLong();
-            Code = packet.ReadString();
+            Code = packet.ReadString(MusicId);// Unknown, still dont figure it out.
         }
     }
 }

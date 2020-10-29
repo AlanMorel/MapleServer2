@@ -2,6 +2,9 @@
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
+using Maple2Storage.Enums;
+using Maple2.Data.Types.Items;
+
 
 namespace MapleServer2.Packets.Helpers {
     public static class ItemPacketHelper {
@@ -12,11 +15,11 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteLong(item.CreationTime)
                 .WriteLong(item.ExpiryTime)
                 .WriteLong()
-                .WriteInt(item.TimesAttributesChanged)
+                .WriteInt(item.AttributesChangeCount)
                 .WriteInt()
                 .WriteBool(item.IsLocked)
                 .WriteLong(item.UnlockTime)
-                .WriteShort(item.RemainingGlamorForges)
+                .WriteShort(item.GlamourForgeCount)
                 .WriteByte()
                 .WriteInt()
                 .WriteAppearance(item)
@@ -35,11 +38,11 @@ namespace MapleServer2.Packets.Helpers {
                 pWriter.WriteTemplate();
             }
 
-            if (item.InventoryType == InventoryTab.Pets) {
+            if (item.InventoryType == InventoryType.Pets) {
                 pWriter.WritePet();
             }
 
-            pWriter.WriteInt((int)item.TransferFlag)
+            pWriter.WriteInt((int)item.Transfer)
                 .WriteByte()
                 .WriteInt()
                 .WriteInt()
@@ -50,7 +53,7 @@ namespace MapleServer2.Packets.Helpers {
             bool isCharBound = (item.Owner != null);
             pWriter.WriteBool(isCharBound);
             if (isCharBound) {
-                pWriter.WriteLong(item.Owner.CharacterId);
+                pWriter.WriteLong(item.Owner.Id);
                 pWriter.WriteUnicodeString(item.Owner.Name);
             }
 
@@ -72,19 +75,19 @@ namespace MapleServer2.Packets.Helpers {
             pWriter.Write<EquipColor>(item.Color);
             pWriter.WriteInt(item.AppearanceFlag);
             // Positioning Data
-            switch (item.ItemSlot) {
-                case ItemSlot.CP:
+            switch (item.EquippedSlot) {
+                case EquipSlot.CP:
                     for (int i = 0; i < 13; i++) {
                         pWriter.Write<float>(0);
                     }
                     break;
-                case ItemSlot.HR:
+                case EquipSlot.HR:
                     pWriter.Write<float>(0.3f);
                     pWriter.WriteZero(24);
                     pWriter.Write<float>(0.3f);
                     pWriter.WriteZero(24);
                     break;
-                case ItemSlot.FD:
+                case EquipSlot.FD:
                     for (int i = 0; i < 4; i++) {
                         pWriter.Write<float>(0);
                     }

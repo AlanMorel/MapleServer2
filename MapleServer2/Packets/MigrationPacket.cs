@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.GameData;
 
 namespace MapleServer2.Packets {
     public static class MigrationPacket {

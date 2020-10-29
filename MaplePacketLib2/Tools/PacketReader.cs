@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MaplePacketLib2.Tools {
-    public class PacketReader : Packet {
+    public class PacketReader : Packet, IByteReader {
         public int Position { get; private set; }
 
         public int Available => Length - Position;

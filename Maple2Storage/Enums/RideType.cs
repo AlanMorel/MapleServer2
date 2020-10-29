@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Enums {
+﻿namespace Maple2Storage.Enums {
     public enum RideType : byte {
         Default = 0,
         UseItem = 1,

@@ -8,3 +8,13 @@ C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\o
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfo.cs
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.dll
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.deps.json
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.dll
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.csprojAssemblyReference.cache
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfoInputs.cache
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfo.cs
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.dll
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.pdb

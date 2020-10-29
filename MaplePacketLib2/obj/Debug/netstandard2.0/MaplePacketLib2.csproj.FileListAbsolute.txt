@@ -31,3 +31,11 @@ H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacket
 H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
 H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
 H:\MapleServer2Login-master\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.deps.json
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\bin\Debug\netstandard2.0\MaplePacketLib2.pdb
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.csprojAssemblyReference.cache
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfoInputs.cache
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.AssemblyInfo.cs
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.dll
+H:\GitHub MS2\MapleServer2\MaplePacketLib2\obj\Debug\netstandard2.0\MaplePacketLib2.pdb

@@ -6,3 +6,11 @@ C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Sql\obj\
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.AssemblyInfo.cs
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.dll
 C:\Users\Rafamod\Desktop\New folder (2)\MapleServer2Login-master\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.pdb
+H:\GitHub MS2\MapleServer2\Maple2.Sql\bin\Debug\netstandard2.1\Maple2.Sql.deps.json
+H:\GitHub MS2\MapleServer2\Maple2.Sql\bin\Debug\netstandard2.1\Maple2.Sql.dll
+H:\GitHub MS2\MapleServer2\Maple2.Sql\bin\Debug\netstandard2.1\Maple2.Sql.pdb
+H:\GitHub MS2\MapleServer2\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.csprojAssemblyReference.cache
+H:\GitHub MS2\MapleServer2\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.AssemblyInfoInputs.cache
+H:\GitHub MS2\MapleServer2\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.AssemblyInfo.cs
+H:\GitHub MS2\MapleServer2\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.dll
+H:\GitHub MS2\MapleServer2\Maple2.Sql\obj\Debug\netstandard2.1\Maple2.Sql.pdb

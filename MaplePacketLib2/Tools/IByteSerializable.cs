@@ -24,7 +24,6 @@ namespace MaplePacketLib2.Tools
         bool ReadBool();
         unsafe uint ReadUInt();
         string ReadMapleString();
-        int Availables();
     }
     public interface IByteWriter
     {

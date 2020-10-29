@@ -5,12 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.9" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Maple2.Sql\Maple2.Sql.csproj" />
       <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
+      <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
     </ItemGroup>
 
 </Project>
