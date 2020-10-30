@@ -7,5 +7,10 @@ namespace MapleServer2.Tools {
     public abstract class ItemFactory
     {
         public abstract Item Init(int id);
+
+        internal static Item Create(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

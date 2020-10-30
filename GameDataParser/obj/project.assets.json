@@ -208,6 +208,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "MaplePacketLib2": "1.0.0",
           "protobuf-net": "2.4.6"
         },
         "compile": {
@@ -215,6 +216,16 @@
         },
         "runtime": {
           "bin/placeholder/Maple2Storage.dll": {}
+        }
+      },
+      "MaplePacketLib2/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/MaplePacketLib2.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MaplePacketLib2.dll": {}
         }
       }
     }
@@ -834,6 +845,11 @@
       "type": "project",
       "path": "../Maple2Storage/Maple2Storage.csproj",
       "msbuildProject": "../Maple2Storage/Maple2Storage.csproj"
+    },
+    "MaplePacketLib2/1.0.0": {
+      "type": "project",
+      "path": "../MaplePacketLib2/MaplePacketLib2.csproj",
+      "msbuildProject": "../MaplePacketLib2/MaplePacketLib2.csproj"
     }
   },
   "projectFileDependencyGroups": {

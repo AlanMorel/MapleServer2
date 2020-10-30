@@ -27,7 +27,7 @@ namespace Maple2.Data.Converter {
             achieve.CurrentGrade = value.CurrentGrade;
             achieve.EndGrade = value.EndGrade;
             achieve.Count = value.Count;
-            achieve.Record = value.Record.DeserializeDictionary<int, long>();
+            achieve.Record = value.Record.DeserializeDictionary<int,long>();
 
             return achieve;
         }

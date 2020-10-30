@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 using Autofac;
-using MapleServer2.Data;
-using MapleServer2.Data.Static;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
+using Maple2.Data.Storage;
 
 namespace MapleServer2.Servers.Login {
     public static class LoginContainerConfig {
@@ -18,8 +17,8 @@ namespace MapleServer2.Servers.Login {
                 .SingleInstance();
             builder.RegisterType<LoginSession>()
                 .AsSelf();
-            builder.RegisterType<StaticAccountStorage>()
-                .As<IAccountStorage>()
+            builder.RegisterType<UserStorage.Request>()
+                .As<IUserStorage>()
                 .SingleInstance();
 
             // Make all packet handlers available to PacketRouter

@@ -88,6 +88,16 @@
           "lib/netstandard2.0/System.ServiceModel.Primitives.dll": {},
           "lib/netstandard2.0/System.ServiceModel.dll": {}
         }
+      },
+      "MaplePacketLib2/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/MaplePacketLib2.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MaplePacketLib2.dll": {}
+        }
       }
     }
   },
@@ -303,10 +313,16 @@
         "system.servicemodel.primitives.nuspec",
         "version.txt"
       ]
+    },
+    "MaplePacketLib2/1.0.0": {
+      "type": "project",
+      "path": "../MaplePacketLib2/MaplePacketLib2.csproj",
+      "msbuildProject": "../MaplePacketLib2/MaplePacketLib2.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "MaplePacketLib2 >= 1.0.0",
       "protobuf-net >= 2.4.6"
     ]
   },
@@ -335,7 +351,11 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj": {
+              "projectPath": "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -160,7 +160,11 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "projectReferences": {}
+            "projectReferences": {
+              "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj": {
+                "projectPath": "H:\\GitHub MS2\\MapleServer2\\MaplePacketLib2\\MaplePacketLib2.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

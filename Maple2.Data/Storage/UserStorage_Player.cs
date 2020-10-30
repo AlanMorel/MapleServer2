@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Maple2.Data.Storage {
     public partial class UserStorage {
-        public partial class Request {
+        public partial class Request  : IUserStorage
+        {
             #region ReadOperations
             public Account GetAccount(long accountId) {
                 return storage.accountConverter.FromModel(context.Account.Find(accountId));

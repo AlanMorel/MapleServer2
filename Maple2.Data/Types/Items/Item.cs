@@ -16,8 +16,7 @@ namespace Maple2.Data.Types.Items {
                                 || DefaultEquipSlot == EquipSlot.FD;
         public bool IsTemplate;
         public bool CanRepackage;
-        public int Id;
-        public long Uid;
+        public long Id;
 
         public int MapleId { get; protected set; }
         public short Slot;
@@ -63,12 +62,12 @@ namespace Maple2.Data.Types.Items {
             this.InventoryType = inventoryType;
             this.EquipSlots = equipSlots;
             this.SlotMax = slotMax;
-            this.Appearance = (DefaultEquipSlot) switch {
+            /*this.Appearance = (DefaultEquipSlot) switch {
                 EquipSlot.HR => new HairAppearance(default),
                 EquipSlot.FD => new DecalAppearance(default),
                 EquipSlot.CP => new CapAppearance(default),
                 _ => new ItemAppearance(default)
-            };
+            };*/
         }
 
 

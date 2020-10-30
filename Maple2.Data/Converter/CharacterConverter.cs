@@ -3,7 +3,7 @@ using Maple2.Data.Types;
 using Maple2.Data.Utils;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
-//using Maple2Storage.Utils;
+using Maple2Storage.Utils;
 
 namespace Maple2.Data.Converter {
     public class CharacterConverter : IModelConverter<Character, Maple2.Sql.Model.Character> {
@@ -16,7 +16,7 @@ namespace Maple2.Data.Converter {
             character.LastModified = value.LastModified;
             character.Name = value.Name;
             character.Gender = value.Gender;
-            character.Job = (int) value.Job;
+            character.Job = (int) value.jobType;
             character.Level = value.Level;
             character.SkinColor = value.SkinColor.Serialize();
             character.Experience = value.Experience;
@@ -25,7 +25,6 @@ namespace Maple2.Data.Converter {
             character.Title = value.Title;
             character.Insignia = value.Insignia;
             character.AttributePoints = value.AttributePoints.Serialize();
-
             character.ReturnMapId = value.ReturnMapId;
             character.ReturnPosition = value.ReturnPosition.Serialize();
             character.Mastery = value.Mastery.Serialize();
@@ -58,7 +57,7 @@ namespace Maple2.Data.Converter {
             character.Name = value.Name;
             character.CreationTime = value.CreationTime.ToEpochSeconds();
             character.Gender = value.Gender;
-            character.Job = (JobType) value.Job;
+            character.jobType = (JobType) value.Job;
             character.Level = value.Level;
             character.SkinColor = value.SkinColor.Deserialize<SkinColor>();
             character.Experience = value.Experience;
@@ -66,7 +65,7 @@ namespace Maple2.Data.Converter {
             character.MapId = value.MapId;
             character.Title = value.Title;
             character.Insignia = value.Insignia;
-            character.AttributePoints = value.AttributePoints.Deserialize<AttributePoints>();
+            character.AttributePoints = value.AttributePoints.Deserialize<PlayerStats>();
             character.GuildId = value.GuildId ?? 0;
 
             character.ReturnMapId = value.ReturnMapId;

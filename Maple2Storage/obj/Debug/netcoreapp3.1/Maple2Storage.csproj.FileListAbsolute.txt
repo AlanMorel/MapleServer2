@@ -18,3 +18,6 @@ H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.A
 H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.AssemblyInfo.cs
 H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.dll
 H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\MaplePacketLib2.dll
+H:\GitHub MS2\MapleServer2\Maple2Storage\bin\Debug\netcoreapp3.1\MaplePacketLib2.pdb
+H:\GitHub MS2\MapleServer2\Maple2Storage\obj\Debug\netcoreapp3.1\Maple2Storage.csproj.CopyComplete

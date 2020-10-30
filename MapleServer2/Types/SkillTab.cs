@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using MaplePacketLib2.Tools;
 
-namespace Maple2.Data.Types {
+namespace MapleServer2.Types {
     public class SkillTab : IByteSerializable {
         public long Id { get; set; }
         public string Name { get; private set; }
