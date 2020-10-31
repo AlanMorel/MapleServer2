@@ -6,6 +6,7 @@ using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using Maple2.Data.Types;
 using Maple2.Data.Types.Items;
+using System;
 
 namespace MapleServer2.Packets {
     public static class CharacterListPacket {
@@ -168,7 +169,7 @@ namespace MapleServer2.Packets {
 
         // Note, the client actually uses item id to determine type
         public static void WriteEquip(EquipSlot slot, Item item, PacketWriter pWriter) {
-            pWriter.WriteInt(item.Id)
+            pWriter.WriteLong(item.Id)
                 .WriteLong(item.Id)
                 .WriteUnicodeString(slot.ToString())
                 .WriteInt(1)
@@ -192,5 +193,21 @@ namespace MapleServer2.Packets {
                 .WriteByte(0x04)
                 .WriteBool(false);
         }
+
+        public static Packet CancelDelete(long characterId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Packet DeletePending(long characterId, long date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Packet DeleteEntry(long characterId)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

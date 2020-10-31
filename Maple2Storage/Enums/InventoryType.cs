@@ -17,6 +17,13 @@
         // 14 Removed
         Lapenshard = 15,
         Fragment = 16,
-
+        GearEquip,
+        OutfitEquip,
+        LapenshardEquip,
+        BadgeEquip,
+        Trade,
+        Storage,
+        PetStorage,
+        FurnishingStorage,
     }
 }

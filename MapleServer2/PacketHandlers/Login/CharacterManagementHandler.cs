@@ -101,12 +101,12 @@ namespace MapleServer2.PacketHandlers.Login {
 
                 Item equip = ItemFactory.Create(id);
                 equip.Slot = (short) slot;
-                equip.Appearance.ReadFrom(packet);
-                InventoryType type = equip.InventoryType == InventoryType.Outfit
-                    ? InventoryType.OutfitEquip
-                    : InventoryType.GearEquip;
-                long ownerId = InventoryState.GetOwnerId(newCharacter.Id, type);
-                long itemId = request.CreateItem(ownerId, equip);
+                //equip.Appearance.ReadFrom(packet);
+                //InventoryType type = equip.InventoryType == InventoryType.Outfit
+                //    ? InventoryType.OutfitEquip
+                //    : InventoryType.GearEquip;
+                //long ownerId = InventoryState.GetOwnerId(newCharacter.Id, type);
+                //long itemId = request.CreateItem(ownerId, equip);
                 //bool result = player.GearEquip.TryPutSlot(equip, (short) slot);
                 //logger.Info($" > {slot} - id:{id}, color:{equip.Appearance.Color} | {itemId}");
                 
