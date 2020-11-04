@@ -169,5 +169,10 @@ namespace MaplePacketLib2.Tools {
         public PacketWriter WriteZero(int count) {
             return Write(new byte[count]);
         }
+
+        public PacketWriter WriteCollection<T>(object obj)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

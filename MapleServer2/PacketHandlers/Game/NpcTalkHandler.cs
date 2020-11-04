@@ -4,6 +4,8 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using MapleServer2.Types.FieldObjects;
+using MapleServer2.Types.Npcs;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class NpcTalkHandler : GamePacketHandler {

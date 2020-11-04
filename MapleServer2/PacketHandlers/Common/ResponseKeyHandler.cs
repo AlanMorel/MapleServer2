@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.GameData;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
+using Maple2Storage.Enums;
 using Microsoft.Extensions.Logging;
+using Maple2.Data.Storage;
 
 namespace MapleServer2.PacketHandlers.Common {
     public class ResponseKeyHandler : CommonPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_KEY;
 
-        private readonly IAccountStorage accountStorage;
+        private readonly IUserStorage accountStorage;
 
-        public ResponseKeyHandler(IAccountStorage accountStorage, ILogger<ResponseKeyHandler> logger) : base(logger) {
-            this.accountStorage = accountStorage;
+        public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) {
+            //this.accountStorage = accountStorage;
         }
 
         public override void Handle(GameSession session, PacketReader packet) {
@@ -29,7 +30,9 @@ namespace MapleServer2.PacketHandlers.Common {
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            session.InitPlayer(accountStorage.GetCharacter(authData.CharacterId));
+            //using UserStorage.Request request = accountStorage.Context();
+
+            //session.InitPlayer(accountStorage.GetCharacter(authData.CharacterId));
             
             //session.Send(0x27, 0x01); // Meret market related...?
 
@@ -66,7 +69,7 @@ namespace MapleServer2.PacketHandlers.Common {
             session.Send(AdventureLevelPacket.Prestige(session.Player));
 
             // Load inventory tabs
-            foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab))) {
+            foreach (InventoryType tab in Enum.GetValues(typeof(InventoryType))) {
                 session.Send(ItemInventoryPacket.ResetTab(tab));
                 session.Send(ItemInventoryPacket.LoadTab(tab));
                 // Load items for above tab

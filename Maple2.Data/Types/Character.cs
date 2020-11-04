@@ -8,9 +8,7 @@ using Maple2.Data.Types.Items;
 
 namespace Maple2.Data.Types {
     public class Character {
-        // Bypass Key is constant PER ACCOUNT, unsure how it is validated
-        // Seems like as long as it's valid, it doesn't matter though
-        public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
+
         public DateTime LastModified;
 
         /* Character */
@@ -44,9 +42,14 @@ namespace Maple2.Data.Types {
         public int[] Trophy = new int[3];
         public string GuildName = "";
         public string GuildRank = "";
+        public string HomeName = "";
         public int GearScore;
         public int ReturnMapId;
         public Vector3 ReturnPosition;
+        public byte Animation;
+        public CoordF UnknownCoord;
+        
+
 
         // Currency Types
         public long Mesos;
@@ -58,7 +61,7 @@ namespace Maple2.Data.Types {
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
 
-        public Dictionary<EquipSlot, Item> Equip = new Dictionary<EquipSlot, Item>();
+        public Dictionary<EquipSlot, Item> Equips = new Dictionary<EquipSlot, Item>();
         public List<Item> Badges = new List<Item>();
 
         public static Character NewCharacter(byte gender, JobType jobType, string name) {

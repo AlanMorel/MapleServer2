@@ -17,7 +17,7 @@ namespace MapleServer2.Servers.Login {
                 .SingleInstance();
             builder.RegisterType<LoginSession>()
                 .AsSelf();
-            builder.RegisterType<UserStorage.Request>()
+            builder.RegisterType<UserStorage>()
                 .As<IUserStorage>()
                 .SingleInstance();
 

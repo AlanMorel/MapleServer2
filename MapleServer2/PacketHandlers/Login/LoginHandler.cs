@@ -4,27 +4,29 @@ using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
-using MapleServer2.Data.Static;
+using Maple2.Data.Types;
+using MapleServer2.GameData.Static;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
-using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using MapleServer2.Types;
+using Maple2.Data.Storage;
 
 namespace MapleServer2.PacketHandlers.Login {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class LoginHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_LOGIN;
 
-        private readonly IAccountStorage accountStorage;
+        //private readonly IAccountStorage accountStorage;
+        private readonly IUserStorage accountStorage;
 
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
 
-        public LoginHandler(IAccountStorage accountStorage, ILogger<LoginHandler> logger) : base(logger) {
-            this.accountStorage = accountStorage;
+        public LoginHandler(ILogger<LoginHandler> logger) : base(logger) {
+            //this.accountStorage = accountStorage;
 
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
@@ -34,17 +36,21 @@ namespace MapleServer2.PacketHandlers.Login {
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {
+            //using UserStorage.Request request = accountStorage.Context();
+
             byte mode = packet.ReadByte();
             string user = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
             logger.Debug($"Logging in with user:{user} pass:{pass}");
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(user) && string.IsNullOrEmpty(pass)) {
-                session.AccountId = StaticAccountStorage.DEFAULT_ACCOUNT;
-            } else {
-                session.AccountId = StaticAccountStorage.SECONDARY_ACCOUNT;
-            }
 
+                logger.Info($"Success, no user and pass");
+            } else {
+                logger.Info($"Success, with any string in user and pass");
+                //session.AccountId = StaticAccountStorage.SECONDARY_ACCOUNT;
+            }
+            
             switch (mode) {
                 case 1:
                     session.Send(PacketWriter.Of(SendOp.NPS_INFO).WriteLong().WriteUnicodeString(""));
@@ -53,9 +59,10 @@ namespace MapleServer2.PacketHandlers.Login {
                     break;
                 case 2:
                     List<Player> characters = new List<Player>();
+                    /*
                     foreach (long characterId in accountStorage.ListCharacters(session.AccountId)) {
                         characters.Add(accountStorage.GetCharacter(characterId));
-                    }
+                    }*/
 
                     Console.WriteLine("Initializing login with " + session.AccountId);
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));

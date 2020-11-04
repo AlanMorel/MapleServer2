@@ -2,6 +2,8 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
+using MapleServer2.Types.FieldObjects;
+using Maple2.Data.Types;
 
 namespace MapleServer2.Packets {
     public static class SyncStatePacket {

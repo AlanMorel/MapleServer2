@@ -127,5 +127,10 @@ namespace MaplePacketLib2.Tools {
             int pos = Array.IndexOf(Buffer, b, Position);
             Skip(pos - Position + 1);
         }
+
+        public T ReadCollection<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

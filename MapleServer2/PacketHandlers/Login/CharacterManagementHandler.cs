@@ -19,11 +19,11 @@ namespace MapleServer2.PacketHandlers.Login {
     public class CharacterManagementHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        private readonly UserStorage userStorage;
+        private readonly IUserStorage accountStorage;
 
-        public CharacterManagementHandler(UserStorage userStorage, ILogger<CharacterManagementHandler> logger)
+        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger)
                 : base(logger) {
-            this.userStorage = userStorage;
+            //this.accountStorage = accountStorage;
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {
@@ -33,10 +33,10 @@ namespace MapleServer2.PacketHandlers.Login {
                     HandleSelect(session, packet);
                     break;
                 case 1:
-                    HandleCreate(session, packet);
+                    //HandleCreate(session, packet);
                     break;
                 case 2:
-                    HandleDelete(session, packet);
+                    //HandleDelete(session, packet);
                     break;
                 case 3:
                     HandleCancelDelete(session, packet);
@@ -67,13 +67,13 @@ namespace MapleServer2.PacketHandlers.Login {
 
             //LoginPacket.LoginError("message?");
         }
-
+        /*
         private void HandleCreate(LoginSession session, PacketReader packet) {
             byte gender = packet.ReadByte();
             var jobCode = (JobCode) packet.ReadShort();
             var jobType = (JobType) ((int) jobCode * 10);
             string name = packet.ReadUnicodeString();
-
+            long accountId = session.AccountId;
             // Temporary fake validation for testing
             if (name.Length < 4) {
                 session.Send(ResponseCharCreatePacket.NameTaken());
@@ -85,11 +85,10 @@ namespace MapleServer2.PacketHandlers.Login {
             
             logger.Info($"Creating character:{name}, gender:{gender}, skinColor:{skinColor}");
             var newCharacter = Character.NewCharacter(gender, jobType, name);
-            newCharacter.AccountId = session.AccountId;
-            newCharacter.SkinColor = skinColor;
 
             using UserStorage.Request request = userStorage.Context();
             newCharacter.Id = request.CreateCharacter(newCharacter);
+            newCharacter.SkinColor = skinColor;
 
             int equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++) {
@@ -118,7 +117,7 @@ namespace MapleServer2.PacketHandlers.Login {
             session.Send(CharacterListPacket.SetMax(4, 6));
 
             Character player = request.GetCharacter(newCharacter.Id);
-            session.Send(CharacterListPacket.AppendEntry(player));
+            //session.Send(CharacterListPacket.AppendEntry(player));
             // There is a bug in the client at causes a lag spike here CxxException [STATUS_ACCESS_VIOLATION] 6F465F6C
         }
 
@@ -138,7 +137,7 @@ namespace MapleServer2.PacketHandlers.Login {
                 }
             }
         }
-
+        */
         private void HandleCancelDelete(LoginSession session, PacketReader packet) {
             long characterId = packet.ReadLong();
 

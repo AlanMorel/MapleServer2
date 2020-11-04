@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using MaplePacketLib2;
-
-
-namespace MaplePacketLib2.Tools
+﻿namespace MaplePacketLib2.Tools
 {
     public interface IByteSerializable
     {
@@ -33,6 +28,6 @@ namespace MaplePacketLib2.Tools
         unsafe PacketWriter WriteLong(long value = 0);
         PacketWriter WriteUnicodeString(string value);
         unsafe PacketWriter Write<T>(T value) where T : struct;
-
+        
     }
 }

@@ -16,7 +16,8 @@ namespace Maple2.Data.Types.Items {
                                 || DefaultEquipSlot == EquipSlot.FD;
         public bool IsTemplate;
         public bool CanRepackage;
-        public long Id;
+        public int Id;
+        public long Uid;
 
         public int MapleId { get; protected set; }
         public short Slot;
@@ -83,6 +84,7 @@ namespace Maple2.Data.Types.Items {
             this.Amount = 1;
             this.Stats = new ItemStats();
             this.CanRepackage = true; // If false, item becomes untradable
+
         }
 
         // Transfer and CoupleInfo are immutable, so don't need deep copy
@@ -129,6 +131,33 @@ namespace Maple2.Data.Types.Items {
             int result = MapleId.CompareTo(other.MapleId);
             if (result != 0) return result;
             return Rarity.CompareTo(other.Rarity);
+        }
+
+        public static Item TutorialBow()
+        {
+            return new Item(15100216)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                //Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                Stats = new ItemStats
+                {
+                    BasicAttributes = {
+                        ItemStat.Of(ItemAttribute.CriticalRate, 12),
+                        ItemStat.Of(ItemAttribute.MinWeaponAtk, 15),
+                        ItemStat.Of(ItemAttribute.MaxWeaponAtk, 17)
+                    }
+                },
+                Transfer = TransferFlag.Binds | TransferFlag.Splitable,
+            };
         }
 
         // Used for serializing type specific data

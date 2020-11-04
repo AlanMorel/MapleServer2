@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using Maple2Storage.Types;
+using Maple2Storage.Enums;
+using Maple2.Data.Types.Items;
 
 // TODO: make this class thread safe?
 namespace MapleServer2.Types {
@@ -20,7 +21,7 @@ namespace MapleServer2.Types {
         public Inventory(short size) {
             this.Size = size;
             this.items = new Dictionary<long, Item>();
-            byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
+            byte maxTabs = Enum.GetValues(typeof(InventoryType)).Cast<byte>().Max();
             this.slotMaps = new Dictionary<short, long>[maxTabs + 1];
             for (byte i = 0; i <= maxTabs; i++) {
                 this.slotMaps[i] = new Dictionary<short, long>();
@@ -33,7 +34,7 @@ namespace MapleServer2.Types {
             }
         }
 
-        public ICollection<Item> GetItems(InventoryTab tab) {
+        public ICollection<Item> GetItems(InventoryType tab) {
             return GetSlots(tab).Select(kvp => items[kvp.Value])
                 .ToImmutableList();
         }
@@ -118,7 +119,7 @@ namespace MapleServer2.Types {
             return new Tuple<long, short>(dstItem?.Uid ?? 0, srcSlot);
         }
 
-        public void Sort(InventoryTab tab) {
+        public void Sort(InventoryType tab) {
             // Get all items in tab and sort by Id
             Dictionary<short, long> slots = GetSlots(tab);
             List<Item> tabItems = slots.Select(kvp => Items[kvp.Value]).ToList();
@@ -148,7 +149,7 @@ namespace MapleServer2.Types {
                    && GetSlots(item.InventoryType).Remove(item.Slot);
         }
 
-        private bool RemoveInternal(InventoryTab tab, short slot, out Item item) {
+        private bool RemoveInternal(InventoryType tab, short slot, out Item item) {
             if (!GetSlots(tab).TryGetValue(slot, out long uid)) {
                 item = null;
                 return false;
@@ -161,7 +162,7 @@ namespace MapleServer2.Types {
             return GetSlots(item.InventoryType).ContainsKey(slot < 0 ? item.Slot : slot);
         }
 
-        private Dictionary<short, long> GetSlots(InventoryTab tab) {
+        private Dictionary<short, long> GetSlots(InventoryType tab) {
             return slotMaps[(int) tab];
         }
     }

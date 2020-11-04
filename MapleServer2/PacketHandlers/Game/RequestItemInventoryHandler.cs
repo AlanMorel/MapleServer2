@@ -1,11 +1,12 @@
 ﻿using System;
-using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using Maple2.Data.Types.Items;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class RequestItemInventoryHandler : GamePacketHandler {
@@ -60,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game {
                     break;
                 }
                 case 10: { // Sort
-                    var tab = (InventoryTab) packet.ReadShort();
+                    var tab = (InventoryType) packet.ReadShort();
                     inventory.Sort(tab);
                     session.Send(ItemInventoryPacket.ResetTab(tab));
                     session.Send(ItemInventoryPacket.LoadItemsToTab(tab, inventory.GetItems(tab)));

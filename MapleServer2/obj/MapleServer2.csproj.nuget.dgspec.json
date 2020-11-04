@@ -315,10 +315,6 @@
               "target": "Package",
               "version": "[3.1.9, )"
             },
-            "MySql.Data": {
-              "target": "Package",
-              "version": "[8.0.21, )"
-            },
             "NLog.Extensions.Logging": {
               "target": "Package",
               "version": "[1.6.5, )"

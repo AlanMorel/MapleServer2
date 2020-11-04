@@ -4,6 +4,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using Maple2.Data.Types.Items;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class ItemEnchantHandler : GamePacketHandler {

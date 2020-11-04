@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using Maple2.Data.Types;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets {

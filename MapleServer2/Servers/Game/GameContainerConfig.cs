@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Autofac;
-using MapleServer2.Data;
-using MapleServer2.Data.Static;
+using MapleServer2.GameData;
+using Maple2.Data.Storage;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 using MapleServer2.Tools;
@@ -22,8 +22,8 @@ namespace MapleServer2.Servers.Game {
             builder.RegisterType<ManagerFactory<FieldManager>>()
                 .AsSelf()
                 .SingleInstance();
-            builder.RegisterType<StaticAccountStorage>()
-                .As<IAccountStorage>()
+            builder.RegisterType<UserStorage>()
+                .As<IUserStorage>()
                 .SingleInstance();
 
             // Make all packet handlers available to PacketRouter

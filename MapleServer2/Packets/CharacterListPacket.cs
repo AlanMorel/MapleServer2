@@ -4,19 +4,20 @@ using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using Maple2.Data.Types;
+using MapleServer2.Types;
 using Maple2.Data.Types.Items;
+using Maple2.Data.Types;
 using System;
 
 namespace MapleServer2.Packets {
     public static class CharacterListPacket {
 
         // TODO: Load real data
-        public static Packet AddEntries(List<Character> players) {
+        public static Packet AddEntries(List<Player> players) {
             var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x00)
                 .WriteByte((byte)players.Count); // CharCount
-            foreach (Character player in players) {
+            foreach (Player player in players) {
                 pWriter.WriteCharacterEntry(player);
             }
 
@@ -24,7 +25,7 @@ namespace MapleServer2.Packets {
         }
 
         // Sent after creating a character to append to list
-        public static Packet AppendEntry(Character player) {
+        public static Packet AppendEntry(Player player) {
             var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x01);
             WriteCharacterEntry(pWriter, player);
@@ -38,10 +39,10 @@ namespace MapleServer2.Packets {
                 .WriteInt(total);
         }
 
-        private static void WriteCharacterEntry(this PacketWriter pWriter, Character player) {
+        private static void WriteCharacterEntry(this PacketWriter pWriter, Player player) {
             WriteCharacter(player, pWriter);
 
-            pWriter.WriteUnicodeString(player.DisplayPicture);
+            pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
             pWriter.WriteByte((byte)player.Equip.Count); // num equips
@@ -76,9 +77,9 @@ namespace MapleServer2.Packets {
             }
         }
 
-        public static void WriteCharacter(Character player, PacketWriter pWriter) {
+        public static void WriteCharacter(Player player, PacketWriter pWriter) {
             pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(player.Id);
+            pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte(player.Gender);
             pWriter.WriteByte(1);
@@ -111,7 +112,7 @@ namespace MapleServer2.Packets {
             pWriter.WriteUnicodeString(player.GuildName);
             pWriter.WriteUnicodeString(player.Motto);
 
-            pWriter.WriteUnicodeString(player.DisplayPicture);
+            pWriter.WriteUnicodeString(player.ProfileUrl);
 
             byte clubCount = 0;
             pWriter.WriteByte(clubCount); // # Clubs

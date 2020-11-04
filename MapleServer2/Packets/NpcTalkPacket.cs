@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
+using MapleServer2.Types.Npcs;
+using MapleServer2.Types.FieldObjects;
 
 namespace MapleServer2.Packets {
     public static class NpcTalkPacket {

@@ -5,7 +5,8 @@ using MapleServer2.Constants;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
+using Maple2Storage.Enums;
+using Maple2.Data.Types.Items;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
@@ -30,7 +31,7 @@ namespace MapleServer2.PacketHandlers.Game {
         private void HandleEquipItem(GameSession session, PacketReader packet) {
             long itemUid = packet.ReadLong();
             string equipSlotStr = packet.ReadUnicodeString();
-            if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot)) {
+            if (!Enum.TryParse(equipSlotStr, out EquipSlot equipSlot)) {
                 logger.Warning("Unknown equip slot: " + equipSlotStr);
                 return;
             }
@@ -41,14 +42,14 @@ namespace MapleServer2.PacketHandlers.Game {
 
             // TODO: Move unequipped item into the correct slot
             // Move previously equipped item back to inventory
-            if (session.Player.Equips.Remove(equipSlot, out Item prevItem)) {
+            if (session.Player.Equip.Remove(equipSlot, out Item prevItem)) {
                 session.Inventory.Add(prevItem);
                 session.Send(ItemInventoryPacket.Add(prevItem));
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
             }
 
             // Equip new item
-            session.Player.Equips[equipSlot] = item;
+            session.Player.Equip[equipSlot] = item;
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
 
             // TODO - Increase stats based on the item stats itself
@@ -67,9 +68,9 @@ namespace MapleServer2.PacketHandlers.Game {
         private void HandleUnequipItem(GameSession session, PacketReader packet) {
             long itemUid = packet.ReadLong();
 
-            foreach ((ItemSlot slot, Item item) in session.Player.Equips) {
+            foreach ((EquipSlot slot, Item item) in session.Player.Equip) {
                 if (itemUid != item.Uid) continue;
-                if (session.Player.Equips.Remove(slot, out Item unequipItem)) {
+                if (session.Player.Equip.Remove(slot, out Item unequipItem)) {
                     session.Inventory.Add(unequipItem);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                     session.Send(ItemInventoryPacket.Add(unequipItem));

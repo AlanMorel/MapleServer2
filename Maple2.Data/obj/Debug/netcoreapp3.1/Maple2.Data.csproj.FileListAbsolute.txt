@@ -18,3 +18,12 @@ H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2Storage.dll
 H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\MaplePacketLib2.dll
 H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Sql.pdb
 H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\MaplePacketLib2.pdb
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Resources\ms2-item-metadata
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Resources\ms2-map-entity-metadata
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Data.deps.json
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Data.dll
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2.Data.pdb
+H:\GitHub MS2\MapleServer2\Maple2.Data\bin\Debug\netcoreapp3.1\Maple2Storage.pdb
+H:\GitHub MS2\MapleServer2\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.csproj.CopyComplete
+H:\GitHub MS2\MapleServer2\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.dll
+H:\GitHub MS2\MapleServer2\Maple2.Data\obj\Debug\netcoreapp3.1\Maple2.Data.pdb

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Maple2.Data.Types;
 using System.Collections.Generic;
-using System.Text;
-using Maple2.Data.Types;
+using Maple2.Data.Converter;
+using Maple2.Data.Types.Items;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Maple2.Data.Storage
 {
-    public interface IUserStorage
+    public interface IUserStorage_Player
     {
         // Read operations for UserStorage_Player
         #region ReadOperations
@@ -27,6 +29,12 @@ namespace Maple2.Data.Storage
         void StageSkillTabs(long characterId, ICollection<SkillTab> skillTabs);
         void StageQuests(long characterId, QuestState quests);
         #endregion
+        
+    }
+
+    public interface IUserStorage
+    {
+        UserStorage.Request Context();
 
     }
 }

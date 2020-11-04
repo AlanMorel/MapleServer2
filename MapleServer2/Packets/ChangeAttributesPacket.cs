@@ -1,7 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using MapleServer2.Types;
+using Maple2.Data.Types.Items;
 
 namespace MapleServer2.Packets {
     public static class ChangeAttributesPacket {

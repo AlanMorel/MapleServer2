@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using MaplePacketLib2.Tools;
-using MapleServer2.Enums;
+using Maple2Storage.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using MapleServer2.Types.FieldObjects;
 using Microsoft.Extensions.Logging;
+using Maple2.Data.Types;
 
 namespace MapleServer2.Servers.Game {
     public class GameSession : Session {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using MapleServer2.Types.FieldObjects;
 using MapleServer2.Types.Npcs;
+using Maple2.Data.Types.Items;
 
 namespace MapleServer2.Types.Skills {
     // All operations on this class should be thread safe

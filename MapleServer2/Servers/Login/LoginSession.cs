@@ -1,5 +1,5 @@
 ﻿using System;
-using MapleServer2.Enums;
+using Maple2Storage.Enums;
 using MapleServer2.Network;
 using Microsoft.Extensions.Logging;
 

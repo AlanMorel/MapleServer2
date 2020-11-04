@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 using System.IO;
 using System.Diagnostics;
 
-namespace MapleServer2.Database
+namespace Maple2.Data.Utils
 {
     public class DBConnect
     {

@@ -48,7 +48,7 @@ namespace Maple2.Data.Converter {
             if (value == null) return null;
 
             Item item = factory.Init(value.ItemId);
-            item.Id = value.Id;
+            item.Uid = value.Id; // Need to be change for the Long ID
             item.Slot = value.Slot;
             item.Amount = value.Amount;
             item.Rarity = value.Rarity;

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Maple2.Data.Types;
+using MapleServer2.Types;
 
 namespace MapleServer2.GameData {
     // Interface for retrieving account data
@@ -9,8 +9,8 @@ namespace MapleServer2.GameData {
         public List<long> ListCharacters(long accountId);
 
         // Retrieves a specific character for an account
-        public Character GetCharacter(long characterId);
+        public Player GetCharacter(long characterId);
 
-        public bool SaveCharacter(long characterId, Character data);
+        public bool SaveCharacter(long characterId, Player data);
     }
 }

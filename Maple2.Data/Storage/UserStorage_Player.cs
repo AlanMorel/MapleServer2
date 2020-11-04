@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Maple2.Data.Storage {
     public partial class UserStorage {
-        public partial class Request  : IUserStorage
+        public partial class Request
         {
             #region ReadOperations
             public Account GetAccount(long accountId) {

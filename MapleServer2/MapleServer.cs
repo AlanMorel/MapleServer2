@@ -8,7 +8,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using NLog;
-using MapleServer2.Database;
 //--------------------------------------------//
 //--------------------------------------------//
 //--------------------------------------------//
@@ -25,7 +24,7 @@ namespace MapleServer2 {
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
-            logger.Info($"Connecting to the Database...");
+            logger.Info($"Getting LoginConfig");
 
 
             #region Container

@@ -4,10 +4,15 @@ using System.Diagnostics;
 using System.Threading;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using MapleServer2.Data.Static;
-using MapleServer2.Enums;
-using MapleServer2.Packets;
+using Maple2.Data.Types.Items;
+using Maple2Storage.Enums;
 using MapleServer2.Types;
+using MapleServer2.Types.FieldObjects;
+using MapleServer2.Packets;
+using MapleServer2.Types.Skills;
+using MapleServer2.Types.Npcs;
+using MapleServer2.GameData;
+using Maple2.Data.Types;
 
 namespace MapleServer2.Servers.Game {
     // TODO: This needs to be thread safe

@@ -1,8 +1,10 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
+using MapleServer2.Types.FieldObjects;
+using MapleServer2.Types.Npcs;
 using MapleServer2.Types;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.Packets {
     public static class FieldObjectPacket {
@@ -19,8 +21,8 @@ namespace MapleServer2.Packets {
                 .WriteByte()
                 .Write<CoordF>(fieldPlayer.Coord)
                 .WriteShort(player.Level)
-                .WriteShort((short) player.JobGroupId)
-                .WriteInt(player.JobId)
+                .WriteShort((short) player.jobType)
+                .WriteInt((int)player.jobCode)
                 .WriteInt()
                 .WriteInt()
                 .WriteInt()

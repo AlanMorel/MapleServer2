@@ -90,11 +90,11 @@ namespace Maple2.Data.Types.Items {
                 if (sockets[i] != default) {
                     Item gem = sockets[i];
                     writer.WriteInt(gem.MapleId);
-                    bool isBound = gem.Transfer.Binding != null;
+                    /*bool isBound = gem.Transfer.Binding != null;
                     writer.WriteBool(isBound);
                     if (isBound) {
                         writer.WriteClass<ItemBinding>(gem.Transfer.Binding);
-                    }
+                    }*/
 
                     writer.WriteBool(gem.IsLocked);
                     if (gem.IsLocked) {

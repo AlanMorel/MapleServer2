@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Maple2.Data.Storage {
-    public partial class UserStorage {
+    public partial class UserStorage : IUserStorage{
         private readonly DbContextOptions options;
         private readonly IModelConverter<Account, Maple2.Sql.Model.Account> accountConverter;
         private readonly IModelConverter<Character, Maple2.Sql.Model.Character> characterConverter;
@@ -38,7 +38,8 @@ namespace Maple2.Data.Storage {
             return new Request(this, new UserContext(options), logger);
         }
 
-        public partial class Request : DatabaseRequest<UserContext> {
+        public partial class Request : DatabaseRequest<UserContext>
+        {
             private readonly UserStorage storage;
             private readonly ItemStorageOperations<UserContext> itemOperations;
 

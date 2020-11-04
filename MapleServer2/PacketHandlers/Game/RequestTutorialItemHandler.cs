@@ -2,7 +2,8 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
+using Maple2Storage.Enums;
+using Maple2.Data.Types.Items;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
@@ -15,7 +16,8 @@ namespace MapleServer2.PacketHandlers.Game {
             // No data passed in
 
             // TODO - Determine item from player's job
-            Item tutorialBow = Item.TutorialBow(session.Player);
+
+            Item tutorialBow = Item.TutorialBow();
 
             // Add the item to the inventory
             session.Inventory.Add(tutorialBow);
