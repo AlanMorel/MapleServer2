@@ -16,10 +16,8 @@ namespace MapleServer2.PacketHandlers.Common {
     public class ResponseKeyHandler : CommonPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_KEY;
 
-        private readonly IUserStorage accountStorage;
-
         public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) {
-            //this.accountStorage = accountStorage;
+            
         }
 
         public override void Handle(GameSession session, PacketReader packet) {

@@ -1,6 +1,7 @@
 ﻿using Maple2.Data.Converter;
 using Maple2.Data.Types;
 using Maple2.Data.Types.Items;
+using Maple2.Data.Utils;
 using Maple2.Sql.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,14 +9,14 @@ using Microsoft.Extensions.Logging;
 namespace Maple2.Data.Storage {
     public partial class UserStorage : IUserStorage{
         private readonly DbContextOptions options;
+        private readonly ILogger logger;
         private readonly IModelConverter<Account, Maple2.Sql.Model.Account> accountConverter;
         private readonly IModelConverter<Character, Maple2.Sql.Model.Character> characterConverter;
         private readonly IModelConverter<Item, Maple2.Sql.Model.Item> itemConverter;
         private readonly IModelConverter<ProgressState, Maple2.Sql.Model.CharacterProgress> progressConverter;
         private readonly IModelConverter<SkillTab, Maple2.Sql.Model.SkillTab> skillTabConverter;
         private readonly IModelConverter<Quest, Maple2.Sql.Model.Quest> questConverter;
-        private readonly ILogger logger;
-
+        
         public UserStorage(DbContextOptions options,
                 IModelConverter<Account, Maple2.Sql.Model.Account> accountConverter,
                 IModelConverter<Character, Maple2.Sql.Model.Character> characterConverter,
@@ -36,8 +37,8 @@ namespace Maple2.Data.Storage {
 
         public Request Context()  {
             return new Request(this, new UserContext(options), logger);
+            
         }
-
         public partial class Request : DatabaseRequest<UserContext>
         {
             private readonly UserStorage storage;

@@ -2,12 +2,17 @@
 using Autofac;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
-using Maple2.Data.Storage;
 
 namespace MapleServer2.Servers.Login {
     public static class LoginContainerConfig {
+
         public static IContainer Configure() {
             var builder = new ContainerBuilder();
+
+            // Adding DataBase Connection and hooked up to DbContext
+            builder.RegisterStorage();
+
+            
             builder.RegisterLogger();
             builder.RegisterType<LoginServer>()
                 .AsSelf()
@@ -17,15 +22,13 @@ namespace MapleServer2.Servers.Login {
                 .SingleInstance();
             builder.RegisterType<LoginSession>()
                 .AsSelf();
-            builder.RegisterType<UserStorage>()
-                .As<IUserStorage>()
-                .SingleInstance();
 
             // Make all packet handlers available to PacketRouter
             builder.RegisterAssemblyTypes(Assembly.Load(nameof(MapleServer2)))
                 .Where(t => typeof(IPacketHandler<LoginSession>).IsAssignableFrom(t))
                 .As<IPacketHandler<LoginSession>>()
                 .SingleInstance();
+
 
             return builder.Build();
         }

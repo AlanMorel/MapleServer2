@@ -6,7 +6,8 @@ using Maple2.Data.Utils;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Maple2.Data.Storage {
-    public partial class UserStorage {
+    public partial class UserStorage
+    {
         public partial class Request
         {
             #region ReadOperations
@@ -20,6 +21,16 @@ namespace Maple2.Data.Storage {
                     .AsEnumerable()
                     .Select(storage.characterConverter.FromModel)
                     .SingleOrDefault();
+            }
+
+            public Character GetCharacterMap(long characterId)
+            {
+                return context.Character.AsQueryable()
+                    .Where(character => character.MapId == characterId)
+                    .AsEnumerable()
+                    .Select(storage.characterConverter.FromModel)
+                    .SingleOrDefault();
+                    
             }
 
             public long GetCharacterId(string name) {

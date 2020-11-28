@@ -13,6 +13,9 @@ namespace Maple2.Data.Utils
         private string uid;
         private string password;
 
+        // Call for connection in UserStorage
+        public string connectionString;
+
         // Constructor
         public DBConnect()
         {
@@ -25,8 +28,8 @@ namespace Maple2.Data.Utils
             server = "localhost";
             database = "ms2_db";
             uid = "root";
-            password = "Raddil12!";
-            string connectionString;
+            password = "";
+            
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
@@ -171,6 +174,12 @@ namespace Maple2.Data.Utils
             {
                 return 0;
             }
+        }
+
+        public int Select(int character)
+        {
+            int sum = character + 10;
+            return sum;
         }
 
         // Count statement

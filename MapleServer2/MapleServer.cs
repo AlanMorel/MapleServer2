@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using Maple2.Data.Storage;
+using Maple2.Data.Utils;
+using Maple2.Sql.Context;
 using MaplePacketLib2.Tools;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 //--------------------------------------------//
 //--------------------------------------------//
@@ -24,8 +29,6 @@ namespace MapleServer2 {
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
-            logger.Info($"Getting LoginConfig");
-
 
             #region Container
 

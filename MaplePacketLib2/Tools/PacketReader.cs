@@ -132,5 +132,7 @@ namespace MaplePacketLib2.Tools {
         {
             throw new NotImplementedException();
         }
+
+        public virtual void Dispose() { }
     }
 }

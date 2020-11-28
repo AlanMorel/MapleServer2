@@ -46,7 +46,6 @@ namespace Maple2.Data.Converter {
 
             return character;
         }
-
         public Character FromModel(Maple2.Sql.Model.Character value) {
             if (value == null) return null;
 

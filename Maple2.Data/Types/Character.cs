@@ -48,8 +48,6 @@ namespace Maple2.Data.Types {
         public Vector3 ReturnPosition;
         public byte Animation;
         public CoordF UnknownCoord;
-        
-
 
         // Currency Types
         public long Mesos;
@@ -85,7 +83,5 @@ namespace Maple2.Data.Types {
 
             return character;
         }
-
-
     }
 }

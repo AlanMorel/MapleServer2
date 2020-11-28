@@ -6,10 +6,12 @@ using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 using MapleServer2.Tools;
 
+
 namespace MapleServer2.Servers.Game {
     public static class GameContainerConfig {
         public static IContainer Configure() {
             var builder = new ContainerBuilder();
+
             builder.RegisterLogger();
             builder.RegisterType<GameServer>()
                 .AsSelf()
@@ -21,9 +23,6 @@ namespace MapleServer2.Servers.Game {
                 .AsSelf();
             builder.RegisterType<ManagerFactory<FieldManager>>()
                 .AsSelf()
-                .SingleInstance();
-            builder.RegisterType<UserStorage>()
-                .As<IUserStorage>()
                 .SingleInstance();
 
             // Make all packet handlers available to PacketRouter

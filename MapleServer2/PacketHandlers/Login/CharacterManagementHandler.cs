@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using Maple2.Data.Storage;
 using Maple2.Data.Types;
 using Maple2.Data.Types.Items;
+using Maple2.Sql.Context;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
@@ -19,11 +21,11 @@ namespace MapleServer2.PacketHandlers.Login {
     public class CharacterManagementHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        private readonly IUserStorage accountStorage;
+        
 
         public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger)
                 : base(logger) {
-            //this.accountStorage = accountStorage;
+           
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {

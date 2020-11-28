@@ -12,6 +12,7 @@ using MapleServer2.Constants;
 using Maple2Storage.Enums;
 using MapleServer2.Extensions;
 using Microsoft.Extensions.Logging;
+using Maple2.Data.Storage;
 
 namespace MapleServer2.Network {
     public abstract class Session : IDisposable {
@@ -44,6 +45,7 @@ namespace MapleServer2.Network {
         private readonly CancellationTokenSource source;
 
         protected readonly ILogger logger;
+        
 
         private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 

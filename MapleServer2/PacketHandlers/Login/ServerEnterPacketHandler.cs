@@ -15,20 +15,19 @@ namespace MapleServer2.PacketHandlers.Login {
         public override ushort OpCode => RecvOp.RESPONSE_SERVER_ENTER;
 
         //private readonly IAccountStorage accountStorage;
-        private readonly IUserStorage accountStorage;
 
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
+        
 
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger) {
-            //this.accountStorage = accountStorage;
 
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
+            builder.Add(new IPEndPoint(IPAddress.Parse("10.0.0.254"), LoginServer.PORT));
 
             this.serverIps = builder.ToImmutable();
-            this.serverName = "SparkMod Server";
+            this.serverName = "Paperwood";
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {

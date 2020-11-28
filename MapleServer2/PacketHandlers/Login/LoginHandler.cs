@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using Maple2.Data.Types;
 using MapleServer2.GameData.Static;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -12,6 +11,8 @@ using MapleServer2.Servers.Login;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
 using Maple2.Data.Storage;
+using MapleServer2.GameData;
+using Maple2.Data.Types;
 
 namespace MapleServer2.PacketHandlers.Login {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -19,25 +20,21 @@ namespace MapleServer2.PacketHandlers.Login {
         public override ushort OpCode => RecvOp.RESPONSE_LOGIN;
 
         //private readonly IAccountStorage accountStorage;
-        private readonly IUserStorage accountStorage;
-
-        // TODO: This data needs to be dynamic
+        
+        //TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
 
         public LoginHandler(ILogger<LoginHandler> logger) : base(logger) {
-            //this.accountStorage = accountStorage;
 
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
+            builder.Add(new IPEndPoint(IPAddress.Parse("10.0.0.254"), LoginServer.PORT));
 
             this.serverIps = builder.ToImmutable();
             this.serverName = "Paperwood";
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {
-            //using UserStorage.Request request = accountStorage.Context();
-
             byte mode = packet.ReadByte();
             string user = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
@@ -45,12 +42,16 @@ namespace MapleServer2.PacketHandlers.Login {
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(user) && string.IsNullOrEmpty(pass)) {
 
-                logger.Info($"Success, no user and pass");
+                //session.AccountId = StaticAccountStorage.DEFAULT_ACCOUNT;
+
+                logger.Info($"No user and password provide logging in with root account ");
             } else {
                 logger.Info($"Success, with any string in user and pass");
                 //session.AccountId = StaticAccountStorage.SECONDARY_ACCOUNT;
             }
             
+
+
             switch (mode) {
                 case 1:
                     session.Send(PacketWriter.Of(SendOp.NPS_INFO).WriteLong().WriteUnicodeString(""));

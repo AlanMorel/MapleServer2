@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MaplePacketLib2.Tools {
     public class PacketWriter : Packet, IByteWriter{
-        private const int DEFAULT_SIZE = 64;
+        private const int DEFAULT_SIZE = 512;
 
         public int Remaining => Buffer.Length - Length;
 
@@ -174,5 +174,7 @@ namespace MaplePacketLib2.Tools {
         {
             throw new NotImplementedException();
         }
+
+        public virtual void Dispose() { }
     }
 }
