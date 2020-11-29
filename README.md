@@ -1,4 +1,3 @@
 # MapleServer2Login-master
-This is a Server created in C#, in contribution with Heroic(@ollisan05) and Citrus(@codetrus) also with the help of Ochi.
+This is a Server created in C#, in contribution with Heroic(@ollisan05) and Citrus(@codetrus) thanks to Ochi for the starting point.
 
-Soon will be public!
