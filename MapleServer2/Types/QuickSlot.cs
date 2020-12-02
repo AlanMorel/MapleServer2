@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Maple2.Data.Types.Items;
 
 namespace MapleServer2.Types {
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]

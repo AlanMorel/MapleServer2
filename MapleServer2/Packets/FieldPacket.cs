@@ -5,11 +5,6 @@ using MapleServer2.Constants;
 using MapleServer2.Extensions;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
-using MapleServer2.Types.Npcs;
-using MapleServer2.Types.FieldObjects;
-using Maple2.Data.Types;
-using Maple2.Data.Types.Items;
-using Maple2Storage.Enums;
 
 namespace MapleServer2.Packets {
     public static class FieldPacket {
@@ -33,9 +28,9 @@ namespace MapleServer2.Packets {
             CharacterListPacket.WriteCharacter(player, pWriter);
 
             // Possible skill related?
-            pWriter.WriteInt((int)player.jobCode);
+            pWriter.WriteInt(player.JobId);
             pWriter.WriteByte(1);
-            pWriter.WriteInt((int)player.jobType);
+            pWriter.WriteInt(player.JobGroupId);
             WriteSkills(pWriter);
 
             pWriter.WriteByte();
@@ -93,8 +88,8 @@ namespace MapleServer2.Packets {
             pWriter.WriteBool(true);
             if (true) {
                 var appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte)player.Equip.Count); // num equips
-                foreach ((EquipSlot slot, Item equip) in player.Equip) {
+                appearanceBuffer.WriteByte((byte)player.Equips.Count); // num equips
+                foreach ((ItemSlot slot, Item equip) in player.Equips) {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
 

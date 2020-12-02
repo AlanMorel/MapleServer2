@@ -7,6 +7,7 @@ namespace Maple2.Data.Types.Items {
         public InventoryType InventoryType { get; }
         public EquipSlot[] EquipSlots { get; }
         public int SlotMax { get; }
+
         private EquipSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : EquipSlot.NONE;
         public bool IsMeso => MapleId > 90000000 && MapleId < 90000004;
         public bool IsStamina => MapleId == 90000010;
@@ -14,11 +15,8 @@ namespace Maple2.Data.Types.Items {
                                 || DefaultEquipSlot == EquipSlot.ER
                                 || DefaultEquipSlot == EquipSlot.FA
                                 || DefaultEquipSlot == EquipSlot.FD;
-        public bool IsTemplate;
-        public bool CanRepackage;
-        public int Id;
-        public long Uid;
 
+        public long Id;
         public int MapleId { get; protected set; }
         public short Slot;
         public EquipSlot EquippedSlot =>
@@ -35,68 +33,43 @@ namespace Maple2.Data.Types.Items {
         public long UnlockTime;
         public short GlamourForgeCount;
         public int Enchants;
-
         // EnchantExp (10000 = 100%) for Peachy
         public int EnchantExp;
         public bool CanRepack;
         public int Charges;
         public int TradeCount;
+
         public ItemStats Stats;
-
-        // For friendship badges
-        public long PairedCharacterId;
-        public string PairedCharacterName;
-
+        // This is marked readonly to prevent invalid assignment
         public ItemAppearance Appearance { get; private set; }
-        public TransferFlag Transfer;
+        public ItemTransfer Transfer;
         public ItemSockets Sockets;
-        //public ItemCoupleInfo CoupleInfo;
-        public Character Owner;
-        public byte AppearanceFlag;
-        public EquipColor Color;
-
+        public ItemCoupleInfo CoupleInfo;
         // Unknown, this was always default
-        //public readonly ItemBinding Binding = new ItemBinding();
+        public readonly ItemBinding Binding = new ItemBinding();
 
         public Item(int mapleId, InventoryType inventoryType, EquipSlot[] equipSlots, int slotMax) {
             this.MapleId = mapleId;
             this.InventoryType = inventoryType;
             this.EquipSlots = equipSlots;
             this.SlotMax = slotMax;
-            /*this.Appearance = (DefaultEquipSlot) switch {
+            this.Appearance = (DefaultEquipSlot) switch {
                 EquipSlot.HR => new HairAppearance(default),
                 EquipSlot.FD => new DecalAppearance(default),
                 EquipSlot.CP => new CapAppearance(default),
                 _ => new ItemAppearance(default)
-            };*/
-        }
-
-
-        // Getting a single Item
-        public Item(int id)
-        {
-            this.Id = id;
-            this.InventoryType = ItemMetadataStorage.GetTab(id);
-            //this.EquippedSlot = ItemMetadataStorage.GetSlot(id);
-            this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
-            this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
-            this.Slot = Convert.ToInt16(ItemMetadataStorage.GetSlot(id));
-            this.Amount = 1;
-            this.Stats = new ItemStats();
-            this.CanRepackage = true; // If false, item becomes untradable
-
+            };
         }
 
         // Transfer and CoupleInfo are immutable, so don't need deep copy
         public virtual Item Clone() {
             var clone = (Item) this.MemberwiseClone();
-            clone.Stats = new ItemStats();
-            //clone.Appearance = Appearance.Clone();
+            clone.Stats = new ItemStats(Stats);
+            clone.Appearance = Appearance.Clone();
             clone.Sockets = new ItemSockets(Sockets);
 
             return clone;
         }
-
 
         // TODO: this is a temporary hacky solution
         // Make sure item is gemstone or lapenshard
@@ -106,6 +79,7 @@ namespace Maple2.Data.Types.Items {
                 MapleId++;
             }
         }
+
         public bool TrySplit(int amount, out Item splitItem) {
             if (this.Amount <= amount) {
                 splitItem = null;
@@ -119,45 +93,20 @@ namespace Maple2.Data.Types.Items {
             splitItem.Id = 0;
             return true;
         }
+
         public bool CanStack(Item item) {
             return MapleId == item.MapleId
                    && Amount < SlotMax
                    && Rarity == item.Rarity
                    && Transfer.Equals(item.Transfer);
         }
+
         public int CompareTo(Item other) {
             if (ReferenceEquals(null, other)) return 1;
 
             int result = MapleId.CompareTo(other.MapleId);
             if (result != 0) return result;
             return Rarity.CompareTo(other.Rarity);
-        }
-
-        public static Item TutorialBow()
-        {
-            return new Item(15100216)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                //Owner = owner,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
-                ),
-                AppearanceFlag = 0x5,
-                Stats = new ItemStats
-                {
-                    BasicAttributes = {
-                        ItemStat.Of(ItemAttribute.CriticalRate, 12),
-                        ItemStat.Of(ItemAttribute.MinWeaponAtk, 15),
-                        ItemStat.Of(ItemAttribute.MaxWeaponAtk, 17)
-                    }
-                },
-                Transfer = TransferFlag.Binds | TransferFlag.Splitable,
-            };
         }
 
         // Used for serializing type specific data

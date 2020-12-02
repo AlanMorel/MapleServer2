@@ -2,9 +2,7 @@
 using System.Numerics;
 using System.Collections.Generic;
 using Maple2Storage.Types;
-using MapleServer2.Types.FieldObjects;
-using Maple2Storage.Enums;
-using Maple2.Data.Types.Items;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types {
     public class Player {
@@ -61,25 +59,24 @@ namespace MapleServer2.Types {
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
 
-        public Dictionary<EquipSlot, Item> Equip = new Dictionary<EquipSlot, Item>();
+        public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
-        public EquipSlot[] EquipSlots { get; }
-        private EquipSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : EquipSlot.NONE;
-        public bool IsBeauty => DefaultEquipSlot == EquipSlot.HR
-                        || DefaultEquipSlot == EquipSlot.FA
-                        || DefaultEquipSlot == EquipSlot.FD
-                        || DefaultEquipSlot == EquipSlot.CL
-                        || DefaultEquipSlot == EquipSlot.PA
-                        || DefaultEquipSlot == EquipSlot.SH
-                        || DefaultEquipSlot == EquipSlot.ER;
+        public ItemSlot[] EquipSlots { get; }
+        private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;
+        public bool IsBeauty => DefaultEquipSlot == ItemSlot.HR
+                        || DefaultEquipSlot == ItemSlot.FA
+                        || DefaultEquipSlot == ItemSlot.FD
+                        || DefaultEquipSlot == ItemSlot.CL
+                        || DefaultEquipSlot == ItemSlot.PA
+                        || DefaultEquipSlot == ItemSlot.SH
+                        || DefaultEquipSlot == ItemSlot.ER;
 
-
-        public JobType jobType;
-        public JobCode jobCode => jobType != JobType.GameMaster ? (JobCode)((int)jobType / 10) : JobCode.GameMaster;
+        public Job jobType;
+        public JobCode jobCode => jobType != Job.GameMaster ? (JobCode)((int)jobType / 10) : JobCode.GameMaster;
 
         public GameOptions GameOptions { get; private set; }
 
-        public static Player Default(long accountId, long characterId, int mapId ,string name = "Default") {
+        public static Player Default(long accountId, long characterId, int mapId ,string name = "SparkmodF") {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
             stats.CurrentHp = new PlayerStat(0, 1000, 0);
@@ -94,7 +91,7 @@ namespace MapleServer2.Types {
                 MapId = mapId,//2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 80,
+                Level = 60,
                 Name = name,
                 Gender = 1,
                 Motto = "Motto",
@@ -106,7 +103,12 @@ namespace MapleServer2.Types {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
                 CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                Equip = new Dictionary<EquipSlot, Item> { },
+                Equips = new Dictionary<ItemSlot, Item> {
+                    { ItemSlot.ER, Item.Ear() },
+                    { ItemSlot.HR, Item.Hair() },
+                    { ItemSlot.FA, Item.Face() },
+                    { ItemSlot.FD, Item.FaceDecoration() },
+                },
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
@@ -114,11 +116,54 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Player NewCharacter(long accountId, byte gender, JobType jobType, string name, SkinColor skinColor, object equips)
+        public static Player MaleDefault(long accountId, long characterId, int mapId, string name = "Sparkmod")
+        {
+            PlayerStats stats = PlayerStats.Default();
+            stats.Hp = new PlayerStat(1000, 0, 1000);
+            stats.CurrentHp = new PlayerStat(0, 1000, 0);
+            stats.Spirit = new PlayerStat(100, 100, 100);
+            stats.Stamina = new PlayerStat(120, 120, 120);
+            stats.AtkSpd = new PlayerStat(120, 100, 130);
+            stats.MoveSpd = new PlayerStat(110, 100, 150);
+            stats.JumpHeight = new PlayerStat(110, 100, 130);
+
+            return new Player
+            {
+                MapId = mapId,//2000062,
+                AccountId = accountId,
+                CharacterId = characterId,
+                Level = 70,
+                Name = name,
+                Gender = 0,
+                Motto = "Motto",
+                HomeName = "HomeName",
+                Coord = CoordF.From(2850, 2550, 1800),
+                JobGroupId = 50,
+                SkinColor = new SkinColor()
+                {
+                    Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
+                },
+                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                Equips = new Dictionary<ItemSlot, Item> {
+                    { ItemSlot.ER, Item.EarMale() },
+                    { ItemSlot.HR, Item.HairMale() },
+                    { ItemSlot.FA, Item.FaceMale() },
+                    { ItemSlot.FD, Item.FaceDecorationMale() },
+                    { ItemSlot.CL, Item.CloathMale() },
+                    { ItemSlot.SH, Item.ShoesMale() },
+
+                },
+                Stats = stats,
+                GameOptions = new GameOptions(),
+                Mesos = 10,
+
+            };
+        }
+
+        public static Player NewCharacter(byte gender, Job jobType, string name, SkinColor skinColor, object equips)
         {
             var player = new Player
             {
-                AccountId = accountId,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Name = name,
                 Gender = gender,
@@ -127,7 +172,7 @@ namespace MapleServer2.Types {
                 MapId = 2000062,
                 Stats = new PlayerStats(),
                 SkinColor = skinColor,
-                Equip = (Dictionary<EquipSlot, Item>)equips,
+                Equips = (Dictionary<ItemSlot, Item>)equips,
         };
             return player;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types {
     [XmlType]
@@ -8,9 +7,9 @@ namespace Maple2Storage.Types {
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
-        public EquipSlot Slot;
+        public ItemSlot Slot;
         [XmlElement(Order = 3)]
-        public InventoryType Tab;
+        public InventoryTab Tab;
         [XmlElement(Order = 4)]
         public int SlotMax;
         [XmlElement(Order = 5)]

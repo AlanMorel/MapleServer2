@@ -19,14 +19,14 @@ namespace Maple2.Data.Types.Items {
         }
 
         public override byte[] SerializeExtraBytes() {
-            var pWriter = new PacketWriter();
-            //pWriter.WriteClass<UgcInfo>(Ugc);
+            var pWriter = new ByteWriter();
+            pWriter.WriteClass<UgcInfo>(Ugc);
             return pWriter.ToArray();
         }
 
         public override void DeserializeExtraBytes(byte[] bytes) {
-            var packet = new PacketReader(bytes);
-            //Ugc = packet.ReadClass<UgcInfo>();
+            var packet = new ByteReader(bytes);
+            Ugc = packet.ReadClass<UgcInfo>();
         }
     }
 }

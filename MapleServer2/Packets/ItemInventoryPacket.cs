@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using Maple2.Data.Types.Items;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets {
     public static class ItemInventoryPacket {
-        public static Packet ResetTab(InventoryType tab) {
+        public static Packet ResetTab(InventoryTab tab) {
             return PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x0D)
                 .WriteInt((int) tab); // index
         }
 
-        public static Packet LoadTab(InventoryType tab) {
+        public static Packet LoadTab(InventoryTab tab) {
             return PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x0E)
                 .WriteByte((byte) tab)
@@ -73,7 +73,7 @@ namespace MapleServer2.Packets {
                 .WriteUnicodeString("");
         }
 
-        public static Packet LoadItemsToTab(InventoryType tab, ICollection<Item> items) {
+        public static Packet LoadItemsToTab(InventoryTab tab, ICollection<Item> items) {
             var pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x0A)
                 .WriteInt((int) tab);

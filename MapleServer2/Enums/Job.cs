@@ -1,5 +1,5 @@
-﻿namespace Maple2Storage.Enums {
-    public enum JobType {
+﻿namespace MapleServer2.Enums {
+    public enum Job {
         None = 0,
         Knight = 100,
         Berserker = 200,

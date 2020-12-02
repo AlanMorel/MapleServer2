@@ -11,10 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameDataParser", "GameDataP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2Storage", "Maple2Storage\Maple2Storage.csproj", "{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2.Sql", "Maple2.Sql\Maple2.Sql.csproj", "{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maple2.Data", "Maple2.Data\Maple2.Data.csproj", "{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,14 +31,6 @@ Global
 		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B4F568F-AF1B-4941-BF44-132F42BF6DF4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C436D7BA-24E7-4A91-BE74-0BDAAAAAF58F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5B8D836-3C6B-4444-9EC3-DB835E0F05D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using ProtoBuf;
 
-namespace Maple2Storage.Types {
+namespace MapleServer2.Data.Static {
     // This is an in-memory storage to help with determining some metadata of items
     public static class ItemMetadataStorage {
         private static readonly Dictionary<int, ItemMetadata> map = new Dictionary<int, ItemMetadata>();
@@ -24,11 +24,11 @@ namespace Maple2Storage.Types {
             return map.GetValueOrDefault(itemId);
         }
 
-        public static EquipSlot GetSlot(int itemId) {
+        public static ItemSlot GetSlot(int itemId) {
             return map.GetValueOrDefault(itemId).Slot;
         }
 
-        public static InventoryType GetTab(int itemId) {
+        public static InventoryTab GetTab(int itemId) {
             return map.GetValueOrDefault(itemId).Tab;
         }
 

@@ -4,15 +4,10 @@ using System.Diagnostics;
 using System.Threading;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using Maple2.Data.Types.Items;
-using Maple2Storage.Enums;
-using MapleServer2.Types;
-using MapleServer2.Types.FieldObjects;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
-using MapleServer2.Types.Skills;
-using MapleServer2.Types.Npcs;
-using MapleServer2.GameData;
-using Maple2.Data.Types;
+using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game {
     // TODO: This needs to be thread safe
@@ -129,6 +124,18 @@ namespace MapleServer2.Servers.Game {
                 session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
             });
         }
+        public void AddMob(GameSession sender, Mob mob)
+        {
+            FieldObject<Mob> fieldMob = WrapObject(mob);
+            fieldMob.Coord = sender.FieldPlayer.Coord;
+
+            State.AddMob(fieldMob);
+
+            Broadcast(sessions =>
+            {
+                
+            });
+        }
 
         public void AddTestNpc(IFieldObject<Npc> fieldNpc) {
             State.AddNpc(fieldNpc);
@@ -137,6 +144,10 @@ namespace MapleServer2.Servers.Game {
                 session.Send(FieldPacket.AddNpc(fieldNpc));
                 session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
             });
+        }
+        public void AddTestMob(IFieldObject<Mob> fieldMob)
+        {
+            
         }
 
         public void AddPortal(IFieldObject<Portal> portal) {

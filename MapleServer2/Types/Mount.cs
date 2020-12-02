@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Enums;
+﻿using MapleServer2.Enums;
 
 namespace MapleServer2.Types {
     public class Mount {

@@ -1,5 +1,5 @@
-﻿namespace Maple2Storage.Enums {
-    public enum InventoryType : byte {
+﻿namespace Maple2Storage.Types {
+    public enum InventoryTab : byte {
         Gear = 0,
         Outfit = 1,
         Mount = 2,
@@ -17,13 +17,6 @@
         // 14 Removed
         Lapenshard = 15,
         Fragment = 16,
-        GearEquip,
-        OutfitEquip,
-        LapenshardEquip,
-        BadgeEquip,
-        Trade,
-        Storage,
-        PetStorage,
-        FurnishingStorage,
+
     }
 }

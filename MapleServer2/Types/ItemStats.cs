@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Maple2Storage.Enums;
+using MapleServer2.Enums;
 
-namespace Maple2.Data.Types.Items {
+namespace MapleServer2.Types {
     [StructLayout(LayoutKind.Sequential, Pack=2, Size = 10)]
     public struct ItemStat {
         public ItemAttribute Type { get; private set; }

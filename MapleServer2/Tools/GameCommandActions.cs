@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
-using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Maple2.Data.Types.Items;
-using MapleServer2.Types.FieldObjects;
-using MapleServer2.Types.Npcs;
+using MapleServer2.Types;
 
 namespace MapleServer2.Tools {
     public static class GameCommandActions {
@@ -36,8 +35,8 @@ namespace MapleServer2.Tools {
 
             // Add some bonus attributes to equips and pets
             var stats = new ItemStats();
-            if (ItemMetadataStorage.GetTab(itemId) == InventoryType.Gear
-                    || ItemMetadataStorage.GetTab(itemId) == InventoryType.Pets) {
+            if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
+                    || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets) {
                 var rng = new Random();
                 stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
                 stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
@@ -46,7 +45,7 @@ namespace MapleServer2.Tools {
             var item = new Item(itemId) {
                 Uid = Environment.TickCount64,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Transfer = TransferFlag.Splitable | TransferFlag.Tradeable,
+                TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
                 Stats = stats
             };
             int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);

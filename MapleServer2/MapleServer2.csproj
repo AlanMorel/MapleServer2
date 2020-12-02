@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -11,6 +11,7 @@
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9" />
       <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.9" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
+      <PackageReference Include="MySql.Data" Version="8.0.21" />
       <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
       <PackageReference Include="SharpZipLib" Version="1.3.0" />
     </ItemGroup>
@@ -22,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Maple2.Data\Maple2.Data.csproj" />
       <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
       <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
     </ItemGroup>

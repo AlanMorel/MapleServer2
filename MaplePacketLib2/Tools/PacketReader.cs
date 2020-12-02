@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MaplePacketLib2.Tools {
-    public class PacketReader : Packet, IByteReader {
+    public class PacketReader : Packet {
         public int Position { get; private set; }
 
         public int Available => Length - Position;
@@ -127,12 +127,5 @@ namespace MaplePacketLib2.Tools {
             int pos = Array.IndexOf(Buffer, b, Position);
             Skip(pos - Position + 1);
         }
-
-        public T ReadCollection<T>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void Dispose() { }
     }
 }

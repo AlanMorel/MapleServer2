@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MapleServer2.GameData {
+namespace MapleServer2.Data {
     // TODO: This is mostly temporary while I think about how auth really should work
     // It's mostly just required to pass login data to GameSession (which is why it's static)
     public static class AuthStorage {

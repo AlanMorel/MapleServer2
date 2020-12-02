@@ -1,10 +1,10 @@
 ﻿using System;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using Maple2Storage.Enums;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Maple2.Data.Types.Items;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
@@ -38,8 +38,8 @@ namespace MapleServer2.PacketHandlers.Game {
                 lockIndex = packet.ReadShort();
             }
 
-            /*if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
-                item.AttributesChangeCount++;
+            if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+                item.TimesAttributesChanged++;
                 var newItem = new Item(item);
                 int attributeCount = newItem.Stats.BonusAttributes.Count;
                 var rng = new Random();
@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game {
 
                 session.StateStorage[NEW_ITEM_KEY] = newItem;
                 session.Send(ChangeAttributesPacket.PreviewNewItem(newItem));
-            }*/
+            }
         }
 
         private void HandleSelectNewAttributes(GameSession session, PacketReader packet) {
@@ -62,8 +62,8 @@ namespace MapleServer2.PacketHandlers.Game {
                     return;
                 }
 
-                //session.Inventory.Replace(item);
-                //session.Send(ChangeAttributesPacket.SelectNewItem(item));
+                session.Inventory.Replace(item);
+                session.Send(ChangeAttributesPacket.SelectNewItem(item));
             }
         }
     }

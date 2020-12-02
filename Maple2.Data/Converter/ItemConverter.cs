@@ -38,7 +38,7 @@ namespace Maple2.Data.Converter {
             item.Stats = value.Stats.Serialize();
             item.Appearance = value.Appearance.Serialize();
             item.Transfer = value.Transfer.Serialize();
-            //item.CoupleInfo = value.CoupleInfo.Serialize();
+            item.CoupleInfo = value.CoupleInfo.Serialize();
             item.ExtraBlob = value.SerializeExtraBytes();
 
             return item;
@@ -48,7 +48,7 @@ namespace Maple2.Data.Converter {
             if (value == null) return null;
 
             Item item = factory.Init(value.ItemId);
-            item.Uid = value.Id; // Need to be change for the Long ID
+            item.Id = value.Id;
             item.Slot = value.Slot;
             item.Amount = value.Amount;
             item.Rarity = value.Rarity;
@@ -66,9 +66,9 @@ namespace Maple2.Data.Converter {
             item.TradeCount = value.TradeCount;
             item.Sockets = new ItemSockets(value.MaxSockets, value.UnlockedSockets);
             item.Stats = value.Stats.Deserialize<ItemStats>();
-            //item.Appearance.ReadFrom(new ByteReader(value.Appearance));
-            //item.Transfer = value.Transfer.Deserialize<ItemTransfer>();
-            //item.CoupleInfo = value.CoupleInfo.Deserialize<ItemCoupleInfo>();
+            item.Appearance.ReadFrom(new ByteReader(value.Appearance));
+            item.Transfer = value.Transfer.Deserialize<ItemTransfer>();
+            item.CoupleInfo = value.CoupleInfo.Deserialize<ItemCoupleInfo>();
             item.DeserializeExtraBytes(value.ExtraBlob);
 
             return item;

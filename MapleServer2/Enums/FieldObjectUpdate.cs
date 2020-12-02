@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Maple2Storage.Enums {
+namespace MapleServer2.Enums {
     [Flags]
     public enum FieldObjectUpdate : byte {
         None = 0,

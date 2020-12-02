@@ -3,7 +3,7 @@ using System.IO;
 using Maple2Storage.Types;
 using ProtoBuf;
 
-namespace MapleServer2.GameData {
+namespace MapleServer2.Data.Static {
     public static class MapEntityStorage {
         private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();

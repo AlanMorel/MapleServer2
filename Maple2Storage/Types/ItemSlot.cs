@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
 // NOTE: These enum are case sensitive
-namespace Maple2Storage.Enums {
-    public enum EquipSlot : byte {
+namespace Maple2Storage.Types {
+    public enum ItemSlot : byte {
         [Description("None")]
         NONE = 0,
         [Description("Hair")]

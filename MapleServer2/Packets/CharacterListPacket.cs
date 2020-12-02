@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using Maple2Storage.Types;
-using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
-using Maple2.Data.Types.Items;
-using Maple2.Data.Types;
-using System;
 
 namespace MapleServer2.Packets {
     public static class CharacterListPacket {
@@ -45,8 +41,8 @@ namespace MapleServer2.Packets {
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
-            pWriter.WriteByte((byte)player.Equip.Count); // num equips
-            foreach ((EquipSlot slot, Item equip) in player.Equip) {
+            pWriter.WriteByte((byte)player.Equips.Count); // num equips
+            foreach ((ItemSlot slot, Item equip) in player.Equips) {
                 WriteEquip(slot, equip, pWriter);
             }
 
@@ -91,8 +87,8 @@ namespace MapleServer2.Packets {
             pWriter.WriteInt();
             pWriter.WriteShort(player.Level);
             pWriter.WriteShort();
-            pWriter.Write<JobType>(player.jobType);
-            pWriter.Write<JobCode>(player.jobCode);
+            pWriter.WriteInt(player.JobGroupId);
+            pWriter.WriteInt(player.JobId);
             pWriter.WriteInt(); // CurHp?
             pWriter.WriteInt(); // MaxHp?
             pWriter.WriteShort();
@@ -169,9 +165,9 @@ namespace MapleServer2.Packets {
         }
 
         // Note, the client actually uses item id to determine type
-        public static void WriteEquip(EquipSlot slot, Item item, PacketWriter pWriter) {
-            pWriter.WriteLong(item.Id)
-                .WriteLong(item.Id)
+        public static void WriteEquip(ItemSlot slot, Item item, PacketWriter pWriter) {
+            pWriter.WriteInt(item.Id)
+                .WriteLong(item.Uid)
                 .WriteUnicodeString(slot.ToString())
                 .WriteInt(1)
                 .WriteItem(item);
@@ -194,21 +190,5 @@ namespace MapleServer2.Packets {
                 .WriteByte(0x04)
                 .WriteBool(false);
         }
-
-        public static Packet CancelDelete(long characterId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Packet DeletePending(long characterId, long date)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static Packet DeleteEntry(long characterId)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

@@ -20,8 +20,4 @@
       <PackageReference Include="protobuf-net" Version="2.4.6" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
-    </ItemGroup>
-
 </Project>

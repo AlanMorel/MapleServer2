@@ -17,6 +17,6 @@
         NoticeAlert3 = 17,
         GuildNotice = 18,
         Unknown = 19, // Guild chat color without [Guild] prefix
-        Club = 20,
+        UnknownPurple = 20,
     }
 }

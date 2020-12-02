@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types.FieldObjects;
+using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets {
@@ -8,8 +8,8 @@ namespace MapleServer2.Packets {
         public static Packet StartRide(IFieldObject<Player> player) {
             return PacketWriter.Of(SendOp.RESPONSE_RIDE)
                 .WriteByte(0x00)
-                .WriteInt(player.ObjectId);
-                //.WriteMount(player.Value.Mount);
+                .WriteInt(player.ObjectId)
+                .WriteMount(player.Value.Mount);
         }
 
         public static Packet StopRide(IFieldObject<Player> player, bool forced = false) {

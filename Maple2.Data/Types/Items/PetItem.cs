@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
 using Maple2Storage.Utils;
@@ -24,7 +23,7 @@ namespace Maple2.Data.Types.Items {
         }
 
         public override byte[] SerializeExtraBytes() {
-            var writer = new PacketWriter();
+            var writer = new ByteWriter();
             writer.WriteUnicodeString(PetName);
             writer.WriteLong(PetExp);
             writer.WriteInt(); // Unknown
@@ -37,7 +36,7 @@ namespace Maple2.Data.Types.Items {
         }
 
         public override void DeserializeExtraBytes(byte[] bytes) {
-            var packet = new PacketReader(bytes);
+            var packet = new ByteReader(bytes);
             PetName = packet.ReadUnicodeString();
             packet.ReadInt();
             PetExp = packet.ReadLong();
@@ -59,11 +58,6 @@ namespace Maple2.Data.Types.Items {
             Index = index;
             Threshold = threshold;
             ItemId = itemId;
-        }
-
-        internal PetPotionSetting[] ToArray()
-        {
-            throw new NotImplementedException();
         }
     }
 

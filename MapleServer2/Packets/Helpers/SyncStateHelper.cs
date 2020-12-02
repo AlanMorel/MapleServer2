@@ -1,6 +1,6 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using Maple2Storage.Enums;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets.Helpers {

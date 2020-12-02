@@ -1,4 +1,4 @@
-﻿namespace Maple2Storage.Enums {
+﻿namespace MapleServer2.Enums {
     public enum ItemSpecialAttribute : short {
         None = 0,
         Experience = 1,

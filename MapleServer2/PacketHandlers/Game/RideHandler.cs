@@ -1,11 +1,10 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using Maple2Storage.Enums;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
-using MapleServer2.Types.FieldObjects;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class RideHandler : GamePacketHandler {

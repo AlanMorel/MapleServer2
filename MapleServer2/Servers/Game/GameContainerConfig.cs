@@ -1,17 +1,15 @@
 ﻿using System.Reflection;
 using Autofac;
-using MapleServer2.GameData;
-using Maple2.Data.Storage;
+using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 using MapleServer2.Tools;
-
 
 namespace MapleServer2.Servers.Game {
     public static class GameContainerConfig {
         public static IContainer Configure() {
             var builder = new ContainerBuilder();
-
             builder.RegisterLogger();
             builder.RegisterType<GameServer>()
                 .AsSelf()
@@ -23,6 +21,9 @@ namespace MapleServer2.Servers.Game {
                 .AsSelf();
             builder.RegisterType<ManagerFactory<FieldManager>>()
                 .AsSelf()
+                .SingleInstance();
+            builder.RegisterType<StaticAccountStorage>()
+                .As<IAccountStorage>()
                 .SingleInstance();
 
             // Make all packet handlers available to PacketRouter

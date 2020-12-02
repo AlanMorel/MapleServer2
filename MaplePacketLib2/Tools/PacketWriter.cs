@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MaplePacketLib2.Tools {
-    public class PacketWriter : Packet, IByteWriter{
-        private const int DEFAULT_SIZE = 512;
+    public class PacketWriter : Packet {
+        private const int DEFAULT_SIZE = 64;
 
         public int Remaining => Buffer.Length - Length;
 
@@ -169,12 +169,5 @@ namespace MaplePacketLib2.Tools {
         public PacketWriter WriteZero(int count) {
             return Write(new byte[count]);
         }
-
-        public PacketWriter WriteCollection<T>(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void Dispose() { }
     }
 }

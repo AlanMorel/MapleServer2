@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Maple2Storage.Types {
+namespace MapleServer2.Types {
     [StructLayout(LayoutKind.Sequential, Size = 432)]
     public struct PlayerStats {
         // Total 36 Stats MUST be in this order (Struct)

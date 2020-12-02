@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 using System.IO;
 using System.Diagnostics;
 
-namespace Maple2.Data.Utils
+namespace MapleServer2.Database
 {
     public class DBConnect
     {
@@ -12,9 +12,6 @@ namespace Maple2.Data.Utils
         private string database;
         private string uid;
         private string password;
-
-        // Call for connection in UserStorage
-        public string connectionString;
 
         // Constructor
         public DBConnect()
@@ -28,8 +25,8 @@ namespace Maple2.Data.Utils
             server = "localhost";
             database = "ms2_db";
             uid = "root";
-            password = "";
-            
+            password = "Raddil12!";
+            string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
 
@@ -174,12 +171,6 @@ namespace Maple2.Data.Utils
             {
                 return 0;
             }
-        }
-
-        public int Select(int character)
-        {
-            int sum = character + 10;
-            return sum;
         }
 
         // Count statement

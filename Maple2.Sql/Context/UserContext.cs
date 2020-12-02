@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Maple2.Sql.Context {
-    public class UserContext : DbContext, IItemAccessor{
+    public class UserContext : DbContext, IItemAccessor {
         public DbSet<Account> Account { get; set; }
         public DbSet<Achieve> Achieve { get; set; }
         public DbSet<Character> Character { get; set; }
@@ -12,11 +12,10 @@ namespace Maple2.Sql.Context {
         public DbSet<Item> Item { get; set; }
         public DbSet<Quest> Quest { get; set; }
         public DbSet<SkillTab> SkillTab { get; set; }
-        
+
         public UserContext(string connectionString)
             : base(new DbContextOptionsBuilder().UseMySql(connectionString).Options) { }
         public UserContext(DbContextOptions options) : base(options) { }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);

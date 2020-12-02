@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Maple2.Data.Storage;
-using Maple2.Data.Utils;
-using Maple2.Sql.Context;
 using MaplePacketLib2.Tools;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using MapleServer2.Database;
 //--------------------------------------------//
 //--------------------------------------------//
 //--------------------------------------------//
 
-    
+
 
 //--------------------------------------------//
 //--------------------------------------------//
@@ -30,8 +26,9 @@ namespace MapleServer2 {
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
 
-            #region Container
+            // Testing stuff
 
+            #region Container
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
             var loginServer = loginScope.Resolve<LoginServer>();
@@ -61,6 +58,7 @@ namespace MapleServer2 {
                             logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
                         }
+
                         break;
                     case "resolve":
                         PacketStructureResolver resolver = PacketStructureResolver.Parse(input[1]);
@@ -73,6 +71,8 @@ namespace MapleServer2 {
             }
             #endregion
         }
+
+        // Testing Stuff outside of a main arg
 
         #region Session
         private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer) {
