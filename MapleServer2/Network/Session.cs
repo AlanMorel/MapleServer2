@@ -12,6 +12,9 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using Microsoft.Extensions.Logging;
+using Pastel;
+using System.Reflection;
+using System.Linq;
 
 namespace MapleServer2.Network {
     public abstract class Session : IDisposable {
@@ -46,7 +49,6 @@ namespace MapleServer2.Network {
         protected readonly ILogger logger;
 
         private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-
         protected Session(ILogger<Session> logger) {
             this.logger = logger;
             this.sendQueue = new Queue<byte[]>();
@@ -183,8 +185,21 @@ namespace MapleServer2.Network {
                 while (mapleStream.TryRead(out byte[] packetBuffer)) {
                     Packet packet = recvCipher.Transform(packetBuffer);
                     short opcode = packet.Reader().ReadShort();
-                    if (opcode != 0x12) { // Filtering sync from logs
-                        logger.Debug($"RECV ({packet.Length}): {packet}");
+                    
+                    //Show name of Constant RecvOp
+                    var props = typeof(RecvOp).GetFields(BindingFlags.Public | BindingFlags.Static);
+                    var wantedProps = props.FirstOrDefault(prop => (ushort)prop.GetValue(opcode) == opcode);
+
+                    if (opcode != 0x12)
+                    { // Filtering sync from logs
+                        if (wantedProps != null)
+                        {
+                            logger.Debug($"RECV ({wantedProps.Name}: {packet.Length})".Pastel("#812F2F") + $": {packet}");
+                        }
+                        else
+                        {
+                            logger.Debug($"RECV ({String.Format("0x00{0:X}", opcode)}: {packet.Length})".Pastel("#812F2F") + $": {packet}");
+                        }
                     }
                     OnPacket?.Invoke(this, packet); // handle packet
                 }
@@ -204,8 +219,20 @@ namespace MapleServer2.Network {
 
         private void SendInternal(byte[] packet) {
             short opcode = BitConverter.ToInt16(packet, 0);
-            if (opcode != 0x1C) { // Filtering sync from logs
-                logger.Debug($"SEND ({packet.Length}): {packet.ToHexString(' ')}");
+
+            //Show name of Constant SendOp
+            var props = typeof(SendOp).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var wantedProps =props.FirstOrDefault(prop => (ushort)prop.GetValue(opcode) == opcode);
+
+            if (opcode != 0x1C) { // Filtering sync from logs{String.Format("0x00{0:X}", opcode)}
+                if (wantedProps != null)
+                {
+                    logger.Debug($"SEND ({wantedProps.Name}: {packet.Length})".Pastel("#197319") + $": {packet.ToHexString(' ')}");
+                }
+                else
+                {
+                    logger.Debug($"SEND ({String.Format("0x00{0:X}", opcode)}: {packet.Length})".Pastel("#197319") + $": {packet.ToHexString(' ')}");
+                }
             }
             Packet encryptedPacket = sendCipher.Transform(packet);
             SendRaw(encryptedPacket);

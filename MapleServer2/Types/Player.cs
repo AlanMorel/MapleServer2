@@ -17,6 +17,7 @@ namespace MapleServer2.Types {
         public string Name { get; private set; }
         // Gender - 0 = male, 1 = female
         public byte Gender { get; private set; }
+
         // Job Group, according to jobgroupname.xml
         public int JobGroupId { get; private set; }
         public bool Awakened { get; private set; }
@@ -76,7 +77,7 @@ namespace MapleServer2.Types {
 
         public GameOptions GameOptions { get; private set; }
 
-        public static Player Default(long accountId, long characterId, int mapId ,string name = "SparkmodF") {
+        public static Player Default(long accountId, long characterId, string name = "SparkmodF") {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
             stats.CurrentHp = new PlayerStat(0, 1000, 0);
@@ -88,7 +89,7 @@ namespace MapleServer2.Types {
 
             return new Player
             {
-                MapId = mapId,//2000062,
+                MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
                 Level = 60,
@@ -96,7 +97,8 @@ namespace MapleServer2.Types {
                 Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800),
+                Coord = CoordF.From(2850, 2550, 1800), //Little Harbor
+                //Coord = CoordF.From(500, 500, 15000), // tria
                 JobGroupId = 50,
                 SkinColor = new SkinColor()
                 {
@@ -116,7 +118,7 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Player MaleDefault(long accountId, long characterId, int mapId, string name = "Sparkmod")
+        public static Player MaleDefault(long accountId, long characterId, string name = "Sparkmod")
         {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
@@ -129,7 +131,7 @@ namespace MapleServer2.Types {
 
             return new Player
             {
-                MapId = mapId,//2000062,
+                MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
                 Level = 70,

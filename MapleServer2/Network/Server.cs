@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using MapleServer2.Extensions;
 using Microsoft.Extensions.Logging;
