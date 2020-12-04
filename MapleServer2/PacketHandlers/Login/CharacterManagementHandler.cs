@@ -17,11 +17,7 @@ namespace MapleServer2.PacketHandlers.Login {
     public class CharacterManagementHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        private readonly IAccountStorage _accountStorage;
-        public CharacterManagementHandler(IAccountStorage accountStorage,ILogger<CharacterManagementHandler> logger) : base(logger) {
-
-            _accountStorage = accountStorage;
-        }
+        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) {}
 
         public override void Handle(LoginSession session, PacketReader packet) {
             byte mode = packet.ReadByte();
@@ -65,7 +61,8 @@ namespace MapleServer2.PacketHandlers.Login {
         {
             byte gender = packet.ReadByte();
             //packet.ReadShort(); // const?
-            var jobCode = (Job)packet.ReadShort();
+            //var jobCode = (Job)packet.ReadShort();
+            int jobCode = packet.ReadShort();
             string name = packet.ReadUnicodeString();
             var skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
@@ -89,46 +86,101 @@ namespace MapleServer2.PacketHandlers.Login {
                 switch (type)
                 {
                     case ItemSlot.HR: // Hair
-                        packet.Skip(56); // Hair Position
-                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)));
+                        // Hair Length/Position
+                        float backLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        byte[] backPositionArray = packet.Read(24);
+                        float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        byte[] frontPositionArray = packet.Read(24);
+
+                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            HairD = HairData.hairData(backLength, frontLength, backPositionArray, frontPositionArray),
+                            Stats = new ItemStats(),
+                        });
                         break;
                     case ItemSlot.FA: // Face
-                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)));
+                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            Stats = new ItemStats(),
+                        });
                         break;
                     case ItemSlot.FD: // Face Decoration
-                        packet.Skip(16);
-                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)));
+                        byte[] faceDecoration = packet.Read(16); // Face decoration position
+                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            FaceDecorationD = faceDecoration,
+                            Stats = new ItemStats(),
+                        });
                         break;
                     case ItemSlot.CL: // Clothes
-                        // Assign CL
-                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)));
+                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            Stats = new ItemStats(),
+                        });
                         break;
                     case ItemSlot.PA: // Pants
-                        // Assign PA
-                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)));
+                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            Stats = new ItemStats(),
+                        });
                         break;
-                    case ItemSlot.SH: //Shoes
-                        // Assign SH
-                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)));
+                    case ItemSlot.SH: // Shoes
+                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            Stats = new ItemStats(),
+                        });
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)));
+                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)) {
+                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            CreationTime = 1565575851,
+                            Color = equipColor,
+                            Stats = new ItemStats(),
+                        });
                         break;
                 }
                 logger.Info($" > {type} - id: {id}, color: {equipColor}, colorIndex: {colorIndex}");
             }
             packet.ReadInt(); // const? (4)
-            //var newCharacter = Player.NewCharacter(gender, jobType, name);
-            // OnSuccess
-            //SendOp.CHAR_MAX_COUNT;
-            session.Send(CharacterListPacket.SetMax(2, 3));
-            //SendOp.CHARACTER_LIST //(New char only. This will append)
-            //session.Send(CharacterListPacket.AppendEntry();
-            // OnFailure, forcing failure here while debugging
-            //session.Send(ResponseCharCreatePacket.NameTaken());
 
+            // Check if name is in use (currently just on local account)
+            bool taken = false;
+            
+            foreach (var character in AccountStorage.characters.Values) {
+                if (character.Name.ToLower().Equals(name.ToLower())) {
+                    taken = true;
+                }
+            }
 
+            if (taken) {
+                session.Send(ResponseCharCreatePacket.NameTaken());
+                return;
+            }
+
+            // Create new player object
+            Player newCharacter = Player.NewCharacter(gender, jobCode, name, skinColor, Equips);
+
+            // Add player object to account storage
+            AccountStorage.AddCharacter(newCharacter);
+
+            // Send updated CHAR_MAX_COUNT
+            session.Send(CharacterListPacket.SetMax(4, 6));
+
+            // Send CHARACTER_LIST for new character only (append)
+            session.Send(CharacterListPacket.AppendEntry(newCharacter));
         }
     }
 }

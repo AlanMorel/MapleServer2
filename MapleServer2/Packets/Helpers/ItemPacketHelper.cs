@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
@@ -32,7 +33,8 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteStatDiff(item.Stats, item.Stats);
 
             if (item.IsTemplate) {
-                pWriter.WriteTemplate();
+                // Not implemented, causes issues for non-default character creation outfits
+                //pWriter.WriteTemplate();
             }
 
             if (item.InventoryType == InventoryTab.Pets) {
@@ -79,15 +81,14 @@ namespace MapleServer2.Packets.Helpers {
                     }
                     break;
                 case ItemSlot.HR:
-                    pWriter.Write<float>(0.3f);
-                    pWriter.WriteZero(24);
-                    pWriter.Write<float>(0.3f);
-                    pWriter.WriteZero(24);
+                    //pWriter.Write<HairData>(item.HairD);
+                    pWriter.Write<float>(item.HairD.BackLength);
+                    pWriter.Write(item.HairD.BackPositionArray);
+                    pWriter.Write<float>(item.HairD.FrontLength);
+                    pWriter.Write(item.HairD.FrontPositionArray);
                     break;
                 case ItemSlot.FD:
-                    for (int i = 0; i < 4; i++) {
-                        pWriter.Write<float>(0);
-                    }
+                    pWriter.Write(item.FaceDecorationD);
                     break;
             }
 

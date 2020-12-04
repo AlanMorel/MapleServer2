@@ -13,15 +13,11 @@ namespace MapleServer2.PacketHandlers.Login {
     public class ServerEnterPacketHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_SERVER_ENTER;
 
-        private readonly IAccountStorage accountStorage;
-
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
 
-        public ServerEnterPacketHandler(IAccountStorage accountStorage, ILogger<ServerEnterPacketHandler> logger) : base(logger) {
-            this.accountStorage = accountStorage;
-
+        public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger) {
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
 
@@ -34,8 +30,8 @@ namespace MapleServer2.PacketHandlers.Login {
             session.Send(ServerListPacket.SetServers(serverName, serverIps));
 
             List<Player> characters = new List<Player>();
-            foreach (long characterId in accountStorage.ListCharacters(session.AccountId)) {
-                characters.Add(accountStorage.GetCharacter(characterId));
+            foreach (long characterId in AccountStorage.ListCharacters(session.AccountId)) {
+                characters.Add(AccountStorage.GetCharacter(characterId));
             }
 
             session.Send(CharacterListPacket.SetMax(4, 6));

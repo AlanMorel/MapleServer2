@@ -17,15 +17,11 @@ namespace MapleServer2.PacketHandlers.Login {
     public class LoginHandler : LoginPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_LOGIN;
 
-        private readonly IAccountStorage accountStorage;
-
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
 
-        public LoginHandler(IAccountStorage accountStorage, ILogger<LoginHandler> logger) : base(logger) {
-            this.accountStorage = accountStorage;
-
+        public LoginHandler(ILogger<LoginHandler> logger) : base(logger) {
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
 
@@ -40,9 +36,9 @@ namespace MapleServer2.PacketHandlers.Login {
             logger.Debug($"Logging in with user:{user} pass:{pass}");
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(user) && string.IsNullOrEmpty(pass)) {
-                session.AccountId = StaticAccountStorage.DEFAULT_ACCOUNT;
+                session.AccountId = AccountStorage.DEFAULT_ACCOUNT;
             } else {
-                session.AccountId = StaticAccountStorage.SECONDARY_ACCOUNT;
+                session.AccountId = AccountStorage.SECONDARY_ACCOUNT;
             }
 
             switch (mode) {
@@ -53,8 +49,8 @@ namespace MapleServer2.PacketHandlers.Login {
                     break;
                 case 2:
                     List<Player> characters = new List<Player>();
-                    foreach (long characterId in accountStorage.ListCharacters(session.AccountId)) {
-                        characters.Add(accountStorage.GetCharacter(characterId));
+                    foreach (long characterId in AccountStorage.ListCharacters(session.AccountId)) {
+                        characters.Add(AccountStorage.GetCharacter(characterId));
                     }
 
                     Console.WriteLine("Initializing login with " + session.AccountId);

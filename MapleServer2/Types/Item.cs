@@ -38,6 +38,10 @@ namespace MapleServer2.Types {
         public Player Owner;
 
         public EquipColor Color;
+
+        public HairData HairD;
+
+        public byte[] FaceDecorationD;
         public byte AppearanceFlag;
 
         public ItemStats Stats;
@@ -80,6 +84,7 @@ namespace MapleServer2.Types {
             PairedCharacterName = other.PairedCharacterName;
             Owner = other.Owner;
             Color = other.Color;
+            HairD = other.HairD;
             AppearanceFlag = other.AppearanceFlag;
             Stats = new ItemStats(other.Stats);
         }
@@ -103,6 +108,7 @@ namespace MapleServer2.Types {
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     15
                 ),
+                HairD = HairData.hairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
                 Stats = new ItemStats(),
             };
@@ -128,6 +134,7 @@ namespace MapleServer2.Types {
                 Uid = 2754959794416496484,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
+                FaceDecorationD = new byte[16],
                 Stats = new ItemStats(),
             };
         }
@@ -184,6 +191,7 @@ namespace MapleServer2.Types {
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
+                HairD = HairData.hairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
                 Stats = new ItemStats(),
             };
@@ -221,6 +229,7 @@ namespace MapleServer2.Types {
                 Uid = 2754959794416496484,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
+                FaceDecorationD = new byte[16],
                 Stats = new ItemStats(),
             };
         }

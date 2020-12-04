@@ -44,7 +44,7 @@ namespace MapleServer2.Types {
         // Appearance
         public SkinColor SkinColor;
 
-        public string GuildName = "Abyss Tales";
+        public string GuildName = "";
         public string ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
         public string Motto = "";
         public string HomeName = "";
@@ -162,20 +162,36 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Player NewCharacter(byte gender, Job jobType, string name, SkinColor skinColor, object equips)
-        {
+        public static Player NewCharacter(byte gender, /*Job jobType,*/ int job, string name, SkinColor skinColor, object equips) {
+            PlayerStats stats = PlayerStats.Default();
+            stats.Hp = new PlayerStat(1000, 0, 1000);
+            stats.CurrentHp = new PlayerStat(0, 1000, 0);
+            stats.Spirit = new PlayerStat(100, 100, 100);
+            stats.Stamina = new PlayerStat(120, 120, 120);
+            stats.AtkSpd = new PlayerStat(120, 100, 130);
+            stats.MoveSpd = new PlayerStat(110, 100, 150);
+            stats.JumpHeight = new PlayerStat(110, 100, 130);
+
             var player = new Player
             {
+                AccountId = 0x1111111111111111,
+                CharacterId = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Name = name,
                 Gender = gender,
-                jobType = jobType,
+                //jobType = jobType,
+                JobGroupId = job,
                 Level = 1,
                 MapId = 2000062,
-                Stats = new PlayerStats(),
+                Stats = stats,
                 SkinColor = skinColor,
                 Equips = (Dictionary<ItemSlot, Item>)equips,
-        };
+                Motto = "Motto",
+                HomeName = "HomeName",
+                Coord = CoordF.From(2850, 2550, 1800),
+                GameOptions = new GameOptions(),
+                Mesos = 10,
+            };
             return player;
         }
     }

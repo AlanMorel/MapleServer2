@@ -42,7 +42,7 @@ namespace Maple2Storage.Types {
         public Color Tertiary { get; private set; }
         public int Index { get; private set; }
 
-        public static EquipColor Argb(Color color) {
+        public static EquipColor Argb(Color color, int index) {
             return new EquipColor {
                 Primary = color,
                 Secondary = color,

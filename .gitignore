@@ -1,6 +1,7 @@
 bin/
 obj/
 .vs/
+.vscode/
 *.cache
 Maple2.Data/bin/
 Maple2.Sql/bin/
