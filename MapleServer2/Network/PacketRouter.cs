@@ -10,8 +10,7 @@ namespace MapleServer2.Network {
         private readonly ImmutableDictionary<ushort, IPacketHandler<T>> handlers;
         private readonly ILogger logger;
 
-        public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers,
-                ILogger<PacketRouter<T>> logger) {
+        public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers, ILogger<PacketRouter<T>> logger) {
             this.logger = logger;
 
             var builder = ImmutableDictionary.CreateBuilder<ushort, IPacketHandler<T>>();

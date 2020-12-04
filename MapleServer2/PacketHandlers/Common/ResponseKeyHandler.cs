@@ -15,11 +15,7 @@ namespace MapleServer2.PacketHandlers.Common {
     public class ResponseKeyHandler : CommonPacketHandler {
         public override ushort OpCode => RecvOp.RESPONSE_KEY;
 
-        private readonly IAccountStorage accountStorage;
-
-        public ResponseKeyHandler(IAccountStorage accountStorage, ILogger<ResponseKeyHandler> logger) : base(logger) {
-            this.accountStorage = accountStorage;
-        }
+        public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) {}
 
         public override void Handle(GameSession session, PacketReader packet) {
             long accountId = packet.ReadLong();
@@ -29,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Common {
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            session.InitPlayer(accountStorage.GetCharacter(authData.CharacterId));
+            session.InitPlayer(AccountStorage.GetCharacter(authData.CharacterId));
 
             //session.Send(0x27, 0x01); // Meret market related...?
 
