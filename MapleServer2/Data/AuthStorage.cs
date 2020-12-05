@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MapleServer2.Data {
     // TODO: This is mostly temporary while I think about how auth really should work

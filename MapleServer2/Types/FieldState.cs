@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace MapleServer2.Types {
     // All operations on this class should be thread safe

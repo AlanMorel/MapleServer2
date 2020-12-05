@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using MaplePacketLib2;
-
-
-namespace MaplePacketLib2.Tools
+﻿namespace MaplePacketLib2.Tools
 {
     public interface IByteSerializable
     {
