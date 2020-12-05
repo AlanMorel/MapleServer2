@@ -34,7 +34,7 @@ namespace MapleServer2.Packets.Helpers {
 
             if (item.IsTemplate) {
                 // Not implemented, causes issues for non-default character creation outfits
-                //pWriter.WriteTemplate();
+                pWriter.WriteTemplate();
             }
 
             if (item.InventoryType == InventoryTab.Pets) {

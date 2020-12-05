@@ -61,8 +61,8 @@ namespace MapleServer2.PacketHandlers.Login {
         {
             byte gender = packet.ReadByte();
             //packet.ReadShort(); // const?
-            //var jobCode = (Job)packet.ReadShort();
-            int jobCode = packet.ReadShort();
+            var jobCode = (Job)packet.ReadShort();
+            //int jobCode = packet.ReadShort();
             string name = packet.ReadUnicodeString();
             var skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
@@ -98,6 +98,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             Color = equipColor,
                             HairD = HairData.hairData(backLength, frontLength, backPositionArray, frontPositionArray),
                             Stats = new ItemStats(),
+                            IsTemplate=false,
                         });
                         break;
                     case ItemSlot.FA: // Face
@@ -106,6 +107,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.FD: // Face Decoration
@@ -116,6 +118,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             Color = equipColor,
                             FaceDecorationD = faceDecoration,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.CL: // Clothes
@@ -124,6 +127,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.PA: // Pants
@@ -132,6 +136,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.SH: // Shoes
@@ -140,6 +145,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.ER: // Ear
@@ -149,6 +155,7 @@ namespace MapleServer2.PacketHandlers.Login {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
+                            IsTemplate = false,
                         });
                         break;
                 }

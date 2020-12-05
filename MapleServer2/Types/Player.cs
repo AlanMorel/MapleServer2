@@ -162,7 +162,7 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Player NewCharacter(byte gender, /*Job jobType,*/ int job, string name, SkinColor skinColor, object equips) {
+        public static Player NewCharacter(byte gender, Job jobType, string name, SkinColor skinColor, object equips) {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
             stats.CurrentHp = new PlayerStat(0, 1000, 0);
@@ -180,7 +180,7 @@ namespace MapleServer2.Types {
                 Name = name,
                 Gender = gender,
                 //jobType = jobType,
-                JobGroupId = job,
+                JobGroupId = (int)jobType,
                 Level = 1,
                 MapId = 2000062,
                 Stats = stats,

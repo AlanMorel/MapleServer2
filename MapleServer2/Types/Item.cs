@@ -8,7 +8,7 @@ namespace MapleServer2.Types {
         public InventoryTab InventoryType { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
         public int SlotMax { get; private set; }
-        public bool IsTemplate { get; private set; }
+        public bool IsTemplate { get; set; }
 
         public readonly int Id;
         public long Uid;
