@@ -1,7 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
-using System.Collections.Generic;
 
 namespace MapleServer2.Packets {
     public static class KeyTablePacket {

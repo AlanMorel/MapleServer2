@@ -8,7 +8,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using NLog;
-using MapleServer2.Database;
 //--------------------------------------------//
 //--------------------------------------------//
 //--------------------------------------------//

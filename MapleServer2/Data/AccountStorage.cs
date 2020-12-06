@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using MapleServer2.Types;
-using Maple2Storage.Types;
 
 namespace MapleServer2.Data {
     // Class for retrieving and storing account data

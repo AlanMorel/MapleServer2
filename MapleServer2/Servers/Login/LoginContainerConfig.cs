@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Autofac;
-using MapleServer2.Data;
-using MapleServer2.Data.Static;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 
@@ -18,9 +16,6 @@ namespace MapleServer2.Servers.Login {
                 .SingleInstance();
             builder.RegisterType<LoginSession>()
                 .AsSelf();
-            builder.RegisterType<StaticAccountStorage>()
-                .As<IAccountStorage>()
-                .SingleInstance();
 
             // Make all packet handlers available to PacketRouter
             builder.RegisterAssemblyTypes(Assembly.Load(nameof(MapleServer2)))
