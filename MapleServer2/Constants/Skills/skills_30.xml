@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="10300001" name="Phantom Claw" />
+	<key id="10300011" name="Flame Tornado" />
+	<key id="10300021" name="Flame Wave" />
+	<key id="10300031" name="Chain Lightning" />
+	<key id="10300041" name="Arcane Blast" sub="10300043" />
+	<key id="10300043" name="Arcane Blast" feature="JobChange_02" />
+	<key id="10300051" name="Ice Spear" sub="10300053,10300262" />
+	<key id="10300053" name="Ice Spear" />
+	<key id="10300061" name="Mana Font" />
+	<key id="10300071" name="Thunderbolt" />
+	<key id="10300081" name="Teleport" />
+	<key id="10300091" name="Focus Seal" sub="10300093" />
+	<key id="10300093" name="Focus Seal" />
+	<key id="10300101" name="Pyromancy" />
+	<key id="10300111" name="Cryomancy" />
+	<key id="10300121" name="Electromancy" />
+	<key id="10300131" name="Magic Armor" />
+	<key id="10300141" name="Ice Storm" />
+	<key id="10300151" name="Elemental Master" />
+	<key id="10300161" name="Mana Claw" />
+	<key id="10300171" name="Mana Control" feature="JobChange_01" sub="10300179" />
+	<key id="10300179" name="Mana Control" feature="JobChange_01" />
+	<key id="10300181" name="Dual Cast" feature="JobChange_01" sub="10300182,10300183,10300184" />
+	<key id="10300182" name="Dual Cast" feature="JobChange_01" />
+	<key id="10300183" name="Dual Cast" feature="JobChange_01" />
+	<key id="10300184" name="Dual Cast" feature="JobChange_01" />
+	<key id="10300191" name="Ice Cream Time" feature="JobChange_01" sub="10300198,10300200" />
+	<key id="10300193" name="Lightning Sensor" feature="JobChange_01" />
+	<key id="10300198" name="Ice Cream Time! (for destruction)" feature="JobChange_01" />
+	<key id="10300200" name="Ice Cream Time" feature="JobChange_01" />
+	<key id="10300201" name="Lodestone Field" feature="JobChange_01" sub="10300203,10300210" />
+	<key id="10300203" name="Call Lightning" feature="JobChange_01" />
+	<key id="10300210" name="Lodestone Field" feature="JobChange_01" />
+	<key id="10300211" name="Perfect Storm" feature="JobChange_01" sub="10300214,10300219,10300266" />
+	<key id="10300214" name="Perfect Storm" feature="JobChange_01" />
+	<key id="10300219" name="Perfect Storm" feature="JobChange_01" />
+	<key id="10300221" name="Ember" feature="JobChange_01" sub="10300222,10300225,10300230" />
+	<key id="10300222" name="Ember" feature="JobChange_01" />
+	<key id="10300223" name="Ember" feature="JobChange_01" />
+	<key id="10300224" name="Ember" feature="JobChange_01" />
+	<key id="10300225" name="Ember" feature="JobChange_01" />
+	<key id="10300230" name="Ember" feature="JobChange_01" />
+	<key id="10300231" name="Barbecue Party" feature="JobChange_01" sub="10300232,10300236,10300240" />
+	<key id="10300232" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300233" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300234" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300235" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300236" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300240" name="Barbecue Party" feature="JobChange_01" />
+	<key id="10300241" name="Playing with Fire" feature="JobChange_01" sub="10300250" />
+	<key id="10300250" name="Playing with Fire" feature="JobChange_01" />
+	<key id="10300251" name="Little Meteor" feature="JobChange_01" sub="10300252,10300253,10300260" />
+	<key id="10300252" name="Little Meteor" feature="JobChange_01" />
+	<key id="10300253" name="Little Meteor" feature="JobChange_01" />
+	<key id="10300254" name="Little Meteor" feature="JobChange_01" />
+	<key id="10300255" name="Little Meteor" feature="JobChange_01" />
+	<key id="10300260" name="Little Meteor" feature="JobChange_01" />
+	<key id="10300261" name="Ice Sprite" feature="JobChange_02" />
+	<key id="10300262" name="Ice Bomb" feature="JobChange_02" />
+	<key id="10300266" name="Risky Rink" feature="JobChange_02" />
+	<key id="10300271" name="Hurricane Warning" feature="JobChange_02" />
+	<key id="10300281" name="Perfect Combustion" feature="JobChange_02" sub="10300282" />
+	<key id="10300282" name="Perfect Combustion" feature="JobChange_02" />
+	<key id="10300291" name="Wildfire" feature="JobChange_02" sub="10300299" />
+	<key id="10300299" name="Wildfire" feature="JobChange_02" />
+</ms2>

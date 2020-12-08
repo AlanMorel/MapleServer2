@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace MapleServer2.Types {
     public class GameOptions {
@@ -12,8 +10,8 @@ namespace MapleServer2.Types {
             KeyBinds = new Dictionary<int, KeyBind>();
             Hotbars = new List<Hotbar>();
 
-            // Have 1 hotbar available
-            for (int hotbar = 0; hotbar < 1; hotbar++) {
+            // Have 3 hotbars available
+            for (int hotbar = 0; hotbar < 3; hotbar++) {
                 Hotbars.Add(new Hotbar());
             }
         }
