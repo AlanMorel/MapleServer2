@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="11000001" name="Mach Punch" />
+	<key id="11000011" name="Fists of Fury" sub="11000012" />
+	<key id="11000012" name="Fists of Fury EX" />
+	<key id="11000021" name="Beatdown" sub="11000026" />
+	<key id="11000026" name="Beatdown EX" />
+	<key id="11000031" name="Rising Kick" sub="11000032" />
+	<key id="11000032" name="Rising Kick EX" />
+	<key id="11000041" name="Guillotine" sub="11000042" />
+	<key id="11000042" name="Guillotine EX" />
+	<key id="11000051" name="Feinting Guard" sub="11000053,11000055" />
+	<key id="11000053" name="Feinting Guard EX" feature="JobChange_01" />
+	<key id="11000055" name="Feinting Guard EX" feature="JobChange_01" />
+	<key id="11000061" name="Hurricane Cutter" />
+	<key id="11000071" name="Power Puncher" />
+	<key id="11000081" name="Knuckle Missile" />
+	<key id="11000082" name="Link Function" />
+	<key id="11000091" name="Giants Fist" />
+	<key id="11000101" name="Overcome" />
+	<key id="11000111" name="Kick Technician" />
+	<key id="11000121" name="Fighting Spirit" />
+	<key id="11000131" name="Dragon Kick" sub="11000132" />
+	<key id="11000132" name="Dragon Fury" feature="JobChange_01" />
+	<key id="11000141" name="Magnum Blow" sub="11000144" />
+	<key id="11000144" name="Mega Blow" feature="JobChange_01" />
+	<key id="11000151" name="Centered Mind" />
+	<key id="11000161" name="Pattern Break" />
+	<key id="11000171" name="Shockwave Punch" feature="JobChange_01" sub="11000221" />
+	<key id="11000181" name="Double-Fist Smash" feature="JobChange_01" sub="11000182,11000183" />
+	<key id="11000182" name="Double-Fist Smash EX" feature="JobChange_01" />
+	<key id="11000183" name="Fire Dragon Uppercut" feature="JobChange_01" />
+	<key id="11000191" name="Vulcan Punch" feature="JobChange_01" sub="11000192" />
+	<key id="11000192" name="Vulcan Punch EX" feature="JobChange_01" />
+	<key id="11000211" name="Meridian Flow" feature="JobChange_01" sub="11000212,11000213,11000214,11000219,11000312,11000313,11000316" />
+	<key id="11000212" name="Meridian Flow II" feature="JobChange_01" />
+	<key id="11000213" name="Meridian Flow III" feature="JobChange_01" />
+	<key id="11000214" name="One-Inch Punch" feature="JobChange_01" />
+	<key id="11000219" name="Meridian Flow" feature="JobChange_01" />
+	<key id="11000221" name="Shockwave Punch" feature="JobChange_01" />
+	<key id="11000231" name="Setup Kick" feature="JobChange_01" />
+	<key id="11000241" name="Setup Kick" feature="JobChange_01" sub="11000231" />
+	<key id="11000261" name="Spiral Cannon" feature="JobChange_01" sub="11000262,11000265,11000266,11000267" />
+	<key id="11000262" name="Spiral Cannon EX" feature="JobChange_01" />
+	<key id="11000263" name="Spiral Cannon EX Hit 2" feature="JobChange_01" />
+	<key id="11000264" name="Spiral Cannon EX Hit 3" feature="JobChange_01" />
+	<key id="11000265" name="Tornado Cutter" feature="JobChange_02" />
+	<key id="11000266" name="Tornado Cutter EX" feature="JobChange_02" />
+	<key id="11000267" name="Spiral Cannon" feature="JobChange_01" />
+	<key id="11000271" name="Spin Kick" feature="JobChange_01" sub="11000272" />
+	<key id="11000272" name="Spin Kick EX" feature="JobChange_01" />
+	<key id="11000281" name="Taunting Feint" feature="JobChange_01" sub="11000282,11000283" />
+	<key id="11000282" name="Taunting Feint" feature="JobChange_01" />
+	<key id="11000283" name="Taunting Feint" feature="JobChange_01" />
+	<key id="11000286" name="Confidence Fade Buff" feature="JobChange_01" />
+	<key id="11000291" name="Raining Blows" feature="JobChange_01" />
+	<key id="11000311" name="Overflowing Fighting Spirit" feature="JobChange_02" sub="11000314" />
+	<key id="11000312" name="Meridian Flow EX" feature="JobChange_02" />
+	<key id="11000313" name="Meridian Flow EX II" feature="JobChange_02" />
+	<key id="11000314" name="Overflowing Fighting Spirit" feature="JobChange_02" />
+	<key id="11000315" name="Meridian Flow EX Debuff" feature="JobChange_02" />
+	<key id="11000316" name="One-Inch Punch EX" feature="JobChange_02" />
+	<key id="11000319" name="Meridian Flow EX II Debuff" feature="JobChange_02" />
+	<key id="11000321" name="Ultimate Rush" feature="JobChange_02" />
+	<key id="11000331" name="Raging Flame" feature="JobChange_02" />
+	<key id="11000341" name="Ultimate Destroyer Kick" feature="JobChange_02" />
+</ms2>

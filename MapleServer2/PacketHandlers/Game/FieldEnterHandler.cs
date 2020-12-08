@@ -28,20 +28,24 @@ namespace MapleServer2.PacketHandlers.Game {
             QuickSlot testSkill = QuickSlot.From(10500153);
 
             if (session.Player.GameOptions.TryGetHotbar(0, out Hotbar mainHotbar)) {
+                /*
                 mainHotbar.MoveQuickSlot(4, arrowStream);
                 mainHotbar.MoveQuickSlot(5, arrowBarrage);
                 mainHotbar.MoveQuickSlot(6, eagleGlide);
                 mainHotbar.MoveQuickSlot(7, testSkill);
+                */
                 session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
             }
 
             // Add catalysts for testing
+            /*
             int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026 };
             foreach (int catalyst in catalysts) {
                 var item = new Item(catalyst) { Amount = 99999, Uid = catalyst };
                 session.Inventory.Add(item);
                 session.Send(ItemInventoryPacket.Add(item));
             }
+            */
         }
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="10700001" name="Double Slash" sub="10700002" />
+	<key id="10700002" name="Poison Stab" feature="JobChange_02" />
+	<key id="10700011" name="Poison Edge" sub="10700016" />
+	<key id="10700016" name="Poison Edge EX" />
+	<key id="10700021" name="Vicious Cuts" sub="10700022" />
+	<key id="10700022" name="Vicious Cuts EX" />
+	<key id="10700031" name="Blade Dance" sub="10700032" />
+	<key id="10700032" name="Blade Dance EX" />
+	<key id="10700041" name="Mind Stealer" sub="10700042" />
+	<key id="10700042" name="Mind Stealer EX" />
+	<key id="10700051" name="Somersault Kick" sub="10700052" />
+	<key id="10700052" name="Somersault Kick EX" />
+	<key id="10700061" name="Spirit Thief" />
+	<key id="10700071" name="Deft Combatant" />
+	<key id="10700081" name="Haste" sub="10700082" />
+	<key id="10700082" name="Cancel Haste" />
+	<key id="10700091" name="Surprise Attack" sub="10700092,10700093" />
+	<key id="10700092" name="Surprise Attack EX" />
+	<key id="10700093" name="Surprise Attack EX" />
+	<key id="10700101" name="Retaliation" />
+	<key id="10700111" name="Poison Vial" />
+	<key id="10700121" name="Mind Breaker" />
+	<key id="10700131" name="Quick Step" />
+	<key id="10700141" name="Cunning Tactics" sub="10700142" />
+	<key id="10700142" name="Cunning Tactics/Battle Plan" feature="JobChange_01" />
+	<key id="10700151" name="Ruthless Guile" />
+	<key id="10700161" name="Mesoguard Plus" sub="10700162" />
+	<key id="10700162" name="Mesoguard Plus EX" />
+	<key id="10700181" name="Critical Slice" feature="JobChange_01" sub="10700182,10700183" />
+	<key id="10700182" name="Dagger Toss" feature="JobChange_01" />
+	<key id="10700183" name="Dagger Toss" feature="JobChange_01" />
+	<key id="10700191" name="Battle Step" feature="JobChange_01" sub="10700192" />
+	<key id="10700192" name="Battle Step" feature="JobChange_01" />
+	<key id="10700200" name="Shadow Step" feature="JobChange_01" sub="10700202,10700204" />
+	<key id="10700202" name="Finishing Step" feature="JobChange_01" />
+	<key id="10700204" name="Finishing Step" feature="JobChange_01" />
+	<key id="10700206" name="Finishing Step" feature="JobChange_01" />
+	<key id="10700211" name="Deadly Strikes" feature="JobChange_01" sub="10700212" />
+	<key id="10700212" name="Deadly Strikes" feature="JobChange_01" />
+	<key id="10700221" name="Savage Strikes" feature="JobChange_01" sub="10700222" />
+	<key id="10700222" name="Savage Strikes (Enhanced)" feature="JobChange_01" />
+	<key id="10700231" name="Volatile Vials" feature="JobChange_01" />
+	<key id="10700241" name="Poison Master" feature="JobChange_01" />
+	<key id="10700251" name="Vengeance" feature="JobChange_01" sub="10700252" />
+	<key id="10700252" name="Vengeance" feature="JobChange_01" />
+	<key id="10700261" name="Battle Plan" feature="JobChange_01" />
+	<key id="10700271" name="Agile Throw" feature="JobChange_02" sub="10700273" />
+	<key id="10700273" name="Agile Slash" feature="JobChange_02" />
+	<key id="10700281" name="Extemporaneous" feature="JobChange_02" sub="10700282,10700283" />
+	<key id="10700282" name="Extemporaneous 2" feature="JobChange_02" />
+	<key id="10700283" name="Extemporaneous 3" feature="JobChange_02" />
+	<key id="10700291" name="Accelerator" feature="JobChange_02" />
+	<key id="10700301" name="Poison Plan" feature="JobChange_02" />
+</ms2>

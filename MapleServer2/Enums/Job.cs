@@ -15,8 +15,7 @@
         GameMaster = 999
     }
 
-    public enum JobCode
-    {
+    public enum JobCode {
         None = 0,
         Knight = 101,
         Berserker = 201,

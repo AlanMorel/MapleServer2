@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Numerics;
+using System.Xml;
+using System.Collections;
 using System.Collections.Generic;
 using Maple2Storage.Types;
 using MapleServer2.Enums;
@@ -59,6 +61,7 @@ namespace MapleServer2.Types {
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
+        public List<SkillTab> SkillTabs = new List<SkillTab>();
 
         public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
@@ -87,19 +90,42 @@ namespace MapleServer2.Types {
             stats.MoveSpd = new PlayerStat(110, 100, 150);
             stats.JumpHeight = new PlayerStat(110, 100, 130);
 
-            return new Player
-            {
+            List<SkillTab> skillTabs = new List<SkillTab>();
+            skillTabs.Add(new SkillTab("test1"));
+
+            // Add runeblade skills set to level 1 and unlearned (normally would be loaded from database)
+            XmlDocument xmlDoc= new XmlDocument();
+            xmlDoc.Load("./MapleServer2/Constants/Skills/skills_10.xml");
+            XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
+            IEnumerator ienum = skills.GetEnumerator();
+            while (ienum.MoveNext()) {
+                XmlNode currentNode = (XmlNode) ienum.Current;
+
+                // Skill id
+                int id = Int32.Parse((currentNode).Attributes["id"].Value);
+                // Skill feature (awakening)
+                XmlAttribute fAttr = (currentNode).Attributes["feature"];
+                string feature = fAttr != null ? fAttr.Value : "";
+                // Skill sub skills
+                XmlAttribute subAttr = (currentNode).Attributes["sub"];
+                int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
+
+                skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
+            }
+
+            Player player = new Player {
+                SkillTabs = skillTabs,
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 60,
+                Level = 70,
                 Name = name,
                 Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800), //Little Harbor
                 //Coord = CoordF.From(500, 500, 15000), // tria
-                JobGroupId = 50,
+                JobGroupId = 10,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -109,13 +135,15 @@ namespace MapleServer2.Types {
                     { ItemSlot.ER, Item.Ear() },
                     { ItemSlot.HR, Item.Hair() },
                     { ItemSlot.FA, Item.Face() },
-                    { ItemSlot.FD, Item.FaceDecoration() },
+                    { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
 
             };
+            player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
+            return player;
         }
 
         public static Player MaleDefault(long accountId, long characterId, string name = "Sparkmod")
@@ -129,8 +157,31 @@ namespace MapleServer2.Types {
             stats.MoveSpd = new PlayerStat(110, 100, 150);
             stats.JumpHeight = new PlayerStat(110, 100, 130);
 
-            return new Player
-            {
+            List<SkillTab> skillTabs = new List<SkillTab>();
+            skillTabs.Add(new SkillTab("test1"));
+
+            // Add archer skills set to level 1 and unlearned (normally would be loaded from database)
+            XmlDocument xmlDoc= new XmlDocument();
+            xmlDoc.Load("./MapleServer2/Constants/Skills/skills_50.xml");
+            XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
+            IEnumerator ienum = skills.GetEnumerator();
+            while (ienum.MoveNext()) {
+                XmlNode currentNode = (XmlNode) ienum.Current;
+
+                // Skill id
+                int id = Int32.Parse((currentNode).Attributes["id"].Value);
+                // Skill feature (awakening)
+                XmlAttribute fAttr = (currentNode).Attributes["feature"];
+                string feature = fAttr != null ? fAttr.Value : "";
+                // Skill sub skills
+                XmlAttribute subAttr = (currentNode).Attributes["sub"];
+                int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
+
+                skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
+            }
+
+            return new Player {
+                SkillTabs = skillTabs,
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
@@ -158,7 +209,6 @@ namespace MapleServer2.Types {
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
-
             };
         }
 
@@ -172,8 +222,31 @@ namespace MapleServer2.Types {
             stats.MoveSpd = new PlayerStat(110, 100, 150);
             stats.JumpHeight = new PlayerStat(110, 100, 130);
 
-            var player = new Player
-            {
+            List<SkillTab> skillTabs = new List<SkillTab>();
+            skillTabs.Add(new SkillTab("test1"));
+
+            // Add job skills set to level 1 and unlearned
+            XmlDocument xmlDoc= new XmlDocument();
+            xmlDoc.Load($"./MapleServer2/Constants/Skills/skills_{job}.xml");
+            XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
+            IEnumerator ienum = skills.GetEnumerator();
+            while (ienum.MoveNext()) {
+                XmlNode currentNode = (XmlNode) ienum.Current;
+
+                // Skill id
+                int id = Int32.Parse((currentNode).Attributes["id"].Value);
+                // Skill feature (awakening)
+                XmlAttribute fAttr = (currentNode).Attributes["feature"];
+                string feature = fAttr != null ? fAttr.Value : "";
+                // Skill sub skills
+                XmlAttribute subAttr = (currentNode).Attributes["sub"];
+                int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
+
+                skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
+            }
+
+            return new Player {
+                SkillTabs = skillTabs,
                 AccountId = 0x1111111111111111,
                 CharacterId = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -192,7 +265,6 @@ namespace MapleServer2.Types {
                 GameOptions = new GameOptions(),
                 Mesos = 10,
             };
-            return player;
         }
     }
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="10800001" name="Lucky Stars" />
+	<key id="10800011" name="Shadow Cutter" />
+	<key id="10800021" name="Fragmented Star" />
+	<key id="10800031" name="Shadow Burst" />
+	<key id="10800041" name="Fatal Strikes" />
+	<key id="10800051" name="Dark Cloak" sub="10800052" />
+	<key id="10800052" name="Cancel Dark Cloak" />
+	<key id="10800053" name="Dark Cloak Stun" />
+	<key id="10800061" name="Shadow Web" />
+	<key id="10800071" name="Dash" />
+	<key id="10800081" name="Shadow Chaser" />
+	<key id="10800091" name="Mark of Death" />
+	<key id="10800101" name="Star Flurry" />
+	<key id="10800111" name="Thrown Weapon Mastery" />
+	<key id="10800121" name="Star Chaser" />
+	<key id="10800131" name="Death Sentence" />
+	<key id="10800141" name="Soul Grind" />
+	<key id="10800151" name="Shadow Arts" />
+	<key id="10800161" name="Mirror Image: Dark Blade" sub="10800163" />
+	<key id="10800163" name="Mirror Image: Dark Blade" />
+	<key id="10800171" name="Redoubled Pain" feature="JobChange_01" />
+	<key id="10800181" name="Binding Punishment" feature="JobChange_01" />
+	<key id="10800191" name="All-in-One" feature="JobChange_01" />
+	<key id="10800201" name="Dark Mire" feature="JobChange_01" sub="10800203" />
+	<key id="10800203" name="Enhanced Dark Mire" feature="JobChange_02" />
+	<key id="10800211" name="Shadow Stance" feature="JobChange_01" />
+	<key id="10800221" name="Assassins Circle" feature="JobChange_01" sub="10800229" />
+	<key id="10800229" name="Enhanced Assassins Circle" feature="JobChange_02" />
+	<key id="10800231" name="Dark Punisher" feature="JobChange_01" sub="10800232" />
+	<key id="10800232" name="Dark Punisher" feature="JobChange_01" />
+	<key id="10800241" name="Art of the Shuriken" feature="JobChange_01" />
+	<key id="10800251" name="Art of the Shadows" feature="JobChange_01" />
+	<key id="10800261" name="Chain Arts" feature="JobChange_02" />
+	<key id="10800271" name="Secret Art: Destruction" feature="JobChange_02" />
+	<key id="10800272" name="Secret Art: Destruction 2nd Damage" feature="JobChange_02" />
+	<key id="10800273" name="Secret Art: Destruction Splash" feature="JobChange_02" />
+	<key id="10800274" name="Secret Art: Destruction Splash (for tick damage)" feature="JobChange_02" />
+	<key id="10800281" name="Secret Art: Mark" feature="JobChange_02" />
+	<key id="10800282" name="Secret Art: Mark 2-hit" feature="JobChange_02" />
+	<key id="10800283" name="Secret Art: Mark 3-hit" feature="JobChange_02" />
+	<key id="10800284" name="Secret Art: Mark Splash" feature="JobChange_02" />
+	<key id="10800291" name="Secret Art: Collapse" feature="JobChange_02" sub="10800293" />
+	<key id="10800292" name="Secret Art: Collapse Splash" feature="JobChange_02" />
+	<key id="10800293" name="Enhanced Secret Art: Collapse" feature="JobChange_02" />
+</ms2>
