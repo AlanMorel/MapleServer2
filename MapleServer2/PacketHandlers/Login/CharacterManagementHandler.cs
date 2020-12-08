@@ -61,8 +61,8 @@ namespace MapleServer2.PacketHandlers.Login {
         {
             byte gender = packet.ReadByte();
             //packet.ReadShort(); // const?
-            var jobCode = (Job)packet.ReadShort();
-            //int jobCode = packet.ReadShort();
+            // var jobCode = (Job)packet.ReadShort();
+            int jobCode = packet.ReadShort();
             string name = packet.ReadUnicodeString();
             var skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
