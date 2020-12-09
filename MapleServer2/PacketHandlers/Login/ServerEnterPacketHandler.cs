@@ -9,15 +9,18 @@ using MapleServer2.Servers.Login;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Login {
-    public class ServerEnterPacketHandler : LoginPacketHandler {
+namespace MapleServer2.PacketHandlers.Login
+{
+    public class ServerEnterPacketHandler : LoginPacketHandler
+    {
         public override ushort OpCode => RecvOp.RESPONSE_SERVER_ENTER;
 
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;
         private readonly string serverName;
 
-        public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger) {
+        public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
+        {
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
 
@@ -25,12 +28,14 @@ namespace MapleServer2.PacketHandlers.Login {
             this.serverName = "Paperwood";
         }
 
-        public override void Handle(LoginSession session, PacketReader packet) {
+        public override void Handle(LoginSession session, PacketReader packet)
+        {
             session.Send(BannerListPacket.SetBanner());
             session.Send(ServerListPacket.SetServers(serverName, serverIps));
 
             List<Player> characters = new List<Player>();
-            foreach (long characterId in AccountStorage.ListCharacters(session.AccountId)) {
+            foreach (long characterId in AccountStorage.ListCharacters(session.AccountId))
+            {
                 characters.Add(AccountStorage.GetCharacter(characterId));
             }
 

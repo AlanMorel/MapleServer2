@@ -2,13 +2,16 @@
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public abstract class GamePacketHandler : IPacketHandler<GameSession> {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public abstract class GamePacketHandler : IPacketHandler<GameSession>
+    {
         public abstract ushort OpCode { get; }
 
         protected readonly ILogger logger;
 
-        protected GamePacketHandler(ILogger<GamePacketHandler> logger) {
+        protected GamePacketHandler(ILogger<GamePacketHandler> logger)
+        {
             this.logger = logger;
         }
 

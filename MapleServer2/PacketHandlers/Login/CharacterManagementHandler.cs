@@ -13,15 +13,19 @@ using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
 using System.Collections.Generic;
 
-namespace MapleServer2.PacketHandlers.Login {
-    public class CharacterManagementHandler : LoginPacketHandler {
+namespace MapleServer2.PacketHandlers.Login
+{
+    public class CharacterManagementHandler : LoginPacketHandler
+    {
         public override ushort OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) {}
+        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) { }
 
-        public override void Handle(LoginSession session, PacketReader packet) {
+        public override void Handle(LoginSession session, PacketReader packet)
+        {
             byte mode = packet.ReadByte();
-            switch (mode) {
+            switch (mode)
+            {
                 case 0: // Login
                     HandleSelect(session, packet);
                     break;
@@ -43,8 +47,8 @@ namespace MapleServer2.PacketHandlers.Login {
             packet.ReadShort(); // 01 00
             logger.Info($"Logging in to game with charId:{charId}");
 
-            var endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
-            var authData = new AuthData
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
+            AuthData authData = new AuthData
             {
                 TokenA = session.GetToken(),
                 TokenB = session.GetToken(),
@@ -64,13 +68,13 @@ namespace MapleServer2.PacketHandlers.Login {
             // var jobCode = (Job)packet.ReadShort();
             int jobCode = packet.ReadShort();
             string name = packet.ReadUnicodeString();
-            var skinColor = packet.Read<SkinColor>();
+            SkinColor skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
             packet.Skip(2);
-            var Equips = new Dictionary<ItemSlot, Item>();
+            Dictionary<ItemSlot,Item> Equips = new Dictionary<ItemSlot, Item>();
 
             logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {jobCode}");
-            
+
             int equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
             {
@@ -80,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Login {
                 {
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
-                var equipColor = packet.Read<EquipColor>();
+                EquipColor equipColor = packet.Read<EquipColor>();
                 int colorIndex = packet.ReadInt();
 
                 switch (type)
@@ -92,17 +96,19 @@ namespace MapleServer2.PacketHandlers.Login {
                         float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
                         byte[] frontPositionArray = packet.Read(24);
 
-                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             HairD = HairData.hairData(backLength, frontLength, backPositionArray, frontPositionArray),
                             Stats = new ItemStats(),
-                            IsTemplate=false,
+                            IsTemplate = false,
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -112,7 +118,8 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -122,7 +129,8 @@ namespace MapleServer2.PacketHandlers.Login {
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -131,7 +139,8 @@ namespace MapleServer2.PacketHandlers.Login {
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -140,7 +149,8 @@ namespace MapleServer2.PacketHandlers.Login {
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -150,7 +160,8 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)) {
+                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
+                        {
                             Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
                             CreationTime = 1565575851,
                             Color = equipColor,
@@ -165,14 +176,17 @@ namespace MapleServer2.PacketHandlers.Login {
 
             // Check if name is in use (currently just on local account)
             bool taken = false;
-            
-            foreach (var character in AccountStorage.characters.Values) {
-                if (character.Name.ToLower().Equals(name.ToLower())) {
+
+            foreach (Player character in AccountStorage.characters.Values)
+            {
+                if (character.Name.ToLower().Equals(name.ToLower()))
+                {
                     taken = true;
                 }
             }
 
-            if (taken) {
+            if (taken)
+            {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
             }

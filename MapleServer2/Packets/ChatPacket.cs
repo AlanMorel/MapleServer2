@@ -3,10 +3,13 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class ChatPacket {
-        public static Packet Send(Player player, string message, ChatType type = ChatType.All) {
-            var pWriter = PacketWriter.Of(SendOp.USER_CHAT)
+namespace MapleServer2.Packets
+{
+    public static class ChatPacket
+    {
+        public static Packet Send(Player player, string message, ChatType type = ChatType.All)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT)
                 .WriteLong(player.AccountId)
                 .WriteLong(player.CharacterId)
                 .WriteUnicodeString(player.Name)
@@ -16,7 +19,8 @@ namespace MapleServer2.Packets {
                 .WriteByte()
                 .WriteInt(); // Channel
 
-            switch (type) {
+            switch (type)
+            {
                 case ChatType.WhisperFrom:
                     pWriter.WriteUnicodeString("???");
                     break;

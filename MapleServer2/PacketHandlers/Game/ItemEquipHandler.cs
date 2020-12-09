@@ -8,16 +8,20 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class ItemEquipHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class ItemEquipHandler : GamePacketHandler
+    {
         public override ushort OpCode => RecvOp.ITEM_EQUIP;
 
         public ItemEquipHandler(ILogger<ItemEquipHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             byte function = packet.ReadByte();
 
-            switch (function) {
+            switch (function)
+            {
                 case 0:
                     HandleEquipItem(session, packet);
                     break;
@@ -27,10 +31,12 @@ namespace MapleServer2.PacketHandlers.Game {
             }
         }
 
-        private void HandleEquipItem(GameSession session, PacketReader packet) {
+        private void HandleEquipItem(GameSession session, PacketReader packet)
+        {
             long itemUid = packet.ReadLong();
             string equipSlotStr = packet.ReadUnicodeString();
-            if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot)) {
+            if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
+            {
                 logger.Warning("Unknown equip slot: " + equipSlotStr);
                 return;
             }
@@ -41,7 +47,8 @@ namespace MapleServer2.PacketHandlers.Game {
 
             // TODO: Move unequipped item into the correct slot
             // Move previously equipped item back to inventory
-            if (session.Player.Equips.Remove(equipSlot, out Item prevItem)) {
+            if (session.Player.Equips.Remove(equipSlot, out Item prevItem))
+            {
                 session.Inventory.Add(prevItem);
                 session.Send(ItemInventoryPacket.Add(prevItem));
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
@@ -64,12 +71,15 @@ namespace MapleServer2.PacketHandlers.Game {
             session.Send(FieldObjectPacket.SetStats(session.FieldPlayer));
         }
 
-        private void HandleUnequipItem(GameSession session, PacketReader packet) {
+        private void HandleUnequipItem(GameSession session, PacketReader packet)
+        {
             long itemUid = packet.ReadLong();
 
-            foreach ((ItemSlot slot, Item item) in session.Player.Equips) {
+            foreach ((ItemSlot slot, Item item) in session.Player.Equips)
+            {
                 if (itemUid != item.Uid) continue;
-                if (session.Player.Equips.Remove(slot, out Item unequipItem)) {
+                if (session.Player.Equips.Remove(slot, out Item unequipItem))
+                {
                     session.Inventory.Add(unequipItem);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                     session.Send(ItemInventoryPacket.Add(unequipItem));

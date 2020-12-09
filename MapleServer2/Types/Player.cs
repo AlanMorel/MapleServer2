@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using Maple2Storage.Types;
 using MapleServer2.Enums;
 
-namespace MapleServer2.Types {
-    public class Player {
+namespace MapleServer2.Types
+{
+    public class Player
+    {
         // Bypass Key is constant PER ACCOUNT, unsure how it is validated
         // Seems like as long as it's valid, it doesn't matter though
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
@@ -80,7 +82,8 @@ namespace MapleServer2.Types {
 
         public GameOptions GameOptions { get; private set; }
 
-        public static Player Default(long accountId, long characterId, string name = "SparkmodF") {
+        public static Player Default(long accountId, long characterId, string name = "SparkmodF")
+        {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
             stats.CurrentHp = new PlayerStat(0, 1000, 0);
@@ -94,12 +97,13 @@ namespace MapleServer2.Types {
             skillTabs.Add(new SkillTab("test1"));
 
             // Add runeblade skills set to level 1 and unlearned (normally would be loaded from database)
-            XmlDocument xmlDoc= new XmlDocument();
+            XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load("./MapleServer2/Constants/Skills/skills_10.xml");
             XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
             IEnumerator ienum = skills.GetEnumerator();
-            while (ienum.MoveNext()) {
-                XmlNode currentNode = (XmlNode) ienum.Current;
+            while (ienum.MoveNext())
+            {
+                XmlNode currentNode = (XmlNode)ienum.Current;
 
                 // Skill id
                 int id = Int32.Parse((currentNode).Attributes["id"].Value);
@@ -113,7 +117,8 @@ namespace MapleServer2.Types {
                 skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
             }
 
-            Player player = new Player {
+            Player player = new Player
+            {
                 SkillTabs = skillTabs,
                 MapId = 2000062,
                 AccountId = accountId,
@@ -161,12 +166,13 @@ namespace MapleServer2.Types {
             skillTabs.Add(new SkillTab("test1"));
 
             // Add archer skills set to level 1 and unlearned (normally would be loaded from database)
-            XmlDocument xmlDoc= new XmlDocument();
+            XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load("./MapleServer2/Constants/Skills/skills_50.xml");
             XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
             IEnumerator ienum = skills.GetEnumerator();
-            while (ienum.MoveNext()) {
-                XmlNode currentNode = (XmlNode) ienum.Current;
+            while (ienum.MoveNext())
+            {
+                XmlNode currentNode = (XmlNode)ienum.Current;
 
                 // Skill id
                 int id = Int32.Parse((currentNode).Attributes["id"].Value);
@@ -180,7 +186,8 @@ namespace MapleServer2.Types {
                 skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
             }
 
-            return new Player {
+            return new Player
+            {
                 SkillTabs = skillTabs,
                 MapId = 2000062,
                 AccountId = accountId,
@@ -212,7 +219,8 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Player NewCharacter(byte gender, /*Job jobType*/ int job, string name, SkinColor skinColor, object equips) {
+        public static Player NewCharacter(byte gender, /*Job jobType*/ int job, string name, SkinColor skinColor, object equips)
+        {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
             stats.CurrentHp = new PlayerStat(0, 1000, 0);
@@ -226,12 +234,13 @@ namespace MapleServer2.Types {
             skillTabs.Add(new SkillTab("test1"));
 
             // Add job skills set to level 1 and unlearned
-            XmlDocument xmlDoc= new XmlDocument();
+            XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load($"./MapleServer2/Constants/Skills/skills_{job}.xml");
             XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
             IEnumerator ienum = skills.GetEnumerator();
-            while (ienum.MoveNext()) {
-                XmlNode currentNode = (XmlNode) ienum.Current;
+            while (ienum.MoveNext())
+            {
+                XmlNode currentNode = (XmlNode)ienum.Current;
 
                 // Skill id
                 int id = Int32.Parse((currentNode).Attributes["id"].Value);
@@ -245,7 +254,8 @@ namespace MapleServer2.Types {
                 skillTabs[0].AddOrUpdate(Skill.skill(id, 1, 0, feature, sub));
             }
 
-            return new Player {
+            return new Player
+            {
                 SkillTabs = skillTabs,
                 AccountId = 0x1111111111111111,
                 CharacterId = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),

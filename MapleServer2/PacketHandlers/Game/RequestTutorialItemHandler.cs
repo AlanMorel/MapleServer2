@@ -5,13 +5,16 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class RequestTutorialItemHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class RequestTutorialItemHandler : GamePacketHandler
+    {
         public override ushort OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
 
         public RequestTutorialItemHandler(ILogger<RequestTutorialItemHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             // No data passed in
 
             // TODO - Determine item from player's job

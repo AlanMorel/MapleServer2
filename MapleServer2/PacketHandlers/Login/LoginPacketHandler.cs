@@ -2,13 +2,16 @@
 using MapleServer2.Servers.Login;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Login {
-    public abstract class LoginPacketHandler : IPacketHandler<LoginSession> {
+namespace MapleServer2.PacketHandlers.Login
+{
+    public abstract class LoginPacketHandler : IPacketHandler<LoginSession>
+    {
         public abstract ushort OpCode { get; }
 
         protected readonly ILogger logger;
 
-        protected LoginPacketHandler(ILogger<LoginPacketHandler> logger) {
+        protected LoginPacketHandler(ILogger<LoginPacketHandler> logger)
+        {
             this.logger = logger;
         }
 

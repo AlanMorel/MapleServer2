@@ -1,8 +1,10 @@
 ﻿using System;
 
-namespace MapleServer2.Enums {
+namespace MapleServer2.Enums
+{
     [Flags]
-    public enum TransferFlag : byte {
+    public enum TransferFlag : byte
+    {
         None = 0,
         Unknown1 = 1,
         Splitable = 2,

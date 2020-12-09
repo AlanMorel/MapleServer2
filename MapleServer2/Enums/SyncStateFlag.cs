@@ -1,8 +1,10 @@
 ﻿using System;
 
-namespace MapleServer2.Enums {
+namespace MapleServer2.Enums
+{
     [Flags]
-    public enum SyncStateFlag : byte {
+    public enum SyncStateFlag : byte
+    {
         None = 0,
         Flag1 = 1,
         Flag2 = 2,

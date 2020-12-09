@@ -1,10 +1,13 @@
-﻿namespace MaplePacketLib2.Crypto {
-    public class XORCrypter : ICrypter {
+﻿namespace MaplePacketLib2.Crypto
+{
+    public class XORCrypter : ICrypter
+    {
         private const int INDEX = 2;
 
         private readonly byte[] table;
 
-        public XORCrypter(uint version) {
+        public XORCrypter(uint version)
+        {
             this.table = new byte[2];
 
             // Init
@@ -15,18 +18,23 @@
             table[1] = (byte)(rand2.RandomFloat() * 255.0f);
         }
 
-        public static uint GetIndex(uint version) {
+        public static uint GetIndex(uint version)
+        {
             return (version + INDEX) % 3 + 1;
         }
 
-        public void Encrypt(byte[] src) {
-            for (int i = 0; i < src.Length; i++) {
+        public void Encrypt(byte[] src)
+        {
+            for (int i = 0; i < src.Length; i++)
+            {
                 src[i] ^= table[i & 1];
             }
         }
 
-        public void Decrypt(byte[] src) {
-            for (int i = 0; i < src.Length; i++) {
+        public void Decrypt(byte[] src)
+        {
+            for (int i = 0; i < src.Length; i++)
+            {
                 src[i] ^= table[i & 1];
             }
         }

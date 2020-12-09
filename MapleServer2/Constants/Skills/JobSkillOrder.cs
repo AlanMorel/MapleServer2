@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 
-namespace MapleServer2.Constants.Skills {
-    public static class JobSkillOrder {
+namespace MapleServer2.Constants.Skills
+{
+    public static class JobSkillOrder
+    {
         public static Dictionary<int, int[]> Order = new Dictionary<int, int[]>();
 
-        static JobSkillOrder() {
+        static JobSkillOrder()
+        {
             Order.Add(10, new int[] {
                 10100091, 10100261, 10100041, 10100211, 10100161, 10100281, 20000011, 10100061, 10100011, 10100181,
                 10100062, 10100131, 10100081, 10100031, 10100201, 10100151, 10100101, 20000001, 10100051, 10100221,

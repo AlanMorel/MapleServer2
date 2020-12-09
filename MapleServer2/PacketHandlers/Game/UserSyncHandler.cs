@@ -6,25 +6,30 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
+namespace MapleServer2.PacketHandlers.Game
+{
     // ClientTicks/Time here are probably used for animation
     // Currently I am just updating animation instantly.
-    public class UserSyncHandler : GamePacketHandler {
+    public class UserSyncHandler : GamePacketHandler
+    {
         public override ushort OpCode => RecvOp.USER_SYNC;
 
         public UserSyncHandler(ILogger<UserSyncHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
-            byte function = packet.ReadByte(); // Unknown what this is for
+        public override void Handle(GameSession session, PacketReader packet)
+        {
+            packet.ReadByte(); // Unknown what this is for
             packet.ReadInt(); // ServerTicks
             packet.ReadInt(); // ClientTicks
             byte segments = packet.ReadByte();
-            if (segments < 1) {
+            if (segments < 1)
+            {
                 return;
             }
 
             SyncState[] syncStates = new SyncState[segments];
-            for (int i = 0; i < segments; i++) {
+            for (int i = 0; i < segments; i++)
+            {
                 syncStates[i] = packet.ReadSyncState();
 
                 packet.ReadInt(); // ClientTicks

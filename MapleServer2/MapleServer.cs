@@ -8,40 +8,33 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using NLog;
-//--------------------------------------------//
-//--------------------------------------------//
-//--------------------------------------------//
-
-
-
-//--------------------------------------------//
-//--------------------------------------------//
-//--------------------------------------------//
-
-namespace MapleServer2 {
-    public static class MapleServer {
-        public static void Main(string[] args) {
+namespace MapleServer2
+{
+    public static class MapleServer
+    {
+        public static void Main(string[] args)
+        {
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
 
-            // Testing stuff
-
             #region Container
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
-            var loginServer = loginScope.Resolve<LoginServer>();
+            LoginServer loginServer = loginScope.Resolve<LoginServer>();
             loginServer.Start();
 
             IContainer gameContainer = GameContainerConfig.Configure();
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
-            var gameServer = gameScope.Resolve<GameServer>();
+            GameServer gameServer = gameScope.Resolve<GameServer>();
             gameServer.Start();
 
             // Input commands to the server
-            while (true) {
+            while (true)
+            {
                 string[] input = (Console.ReadLine() ?? string.Empty).Split(" ", 2);
-                switch (input[0]) {
+                switch (input[0])
+                {
                     case "exit":
                     case "quit":
                         gameServer.Stop();
@@ -53,7 +46,8 @@ namespace MapleServer2 {
                         var pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
                         logger.Info(pWriter);
-                        foreach (Session session in GetSessions(loginServer, gameServer)) {
+                        foreach (Session session in GetSessions(loginServer, gameServer))
+                        {
                             logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
                         }
@@ -71,10 +65,9 @@ namespace MapleServer2 {
             #endregion
         }
 
-        // Testing Stuff outside of a main arg
-
         #region Session
-        private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer) {
+        private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer)
+        {
             List<Session> sessions = new List<Session>();
             sessions.AddRange(loginServer.GetSessions());
             sessions.AddRange(gameServer.GetSessions());

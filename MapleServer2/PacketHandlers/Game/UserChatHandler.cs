@@ -5,21 +5,25 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class UserChatHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class UserChatHandler : GamePacketHandler
+    {
         public override ushort OpCode => RecvOp.USER_CHAT;
 
         public UserChatHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
-            var type = (ChatType) packet.ReadInt();
+        public override void Handle(GameSession session, PacketReader packet)
+        {
+            ChatType type = (ChatType)packet.ReadInt();
             string message = packet.ReadUnicodeString();
-            string recipient = packet.ReadUnicodeString();
+            packet.ReadUnicodeString(); // Recipient
             packet.ReadLong();
 
             GameCommandActions.Process(session, message);
 
-            if (type == ChatType.All) {
+            if (type == ChatType.All)
+            {
                 session.FieldManager.SendChat(session.Player, message);
             }
         }

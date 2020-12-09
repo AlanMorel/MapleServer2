@@ -1,7 +1,9 @@
 ﻿using Maple2Storage.Types;
 
-namespace MapleServer2.Types {
-    public class Portal {
+namespace MapleServer2.Types
+{
+    public class Portal
+    {
         public int Id;
         public bool IsVisible;
         public bool IsEnabled;
@@ -9,7 +11,8 @@ namespace MapleServer2.Types {
         public CoordF Rotation;
         public int TargetMapId;
 
-        public Portal(int id) {
+        public Portal(int id)
+        {
             this.Id = id;
         }
     }

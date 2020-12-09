@@ -6,9 +6,12 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class FieldPacket {
-        public static Packet RequestEnter(IFieldObject<Player> player) {
+namespace MapleServer2.Packets
+{
+    public static class FieldPacket
+    {
+        public static Packet RequestEnter(IFieldObject<Player> player)
+        {
             return PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER)
                 .WriteByte(0x00)
                 .WriteInt(player.Value.MapId)
@@ -21,9 +24,10 @@ namespace MapleServer2.Packets {
                 .WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
         }
 
-        public static Packet AddPlayer(IFieldObject<Player> fieldPlayer) {
+        public static Packet AddPlayer(IFieldObject<Player> fieldPlayer)
+        {
             Player player = fieldPlayer.Value;
-            var pWriter = PacketWriter.Of(SendOp.FIELD_ADD_USER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_USER);
             pWriter.WriteInt(fieldPlayer.ObjectId);
             CharacterListPacket.WriteCharacter(player, pWriter);
 
@@ -48,7 +52,8 @@ namespace MapleServer2.Packets {
             // ???
             bool flagA = false;
             pWriter.WriteBool(flagA);
-            if (flagA) {
+            if (flagA)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteUnicodeString("");
                 pWriter.WriteUnicodeString("");
@@ -67,13 +72,15 @@ namespace MapleServer2.Packets {
             pWriter.WriteUnicodeString(player.ProfileUrl); // Profile URL
 
             pWriter.WriteBool(player.Mount != null);
-            if (player.Mount != null) {
+            if (player.Mount != null)
+            {
                 pWriter.WriteMount(player.Mount);
 
                 // Unknown
                 byte countA = 0;
                 pWriter.WriteByte(countA);
-                for (int i = 0; i < countA; i++) {
+                for (int i = 0; i < countA; i++)
+                {
                     pWriter.WriteInt()
                         .WriteByte();
                 }
@@ -84,11 +91,14 @@ namespace MapleServer2.Packets {
             pWriter.WriteInt();
 
             // This seems to be character appearance encoded as a blob
+            // Also this is always true.
             pWriter.WriteBool(true);
-            if (true) {
-                var appearanceBuffer = new PacketWriter();
+            if (true)
+            {
+                PacketWriter appearanceBuffer = new PacketWriter();
                 appearanceBuffer.WriteByte((byte)player.Equips.Count); // num equips
-                foreach ((ItemSlot slot, Item equip) in player.Equips) {
+                foreach ((ItemSlot slot, Item equip) in player.Equips)
+                {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
 
@@ -122,39 +132,33 @@ namespace MapleServer2.Packets {
                 pWriter.WriteInt();
                 pWriter.WriteInt();
                 pWriter.WriteShort();
-            } else {
-                //pWriter.WriteInt(); commented out to remove warning
             }
 
             return pWriter;
         }
 
-        public static Packet RemovePlayer(IFieldObject<Player> player) {
+        public static Packet RemovePlayer(IFieldObject<Player> player)
+        {
             return PacketWriter.Of(SendOp.FIELD_REMOVE_USER)
                 .WriteInt(player.ObjectId);
         }
 
-        private static void WriteTotalStats(this PacketWriter pWriter, ref PlayerStats stats) {
+        private static void WriteTotalStats(this PacketWriter pWriter, ref PlayerStats stats)
+        {
             pWriter.WriteByte(0x23);
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
+            {
                 pWriter.WriteLong(stats.Hp[i])
                     .WriteInt(stats.AtkSpd[i])
                     .WriteInt(stats.MoveSpd[i])
                     .WriteInt(stats.MountSpeed[i])
                     .WriteInt(stats.JumpHeight[i]);
             }
-
-            /* Alternative Stat Struct
-            pWriter.WriteByte(); // Count
-            for (int i = 0; i < count; i++) {
-                pWriter.WriteByte(); // Type
-                if (type == 4) pWriter.WriteLong();
-                else pWriter.WriteInt();
-            }
-            */
         }
 
-        private static void WritePassiveSkills(PacketWriter pWriter) {
+        private static void WritePassiveSkills(PacketWriter pWriter)
+        {
+            // This is still hardcoded until figure out
             pWriter.Write(
                 "01 00 3E FF 5A 00 A4 63 12 02 3E FF 5A 00 D0 71 85 28 D0 71 85 28 0F 38 A0 00 01 00 01 00 00 00 01 00 00 00 00 00 00 00 00"
                     .ToByteArray());
@@ -174,15 +178,17 @@ namespace MapleServer2.Packets {
             }*/
         }
 
-        public static Packet AddItem(IFieldObject<Item> item, int userObjectId) {
-            var pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM)
+        public static Packet AddItem(IFieldObject<Item> item, int userObjectId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM)
                 .Write(item.ObjectId) // object id
                 .Write(item.Value.Id)
                 .Write(item.Value.Amount);
 
             bool flag = true;
             pWriter.WriteBool(flag);
-            if (flag) {
+            if (flag)
+            {
                 pWriter.WriteLong();
             }
 
@@ -197,42 +203,51 @@ namespace MapleServer2.Packets {
                 .WriteItem(item.Value);
         }
 
-        public static Packet PickupItem(int objectId, int userObjectId) {
+        public static Packet PickupItem(int objectId, int userObjectId)
+        {
             return PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM)
                 .WriteByte(0x01)
                 .WriteInt(objectId)
                 .WriteInt(userObjectId);
         }
 
-        public static Packet RemoveItem(int objectId) {
+        public static Packet RemoveItem(int objectId)
+        {
             return PacketWriter.Of(SendOp.FIELD_REMOVE_ITEM)
                 .WriteInt(objectId);
         }
 
-        public static Packet AddNpc(IFieldObject<Npc> npc) {
-            var pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
+        public static Packet AddNpc(IFieldObject<Npc> npc)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
                 .WriteInt(npc.ObjectId)
                 .WriteInt(npc.Value.Id)
                 .Write<CoordF>(npc.Coord)
-                .Write<CoordF>(CoordF.From(0,0,0)); // Unknown
+                .Write<CoordF>(CoordF.From(0, 0, 0)); // Unknown
             // If NPC is not valid, the packet seems to stop here
 
             // NPC Stat
             byte flag = 0x23;
             pWriter.WriteByte(flag);
-            if (flag == 1) {
+            if (flag == 1)
+            {
                 byte value = 0;
                 pWriter.WriteByte(value); // value
-                if (value == 4) {
+                if (value == 4)
+                {
                     pWriter.WriteLong()
                         .WriteLong()
                         .WriteLong();
-                } else {
+                }
+                else
+                {
                     pWriter.WriteInt()
                         .WriteInt()
                         .WriteInt();
                 }
-            } else {
+            }
+            else
+            {
                 pWriter.WriteLong(29)
                     .WriteInt()
                     .WriteLong(29)
@@ -246,7 +261,8 @@ namespace MapleServer2.Packets {
 
             short count = 0;
             pWriter.WriteShort(count); // branch
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 pWriter.WriteInt()
                     .WriteInt()
                     .WriteInt()
@@ -268,7 +284,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet AddPortal(IFieldObject<Portal> portal) {
+        public static Packet AddPortal(IFieldObject<Portal> portal)
+        {
             return PacketWriter.Of(SendOp.FIELD_PORTAL)
                 .WriteByte(0x00)
                 .WriteInt(portal.Value.Id)

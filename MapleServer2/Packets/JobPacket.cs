@@ -4,21 +4,22 @@ using MapleServer2.Constants;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class JobPacket {
+namespace MapleServer2.Packets
+{
+    public static class JobPacket
+    {
         // Close skill tree
-        public static Packet Close() {
+        public static Packet Close()
+        {
             // After a save the close sends the same save data again, but this doesn't seem to do anything so instead just write 0 int
-            var pWriter = PacketWriter.Of(SendOp.JOB);
-
-            pWriter.WriteInt();
-
-            return pWriter;
+            return PacketWriter.Of(SendOp.JOB)
+                .WriteInt();
         }
 
         // Save skill tree
-        public static Packet Save(Player character, int objectId = 0) {
-            var pWriter = PacketWriter.Of(SendOp.JOB);
+        public static Packet Save(Player character, int objectId = 0)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
 
             // Identifier info
             pWriter.WriteInt(objectId);
@@ -33,7 +34,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet WriteSkills(PacketWriter pWriter, Player character) {
+        public static Packet WriteSkills(PacketWriter pWriter, Player character)
+        {
             // Get skills
             Dictionary<int, Skill> skills = character.SkillTabs[0].GetSkills(); // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
 
@@ -44,7 +46,8 @@ namespace MapleServer2.Packets {
             pWriter.WriteByte((byte)(ids.Length - 8)); // Skill count minus 8
 
             // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
-            foreach (int id in ids) {
+            foreach (int id in ids)
+            {
                 if (id == countId) pWriter.WriteByte(8); // Write that there are 8 skills left
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);

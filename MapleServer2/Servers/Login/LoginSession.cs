@@ -3,18 +3,22 @@ using MapleServer2.Enums;
 using MapleServer2.Network;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.Servers.Login {
-    public class LoginSession : Session {
+namespace MapleServer2.Servers.Login
+{
+    public class LoginSession : Session
+    {
         protected override SessionType Type => SessionType.Login;
 
         public long AccountId;
         private readonly Random rng;
 
-        public LoginSession(ILogger<LoginSession> logger) : base(logger) {
+        public LoginSession(ILogger<LoginSession> logger) : base(logger)
+        {
             this.rng = new Random();
         }
 
-        public int GetToken() {
+        public int GetToken()
+        {
             return rng.Next();
         }
     }
