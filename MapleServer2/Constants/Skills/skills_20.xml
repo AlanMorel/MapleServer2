@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="10200001" name="Raging Slash" />
+	<key id="10200011" name="Death Spin" />
+	<key id="10200021" name="Ground Breaker" />
+	<key id="10200031" name="Dark Aura" />
+	<key id="10200041" name="Void Slash" />
+	<key id="10200051" name="Bloodlust" />
+	<key id="10200061" name="Intimidation" sub="10200062" />
+	<key id="10200062" name="Improved Intimidation" />
+	<key id="10200063" name="Intimidation Stun" />
+	<key id="10200071" name="Dark Breaker" />
+	<key id="10200081" name="Adrenaline Rush" />
+	<key id="10200082" name="Adrenaline Rush 2" />
+	<key id="10200083" name="Adrenaline Rush 3" />
+	<key id="10200091" name="X Slash" />
+	<key id="10200101" name="Inhuman Endurance" />
+	<key id="10200111" name="Deep Wounds" />
+	<key id="10200121" name="Greatsword Mastery" />
+	<key id="10200131" name="Dark Might" />
+	<key id="10200141" name="Blood Price" sub="10200142" />
+	<key id="10200142" name="Cancel Blood Price" />
+	<key id="10200151" name="Warriors Instinct" />
+	<key id="10200161" name="Earthquake" />
+	<key id="10200171" name="Aerial Smash" feature="JobChange_01" sub="10200172" />
+	<key id="10200172" name="Aerial Smash" feature="JobChange_01" />
+	<key id="10200181" name="Parry the Moon" feature="JobChange_01" sub="10200182,10200188,10200189" />
+	<key id="10200182" name="Parry the Moon" feature="JobChange_01" />
+	<key id="10200188" name="Parry the Moon" feature="JobChange_01" />
+	<key id="10200189" name="Parry the Moon" feature="JobChange_01" />
+	<key id="10200191" name="Infinite Darkness" feature="JobChange_01" />
+	<key id="10200201" name="Skull Splitter" feature="JobChange_01" sub="10200203,10200205,10200206,10200207,10200209" />
+	<key id="10200203" name="Skull Splitter" feature="JobChange_01" />
+	<key id="10200205" name="Skull Splitter" feature="JobChange_01" />
+	<key id="10200206" name="Skull Splitter" feature="JobChange_01" />
+	<key id="10200207" name="Ground Breaker" feature="JobChange_01" />
+	<key id="10200209" name="Skull Splitter" feature="JobChange_01" />
+	<key id="10200211" name="Blood Fury" feature="JobChange_01" />
+	<key id="10200221" name="Raging Soul" feature="JobChange_01" sub="10200229" />
+	<key id="10200229" name="Cancel Raging Soul" feature="JobChange_01" />
+	<key id="10200231" name="Squall" feature="JobChange_01" sub="10200233,10200234" />
+	<key id="10200233" name="Whirlwind" feature="JobChange_01" />
+	<key id="10200234" name="Whirlwind" feature="JobChange_01" />
+	<key id="10200241" name="Rend Wound" feature="JobChange_01" />
+	<key id="10200251" name="Blood Slash" feature="JobChange_01" sub="10200254,10200255,10200257" />
+	<key id="10200254" name="Blood Slash" feature="JobChange_01" />
+	<key id="10200255" name="Dark Blood Slash" feature="JobChange_01" />
+	<key id="10200257" name="Blood Slash Spin Attack" feature="JobChange_01" />
+	<key id="10200261" name="Death Rattle" feature="JobChange_02" />
+	<key id="10200271" name="Sever" feature="JobChange_02" />
+	<key id="10200281" name="Cripple" feature="JobChange_02" sub="10200282" />
+	<key id="10200282" name="Cripple" feature="JobChange_02" />
+	<key id="10200291" name="Dusk Fall" feature="JobChange_02" />
+</ms2>

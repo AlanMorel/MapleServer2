@@ -27,14 +27,13 @@ namespace MapleServer2.Packets {
             pWriter.WriteInt(fieldPlayer.ObjectId);
             CharacterListPacket.WriteCharacter(player, pWriter);
 
-            // Possible skill related?
+            // Skills
             pWriter.WriteInt(player.JobId);
             pWriter.WriteByte(1);
             pWriter.WriteInt(player.JobGroupId);
-            WriteSkills(pWriter);
+            JobPacket.WriteSkills(pWriter, player);
 
-            pWriter.WriteByte();
-            pWriter.WriteByte();
+            // Coords
             pWriter.Write<CoordF>(fieldPlayer.Coord);
             pWriter.Write<CoordF>(player.UnknownCoord);
             pWriter.WriteByte();
@@ -124,7 +123,7 @@ namespace MapleServer2.Packets {
                 pWriter.WriteInt();
                 pWriter.WriteShort();
             } else {
-                pWriter.WriteInt();
+                //pWriter.WriteInt(); commented out to remove warning
             }
 
             return pWriter;
@@ -133,23 +132,6 @@ namespace MapleServer2.Packets {
         public static Packet RemovePlayer(IFieldObject<Player> player) {
             return PacketWriter.Of(SendOp.FIELD_REMOVE_USER)
                 .WriteInt(player.ObjectId);
-        }
-
-        private static void WriteSkills(PacketWriter pWriter) {
-            pWriter.Write(
-                "23 00 00 05 38 A0 00 01 00 00 00 00 00 01 38 38 A0 00 01 00 00 00 00 00 00 7D 38 A0 00 01 00 00 00 00 00 00 D3 37 A0 00 01 00 00 00 00 00 01 39 38 A0 00 01 00 00 00 00 00 00 4B 38 A0 00 01 00 00 00 00 00 01 A1 37 A0 00 01 00 00 00 00 00 00 C3 38 A0 00 01 00 00 00 00 00 00 4C 38 A0 00 01 00 00 00 00 00 00 91 38 A0 00 01 00 00 00 00 00 01 0B 2D 31 01 01 00 00 00 00 00 00 4D 38 A0 00 01 00 00 00 00 00 00 5F 38 A0 00 01 00 00 00 00 00 00 B5 37 A0 00 01 00 00 00 00 00 00 4E 38 A0 00 01 00 00 00 00 00 00 2D 38 A0 00 01 00 00 00 00 00 00 60 38 A0 00 01 00 00 00 00 00 00 93 38 A0 00 01 00 00 00 00 00 00 FB 37 A0 00 01 00 00 00 00 00 00 61 38 A0 00 01 00 00 00 00 00 00 A5 38 A0 00 01 00 00 00 00 00 00 C9 37 A0 00 01 00 00 00 00 00 00 73 38 A0 00 01 00 00 00 00 00 00 FD 37 A0 00 01 00 00 00 00 00 00 30 38 A0 00 01 00 00 00 00 00 00 B9 38 A0 00 01 00 00 00 00 00 00 87 38 A0 00 01 00 00 00 00 00 01 01 2D 31 01 01 00 00 00 00 00 00 DD 37 A0 00 01 00 00 00 00 00 00 55 38 A0 00 01 00 00 00 00 00 01 AB 37 A0 00 01 00 00 00 00 00 00 F1 37 A0 00 01 00 00 00 00 00 00 BF 37 A0 00 01 00 00 00 00 00 00 E1 37 A0 00 01 00 00 00 00 00 01 37 38 A0 00 01 00 00 00 00 0E 00 00 E3 37 A0 00 01 00 00 00 00 00 00 AF 38 A0 00 01 00 00 00 00 00 00 19 38 A0 00 01 00 00 00 00 00 00 C4 38 A0 00 01 00 00 00 00 00 00 E7 37 A0 00 01 00 00 00 00 00 00 C5 38 A0 00 01 00 00 00 00 00 00 41 38 A0 00 01 00 00 00 00 00 01 0F 38 A0 00 01 00 00 00 00 00 00 88 38 A0 00 01 00 00 00 00 00 00 23 38 A0 00 01 00 00 00 00 00 00 DF 37 A0 00 01 00 00 00 00 00 00 9B 38 A0 00 01 00 00 00 00 00 00 E0 37 A0 00 01 00 00 00 00 00 00 69 38 A0 00 01 00 00 00 00"
-                    .ToByteArray());
-            // Normal + Awakening skills (2)
-            /*for (int i = 0; i < 2; i++) {
-                byte count = 0;
-                pWriter.WriteByte(count);
-                for (int j = 0; j < count; j++) {
-                    pWriter.WriteShort();
-                    pWriter.WriteInt();
-                    pWriter.WriteByte();
-                    pWriter.WriteInt();
-                }
-            }*/
         }
 
         private static void WriteTotalStats(this PacketWriter pWriter, ref PlayerStats stats) {

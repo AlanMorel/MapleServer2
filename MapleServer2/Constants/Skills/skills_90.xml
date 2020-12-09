@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="1000001" name="Unknown Skill" sub="1000003,1000005,1000007" />
+	<key id="1000003" name="Unknown Skill" />
+	<key id="1000005" name="Unknown Skill" />
+	<key id="1000007" name="Unknown Skill" />
+	<key id="1000011" name="Unknown Skill" sub="1000012,1000013,1000014" />
+	<key id="1000012" name="Unknown Skill" />
+	<key id="1000013" name="Unknown Skill" />
+	<key id="1000014" name="Unknown Skill" />
+	<key id="10900001" name="Flame Sigil" />
+	<key id="10900011" name="Frost Sigil" />
+	<key id="10900021" name="Storm Sigil" />
+	<key id="10900031" name="Flurry" sub="10900032,10900033,10900034" />
+	<key id="10900032" name="Flame Flurry" />
+	<key id="10900033" name="Frost Flurry" />
+	<key id="10900034" name="Storm Flurry" />
+	<key id="10900041" name="Rune Balance" />
+	<key id="10900051" name="Blink" />
+	<key id="10900061" name="Whirling Blades" sub="10900062,10900063,10900065" />
+	<key id="10900062" name="Whirling Flames" />
+	<key id="10900063" name="Whirling Frost" />
+	<key id="10900065" name="Whirling Storms" />
+	<key id="10900071" name="Impact" sub="10900072,10900074,10900076" />
+	<key id="10900072" name="Flame Impact" />
+	<key id="10900074" name="Frost Impact" />
+	<key id="10900076" name="Storm Impact" />
+	<key id="10900081" name="Gravity Rune" />
+	<key id="10900091" name="Warding Rune" sub="10900092,10900094,10900095" />
+	<key id="10900092" name="Warding Flame" />
+	<key id="10900094" name="Warding Frost" />
+	<key id="10900095" name="Warding Storm" />
+	<key id="10900101" name="Blade Chasm" sub="10900103,10900105,10900107" />
+	<key id="10900103" name="Flame Chasm" />
+	<key id="10900105" name="Frost Chasm" />
+	<key id="10900107" name="Storm Chasm" />
+	<key id="10900111" name="Illusory Blades" />
+	<key id="10900121" name="Rune Focus" />
+	<key id="10900131" name="Elemental Potency" />
+	<key id="10900141" name="Blade Mastery" />
+	<key id="10900151" name="Echoing Blade" sub="10900153,10900155,10900157" />
+	<key id="10900153" name="Echoing Flame" />
+	<key id="10900155" name="Echoing Frost" />
+	<key id="10900157" name="Echoing Storm" />
+	<key id="10900161" name="Honing Runes" />
+	<key id="10900163" name="Unknown Skill" />
+	<key id="10900171" name="Dimension Blade" feature="JobChange_01" sub="10900173,10900175,10900177" />
+	<key id="10900173" name="Dimension Flame" feature="JobChange_01" />
+	<key id="10900175" name="Dimension Frost" feature="JobChange_01" />
+	<key id="10900177" name="Dimension Storm" feature="JobChange_01" />
+	<key id="10900181" name="Phantasm Slash" feature="JobChange_01" />
+	<key id="10900191" name="Rune Ignition" feature="JobChange_01" sub="10900193,10900196,10900198" />
+	<key id="10900193" name="Flame Ignition" feature="JobChange_01" />
+	<key id="10900196" name="Frost Ignition" feature="JobChange_01" />
+	<key id="10900198" name="Storm Ignition" feature="JobChange_01" />
+	<key id="10900201" name="Rune Trigger" feature="JobChange_01" sub="10900203,10900205,10900207" />
+	<key id="10900203" name="Flame Trigger" feature="JobChange_01" />
+	<key id="10900205" name="Frost Trigger" feature="JobChange_01" />
+	<key id="10900207" name="Storm Trigger" feature="JobChange_01" />
+	<key id="10900211" name="Quintuple Cut" feature="JobChange_01" sub="10900212,10900213,10900214" />
+	<key id="10900212" name="Flame Quintuple Cut" feature="JobChange_01" />
+	<key id="10900213" name="Frost Quintuple Cut" feature="JobChange_01" />
+	<key id="10900214" name="Storm Quintuple Cut" feature="JobChange_01" />
+	<key id="10900221" name="Blade Whip" feature="JobChange_01" sub="10900222,10900223,10900225" />
+	<key id="10900222" name="Flame Whip" feature="JobChange_01" />
+	<key id="10900223" name="Frost Whip" feature="JobChange_01" />
+	<key id="10900225" name="Storm Whip" feature="JobChange_01" />
+	<key id="10900231" name="Physical Boost" feature="JobChange_01" />
+	<key id="10900232" name="Unknown Skill" feature="JobChange_01" />
+	<key id="10900241" name="Blade Expert" feature="JobChange_01" />
+	<key id="10900251" name="Rune Expert" feature="JobChange_01" />
+	<key id="10900261" name="Lunatic Flash" feature="JobChange_02" />
+	<key id="10900271" name="Swift Blade" feature="JobChange_02" />
+	<key id="10900281" name="Element Roulette" feature="JobChange_02" />
+	<key id="10900291" name="Gate of Blades" feature="JobChange_02" sub="10900292,10900293,10900294" />
+	<key id="10900292" name="Gate of Flame" feature="JobChange_02" />
+	<key id="10900293" name="Gate of Frost" feature="JobChange_02" />
+	<key id="10900294" name="Gate of Storms" feature="JobChange_02" />
+</ms2>

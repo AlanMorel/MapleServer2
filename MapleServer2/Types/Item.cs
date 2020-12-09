@@ -140,6 +140,20 @@ namespace MapleServer2.Types {
         }
 
         public static Item TutorialBow(Player owner) {
+            // bow 15100216
+            // [longsword]  Tairen Royal Longsword - 13200309
+            // [shield] Tairen Royal Shield - 14100279
+            // [greatsword] Tairen Royal Greatsword - 15000313
+            // [scepter] Tairen Royal Scepter - 13300308
+            // [codex] Tairen Royal Codex - 14000270
+            // [staff] Tairen Royal Staff - 15200312
+            // [cannon] Tairen Royal Cannon - 15300308
+            // [bow] Tairen Royal Bow - 15100305
+            // [dagger] Tairen Royal Knife - 13100314
+            // [star] Tairen Royal Star - 13400307
+            // [blade] Tairen Royal Blade - 15400294
+            // [knuckles] Tairen Royal Knuckles - 15500226
+            // [orb] Tairen Royal Spirit - 15600228
             return new Item(15100216) {
                 Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
                 Rarity = 1,

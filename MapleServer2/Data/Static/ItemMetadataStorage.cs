@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Maple2Storage.Types;
 using ProtoBuf;
+using Maple2Storage.Types;
 
 namespace MapleServer2.Data.Static {
     // This is an in-memory storage to help with determining some metadata of items
@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static {
         private static readonly Dictionary<int, ItemMetadata> map = new Dictionary<int, ItemMetadata>();
 
         static ItemMetadataStorage() {
-            using FileStream stream = File.OpenRead("Resources/ms2-item-metadata");
+            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-item-metadata");
             List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
             foreach (ItemMetadata item in items) {
                 map[item.Id] = item;

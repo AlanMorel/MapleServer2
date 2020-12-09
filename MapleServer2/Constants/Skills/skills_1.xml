@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="10000001" name="Hammer Blow" />
+	<key id="10000011" name="Power Strike" />
+	<key id="10000021" name="Snail Toss" />
+	<key id="10000031" name="Headbutt" />
+	<key id="10000041" name="Forward Roll" />
+	<key id="10000051" name="Second Wind" />
+	<key id="10000061" name="Versatility" />
+	<key id="19900001" name="GMs Judgment" />
+	<key id="19900011" name="High Speed Flying" />
+	<key id="19900021" name="Raise the Spoon" />
+	<key id="19900031" name="GM Love" />
+	<key id="19900032" name="GM Love Splash" />
+	<key id="19900041" name="GM Cheer" />
+	<key id="19900042" name="GM Cheer Splash" />
+	<key id="19900051" name="GM Fuss" />
+	<key id="19900052" name="GM Fuss Splash" />
+	<key id="19900061" name="GM Strike" />
+	<key id="19999991" name="Camera Filming" />
+</ms2>

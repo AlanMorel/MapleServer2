@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ms2>
+	<key id="20000001" name="Swift Swim" />
+	<key id="20000011" name="Wall Climbing" />
+	<key id="20000021" name="Flying Balloon" />
+	<key id="20000031" name="Grab" />
+	<key id="20000041" name="Eagle Familiar" />
+	<key id="20000051" name="Heavenbound Hog" />
+	<key id="20000061" name="Second Wind" />
+	<key id="20000071" name="Brilliant Bulb" />
+	<key id="20000081" name="Alien Menace" />
+	<key id="20000091" name="Booster Missile" />
+	<key id="20000101" name="Titan Rocket" />
+	<key id="20000111" name="Paper Airplane" />
+	<key id="20000121" name="Drone" />
+	<key id="20000131" name="Snowflake" />
+	<key id="20000141" name="Levitation Sigil" />
+	<key id="20000151" name="Duckling Balloons" />
+	<key id="20000161" name="Flying Slime" />
+	<key id="20000171" name="Flying Maple Leaf" />
+	<key id="40000001" name="Headbutt" />
+	<key id="40001001" name="Rushing Headbutt" />
+	<key id="40002001" name="Leaf Throw" />
+	<key id="40003001" name="Headbutt" />
+	<key id="40003011" name="Rushing Headbutt" />
+	<key id="40004001" name="Headbutt" />
+	<key id="40005001" name="Headbutt" />
+	<key id="40005011" name="Release Poison Powder" />
+	<key id="40006001" name="Headbutt" />
+	<key id="40006011" name="Release Confusion Powder" />
+	<key id="40007001" name="Headbutt" />
+	<key id="40007011" name="Release Paralysis Powder" />
+	<key id="40008001" name="Jumping Slam Down" />
+	<key id="40008011" name="Rolling Attack" />
+	<key id="40009001" name="Jumping Slam Down" />
+	<key id="40009011" name="Thorn Thrust" />
+	<key id="40010001" name="Vine Sting Hit 3" />
+	<key id="40010002" name="Vine Sting Hit 3 Splash" />
+	<key id="40010011" name="Cross Vine Sting" />
+	<key id="40010012" name="Cross Vine Sting Splash" />
+	<key id="40011001" name="Vine Wave" />
+	<key id="40011002" name="Vine Splash" />
+	<key id="40011011" name="Vine Prison" />
+	<key id="40011012" name="Vine Prison Splash" />
+	<key id="40011021" name="Release Poison Cloud" />
+	<key id="59000001" name="Honk" />
+	<key id="59000002" name="Accelerator" />
+	<key id="59000003" name="High Beam" />
+	<key id="59000004" name="Tamed Ducky" />
+	<key id="59000005" name="Tamed Lycao" />
+	<key id="59000006" name="Tamed Cobalt Lupin" />
+	<key id="59000007" name="Tamed Cerbe" />
+	<key id="59000008" name="Tamed Birk" />
+	<key id="59000009" name="Tamed Dueling Birk" />
+	<key id="59000010" name="Tamed Lupin" />
+	<key id="59000011" name="Tamed Scarlet Lupin" />
+	<key id="59000012" name="Tamed Curse Eye" />
+	<key id="59000013" name="Tamed Evil Eye" />
+	<key id="59000014" name="Tamed Lava Eye" />
+	<key id="59000015" name="Tamed Broccoli Turtle" />
+	<key id="59000016" name="Tamed Dark Broccoli Turtle" />
+	<key id="59000017" name="Tamed Red Lotus Turtle" />
+	<key id="59000018" name="Tamed Yellow Lotus Turtle" />
+	<key id="59000019" name="Tamed Hylicao" />
+	<key id="60012001" name="Hammer Slam Down" />
+	<key id="60012011" name="Hammer Slam Down (Move)" />
+	<key id="60012021" name="Strike up with Hammer" />
+	<key id="60012031" name="Dash Strike up with Hammer" />
+	<key id="60012041" name="Poison Hammer Slam Down" />
+	<key id="60012051" name="Throw Toxic Substance" />
+	<key id="60012052" name="Throw Toxic Substance Splash" />
+	<key id="60012061" name="Throw Enhanced Toxic Substance" />
+	<key id="70000001" name="Thorn" />
+	<key id="70000002" name="Lava" />
+	<key id="70000003" name="Pincer Attack" />
+	<key id="70000004" name="Lava Stack Damage" />
+	<key id="70000005" name="Attack Down" />
+	<key id="70000006" name="Attack Down" />
+	<key id="70000007" />
+	<key id="70000008" name="Movement Speed Up" />
+	<key id="70000009" name="Decreases movement speed." />
+	<key id="70000010" name="Toxic Swamp" />
+	<key id="70000011" name="Steam Pit" />
+	<key id="70000012" name="Steam Pit Wall" />
+	<key id="70000013" name="Steam Pit Wall 2" />
+	<key id="70000014" name="Geyser" />
+	<key id="70000015" name="Iron Skewer" />
+	<key id="70000016" name="Wooden Skewer" />
+	<key id="70000017" name="Shadow Poison" />
+	<key id="70000018" name="Regenerate" />
+	<key id="70000019" name="Blessing of Ereve" />
+	<key id="70000020" name="Blessing of Puzroon" />
+	<key id="70000021" name="Shadow Poison" />
+	<key id="70000022" name="G-star Mini-game Steam" />
+	<key id="70000023" name="Decreases movement speed." />
+	<key id="70000025" name="Nullify Stamina" />
+	<key id="70000027" name="Toxic Swamp (Toh and Googoo)" />
+	<key id="70000028" name="Shadow Domination" />
+	<key id="70000029" name="Lapenta Aegis" />
+	<key id="70000030" name="Well Rested" />
+	<key id="70000031" name="Shadow Power (Gain Full Health)" />
+	<key id="70000032" name="Safe Travels" />
+	<key id="70000034" name="Red Wolfs Valor" />
+	<key id="70000035" name="Activate Red Wolfs Valor" />
+	<key id="70000036" name="Wisdom of Namid" />
+	<key id="70000037" name="Activate Wisdom of Namid" />
+	<key id="70000038" name="Blessing of Kumbawanka" />
+	<key id="70000039" name="Activate Blessing of Kumbawanka" />
+	<key id="70000040" name="Enhanced Geyser" />
+	<key id="70000041" name="Vengeance" />
+	<key id="70000042" name="Electric AoE" />
+	<key id="70000043" name="Party Dungeon Bomb" />
+	<key id="70000045" name="Dimensional Chaos" />
+	<key id="70000046" name="Toxic Swamp (Toh and Googoo)" />
+	<key id="70000047" name="Plant Bomb &amp; Remove Poisoned Status (Lo and Moomoo)" />
+	<key id="70000048" name="Display Effect of Lo and Moomoo Recovery Spring" />
+	<key id="70000049" name="Remove Frozen State (Shoo and Googoo)" />
+	<key id="70000050" name="Display Effect of Shoo and Googoo Recovery Fire" />
+	<key id="70000051" name="Bellas Flame" />
+	<key id="70000058" name="Wind of Life" />
+	<key id="70000113" name="Burning Breath" />
+	<key id="70000114" name="Snowfields Intense Cold" />
+	<key id="70000117" name="Slime Factory Furnace Terrain Damage" feature="GuildRaid01" />
+	<key id="70000136" name="Bleed" />
+	<key id="70000137" name="Bleed" />
+	<key id="70000138" name="Bleed" />
+	<key id="70000139" name="Bleed" />
+	<key id="70000140" name="Bleed" />
+	<key id="70000201" name="Thornbush" />
+	<key id="70000202" name="Thornbush" />
+	<key id="70000203" name="Thornbush" />
+	<key id="70000204" name="Thornbush" />
+	<key id="70000211" name="Thornbush" />
+	<key id="70000212" name="Thornbush" />
+	<key id="70000213" name="Thornbush" />
+	<key id="70000214" name="Thornbush" />
+	<key id="70000301" name="Poisonous Swamp" />
+	<key id="80000002" name="Tamed Lycao" />
+	<key id="80000003" name="Tamed Lightning Wolf" />
+	<key id="80000004" name="Merrari 458 Tria (Red)" />
+	<key id="80000005" name="Tamed Cerbe" />
+	<key id="80000006" name="Tamed Birk" />
+	<key id="80000007" name="Tamed Dueling Birk" />
+	<key id="80000008" name="Merrari 458 Tria (White)" />
+	<key id="80000009" name="Merrari 458 Tria (Black)" />
+	<key id="90000001" name="Red Potion" />
+	<key id="90000002" name="Green Milk" />
+	<key id="90000003" name="Red Milk" />
+	<key id="90000004" name="Instantly Recover Mana" />
+	<key id="90000005" name="Instantly Recover Health/Mana" />
+	<key id="90000006" name="Barbecue" />
+	<key id="90000007" name="Fairy Cookie" />
+	<key id="90000008" name="Sweet Honey" />
+	<key id="90000009" name="Energy Drink" />
+	<key id="90000010" name="Lv. 1 Elixir" />
+	<key id="90000011" name="Orange Potion" />
+	<key id="90000012" name="White Potion" />
+	<key id="90000013" name="Boiling Lava" />
+	<key id="90000014" name="Health % Recovery" />
+	<key id="90000015" name="Lv. 2 Elixir" />
+	<key id="90000016" name="Lv. 3 Elixir" />
+	<key id="90000017" name="Lv. 4 Elixir" />
+	<key id="90000018" name="Lv. 5 Elixir" />
+	<key id="90000019" name="Powerful White Potion" />
+	<key id="90000020" name="Super Powerful White Potion" />
+	<key id="90000021" name="Super Duper Powerful White Potion" />
+	<key id="90000022" name="Turtle Egg" />
+	<key id="90000023" name="Combat Rations" />
+	<key id="90000024" name="Dubi Gummies" />
+	<key id="90000025" name="Glutamine Tablet" />
+	<key id="90000026" name="Warrior Tonic" />
+	<key id="90000027" name="Magic Tonic" />
+	<key id="90000028" name="Health Tonic" />
+	<key id="90000029" name="Experience Tonic" />
+	<key id="90000031" name="Lv. 1 Instant Recovery Potion" />
+	<key id="90000032" name="Lv. 10 Instant Recovery Potion" />
+	<key id="90000033" name="Lv. 20 Instant Recovery Potion" />
+	<key id="90000034" name="Lv. 30 Instant Recovery Potion" />
+	<key id="90000035" name="Lv. 40 Instant Recovery Potion" />
+	<key id="90000036" name="Lv. 45 Instant Recovery Potion" />
+	<key id="90000037" name="Lv. 50 Instant Recovery Potion" />
+	<key id="90000038" name="Lv. 1 Gradual Recovery Potion" />
+	<key id="90000039" name="Lv. 10 Gradual Recovery Potion" />
+	<key id="90000040" name="Lv. 20 Gradual Recovery Potion" />
+	<key id="90000041" name="Lv. 30 Gradual Recovery Potion" />
+	<key id="90000042" name="Lv. 40 Gradual Recovery Potion" />
+	<key id="90000043" name="Lv. 45 Gradual Recovery Potion" />
+	<key id="90000044" name="Lv. 50 Gradual Recovery Potion" />
+	<key id="90000046" name="Strawberry Punch" />
+	<key id="90000047" name="Rainbow Shake" />
+	<key id="90000048" name="Orange Cooler" />
+	<key id="90000049" name="Strawberry Knock-out" />
+	<key id="90000050" name="High Flyer" />
+	<key id="90000051" name="Milk" />
+	<key id="90000052" name="Egg" />
+	<key id="90000053" name="Pot of Honey" />
+	<key id="90000054" name="Golden Apple" />
+	<key id="90000055" name="Blue Mushroom" />
+	<key id="90000056" name="Baba Powder" />
+	<key id="90000057" name="Abyssal DNA" />
+	<key id="90000058" name="Unprocessed Sample" />
+	<key id="90000059" name="Mutated DNA" />
+	<key id="90000060" name="Experimental Potion" />
+	<key id="90000061" name="Concrete Powder" />
+	<key id="90000062" name="Sweet Leaf" />
+	<key id="90000063" name="Lava Eye Tail" />
+	<key id="90000064" name="Evil Eye Poop" />
+	<key id="90000065" name="Slime Glob" />
+	<key id="90000066" name="Captured Stone Crabby" />
+	<key id="90000067" name="Mandecasil" />
+	<key id="90000068" name="Ripe Valley Enoki" />
+	<key id="90000069" name="Rotten Valley Enoki" />
+	<key id="90000070" name="Fairy Dew" />
+	<key id="90000071" name="Red Daisy" />
+	<key id="90000072" name="Clam Meat" />
+	<key id="90000073" name="Fresh Chicken" />
+	<key id="90000074" name="Fast-gro" />
+	<key id="90000075" name="Springy Ramen" />
+	<key id="90000076" name="Plump Chicken" />
+	<key id="90000077" name="Squid Peanut" />
+	<key id="90000078" name="Fireworks" />
+	<key id="90000079" name="Experience Booster +50%" />
+	<key id="90000080" name="Superb Experience Booster +50%" />
+	<key id="90000081" name="Experience Booster +100%" />
+	<key id="90000082" name="Superb Experience Booster +100%" />
+	<key id="90000083" name="Experience Booster +200%" />
+	<key id="90000084" name="Superb Experience Booster +200%" />
+	<key id="90000085" name="Giant Lava Eye Tail" />
+	<key id="90000086" name="Spoiled Milk" />
+	<key id="90000087" name="Multigrain Bread" />
+	<key id="90000088" name="Green Herb" />
+	<key id="90000089" name="Green Potion" />
+	<key id="90000090" name="Invisibility Potion" />
+	<key id="90000091" name="Stun Grenade" />
+	<key id="90000092" />
+	<key id="90000093" name="Baba Fruit" />
+	<key id="90000094" name="Torn Shadow" />
+	<key id="90000121" name="Snowflake Fireworks" />
+	<key id="90000122" name="Pink Petal Fireworks" />
+	<key id="90000123" name="Premium Fireworks" />
+	<key id="90000124" name="Heart Fireworks" />
+	<key id="90000125" name="Bat Tracks" />
+	<key id="90000126" name="Star Tracks" />
+	<key id="90000127" name="Petal Tracks" />
+	<key id="90000128" name="Starry Fireworks" />
+	<key id="90000180" name="Manos Mesmerizing Flower" />
+	<key id="90000190" name="Bitter Pill" />
+	<key id="90000191" name="Heart Starter" />
+	<key id="90000193" name="Golden Dungeon Key" />
+	<key id="90000262" name="Worm Lure" />
+	<key id="90000263" name="Fresh Bait" />
+	<key id="90000264" name="Fancy Bait" />
+	<key id="90000265" name="Shiny Bait" />
+	<key id="90000266" name="Tasty Bait" />
+	<key id="90000267" name="Big Worm Lure" />
+	<key id="90000268" name="Striped Worm" />
+	<key id="90000269" name="Luminous Lure" />
+	<key id="90000270" name="Fire Worm Lure" />
+	<key id="90000271" name="Devil Spider" />
+	<key id="90000331" name="Maple Cookie " />
+	<key id="90000332" name="Maple Cookie 2" />
+	<key id="90000333" name="Maple Cookie 3" />
+	<key id="90000334" name="Maple Cooki 4" />
+	<key id="90000335" name="Spoiled Maple Cookie" />
+	<key id="90000339" name="Experience Booster +100%" />
+	<key id="90000341" name="Experience Booster +200%" />
+	<key id="90000343" name="Mining Production Buff Tool (Guide Quest)" feature="Mastery" />
+	<key id="90000344" name="Mining Production Buff Tool 1" feature="Mastery" />
+	<key id="90000345" name="Mining Production Buff Tool 2" feature="Mastery" />
+	<key id="90000346" name="Mining Production Buff Tool 3" feature="Mastery" />
+	<key id="90000347" name="Mining Production Buff Tool 4" feature="Mastery" />
+	<key id="90000348" name="Mining Production Buff Tool 5" feature="Mastery" />
+	<key id="90000349" name="Mining Production Buff Tool 6" feature="Mastery" />
+	<key id="90000350" name="Ranching Production Buff Tool (Guide Quest)" feature="Mastery" />
+	<key id="90000351" name="Ranching Production Buff Tool 1" feature="Mastery" />
+	<key id="90000352" name="Ranching Production Buff Tool 2" feature="Mastery" />
+	<key id="90000353" name="Ranching Production Buff Tool 3" feature="Mastery" />
+	<key id="90000354" name="Ranching Production Buff Tool 4" feature="Mastery" />
+	<key id="90000355" name="Ranching Production Buff Tool 5" feature="Mastery" />
+	<key id="90000356" name="Ranching Production Buff Tool 6" feature="Mastery" />
+	<key id="90000357" name="Mining Production Tool 1" feature="Mastery" />
+	<key id="90000358" name="Mining Production Tool 2" feature="Mastery" />
+	<key id="90000359" name="Mining Production Tool 3" feature="Mastery" />
+	<key id="90000360" name="Mining Production Tool 4" feature="Mastery" />
+	<key id="90000361" name="Mining Production Tool 5" feature="Mastery" />
+	<key id="90000362" name="Mining Production Tool 6" feature="Mastery" />
+	<key id="90000363" name="Ranching Production Tool 1" feature="Mastery" />
+	<key id="90000364" name="Ranching Production Tool 2" feature="Mastery" />
+	<key id="90000365" name="Ranching Production Tool 3" feature="Mastery" />
+	<key id="90000366" name="Ranching Production Tool 4" feature="Mastery" />
+	<key id="90000367" name="Ranching Production Tool 5" feature="Mastery" />
+	<key id="90000368" name="Ranching Production Tool 6" feature="Mastery" />
+	<key id="90000369" name="Smithing Production Tool 1" feature="Mastery" />
+	<key id="90000370" name="Smithing Production Tool 2" feature="Mastery" />
+	<key id="90000371" name="Smithing Production Tool 3" feature="Mastery" />
+	<key id="90000372" name="Smithing Production Tool 4" feature="Mastery" />
+	<key id="90000373" name="Smithing Production Tool 5" feature="Mastery" />
+	<key id="90000374" name="Smithing Production Tool 6" feature="Mastery" />
+	<key id="90000375" name="Handicraft Production Tool 1" feature="Mastery" />
+	<key id="90000376" name="Handicraft Production Tool 2" feature="Mastery" />
+	<key id="90000377" name="Handicraft Production Tool 3" feature="Mastery" />
+	<key id="90000378" name="Handicraft Production Tool 4" feature="Mastery" />
+	<key id="90000379" name="Handicraft Production Tool 5" feature="Mastery" />
+	<key id="90000380" name="Handicraft Production Tool 6" feature="Mastery" />
+	<key id="90000381" name="Smithing Mastery Buff Tool 1" feature="Mastery" />
+	<key id="90000382" name="Smithing Mastery Buff Tool 2" feature="Mastery" />
+	<key id="90000383" name="Smithing Mastery Buff Tool 3" feature="Mastery" />
+	<key id="90000384" name="Smithing Mastery Buff Tool 4" feature="Mastery" />
+	<key id="90000385" name="Smithing Mastery Buff Tool 5" feature="Mastery" />
+	<key id="90000386" name="Smithing Mastery Buff Tool 6" feature="Mastery" />
+	<key id="90000387" name="Handicraft Mastery Buff Tool 1" feature="Mastery" />
+	<key id="90000388" name="Handicraft Mastery Buff Tool 2" feature="Mastery" />
+	<key id="90000389" name="Handicraft Mastery Buff Tool 3" feature="Mastery" />
+	<key id="90000390" name="Handicraft Mastery Buff Tool 4" feature="Mastery" />
+	<key id="90000391" name="Handicraft Mastery Buff Tool 5" feature="Mastery" />
+	<key id="90000392" name="Handicraft Mastery Buff Tool 6" feature="Mastery" />
+	<key id="90000394" name="Tin Whetstone" feature="Mastery" />
+	<key id="90000395" name="Platinum Whetstone" feature="Mastery" />
+	<key id="90000396" name="Snail Shell Compound" feature="Mastery" />
+	<key id="90000397" name="Fox Tail Compound" feature="Mastery" />
+	<key id="90000398" name="Experience Booster +100%" />
+	<key id="90000399" name="Mini Vitality Elixir" />
+	<key id="90000400" name="Vitality Elixir" />
+	<key id="90000401" name="Mini Energy Elixir" />
+	<key id="90000402" name="Energy Elixir" />
+	<key id="90000403" name="Mini Recovery Elixir" />
+	<key id="90000404" name="Recovery Elixir" />
+	<key id="90000405" name="Special Vitality Herb" />
+	<key id="90000406" name="Special Energy Herb" />
+	<key id="90000408" name="Powerful Magnetic Lure" />
+	<key id="90000409" name="(Premium) Special White Potion" />
+	<key id="90000410" name="Golden Pot" />
+	<key id="90000411" name="Lulus Experience Tonic" />
+	<key id="90000412" name="Lulus Mini Experience Tonic" />
+	<key id="90000413" name="Concentrated Experience Tonic" />
+	<key id="90000414" name="Burning Breath" />
+	<key id="90000415" name="Lumenstone Shard" />
+	<key id="90000416" name="Lavender Candle" feature="MasterySecond" />
+	<key id="90000417" name="Yarrow Candle" feature="MasterySecond" />
+	<key id="90000418" name="Sweet Pumpkin Soup" feature="MasterySecond" />
+	<key id="90000419" name="Baguette" feature="MasterySecond" />
+	<key id="90000420" name="Marjoram Supplement" feature="MasterySecond" />
+	<key id="90000421" name="Rosemary Supplement" feature="MasterySecond" />
+	<key id="90000422" name="Mandarin Supplement" feature="MasterySecond" />
+	<key id="90000423" name="Tea Supplement" feature="MasterySecond" />
+	<key id="90000424" name="Patchouli Supplement" feature="MasterySecond" />
+	<key id="90000425" name="Bergamot Supplement" feature="MasterySecond" />
+	<key id="90000426" name="Rice Chips" feature="MasterySecond" />
+	<key id="90000427" name="Apple Chips" feature="MasterySecond" />
+	<key id="90000428" name="Orange Chips" feature="MasterySecond" />
+	<key id="90000429" name="Banana Chips" feature="MasterySecond" />
+	<key id="90000430" name="Tomato Chips" feature="MasterySecond" />
+	<key id="90000431" name="Pear Chips" feature="MasterySecond" />
+	<key id="90000432" name="Lavender Crystal" feature="MasterySecond" />
+	<key id="90000433" name="Lemon Balm Crystal" feature="MasterySecond" />
+	<key id="90000434" name="Jasmine Crystal" feature="MasterySecond" />
+	<key id="90000435" name="Cherry Sage Crystal" feature="MasterySecond" />
+	<key id="90000436" name="Oregano Crystal" feature="MasterySecond" />
+	<key id="90000437" name="Basil Crystal" feature="MasterySecond" />
+	<key id="90000438" name="Pumpkin Seasoning" feature="MasterySecond" />
+	<key id="90000439" name="Pine Mushroom Seasoning" feature="MasterySecond" />
+	<key id="90000440" name="Green Onion Seasoning" feature="MasterySecond" />
+	<key id="90000441" name="Medicinal Mushroom Seasoning" feature="MasterySecond" />
+	<key id="90000442" name="Cucumber Seasoning" feature="MasterySecond" />
+	<key id="90000443" name="Agaric Mushroom Seasoning" feature="MasterySecond" />
+	<key id="90000444" name="Orange Madeleine" feature="MasterySecond" />
+	<key id="90000445" name="Banana Sandwich" feature="MasterySecond" />
+	<key id="90000446" name="Caprese Salad" feature="MasterySecond" />
+	<key id="90000447" name="Fruit Tart" feature="MasterySecond" />
+	<key id="90000448" name="Maple Cheesecake with Pears" feature="MasterySecond" />
+	<key id="90000449" name="Pine Mushroom Stew " feature="MasterySecond" />
+	<key id="90000450" name="Medicinal Mushroom Tea" feature="MasterySecond" />
+	<key id="90000451" name="Agaric Mushroom Kebab" feature="MasterySecond" />
+	<key id="90000452" name="Valentines Day Chocolate" />
+	<key id="90000453" name="Bright Brilliance Tonic" />
+	<key id="90000454" name="Blood Bond Tonic" />
+	<key id="90000455" name="Swift Wind Tonic" />
+	<key id="90000456" name="Focused Rage Tonic " />
+	<key id="90000457" name="Immortal Guardian Tonic " />
+	<key id="90000458" name="Condensed Boost Tonic" />
+	<key id="90000459" name="Soaring Focus Tonic" />
+	<key id="90000460" name="Steel Defense Tonic" />
+	<key id="90000461" name="Concentrated Experience Tonic" />
+	<key id="90000462" name="Special Warrior Tonic" />
+	<key id="90000463" name="Special Mage Tonic" />
+	<key id="90000464" name="Special Health Tonic" />
+	<key id="90000465" name="Special Defense Tonic" />
+	<key id="90000466" name="Experience Booster +100%" />
+	<key id="90000467" name="Regurgitated Chocolate Milk" />
+	<key id="90000482" name="Nutritional Supplement" feature="ContentsGuide02" />
+	<key id="90000483" name="Dried Persimmon" feature="ContentsGuide02" />
+	<key id="90000484" name="Fantastic Level-up Booster" />
+	<key id="90000485" name="Experience Tonic 1" />
+	<key id="90000486" name="Experience Tonic 2" />
+	<key id="90000487" name="Experience Tonic 3" />
+	<key id="90000488" name="Experience Tonic 4" />
+	<key id="90100001" name="Has a 20% chance to drain health for 3 sec on hit." />
+	<key id="90100011" name="20% chance to increase strength on hit." />
+	<key id="90000490" name="Special Yummy Omelet" />
+	<key id="90000491" name="Experience Booster +100%" />
+	<key id="90000492" name="Overpowered Magnetic Lure" />
+	<key id="90000494" name="Experience Booster +100%" />
+	<key id="90000495" name="Pink Pot" />
+	<key id="90000496" name="Bright Brilliance Tonic" />
+	<key id="90000497" name="Blood Bond Tonic" />
+	<key id="90000498" name="Swift Wind Tonic" />
+	<key id="90000499" name="Focused Rage Tonic " />
+	<key id="90000500" name="Immortal Guardian Tonic " />
+	<key id="90000501" name="Condensed Boost Tonic" />
+	<key id="90000502" name="Soaring Focus Tonic" />
+	<key id="90000503" name="Steel Defense Tonic" />
+	<key id="90000505" name="Experience Booster +200%" />
+	<key id="90000506" name="Potent Meso Eye Drop" />
+	<key id="90000507" name="Bright Brilliance Tonic" />
+	<key id="90000508" name="Blood Bond Tonic" />
+	<key id="90000509" name="Swift Wind Tonic" />
+	<key id="90000510" name="Focused Rage Tonic" />
+	<key id="90000511" name="Immortal Guardian Tonic" />
+	<key id="90000512" name="Condensed Boost Tonic" />
+	<key id="90000513" name="Soaring Focus Tonic" />
+	<key id="90000514" name="Steel Defense Tonic" />
+	<key id="90000595" name="Lulus Elixir" />
+	<key id="90000606" name="Bright Brilliance Tonic" />
+	<key id="90000607" name="Blood Bond Tonic" />
+	<key id="90000608" name="Swift Wind Tonic" />
+	<key id="90000609" name="Focused Rage Tonic" />
+	<key id="90000610" name="Immortal Guardian Tonic" />
+	<key id="90000611" name="Condensed Boost Tonic" />
+	<key id="90000612" name="Soaring Focus Tonic" />
+	<key id="90000613" name="Mini-Elixir" />
+	<key id="90000614" name="Fantastic Level-up Booster" />
+	<key id="90000615" name="Crispy Zakum Cookie" />
+	<key id="90000616" name="Golden Pot" />
+	<key id="90000617" name="Auto-Fishing" />
+	<key id="90000618" name="Auto-Perform" />
+	<key id="90000619" name="Pink Bean Experience Tonic" />
+	<key id="90000651" name="Ray Fireworks" />
+	<key id="90000652" name="Birthday Cake Fireworks" />
+	<key id="90000653" name="((China Only)) sets of National Day Fireworks" />
+	<key id="90000654" name="((China Only)) MapleStory Traditional Mooncake" />
+	<key id="90000655" name="((China Only)) MapleStory Distinct Mooncake" />
+	<key id="90000656" name="((China Only)) LAYs Spicy Stir-fried Beef" />
+	<key id="90000657" name="((China Only)) LAYs Cream Pasta" />
+	<key id="90000658" name="((China Only)) LAYs Homemade Hamburger" />
+	<key id="90000659" name="Warrior Tonic" />
+	<key id="90000660" name="Mage Tonic" />
+	<key id="90000661" name="Health Tonic" />
+	<key id="90000662" name="Elixir" />
+	<key id="90000663" name="Mini-Elixir" />
+	<key id="90000664" name="Pink Petal Fireworks" />
+	<key id="90000665" name="Heart Fireworks" />
+	<key id="90000667" name="((China Only)) China Grand Opening Celebration Fireworks" />
+	<key id="90000668" name="Starlight Magnetic Lure" />
+	<key id="90000669" name="Pumpkin Candy" />
+	<key id="90000672" name="Superb Experience Booster +200%" />
+	<key id="90000685" name="Special Defense Tonic" />
+	<key id="90000686" name="Superb Experience Booster +100%" />
+	<key id="90000687" name="Multigrain Bread" />
+	<key id="90000688" name="Superb Experience Booster +200%" />
+	<key id="90000689" name="Mushroom Experience Potion" />
+	<key id="90000701" name="Crispy Zakum Cookie" />
+	<key id="90000702" name="Kays Experience Booster +100% (30 Min)" />
+	<key id="90000703" name="Fishing Experience Booster +100% (30 Min)" />
+	<key id="90000704" name="Beginners Golden Lure (10 Min)" />
+	<key id="90000705" name="Beginners Golden Lure (1 Hour)" />
+	<key id="90000706" name="Masters Golden Lure (10 Min)" />
+	<key id="90000707" name="Experience Potion (500)" />
+	<key id="90000708" name="Experience Potion (1,000)" />
+	<key id="90000709" name="Experience Potion (5,000)" />
+	<key id="90000710" name="Experience Potion (10,000)" />
+	<key id="90000711" name="Experience Potion (50,000)" />
+	<key id="90000712" name="Experience Potion (100,000)" />
+	<key id="90000713" name="Experience Potion (500,000)" />
+	<key id="90000714" name="Experience Potion (1,000,000)" />
+	<key id="90000720" name="Herb" feature="SurvivalContents01" />
+	<key id="90000728" name="Starlight Magnetic Lure" />
+	<key id="90000729" name="Magic Boom" feature="SurvivalContents01" />
+	<key id="90000730" name="Magic Arrow" feature="SurvivalContents01" />
+	<key id="90000735" name="Stun Grenades" />
+	<key id="90000736" name="Stun Grenades" />
+	<key id="90000740" name="((China Only)) Adventure Island Light Crystal" />
+	<key id="90000741" name="((China Only)) Adventure Island Snow Crystal" />
+	<key id="90000749" name="Performance Experience Booster +100% (30 Min)" />
+	<key id="90000750" name="Golden Butterfly Blessing" />
+	<key id="90000751" name="Alliance Protection" feature="FameContents" />
+	<key id="90000772" name="Jab" feature="SurvivalContents01" />
+	<key id="90000773" name="Heavy Strike" feature="SurvivalContents01" />
+	<key id="90000774" name="Whirlwind" feature="SurvivalContents01" />
+	<key id="90000775" name="Bleed" feature="SurvivalContents01" />
+	<key id="90000782" name="Dash" />
+	<key id="90000783" name="Arrow Stream" />
+	<key id="90000784" name="Lock-on" />
+	<key id="90000785" name="M-Bomb" />
+	<key id="90000786" name="M-Bomb" />
+	<key id="90000787" name="M-Bomb" />
+	<key id="90000791" name="Fireblast" />
+	<key id="90000792" name="Magic Arrow" />
+	<key id="90000793" name="Stun Grenades" />
+	<key id="90000794" name="Stun Grenades" />
+	<key id="90000795" name="Jab" />
+	<key id="90000796" name="Arrow Stream" />
+	<key id="90000797" name="Lock-on" />
+	<key id="90000798" name="M-Bomb" />
+	<key id="90000799" name="M-Bomb" />
+	<key id="90000800" name="M-Bomb" />
+	<key id="90000801" name="Flame Wave" />
+	<key id="90000802" name="Flame Wave" />
+	<key id="90000803" name="Screwdriver Shot" />
+	<key id="90000804" name="Screwdriver Shot" />
+	<key id="90000805" name="Shurricane" />
+	<key id="90000806" name="Shurricane" />
+	<key id="90000807" name="Arcane Orb" />
+	<key id="90000808" name="Arcane Orb" />
+	<key id="90000809" name="Arcane Orb" />
+	<key id="90000810" name="Arcane Orb" />
+	<key id="90000811" name="Shurricane" />
+	<key id="90000812" name="Shurricane" />
+	<key id="90000813" name="Mushroom Sporeblock" />
+	<key id="90000831" name="Dash Attack" />
+	<key id="90000832" name="Dash Attack" />
+	<key id="90000834" name="Whirlwind" feature="SurvivalContents01" />
+	<key id="90000837" name="Spring Jump" feature="SurvivalContents02" />
+	<key id="90000840" name="Ranching Production Buff Tool 7" feature="Mastery06" />
+	<key id="90000841" name="Mining Production Buff Tool 7" feature="Mastery06" />
+	<key id="90000842" name="Spartium Crystal" feature="Mastery06" />
+	<key id="90000843" name="Thyme Supplement" feature="Mastery06" />
+	<key id="90000844" name="Pineapple Seasoning" feature="Mastery06" />
+	<key id="90000845" name="Durian Chips" feature="Mastery06" />
+	<key id="90000846" name="Orichalcum Whetstone" feature="Mastery06" />
+	<key id="90000847" name="Axolotl Egg Compound" feature="Mastery06" />
+	<key id="90000848" name="Enhanced Special Mage Tonic" feature="Mastery06" />
+	<key id="90000849" name="Enhanced Survival Instinct Tonic" feature="Mastery06" />
+	<key id="90000850" name="Enhanced Spirit Boost Tonic" feature="Mastery06" />
+	<key id="90000851" name="Pineapple Pizza" feature="Mastery06" />
+	<key id="90000852" name="Heavenly Crepe Cake" feature="Mastery06" />
+	<key id="90000854" name="Enhanced Special Warrior Tonic" feature="Mastery06" />
+	<key id="90000855" name="Cool Summer Fireworks" />
+	<key id="90000861" name="Yellow Paint Bomb" />
+	<key id="90000864" name="Lucky Fireworks" />
+	<key id="90000871" name="Victory Fireworks" feature="SurvivalContents03" />
+	<key id="90000875" name="Fireblast" feature="SurvivalContents03" />
+	<key id="90000876" name="Arrow Stream" feature="SurvivalContents03" />
+	<key id="90000877" name="Lock-on" feature="SurvivalContents03" />
+	<key id="90000878" name="M-Bomb" feature="SurvivalContents03" />
+	<key id="90000881" name="Flame Wave" feature="SurvivalContents03" />
+	<key id="90000885" name="Steaming Songpyeon" />
+	<key id="90000886" name="Soft Star Jelly" />
+	<key id="90000897" name="Star Pop Candy" />
+	<key id="90000901" name="Papulatuss Clock" />
+	<key id="90000907" name="Maple Syrup" locale="NA" />
+	<key id="90000911" name="Winters Golden Apple" />
+	<key id="90000912" name="Winters Golden Apple" />
+	<key id="90000913" name="Sweet Hot Cocoa" />
+	<key id="90000914" name="Sweet Hot Cocoa" />
+	<key id="90000915" name="Mysterious Aetherine" />
+	<key id="90000916" name="Nairins Special Candy" />
+	<key id="90000940" name="Pink Paint" feature="Event" />
+	<key id="90000942" name="Green Paint" feature="Event" />
+	<key id="90000953" name="New Year 2020 Fireworks" feature="Event" />
+	<key id="90001153" name="Metal Strainer" feature="Event" />
+	<key id="90001155" name="Experience Booster +100%" />
+	<key id="90001156" name="Moon Bunnys Ducky Cake" feature="Event" />
+	<key id="90001159" name="Rainbow Snail" feature="MassiveHideAndSeek" />
+	<key id="90001160" name="Rainbow Snail Splash" feature="MassiveHideAndSeek" />
+	<key id="90001161" name="Enhanced Special Warrior Tonic" feature="Mastery06" />
+	<key id="90001162" name="Enhanced Special Mage Tonic" feature="Mastery06" />
+	<key id="90001163" name="Enhanced Special Health Tonic" />
+	<key id="90001164" name="Experience Potion (13,650,000)" feature="Event" locale="NA" />
+	<key id="90001183" name="Lv. 45 Gradual Recovery Potion" feature="Event" locale="NA" />
+	<key id="90001193" name="Holiday Hot Cocoa" feature="Event" locale="NA" />
+	<key id="90001194" name="Sunshine Macaron" feature="Event" locale="NA" />
+	<key id="90001199" name="Creamy Tomato Soup" feature="Event" />
+	<key id="90001200" name="Pink Beans Pink Shake" feature="Event" />
+	<key id="90001201" name="Crispy Zakum Cookie" feature="Event" />
+	<key id="90001203" name="Bubbly Heart Candy" feature="Event" locale="NA" />
+	<key id="90200001" name="Anger" />
+	<key id="90200002" name="Martial Shout" />
+	<key id="90200003" name="Pout" />
+	<key id="90200004" name="Scheme" />
+	<key id="90200005" name="Dejected" />
+	<key id="90200006" name="Like" />
+	<key id="90200007" name="Dont Ask Me" />
+	<key id="90200008" name="Dynamic Pose" />
+	<key id="90200009" name="Despair" />
+	<key id="90200010" name="Dreamy" />
+	<key id="90200011" name="Greet" />
+	<key id="90200012" name="Mock" />
+	<key id="90200013" name="Crazy Dance" />
+	<key id="90200014" name="Time-out" />
+	<key id="90200015" name="Punishment" />
+	<key id="90200016" name="Sleep" />
+	<key id="90200017" name="Para Para Dance" />
+	<key id="90200018" name="Tantrum" />
+	<key id="90200019" name="Scissors" />
+	<key id="90200020" name="Rock" />
+	<key id="90200021" name="Paper" />
+	<key id="90200022" name="Bow" />
+	<key id="90200023" name="Surprise" />
+	<key id="90200024" name="Reject" />
+	<key id="90200025" name="Taunt" />
+	<key id="90200026" name="Sulk" />
+	<key id="90200027" name="Blow Kiss" />
+	<key id="90200028" name="Kiss" />
+	<key id="90200029" name="Tap Dance" />
+	<key id="90200030" name="Shimmy" />
+	<key id="90200031" name="Cry" />
+	<key id="90200037" name="Job_Male Knight" />
+	<key id="90200038" name="Job_Male Assassin" />
+	<key id="90200039" name="Job_Female Priest" />
+	<key id="90200040" name="Job_Female Archer" />
+	<key id="90200041" name="Sit" />
+	<key id="90200042" name="Ledge Sit" />
+	<key id="90200043" name="Epiphany" />
+	<key id="90200044" name="Worry" />
+	<key id="90200045" name="Big Meanie" />
+	<key id="90200046" name="Wave Dance" />
+	<key id="90200047" name="Spin Dance" />
+	<key id="90200048" name="Bunny Dance" />
+	<key id="90200049" name="Shuffle Dance" />
+	<key id="90200050" name="Strut Dance" />
+	<key id="90200051" name="Worm Dance" />
+	<key id="90200052" name="Sing" />
+	<key id="90200053" name="Kowtow" />
+	<key id="90200054" name="Goofy Dance" />
+	<key id="90200055" name="Rowboat Dance" />
+	<key id="90200056" name="Lean Dance" />
+	<key id="90200057" name="Possessed Fan Dance" />
+	<key id="90200058" name="Rolling Dance" />
+	<key id="90200059" name="China GM Mannequin" />
+	<key id="90200060" name="Windmill Dance" />
+	<key id="90200061" name="Groove Dance" />
+	<key id="90200062" name="Whip Dance" />
+	<key id="90200063" name="Gold Exemplar Throne" />
+	<key id="90200064" name="Silver Exemplar Throne" />
+	<key id="90200065" name="Bronze Exemplar Throne" />
+	<key id="90200066" name="Summoned Pim" />
+	<key id="90200067" name="Dark Shade" />
+	<key id="90200068" name="Zombie Dance" />
+	<key id="90200069" name="Hypnotic Dance" />
+	<key id="90200070" name="Anticipated Gift" />
+	<key id="90200071" name="Snow Day" />
+	<key id="90200072" name="Phoenix Throne" />
+	<key id="90200073" name="Make It Rain" />
+	<key id="90200074" name="Smooched by Bobby" />
+	<key id="90200075" name="Smooched by Ruby" />
+	<key id="90200076" name="Rose" />
+	<key id="90200077" name="Catch of the Day" />
+	<key id="90200078" name="Class with Goldus" />
+	<key id="90200079" name="Class with Miel" />
+	<key id="90200080" name="Class with Belma" />
+	<key id="90200081" name="Cherry Blossom Picnic" />
+	<key id="90200082" name="Salty Noodles" />
+	<key id="90200083" name="Tasty Noodles" />
+	<key id="90200084" name="Run for Your Life" />
+	<key id="90200085" name="Heartfelt Proposal" />
+	<key id="90200086" name="Accept Proposal" />
+	<key id="90200087" name="Reject Proposal" />
+	<key id="90200088" name="Squishy Pink Bean" />
+	<key id="90200089" name="Zakum Chair" />
+	<key id="90200090" name="Happy Birthday" />
+	<key id="90200091" name="Ambitious Throne" />
+	<key id="90200092" name="High Five" />
+	<key id="90200093" name="Hop Shuffle Boogie" />
+	<key id="90200094" name="((China Only)) Ray Dance" />
+	<key id="90200095" name="Pound Rice Cake" />
+	<key id="90200096" name="Party Cake" locale="NA" />
+	<key id="90200097" name="Noble Exemplar Throne" />
+	<key id="90200098" name="Cheer Up" />
+	<key id="90200100" name="Orange Mushroom" />
+	<key id="90200101" name="Hip Shimmy" />
+	<key id="90200102" name="Internet Celebrity" />
+	<key id="90200103" name="Fireworks" />
+	<key id="90200104" name="Floral Kite" />
+	<key id="90200105" name="Swing Set" />
+	<key id="90200106" name="CBT Celebration" locale="NA" />
+	<key id="90200107" name="Psych Up" />
+	<key id="90200110" name="Beach Day" />
+	<key id="90200111" name="Penguin Cup" />
+	<key id="90200112" name="Sleepy Shroom Dance" />
+	<key id="90200113" name="Watermelon Punch" />
+	<key id="90200115" name="Monkey Dance" feature="Event" />
+	<key id="90200116" name="Gloat" feature="SurvivalContents03" />
+	<key id="90200117" name="Mushroom Powder" feature="SurvivalContents03" />
+	<key id="90200118" name="Sleepy Shroom Nap" feature="SurvivalContents03" />
+	<key id="90200119" name="Puppet Show" />
+	<key id="90200120" name="Maple Bliss" />
+	<key id="90200121" name="Caught Shark" feature="Fishing02" />
+	<key id="90200122" name="Piggy Dreams" />
+	<key id="90200123" name="Hot Soak" />
+	<key id="90200124" name="Mason Copycat" feature="Kritias_2018_12" />
+	<key id="90200125" name="Shuffle Step Dance" />
+	<key id="90200126" name="Poing Poing Dance" feature="Event" />
+	<key id="90200127" name="Poing Playdate" feature="Event" />
+	<key id="90200128" name="Study Frenzy" />
+	<key id="90200129" name="Zzz" />
+	<key id="90200130" name="Cool Kid Dance" />
+	<key id="90200131" name="Selfie" />
+	<key id="90200132" name="Alberto Beans Training" feature="Colosseum01" />
+	<key id="90200133" name="Dramatic Appearance" />
+	<key id="90200134" name="My Turn" />
+	<key id="90200135" name="Witness Me" />
+	<key id="90200136" name="Mariachi Dance" />
+	<key id="90200137" name="Cherry Blossom Viewing" />
+	<key id="90200138" name="Joyous Twirl" />
+	<key id="90200139" name="Face-to-Face Twirl" />
+	<key id="90200140" name="Space Walk" />
+	<key id="90200142" name="Styling" />
+	<key id="90200143" name="DJ" />
+	<key id="90200144" name="Buried at the Beach" />
+	<key id="90200145" name="Warm Up" />
+	<key id="90220001" name="Embrace" />
+	<key id="90220002" name="Fist Bump" />
+	<key id="90220003" name="Winter Mischief" />
+	<key id="90220004" name="Sweet Candy" />
+	<key id="90220005" name="Please Help" />
+	<key id="90220006" name="Lean on Me" />
+	<key id="90220007" name="Kowtow" />
+	<key id="90220008" name="Fantastic Couple Dance" />
+	<key id="90220009" name="Clap Hands" />
+	<key id="90220010" name="Hot Coffee" />
+	<key id="90220011" name="Ducky Dance" />
+	<key id="90220012" name="SKILLNAME_90220012_NAME" />
+	<key id="90220013" name="Tug o War" />
+	<key id="90220014" name="Water Gun" />
+	<key id="90220015" name="Into My Arms" />
+	<key id="90220016" name="Warm Holiday" />
+	<key id="90220017" name="Red Lantern" />
+	<key id="90220018" name="Nom Nom Chocolate" />
+	<key id="90220019" name="Consolation Candy" />
+	<key id="90220020" name="Candy Time" />
+	<key id="90220021" name="Surprise Egg" />
+	<key id="90220022" name="Couples Picnic" />
+	<key id="90220023" name="Twirling Clapping Dance" />
+	<key id="90220024" name="Unicorn Carousel" />
+	<key id="90220025" name="Beach Volleyball" />
+	<key id="90220026" name="Hula Dance" />
+	<key id="90220027" name="Moonlight Saunter" />
+	<key id="90220028" name="Autumn Camping Trip" />
+	<key id="90220029" name="Trick or Treat" />
+	<key id="90220031" name="Shopping Spree" />
+	<key id="90220033" name="First Snow" />
+	<key id="90220034" name="Sky Lantern" />
+	<key id="90220035" name="TV Buddy" />
+	<key id="90300001" name="20% chance to inflict burn on hit." />
+	<key id="90300011" name="20% chance to increase intelligence on hit." />
+	<key id="90400001" name="10% chance to inflict burn on hit." />
+	<key id="90400011" name="20% chance to increase critical rate on hit." />
+	<key id="90500001" name="25% chance to inflict bleeding on hit." />
+	<key id="90500011" name="20% chance to increase attack speed on hit." />
+	<key id="90800001" name="20% chance to inflict poison on hit." />
+	<key id="90800011" name="10% chance to increase movement speed on hit." />
+	<key id="99900991" name="Sticky Jelly" feature="SurvivalContents01" />
+	<key id="99900992" name="Sticky Jelly" feature="SurvivalContents01" />
+	<key id="99901001" name="Flame Bomb" feature="SurvivalContents01" />
+	<key id="99901002" name="Flame Bomb" feature="SurvivalContents01" />
+	<key id="99901003" name="Gravity Well" feature="SurvivalContents01" />
+	<key id="99901004" name="Gravity Well" feature="SurvivalContents01" />
+	<key id="99901005" name="Acorn Cart" feature="SurvivalContents01" />
+	<key id="99901006" name="Thorny Vine" feature="SurvivalContents01" />
+	<key id="99901007" name="Thorny Vine" feature="SurvivalContents01" />
+	<key id="99901011" name="Paint Bomb" feature="SurvivalContents01" />
+	<key id="99901012" name="Paint Bomb" feature="SurvivalContents01" />
+	<key id="99901021" name="Thorny Vine" feature="SurvivalContents01" />
+	<key id="99901022" name="Thorny Vine" feature="SurvivalContents01" />
+	<key id="99910001" name="Horn Headbutt" />
+	<key id="99910002" name="Rush" />
+	<key id="99910021" name="Fireball" />
+	<key id="99910031" name="A" />
+	<key id="99910032" name="B" />
+	<key id="99910033" name="B Splash" />
+	<key id="99910041" name="Fist Swing" />
+	<key id="99910042" name="One Two Punch" />
+	<key id="99910043" name="Stone Shock" />
+	<key id="99910051" name="Whack-a-mole" />
+	<key id="99910052" name="Big Nail Drive" />
+	<key id="99910053" name="Picnic" />
+	<key id="99910061" name="Sploot" />
+	<key id="99910062" name="Swish Smash!" />
+	<key id="99910071" name="Electric Shock (Left)" />
+	<key id="99910072" name="Electric Shock (Right)" />
+	<key id="99910073" name="Laser" />
+	<key id="99910074" name="Hyper Booster" />
+	<key id="99910075" name="Gunfire" />
+	<key id="99910076" name="Electric Laser" />
+	<key id="99910081" name="Magical Bullet" />
+	<key id="99910091" name="Lazy Swing" feature="VIPDungeon" />
+	<key id="99910092" name="Roll and Strike" feature="VIPDungeon" />
+	<key id="99910101" name="Slash and Stab" feature="VIPDungeon" />
+	<key id="99910102" name="Wind Cutter II" feature="VIPDungeon" />
+	<key id="99910111" name="Rapid Fire" feature="VIPDungeon" />
+	<key id="99910112" name="Barrage" feature="VIPDungeon" />
+	<key id="99910121" name="Bubble Shot" feature="PirateOcean" />
+	<key id="99910122" name="Water Cannon" feature="PirateOcean" />
+	<key id="99910131" name="20mm Vulcan Cannon" feature="DarkCastle" />
+	<key id="99910132" name="Excavator Charge" feature="DarkCastle" />
+	<key id="99910133" name="105mm Howitzer" feature="DarkCastle" />
+	<key id="99910141" name="Mighty Charge" feature="DarkCastle" />
+	<key id="99910142" name="Second Wind" feature="DarkCastle" />
+	<key id="99910151" name="Rapid Fire" feature="DarkCastle" />
+	<key id="99910152" name="Barrage" feature="DarkCastle" />
+	<key id="99910161" name="Gunfire" feature="DarkCastle" />
+	<key id="99910162" name="Laser Beam" feature="DarkCastle" />
+	<key id="99910163" name="Hyper Booster" feature="DarkCastle" />
+	<key id="99910164" name="Laser Booster" feature="DarkCastle" />
+	<key id="99910171" name="Twin Weapon Toss" feature="DarkCastle" />
+	<key id="99910172" name="Grenade Throw" feature="DarkCastle" />
+	<key id="99910173" name="Dash" feature="DarkCastle" />
+	<key id="99910181" name="Slash and Stab" feature="DarkCastle" />
+	<key id="99910182" name="Wind Cutter II" feature="DarkCastle" />
+	<key id="99910191" name="Rapid Fire" feature="DarkCastle" />
+	<key id="99910192" name="Barrage" feature="DarkCastle" />
+	<key id="99910193" name="Arrow Storm II" feature="DarkCastle" />
+	<key id="99910241" name="Steal Egg" feature="GuildRaid01" />
+	<key id="99910301" name="Swing" feature="FameContents_EP1_02" />
+	<key id="99910302" name="Leaf Cut" feature="FameContents_EP1_02" />
+	<key id="99910303" name="Wind Cutter" feature="FameContents_EP1_02" />
+	<key id="99910304" name="Swing" feature="FameContents_EP1_02" />
+	<key id="99910305" name="Leaf Cut" feature="FameContents_EP1_02" />
+	<key id="99910306" name="Wind Cutter" feature="FameContents_EP1_02" />
+	<key id="99910307" name="Inferno Strike" feature="FameContents_EP1_02" />
+	<key id="99910341" name="Area Blast" feature="SurvivalContents02" />
+	<key id="99910342" name="Primary Lasers" feature="SurvivalContents02" />
+	<key id="99910343" name="Booster Rush" feature="SurvivalContents02" />
+	<key id="99910344" name="Overload Beam" feature="SurvivalContents02" />
+	<key id="99910351" name="Doze" feature="SurvivalContentsTeam" />
+	<key id="99910371" name="Gunfire Burst" feature="Fieldwar01" />
+	<key id="99910372" name="Flamethrower" feature="Fieldwar01" />
+	<key id="99910401" name="Drill Attack" feature="Gigantica01" />
+	<key id="99910402" name="Drill Rush" feature="Gigantica01" />
+	<key id="99910403" name="Seismic Wave" feature="Gigantica01" />
+	<key id="50001354" name="Undefeated: Deluge of Time" feature="LapentaDungeon" />
+	<key id="60300016" name="Decisive: Explosive Life Force" feature="LapentaDungeon" />
+	<key id="60300114" name="Call of Thunder: Frenzy" feature="LapentaDungeon" />
+	<key id="70003001" name="Super Strong Skill" feature="Kritias_2018_12" />
+	<key id="70003011" name="Super Strong Skill" feature="Kritias_2018_12" />
+	<key id="70003021" name="Super Strong Skill" feature="Kritias_2018_12" />
+	<key id="70003031" name="Super Strong Skill" feature="Kritias_2018_12" />
+	<key id="70003041" name="Super Strong Skill for Boss Use" feature="Kritias_2018_12" />
+	<key id="70003051" name="Super Strong Skill for Boss Use" feature="Kritias_2018_12" />
+	<key id="70003061" name="Super Strong Skill for Boss Use" feature="Kritias_2018_12" />
+	<key id="70003071" name="Super Strong Skill for Boss Use" feature="Kritias_2018_12" />
+	<key id="70003091" name="Jab" feature="Fieldwar02" />
+	<key id="70003101" name="Shockwave" feature="Fieldwar02" />
+	<key id="70003121" name="Machine Gun Fire" feature="Fieldwar02" />
+	<key id="70003122" name="Drill Driver" feature="Fieldwar02" />
+	<key id="70003123" name="Power Cannon" feature="Fieldwar02" />
+	<key id="70003131" name="Special White Potion" feature="Fieldwar02" />
+	<key id="90003003" name="Sword of Time (Red)" feature="LapentaDungeon" />
+	<key id="90003004" name="Space Rift (Blue)" feature="LapentaDungeon" />
+	<key id="90003005" name="Eupherias Barrier (Green)" feature="LapentaDungeon" />
+	<key id="120010001" name="Celines Heart" feature="Lapenshard01" />
+	<key id="120010002" name="Pride Bolt" feature="Lapenshard01" />
+	<key id="120010003" name="Lumarigons Pride" feature="Lapenshard01" />
+	<key id="120010004" name="Sword of Time (Red)" feature="Lapenshard01" />
+	<key id="120010010" name="Moonlight Slash (Red)" feature="Lapenshard01" />
+	<key id="120010020" name="Gigantica Beam (Red)" feature="Lapenshard01" />
+</ms2>
