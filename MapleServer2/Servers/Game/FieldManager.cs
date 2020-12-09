@@ -109,8 +109,7 @@ namespace MapleServer2.Servers.Game
             State.AddPlayer(player);
 
             // Broadcast new player to all players in map
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.AddPlayer(player));
                 session.Send(FieldObjectPacket.LoadPlayer(player));
             });
@@ -125,8 +124,7 @@ namespace MapleServer2.Servers.Game
             State.RemovePlayer(player.ObjectId);
 
             // Remove player
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.RemovePlayer(player));
             });
 
@@ -141,10 +139,21 @@ namespace MapleServer2.Servers.Game
 
             State.AddNpc(fieldNpc);
 
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.AddNpc(fieldNpc));
                 session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
+            });
+        }
+        public void AddMob(GameSession sender, Mob mob)
+        {
+            FieldObject<Mob> fieldMob = WrapObject(mob);
+            fieldMob.Coord = sender.FieldPlayer.Coord;
+
+            State.AddMob(fieldMob);
+
+            Broadcast(sessions =>
+            {
+
             });
         }
 
@@ -152,11 +161,14 @@ namespace MapleServer2.Servers.Game
         {
             State.AddNpc(fieldNpc);
 
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.AddNpc(fieldNpc));
                 session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
             });
+        }
+        public void AddTestMob(IFieldObject<Mob> fieldMob)
+        {
+
         }
 
         public void AddPortal(IFieldObject<Portal> portal)
@@ -167,8 +179,7 @@ namespace MapleServer2.Servers.Game
 
         public void SendChat(Player player, string message)
         {
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(ChatPacket.Send(player, message, ChatType.All));
             });
         }
@@ -180,8 +191,7 @@ namespace MapleServer2.Servers.Game
 
             State.AddItem(fieldItem);
 
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.AddItem(fieldItem, session.FieldPlayer.ObjectId));
             });
         }
@@ -193,8 +203,7 @@ namespace MapleServer2.Servers.Game
                 return false;
             }
 
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 session.Send(FieldPacket.PickupItem(objectId, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
             });
@@ -204,8 +213,7 @@ namespace MapleServer2.Servers.Game
         // Providing a session will result in packet not being broadcast to self.
         public void BroadcastPacket(Packet packet, GameSession sender = null)
         {
-            Broadcast(session =>
-            {
+            Broadcast(session => {
                 if (session == sender) return;
                 session.Send(packet);
             });

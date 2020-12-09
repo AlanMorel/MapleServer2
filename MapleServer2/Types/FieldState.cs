@@ -10,11 +10,13 @@ namespace MapleServer2.Types
         public IReadOnlyDictionary<int, IFieldObject<Player>> Players => players;
         public IReadOnlyDictionary<int, IFieldObject<Npc>> Npcs => npcs;
         public IReadOnlyDictionary<int, IFieldObject<Portal>> Portals => portals;
+        public IReadOnlyDictionary<int, IFieldObject<Mob>> Mobs => mobs;
 
         private readonly ConcurrentDictionary<int, IFieldObject<Item>> items;
         private readonly ConcurrentDictionary<int, IFieldObject<Player>> players;
         private readonly ConcurrentDictionary<int, IFieldObject<Npc>> npcs;
         private readonly ConcurrentDictionary<int, IFieldObject<Portal>> portals;
+        private readonly ConcurrentDictionary<int, IFieldObject<Mob>> mobs;
 
         public FieldState()
         {
@@ -22,6 +24,7 @@ namespace MapleServer2.Types
             this.players = new ConcurrentDictionary<int, IFieldObject<Player>>();
             this.npcs = new ConcurrentDictionary<int, IFieldObject<Npc>>();
             this.portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
+            this.mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
 
         }
 
@@ -71,6 +74,11 @@ namespace MapleServer2.Types
         public bool RemovePortal(int objectId)
         {
             return portals.Remove(objectId, out _);
+        }
+
+        public void AddMob(IFieldObject<Mob> mob)
+        {
+            mobs[mob.ObjectId] = mob;
         }
     }
 }
