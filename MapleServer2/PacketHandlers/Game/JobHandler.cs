@@ -11,9 +11,11 @@ namespace MapleServer2.PacketHandlers.Game {
 
         public JobHandler(ILogger<JobHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             byte mode = packet.ReadByte();
-            switch (mode) {
+            switch (mode)
+            {
                 case 8: // Close Skill Tree
                     HandleCloseSkillTree(session, packet);
                     break;
@@ -23,23 +25,26 @@ namespace MapleServer2.PacketHandlers.Game {
             }
         }
 
-        public void HandleCloseSkillTree(GameSession session, PacketReader packet) {
+        private void HandleCloseSkillTree(GameSession session, PacketReader packet)
+        {
             session.Send(JobPacket.Close());
         }
 
-        public void HandleSaveSkillTree(GameSession session, PacketReader packet) {
+        private void HandleSaveSkillTree(GameSession session, PacketReader packet)
+        {
             // Get skill tab to update
             SkillTab skillTab = session.Player.SkillTabs[0]; // Get first skill tab only for now, uncertain of how to have multiple skill tabs
 
             // Read skills
             int count = packet.ReadInt(); // Number of skills
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 // Read skill info
                 int id = packet.ReadInt(); // Skill id
                 short level = packet.ReadShort(); // Skill level
                 byte learned = packet.ReadByte(); // 00 if unlearned 01 if learned
                 // Update current character skill tree data with new skill
-                skillTab.AddOrUpdate(Skill.skill(id, level, learned));
+                skillTab.AddOrUpdate(new Skill(id, level, learned));
             }
 
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
