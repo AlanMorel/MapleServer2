@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class EmotionHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.EMOTION;
+        public override RecvOp OpCode => RecvOp.EMOTION;
 
         public EmotionHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 

@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace MapleServer2.PacketHandlers.Login {
     public class CharacterManagementHandler : LoginPacketHandler {
-        public override ushort OpCode => RecvOp.CHARACTER_MANAGEMENT;
+        public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
         public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) {}
 

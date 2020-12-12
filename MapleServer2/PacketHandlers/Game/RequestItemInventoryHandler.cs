@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class RequestItemInventoryHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
+        public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
         public RequestItemInventoryHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 

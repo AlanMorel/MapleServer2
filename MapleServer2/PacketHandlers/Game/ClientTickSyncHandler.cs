@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class ClientTickSyncHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.RESPONSE_CLIENTTICK_SYNC;
+        public override RecvOp OpCode => RecvOp.RESPONSE_CLIENTTICK_SYNC;
 
         public ClientTickSyncHandler(ILogger<ClientTickSyncHandler> logger) : base(logger) { }
 

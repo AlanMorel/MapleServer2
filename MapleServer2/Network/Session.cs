@@ -186,20 +186,14 @@ namespace MapleServer2.Network {
                     Packet packet = recvCipher.Transform(packetBuffer);
                     short opcode = packet.Reader().ReadShort();
                     
-                    //Show name of Constant RecvOp
-                    var props = typeof(RecvOp).GetFields(BindingFlags.Public | BindingFlags.Static);
-                    var wantedProps = props.FirstOrDefault(prop => (ushort)prop.GetValue(opcode) == opcode);
+                    RecvOp recvOp = (RecvOp) opcode;
 
-                    if (opcode != 0x12)
-                    { // Filtering sync from logs
-                        if (wantedProps != null)
-                        {
-                            logger.Debug($"RECV ({wantedProps.Name}: {packet.Length})".Pastel("#812F2F") + $": {packet}");
-                        }
-                        else
-                        {
-                            logger.Debug($"RECV ({String.Format("0x00{0:X}", opcode)}: {packet.Length})".Pastel("#812F2F") + $": {packet}");
-                        }
+                    switch (recvOp) {
+                        case RecvOp.USER_SYNC:
+                            break;
+                        default:
+                            logger.Debug($"RECV ({recvOp.ToString()}): {packet}".Pastel("#8CC265"));
+                            break;
                     }
                     OnPacket?.Invoke(this, packet); // handle packet
                 }
@@ -219,20 +213,14 @@ namespace MapleServer2.Network {
 
         private void SendInternal(byte[] packet) {
             short opcode = BitConverter.ToInt16(packet, 0);
+            SendOp sendOp = (SendOp) opcode;
 
-            //Show name of Constant SendOp
-            var props = typeof(SendOp).GetFields(BindingFlags.Public | BindingFlags.Static);
-            var wantedProps =props.FirstOrDefault(prop => (ushort)prop.GetValue(opcode) == opcode);
-
-            if (opcode != 0x1C) { // Filtering sync from logs{String.Format("0x00{0:X}", opcode)}
-                if (wantedProps != null)
-                {
-                    logger.Debug($"SEND ({wantedProps.Name}: {packet.Length})".Pastel("#197319") + $": {packet.ToHexString(' ')}");
-                }
-                else
-                {
-                    logger.Debug($"SEND ({String.Format("0x00{0:X}", opcode)}: {packet.Length})".Pastel("#197319") + $": {packet.ToHexString(' ')}");
-                }
+            switch (sendOp) {
+                case SendOp.USER_SYNC:
+                    break;
+                default:
+                    logger.Debug($"SEND ({sendOp.ToString()}): {packet.ToHexString(' ')}".Pastel("#E05561"));
+                    break;
             }
             Packet encryptedPacket = sendCipher.Transform(packet);
             SendRaw(encryptedPacket);

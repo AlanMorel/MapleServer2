@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MapleServer2.PacketHandlers.Game {
     // This is not working yet. for some reason it does not give the "start" prompt after casting line.
     public class FishingHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.FISHING;
+        public override RecvOp OpCode => RecvOp.FISHING;
 
         public FishingHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 

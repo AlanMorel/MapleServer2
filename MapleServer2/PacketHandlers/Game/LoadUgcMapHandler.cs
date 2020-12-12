@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class LoadUgcMapHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_LOAD_UGC_MAP;
+        public override RecvOp OpCode => RecvOp.REQUEST_LOAD_UGC_MAP;
 
         public LoadUgcMapHandler(ILogger<LoadUgcMapHandler> logger) : base(logger) { }
 

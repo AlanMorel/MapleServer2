@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
     public class ResponseVersionHandler : CommonPacketHandler {
-        public override ushort OpCode => RecvOp.RESPONSE_VERSION;
+        public override RecvOp OpCode => RecvOp.RESPONSE_VERSION;
 
         public ResponseVersionHandler(ILogger<ResponseVersionHandler> logger) : base(logger) { }
 

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class StateSkillHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.STATE_SKILL;
+        public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
         public StateSkillHandler(ILogger<StateSkillHandler> logger) : base(logger) { }
 

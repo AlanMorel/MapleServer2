@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace MapleServer2.PacketHandlers.Login {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class LoginHandler : LoginPacketHandler {
-        public override ushort OpCode => RecvOp.RESPONSE_LOGIN;
+        public override RecvOp OpCode => RecvOp.RESPONSE_LOGIN;
 
         // TODO: This data needs to be dynamic
         private readonly ImmutableList<IPEndPoint> serverIps;

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class ChangeAttributesHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.CHANGE_ATTRIBUTES;
+        public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES;
 
         private const string NEW_ITEM_KEY = "new_item_key";
 

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
     public class ResponseKeyHandler : CommonPacketHandler {
-        public override ushort OpCode => RecvOp.RESPONSE_KEY;
+        public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 
         public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) {}
 

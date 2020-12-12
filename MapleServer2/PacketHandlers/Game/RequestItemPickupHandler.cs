@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class RequestItemPickupHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_ITEM_PICKUP;
+        public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
 
         public RequestItemPickupHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 
