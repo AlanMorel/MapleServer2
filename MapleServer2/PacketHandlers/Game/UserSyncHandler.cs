@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game {
     // ClientTicks/Time here are probably used for animation
     // Currently I am just updating animation instantly.
     public class UserSyncHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.USER_SYNC;
+        public override RecvOp OpCode => RecvOp.USER_SYNC;
 
         public UserSyncHandler(ILogger<UserSyncHandler> logger) : base(logger) { }
 

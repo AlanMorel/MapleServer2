@@ -1,10 +1,11 @@
 ﻿using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public abstract class GamePacketHandler : IPacketHandler<GameSession> {
-        public abstract ushort OpCode { get; }
+        public abstract RecvOp OpCode { get; }
 
         protected readonly ILogger logger;
 
@@ -14,6 +15,6 @@ namespace MapleServer2.PacketHandlers.Game {
 
         public abstract void Handle(GameSession session, PacketReader packet);
 
-        public override string ToString() => $"[0x{OpCode:X4}] Game.{GetType().Name}";
+        public override string ToString() => $"[{OpCode.ToString()}] Game.{GetType().Name}";
     }
 }

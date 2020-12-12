@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class RequestTutorialItemHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
+        public override RecvOp OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
 
         public RequestTutorialItemHandler(ILogger<RequestTutorialItemHandler> logger) : base(logger) { }
 

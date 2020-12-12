@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class UserChatHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.USER_CHAT;
+        public override RecvOp OpCode => RecvOp.USER_CHAT;
 
         public UserChatHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 

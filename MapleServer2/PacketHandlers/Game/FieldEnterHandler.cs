@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class FieldEnterHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.RESPONSE_FIELD_ENTER;
+        public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 
         public FieldEnterHandler(ILogger<FieldEnterHandler> logger) : base(logger) { }
 

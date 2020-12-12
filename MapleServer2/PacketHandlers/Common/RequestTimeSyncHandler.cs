@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
     public class RequestTimeSyncHandler : CommonPacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_TIME_SYNC;
+        public override RecvOp OpCode => RecvOp.REQUEST_TIME_SYNC;
 
         public RequestTimeSyncHandler(ILogger<RequestTimeSyncHandler> logger) : base(logger) { }
 

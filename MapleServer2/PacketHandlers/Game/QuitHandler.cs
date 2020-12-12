@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class QuitHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_QUIT;
+        public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
 
         private IPEndPoint loginEndpoint;
 

@@ -8,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class SkillBookTreeHandler : GamePacketHandler
     {
-        public override ushort OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
+        public override RecvOp OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
 
         public SkillBookTreeHandler(ILogger<SkillBookTreeHandler> logger) : base(logger) { }
 

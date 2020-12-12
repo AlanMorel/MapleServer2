@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class ItemEnchantHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
+        public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
 
         public ItemEnchantHandler(ILogger<ItemEnchantHandler> logger) : base(logger) { }
 

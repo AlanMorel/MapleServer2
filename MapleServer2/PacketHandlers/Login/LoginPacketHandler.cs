@@ -1,10 +1,11 @@
 ﻿using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Servers.Login;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login {
     public abstract class LoginPacketHandler : IPacketHandler<LoginSession> {
-        public abstract ushort OpCode { get; }
+        public abstract RecvOp OpCode { get; }
 
         protected readonly ILogger logger;
 
@@ -14,6 +15,6 @@ namespace MapleServer2.PacketHandlers.Login {
 
         public abstract void Handle(LoginSession session, PacketReader packet);
 
-        public override string ToString() => $"[0x{OpCode:X4}] Login.{GetType().Name}";
+        public override string ToString() => $"[{OpCode.ToString()}] Login.{GetType().Name}";
     }
 }

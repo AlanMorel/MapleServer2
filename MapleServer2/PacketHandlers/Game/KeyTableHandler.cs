@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class KeyTableHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.KEY_TABLE;
+        public override RecvOp OpCode => RecvOp.KEY_TABLE;
 
         public KeyTableHandler(ILogger<KeyTableHandler> logger) : base(logger) { }
 

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class ItemEquipHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.ITEM_EQUIP;
+        public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
 
         public ItemEquipHandler(ILogger<ItemEquipHandler> logger) : base(logger) { }
 

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
     public class SystemInfoHandler : CommonPacketHandler {
-        public override ushort OpCode => RecvOp.SYSTEM_INFO;
+        public override RecvOp OpCode => RecvOp.SYSTEM_INFO;
 
         public SystemInfoHandler(ILogger<SystemInfoHandler> logger) : base(logger) { }
 

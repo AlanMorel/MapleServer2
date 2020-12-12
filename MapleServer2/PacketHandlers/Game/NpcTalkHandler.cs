@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class NpcTalkHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.NPC_TALK;
+        public override RecvOp OpCode => RecvOp.NPC_TALK;
 
         public NpcTalkHandler(ILogger<NpcTalkHandler> logger) : base(logger) { }
 

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class FileHashHandler : GamePacketHandler {
-        public override ushort OpCode => RecvOp.FILE_HASH;
+        public override RecvOp OpCode => RecvOp.FILE_HASH;
 
         public FileHashHandler(ILogger<FileHashHandler> logger) : base(logger) { }
 
