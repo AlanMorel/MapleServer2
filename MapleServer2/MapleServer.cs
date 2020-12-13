@@ -8,15 +8,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using NLog;
-//--------------------------------------------//
-//--------------------------------------------//
-//--------------------------------------------//
-
-
-
-//--------------------------------------------//
-//--------------------------------------------//
-//--------------------------------------------//
 
 namespace MapleServer2 {
     public static class MapleServer {
@@ -25,9 +16,6 @@ namespace MapleServer2 {
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
 
-            // Testing stuff
-
-            #region Container
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
             var loginServer = loginScope.Resolve<LoginServer>();
@@ -48,11 +36,11 @@ namespace MapleServer2 {
                         loginServer.Stop();
                         return;
                     case "send":
-                        // Remove whitespace
                         string packet = input[1].Replace(" ", "");
                         var pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
                         logger.Info(pWriter);
+
                         foreach (Session session in GetSessions(loginServer, gameServer)) {
                             logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
@@ -68,12 +56,9 @@ namespace MapleServer2 {
                         break;
                 }
             }
-            #endregion
         }
 
         // Testing Stuff outside of a main arg
-
-        #region Session
         private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer) {
             List<Session> sessions = new List<Session>();
             sessions.AddRange(loginServer.GetSessions());
@@ -81,6 +66,5 @@ namespace MapleServer2 {
 
             return sessions;
         }
-        #endregion
     }
 }

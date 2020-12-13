@@ -13,8 +13,6 @@ using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using Microsoft.Extensions.Logging;
 using Pastel;
-using System.Reflection;
-using System.Linq;
 
 namespace MapleServer2.Network {
     public abstract class Session : IDisposable {
@@ -192,7 +190,8 @@ namespace MapleServer2.Network {
                         case RecvOp.USER_SYNC:
                             break;
                         default:
-                            logger.Debug($"RECV ({recvOp.ToString()}): {packet}".Pastel("#8CC265"));
+                            string packetString = packet.ToString();
+                            logger.Debug($"RECV ({recvOp.ToString()}): {packetString.Substring(Math.Min(packetString.Length, 6))}".Pastel("#8CC265"));
                             break;
                     }
                     OnPacket?.Invoke(this, packet); // handle packet
@@ -219,7 +218,8 @@ namespace MapleServer2.Network {
                 case SendOp.USER_SYNC:
                     break;
                 default:
-                    logger.Debug($"SEND ({sendOp.ToString()}): {packet.ToHexString(' ')}".Pastel("#E05561"));
+                    string packetString = packet.ToHexString(' ');
+                    logger.Debug($"SEND ({sendOp.ToString()}): {packetString.Substring(Math.Min(packetString.Length, 6))}".Pastel("#E05561"));
                     break;
             }
             Packet encryptedPacket = sendCipher.Transform(packet);
