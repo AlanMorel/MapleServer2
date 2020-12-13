@@ -38,14 +38,32 @@ namespace MapleServer2.PacketHandlers.Game {
             }
 
             // Add catalysts for testing
-            /*
+            
             int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026 };
-            foreach (int catalyst in catalysts) {
-                var item = new Item(catalyst) { Amount = 99999, Uid = catalyst };
+
+            //Adds first set of item test case
+            foreach(int catalyst in catalysts)
+            {
+                var item = new Item(catalyst) { Amount = 4, Uid = catalyst };
+
                 session.Inventory.Add(item);
                 session.Send(ItemInventoryPacket.Add(item));
             }
-            */
+
+            //Adds 2nd set of same items to test stacking
+            foreach (int catalyst in catalysts) {
+                var item = new Item(catalyst) { Amount = 4, Uid = catalyst };
+
+                if (!session.Inventory.Add(item))
+                {
+                    session.Send(ItemInventoryPacket.Update(item.Uid, (item.Amount + item.Amount)));
+                }
+                else
+                {
+                    session.Send(ItemInventoryPacket.Add(item));
+                }
+            }
+            
         }
     }
 }
