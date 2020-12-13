@@ -49,6 +49,7 @@ namespace MapleServer2.PacketHandlers.Game {
                 session.Inventory.Add(item);
                 session.Send(ItemInventoryPacket.Add(item));
             }
+            //session.Inventory.print();
 
             //Adds 2nd set of same items to test stacking
             foreach (int catalyst in catalysts) {
@@ -56,14 +57,15 @@ namespace MapleServer2.PacketHandlers.Game {
 
                 if (!session.Inventory.Add(item))
                 {
+                    session.Inventory.Update(item, (item.Amount + item.Amount));
                     session.Send(ItemInventoryPacket.Update(item.Uid, (item.Amount + item.Amount)));
                 }
                 else
                 {
                     session.Send(ItemInventoryPacket.Add(item));
                 }
+            //session.Inventory.print();
             }
-            
         }
     }
 }

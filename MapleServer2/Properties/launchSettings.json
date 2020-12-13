@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MapleServer2": {
+      "commandName": "Project",
+      "workingDirectory": "E:\\MS2 Pserver\\MapleStory 2 Server Emulator"
+    }
+  }
+}

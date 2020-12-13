@@ -73,6 +73,15 @@ namespace MapleServer2.Types {
             return false;
         }
 
+        //Updates items dictionary with proper amount.
+        public void Update(Item item, int amount)
+        {
+            if (Check(item))
+            {
+                items[item.Uid].Amount = amount;
+            }
+        }
+
         // Returns false if item doesn't exist or removing more than available
         public int Remove(long uid, out Item removedItem, int amount = -1) {
             // Removing more than available
@@ -156,6 +165,15 @@ namespace MapleServer2.Types {
             return false;
         }
 
+        //For printing items to show amount
+        public void print()
+        {
+            foreach (KeyValuePair<long, Item> i in items)
+            {
+                Console.WriteLine(i.Key);
+                Console.WriteLine(i.Value.Amount);
+            }
+        }
 
         // This REQUIRES item.Slot to be set appropriately
         private void AddInternal(Item item) {
