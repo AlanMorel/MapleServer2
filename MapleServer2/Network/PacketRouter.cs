@@ -14,10 +14,11 @@ namespace MapleServer2.Network {
         public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers, ILogger<PacketRouter<T>> logger) {
             this.logger = logger;
 
-            var builder = ImmutableDictionary.CreateBuilder<RecvOp, IPacketHandler<T>>();
+            ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder = ImmutableDictionary.CreateBuilder<RecvOp, IPacketHandler<T>>();
             foreach (IPacketHandler<T> packetHandler in packetHandlers) {
                 Register(builder, packetHandler);
             }
+
             this.handlers = builder.ToImmutable();
         }
 

@@ -30,9 +30,8 @@ namespace MapleServer2.Data {
         }
 
         // Adds new character
-        public static bool AddCharacter(Player data) {
+        public static void AddCharacter(Player data) {
             characters.Add(data.CharacterId, data);
-            return true;
         }
 
         // Retrieves a specific character for an account
@@ -41,10 +40,9 @@ namespace MapleServer2.Data {
         }
 
         // Updates a character
-        public static bool UpdateCharacter(Player data) {
+        public static void UpdateCharacter(Player data) {
             characters.Remove(data.CharacterId);
             characters.Add(data.CharacterId, data);
-            return true;
         }
     }
 }

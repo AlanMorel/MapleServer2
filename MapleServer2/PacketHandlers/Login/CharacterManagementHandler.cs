@@ -8,7 +8,6 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using MapleServer2.Enums;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
 using System.Collections.Generic;
