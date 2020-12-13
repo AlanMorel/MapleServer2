@@ -165,24 +165,14 @@ namespace MapleServer2.Types {
             return false;
         }
 
-        //For printing items to show amount
-        public void print()
-        {
-            foreach (KeyValuePair<long, Item> i in items)
-            {
-                Console.WriteLine(i.Key);
-                Console.WriteLine(i.Value.Amount);
-            }
-        }
-
         // This REQUIRES item.Slot to be set appropriately
         private void AddInternal(Item item) {
-            /*Debug.Assert(!items.ContainsKey(item.Uid),
-                "Error adding an item that already exists");*/
+            Debug.Assert(!items.ContainsKey(item.Uid),
+                "Error adding an item that already exists");
                 items[item.Uid] = item;
 
-            /*Debug.Assert(!GetSlots(item.InventoryType).ContainsKey(item.Slot),
-                "Error adding item to slot that is already taken."); */
+            Debug.Assert(!GetSlots(item.InventoryType).ContainsKey(item.Slot),
+                "Error adding item to slot that is already taken."); 
                 GetSlots(item.InventoryType)[item.Slot] = item.Uid;
         }
 
