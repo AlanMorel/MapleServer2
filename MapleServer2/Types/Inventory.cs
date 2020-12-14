@@ -45,10 +45,10 @@ namespace MapleServer2.Types {
             // Item has a slot set, try to use that slot
             if (item.Slot >= 0) {
                 if (!SlotTaken(item, item.Slot)) {
-                    //Performs a item exist check before adding item
-                    if (Check(item))
+                    // Performs a item exist check before adding item
+                    if (Exists(item))
                     {
-                        return false;
+                        return Exists(item);
                     }
                     AddInternal(item);
                     return true;
@@ -60,10 +60,10 @@ namespace MapleServer2.Types {
             for (short i = 0; i < Size; i++) {
                 if (!SlotTaken(item, i)) {
                     item.Slot = i;
-                    //Performs a item exist check before adding item
-                    if (Check(item))
+                    // Performs a item exist check before adding item
+                    if (Exists(item))
                     {
-                        return false;
+                        return Exists(item);
                     }
                     AddInternal(item);
                     return true;
@@ -76,7 +76,7 @@ namespace MapleServer2.Types {
         //Updates items dictionary with proper amount.
         public void Update(Item item, int amount)
         {
-            if (Check(item))
+            if (Exists(item))
             {
                 items[item.Uid].Amount = amount;
             }
@@ -153,7 +153,7 @@ namespace MapleServer2.Types {
         }
 
         // Checks if item exists already or if slot is taken already.
-        public bool Check(Item item)
+        public bool Exists(Item item)
         {
             if (items.ContainsKey(item.Uid)){
                 return true;
