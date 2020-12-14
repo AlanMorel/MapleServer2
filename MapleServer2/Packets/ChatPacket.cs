@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     {
         public static Packet Send(Player player, string message, ChatType type)
         {
-            var pWriter = PacketWriter.Of(SendOp.USER_CHAT)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT)
                 .WriteLong(player.AccountId)
                 .WriteLong(player.CharacterId)
                 .WriteUnicodeString(player.Name)

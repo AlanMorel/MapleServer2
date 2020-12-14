@@ -15,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            var type = (ChatType)packet.ReadInt();
+            ChatType type = (ChatType)packet.ReadInt();
             string message = packet.ReadUnicodeString();
             string recipient = packet.ReadUnicodeString();
             packet.ReadLong();
