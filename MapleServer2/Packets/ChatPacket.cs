@@ -3,9 +3,12 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class ChatPacket {
-        public static Packet Send(Player player, string message, ChatType type = ChatType.All) {
+namespace MapleServer2.Packets
+{
+    public static class ChatPacket
+    {
+        public static Packet Send(Player player, string message, ChatType type = ChatType.All)
+        {
             var pWriter = PacketWriter.Of(SendOp.USER_CHAT)
                 .WriteLong(player.AccountId)
                 .WriteLong(player.CharacterId)
@@ -16,15 +19,22 @@ namespace MapleServer2.Packets {
                 .WriteByte()
                 .WriteInt(); // Channel
 
-            switch (type) {
+            switch (type)
+            {
                 case ChatType.WhisperFrom:
                     pWriter.WriteUnicodeString("???");
                     break;
                 case ChatType.Super:
-                    pWriter.WriteInt(); // item id?
+                    pWriter.WriteInt(20800017); // item id?
                     break;
                 case ChatType.UnknownPurple:
                     pWriter.WriteLong(); // char id?
+                    break;
+                case ChatType.World:
+                    pWriter.WriteInt(); // Merets
+                    break;
+                case ChatType.Channel:
+                    pWriter.WriteInt(); // Merets
                     break;
             }
 
