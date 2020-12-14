@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class ChatPacket
     {
-        public static Packet Send(Player player, string message, ChatType type = ChatType.All)
+        public static Packet Send(Player player, string message, ChatType type)
         {
             var pWriter = PacketWriter.Of(SendOp.USER_CHAT)
                 .WriteLong(player.AccountId)
@@ -29,12 +29,6 @@ namespace MapleServer2.Packets
                     break;
                 case ChatType.UnknownPurple:
                     pWriter.WriteLong(); // char id?
-                    break;
-                case ChatType.World:
-                    pWriter.WriteInt(); // Merets
-                    break;
-                case ChatType.Channel:
-                    pWriter.WriteInt(); // Merets
                     break;
             }
 

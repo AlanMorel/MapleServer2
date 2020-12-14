@@ -21,21 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadLong();
 
             GameCommandActions.Process(session, message);
-            switch (type)
-            {
-                case (ChatType.Super):
-                    session.FieldManager.SendChat(session.Player, message, type);
-                    break;
-                case (ChatType.World):
-                    session.FieldManager.SendChat(session.Player, message, type);
-                    break;
-                case (ChatType.Channel):
-                    session.FieldManager.SendChat(session.Player, message, type);
-                    break;
-                default:
-                    session.FieldManager.SendChat(session.Player, message);
-                    break;
-            }
+            session.FieldManager.SendChat(session.Player, message, type);
         }
     }
 }
