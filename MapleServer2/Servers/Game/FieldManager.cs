@@ -155,9 +155,9 @@ namespace MapleServer2.Servers.Game {
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-        public void SendChat(Player player, string message) {
+        public void SendChat(Player player, string message, ChatType type) {
             Broadcast(session => {
-                session.Send(ChatPacket.Send(player, message, ChatType.All));
+                session.Send(ChatPacket.Send(player, message, type));
             });
         }
 
