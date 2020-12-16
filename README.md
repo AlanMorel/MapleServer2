@@ -19,8 +19,10 @@ Have an up-to-date GMS2 client with **[Orion2.dll](https://github.com/EricSoftTM
 
 ### Configuration (Visual Studio)
 Open the solution in Visual Studio and then go to `Project > Properties > Configuration Properties > Debugging`.
+
 Then change the working directory to `$(SolutionDir)`.
 
 ### Configuration (Visual Studio Code)
 Go to `Extensions` and install the `C#` extension.
+
 Then go to `Run > Open Configurations` and change the value of `"cwd"` to `"${workspaceFolder}"`.
