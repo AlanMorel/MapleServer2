@@ -23,6 +23,6 @@ Open the solution in Visual Studio and then go to `Project > Properties > Config
 Then change the working directory to `$(SolutionDir)`.
 
 ### Configuration (Visual Studio Code)
-Go to `Extensions` and install the `C#` extension.
+Open the solution as a workspace and then go to `Extensions` and install the `C#` extension.
 
 Then go to `Run > Open Configurations` and change the value of `"cwd"` to `"${workspaceFolder}"`.
