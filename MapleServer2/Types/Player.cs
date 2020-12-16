@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
+using MapleServer2.Data;
 
 namespace MapleServer2.Types
 {
@@ -115,7 +116,7 @@ namespace MapleServer2.Types
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
-                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
                 Equips = new Dictionary<ItemSlot, Item> {
                     { ItemSlot.ER, Item.Ear() },
                     { ItemSlot.HR, Item.Hair() },
@@ -164,7 +165,7 @@ namespace MapleServer2.Types
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
-                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
                 Equips = new Dictionary<ItemSlot, Item> {
                     { ItemSlot.ER, Item.EarMale() },
                     { ItemSlot.HR, Item.HairMale() },
@@ -198,8 +199,8 @@ namespace MapleServer2.Types
             {
                 SkillTabs = skillTabs,
                 AccountId = 0x1111111111111111,
-                CharacterId = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                CharacterId = GuidGenerator.Long(),
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
                 Gender = gender,
                 //jobType = jobType,

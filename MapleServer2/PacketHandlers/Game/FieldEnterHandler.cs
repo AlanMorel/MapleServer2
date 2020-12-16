@@ -1,17 +1,23 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using System.Collections.Generic;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class FieldEnterHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class FieldEnterHandler : GamePacketHandler
+    {
         public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 
         public FieldEnterHandler(ILogger<FieldEnterHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             packet.ReadInt(); // ?
 
             // Liftable: 00 00 00 00 00
@@ -27,7 +33,8 @@ namespace MapleServer2.PacketHandlers.Game {
             QuickSlot eagleGlide = QuickSlot.From(10500151);
             QuickSlot testSkill = QuickSlot.From(10500153);
 
-            if (session.Player.GameOptions.TryGetHotbar(0, out Hotbar mainHotbar)) {
+            if (session.Player.GameOptions.TryGetHotbar(0, out Hotbar mainHotbar))
+            {
                 /*
                 mainHotbar.MoveQuickSlot(4, arrowStream);
                 mainHotbar.MoveQuickSlot(5, arrowBarrage);
@@ -46,6 +53,62 @@ namespace MapleServer2.PacketHandlers.Game {
                 session.Send(ItemInventoryPacket.Add(item));
             }
             */
+
+            // Add mail for testing
+            // System mail without any item
+            Mail sysMail = new Mail
+            (
+                101,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                "50000002",
+                "",
+                "",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
+
+            // System mail with an item
+            List<Item> items = new List<Item>
+            {
+                new Item(20302228)
+                {
+                    Uid = GuidGenerator.Long(),
+                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Owner = session.Player
+                }
+            };
+            Mail sysItemMail = new Mail
+            (
+                101,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                "53000042",
+                "",
+                "",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                items
+            );
+
+            // Regular mail
+            Mail regMail = new Mail
+            (
+                1,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                session.Player.Name,
+                "Test Title",
+                "Test Body",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
+
+            session.Mailbox.AddOrUpdate(sysItemMail);
+            session.Mailbox.AddOrUpdate(sysMail);
+            session.Mailbox.AddOrUpdate(regMail);
         }
     }
 }

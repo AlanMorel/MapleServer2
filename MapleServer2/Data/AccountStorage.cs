@@ -11,6 +11,8 @@ namespace MapleServer2.Data {
 
         public const long SECONDARY_ACCOUNT = 0x2222222222222222;
 
+        public static int TickCount = 0;
+
         // Dictionary of character ids for the account
         public static Dictionary<long, List<long>> accountCharacters = new Dictionary<long, List<long>>();
 

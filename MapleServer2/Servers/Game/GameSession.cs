@@ -18,6 +18,7 @@ namespace MapleServer2.Servers.Game {
         // Using this for now to store arbitrary state objects by key.
         public readonly Dictionary<string, object> StateStorage;
         public readonly Inventory Inventory;
+        public Mailbox Mailbox;
 
         public int ServerTick { get; private set; }
         public int ClientTick;
@@ -37,6 +38,7 @@ namespace MapleServer2.Servers.Game {
             this.cancellationToken = new CancellationTokenSource();
             this.StateStorage = new Dictionary<string, object>();
             this.Inventory = new Inventory(48);
+            this.Mailbox = new Mailbox();
 
             // Continuously sends field updates to client
             new Thread(() => {
