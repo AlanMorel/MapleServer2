@@ -93,9 +93,10 @@ namespace MapleServer2.Types
             return false;
         }
 
+        // Checks if item is stackable.
         private bool isStackable(Item item) => item.SlotMax > 1;
 
-        private void Stack(Item item) // replace 10 with i.SlotMax after testing
+        private void Stack(Item item) // Replace 10 with item.slotmax to test against actual max slot count.
         {
             foreach (Item i in items.Values)
             {
