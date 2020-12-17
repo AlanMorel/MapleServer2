@@ -26,3 +26,27 @@ Then change the working directory to `$(SolutionDir)`.
 Open the solution as a workspace and then go to `Extensions` and install the `C#` extension.
 
 Then go to `Run > Open Configurations` and change the value of `"cwd"` to `"${workspaceFolder}"`.
+
+### Need to be implemented
+- Achieve.
+- Quest (All types).
+- Mobs, from Npc (diferent behavior, moving around, spawning on field, more ).
+- Attributes on Player.
+- Dungeons (Instance of dungeons, rewards, more).
+- Exp System (Level up, get exp from quest, mob exp, more).
+- Battle System (Do damage, taking damage, skills damage, affecting stats, more).
+- BlackMarket (selling item, buying item, list on market, retrieving currency, more).
+- Pets (affecting stats, more)
+- Mounts.
+- Cutscenes.
+- Gathering.
+- Housing.
+- Crafting.
+- Prestige System.
+- Adventure System.
+- Reputation.
+- Traits.
+- Lapenshards.
+- World Map.
+- Minimap.
+- CharacterInfo (Title, insignia, Mastery, more)
