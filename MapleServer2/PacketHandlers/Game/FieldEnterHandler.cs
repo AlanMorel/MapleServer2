@@ -70,11 +70,9 @@ namespace MapleServer2.PacketHandlers.Game
             session.Inventory.Add(item3);
 
             session.Send(ItemInventoryPacket.Add(item));
-            if (item2.Amount > 0)
-            {
-                session.Send(ItemInventoryPacket.Add(item2));
-                session.Send(ItemInventoryPacket.Add(item3));
-            }
+            session.Send(ItemInventoryPacket.Add(item2));
+            session.Send(ItemInventoryPacket.Add(item3));
+            
         }
     }
 }

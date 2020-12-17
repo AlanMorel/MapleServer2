@@ -97,21 +97,20 @@ namespace MapleServer2.Types
         {
             foreach (Item i in items.Values)
             {
-                if (i.Id == item.Id)
+                if (i.Id != item.Id || i.Amount > i.SlotMax)
                 {
-                    if (i.Amount < i.SlotMax)
-                    {
-                        if ((i.Amount + item.Amount) > i.SlotMax)
-                        {
-                            item.Amount = item.Amount - (i.SlotMax - i.Amount);
-                            i.Amount = i.SlotMax;
-                        }
-                        else
-                        {
-                            i.Amount = i.Amount + item.Amount;
-                            return;
-                        }
-                    }
+                    continue;
+                }
+                if ((i.Amount + item.Amount) > i.SlotMax)
+                {
+                    item.Amount = item.Amount - (i.SlotMax - i.Amount);
+                    i.Amount = i.SlotMax;
+                }
+                else
+                {
+                    i.Amount = i.Amount + item.Amount;
+                    item.Amount = 0;
+                    return;
                 }
             }
             AddInternal(item);
