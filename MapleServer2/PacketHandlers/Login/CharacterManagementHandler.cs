@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
@@ -8,9 +10,8 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
-using System.Collections.Generic;
+using MapleServer2.Tools;
 
 namespace MapleServer2.PacketHandlers.Login {
     public class CharacterManagementHandler : LoginPacketHandler {
@@ -92,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         byte[] frontPositionArray = packet.Read(24);
 
                         Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             HairD = HairData.hairData(backLength, frontLength, backPositionArray, frontPositionArray),
@@ -102,7 +103,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.FA: // Face
                         Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -112,7 +113,7 @@ namespace MapleServer2.PacketHandlers.Login {
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
                         Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             FaceDecorationD = faceDecoration,
@@ -122,7 +123,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.CL: // Clothes
                         Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -131,7 +132,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.PA: // Pants
                         Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -140,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         break;
                     case ItemSlot.SH: // Shoes
                         Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -150,7 +151,7 @@ namespace MapleServer2.PacketHandlers.Login {
                     case ItemSlot.ER: // Ear
                         // Assign ER
                         Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)) {
-                            Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0),
+                            Uid = GuidGenerator.Long(),
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
