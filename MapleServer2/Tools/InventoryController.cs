@@ -25,7 +25,7 @@ public class InventoryController
                 else
                 {
                     i.Amount = i.Amount + item.Amount;
-                    item.Amount = 0;
+                    session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                     return;
                 }
             }

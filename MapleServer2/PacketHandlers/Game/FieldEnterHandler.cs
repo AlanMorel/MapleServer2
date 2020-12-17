@@ -45,73 +45,87 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Add catalysts for testing
-            /*
+
             int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026 };
-            foreach (int catalyst in catalysts) {
-                var item = new Item(catalyst) { Amount = 99999, Uid = catalyst };
-                session.Inventory.Add(item);
-                session.Send(ItemInventoryPacket.Add(item));
+
+            var item = new Item(40100001)
+            {
+                Amount = 99999,
+                Uid = GuidGenerator.Long()
+            };
+            var item2 = new Item(40100001)
+            {
+                Amount = 90000,
+                Uid = GuidGenerator.Long()
+            };
+            var item3 = new Item(40100001)
+            {
+                Amount = 10000,
+                Uid = GuidGenerator.Long()
+            };
             InventoryController.Add(session, item);
             InventoryController.Add(session, item2);
             InventoryController.Add(session, item3);
-            }
-            */
+
+
+
+
 
             // Add mail for testing
             // System mail without any item
-            Mail sysMail = new Mail
-            (
-                101,
-                GuidGenerator.Int(),
-                session.Player.CharacterId,
-                "50000002",
-                "",
-                "",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                null
-            );
+            //Mail sysMail = new Mail
+            //(
+            //    101,
+            //    GuidGenerator.Int(),
+            //    session.Player.CharacterId,
+            //    "50000002",
+            //    "",
+            //    "",
+            //    0,
+            //    DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            //    null
+            //);
 
-            // System mail with an item
-            List<Item> items = new List<Item>
-            {
-                new Item(20302228)
-                {
-                    Uid = GuidGenerator.Long(),
-                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Owner = session.Player
-                }
-            };
-            Mail sysItemMail = new Mail
-            (
-                101,
-                GuidGenerator.Int(),
-                session.Player.CharacterId,
-                "53000042",
-                "",
-                "",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                items
-            );
+            //// System mail with an item
+            //List<Item> items = new List<Item>
+            //{
+            //    new Item(20302228)
+            //    {
+            //        Uid = GuidGenerator.Long(),
+            //        CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            //        Owner = session.Player
+            //    }
+            //};
+            //Mail sysItemMail = new Mail
+            //(
+            //    101,
+            //    GuidGenerator.Int(),
+            //    session.Player.CharacterId,
+            //    "53000042",
+            //    "",
+            //    "",
+            //    0,
+            //    DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            //    items
+            //);
 
-            // Regular mail
-            Mail regMail = new Mail
-            (
-                1,
-                GuidGenerator.Int(),
-                session.Player.CharacterId,
-                session.Player.Name,
-                "Test Title",
-                "Test Body",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                null
-            );
+            //// Regular mail
+            //Mail regMail = new Mail
+            //(
+            //    1,
+            //    GuidGenerator.Int(),
+            //    session.Player.CharacterId,
+            //    session.Player.Name,
+            //    "Test Title",
+            //    "Test Body",
+            //    0,
+            //    DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            //    null
+            //);
 
-            session.Mailbox.AddOrUpdate(sysItemMail);
-            session.Mailbox.AddOrUpdate(sysMail);
-            session.Mailbox.AddOrUpdate(regMail);
+            //session.Mailbox.AddOrUpdate(sysItemMail);
+            //session.Mailbox.AddOrUpdate(sysMail);
+            //session.Mailbox.AddOrUpdate(regMail);
         }
     }
 }
