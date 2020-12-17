@@ -5,6 +5,7 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
+using MapleServer2.Data;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
@@ -14,6 +15,9 @@ namespace MapleServer2.PacketHandlers.Common {
         public ResponseVersionHandler(ILogger<ResponseVersionHandler> logger) : base(logger) { }
 
         public override void Handle(LoginSession session, PacketReader packet) {
+            // Sync the account state TickCount
+            AccountStorage.TickCount = Environment.TickCount;
+
             HandleCommon(session, packet);
 
             session.Send(RequestPacket.Login());

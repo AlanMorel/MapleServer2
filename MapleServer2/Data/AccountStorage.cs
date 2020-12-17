@@ -11,6 +11,8 @@ namespace MapleServer2.Data {
 
         public const long SECONDARY_ACCOUNT = 0x2222222222222222;
 
+        public static int TickCount = 0;
+
         // Dictionary of character ids for the account
         public static Dictionary<long, List<long>> accountCharacters = new Dictionary<long, List<long>>();
 
@@ -30,9 +32,8 @@ namespace MapleServer2.Data {
         }
 
         // Adds new character
-        public static bool AddCharacter(Player data) {
+        public static void AddCharacter(Player data) {
             characters.Add(data.CharacterId, data);
-            return true;
         }
 
         // Retrieves a specific character for an account
@@ -41,10 +42,9 @@ namespace MapleServer2.Data {
         }
 
         // Updates a character
-        public static bool UpdateCharacter(Player data) {
+        public static void UpdateCharacter(Player data) {
             characters.Remove(data.CharacterId);
             characters.Add(data.CharacterId, data);
-            return true;
         }
     }
 }

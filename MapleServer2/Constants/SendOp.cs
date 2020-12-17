@@ -228,6 +228,7 @@
         ONE_TIME_EFFECT = 0x00F3,
         FIREWORKS = 0x00F7,
         CLUB = 0x00F8,
+        ITEM = 0x0105,
         ITEM_ENCHANT_TRANSFORM = 0x0106,
         GM_COMMAND = 0x0108,
         SKILL_BOOK_TREE = 0x010E,

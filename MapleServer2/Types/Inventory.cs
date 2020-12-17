@@ -53,15 +53,8 @@ namespace MapleServer2.Types
             if (item.Slot >= 0)
             {
                 if (!SlotTaken(item, item.Slot))
-                {
-                    if (isStackable(item))
-                    {
-                        Stack(item);
-                    }
-                    else
-                    {
-                        AddInternal(item);
-                    }
+                {                 
+                    AddInternal(item);
                     return true;
                 }
 
@@ -75,46 +68,11 @@ namespace MapleServer2.Types
                     continue;
                 }
                 item.Slot = i;
-                if (isStackable(item))
-                {
-                    Stack(item);
-                }
-                else
-                {
-                    AddInternal(item);
-                }
+
+                AddInternal(item);
                 return true;
             }
             return false;
-        }
-
-        // Checks if item is stackable.
-        private bool isStackable(Item item)
-        {
-            return item.SlotMax > 1;
-        }
-
-        private void Stack(Item item) // Replace 10 with item.slotmax to test against actual max slot count.
-        {
-            foreach (Item i in items.Values)
-            {
-                if (i.Id != item.Id || i.Amount > i.SlotMax)
-                {
-                    continue;
-                }
-                if ((i.Amount + item.Amount) > i.SlotMax)
-                {
-                    item.Amount = item.Amount - (i.SlotMax - i.Amount);
-                    i.Amount = i.SlotMax;
-                }
-                else
-                {
-                    i.Amount = i.Amount + item.Amount;
-                    item.Amount = 0;
-                    return;
-                }
-            }
-            AddInternal(item);
         }
 
         // Returns false if item doesn't exist or removing more than available

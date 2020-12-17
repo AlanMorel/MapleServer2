@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MapleServer2.Types
 {
@@ -33,7 +34,6 @@ namespace MapleServer2.Types
             {
                 Skills.Add(skill.Id, skill);
             }
-
             // Recursive add or update for sub skills
             if (skill.Sub != null)
             {

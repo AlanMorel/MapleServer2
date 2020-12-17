@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -44,35 +45,73 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Add catalysts for testing
+            /*
+            int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026 };
+            foreach (int catalyst in catalysts) {
+                var item = new Item(catalyst) { Amount = 99999, Uid = catalyst };
+                session.Inventory.Add(item);
+                session.Send(ItemInventoryPacket.Add(item));
+            InventoryController.Add(session, item);
+            InventoryController.Add(session, item2);
+            InventoryController.Add(session, item3);
+            }
+            */
 
-            int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026, 15100216, 15100216 };
+            // Add mail for testing
+            // System mail without any item
+            Mail sysMail = new Mail
+            (
+                101,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                "50000002",
+                "",
+                "",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
 
-            // Adds first set of item test case
-
-            Item item = new Item(40100001)
+            // System mail with an item
+            List<Item> items = new List<Item>
             {
-                Amount = 10,
-                Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0)
+                new Item(20302228)
+                {
+                    Uid = GuidGenerator.Long(),
+                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Owner = session.Player
+                }
             };
-            Item item2 = new Item(40100001)
-            {
-                Amount = 8,
-                Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0)
-            };
-            Item item3 = new Item(40100001)
-            {
-                Amount = 5,
-                Uid = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0)
-            };
+            Mail sysItemMail = new Mail
+            (
+                101,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                "53000042",
+                "",
+                "",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                items
+            );
 
-            session.Inventory.Add(item);
-            session.Inventory.Add(item2);
-            session.Inventory.Add(item3);
+            // Regular mail
+            Mail regMail = new Mail
+            (
+                1,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                session.Player.Name,
+                "Test Title",
+                "Test Body",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
 
-            session.Send(ItemInventoryPacket.Add(item));
-            session.Send(ItemInventoryPacket.Add(item2));
-            session.Send(ItemInventoryPacket.Add(item3));
-            
+            session.Mailbox.AddOrUpdate(sysItemMail);
+            session.Mailbox.AddOrUpdate(sysMail);
+            session.Mailbox.AddOrUpdate(regMail);
         }
     }
 }
