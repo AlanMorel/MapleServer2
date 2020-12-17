@@ -67,9 +67,8 @@ namespace MapleServer2.PacketHandlers.Game
             InventoryController.Add(session, item2);
             InventoryController.Add(session, item3);
 
-            /*Add mail for testing
-            System mail without any item
-
+            //Add mail for testing
+            //System mail without any item
            Mail sysMail = new Mail
            (
                101,
@@ -122,7 +121,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Mailbox.AddOrUpdate(sysItemMail);
             session.Mailbox.AddOrUpdate(sysMail);
-            session.Mailbox.AddOrUpdate(regMail);*/
+            session.Mailbox.AddOrUpdate(regMail);
         }
     }
 }
