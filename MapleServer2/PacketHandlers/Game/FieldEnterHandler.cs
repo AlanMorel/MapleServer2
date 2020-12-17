@@ -69,12 +69,9 @@ namespace MapleServer2.PacketHandlers.Game
             session.Inventory.Add(item2);
             session.Inventory.Add(item3);
 
-            Debug.WriteLine(item.Amount);
-
             session.Send(ItemInventoryPacket.Add(item));
             if (item2.Amount > 0)
             {
-                Debug.WriteLine(item2.Amount);
                 session.Send(ItemInventoryPacket.Add(item2));
                 session.Send(ItemInventoryPacket.Add(item3));
             }

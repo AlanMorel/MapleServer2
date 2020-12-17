@@ -12,9 +12,6 @@ namespace MapleServer2.Types
     {
         public short Size { get; }
         public IReadOnlyDictionary<long, Item> Items => items;
-        int originAmount;
-        int amount;
-        bool isStacking;
         // This contains ALL inventory items regardless of tab
         private readonly Dictionary<long, Item> items;
 
@@ -76,8 +73,6 @@ namespace MapleServer2.Types
                 if (!SlotTaken(item, i))
                 {
                     item.Slot = i;
-
-
                     if (isStackable(item))
                     {
                         Stack(item);
@@ -89,12 +84,14 @@ namespace MapleServer2.Types
                     return true;
                 }
             }
-
             return false;
         }
 
         // Checks if item is stackable.
-        private bool isStackable(Item item) => item.SlotMax > 1;
+        private bool isStackable(Item item)
+        {
+            return item.SlotMax > 1;
+        }
 
         private void Stack(Item item) // Replace 10 with item.slotmax to test against actual max slot count.
         {
@@ -102,12 +99,12 @@ namespace MapleServer2.Types
             {
                 if (i.Id == item.Id)
                 {
-                    if (i.Amount < 10)
+                    if (i.Amount < i.SlotMax)
                     {
-                        if ((i.Amount + item.Amount) > 10)
+                        if ((i.Amount + item.Amount) > i.SlotMax)
                         {
-                            item.Amount = item.Amount - (10 - i.Amount);
-                            i.Amount = 10;
+                            item.Amount = item.Amount - (i.SlotMax - i.Amount);
+                            i.Amount = i.SlotMax;
                         }
                         else
                         {
@@ -143,7 +140,6 @@ namespace MapleServer2.Types
 
             return item.TrySplit(amount, out removedItem) ? item.Amount : -1;
         }
-
 
         // Replaces an existing item with an updated copy of itself
         public bool Replace(Item item)
@@ -200,7 +196,6 @@ namespace MapleServer2.Types
                 slots[i] = tabItems[i].Uid;
             }
         }
-
 
         // This REQUIRES item.Slot to be set appropriately
         private void AddInternal(Item item)
