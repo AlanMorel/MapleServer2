@@ -70,19 +70,20 @@ namespace MapleServer2.Types
 
             for (short i = 0; i < Size; i++)
             {
-                if (!SlotTaken(item, i))
+                if (SlotTaken(item, i))
                 {
-                    item.Slot = i;
-                    if (isStackable(item))
-                    {
-                        Stack(item);
-                    }
-                    else
-                    {
-                        AddInternal(item);
-                    }
-                    return true;
+                    continue;
                 }
+                item.Slot = i;
+                if (isStackable(item))
+                {
+                    Stack(item);
+                }
+                else
+                {
+                    AddInternal(item);
+                }
+                return true;
             }
             return false;
         }
