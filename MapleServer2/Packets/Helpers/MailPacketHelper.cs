@@ -62,7 +62,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
             pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + AccountStorage.TickCount : 0); // Read timestamp
-            pWriter.WriteLong(mail.SentTimestamp + 864000000); // Time left
+            pWriter.WriteLong(mail.SentTimestamp + 864000000); // Time left = sentTime + 10000 days
             pWriter.WriteLong(mail.SentTimestamp + AccountStorage.TickCount); // Sent timestamp
             pWriter.WriteShort(0);
 
@@ -88,7 +88,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
             pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + AccountStorage.TickCount : 0); // Read timestamp
-            pWriter.WriteLong(mail.SentTimestamp + 2592000); // Time left
+            pWriter.WriteLong(mail.SentTimestamp + 2592000); // Time left = sentTime + 30 days
             pWriter.WriteLong(mail.SentTimestamp + AccountStorage.TickCount); // Sent timestamp
             pWriter.WriteShort(0);
 

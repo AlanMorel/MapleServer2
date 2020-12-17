@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
+using MapleServer2.Types;
+using MapleServer2.Tools;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -41,7 +45,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleOpen(GameSession session, PacketReader packet)
         {
-            MailPacket.Open(session);
+            session.Mailbox.ClearExpired();
+
+            session.Send(MailPacket.StartOpen());
+            session.Send(MailPacket.Open(session.Mailbox.Box));
+            session.Send(MailPacket.EndOpen());
         }
 
         private void HandleSend(GameSession session, PacketReader packet)
@@ -50,34 +58,70 @@ namespace MapleServer2.PacketHandlers.Game
             string title = packet.ReadUnicodeString();
             string body = packet.ReadUnicodeString();
 
-            session.Send(MailPacket.Send(session, recipient, title, body));
+            // Would make database call to look for recipient and add mail to their mailbox, instead add mail to session
+            Mail mail = new Mail
+            (
+                1,
+                GuidGenerator.Int(),
+                session.Player.CharacterId,
+                session.Player.Name,
+                title,
+                body,
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
+            session.Mailbox.AddOrUpdate(mail);
+
+            session.Send(MailPacket.Send(mail));
         }
 
         private void HandleRead(GameSession session, PacketReader packet)
         {
             int id = packet.ReadInt();
+            packet.ReadInt();
 
-            session.Send(MailPacket.Read(session, id));
+            long timestamp = session.Mailbox.Read(id);
+
+            session.Send(MailPacket.Read(id, timestamp));
         }
 
         private void HandleCollect(GameSession session, PacketReader packet)
         {
             int id = packet.ReadInt();
+            packet.ReadInt();
 
-            MailPacket.Collect(session, id);
+            // Get items and add to inventory
+            List<Item> items = session.Mailbox.Collect(id);
+
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (Item item in items)
+            {
+                session.Inventory.Remove(item.Uid, out Item removed);
+                session.Inventory.Add(item);
+
+                // Item packet, not sure if this is only used for mail, it also doesn't seem to do anything
+                session.Send(ItemPacket.ItemData(item));
+                // Inventory packets
+                session.Send(ItemInventoryPacket.Add(item));
+                session.Send(ItemInventoryPacket.MarkItemNew(item));
+            }
+
+            session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            session.Send(MailPacket.CollectResponse(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
 
         private void HandleReadBatch(GameSession session, PacketReader packet)
         {
             int count = packet.ReadInt();
 
-            int id = 0;
             for (int i = 0; i < count; i++)
             {
-                id = packet.ReadInt();
-                packet.ReadInt();
-
-                session.Send(MailPacket.Read(session, id));
+                HandleRead(session, packet);
             }
         }
 
@@ -85,14 +129,13 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int count = packet.ReadInt();
 
-            int id = 0;
             for (int i = 0; i < count; i++)
             {
-                id = packet.ReadInt();
-                packet.ReadInt();
+                HandleRead(session, packet);
 
-                session.Send(MailPacket.Read(session, id));
-                MailPacket.Collect(session, id);
+                packet.Skip(-8); // Back track to reread id
+
+                HandleCollect(session, packet);
             }
         }
     }

@@ -15,6 +15,7 @@ namespace MapleServer2.Types
         public void AddOrUpdate(Mail mail)
         {
             int index = Box.FindIndex(x => x.Uid == mail.Uid);
+
             if (index > -1)
             {
                 Box[index] = mail;
@@ -27,22 +28,34 @@ namespace MapleServer2.Types
 
         public long Read(int id)
         {
+            long timestamp = 0;
             int index = Box.FindIndex(x => x.Uid == id);
-            Box[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-            return Box[index].ReadTimestamp;
+            if (index > -1)
+            {
+                Box[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                timestamp = Box[index].ReadTimestamp;
+            }
+
+            return timestamp;
         }
 
         public List<Item> Collect(int id)
         {
+            List<Item> items = null;
             int index = Box.FindIndex(x => x.Uid == id);
-            List<Item> items = Box[index].Items;
-            Box[index].Collect(null);
+
+            if (index > -1)
+            {
+                items = Box[index].Items;
+                Box[index].Collect(null);
+            }
 
             return items;
+            
         }
 
-        public int GetUnread()
+        public int GetUnreadCount()
         {
             int unread = 0;
             foreach (Mail mail in Box)
@@ -54,6 +67,29 @@ namespace MapleServer2.Types
             }
 
             return unread;
+        }
+
+        public void ClearExpired()
+        {
+            long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            foreach (Mail mail in Box)
+            {
+                if (mail.Type == 1)
+                {
+                    if (currentTime >= mail.SentTimestamp + 2592000) // 2592000 = 30 days
+                    {
+                        Box.Remove(mail);
+                    }
+                }
+                else if (mail.Type == 101)
+                {
+                    if (currentTime >= mail.SentTimestamp + 864000000) // 864000000 = 10000 days
+                    {
+                        Box.Remove(mail);
+                    }
+                }
+            }
         }
     }
 }
