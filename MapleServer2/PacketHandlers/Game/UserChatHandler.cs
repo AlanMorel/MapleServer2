@@ -4,6 +4,7 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -25,8 +26,9 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch(type)
             {
-                case ChatType.Channel:
-                    //TODO: Send to all players on current channel
+                
+                case ChatType.Channel: //TODO: Send to all players on current channel
+                case ChatType.Super:
                 case ChatType.World:
                     //Send to all players online
                     MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
@@ -39,22 +41,19 @@ namespace MapleServer2.PacketHandlers.Game
                     //TODO: Send to all in party
                     break;
                 case ChatType.WhisperTo:
-                    Types.Player recipientPlayer = null;
+                    bool playerFound = false;
                     MapleServer.BroadcastAll(pSession => {
                         if (pSession.Player.Name == recipient)
                         {
                             pSession.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
-                            recipientPlayer = pSession.Player;
+                            session.Send(ChatPacket.Send(pSession.Player, message, ChatType.WhisperTo));
+                            playerFound = true;
                         }
                     });
-                    if (recipientPlayer != null)
+                    if (!playerFound)
                     {
-                        session.Send(ChatPacket.Send(recipientPlayer, message, type));
-                        break;
+                        session.Send(ChatPacket.Send(session.Player, "Player not found or they are not online.", ChatType.WhisperFail));
                     }
-                    goto case ChatType.WhisperFail;
-                case ChatType.WhisperFail:
-                    session.Send(ChatPacket.Send(session.Player, "Player not found or they are not online.", ChatType.WhisperFail));
                     break;
                 default:
                     session.FieldManager.SendChat(session.Player, message, type);
@@ -63,5 +62,3 @@ namespace MapleServer2.PacketHandlers.Game
         }
     }
 }
-// Party invite
-// 01 09 00 42 00 75 00 62 00 62 00 6C 00 65 00 47 00 75 00 6E 00
