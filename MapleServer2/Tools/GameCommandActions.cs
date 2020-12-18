@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
 using MapleServer2.Data.Static;
@@ -17,6 +17,9 @@ namespace MapleServer2.Tools {
                     break;
                 case "npc":
                     ProcessNpcCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
+                case "map":
+                    ProcessMapCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "coord":
                     session.SendNotice(session.FieldPlayer.Coord.ToString());
@@ -56,6 +59,30 @@ namespace MapleServer2.Tools {
                 session.Send(ItemInventoryPacket.Add(item));
                 session.Send(ItemInventoryPacket.MarkItemNew(item));
             }
+        }
+
+        // Example: "map -> return current map id"
+        // Example: "map id:200001 -> teleport to map"
+        private static void ProcessMapCommand(GameSession session, string command) {
+            Dictionary<string, string> config = command.ToMap();
+            int.TryParse(config.GetValueOrDefault("id", "0"), out int mapId);
+            if (mapId == 0)
+            {
+                session.SendNotice($"Current map id:{session.Player.MapId}");
+                return;
+            }
+
+            if (!MapEntityStorage.HasPortals(mapId))
+            {
+                session.SendNotice("Invalid map: " + mapId);
+                return;
+            }
+
+            MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
+
+            session.Player.MapId = mapId;
+            session.Player.Coord = dstPortal.Coord.ToFloat();
+            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
         }
 
         private static void ProcessNpcCommand(GameSession session, string command) {
