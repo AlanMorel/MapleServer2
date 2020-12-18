@@ -82,13 +82,13 @@ namespace MapleServer2.Types
 
         public GameOptions GameOptions { get; private set; }
 
-        public static Player Default(long accountId, long characterId, string name = "SparkmodF")
+        public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {
             int job = 10;
 
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 1000, 0);
+            stats.CurrentHp = new PlayerStat(0, 500, 0);
             stats.Spirit = new PlayerStat(100, 100, 100);
             stats.Stamina = new PlayerStat(120, 120, 120);
             stats.AtkSpd = new PlayerStat(120, 100, 130);
@@ -126,13 +126,17 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
-
+                ValorToken = 1,
+                Treva = 2,
+                Rue = 3,
+                HaviFruit = 4,
+                MesoToken = 5
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
         }
 
-        public static Player MaleDefault(long accountId, long characterId, string name = "Sparkmod")
+        public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
             int job = 50;
 
@@ -181,7 +185,7 @@ namespace MapleServer2.Types
             };
         }
 
-        public static Player NewCharacter(byte gender, /*Job jobType*/ int job, string name, SkinColor skinColor, object equips)
+        public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);
@@ -203,7 +207,6 @@ namespace MapleServer2.Types
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
                 Gender = gender,
-                //jobType = jobType,
                 JobGroupId = job,
                 Level = 1,
                 MapId = 2000062,

@@ -33,12 +33,13 @@ namespace MapleServer2.PacketHandlers.Login {
             string user = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
             logger.Debug($"Logging in with user:{user} pass:{pass}");
+
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(user) && string.IsNullOrEmpty(pass)) {
-                session.AccountId = AccountStorage.DEFAULT_ACCOUNT;
-            } else {
-                session.AccountId = AccountStorage.SECONDARY_ACCOUNT;
+                // send error / account credentials not found
             }
+
+            session.AccountId = AccountStorage.DEFAULT_ACCOUNT_ID;
 
             switch (mode) {
                 case 1:

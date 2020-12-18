@@ -9,27 +9,29 @@ namespace MapleServer2.Packets {
             var pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteLong(session.Player.CharacterId);
-            pWriter.WriteShort();
+            pWriter.WriteShort(1); // channel
             pWriter.WriteLong(session.Player.Experience);
             pWriter.WriteLong(session.Player.RestExperience);
             pWriter.WriteLong(session.Player.Mesos);
-            // These Merets are added up
+
             pWriter.WriteLong(); // Merets
             pWriter.WriteLong(); // Merets
-            pWriter.WriteLong(); // Game Merets
             // These Merets are added up. If set, previous are ignored.
+
             pWriter.WriteLong(); // Game Merets
             pWriter.WriteLong(); // Event Merets
-            pWriter.WriteLong(); // Merets
 
-            pWriter.WriteLong(); // Treva
-            pWriter.WriteLong(); // Rue
-            pWriter.WriteLong(); // Havi Fruit
+            pWriter.WriteLong();
+
+            pWriter.WriteLong(session.Player.ValorToken);
+            pWriter.WriteLong(session.Player.Treva);
+            pWriter.WriteLong(session.Player.Rue);
+            pWriter.WriteLong(session.Player.HaviFruit);
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteLong(); // Meso Token
+            pWriter.WriteLong(session.Player.MesoToken);
             pWriter.WriteUnicodeString(""); // Profile Url
             pWriter.WriteByte();
             pWriter.WriteByte();
