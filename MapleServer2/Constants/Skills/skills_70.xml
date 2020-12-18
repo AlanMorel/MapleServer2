@@ -14,11 +14,11 @@
 	<key id="10700022" name="Vicious Cuts EX" />
 	<key id="10700031" name="Blade Dance" sub="10700032" />
 	<key id="10700032" name="Blade Dance EX" />
-	<key id="10700041" name="Mind Stealer" sub="10700042" />
+	<key id="10700041" name="Mind Stealer" default="1" sub="10700042" />
 	<key id="10700042" name="Mind Stealer EX" />
 	<key id="10700051" name="Somersault Kick" sub="10700052" />
 	<key id="10700052" name="Somersault Kick EX" />
-	<key id="10700061" name="Spirit Thief" />
+	<key id="10700061" name="Spirit Thief" default="1" />
 	<key id="10700071" name="Deft Combatant" />
 	<key id="10700081" name="Haste" sub="10700082" />
 	<key id="10700082" name="Cancel Haste" />

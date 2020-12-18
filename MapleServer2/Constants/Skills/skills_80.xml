@@ -13,8 +13,8 @@
 	<key id="10800052" name="Cancel Dark Cloak" />
 	<key id="10800053" name="Dark Cloak Stun" />
 	<key id="10800061" name="Shadow Web" />
-	<key id="10800071" name="Dash" />
-	<key id="10800081" name="Shadow Chaser" />
+	<key id="10800071" name="Dash" default="1" />
+	<key id="10800081" name="Shadow Chaser" default="1" />
 	<key id="10800091" name="Mark of Death" />
 	<key id="10800101" name="Star Flurry" />
 	<key id="10800111" name="Thrown Weapon Mastery" />

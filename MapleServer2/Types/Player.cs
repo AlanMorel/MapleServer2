@@ -84,7 +84,7 @@ namespace MapleServer2.Types
 
         public static Player Default(long accountId, long characterId, string name = "SparkmodF")
         {
-            int job = 10;
+            int job = 100;
 
             PlayerStats stats = PlayerStats.Default();
             stats.Hp = new PlayerStat(1000, 0, 1000);

@@ -30,6 +30,9 @@ namespace MapleServer2.Tools
 
                 // Skill id
                 int id = Int32.Parse(currentNode.Attributes["id"].Value);
+                // Default
+                XmlAttribute dAttr = currentNode.Attributes["default"];
+                int DefaultSkill = dAttr != null ? Int32.Parse(dAttr.Value) : 0;
                 // Skill feature (awakening)
                 XmlAttribute fAttr = currentNode.Attributes["feature"];
                 string feature = fAttr != null ? fAttr.Value : "";
@@ -37,7 +40,15 @@ namespace MapleServer2.Tools
                 XmlAttribute subAttr = currentNode.Attributes["sub"];
                 int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
 
-                skillTab.AddOrUpdate(new Skill(id, 1, 0, feature, sub));
+                if (DefaultSkill > 0)
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 1, feature, sub));
+                }
+                else
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 0, feature, sub));
+                }
+                
             }
 
             return skillTab;

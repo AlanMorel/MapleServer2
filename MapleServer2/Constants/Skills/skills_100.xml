@@ -16,12 +16,12 @@
 	<key id="11000032" name="Rising Kick EX" />
 	<key id="11000041" name="Guillotine" sub="11000042" />
 	<key id="11000042" name="Guillotine EX" />
-	<key id="11000051" name="Feinting Guard" sub="11000053,11000055" />
+	<key id="11000051" name="Feinting Guard" default ="1" sub="11000053,11000055" />
 	<key id="11000053" name="Feinting Guard EX" feature="JobChange_01" />
 	<key id="11000055" name="Feinting Guard EX" feature="JobChange_01" />
 	<key id="11000061" name="Hurricane Cutter" />
 	<key id="11000071" name="Power Puncher" />
-	<key id="11000081" name="Knuckle Missile" />
+	<key id="11000081" name="Knuckle Missile" default="1" />
 	<key id="11000082" name="Link Function" />
 	<key id="11000091" name="Giants Fist" />
 	<key id="11000101" name="Overcome" />

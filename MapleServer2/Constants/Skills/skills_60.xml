@@ -12,8 +12,8 @@
 	<key id="10600044" name="Rapid-Fire Electric Blast" />
 	<key id="10600051" name="Stun Grenades" />
 	<key id="10600061" name="Magnetic Bomb" />
-	<key id="10600071" name="Reload" />
-	<key id="10600081" name="Jet Boots" />
+	<key id="10600071" name="Reload" default="1" />
+	<key id="10600081" name="Jet Boots" default="1" />
 	<key id="10600091" name="Med Kit" />
 	<key id="10600101" name="Bullet Spray" />
 	<key id="10600111" name="Advanced Bullets" />

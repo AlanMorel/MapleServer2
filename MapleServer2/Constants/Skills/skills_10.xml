@@ -10,11 +10,11 @@
 	<key id="10100031" name="Drill Thrust" />
 	<key id="10100041" name="Warhorn" />
 	<key id="10100051" name="Shield Wall" />
-	<key id="10100061" name="Iron Defense" sub="10100062" />
+	<key id="10100061" name="Iron Defense" default="1" sub="10100062" />
 	<key id="10100062" name="Cancel Iron Defense" />
 	<key id="10100071" name="Shield Toss" />
 	<key id="10100081" name="Bulwark" />
-	<key id="10100091" name="Shield Charge" />
+	<key id="10100091" name="Shield Charge" default="1" />
 	<key id="10100101" name="Defender of the Faith" />
 	<key id="10100111" name="Longsword Mastery" />
 	<key id="10100121" name="Shield Mastery" />
