@@ -2,7 +2,6 @@
 using System.Collections.Immutable;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Extensions;
 using MapleServer2.PacketHandlers;
 using Microsoft.Extensions.Logging;
 
@@ -31,7 +30,6 @@ namespace MapleServer2.Network {
 
         private void Register(ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder,
                 IPacketHandler<T> packetHandler) {
-            logger.Debug($"Registered {packetHandler}");
             builder.Add(packetHandler.OpCode, packetHandler);
         }
     }

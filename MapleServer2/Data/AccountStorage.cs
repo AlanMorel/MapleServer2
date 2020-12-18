@@ -5,11 +5,7 @@ namespace MapleServer2.Data {
     // Class for retrieving and storing account data
     public static class AccountStorage {
         // Temp account and character ids
-        public const long DEFAULT_ACCOUNT = 0x1111111111111111;
-        public const long DEFAULT_CHAR1 = 0x7777777777777777;
-        public const long DEFAULT_CHAR2 = 0x1212121212121212;
-
-        public const long SECONDARY_ACCOUNT = 0x2222222222222222;
+        public const long DEFAULT_ACCOUNT_ID = 1;
 
         public static int TickCount = 0;
 
@@ -19,11 +15,15 @@ namespace MapleServer2.Data {
         // Dictionary of characters for the account
         public static Dictionary<long, Player> characters = new Dictionary<long, Player>();
 
-        static AccountStorage () {
+        static AccountStorage() {
             // Add temp characters
-            accountCharacters.Add(DEFAULT_ACCOUNT, new List<long> { DEFAULT_CHAR1, DEFAULT_CHAR2 });
-            characters.Add(DEFAULT_CHAR1, Player.Default(DEFAULT_ACCOUNT, DEFAULT_CHAR1));
-            characters.Add(DEFAULT_CHAR2, Player.MaleDefault(DEFAULT_ACCOUNT, DEFAULT_CHAR2));
+            long defaultCharId1 = 1;
+            long defaultCharId2 = 2;
+
+            accountCharacters.Add(DEFAULT_ACCOUNT_ID, new List<long> { defaultCharId1, defaultCharId2 });
+
+            characters.Add(defaultCharId1, Player.Char1(DEFAULT_ACCOUNT_ID, defaultCharId1));
+            characters.Add(defaultCharId2, Player.Char2(DEFAULT_ACCOUNT_ID, defaultCharId2));
         }
 
         // Retrieves a list of character ids for an account
