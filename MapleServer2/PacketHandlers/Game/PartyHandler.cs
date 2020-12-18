@@ -5,6 +5,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace MapleServer2.PacketHandlers.Game {
     public class PartyHandler : GamePacketHandler {
@@ -26,7 +27,8 @@ namespace MapleServer2.PacketHandlers.Game {
                 case 2:
                     HandleJoin(session, packet);
                     break;
-                default:
+                case 3:
+                    HandleLeave(session, packet);
                     break;
 
             }
@@ -41,6 +43,7 @@ namespace MapleServer2.PacketHandlers.Game {
                 {
                     pSession.Send(PartyPacket.SendInvite(pSession.Player, session.Player));
                     pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
+                    session.Send(PartyPacket.CreateParty(session.Player));
                 }
             });
         }
@@ -54,26 +57,45 @@ namespace MapleServer2.PacketHandlers.Game {
             byte unk3 = packet.ReadByte();
             if(accept == 1)
             {
+                Player other = null;
                 //Create party object and append to parties master list somewhere
                 MapleServer.BroadcastAll(pSession => {
                     if (pSession.Player.Name == target)
                     {
-                        pSession.Send(PartyPacket.JoinParty(pSession.Player, session.Player));
-                        pSession.Send(PartyPacket.JoinParty2(pSession.Player, session.Player));
-                        pSession.Send(PartyPacket.JoinParty(pSession.Player, session.Player));
-                        pSession.Send(PartyPacket.JoinParty3(pSession.Player, session.Player));
-                        session.Send(PartyPacket.JoinParty(session.Player, session.Player));
-                        session.Send(PartyPacket.JoinParty2(pSession.Player, session.Player));
-                        session.Send(PartyPacket.JoinParty(pSession.Player, session.Player));
-                        session.Send(PartyPacket.JoinParty3(session.Player, session.Player));
+                        other = pSession.Player;
+                        
+
+                        pSession.Send(PartyPacket.JoinParty(session.Player));
+                        pSession.Send(PartyPacket.JoinParty2(session.Player));
+
+                        pSession.Send(PartyPacket.UpdateHitpoints(pSession.Player));
+                        pSession.Send(PartyPacket.UpdateHitpoints(session.Player));
+                        
+
                     }
                 });
-                
+                //Need a special JoinParty that sends all players in party to newly joining player.
+                session.Send(PartyPacket.JoinParty3(other, session.Player));
+                session.Send(PartyPacket.JoinParty2(other));
+                session.Send(PartyPacket.JoinParty(session.Player));
+
+                session.Send(PartyPacket.UpdateHitpoints(other));
+                session.Send(PartyPacket.UpdateHitpoints(session.Player));
             }
             else
             {
                 //Send Decline message to inviting player?
             }
+        }
+
+        private void HandleLeave(GameSession session, PacketReader packet)
+        {
+            session.Send(PartyPacket.LeaveParty(session.Player));
+        }
+
+        private void HandleKick(GameSession session, PacketReader packet)
+        {
+            string target = packet.ReadUnicodeString();
         }
     }
 }
