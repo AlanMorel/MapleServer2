@@ -11,6 +11,8 @@ using NLog;
 
 namespace MapleServer2 {
     public static class MapleServer {
+
+        private static GameServer gameServer;
         public static void Main(string[] args) {
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
@@ -23,7 +25,7 @@ namespace MapleServer2 {
 
             IContainer gameContainer = GameContainerConfig.Configure();
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
-            var gameServer = gameScope.Resolve<GameServer>();
+            gameServer = gameScope.Resolve<GameServer>();
             gameServer.Start();
 
             // Input commands to the server
@@ -54,6 +56,25 @@ namespace MapleServer2 {
                     default:
                         logger.Info($"Unknown command:{input[0]} args:{(input.Length > 1 ? input[1] : "N/A")}");
                         break;
+                }
+            }
+        }
+
+        public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
+        {
+            BroadcastAll(session => {
+                if (session == sender) return;
+                session.Send(packet);
+            });
+        }
+
+        public static void BroadcastAll(Action<GameSession> action)
+        {
+            lock (gameServer.GetSessions())
+            {
+                foreach (GameSession session in gameServer.GetSessions())
+                {
+                    action?.Invoke(session);
                 }
             }
         }
