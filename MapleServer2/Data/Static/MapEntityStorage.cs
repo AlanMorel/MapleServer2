@@ -36,11 +36,7 @@ namespace MapleServer2.Data.Static {
         public static MapPortal GetFirstPortal(int mapId)
         {
             List<MapPortal> items = portals.GetValueOrDefault(mapId);
-            if (items.Count > 0)
-            {
-                return items[0];
-            }
-            return null;
+            return items?.Count > 0 ? items[0] : null;
         }
     }
 }

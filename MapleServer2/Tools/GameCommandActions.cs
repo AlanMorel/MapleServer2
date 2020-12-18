@@ -80,9 +80,12 @@ namespace MapleServer2.Tools {
 
             MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
 
-            session.Player.MapId = mapId;
-            session.Player.Coord = dstPortal.Coord.ToFloat();
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            if (dstPortal != null)
+            {
+                session.Player.MapId = mapId;
+                session.Player.Coord = dstPortal.Coord.ToFloat();
+                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            }
         }
 
         private static void ProcessNpcCommand(GameSession session, string command) {
