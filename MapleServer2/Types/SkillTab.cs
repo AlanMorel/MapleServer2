@@ -33,6 +33,7 @@ namespace MapleServer2.Types
             {
                 Skills.Add(skill.Id, skill);
             }
+
             // Recursive add or update for sub skills
             if (skill.Sub != null)
             {
