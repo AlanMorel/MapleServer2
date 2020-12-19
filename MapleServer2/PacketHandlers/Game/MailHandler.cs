@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.MAIL;
 
-        public MailHandler(ILogger<SkillBookTreeHandler> logger) : base(logger) { }
+        public MailHandler(ILogger<MailHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
