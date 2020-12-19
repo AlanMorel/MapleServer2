@@ -5,7 +5,7 @@
 			11000181,11000341,11000182,11000183,11000131,11000132,11000026,11000081,20000011,11000241,
 			11000031,11000191,11000032,11000192,11000141,11000091,11000144,11000041,11000042,11000071,
 			11000311,11000331,11000314,11000111,11000231,11000267,11000082,11000219,11000151,11000221,
-			11000291"
+			11000291" split="12"
 >
 	<key id="11000001" name="Mach Punch" />
 	<key id="11000011" name="Fists of Fury" sub="11000012" />
@@ -16,12 +16,12 @@
 	<key id="11000032" name="Rising Kick EX" />
 	<key id="11000041" name="Guillotine" sub="11000042" />
 	<key id="11000042" name="Guillotine EX" />
-	<key id="11000051" name="Feinting Guard" sub="11000053,11000055" />
-	<key id="11000053" name="Feinting Guard EX" feature="JobChange_01" />
-	<key id="11000055" name="Feinting Guard EX" feature="JobChange_01" />
+	<key id="11000051" name="Feinting Guard" default ="1" sub="11000053,11000055" />
+	<key id="11000053" name="Feinting Guard EX" default="1" feature="JobChange_01" />
+	<key id="11000055" name="Feinting Guard EX" default="1" feature="JobChange_01" />
 	<key id="11000061" name="Hurricane Cutter" />
 	<key id="11000071" name="Power Puncher" />
-	<key id="11000081" name="Knuckle Missile" />
+	<key id="11000081" name="Knuckle Missile" default="1" />
 	<key id="11000082" name="Link Function" />
 	<key id="11000091" name="Giants Fist" />
 	<key id="11000101" name="Overcome" />

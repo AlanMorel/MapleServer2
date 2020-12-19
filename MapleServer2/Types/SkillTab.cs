@@ -8,13 +8,15 @@ namespace MapleServer2.Types
         public long Id { get; set; }
         public string Name { get; private set; }
         public int[] Order { get; private set; }
+        public byte Split { get; private set; }
         public Dictionary<int, Skill> Skills { get; private set; }
 
-        public SkillTab(string name, int[] order = null, Dictionary<int, Skill> skills = null)
+        public SkillTab(string name, int[] order = null, byte split = 8, Dictionary<int, Skill> skills = null)
         {
             this.Id = 0x000032DF995949B9; // temporary hard coded id
             this.Name = name;
             this.Order = order;
+            this.Split = split;
             this.Skills = (skills != null && skills.Any()) ? skills : new Dictionary<int, Skill>();
 
             // Add default skills

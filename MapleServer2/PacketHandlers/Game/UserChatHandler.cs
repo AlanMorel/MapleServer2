@@ -24,10 +24,11 @@ namespace MapleServer2.PacketHandlers.Game
 
             GameCommandActions.Process(session, message);
 
-            switch(type)
+            switch (type)
             {
-                
+
                 case ChatType.Channel: //TODO: Send to all players on current channel
+                    break;
                 case ChatType.Super:
                 case ChatType.World:
                     //Send to all players online
@@ -41,16 +42,14 @@ namespace MapleServer2.PacketHandlers.Game
                     //TODO: Send to all in party
                     break;
                 case ChatType.WhisperTo:
-                    bool playerFound = false;
-                    MapleServer.BroadcastAll(pSession => {
-                        if (pSession.Player.Name == recipient)
-                        {
-                            pSession.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
-                            session.Send(ChatPacket.Send(pSession.Player, message, ChatType.WhisperTo));
-                            playerFound = true;
-                        }
-                    });
-                    if (!playerFound)
+                    Player recipientPlayer = GameServer.Storage.GetPlayerByName(recipient);
+
+                    if (recipientPlayer != null)
+                    {
+                        recipientPlayer.Session.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
+                        session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
+                    }
+                    else
                     {
                         session.Send(ChatPacket.Send(session.Player, "Player not found or they are not online.", ChatType.WhisperFail));
                     }

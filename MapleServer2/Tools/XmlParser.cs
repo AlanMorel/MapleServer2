@@ -14,12 +14,14 @@ namespace MapleServer2.Tools
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load($"MapleServer2/Constants/Skills/skills_{job}.xml");
 
-            // Parse skill id order
+            // Parse skill id order and count split num
             XmlAttribute oAttr = xmlDoc.DocumentElement.Attributes["order"];
             int[] order = oAttr != null ? Array.ConvertAll(oAttr.Value.Split(","), Int32.Parse) : null;
+            XmlAttribute splitAttr = xmlDoc.DocumentElement.Attributes["split"];
+            byte split  = splitAttr != null ? Byte.Parse(splitAttr.Value) : (byte) 8;
 
             // Create new skill tab with name and skill order
-            SkillTab skillTab = new SkillTab(name, order);
+            SkillTab skillTab = new SkillTab(name, order, split);
 
             // Parse skills and add to skillTab
             XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
@@ -30,6 +32,9 @@ namespace MapleServer2.Tools
 
                 // Skill id
                 int id = Int32.Parse(currentNode.Attributes["id"].Value);
+                // Default
+                XmlAttribute dAttr = currentNode.Attributes["default"];
+                int DefaultSkill = dAttr != null ? Int32.Parse(dAttr.Value) : 0;
                 // Skill feature (awakening)
                 XmlAttribute fAttr = currentNode.Attributes["feature"];
                 string feature = fAttr != null ? fAttr.Value : "";
@@ -37,7 +42,14 @@ namespace MapleServer2.Tools
                 XmlAttribute subAttr = currentNode.Attributes["sub"];
                 int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
 
-                skillTab.AddOrUpdate(new Skill(id, 1, 0, feature, sub));
+                if (DefaultSkill > 0)
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 1, feature, sub));
+                }
+                else
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 0, feature, sub));
+                }
             }
 
             return skillTab;

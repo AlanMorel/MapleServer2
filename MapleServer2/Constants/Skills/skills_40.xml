@@ -2,7 +2,7 @@
 <ms2 order="10400091,10400193,10400041,10400211,10400161,20000011,10400061,10400231,10400011,10400181,
 			10400081,10400031,10400151,20000001,10400101,10400271,10400186,10400051,10400221,10400001,
 			10400171,10400121,10400291,10400071,10400241,10400191,10400072,10400141,10400261,10400111,
-			10400281,10400131,10400301,10400251,10400021,10400242,10400293"
+			10400281,10400131,10400301,10400251,10400021,10400242,10400293" split="10"
 >
 	<key id="10400001" name="Celestial Light" />
 	<key id="10400002" name="Scathing Light" feature="JobChange_01" />
@@ -21,11 +21,11 @@
 	<key id="10400091" name="Celestial Blessings" />
 	<key id="10400101" name="Scourging Wave" />
 	<key id="10400102" name="Scourging Wave EX" />
-	<key id="10400111" name="Steadfast Faith" />
+	<key id="10400111" name="Steadfast Faith" default="1" />
 	<key id="10400121" name="Smiting Aura" />
 	<key id="10400131" name="Disciple" />
 	<key id="10400141" name="Healing Mastery" />
-	<key id="10400151" name="Heavenly Wings" />
+	<key id="10400151" name="Heavenly Wings" default="1" />
 	<key id="10400161" name="Angelic Ray" />
 	<key id="10400171" name="Scathing Light" feature="JobChange_01" />
 	<key id="10400181" name="Heavens Wrath" feature="JobChange_01" sub="10400186" />

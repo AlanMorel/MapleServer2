@@ -5,6 +5,7 @@ using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
 using MapleServer2.Data;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
@@ -13,6 +14,7 @@ namespace MapleServer2.Types
         // Bypass Key is constant PER ACCOUNT, unsure how it is validated
         // Seems like as long as it's valid, it doesn't matter though
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
+        public GameSession Session;
 
         // Constant Values
         public long AccountId { get; private set; }
@@ -82,18 +84,14 @@ namespace MapleServer2.Types
 
         public GameOptions GameOptions { get; private set; }
 
+        public Inventory Inventory;
+        public Mailbox Mailbox;
+
         public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {
-            int job = 10;
+            int job = 50; // Archer
 
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 500, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
@@ -130,7 +128,9 @@ namespace MapleServer2.Types
                 Treva = 2,
                 Rue = 3,
                 HaviFruit = 4,
-                MesoToken = 5
+                MesoToken = 5,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
@@ -141,13 +141,6 @@ namespace MapleServer2.Types
             int job = 50;
 
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 1000, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
@@ -182,19 +175,14 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
         }
 
         public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 1000, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
@@ -202,7 +190,7 @@ namespace MapleServer2.Types
             return new Player
             {
                 SkillTabs = skillTabs,
-                AccountId = 0x1111111111111111,
+                AccountId = AccountStorage.DEFAULT_ACCOUNT_ID,
                 CharacterId = GuidGenerator.Long(),
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
@@ -218,6 +206,8 @@ namespace MapleServer2.Types
                 Coord = CoordF.From(2850, 2550, 1800),
                 GameOptions = new GameOptions(),
                 Mesos = 10,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
         }
     }

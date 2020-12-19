@@ -2,7 +2,7 @@
 <ms2 order="10100091,10100261,10100041,10100211,10100161,10100281,20000011,10100061,10100011,10100181,
 			10100062,10100131,10100081,10100031,10100201,10100151,10100101,20000001,10100051,10100221,
 			10100001,10100171,10100291,10100071,10100021,10100191,10100141,10100294,10100111,10100162,
-			10100231,10100251,10100202,10100271,10100204,10100121,10100241"
+			10100231,10100251,10100202,10100271,10100204,10100121,10100241" split="9" 
 >
 	<key id="10100001" name="Cross Cut" />
 	<key id="10100011" name="Tornado Slash" />
@@ -10,11 +10,11 @@
 	<key id="10100031" name="Drill Thrust" />
 	<key id="10100041" name="Warhorn" />
 	<key id="10100051" name="Shield Wall" />
-	<key id="10100061" name="Iron Defense" sub="10100062" />
+	<key id="10100061" name="Iron Defense" default="1" sub="10100062" />
 	<key id="10100062" name="Cancel Iron Defense" />
 	<key id="10100071" name="Shield Toss" />
 	<key id="10100081" name="Bulwark" />
-	<key id="10100091" name="Shield Charge" />
+	<key id="10100091" name="Shield Charge" default="1" />
 	<key id="10100101" name="Defender of the Faith" />
 	<key id="10100111" name="Longsword Mastery" />
 	<key id="10100121" name="Shield Mastery" />

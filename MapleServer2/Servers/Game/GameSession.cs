@@ -17,8 +17,6 @@ namespace MapleServer2.Servers.Game {
         // TODO: Come up with a better solution
         // Using this for now to store arbitrary state objects by key.
         public readonly Dictionary<string, object> StateStorage;
-        public readonly Inventory Inventory;
-        public Mailbox Mailbox;
 
         public int ServerTick { get; private set; }
         public int ClientTick;
@@ -37,8 +35,6 @@ namespace MapleServer2.Servers.Game {
             this.fieldManagerFactory = fieldManagerFactory;
             this.cancellationToken = new CancellationTokenSource();
             this.StateStorage = new Dictionary<string, object>();
-            this.Inventory = new Inventory(48);
-            this.Mailbox = new Mailbox();
 
             // Continuously sends field updates to client
             new Thread(() => {
@@ -53,13 +49,6 @@ namespace MapleServer2.Servers.Game {
             }).Start();
         }
 
-        public new void Dispose() {
-            FieldManager.RemovePlayer(this, FieldPlayer);
-            cancellationToken.Cancel();
-            // Should we Join the thread to wait for it to complete?
-            base.Dispose();
-        }
-
         public void SendNotice(string message) {
             Send(ChatPacket.Send(Player, message, ChatType.NoticeAlert));
         }
@@ -69,6 +58,7 @@ namespace MapleServer2.Servers.Game {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
             FieldManager = fieldManagerFactory.GetManager(player.MapId);
             this.FieldPlayer = FieldManager.RequestFieldObject(player);
+            GameServer.Storage.AddPlayer(player);
         }
 
         public void EnterField(int newMapId) {
@@ -88,6 +78,14 @@ namespace MapleServer2.Servers.Game {
         public void SyncTicks() {
             ServerTick = Environment.TickCount;
             Send(RequestPacket.TickSync(ServerTick));
+        }
+
+        public override void EndSession()
+        {
+            FieldManager.RemovePlayer(this, FieldPlayer);
+            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
+            cancellationToken.Cancel();
+            // Should we Join the thread to wait for it to complete?
         }
     }
 }

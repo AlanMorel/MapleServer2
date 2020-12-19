@@ -46,7 +46,7 @@ We actively welcome your pull requests:
 
 ## Use a Consistent Coding Style
 Make sure your code with [C# Standards](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with the exceptions of:
-  * 2 spaces for indentation rather than tabs
+  * 4 spaces for indentation rather than tabs
   * Instead of `var player` use `Player player`
   * In Visual Studio you can `CTRL+K` then `CTRL+D` for style unification.
 

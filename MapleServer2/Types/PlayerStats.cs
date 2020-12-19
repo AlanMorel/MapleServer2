@@ -11,12 +11,12 @@ namespace MapleServer2.Types {
         public PlayerStat Hp;
         public PlayerStat CurrentHp;
         public PlayerStat HpRegen;
-        public PlayerStat Unknown7;
+        public PlayerStat Unknown7;     // (3000, 3000, 3000)
         public PlayerStat Spirit;
-        public PlayerStat Unknown9;
-        public PlayerStat Unknown10;
-        public PlayerStat Stamina;
-        public PlayerStat Unknown12;
+        public PlayerStat Unknown9;     // (10, 10, 10)
+        public PlayerStat Unknown10;    // (500, 500, 500)
+        public PlayerStat Stamina;      // (10, 10, 10)
+        public PlayerStat Unknown12;    // (500, 500, 500)
         public PlayerStat Unknown13;
         public PlayerStat AtkSpd;
         public PlayerStat MoveSpd;
@@ -42,16 +42,17 @@ namespace MapleServer2.Types {
         public PlayerStat Unknown35;
 
         public static PlayerStats Default() {
-            return new PlayerStats {
-                Unknown7 = new PlayerStat(3000, 3000, 3000),
-                Unknown9 = new PlayerStat(10, 10, 10),
-                Unknown10 = new PlayerStat(500, 500, 500),
-                Unknown12 = new PlayerStat(10, 10, 10),
-                Unknown13 = new PlayerStat(500, 500, 500),
-                Unknown30 = new PlayerStat(0, 0, 0),
-                Unknown31 = new PlayerStat(0, 0, 0),
+            return new PlayerStats
+            {
+                Hp = new PlayerStat(1000, 0, 1000),
+                CurrentHp = new PlayerStat(0, 500, 0),
+                Spirit = new PlayerStat(100, 100, 100),
+                Stamina = new PlayerStat(120, 120, 120),
+                AtkSpd = new PlayerStat(120, 100, 130),
+                MoveSpd = new PlayerStat(110, 100, 150),
+                JumpHeight = new PlayerStat(110, 100, 130),
                 MountSpeed = new PlayerStat(100, 100, 100),
-                Unknown35 = new PlayerStat(0, 0, 0),
+
             };
         }
     }
