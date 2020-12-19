@@ -43,16 +43,17 @@ namespace MapleServer2.Packets
 
             // Ordered list of skill ids (must be sent in this order)
             int[] ids = character.SkillTabs[0].Order;
-            int countId = ids[ids.Length - 8]; // 8th to last skill id
+            byte split = character.SkillTabs[0].Split;
+            int countId = ids[ids.Length - split]; // Split to last skill id
 
-            pWriter.WriteByte((byte)(ids.Length - 8)); // Skill count minus 8
+            pWriter.WriteByte((byte)(ids.Length - split)); // Skill count minus split
 
             // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
             foreach (int id in ids)
             {
                 if (id == countId)
                 {
-                    pWriter.WriteByte(8); // Write that there are 8 skills left
+                    pWriter.WriteByte(split); // Write that there are (split) skills left
                 }
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
