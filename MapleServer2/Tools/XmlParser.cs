@@ -42,8 +42,14 @@ namespace MapleServer2.Tools
                 XmlAttribute subAttr = currentNode.Attributes["sub"];
                 int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
 
-
-                
+                if (DefaultSkill > 0)
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 1, feature, sub));
+                }
+                else
+                {
+                    skillTab.AddOrUpdate(new Skill(id, 1, 0, feature, sub));
+                }
             }
 
             return skillTab;
