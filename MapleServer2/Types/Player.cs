@@ -5,6 +5,7 @@ using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
 using MapleServer2.Data;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
@@ -13,6 +14,7 @@ namespace MapleServer2.Types
         // Bypass Key is constant PER ACCOUNT, unsure how it is validated
         // Seems like as long as it's valid, it doesn't matter though
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
+        public GameSession Session;
 
         // Constant Values
         public long AccountId { get; private set; }

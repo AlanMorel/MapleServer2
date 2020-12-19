@@ -62,17 +62,22 @@ namespace MapleServer2 {
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
         {
-            BroadcastAll(session => {
-                if (session == sender) return;
+            BroadcastAll(session => 
+            {
+                if (session == sender) 
+                {
+                    return;
+                }
                 session.Send(packet);
             });
         }
 
         public static void BroadcastAll(Action<GameSession> action)
         {
-            lock (gameServer.GetSessions())
+            IEnumerable<GameSession> sessions = gameServer.GetSessions();
+            lock (sessions)
             {
-                foreach (GameSession session in gameServer.GetSessions())
+                foreach (GameSession session in sessions)
                 {
                     action?.Invoke(session);
                 }

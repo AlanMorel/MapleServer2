@@ -108,6 +108,7 @@ namespace MapleServer2.Servers.Game {
             Broadcast(session => {
                 session.Send(FieldPacket.RemovePlayer(player));
             });
+            GameServer.Storage.RemovePlayer(player.Value);
 
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
         }
