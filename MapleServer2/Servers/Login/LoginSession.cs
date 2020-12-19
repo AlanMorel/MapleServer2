@@ -17,5 +17,9 @@ namespace MapleServer2.Servers.Login {
         public int GetToken() {
             return rng.Next();
         }
+
+        public override void EndSession()
+        {
+        }
     }
 }

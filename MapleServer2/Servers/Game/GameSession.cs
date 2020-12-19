@@ -49,14 +49,6 @@ namespace MapleServer2.Servers.Game {
             }).Start();
         }
 
-        public new void Dispose() {
-            FieldManager.RemovePlayer(this, FieldPlayer);
-            cancellationToken.Cancel();
-            // Should we Join the thread to wait for it to complete?
-            base.Dispose();
-            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-        }
-
         public void SendNotice(string message) {
             Send(ChatPacket.Send(Player, message, ChatType.NoticeAlert));
         }
@@ -86,6 +78,14 @@ namespace MapleServer2.Servers.Game {
         public void SyncTicks() {
             ServerTick = Environment.TickCount;
             Send(RequestPacket.TickSync(ServerTick));
+        }
+
+        public override void EndSession()
+        {
+            FieldManager.RemovePlayer(this, FieldPlayer);
+            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
+            cancellationToken.Cancel();
+            // Should we Join the thread to wait for it to complete?
         }
     }
 }
