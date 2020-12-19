@@ -11,7 +11,7 @@ public class InventoryController
         // Checks if item is stackable or not.
         if (item.SlotMax > 1)
         {
-            foreach (Item i in session.Inventory.Items.Values)
+            foreach (Item i in session.Player.Inventory.Items.Values)
             {
                 // Checks to see if item exists in database (dictionary)
                 if (i.Id != item.Id || i.Amount >= i.SlotMax)
@@ -34,7 +34,7 @@ public class InventoryController
                 }
             }
         }
-        session.Inventory.Add(item); // adds item into internal database
+        session.Player.Inventory.Add(item); // adds item into internal database
         session.Send(ItemInventoryPacket.Add(item)); // sends packet to add item clientside.
     }
 }

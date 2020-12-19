@@ -18,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game {
             Item tutorialBow = Item.TutorialBow(session.Player);
 
             // Add the item to the inventory
-            session.Inventory.Add(tutorialBow);
+            session.Player.Inventory.Add(tutorialBow);
 
             // Send to client
             session.Send(ItemInventoryPacket.Add(tutorialBow));

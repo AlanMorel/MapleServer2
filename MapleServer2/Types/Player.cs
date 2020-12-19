@@ -82,6 +82,9 @@ namespace MapleServer2.Types
 
         public GameOptions GameOptions { get; private set; }
 
+        public Inventory Inventory;
+        public Mailbox Mailbox;
+
         public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {
             int job = 10;
@@ -130,7 +133,9 @@ namespace MapleServer2.Types
                 Treva = 2,
                 Rue = 3,
                 HaviFruit = 4,
-                MesoToken = 5
+                MesoToken = 5,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
@@ -182,6 +187,8 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
         }
 
@@ -202,7 +209,7 @@ namespace MapleServer2.Types
             return new Player
             {
                 SkillTabs = skillTabs,
-                AccountId = 0x1111111111111111,
+                AccountId = AccountStorage.DEFAULT_ACCOUNT_ID,
                 CharacterId = GuidGenerator.Long(),
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
@@ -218,6 +225,8 @@ namespace MapleServer2.Types
                 Coord = CoordF.From(2850, 2550, 1800),
                 GameOptions = new GameOptions(),
                 Mesos = 10,
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox()
             };
         }
     }

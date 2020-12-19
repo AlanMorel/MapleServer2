@@ -38,7 +38,7 @@ namespace MapleServer2.PacketHandlers.Game {
                 lockIndex = packet.ReadShort();
             }
 
-            if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
                 item.TimesAttributesChanged++;
                 var newItem = new Item(item);
                 int attributeCount = newItem.Stats.BonusAttributes.Count;
@@ -62,7 +62,7 @@ namespace MapleServer2.PacketHandlers.Game {
                     return;
                 }
 
-                session.Inventory.Replace(item);
+                session.Player.Inventory.Replace(item);
                 session.Send(ChangeAttributesPacket.SelectNewItem(item));
             }
         }

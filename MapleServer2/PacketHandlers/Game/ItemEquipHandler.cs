@@ -36,13 +36,13 @@ namespace MapleServer2.PacketHandlers.Game {
             }
 
             // Remove the item from the users inventory
-            session.Inventory.Remove(itemUid, out Item item);
+            session.Player.Inventory.Remove(itemUid, out Item item);
             session.Send(ItemInventoryPacket.Remove(itemUid));
 
             // TODO: Move unequipped item into the correct slot
             // Move previously equipped item back to inventory
             if (session.Player.Equips.Remove(equipSlot, out Item prevItem)) {
-                session.Inventory.Add(prevItem);
+                session.Player.Inventory.Add(prevItem);
                 session.Send(ItemInventoryPacket.Add(prevItem));
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
             }
@@ -70,7 +70,7 @@ namespace MapleServer2.PacketHandlers.Game {
             foreach ((ItemSlot slot, Item item) in session.Player.Equips) {
                 if (itemUid != item.Uid) continue;
                 if (session.Player.Equips.Remove(slot, out Item unequipItem)) {
-                    session.Inventory.Add(unequipItem);
+                    session.Player.Inventory.Add(unequipItem);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                     session.Send(ItemInventoryPacket.Add(unequipItem));
                     break;

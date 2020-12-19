@@ -119,9 +119,9 @@ namespace MapleServer2.PacketHandlers.Game
                 null
             );
 
-            session.Mailbox.AddOrUpdate(sysItemMail);
-            session.Mailbox.AddOrUpdate(sysMail);
-            session.Mailbox.AddOrUpdate(regMail);
+            session.Player.Mailbox.AddOrUpdate(sysItemMail);
+            session.Player.Mailbox.AddOrUpdate(sysMail);
+            session.Player.Mailbox.AddOrUpdate(regMail);
         }
     }
 }

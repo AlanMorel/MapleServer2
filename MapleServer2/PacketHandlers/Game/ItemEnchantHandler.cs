@@ -33,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game {
             byte type = packet.ReadByte();
             long itemUid = packet.ReadLong();
 
-            if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
                 session.Send(ItemEnchantPacket.BeginEnchant(type, item));
             }
         }
@@ -41,7 +41,7 @@ namespace MapleServer2.PacketHandlers.Game {
         private void HandleOpheliaEnchant(GameSession session, PacketReader packet) {
             long itemUid = packet.ReadLong();
 
-            if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
                 item.Enchants += 5;
                 item.Charges += 10;
                 session.Send(ItemEnchantPacket.EnchantResult(item));
@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game {
         private void HandlePeachyEnchant(GameSession session, PacketReader packet) {
             long itemUid = packet.ReadLong();
 
-            if (session.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
                 item.EnchantExp += 5000;
                 if (item.EnchantExp >= 10000) {
                     item.EnchantExp %= 10000;
