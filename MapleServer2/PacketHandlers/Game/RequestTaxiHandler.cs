@@ -17,19 +17,15 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             byte mode = packet.ReadByte();
-
-            System.Console.WriteLine("Taxi Mode: "+mode);
+            int mapId = packet.ReadInt();
 
             switch (mode)
             {
                 case 3: // rotors using mesos?
                     break;
             }
-            int mapId = packet.ReadInt();
 
-            System.Console.WriteLine(mapId);
-
-            //TODO: figure out when to pay
+            //TODO: figure out when to pay which currency Merits/Mesos?
             //TODO: get correct player spawn coordinates
             MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
 
