@@ -89,16 +89,9 @@ namespace MapleServer2.Types
 
         public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {
-            int job = 10;
+            int job = 50; // Archer
 
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 500, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
@@ -148,13 +141,6 @@ namespace MapleServer2.Types
             int job = 50;
 
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 1000, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
@@ -197,13 +183,6 @@ namespace MapleServer2.Types
         public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
-            stats.Hp = new PlayerStat(1000, 0, 1000);
-            stats.CurrentHp = new PlayerStat(0, 1000, 0);
-            stats.Spirit = new PlayerStat(100, 100, 100);
-            stats.Stamina = new PlayerStat(120, 120, 120);
-            stats.AtkSpd = new PlayerStat(120, 100, 130);
-            stats.MoveSpd = new PlayerStat(110, 100, 150);
-            stats.JumpHeight = new PlayerStat(110, 100, 130);
 
             List<SkillTab> skillTabs = new List<SkillTab>();
             skillTabs.Add(XmlParser.ParseSkills(job));
