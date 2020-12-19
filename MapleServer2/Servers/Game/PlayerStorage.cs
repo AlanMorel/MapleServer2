@@ -31,12 +31,22 @@ namespace MapleServer2.Servers.Game
 
         public Player GetPlayerByName(string name)
         {
-            return nameStorage[name];
+            Player foundPlayer;
+            if (nameStorage.TryGetValue(name, out foundPlayer))
+            {
+                return foundPlayer;
+            }
+            return null;
         }
 
         public Player GetPlayerById(long id)
         {
-            return idStorage[id];
+            Player foundPlayer;
+            if (idStorage.TryGetValue(id, out foundPlayer))
+            {
+                return foundPlayer;
+            }
+            return null;
         }
     }
 }
