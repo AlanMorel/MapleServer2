@@ -21,11 +21,11 @@
 	<key id="10400091" name="Celestial Blessings" />
 	<key id="10400101" name="Scourging Wave" />
 	<key id="10400102" name="Scourging Wave EX" />
-	<key id="10400111" name="Steadfast Faith" />
+	<key id="10400111" name="Steadfast Faith" default="1" />
 	<key id="10400121" name="Smiting Aura" />
 	<key id="10400131" name="Disciple" />
 	<key id="10400141" name="Healing Mastery" />
-	<key id="10400151" name="Heavenly Wings" />
+	<key id="10400151" name="Heavenly Wings" default="1" />
 	<key id="10400161" name="Angelic Ray" />
 	<key id="10400171" name="Scathing Light" feature="JobChange_01" />
 	<key id="10400181" name="Heavens Wrath" feature="JobChange_01" sub="10400186" />

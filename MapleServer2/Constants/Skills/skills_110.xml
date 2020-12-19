@@ -31,8 +31,8 @@
 	<key id="11100025" name="Shooting Star (5th Mantra)" />
 	<key id="11100031" name="Animus Focus" />
 	<key id="11100041" name="Radiant Salvo" />
-	<key id="11100051" name="Illusion" />
-	<key id="11100061" name="Mantra Array" />
+	<key id="11100051" name="Illusion" default="1" />
+	<key id="11100061" name="Mantra Array" default="1" />
 	<key id="11100062" name="Awakened Mantra" feature="JobChange_01" sub="11100002,11100063" />
 	<key id="11100063" name="Awakened Mantra" feature="JobChange_01" />
 	<key id="11100071" name="Light Barrier" sub="11100072,11100073,11100074,11100075" />

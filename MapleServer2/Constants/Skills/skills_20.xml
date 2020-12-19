@@ -8,7 +8,7 @@
 	<key id="10200001" name="Raging Slash" />
 	<key id="10200011" name="Death Spin" />
 	<key id="10200021" name="Ground Breaker" />
-	<key id="10200031" name="Dark Aura" />
+	<key id="10200031" name="Dark Aura" default="1" />
 	<key id="10200041" name="Void Slash" />
 	<key id="10200051" name="Bloodlust" />
 	<key id="10200061" name="Intimidation" sub="10200062" />
@@ -18,7 +18,7 @@
 	<key id="10200081" name="Adrenaline Rush" />
 	<key id="10200082" name="Adrenaline Rush 2" />
 	<key id="10200083" name="Adrenaline Rush 3" />
-	<key id="10200091" name="X Slash" />
+	<key id="10200091" name="X Slash" default="1" />
 	<key id="10200101" name="Inhuman Endurance" />
 	<key id="10200111" name="Deep Wounds" />
 	<key id="10200121" name="Greatsword Mastery" />

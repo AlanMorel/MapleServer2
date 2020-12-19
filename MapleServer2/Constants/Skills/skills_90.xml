@@ -23,8 +23,8 @@
 	<key id="10900032" name="Flame Flurry" />
 	<key id="10900033" name="Frost Flurry" />
 	<key id="10900034" name="Storm Flurry" />
-	<key id="10900041" name="Rune Balance" />
-	<key id="10900051" name="Blink" />
+	<key id="10900041" name="Rune Balance" default="1" />
+	<key id="10900051" name="Blink" default="1" />
 	<key id="10900061" name="Whirling Blades" sub="10900062,10900063,10900065" />
 	<key id="10900062" name="Whirling Flames" />
 	<key id="10900063" name="Whirling Frost" />

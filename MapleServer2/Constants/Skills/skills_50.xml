@@ -21,14 +21,14 @@
 	<key id="10500091" name="Eagles Majesty" sub="10500093" />
 	<key id="10500093" name="Phoenix Spirit" feature="JobChange_02" />
 	<key id="10500101" name="Arrow Storm" />
-	<key id="10500111" name="Snipe" />
+	<key id="10500111" name="Snipe" default="1"/>
 	<key id="10500121" name="Conditioning" />
 	<key id="10500131" name="Agile Archer" />
 	<key id="10500141" name="Screwdriver Shot" sub="10500144" />
 	<key id="10500144" name="Screwdriver Shot" />
-	<key id="10500151" name="Eagle Glide" sub="10500152,10500153" />
-	<key id="10500152" name="Enhanced Eagle Glide" feature="JobChange_01" />
-	<key id="10500153" name="Captain Glide" feature="JobChange_02" />
+	<key id="10500151" name="Eagle Glide" default="1" sub="10500152,10500153" />
+	<key id="10500152" name="Enhanced Eagle Glide" default="1" feature="JobChange_01" />
+	<key id="10500153" name="Captain Glide" default="1" feature="JobChange_02" />
 	<key id="10500161" name="Precision Shooter" />
 	<key id="10500171" name="Flame Arrow" feature="JobChange_01" sub="10500172,10500173,10500174" />
 	<key id="10500172" name="Flame Arrow II" feature="JobChange_01" />

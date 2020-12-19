@@ -14,9 +14,9 @@
 	<key id="10300043" name="Arcane Blast" feature="JobChange_02" />
 	<key id="10300051" name="Ice Spear" sub="10300053,10300262" />
 	<key id="10300053" name="Ice Spear" />
-	<key id="10300061" name="Mana Font" />
+	<key id="10300061" name="Mana Font" default="1" />
 	<key id="10300071" name="Thunderbolt" />
-	<key id="10300081" name="Teleport" />
+	<key id="10300081" name="Teleport" default="1" />
 	<key id="10300091" name="Focus Seal" sub="10300093" />
 	<key id="10300093" name="Focus Seal" />
 	<key id="10300101" name="Pyromancy" />
