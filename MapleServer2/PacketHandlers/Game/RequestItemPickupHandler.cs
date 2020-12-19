@@ -21,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Game {
                 return;
             }
 
-            session.Inventory.Add(item);
+            session.Player.Inventory.Add(item);
             session.Send(ItemInventoryPacket.Add(item));
             session.Send(ItemInventoryPacket.MarkItemNew(item));
         }

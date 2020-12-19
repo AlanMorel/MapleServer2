@@ -91,6 +91,7 @@ namespace MapleServer2.Network {
             source.Cancel();
             sendThread.Wait(STOP_TIMEOUT);
             recvThread.Wait(STOP_TIMEOUT);
+            EndSession();
         }
 
         public bool Connected() {
@@ -160,8 +161,8 @@ namespace MapleServer2.Network {
 
         // Ensures no more communication before sending a final packet.
         public void SendFinal(Packet packet) {
-            StopThreads();
             SendInternal(packet.ToArray());
+            StopThreads();
         }
 
         private async void StartRead() {
@@ -188,6 +189,7 @@ namespace MapleServer2.Network {
 
                     switch (recvOp) {
                         case RecvOp.USER_SYNC:
+                        case RecvOp.KEY_TABLE:
                             break;
                         default:
                             string packetString = packet.ToString();
@@ -216,6 +218,18 @@ namespace MapleServer2.Network {
 
             switch (sendOp) {
                 case SendOp.USER_SYNC:
+                case SendOp.KEY_TABLE:
+                case SendOp.STAT:
+                case SendOp.EMOTION:
+                case SendOp.CHARACTER_LIST:
+                case SendOp.ITEM_INVENTORY:
+                case SendOp.FIELD_ADD_NPC:
+                case SendOp.FIELD_PORTAL:
+                case SendOp.NPC_CONTROL:
+                case SendOp.PROXY_GAME_OBJ:
+                case SendOp.FIELD_ADD_USER:
+                case SendOp.FIELD_ENTRANCE:
+                case SendOp.SERVER_ENTER:
                     break;
                 default:
                     string packetString = packet.ToHexString(' ');
@@ -238,5 +252,7 @@ namespace MapleServer2.Network {
         public override string ToString() {
             return $"{GetType().Name} from {client?.Client.RemoteEndPoint}";
         }
+
+        public abstract void EndSession();
     }
 }

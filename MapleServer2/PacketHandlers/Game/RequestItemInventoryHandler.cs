@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Game {
         public override void Handle(GameSession session, PacketReader packet) {
             byte function = packet.ReadByte();
 
-            Inventory inventory = session.Inventory;
+            Inventory inventory = session.Player.Inventory;
             switch (function) {
                 case 0: {
                     break;
