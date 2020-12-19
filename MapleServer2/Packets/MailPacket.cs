@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
 
             pWriter.WriteByte(14); // Mode for mail notification
-            pWriter.WriteInt(session.Mailbox.GetUnreadCount()); // Count of unread mail
+            pWriter.WriteInt(session.Player.Mailbox.GetUnreadCount()); // Count of unread mail
             pWriter.WriteByte(); // Unknown
             pWriter.WriteInt(); // Unknown maybe repeat of count?
 

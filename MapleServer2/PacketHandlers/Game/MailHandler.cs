@@ -45,10 +45,10 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleOpen(GameSession session, PacketReader packet)
         {
-            session.Mailbox.ClearExpired();
+            session.Player.Mailbox.ClearExpired();
 
             session.Send(MailPacket.StartOpen());
-            session.Send(MailPacket.Open(session.Mailbox.Box));
+            session.Send(MailPacket.Open(session.Player.Mailbox.Box));
             session.Send(MailPacket.EndOpen());
         }
 
@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 null
             );
-            session.Mailbox.AddOrUpdate(mail);
+            session.Player.Mailbox.AddOrUpdate(mail);
 
             session.Send(MailPacket.Send(mail));
         }
@@ -81,7 +81,7 @@ namespace MapleServer2.PacketHandlers.Game
             int id = packet.ReadInt();
             packet.ReadInt();
 
-            long timestamp = session.Mailbox.Read(id);
+            long timestamp = session.Player.Mailbox.Read(id);
 
             session.Send(MailPacket.Read(id, timestamp));
         }
@@ -92,7 +92,7 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadInt();
 
             // Get items and add to inventory
-            List<Item> items = session.Mailbox.Collect(id);
+            List<Item> items = session.Player.Mailbox.Collect(id);
 
             if (items == null)
             {
@@ -101,8 +101,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             foreach (Item item in items)
             {
-                session.Inventory.Remove(item.Uid, out Item removed);
-                session.Inventory.Add(item);
+                session.Player.Inventory.Remove(item.Uid, out Item removed);
+                session.Player.Inventory.Add(item);
 
                 // Item packet, not sure if this is only used for mail, it also doesn't seem to do anything
                 session.Send(ItemPacket.ItemData(item));
