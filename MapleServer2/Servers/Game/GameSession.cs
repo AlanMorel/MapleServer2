@@ -54,6 +54,7 @@ namespace MapleServer2.Servers.Game {
             cancellationToken.Cancel();
             // Should we Join the thread to wait for it to complete?
             base.Dispose();
+            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
         }
 
         public void SendNotice(string message) {
@@ -65,6 +66,7 @@ namespace MapleServer2.Servers.Game {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
             FieldManager = fieldManagerFactory.GetManager(player.MapId);
             this.FieldPlayer = FieldManager.RequestFieldObject(player);
+            GameServer.Storage.AddPlayer(player);
         }
 
         public void EnterField(int newMapId) {

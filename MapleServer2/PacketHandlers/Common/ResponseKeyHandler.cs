@@ -9,6 +9,7 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common {
@@ -25,7 +26,10 @@ namespace MapleServer2.PacketHandlers.Common {
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            session.InitPlayer(AccountStorage.GetCharacter(authData.CharacterId));
+            Player player = AccountStorage.GetCharacter(authData.CharacterId);
+            player.Session = session;
+
+            session.InitPlayer(player);
 
             //session.Send(0x27, 0x01); // Meret market related...?
 
