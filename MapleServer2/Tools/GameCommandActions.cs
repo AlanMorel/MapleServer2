@@ -102,7 +102,7 @@ namespace MapleServer2.Tools {
                 fieldNpc.Coord = session.FieldPlayer.Coord;
             }
 
-            session.FieldManager.AddTestNpc(fieldNpc);
+            session.FieldManager.AddNpc(fieldNpc);
         }
 
         private static Dictionary<string, string> ToMap(this string command) {
