@@ -8,7 +8,13 @@ namespace MapleServer2.Packets
 {
     public static class PartyPacket
     {
-        public static Packet SendInvite(Player recipient, Player sender)
+
+        /// <summary>
+        /// Sends a party invite to the player. Unsure what the 3843 short is.
+        /// </summary>
+        /// <param name="sender">The player inviting</param>
+        /// <returns></returns>
+        public static Packet SendInvite(Player sender)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(11) //Mode?
@@ -20,16 +26,17 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        //Creates a backend party
-        public static Packet CreateParty(Player p)
+   
+        /// <summary>
+        /// Creates a party with the specified player as the leader. Used when inviting someone to a party when you are not in one.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Packet Create(Player p)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0009) //Create new party I think. Sent to player inviting someone to party
-                .WriteByte(2) //unkown
-                .WriteInt() //unknown
-                .WriteLong(p.CharacterId)
-                .WriteByte(1) //Party member count?
-                .WriteByte();
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+
+            CreatePartyHeader(p, pWriter, 1);
 
             CharacterListPacket.WriteCharacter(p, pWriter);
             pWriter.WriteLong();
@@ -38,41 +45,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        //UI PLAYER JOIN
-        public static Packet JoinParty(Player p)
+        //TODO: Make this send all players in the party already (how to find that party I have no idea at the moment)
+        public static Packet CreateExisting(Player party1, Player party2)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0002); //Add player to party UI
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
-            CharacterListPacket.WriteCharacter(p, pWriter);
-            pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, p);
-
-            return pWriter;
-        }
-
-        public static Packet JoinParty2(Player p)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x000D) //Pretty sure this is the party update function, call after UI joinparty to update their location, afk status, etc.
-                .WriteLong(p.CharacterId);
-
-            CharacterListPacket.WriteCharacter(p, pWriter);
-            pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, p);
-
-            return pWriter;
-        }
-
-        public static Packet JoinParty3(Player party1, Player party2)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0009) //Creates party on the backend with the 2 members
-                .WriteByte(2) //unkown
-                .WriteInt()//unknown
-                .WriteLong(party1.CharacterId)
-                .WriteByte(2) //Party member count?
-                .WriteByte();
+            CreatePartyHeader(party1, pWriter, 2);
 
             CharacterListPacket.WriteCharacter(party1, pWriter);
             pWriter.WriteLong();
@@ -84,6 +62,61 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        //Generates the header code for Create
+        public static Packet CreatePartyHeader(Player p, PacketWriter pWriter, byte memberCount)
+        {
+            pWriter.WriteByte(0x0009) //Creates party on the backend with the 2 members
+                .WriteByte(2)
+                .WriteInt()
+                .WriteLong(p.CharacterId)
+                .WriteByte(memberCount) //Party member count?
+                .WriteByte();
+            return pWriter;
+        }
+
+
+
+        /// <summary>
+        /// Adds the specified player to the party UI, that player needs to be added either with UpdatePlayer or CreateExisting
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Packet Join(Player p)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x0002); //Add player to party UI
+
+            CharacterListPacket.WriteCharacter(p, pWriter);
+            pWriter.WriteLong();
+            JobPacket.WriteSkills(pWriter, p);
+
+            return pWriter;
+        }
+
+        /// <summary>
+        /// Update existing player or add a new player to the backend party. Does not add them to the UI.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public static Packet UpdatePlayer(Player p)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x000D) //Pretty sure this is the party update function, call after Join to update their location, afk status, etc.
+                .WriteLong(p.CharacterId);
+
+            CharacterListPacket.WriteCharacter(p, pWriter);
+            pWriter.WriteLong();
+            JobPacket.WriteSkills(pWriter, p);
+            return pWriter;
+        }
+
+
+
+        /// <summary>
+        /// Updates the hitpoints on the party UI of the specified player.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
 
         public static Packet UpdateHitpoints(Player player)
         {
@@ -97,7 +130,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetPartyLeader(Player player)
+
+        /// <summary>
+        /// Sets the given player as party leader.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static Packet SetLeader(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x0008)
@@ -105,7 +144,28 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LeaveParty(Player player)
+
+        /// <summary>
+        /// Leaves the party.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static Packet Leave(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x0003)
+                .WriteLong(player.CharacterId)
+                .WriteByte(1);
+            return pWriter;
+        }
+
+
+        /// <summary>
+        /// Kicks player from the party.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static Packet Kick(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x0004)
@@ -113,7 +173,8 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WriteSkills(PacketWriter pWriter, Player character)
+        //Had to copy this method because of the last short being written. Pretty sure it's supposed to be a byte.
+        private static Packet WriteSkills(PacketWriter pWriter, Player character)
         {
             // Get skills
             Dictionary<int, Skill> skills = character.SkillTabs[0].Skills; // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
@@ -138,7 +199,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
             }
 
-            pWriter.WriteByte(); // Ends with zero short
+            pWriter.WriteByte();
 
             return pWriter;
         }

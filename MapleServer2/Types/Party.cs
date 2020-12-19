@@ -6,7 +6,8 @@ namespace MapleServer2.Types {
 
         public int Uid { get; private set; }
         public int MaxMembers { get; set; }
-        public long Leader { get; private set; }
+        public long Leader { get; set; }
+
         public HashSet<Player> Players { get; private set; }
         public long CreatedTimestamp { get; private set; }
 
