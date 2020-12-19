@@ -53,8 +53,9 @@ namespace MapleServer2.PacketHandlers.Login {
             // Write AuthData to storage shared with GameServer
             AuthStorage.SetData(session.AccountId, authData);
 
-            session.Send(MigrationPacket.LoginToGame(endpoint, authData));
-            //LoginPacket.LoginError("message?");
+            session.SendFinal(MigrationPacket.LoginToGame(endpoint, authData));
+            
+            // LoginPacket.LoginError("message?");
         }
 
         public void HandleCreate(LoginSession session, PacketReader packet)
