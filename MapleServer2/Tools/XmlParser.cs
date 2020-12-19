@@ -14,12 +14,14 @@ namespace MapleServer2.Tools
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load($"MapleServer2/Constants/Skills/skills_{job}.xml");
 
-            // Parse skill id order
+            // Parse skill id order and count split num
             XmlAttribute oAttr = xmlDoc.DocumentElement.Attributes["order"];
             int[] order = oAttr != null ? Array.ConvertAll(oAttr.Value.Split(","), Int32.Parse) : null;
+            XmlAttribute splitAttr = xmlDoc.DocumentElement.Attributes["split"];
+            byte split  = splitAttr != null ? Byte.Parse(splitAttr.Value) : (byte) 8;
 
             // Create new skill tab with name and skill order
-            SkillTab skillTab = new SkillTab(name, order);
+            SkillTab skillTab = new SkillTab(name, order, split);
 
             // Parse skills and add to skillTab
             XmlNodeList skills = xmlDoc.SelectNodes("/ms2/key");
