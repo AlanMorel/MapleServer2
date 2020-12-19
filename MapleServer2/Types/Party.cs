@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using MapleServer2.Servers.Game;
+using System.Collections.Generic;
 
 namespace MapleServer2.Types {
     public class Party {
@@ -8,16 +8,15 @@ namespace MapleServer2.Types {
         public int MaxMembers { get; set; }
         public long Leader { get; set; }
 
+        //List of players and their session.
         public HashSet<Player> Players { get; private set; }
-        public long CreatedTimestamp { get; private set; }
 
-        public Party(int pUid, int pMaxMembers, long pLeader, HashSet<Player> pPlayers, long pCreateTimestamp)
+        public Party(int pUid, int pMaxMembers, long pLeader, HashSet<Player> pPlayers)
         {
             Uid = pUid;
             MaxMembers = pMaxMembers;
             Leader = pLeader;
             Players = pPlayers;
-            CreatedTimestamp = pCreateTimestamp;
         }
 
         public void AddPlayer(Player p)

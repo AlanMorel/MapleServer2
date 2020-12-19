@@ -3,6 +3,7 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -45,13 +46,19 @@ namespace MapleServer2.PacketHandlers.Game {
         {
             string target = packet.ReadUnicodeString();
 
-            //TODO: Check if invited player already in a party.
             Player other = GameServer.Storage.GetPlayerByName(target);
             if (other != null)
             {
-                other.Session.Send(PartyPacket.SendInvite(session.Player));
-                session.Send(PartyPacket.Create(session.Player));
-                //pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
+                if (other.Party == null)
+                {
+                    other.Session.Send(PartyPacket.SendInvite(session.Player));
+                    session.Send(PartyPacket.Create(session.Player));
+                    //pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
+                }
+                else
+                {
+                    session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
+                }
             }
 
         }
@@ -63,28 +70,43 @@ namespace MapleServer2.PacketHandlers.Game {
             int unknown = packet.ReadInt();
             if(accept == 1)
             {
-                //TODO:
-                // Check if party already exists with leader (other)
-                // If already exists, join that party and send this player joining to all other party members
-                // If it doesn't exists, create party and add other and this session
-
-
-                //Create party object and append to parties master list somewhere
                 Player other = GameServer.Storage.GetPlayerByName(target);
                 if (other != null)
                 {
-                    GameSession pSession = other.Session;
-                    pSession.Send(PartyPacket.Join(session.Player));
-                    pSession.Send(PartyPacket.UpdatePlayer(session.Player));
-                    pSession.Send(PartyPacket.UpdateHitpoints(other));
-                    pSession.Send(PartyPacket.UpdateHitpoints(session.Player));
-
-                    //Need a special JoinParty that sends all players in party to newly joining player.
-                    session.Send(PartyPacket.CreateExisting(other, session.Player));
-                    session.Send(PartyPacket.UpdatePlayer(other));
+                    if (other.Party != null)
+                    {
+                        //Load old
+                        other.Party.AddPlayer(session.Player);
+                        foreach(Player partyMember in other.Party.Players)
+                        {
+                            GameSession pSession = partyMember.Session;
+                            pSession.Send(PartyPacket.Join(session.Player));
+                            pSession.Send(PartyPacket.UpdatePlayer(session.Player));
+                            pSession.Send(PartyPacket.UpdateHitpoints(session.Player));
+                        }
+                    }
+                    else
+                    {
+                        //Create new
+                        Party newParty = new Party(GuidGenerator.Int(), 10, other.CharacterId, new HashSet<Player> { other, session.Player });
+                        other.Party = newParty;
+                        GameSession pSession = other.Session;
+                        pSession.Send(PartyPacket.Join(session.Player));
+                        pSession.Send(PartyPacket.UpdatePlayer(session.Player));
+                        pSession.Send(PartyPacket.UpdateHitpoints(session.Player));
+                        pSession.Send(PartyPacket.UpdateHitpoints(other));
+                    }
+                    session.Player.Party = other.Party;
+                    session.Send(PartyPacket.CreateExisting(other, other.Party.Players));
+                    foreach (Player partyMember in other.Party.Players)
+                    {
+                        if (partyMember != session.Player)
+                        {
+                            session.Send(PartyPacket.UpdatePlayer(partyMember));
+                            session.Send(PartyPacket.UpdateHitpoints(partyMember));
+                        }
+                    }
                     session.Send(PartyPacket.Join(session.Player));
-
-                    session.Send(PartyPacket.UpdateHitpoints(other));
                     session.Send(PartyPacket.UpdateHitpoints(session.Player));
                 }
             }
@@ -100,21 +122,49 @@ namespace MapleServer2.PacketHandlers.Game {
             Player newLeader = GameServer.Storage.GetPlayerByName(target);
             if (newLeader != null)
             {
-                //TODO: Send to all players in party
-                MapleServer.BroadcastPacketAll(PartyPacket.SetLeader(newLeader));
+                foreach (Player partyMember in session.Player.Party.Players)
+                {
+                    partyMember.Party.Leader = newLeader.CharacterId;
+                    partyMember.Session.Send(PartyPacket.SetLeader(newLeader));
+                }
             }
         }
 
         private void HandleLeave(GameSession session, PacketReader packet)
         {
-            //TODO: Send to all players in party
-            MapleServer.BroadcastPacketAll(PartyPacket.Leave(session.Player));
+            session.Player.Party.RemovePlayer(session.Player);
+            foreach (Player partyMember in session.Player.Party.Players)
+            {
+                partyMember.Party.RemovePlayer(session.Player);
+                partyMember.Session.Send(PartyPacket.Leave(session.Player));
+                if (partyMember.Party.Players.Count < 2)
+                {
+                    //Disband
+                    partyMember.Party = null;
+                }
+            }
+            session.Send(PartyPacket.Leave(session.Player));
+            session.Player.Party = null;
         }
 
         private void HandleKick(GameSession session, PacketReader packet)
         {
             long char_id = packet.ReadLong();
             Player kickedPlayer = GameServer.Storage.GetPlayerById(char_id);
+
+
+
+            //TODO: finish this
+
+
+
+
+
+
+
+
+
+
             //TODO: Send to all players in party
             session.Send(PartyPacket.Kick(kickedPlayer));
             kickedPlayer.Session.Send(PartyPacket.Kick(kickedPlayer));

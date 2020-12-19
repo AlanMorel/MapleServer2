@@ -3,6 +3,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MapleServer2.Packets
 {
@@ -46,18 +47,18 @@ namespace MapleServer2.Packets
         }
 
         //TODO: Make this send all players in the party already (how to find that party I have no idea at the moment)
-        public static Packet CreateExisting(Player party1, Player party2)
+        public static Packet CreateExisting(Player leader, HashSet<Player> members)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
-            CreatePartyHeader(party1, pWriter, 2);
+            CreatePartyHeader(leader, pWriter, 2);
 
-            CharacterListPacket.WriteCharacter(party1, pWriter);
-            pWriter.WriteLong();
-            WriteSkills(pWriter, party1);
-            CharacterListPacket.WriteCharacter(party2, pWriter);
-            pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, party2);
+            foreach (Player member in members)
+            {
+                CharacterListPacket.WriteCharacter(member, pWriter);
+                pWriter.WriteLong();
+                WriteSkills(pWriter, member);
+            }
 
             return pWriter;
         }
