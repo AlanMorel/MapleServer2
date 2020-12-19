@@ -12,7 +12,9 @@ namespace MapleServer2.Servers.Game
         public PlayerStorage()
         {
             this.idStorage = new Dictionary<long, Player>();
-            this.nameStorage = new Dictionary<string, Player>();
+
+            StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
+            this.nameStorage = new Dictionary<string, Player>(ignoreCase);
         }
 
         public void AddPlayer(Player player)
