@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -96,7 +96,7 @@ namespace MapleServer2.Packets {
             pWriter.WriteLong(); // Some timestamp
             pWriter.WriteLong();
             pWriter.WriteInt();
-            pWriter.Write<CoordF>(new CoordF()); // NOT char Coord/UnknownCoord
+            pWriter.Write<CoordF>(player.Rotation); // NOT char Coord/UnknownCoord
             pWriter.WriteInt();
             pWriter.Write<SkinColor>(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -20,7 +20,7 @@ namespace MapleServer2.Packets
                 .WriteInt()
                 .WriteInt()
                 .Write<CoordF>(player.Coord)
-                .Write<CoordF>(player.Value.UnknownCoord)
+                .Write<CoordF>(player.Value.Rotation)
                 .WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
         }
 
@@ -39,7 +39,7 @@ namespace MapleServer2.Packets
 
             // Coords
             pWriter.Write<CoordF>(fieldPlayer.Coord);
-            pWriter.Write<CoordF>(player.UnknownCoord);
+            pWriter.Write<CoordF>(player.Rotation);
             pWriter.WriteByte();
 
             pWriter.WriteTotalStats(ref player.Stats);
