@@ -25,23 +25,21 @@ namespace MapleServer2.PacketHandlers.Game
             // Get the box item
             Item box = session.Player.Inventory.Items[boxUid];
 
-            // Normally would look up which item to create, instead always create poisonous mushroom
-            Item item = new Item(30001001);
-
             // Remove box if amount is 1 or less
             if (box.Amount <= 1)
             {
                 session.Player.Inventory.Remove(boxUid, out Item removed);
                 session.Send(ItemInventoryPacket.Remove(boxUid));
             }
-            // Update box amount to be -1 otherwise
+            // Decrement box amount to otherwise
             else
             {
                 box.Amount -= 1;
                 session.Send(ItemInventoryPacket.Update(boxUid, box.Amount));
             }
 
-            // Add the opened item
+            // Normally would look up which item to create, instead always add poisonous mushroom
+            Item item = new Item(30001001);
             InventoryController.Add(session, item);
         }
     }

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class ItemUsePacket
     {
-        public static Packet Use(GameSession session, int id, int amount)
+        public static Packet Use(int id, int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_USE);
 

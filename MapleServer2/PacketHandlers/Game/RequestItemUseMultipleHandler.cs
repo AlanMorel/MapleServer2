@@ -57,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            session.Send(ItemUsePacket.Use(session, boxId, amount));
+            session.Send(ItemUsePacket.Use(boxId, amount));
 
             // Need to handle opening boxes, probably serialize the item xml
         }
