@@ -4,7 +4,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using Microsoft.Extensions.Logging;
 
-
 namespace MapleServer2.PacketHandlers.Game
 {
     public class RequestWorldMapHandler : GamePacketHandler
