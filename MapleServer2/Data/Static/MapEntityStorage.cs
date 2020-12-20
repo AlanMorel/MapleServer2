@@ -16,9 +16,9 @@ namespace MapleServer2.Data.Static {
             List<MapEntityMetadata> entities = Serializer.Deserialize<List<MapEntityMetadata>>(stream);
             foreach (MapEntityMetadata entity in entities)
             {
-                playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
                 npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
+                playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
             }
         }
 
