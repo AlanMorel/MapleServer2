@@ -8,33 +8,41 @@ public class InventoryController
 {
 	public static void Add(GameSession session, Item item)
 	{
-        // Checks if item is stackable or not.
+        // Checks if item is stackable or not
         if (item.SlotMax > 1)
         {
+            int added = 0; // For marking item new with correct added amount
+
             foreach (Item i in session.Player.Inventory.Items.Values)
             {
-                // Checks to see if item exists in database (dictionary)
+                // Continue if inventory item id doesn't match or it is at max amount
                 if (i.Id != item.Id || i.Amount >= i.SlotMax)
                 {
                     continue;
                 }
-                // Updates inventory for item amount overflow.
+                // Updates inventory for item amount overflow
                 if ((i.Amount + item.Amount) > i.SlotMax)
                 {
+                    added = i.SlotMax - i.Amount;
+
                     item.Amount = item.Amount - (i.SlotMax - i.Amount);
                     i.Amount = i.SlotMax;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
+                    session.Send(ItemInventoryPacket.MarkItemNew(i, added));
                 }
                 // Updates item amount
                 else
                 {
                     i.Amount = i.Amount + item.Amount;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
+                    session.Send(ItemInventoryPacket.MarkItemNew(i, item.Amount));
                     return;
                 }
             }
         }
-        session.Player.Inventory.Add(item); // adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // sends packet to add item clientside.
+        // Add item to inventory if cannot stack any further
+        session.Player.Inventory.Add(item); 
+        session.Send(ItemInventoryPacket.Add(item));
+        session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
     }
 }

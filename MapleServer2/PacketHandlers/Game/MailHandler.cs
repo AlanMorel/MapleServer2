@@ -108,7 +108,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(ItemPacket.ItemData(item));
                 // Inventory packets
                 session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item));
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
             }
 
             session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));

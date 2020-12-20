@@ -89,7 +89,8 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     Uid = GuidGenerator.Long(),
                     CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Owner = session.Player
+                    Owner = session.Player,
+                    Amount = 10
                 }
             };
             Mail sysItemMail = new Mail
