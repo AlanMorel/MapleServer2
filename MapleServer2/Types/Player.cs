@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using System.Collections.Generic;
 using Maple2Storage.Types;
@@ -123,7 +123,7 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 10,
+                Mesos = 1000000000,
                 ValorToken = 1,
                 Treva = 2,
                 Rue = 3,
