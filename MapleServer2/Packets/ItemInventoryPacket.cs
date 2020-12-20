@@ -65,11 +65,11 @@ namespace MapleServer2.Packets {
         }
 
         // Marks an item in inventory as new
-        public static Packet MarkItemNew(Item item) {
+        public static Packet MarkItemNew(Item item, int amount) {
             return PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x08)
                 .WriteLong(item.Uid)
-                .WriteInt(item.Amount)
+                .WriteInt(amount)
                 .WriteUnicodeString("");
         }
 

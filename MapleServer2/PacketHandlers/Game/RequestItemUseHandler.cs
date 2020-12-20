@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-        public RequestItemUseHandler(ILogger<SkillBookTreeHandler> logger) : base(logger) { }
+        public RequestItemUseHandler(ILogger<RequestItemUseHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

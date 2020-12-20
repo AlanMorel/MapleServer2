@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
 
-        public RequestItemUseMultipleHandler(ILogger<SkillBookTreeHandler> logger) : base(logger) { }
+        public RequestItemUseMultipleHandler(ILogger<RequestItemUseMultipleHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
