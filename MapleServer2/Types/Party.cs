@@ -7,7 +7,6 @@ namespace MapleServer2.Types
 {
     public class Party
     {
-
         public int Uid { get; private set; }
         public int MaxMembers { get; set; }
         public Player Leader { get; set; }

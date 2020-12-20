@@ -9,12 +9,6 @@ namespace MapleServer2.Packets
 {
     public static class PartyPacket
     {
-
-        /// <summary>
-        /// Sends a party invite to the player. Unsure what the 3843 short is.
-        /// </summary>
-        /// <param name="sender">The player inviting</param>
-        /// <returns></returns>
         public static Packet SendInvite(Player sender)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -27,12 +21,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-        /// <summary>
-        /// Creates a party with the specified player as the leader. Used when inviting someone to a party when you are not in one.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
         public static Packet Create(Player p)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
@@ -61,7 +49,6 @@ namespace MapleServer2.Packets
                 {
                     pWriter.WriteByte();
                 }
-
             }
 
             return pWriter;
@@ -79,13 +66,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-
-        /// <summary>
-        /// Adds the specified player to the party UI, that player needs to be added either with UpdatePlayer or CreateExisting
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
         public static Packet Join(Player p)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -98,11 +78,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        /// <summary>
-        /// Update existing player or add a new player to the backend party. Does not add them to the UI.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
         public static Packet UpdatePlayer(Player p)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -114,14 +89,6 @@ namespace MapleServer2.Packets
             JobPacket.WriteSkills(pWriter, p);
             return pWriter;
         }
-
-
-
-        /// <summary>
-        /// Updates the hitpoints on the party UI of the specified player.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
 
         public static Packet UpdateHitpoints(Player player)
         {
@@ -135,12 +102,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-        /// <summary>
-        /// Sets the given player as party leader.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
         public static Packet SetLeader(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -156,12 +117,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-        /// <summary>
-        /// Leaves the party.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
         public static Packet Leave(Player player, byte self)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -171,12 +126,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-        /// <summary>
-        /// Kicks player from the party.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
         public static Packet Kick(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
