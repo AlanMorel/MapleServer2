@@ -11,8 +11,6 @@ public class InventoryController
         // Checks if item is stackable or not
         if (item.SlotMax > 1)
         {
-            int added = 0; // For marking item new with correct added amount
-
             foreach (Item i in session.Player.Inventory.Items.Values)
             {
                 // Continue if inventory item id doesn't match or it is at max amount
@@ -23,7 +21,7 @@ public class InventoryController
                 // Updates inventory for item amount overflow
                 if ((i.Amount + item.Amount) > i.SlotMax)
                 {
-                    added = i.SlotMax - i.Amount;
+                    int added = i.SlotMax - i.Amount; // For marking item new with correct added amount
 
                     item.Amount = item.Amount - (i.SlotMax - i.Amount);
                     i.Amount = i.SlotMax;
