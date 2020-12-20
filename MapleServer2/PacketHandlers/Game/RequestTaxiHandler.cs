@@ -34,8 +34,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             int mapId = packet.ReadInt();
 
-            System.Console.WriteLine(mapId);
-
             //TODO: get correct player spawn coordinates
             MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
 
