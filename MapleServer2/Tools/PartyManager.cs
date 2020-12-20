@@ -27,12 +27,6 @@ namespace MapleServer2.Data
 
         public Party GetPartyById(long id)
         {
-            System.Console.WriteLine("Party list: ");
-            foreach (KeyValuePair<long, Party> entry in partyList)
-            {
-                Party p = entry.Value;
-                System.Console.WriteLine(p.Leader.Name + ", " + p.Uid + ", Members:" + p.Players.Count);
-            }
             Party foundParty;
             if (partyList.TryGetValue(id, out foundParty))
             {
