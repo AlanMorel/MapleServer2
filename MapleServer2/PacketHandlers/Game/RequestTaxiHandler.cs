@@ -17,16 +17,24 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             byte mode = packet.ReadByte();
+            long price = 0;
 
             switch (mode)
             {
                 case 3: // rotors using mesos
-                    session.Player.Mesos -= 60000;
-                    session.Send(MesosPacket.UpdateMesos(session));
+                    price = 60000;
+                    if (session.Player.Mesos >= price) {
+                        session.Player.Mesos -= price;
+                        session.Send(MesosPacket.UpdateMesos(session));
+                    }
                     break;
                 case 4: // rotors using merets
-                    session.Player.Merets -= 15;
-                    session.Send(MeretsPacket.UpdateMerets(session));
+                    price = 15;
+                    if (session.Player.Merets >= price)
+                    {
+                        session.Player.Merets -= price;
+                        session.Send(MeretsPacket.UpdateMerets(session));
+                    }
                     break;
                 case 5: // is sent after using rotors with meret, idk why..
                     return;
@@ -34,15 +42,13 @@ namespace MapleServer2.PacketHandlers.Game
 
             int mapId = packet.ReadInt();
 
-            System.Console.WriteLine(mapId);
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
 
-            //TODO: get correct player spawn coordinates
-            MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
-
-            if (dstPortal != null)
+            if (spawn != null)
             {
                 session.Player.MapId = mapId;
-                session.Player.Coord = dstPortal.Coord.ToFloat();
+                session.Player.Coord = spawn.Coord.ToFloat();
+                session.Player.Rotation = spawn.Rotation.ToFloat();
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }

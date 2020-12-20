@@ -72,19 +72,23 @@ namespace MapleServer2.Tools {
                 return;
             }
 
-            if (!MapEntityStorage.HasPortals(mapId))
+            if(session.Player.MapId == mapId)
             {
-                session.SendNotice("Invalid map: " + mapId);
+                session.SendNotice("You are already on that map.");
                 return;
             }
 
-            MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
 
-            if (dstPortal != null)
+            if (spawn != null)
             {
                 session.Player.MapId = mapId;
-                session.Player.Coord = dstPortal.Coord.ToFloat();
+                session.Player.Coord = spawn.Coord.ToFloat();
+                session.Player.Rotation = spawn.Rotation.ToFloat();
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            } else
+            {
+                session.SendNotice("Could not find coordinates to spawn on that map.");
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Text;
@@ -11,8 +11,8 @@ using Maple2Storage.Types;
 
 namespace GameDataParser {
     internal static class Program {
-        private const string XML_PATH = @"C:\Nexon\Library\maplestory2ps\appdata\Data\Xml.m2d";
-        private const string EXPORTED_PATH = @"C:\Nexon\Library\maplestory2ps\appdata\Data\Resource\Exported.m2d";
+        private const string XML_PATH = @"D:\Projects\MapleStory2 Client\appdata\Data\Xml.m2d";
+        private const string EXPORTED_PATH = @"D:\Projects\MapleStory2 Client\appdata\Data\Resource\Exported.m2d";
 
 
         private static void Main() {

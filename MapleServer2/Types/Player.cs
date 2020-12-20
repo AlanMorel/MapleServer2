@@ -46,7 +46,7 @@ namespace MapleServer2.Types
         public int[] Trophy = new int[3];
 
         public CoordF Coord;
-        public CoordF UnknownCoord;
+        public CoordF Rotation; // Rotation?
 
         // Appearance
         public SkinColor SkinColor;

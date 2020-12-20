@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -12,15 +12,20 @@ namespace Maple2Storage.Types {
         public readonly List<MapNpc> Npcs;
         [XmlElement(Order = 3)]
         public readonly List<MapPortal> Portals;
+        [XmlElement(Order = 4)]
+        public readonly List <MapPlayerSpawn> PlayerSpawns;
 
         // Required for deserialization
-        public MapEntityMetadata() {
+        public MapEntityMetadata()
+        {
+            this.PlayerSpawns = new List<MapPlayerSpawn>();
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
         }
 
         public MapEntityMetadata(int mapId) {
             this.MapId = mapId;
+            this.PlayerSpawns = new List<MapPlayerSpawn>();
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
         }
@@ -150,6 +155,26 @@ namespace Maple2Storage.Types {
         public static bool operator !=(MapPortal left, MapPortal right) {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class MapPlayerSpawn
+    {
+        [XmlElement(Order = 1)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 2)]
+        public readonly CoordS Rotation;
+
+        // Required for deserialization
+        public MapPlayerSpawn() { }
+
+        public MapPlayerSpawn(CoordS coord, CoordS rotation) {
+            this.Coord = coord;
+            this.Rotation = rotation;
+        }
+
+        public override string ToString() =>
+            $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
     }
 
     [Flags]
