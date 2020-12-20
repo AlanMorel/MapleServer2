@@ -36,7 +36,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             System.Console.WriteLine(mapId);
 
-            //TODO: figure out when to pay which currency Merits/Mesos?
             //TODO: get correct player spawn coordinates
             MapPortal dstPortal = MapEntityStorage.GetFirstPortal(mapId);
 
