@@ -9,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class RequestWorldMapHandler : GamePacketHandler
     {
-        public override RecvOp OpCode => RecvOp.REQUEST_WORLDMAP;
+        public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
 
         public RequestWorldMapHandler(ILogger<RequestWorldMapHandler> logger) : base(logger) { }
 
