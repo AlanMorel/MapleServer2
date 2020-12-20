@@ -23,7 +23,7 @@ namespace MapleServer2.PacketHandlers.Game {
 
             session.Player.Inventory.Add(item);
             session.Send(ItemInventoryPacket.Add(item));
-            session.Send(ItemInventoryPacket.MarkItemNew(item));
+            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
         }
     }
 }

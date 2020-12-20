@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Constants {
+namespace MapleServer2.Constants {
     public enum RecvOp : ushort {
         NULL = 0x0000,
         RESPONSE_VERSION = 0x0001,
@@ -21,7 +21,7 @@
         REQUEST_ITEM_INVENTORY = 0x0017,
         REQUEST_ITEM_STORAGE = 0x0018,
         REQUEST_ITEM_USE = 0x0019,
-        ITEM_EXTRA_DATA = 0x001A,
+        REQUEST_ITEM_USE_MULTIPLE = 0x001A,
         REQUEST_ITEM_PICKUP = 0x001C,
         REQUEST_MONEY_PICKUP = 0x001D,
         CHARACTER_INFO = 0x001E,
@@ -69,7 +69,7 @@
         REQUEST_GEM_EQUIPMENT = 0x0048,
         REQUEST_TAXI = 0x0049,
         TRADE_EX = 0x004A,
-        REQUEST_WORLDMAP = 0x004B,
+        REQUEST_WORLD_MAP = 0x004B,
         GUILD = 0x004C,
         GROUP_CHAT = 0x004D,
         REQUEST_HOME_BANK = 0x004E,

@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Constants {
+namespace MapleServer2.Constants {
     public enum SendOp : ushort {
         NULL = 0x0000,
         REQUEST_VERSION = 0x0001,
@@ -124,7 +124,7 @@
         FIND_FIELDS = 0x0083,
         TRADE_EX = 0x0084,
         INVINCIBLE_EFFECT = 0x0085,
-        WORLDMAP = 0x0086,
+        WORLD_MAP = 0x0086,
         MOVE_EVENTFIELD = 0x0087,
         DPS_STAT = 0x0088,
         DEBUG_MODE = 0x0089,
@@ -163,7 +163,7 @@
         USER_ENV = 0x00AA,
         MANUFACTURER = 0x00AB,
         ENTER_UGC_MAP = 0x00AC,
-        ITEM_USE = 0x00AD,
+        ITEM_USE = 0x00AE,
         CASH = 0x00AF,
         MY_INFO = 0x00B0,
         SESSION = 0x00B1,

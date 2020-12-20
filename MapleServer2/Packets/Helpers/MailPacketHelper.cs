@@ -34,7 +34,7 @@ namespace MapleServer2.Packets.Helpers
                     pWriter.WriteInt(256); // Unknown 00 01 00 00 => 256
                     pWriter.WriteInt(256); // Unknown 00 01 00 00 => 256
                     pWriter.WriteZero(21);
-                    pWriter.WriteInt(1); // Amount
+                    pWriter.WriteInt(item.Amount); // Amount
                     pWriter.WriteInt(0); // Unknown
                     pWriter.WriteInt(-1); // Unknown
                     pWriter.WriteLong(item.CreationTime); // Item creation time

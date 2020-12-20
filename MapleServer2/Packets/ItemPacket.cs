@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class ItemPacket
     {
-        public static Packet ItemData(Item item, long uid = 0)
+        public static Packet ItemData(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM);
 
