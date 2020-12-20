@@ -88,7 +88,7 @@ namespace MapleServer2.Types
         public Inventory Inventory;
         public Mailbox Mailbox;
 
-        public Party Party;
+        public long PartyId;
 
         public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {

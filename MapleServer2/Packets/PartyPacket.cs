@@ -18,7 +18,7 @@ namespace MapleServer2.Packets
         public static Packet SendInvite(Player sender)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(11) //Mode?
+                .WriteByte(0x000B) //Invite
                 .WriteUnicodeString(sender.Name)
                 .WriteShort(3843)
                 .WriteByte()
@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-   
+
         /// <summary>
         /// Creates a party with the specified player as the leader. Used when inviting someone to a party when you are not in one.
         /// </summary>
@@ -46,18 +46,22 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        //TODO: Make this send all players in the party already (how to find that party I have no idea at the moment)
         public static Packet CreateExisting(Player leader, HashSet<Player> members)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
-            CreatePartyHeader(leader, pWriter, 2);
+            CreatePartyHeader(leader, pWriter, (byte)members.Count);
 
             foreach (Player member in members)
             {
                 CharacterListPacket.WriteCharacter(member, pWriter);
                 pWriter.WriteLong();
                 WriteSkills(pWriter, member);
+                if (member != members.Last())
+                {
+                    pWriter.WriteByte();
+                }
+
             }
 
             return pWriter;
@@ -145,18 +149,25 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet Disband()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x0007);
+            return pWriter;
+        }
+
 
         /// <summary>
         /// Leaves the party.
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
-        public static Packet Leave(Player player)
+        public static Packet Leave(Player player, byte self)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x0003)
                 .WriteLong(player.CharacterId)
-                .WriteByte(1);
+                .WriteByte(self); //0 = Other leaving, 1 = Self leaving
             return pWriter;
         }
 
@@ -174,7 +185,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        //Had to copy this method because of the last short being written. Pretty sure it's supposed to be a byte.
+        public static Packet ReadyCheck(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x002E)
+                .WriteLong(player.CharacterId);
+            return pWriter;
+        }
+
+        //Had to copy this method because of the last short being written.
         private static Packet WriteSkills(PacketWriter pWriter, Player character)
         {
             // Get skills
@@ -199,8 +218,6 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt((int)skills[id].Level);
                 pWriter.WriteByte();
             }
-
-            pWriter.WriteByte();
 
             return pWriter;
         }

@@ -136,6 +136,7 @@ namespace MapleServer2.Constants {
         TUTORIAL = 0x008B,
         ITEM_SOCKET_SCROLL = 0x008C,
         CONSTRUCT_SHOP = 0x0094,
+        CLUB = 0x0096,
         STAT_POINT = 0x009A,
         ITEM_REPEAT = 0x009B,
         REQUEST_TUTORIAL_ITEM = 0x009D,
