@@ -40,26 +40,6 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(ItemInventoryPacket.Update(itemUid, box.Amount));
                 InventoryController.Add(session, item);
             }
-
-            // Need to handle opening boxes, probably serialize the item xml
-
-            /* Single box workflow
-            REQUEST_ITEM_USE
-            [B0 A7 0B A9 DA 19 1D 24] [00 00]
-            [Box Item Uid] [Short]
-
-            ITEM_INVENTORY
-            [02] [B0 A7 0B A9 DA 19 1D 24] [3A 00 00 00]
-            [Mode Update] [Box Item Uid] [New Total Amount]
-
-            ITEM_INVENTORY
-            [02] [4C 5F 91 C8 37 19 2F 24] [12 00 00 00]
-            [Mode Update] [Loot Item Uid] [New Total Amount]
-
-            ITEM_INVENTORY
-            [07] [4C 5F 91 C8 37 19 2F 24] [04 00 00 00] [00 00]
-            [Mode MarkItemNew] [Loot Item Uid] [Amount That Is New] [Empty String]
-            */
         }
     }
 }
