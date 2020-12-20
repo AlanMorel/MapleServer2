@@ -5,7 +5,6 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Types;
-using MapleServer2.Tools;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -37,8 +36,7 @@ namespace MapleServer2.PacketHandlers.Game
                     // Create new item from opening box
                     Item newItem = new Item(30001001)
                     {
-                        Amount = 1,
-                        Uid = GuidGenerator.Long()
+                        Amount = 1
                     };
 
                     if (item.Amount <= 1) // Remove box if there is only 1 left

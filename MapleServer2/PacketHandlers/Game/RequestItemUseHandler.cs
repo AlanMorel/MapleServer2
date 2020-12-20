@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Types;
-using MapleServer2.Tools;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -29,8 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Normally would look up which item to create, instead always create poisonous mushroom
             Item item = new Item(30001001)
             {
-                Amount = 1,
-                Uid = GuidGenerator.Long()
+                Amount = 1
             };
 
             // Remove box if amount is 1 or less

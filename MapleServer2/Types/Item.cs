@@ -2,6 +2,7 @@
 using Maple2Storage.Types;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types {
     public class Item {
@@ -48,6 +49,7 @@ namespace MapleServer2.Types {
 
         public Item(int id) {
             this.Id = id;
+            this.Uid = GuidGenerator.Long();
             this.InventoryType = ItemMetadataStorage.GetTab(id);
             this.ItemSlot = ItemMetadataStorage.GetSlot(id);
             this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
