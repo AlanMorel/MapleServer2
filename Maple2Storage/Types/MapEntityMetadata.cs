@@ -12,24 +12,28 @@ namespace Maple2Storage.Types {
         public readonly List<MapNpc> Npcs;
         [XmlElement(Order = 3)]
         public readonly List<MapPortal> Portals;
+        [XmlElement(Order = 4)]
+        public readonly List<MapPlayerSpawn> PlayerSpawn;
 
         // Required for deserialization
         public MapEntityMetadata() {
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
+            this.PlayerSpawn = new List<MapPlayerSpawn>();
         }
 
         public MapEntityMetadata(int mapId) {
             this.MapId = mapId;
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
+            this.PlayerSpawn = new List<MapPlayerSpawn>();
         }
 
         public override string ToString() =>
-            $"MapEntityMetadata(Id:{MapId},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)})";
+            $"MapEntityMetadata(Id:{MapId},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},PlayerSpawn:{string.Join(",", PlayerSpawn)},)";
 
         protected bool Equals(MapEntityMetadata other) {
-            return MapId == other.MapId && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals);
+            return MapId == other.MapId && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && PlayerSpawn.SequenceEqual(other.PlayerSpawn);
         }
 
         public override bool Equals(object obj) {
@@ -40,7 +44,7 @@ namespace Maple2Storage.Types {
         }
 
         public override int GetHashCode() {
-            return HashCode.Combine(MapId, Npcs, Portals);
+            return HashCode.Combine(MapId, Npcs, Portals, PlayerSpawn);
         }
 
         public static bool operator ==(MapEntityMetadata left, MapEntityMetadata right) {
@@ -150,6 +154,49 @@ namespace Maple2Storage.Types {
         public static bool operator !=(MapPortal left, MapPortal right) {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class MapPlayerSpawn
+    {
+        [XmlElement(Order = 1)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 2)]
+        public readonly CoordS Rotation;
+
+        public MapPlayerSpawn()
+        {
+
+        }
+        public MapPlayerSpawn(CoordS coord, CoordS rotation)
+        {
+            this.Coord = coord;
+            this.Rotation = rotation;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((MapPlayerSpawn)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Coord, Rotation);
+        }
+
+        public static bool operator ==(MapPlayerSpawn left, MapPlayerSpawn right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(MapPlayerSpawn left, MapPlayerSpawn right)
+        {
+            return !Equals(left, right);
+        }
+        public override string ToString() => $"MapPlayerSpawn(Position:{Coord},Rotation:{Rotation}";
     }
 
     [Flags]
