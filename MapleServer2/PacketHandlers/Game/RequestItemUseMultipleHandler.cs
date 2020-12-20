@@ -39,7 +39,8 @@ namespace MapleServer2.PacketHandlers.Game
                         Amount = 1
                     };
 
-                    if (item.Amount <= 1) // Remove box if there is only 1 left
+                    // Remove box if there is only 1 left
+                    if (item.Amount <= 1)
                     {
                         session.Player.Inventory.Remove(item.Uid, out Item removed);
                         session.Send(ItemInventoryPacket.Remove(item.Uid));
@@ -49,14 +50,13 @@ namespace MapleServer2.PacketHandlers.Game
 
                         break; // Break out of the amount loop because this stack of boxes is empty, look for next stack
                     }
-                    else // Update box amount if there is more than 1
-                    {
-                        item.Amount -= 1;
-                        session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
-                        InventoryController.Add(session, newItem);
 
-                        opened++;
-                    }
+                    // Update box amount if there is more than 1
+                    item.Amount -= 1;
+                    session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+                    InventoryController.Add(session, newItem);
+
+                    opened++;
                 }
             }
 
