@@ -57,7 +57,6 @@ namespace GameDataParser.Parsers {
                             XmlNode coordNode = parent.SelectSingleNode("property[@name='Position']");
                             XmlNode rotationNode = parent.SelectSingleNode("property[@name='Rotation']");
                             string npcListValue = node.FirstChild.Attributes["index"].Value;
-
                             string positionValue = coordNode.FirstChild.Attributes["value"].Value;
                             string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
