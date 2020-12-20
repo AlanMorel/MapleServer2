@@ -34,10 +34,7 @@ namespace MapleServer2.PacketHandlers.Game
                 for (int i = opened; i < amount; i++)
                 {
                     // Create new item from opening box
-                    Item newItem = new Item(30001001)
-                    {
-                        Amount = 1
-                    };
+                    Item newItem = new Item(30001001);
 
                     // Remove box if there is only 1 left
                     if (item.Amount <= 1)
