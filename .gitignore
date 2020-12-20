@@ -14,5 +14,3 @@ Maple2Storage/obj/
 MaplePacketLib2/obj/
 MapleServer2/obj/
 MapleServer2/Properties/launchSettings.json
-/MapleServer2/PacketHandlers/Game/RequestItemUseHandler.cs
-/MapleServer2/Packets/ItemUsePacket.cs
