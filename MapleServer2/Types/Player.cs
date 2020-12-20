@@ -35,6 +35,7 @@ namespace MapleServer2.Types
         public long Experience;
         public long RestExperience;
         public long Mesos;
+        public long Merets;
         public int PrestigeLevel = 100;
         public long PrestigeExperience;
         public byte Animation;
@@ -123,7 +124,8 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 1000000000,
+                Mesos = 200000,
+                Merets = 50,
                 ValorToken = 1,
                 Treva = 2,
                 Rue = 3,

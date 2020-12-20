@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
@@ -14,7 +14,7 @@ namespace MapleServer2.Packets {
             pWriter.WriteLong(session.Player.RestExperience);
             pWriter.WriteLong(session.Player.Mesos);
 
-            pWriter.WriteLong(); // Merets
+            pWriter.WriteLong(session.Player.Merets); // Merets
             pWriter.WriteLong(); // Merets
             // These Merets are added up. If set, previous are ignored.
 

@@ -17,13 +17,24 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             byte mode = packet.ReadByte();
-            int mapId = packet.ReadInt();
 
             switch (mode)
             {
-                case 3: // rotors using mesos?
+                case 3: // rotors using mesos
+                    session.Player.Mesos -= 60000;
+                    session.Send(MesosPacket.UpdateMesos(session));
                     break;
+                case 4: // rotors using merets
+                    session.Player.Merets -= 15;
+                    session.Send(MeretsPacket.UpdateMerets(session));
+                    break;
+                case 5: // is sent after using rotors with meret, idk why..
+                    return;
             }
+
+            int mapId = packet.ReadInt();
+
+            System.Console.WriteLine(mapId);
 
             //TODO: figure out when to pay which currency Merits/Mesos?
             //TODO: get correct player spawn coordinates
@@ -32,6 +43,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (dstPortal != null)
             {
                 session.Player.MapId = mapId;
+                session.Player.Coord = dstPortal.Coord.ToFloat();
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
