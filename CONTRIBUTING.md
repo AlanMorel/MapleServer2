@@ -1,5 +1,5 @@
 # Contributing to MapleServer2
-👍 First off, Thanks for considering helping the project! 👍
+👍 First off, thanks for considering helping the project! 👍
 
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
 We want to make contributing to this project simple and easy for everybody, whether it's:
@@ -23,11 +23,11 @@ in our project and our community a harassment-free experience for everyone!
 
 
 ## State of the project
-This project is not near to be finish by now, but we are whiling to keep accepting new people that can help.
+This project is only at the beginning stages, but we are willing to keep accepting new people that can help.
 
 
 # Guidelines
-In order to contribute, we establish some guidelines to keep the code organice and simple.
+In order to contribute, we establish some guidelines to keep the code organized and simple.
 
 
 ## We Develop with Github
@@ -61,5 +61,5 @@ Please try to be as detailed as possible in your report. What is your environmen
 What would you expect to be the outcome? All these details will help people to fix any potential bugs.
 
 
-### Any contributions made will be Open Source with this project
-In short, when you submit code changes, your submissions are understood to be Open Source.
+### Any contributions made will be open-source with this project
+In short, when you submit code changes, your submissions are understood to be open-source.
