@@ -13,7 +13,6 @@ namespace MapleServer2.Packets
                 .WriteUnicodeString(motto)
                 .WriteInt() //Unk
                 .WriteShort(); //Unk
-
             return pWriter;
         }
 
