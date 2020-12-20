@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -14,10 +15,10 @@ namespace MapleServer2.Types
         public long SentTimestamp { get; private set; }
         public List<Item> Items { get; private set; }
 
-        public Mail(byte type, int uid, long characterId, string senderName, string title, string body, long readTimestamp, long sentTimestamp, List<Item> items)
+        public Mail(byte type, long characterId, string senderName, string title, string body, long readTimestamp, long sentTimestamp, List<Item> items)
         {
             Type = type;
-            Uid = uid;
+            Uid = GuidGenerator.Int();
             CharacterId = characterId;
             SenderName = senderName;
             Title = title;

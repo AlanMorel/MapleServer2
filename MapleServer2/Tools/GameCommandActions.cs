@@ -57,7 +57,7 @@ namespace MapleServer2.Tools {
             // Simulate looting item
             if (session.Player.Inventory.Add(item)) {
                 session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item));
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
             }
         }
 

@@ -6,7 +6,6 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using MapleServer2.Types;
-using MapleServer2.Tools;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -62,7 +61,6 @@ namespace MapleServer2.PacketHandlers.Game
             Mail mail = new Mail
             (
                 1,
-                GuidGenerator.Int(),
                 session.Player.CharacterId,
                 session.Player.Name,
                 title,
@@ -108,7 +106,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(ItemPacket.ItemData(item));
                 // Inventory packets
                 session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item));
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
             }
 
             session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));

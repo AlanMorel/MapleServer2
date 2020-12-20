@@ -22,7 +22,7 @@ namespace MapleServer2.PacketHandlers.Game {
 
             // Send to client
             session.Send(ItemInventoryPacket.Add(tutorialBow));
-            session.Send(ItemInventoryPacket.MarkItemNew(tutorialBow));
+            session.Send(ItemInventoryPacket.MarkItemNew(tutorialBow, tutorialBow.Amount));
 
             // The below packet is sent with the inventory packets, but doesn't seem to be needed
             //session.Send(PacketWriter.Of(0x0105).WriteHexString("3F A6 36 E2 94 98 9B 2F 01 00 00 00 00 00 00 00 FF FF FF FF 89 18 84 5E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 B3 BC BC FF 3D DA C3 FF BA B4 B0 FF 13 00 00 00 05 00 00 00 00 03 00 11 00 0C 00 00 00 00 00 00 00 1B 00 0F 00 00 00 00 00 00 00 1C 00 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0E 00 00 00 01 00 00 00 00 00 00 00 00 00 01 01 66 66 66 66 66 66 66 66 08 00 61 00 73 00 61 00 73 00 61 00 73 00 31 00 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));

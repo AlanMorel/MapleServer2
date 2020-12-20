@@ -5,7 +5,6 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -50,18 +49,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             var item = new Item(40100001)
             {
-                Amount = 99999,
-                Uid = GuidGenerator.Long()
+                Amount = 99999
             };
             var item2 = new Item(40100001)
             {
-                Amount = 90000,
-                Uid = GuidGenerator.Long()
+                Amount = 90000
             };
             var item3 = new Item(40100001)
             {
-                Amount = 10000,
-                Uid = GuidGenerator.Long()
+                Amount = 10000
             };
             InventoryController.Add(session, item);
             InventoryController.Add(session, item2);
@@ -72,7 +68,6 @@ namespace MapleServer2.PacketHandlers.Game
            Mail sysMail = new Mail
            (
                101,
-               GuidGenerator.Int(),
                session.Player.CharacterId,
                "50000002",
                "",
@@ -87,15 +82,14 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 new Item(20302228)
                 {
-                    Uid = GuidGenerator.Long(),
                     CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Owner = session.Player
+                    Owner = session.Player,
+                    Amount = 10
                 }
             };
             Mail sysItemMail = new Mail
             (
                 101,
-                GuidGenerator.Int(),
                 session.Player.CharacterId,
                 "53000042",
                 "",
@@ -109,7 +103,6 @@ namespace MapleServer2.PacketHandlers.Game
             Mail regMail = new Mail
             (
                 1,
-                GuidGenerator.Int(),
                 session.Player.CharacterId,
                 session.Player.Name,
                 "Test Title",
