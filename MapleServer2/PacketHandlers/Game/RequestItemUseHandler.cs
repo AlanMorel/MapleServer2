@@ -16,30 +16,38 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            long itemUid = packet.ReadLong();
+            long boxUid = packet.ReadLong();
 
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            if (!session.Player.Inventory.Items.ContainsKey(boxUid))
             {
                 return;
             }
-            Item box = session.Player.Inventory.Items[itemUid];
+
+            // Get the box item
+            Item box = session.Player.Inventory.Items[boxUid];
+
+            // Normally would look up which item to create, instead always create poisonous mushroom
             Item item = new Item(30001001)
             {
                 Amount = 1,
                 Uid = GuidGenerator.Long()
             };
+
+            // Remove box if amount is 1 or less
             if (box.Amount <= 1)
             {
-                session.Player.Inventory.Remove(itemUid, out Item removed);
-                session.Send(ItemInventoryPacket.Remove(itemUid));
-                InventoryController.Add(session, item);
+                session.Player.Inventory.Remove(boxUid, out Item removed);
+                session.Send(ItemInventoryPacket.Remove(boxUid));
             }
+            // Update box amount to be -1 otherwise
             else
             {
                 box.Amount -= 1;
-                session.Send(ItemInventoryPacket.Update(itemUid, box.Amount));
-                InventoryController.Add(session, item);
+                session.Send(ItemInventoryPacket.Update(boxUid, box.Amount));
             }
+
+            // Add the opened item
+            InventoryController.Add(session, item);
         }
     }
 }
