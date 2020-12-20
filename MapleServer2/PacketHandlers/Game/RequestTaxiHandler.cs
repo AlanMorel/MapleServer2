@@ -23,7 +23,8 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 case 3: // rotors using mesos
                     price = 60000;
-                    if (session.Player.Mesos >= price) {
+                    if (session.Player.Mesos >= price)
+                    {
                         session.Player.Mesos -= price;
                         session.Send(MesosPacket.UpdateMesos(session));
                     }
