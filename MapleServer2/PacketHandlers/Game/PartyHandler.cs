@@ -51,7 +51,6 @@ namespace MapleServer2.PacketHandlers.Game
                 case 46:
                     HandleReadyCheck(session, packet);
                     break;
-
             }
         }
         private void HandleInvite(GameSession session, PacketReader packet)
@@ -75,7 +74,6 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
                 }
             }
-
         }
 
         private void HandleJoin(GameSession session, PacketReader packet)
@@ -210,7 +208,6 @@ namespace MapleServer2.PacketHandlers.Game
                             session.Send(PartyPacket.Disband());
                         });
                         GameServer.PartyManager.RemoveParty(party);
-
                     }
                 }
             }
