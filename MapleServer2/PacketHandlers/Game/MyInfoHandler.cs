@@ -11,17 +11,15 @@ namespace MapleServer2.PacketHandlers.Game {
         public MyInfoHandler(ILogger<MyInfoHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet) {
-            byte mode = packet.ReadByte();
+            byte mode = packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.
             switch (mode)
             {
                 case 0: //Set Motto
                     string newmotto = packet.ReadUnicodeString();
-                    session.Send(MyInfoPacket.SetMotto(session.Player, newmotto));
+                    session.Player.Motto = newmotto;
+                    session.FieldManager.BroadcastPacket(MyInfoPacket.SetMotto(session.FieldPlayer, newmotto));
                     break;
             }
-                    
-            //session.Send(PacketWriter.Of(SendOp.LOAD_UGC_MAP).WriteZero(9));
-            // SendCubes...?
         }
     }
 }

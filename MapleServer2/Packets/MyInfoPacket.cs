@@ -6,12 +6,13 @@ namespace MapleServer2.Packets
 {
     public static class MyInfoPacket
     {
-        public static Packet SetMotto(Player p, string motto)
+        public static Packet SetMotto(IFieldObject<Player> pObject, string motto)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MY_INFO)
-                .WriteLong(p.CharacterId)
+                .WriteInt(pObject.ObjectId)
                 .WriteUnicodeString(motto)
-                .WriteByte(1);
+                .WriteInt() //Unk
+                .WriteShort(); //Unk
 
             return pWriter;
         }
