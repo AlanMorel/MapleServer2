@@ -19,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            int mode = (int)packet.ReadByte(); //Mode
+            byte mode = packet.ReadByte(); //Mode
 
             switch (mode)
             {
@@ -40,15 +40,15 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleKick(session, packet);
                     break;
                 //Set party leader
-                case 17:
+                case 11:
                     HandleSetLeader(session, packet);
                     break;
                 //Vote kicking
-                case 45:
+                case 0x2D:
                     HandleVoteKick(session, packet);
                     break;
                 //Ready check
-                case 46:
+                case 0x2E:
                     HandleReadyCheck(session, packet);
                     break;
             }
@@ -58,21 +58,22 @@ namespace MapleServer2.PacketHandlers.Game
             string target = packet.ReadUnicodeString();
 
             Player other = GameServer.Storage.GetPlayerByName(target);
-            if (other != null)
+            if (other == null)
             {
-                if (other.PartyId == 0)
+                return;
+            }
+            if (other.PartyId == 0)
+            {
+                other.Session.Send(PartyPacket.SendInvite(session.Player));
+                if (session.Player.PartyId == 0)
                 {
-                    other.Session.Send(PartyPacket.SendInvite(session.Player));
-                    if (session.Player.PartyId == 0)
-                    {
-                        session.Send(PartyPacket.Create(session.Player));
-                    }
-                    //pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
+                    session.Send(PartyPacket.Create(session.Player));
                 }
-                else
-                {
-                    session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
-                }
+                //pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
+            }
+            else
+            {
+                session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
             }
         }
 
@@ -83,77 +84,83 @@ namespace MapleServer2.PacketHandlers.Game
             int unknown = packet.ReadInt(); //Something something I think it's dungeon not sure
 
             Player partyLeader = GameServer.Storage.GetPlayerByName(target);
-            if (partyLeader != null)
+            if (partyLeader == null)
             {
-                GameSession leaderSession = partyLeader.Session;
-                if (accept == 1)
+                return;
+            }
+            GameSession leaderSession = partyLeader.Session;
+            if (accept == 1)
+            {
+                Party party = GameServer.PartyManager.GetPartyByLeader(partyLeader);
+                if (party != null)
                 {
-                    Party party = GameServer.PartyManager.GetPartyByLeader(partyLeader);
-                    if (party != null)
-                    {
-                        //Existing party, add joining player to all other party members.
-                        party.BroadcastPacketParty(PartyPacket.Join(session.Player));
-                        party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
-                        party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(session.Player));
-                        party.AddPlayer(session.Player);
-                    }
-                    else
-                    {
-                        //Create new party
-                        Party newParty = new Party(GuidGenerator.Int(), 10, partyLeader, new HashSet<Player> { partyLeader, session.Player });
-                        GameServer.PartyManager.AddParty(newParty);
-
-                        //Send the party leader all the stuff for the joining player
-                        leaderSession.Send(PartyPacket.Join(session.Player));
-                        leaderSession.Send(PartyPacket.UpdatePlayer(session.Player));
-                        leaderSession.Send(PartyPacket.UpdateHitpoints(session.Player));
-
-                        leaderSession.Send(PartyPacket.UpdateHitpoints(partyLeader));
-
-                        partyLeader.PartyId = newParty.Uid;
-
-                        party = newParty;
-                    }
-
-                    session.Player.PartyId = party.Uid;
-
-                    //Create existing party based on the list of party members
-                    session.Send(PartyPacket.CreateExisting(partyLeader, party.Players));
-                    session.Send(PartyPacket.UpdatePlayer(session.Player));
-                    foreach (Player partyMember in party.Players)
-                    {
-                        //Don't know why you have to skip the first character in the list
-                        if (partyMember.CharacterId != party.Players.First().CharacterId)
-                        {
-                            //Adds the party member to the UI
-                            session.Send(PartyPacket.Join(partyMember));
-                        }
-                        //Update the HP for each party member.
-                        session.Send(PartyPacket.UpdateHitpoints(partyMember));
-                    }
-                    //Sometimes the party leader doesn't get set correctly. Not sure how to fix.
+                    //Existing party, add joining player to all other party members.
+                    party.BroadcastPacketParty(PartyPacket.Join(session.Player));
+                    party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+                    party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(session.Player));
+                    party.AddMember(session.Player);
                 }
                 else
                 {
-                    //Send Decline message to inviting player
-                    leaderSession.Send(ChatPacket.Send(partyLeader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
+                    //Create new party
+                    Party newParty = new Party(GuidGenerator.Int(), 10, new List<Player> { partyLeader, session.Player });
+                    GameServer.PartyManager.AddParty(newParty);
+
+                    //Send the party leader all the stuff for the joining player
+                    leaderSession.Send(PartyPacket.Join(session.Player));
+                    leaderSession.Send(PartyPacket.UpdatePlayer(session.Player));
+                    leaderSession.Send(PartyPacket.UpdateHitpoints(session.Player));
+
+                    leaderSession.Send(PartyPacket.UpdateHitpoints(partyLeader));
+
+                    partyLeader.PartyId = newParty.Id;
+
+                    party = newParty;
                 }
+
+                session.Player.PartyId = party.Id;
+
+                //Create existing party based on the list of party members
+                session.Send(PartyPacket.CreateExisting(partyLeader, party.Members));
+                session.Send(PartyPacket.UpdatePlayer(session.Player));
+                foreach (Player partyMember in party.Members)
+                {
+                    //Don't know why you have to skip the first character in the list
+                    if (partyMember.CharacterId != party.Members.First().CharacterId)
+                    {
+                        //Adds the party member to the UI
+                        session.Send(PartyPacket.Join(partyMember));
+                    }
+                    //Update the HP for each party member.
+                    session.Send(PartyPacket.UpdateHitpoints(partyMember));
+                }
+                //Sometimes the party leader doesn't get set correctly. Not sure how to fix.
+            }
+            else
+            {
+                //Send Decline message to inviting player
+                leaderSession.Send(ChatPacket.Send(partyLeader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
             }
         }
 
         private void HandleSetLeader(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
+
             Player newLeader = GameServer.Storage.GetPlayerByName(target);
-            if (newLeader != null)
+            if (newLeader == null)
             {
-                Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
-                if (party != null)
-                {
-                    party.BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
-                    party.Leader = newLeader;
-                }
+                return;
             }
+
+            Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+            if (party == null)
+            {
+                return;
+            }
+
+            party.BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
+            party.Leader = newLeader;
         }
 
         private void HandleLeave(GameSession session, PacketReader packet)
@@ -161,16 +168,16 @@ namespace MapleServer2.PacketHandlers.Game
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
             session.Player.PartyId = 0;
-            party.RemovePlayer(session.Player);
+            party.RemoveMember(session.Player);
             party.BroadcastPacketParty(PartyPacket.Leave(session.Player, 0));
             if (party.Leader.CharacterId == session.Player.CharacterId)
             {
                 //Set new leader
-                Player newLeader = party.Players.First();
-                party.BroadcastPacketParty(PartyPacket.SetLeader(party.Players.First()));
+                Player newLeader = party.Members.First();
+                party.BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
                 party.Leader = newLeader;
             }
-            if (party.Players.Count < 2)
+            if (party.Members.Count < 2)
             {
                 party.BroadcastParty(session =>
                 {
@@ -183,58 +190,70 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleKick(GameSession session, PacketReader packet)
         {
-            long char_id = packet.ReadLong();
+            long charId = packet.ReadLong();
+
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
-            if (party != null)
+            if (party == null)
             {
-                Player kickedPlayer = GameServer.Storage.GetPlayerById(char_id);
-                if (kickedPlayer != null)
+                return;
+            }
+
+            Player kickedPlayer = GameServer.Storage.GetPlayerById(charId);
+            if (kickedPlayer == null)
+            {
+                return;
+            }
+
+            party.BroadcastPacketParty(PartyPacket.Kick(kickedPlayer));
+            party.RemoveMember(kickedPlayer);
+            kickedPlayer.PartyId = 0;
+
+            if (party.Leader.CharacterId == kickedPlayer.CharacterId)
+            {
+                //Set new leader
+                Player newLeader = party.Members.First();
+                party.BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
+                party.Leader = newLeader;
+            }
+            if (party.Members.Count < 2)
+            {
+                party.BroadcastParty(session =>
                 {
-                    party.BroadcastPacketParty(PartyPacket.Kick(kickedPlayer));
-                    party.RemovePlayer(kickedPlayer);
-                    kickedPlayer.PartyId = 0;
-                    if (party.Leader.CharacterId == kickedPlayer.CharacterId)
-                    {
-                        //Set new leader
-                        Player newLeader = party.Players.First();
-                        party.BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
-                        party.Leader = newLeader;
-                    }
-                    if (party.Players.Count < 2)
-                    {
-                        party.BroadcastParty(session =>
-                        {
-                            session.Player.PartyId = 0;
-                            session.Send(PartyPacket.Disband());
-                        });
-                        GameServer.PartyManager.RemoveParty(party);
-                    }
-                }
+                    session.Player.PartyId = 0;
+                    session.Send(PartyPacket.Disband());
+                });
+                GameServer.PartyManager.RemoveParty(party);
             }
         }
 
         private void HandleVoteKick(GameSession session, PacketReader packet)
         {
-            long char_id = packet.ReadLong();
+            long charId = packet.ReadLong();
+
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
-            if (party != null)
+            if (party == null)
             {
-                Player kickedPlayer = GameServer.Storage.GetPlayerById(char_id);
-                if (kickedPlayer != null)
-                {
-                    party.BroadcastPacketParty(ChatPacket.Send(session.Player, session.Player.Name + " voted to kick " + kickedPlayer.Name, ChatType.NoticeAlert3));
-                    //TODO: Keep a counter of vote kicks for a player?
-                }
+                return;
             }
+
+            Player kickedPlayer = GameServer.Storage.GetPlayerById(charId);
+            if (kickedPlayer == null)
+            {
+                return;
+            }
+
+            party.BroadcastPacketParty(ChatPacket.Send(session.Player, session.Player.Name + " voted to kick " + kickedPlayer.Name, ChatType.NoticeAlert3));
+            //TODO: Keep a counter of vote kicks for a player?
         }
 
         private void HandleReadyCheck(GameSession session, PacketReader packet)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
-            if (party != null)
+            if (party == null)
             {
-                party.BroadcastPacketParty(PartyPacket.ReadyCheck(session.Player));
+                return;
             }
+            party.BroadcastPacketParty(PartyPacket.ReadyCheck(session.Player));
         }
     }
 }

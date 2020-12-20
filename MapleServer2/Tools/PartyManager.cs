@@ -17,12 +17,12 @@ namespace MapleServer2.Data
 
         public void AddParty(Party party)
         {
-            partyList.Add(party.Uid, party);
+            partyList.Add(party.Id, party);
         }
 
         public void RemoveParty(Party party)
         {
-            partyList.Remove(party.Uid);
+            partyList.Remove(party.Id);
         }
 
         public Party GetPartyById(long id)

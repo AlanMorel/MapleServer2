@@ -12,12 +12,11 @@ namespace MapleServer2.Packets
         public static Packet SendInvite(Player sender)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x000B) //Invite
+                .WriteByte(0xB) //Invite
                 .WriteUnicodeString(sender.Name)
-                .WriteShort(3843)
-                .WriteByte()
-                .WriteByte();
-
+                .WriteShort(3843) //Unk
+                .WriteByte() //Unk
+                .WriteByte(); //Unk
             return pWriter;
         }
 
@@ -34,7 +33,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CreateExisting(Player leader, HashSet<Player> members)
+        public static Packet CreateExisting(Player leader, List<Player> members)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
@@ -50,14 +49,13 @@ namespace MapleServer2.Packets
                     pWriter.WriteByte();
                 }
             }
-
             return pWriter;
         }
 
         //Generates the header code for Create
         public static Packet CreatePartyHeader(Player p, PacketWriter pWriter, byte memberCount)
         {
-            pWriter.WriteByte(0x0009) //Creates party on the backend with the 2 members
+            pWriter.WriteByte(0x9) //Creates party on the backend with the 2 members
                 .WriteByte(2)
                 .WriteInt()
                 .WriteLong(p.CharacterId)
@@ -69,7 +67,7 @@ namespace MapleServer2.Packets
         public static Packet Join(Player p)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0002); //Add player to party UI
+                .WriteByte(0x2); //Add player to party UI
 
             CharacterListPacket.WriteCharacter(p, pWriter);
             pWriter.WriteLong();
@@ -81,7 +79,7 @@ namespace MapleServer2.Packets
         public static Packet UpdatePlayer(Player p)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x000D) //Pretty sure this is the party update function, call after Join to update their location, afk status, etc.
+                .WriteByte(0xD) //Pretty sure this is the party update function, call after Join to update their location, afk status, etc.
                 .WriteLong(p.CharacterId);
 
             CharacterListPacket.WriteCharacter(p, pWriter);
@@ -93,7 +91,7 @@ namespace MapleServer2.Packets
         public static Packet UpdateHitpoints(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0013)
+                .WriteByte(0x13)
                 .WriteLong(player.CharacterId)
                 .WriteLong(player.AccountId)
                 .WriteInt(player.Stats.Hp.Total)
@@ -105,7 +103,7 @@ namespace MapleServer2.Packets
         public static Packet SetLeader(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0008)
+                .WriteByte(0x8)
                 .WriteLong(player.CharacterId);
             return pWriter;
         }
@@ -113,14 +111,14 @@ namespace MapleServer2.Packets
         public static Packet Disband()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0007);
+                .WriteByte(0x7);
             return pWriter;
         }
 
         public static Packet Leave(Player player, byte self)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0003)
+                .WriteByte(0x3)
                 .WriteLong(player.CharacterId)
                 .WriteByte(self); //0 = Other leaving, 1 = Self leaving
             return pWriter;
@@ -129,7 +127,7 @@ namespace MapleServer2.Packets
         public static Packet Kick(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x0004)
+                .WriteByte(0x4)
                 .WriteLong(player.CharacterId);
             return pWriter;
         }
@@ -137,7 +135,7 @@ namespace MapleServer2.Packets
         public static Packet ReadyCheck(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x002E)
+                .WriteByte(0x2E)
                 .WriteLong(player.CharacterId);
             return pWriter;
         }

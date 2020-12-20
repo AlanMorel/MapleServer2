@@ -2,34 +2,35 @@
 using MapleServer2.Servers.Game;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MapleServer2.Types
 {
     public class Party
     {
-        public int Uid { get; private set; }
+        public int Id { get; private set; }
         public int MaxMembers { get; set; }
         public Player Leader { get; set; }
 
         //List of players and their session.
-        public HashSet<Player> Players { get; private set; }
+        public List<Player> Members { get; private set; }
 
-        public Party(int pUid, int pMaxMembers, Player pLeader, HashSet<Player> pPlayers)
+        public Party(int pUid, int pMaxMembers, List<Player> pPlayers)
         {
-            Uid = pUid;
+            Id = pUid;
             MaxMembers = pMaxMembers;
-            Leader = pLeader;
-            Players = pPlayers;
+            Leader = pPlayers.First();
+            Members = pPlayers;
         }
 
-        public void AddPlayer(Player p)
+        public void AddMember(Player p)
         {
-            Players.Add(p);
+            Members.Add(p);
         }
 
-        public void RemovePlayer(Player p)
+        public void RemoveMember(Player p)
         {
-            Players.Remove(p);
+            Members.Remove(p);
         }
 
         public void BroadcastPacketParty(Packet packet, GameSession sender = null)
@@ -60,7 +61,7 @@ namespace MapleServer2.Types
         {
             List<GameSession> sessions = new List<GameSession>();
 
-            foreach (Player partyMember in Players)
+            foreach (Player partyMember in Members)
             {
                 sessions.Add(partyMember.Session);
             }
