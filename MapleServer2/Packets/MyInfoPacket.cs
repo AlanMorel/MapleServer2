@@ -15,6 +15,5 @@ namespace MapleServer2.Packets
                 .WriteShort(); //Unk
             return pWriter;
         }
-
     }
 }
