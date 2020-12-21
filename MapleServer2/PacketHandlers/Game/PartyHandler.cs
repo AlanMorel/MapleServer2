@@ -173,6 +173,10 @@ namespace MapleServer2.PacketHandlers.Game
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
             session.Player.PartyId = 0;
+            if (party == null)
+            {
+                return;
+            }
             party.RemoveMember(session.Player);
             party.BroadcastPacketParty(PartyPacket.Leave(session.Player, 0));
             if (party.Leader.CharacterId == session.Player.CharacterId)

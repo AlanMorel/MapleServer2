@@ -41,17 +41,8 @@ namespace MapleServer2.Packets
 
             CreatePartyHeader(leader, pWriter, (short) members.Count);
 
-            CharacterListPacket.WriteCharacter(leader, pWriter);
-            pWriter.WriteInt();
-            pWriter.WriteByte();
-            WriteSkills(pWriter, leader);
-
             foreach (Player member in members)
             {
-                if (member.CharacterId != leader.CharacterId)
-                {
-                    continue;
-                }
                 CharacterListPacket.WriteCharacter(member, pWriter);
                 pWriter.WriteInt();
                 pWriter.WriteByte();
@@ -65,8 +56,8 @@ namespace MapleServer2.Packets
         public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, short members)
         {
             pWriter.WriteByte(0x9) //Creates party on the backend with the 2 members
-                .WriteByte(0xFF)
-                .WriteInt()
+                .WriteByte(0)
+                .WriteInt(0)
                 .WriteLong(player.CharacterId)
                 .WriteShort(1); //# of Party members I think, but it's scuffed. Pretty sure nexon changed the packet in KMS2
             return pWriter;
