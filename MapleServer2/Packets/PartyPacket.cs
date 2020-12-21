@@ -2,6 +2,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,16 +21,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Create(Player p)
+        public static Packet Create(Player leader)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
-            CreatePartyHeader(p, pWriter, 1);
+            CreatePartyHeader(leader, pWriter, 1);
 
-            CharacterListPacket.WriteCharacter(p, pWriter);
+            CharacterListPacket.WriteCharacter(leader, pWriter);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, p);
-
+            JobPacket.WriteSkills(pWriter, leader);
             return pWriter;
         }
 
@@ -53,38 +53,37 @@ namespace MapleServer2.Packets
         }
 
         //Generates the header code for Create
-        public static Packet CreatePartyHeader(Player p, PacketWriter pWriter, byte memberCount)
+        public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, byte memberCount)
         {
             pWriter.WriteByte(0x9) //Creates party on the backend with the 2 members
                 .WriteByte(2)
                 .WriteInt()
-                .WriteLong(p.CharacterId)
+                .WriteLong(player.CharacterId)
                 .WriteByte(memberCount) //Party member count?
                 .WriteByte();
             return pWriter;
         }
 
-        public static Packet Join(Player p)
+        public static Packet Join(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x2); //Add player to party UI
 
-            CharacterListPacket.WriteCharacter(p, pWriter);
+            CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, p);
-
+            JobPacket.WriteSkills(pWriter, player);
             return pWriter;
         }
 
-        public static Packet UpdatePlayer(Player p)
+        public static Packet UpdatePlayer(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0xD) //Pretty sure this is the party update function, call after Join to update their location, afk status, etc.
-                .WriteLong(p.CharacterId);
+                .WriteLong(player.CharacterId);
 
-            CharacterListPacket.WriteCharacter(p, pWriter);
+            CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, p);
+            JobPacket.WriteSkills(pWriter, player);
             return pWriter;
         }
 
@@ -132,11 +131,36 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ReadyCheck(Player player)
+        public static Packet StartReadyCheck(Player leader, List<Player> members, int count)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteByte(0x2E)
-                .WriteLong(player.CharacterId);
+                .WriteByte(0x2F)
+                .WriteByte(2) //unk
+                .WriteInt(count)
+                .WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount)
+                .WriteInt(members.Count);
+            foreach (Player partyMember in members)
+            {
+                pWriter.WriteLong(partyMember.CharacterId);
+            }
+            pWriter.WriteInt(1) //unk
+                .WriteLong(leader.CharacterId)
+                .WriteInt(0); //unk
+            return pWriter;
+
+        }
+        public static Packet ReadyCheck(Player player, byte accept)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x30)
+                .WriteLong(player.CharacterId)
+                .WriteByte(accept);
+            return pWriter;
+        }
+        public static Packet EndReadyCheck()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
+                .WriteByte(0x31);
             return pWriter;
         }
 

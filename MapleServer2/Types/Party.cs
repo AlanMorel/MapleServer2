@@ -1,4 +1,5 @@
 ﻿using MaplePacketLib2.Tools;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using System;
 using System.Collections.Generic;
@@ -11,26 +12,51 @@ namespace MapleServer2.Types
         public int Id { get; private set; }
         public int MaxMembers { get; set; }
         public Player Leader { get; set; }
+        public int ReadyChecks { get; set; }
+        public int RemainingMembers { get; set; } //# of members left to reply to ready check
 
         //List of players and their session.
         public List<Player> Members { get; private set; }
 
-        public Party(int pUid, int pMaxMembers, List<Player> pPlayers)
+        public Party(int pId, int pMaxMembers, List<Player> pPlayers)
         {
-            Id = pUid;
+            Id = pId;
             MaxMembers = pMaxMembers;
             Leader = pPlayers.First();
             Members = pPlayers;
+            ReadyChecks = 0;
         }
 
-        public void AddMember(Player p)
+        public void AddMember(Player player)
         {
-            Members.Add(p);
+            Members.Add(player);
         }
 
-        public void RemoveMember(Player p)
+        public void RemoveMember(Player player)
         {
-            Members.Remove(p);
+            Members.Remove(player);
+        }
+
+        public void FindNewLeader()
+        {
+            Player newLeader = Members.First();
+            BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
+            Leader = newLeader;
+            Members.Remove(newLeader);
+            Members.Insert(0, newLeader);
+        }
+
+        public void CheckDisband()
+        {
+            if (Members.Count < 2)
+            {
+                BroadcastParty(session =>
+                {
+                    session.Player.PartyId = 0;
+                    session.Send(PartyPacket.Disband());
+                });
+                GameServer.PartyManager.RemoveParty(this);
+            }
         }
 
         public void BroadcastPacketParty(Packet packet, GameSession sender = null)
@@ -63,7 +89,10 @@ namespace MapleServer2.Types
 
             foreach (Player partyMember in Members)
             {
-                sessions.Add(partyMember.Session);
+                if (partyMember.Session.Connected())
+                {
+                    sessions.Add(partyMember.Session);
+                }
             }
             return sessions;
         }
