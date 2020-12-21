@@ -28,8 +28,10 @@ namespace MapleServer2.Packets
             CreatePartyHeader(leader, pWriter, 1);
 
             CharacterListPacket.WriteCharacter(leader, pWriter);
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            WriteSkills(pWriter, leader);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, leader);
             return pWriter;
         }
 
@@ -37,30 +39,36 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
 
-            CreatePartyHeader(leader, pWriter, (byte)members.Count);
+            CreatePartyHeader(leader, pWriter, (short) members.Count);
+
+            CharacterListPacket.WriteCharacter(leader, pWriter);
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            WriteSkills(pWriter, leader);
 
             foreach (Player member in members)
             {
-                CharacterListPacket.WriteCharacter(member, pWriter);
-                pWriter.WriteLong();
-                WriteSkills(pWriter, member);
-                if (member != members.Last())
+                if (member.CharacterId != leader.CharacterId)
                 {
-                    pWriter.WriteByte();
+                    continue;
                 }
+                CharacterListPacket.WriteCharacter(member, pWriter);
+                pWriter.WriteInt();
+                pWriter.WriteByte();
+                WriteSkills(pWriter, member);
             }
+            pWriter.WriteLong();
             return pWriter;
         }
 
         //Generates the header code for Create
-        public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, byte memberCount)
+        public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, short members)
         {
             pWriter.WriteByte(0x9) //Creates party on the backend with the 2 members
-                .WriteByte(2)
+                .WriteByte(0xFF)
                 .WriteInt()
                 .WriteLong(player.CharacterId)
-                .WriteByte(memberCount) //Party member count?
-                .WriteByte();
+                .WriteShort(1); //# of Party members I think, but it's scuffed. Pretty sure nexon changed the packet in KMS2
             return pWriter;
         }
 
@@ -70,8 +78,9 @@ namespace MapleServer2.Packets
                 .WriteByte(0x2); //Add player to party UI
 
             CharacterListPacket.WriteCharacter(player, pWriter);
+            pWriter.WriteInt();
+            WriteSkills(pWriter, player);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, player);
             return pWriter;
         }
 
@@ -82,8 +91,9 @@ namespace MapleServer2.Packets
                 .WriteLong(player.CharacterId);
 
             CharacterListPacket.WriteCharacter(player, pWriter);
+            pWriter.WriteInt();
+            WriteSkills(pWriter, player);
             pWriter.WriteLong();
-            JobPacket.WriteSkills(pWriter, player);
             return pWriter;
         }
 
@@ -164,24 +174,93 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        //For some reason CreateParty needs 9 bytes removed.
+        public static void WriteCharacter(Player player, PacketWriter pWriter, bool addByte)
+        {
+            pWriter.WriteLong(player.AccountId);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte(player.Gender);
+            pWriter.WriteByte(1);
+
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteInt(player.MapId);
+            pWriter.WriteInt(player.MapId); // Sometimes 0
+            pWriter.WriteInt();
+            pWriter.WriteShort(player.Level);
+            pWriter.WriteShort();
+            pWriter.WriteInt(player.JobGroupId);
+            pWriter.WriteInt(player.JobId);
+            pWriter.WriteInt(); // CurHp?
+            pWriter.WriteInt(); // MaxHp?
+            pWriter.WriteShort();
+            pWriter.WriteLong();
+            pWriter.WriteLong(); // Some timestamp
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.Write<CoordF>(player.Rotation); // NOT char Coord/UnknownCoord (maybe last on ground position?)
+            pWriter.WriteInt();
+            pWriter.Write<SkinColor>(player.SkinColor);
+            pWriter.WriteLong(player.CreationTime);
+            foreach (int trophyCount in player.Trophy)
+            {
+                pWriter.WriteInt(trophyCount);
+            }
+
+            pWriter.WriteLong(); // some uid
+            pWriter.WriteUnicodeString(player.GuildName);
+            pWriter.WriteUnicodeString(player.Motto);
+
+            pWriter.WriteUnicodeString(player.ProfileUrl);
+
+            byte clubCount = 0;
+            pWriter.WriteByte(clubCount); // # Clubs
+            for (int i = 0; i < clubCount; i++)
+            {
+                bool clubBool = true;
+                pWriter.WriteBool(clubBool);
+                if (clubBool)
+                {
+                    pWriter.WriteLong();
+                    pWriter.WriteUnicodeString("club name");
+                }
+            }
+            pWriter.WriteByte();
+            for (int i = 0; i < 12; i++)
+            {
+                pWriter.WriteInt(); // ???
+            }
+
+
+            // Some function call on CCharacterList property
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteLong(player.UnknownId); // THIS MUST BE CORRECT... BYPASS KEY...
+            pWriter.WriteLong(2000);
+            pWriter.WriteLong(3000);
+            pWriter.WriteInt();
+            pWriter.WriteInt(player.PrestigeLevel);
+        }
+
         //Had to copy this method because of the last short being written.
-        private static Packet WriteSkills(PacketWriter pWriter, Player character)
+        public static Packet WriteSkills(PacketWriter pWriter, Player character)
         {
             // Get skills
             Dictionary<int, Skill> skills = character.SkillTabs[0].Skills; // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
 
             // Ordered list of skill ids (must be sent in this order)
             int[] ids = character.SkillTabs[0].Order;
-            int countId = ids[ids.Length - 8]; // 8th to last skill id
+            byte split = character.SkillTabs[0].Split;
+            int countId = ids[ids.Length - split]; // Split to last skill id
 
-            pWriter.WriteByte((byte)(ids.Length - 8)); // Skill count minus 8
+            pWriter.WriteByte((byte)(ids.Length - split)); // Skill count minus split
 
             // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
             foreach (int id in ids)
             {
                 if (id == countId)
                 {
-                    pWriter.WriteByte(8); // Write that there are 8 skills left
+                    pWriter.WriteByte(split); // Write that there are (split) skills left
                 }
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
