@@ -14,4 +14,8 @@
       <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
+
 </Project>

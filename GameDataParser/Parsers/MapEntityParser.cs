@@ -31,6 +31,23 @@ namespace GameDataParser.Parsers {
                 var metadata = new MapEntityMetadata(mapId);
 
                 XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+
+                XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
+
+                foreach (XmlNode node in mapEntities)
+                {
+                    if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
+                    {
+                        XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
+                        XmlNode playerRotation = node.SelectSingleNode("property[@name='Rotation']");
+
+                        string playerPositionValue = playerCoord.FirstChild.Attributes["value"].Value;
+                        string playerRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+
+                        metadata.PlayerSpawns.Add(new MapPlayerSpawn(ParseCoord(playerPositionValue), ParseCoord(playerRotationValue)));
+                    }
+                }
+
                 //XmlNodeList nodes = document.SelectNodes("/game/entitySet/entity/property[@name='NpcList']");
                 XmlNodeList nodes = document.SelectNodes("/game/entitySet/entity/property");
                 foreach (XmlNode node in nodes) {

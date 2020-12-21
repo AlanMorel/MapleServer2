@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
 using ProtoBuf;
@@ -9,7 +10,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
-        private static readonly Dictionary<int, List<MapPlayerSpawn>> spawn = new Dictionary<int, List<MapPlayerSpawn>>();
+        private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
 
         static MapEntityStorage()
         {
@@ -19,7 +20,7 @@ namespace MapleServer2.Data.Static
             {
                 npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
-                spawn.Add(entity.MapId, entity.PlayerSpawn);
+                playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
             }
         }
 
@@ -35,7 +36,13 @@ namespace MapleServer2.Data.Static
 
         public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId)
         {
-            return spawn.GetValueOrDefault(mapId);
+            return playerSpawns.GetValueOrDefault(mapId);
+        }
+
+        public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
+        {
+            List<MapPlayerSpawn> list = playerSpawns.GetValueOrDefault(mapId);
+            return list?.Count > 0 ? list[new Random().Next(list.Count)] : null;
         }
 
         public static bool HasPortals(int mapId)
