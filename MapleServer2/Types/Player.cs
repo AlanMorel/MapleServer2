@@ -88,6 +88,8 @@ namespace MapleServer2.Types
         public Inventory Inventory;
         public Mailbox Mailbox;
 
+        public long PartyId;
+
         public static Player Char1(long accountId, long characterId, string name = "Char1") 
         {
             int job = 50; // Archer

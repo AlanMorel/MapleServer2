@@ -39,7 +39,11 @@ namespace MapleServer2.PacketHandlers.Game
                     //TODO: Send to all in guild
                     break;
                 case ChatType.Party:
-                    //TODO: Send to all in party
+                    Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                    if (party != null)
+                    {
+                        party.BroadcastPacketParty(ChatPacket.Send(session.Player, message, type));
+                    }
                     break;
                 case ChatType.WhisperTo:
                     Player recipientPlayer = GameServer.Storage.GetPlayerByName(recipient);
