@@ -19,10 +19,11 @@ namespace MapleServer2.PacketHandlers.Game
             byte mode = packet.ReadByte();
             long price = 0;
             bool paid = false;
+            int mapId = 0;
 
             if (mode != 5)
             {
-                int mapId = packet.ReadInt();
+                mapId = packet.ReadInt();
             }
 
             switch (mode)
