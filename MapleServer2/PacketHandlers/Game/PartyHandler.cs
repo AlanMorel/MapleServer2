@@ -56,6 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
         }
+
         private void HandleInvite(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
@@ -128,7 +129,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(PartyPacket.UpdatePlayer(session.Player));
                 foreach (Player partyMember in party.Members)
                 {
-                    //Don't know why you have to skip the first character in the list
+                    //Skip first character because of the scuffed Create packet. For now this is a workaround and functions the same.
                     if (partyMember.CharacterId != party.Members.First().CharacterId)
                     {
                         //Adds the party member to the UI
@@ -243,6 +244,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.BroadcastPacketParty(PartyPacket.StartReadyCheck(session.Player, party.Members, party.ReadyChecks++));
             party.RemainingMembers = party.Members.Count - 1;
         }
+
         private void HandleReadyCheckUpdate(GameSession session, PacketReader packet)
         {
             int checkNum = packet.ReadInt() + 1; //+ 1 is because the ReadyChecks variable is always 1 ahead

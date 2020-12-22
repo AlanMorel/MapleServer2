@@ -28,7 +28,9 @@ namespace MapleServer2.Packets
             CreatePartyHeader(leader, pWriter, 1);
 
             CharacterListPacket.WriteCharacter(leader, pWriter);
+            pWriter.WriteLong();
             pWriter.WriteInt();
+            pWriter.WriteShort();
             pWriter.WriteByte();
             WriteSkills(pWriter, leader);
             pWriter.WriteLong();
@@ -44,9 +46,12 @@ namespace MapleServer2.Packets
             foreach (Player member in members)
             {
                 CharacterListPacket.WriteCharacter(member, pWriter);
+                pWriter.WriteLong();
                 pWriter.WriteInt();
+                pWriter.WriteShort();
                 pWriter.WriteByte();
                 WriteSkills(pWriter, member);
+                pWriter.WriteByte(15);
             }
             pWriter.WriteLong();
             return pWriter;
@@ -55,11 +60,11 @@ namespace MapleServer2.Packets
         //Generates the header code for Create
         public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, short members)
         {
-            pWriter.WriteByte(0x9) //Creates party on the backend with the 2 members
+            pWriter.WriteByte(0x9) //Creates party with the # of members
                 .WriteByte(0)
                 .WriteInt(0)
                 .WriteLong(player.CharacterId)
-                .WriteShort(1); //# of Party members I think, but it's scuffed. Pretty sure nexon changed the packet in KMS2
+                .WriteShort(1); //# of Party members I think, but it's scuffed
             return pWriter;
         }
 
@@ -163,74 +168,6 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x31);
             return pWriter;
-        }
-
-        //For some reason CreateParty needs 9 bytes removed.
-        public static void WriteCharacter(Player player, PacketWriter pWriter, bool addByte)
-        {
-            pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(player.CharacterId);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteByte(player.Gender);
-            pWriter.WriteByte(1);
-
-            pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.WriteInt(player.MapId);
-            pWriter.WriteInt(player.MapId); // Sometimes 0
-            pWriter.WriteInt();
-            pWriter.WriteShort(player.Level);
-            pWriter.WriteShort();
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
-            pWriter.WriteInt(); // CurHp?
-            pWriter.WriteInt(); // MaxHp?
-            pWriter.WriteShort();
-            pWriter.WriteLong();
-            pWriter.WriteLong(); // Some timestamp
-            pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.Write<CoordF>(player.Rotation); // NOT char Coord/UnknownCoord (maybe last on ground position?)
-            pWriter.WriteInt();
-            pWriter.Write<SkinColor>(player.SkinColor);
-            pWriter.WriteLong(player.CreationTime);
-            foreach (int trophyCount in player.Trophy)
-            {
-                pWriter.WriteInt(trophyCount);
-            }
-
-            pWriter.WriteLong(); // some uid
-            pWriter.WriteUnicodeString(player.GuildName);
-            pWriter.WriteUnicodeString(player.Motto);
-
-            pWriter.WriteUnicodeString(player.ProfileUrl);
-
-            byte clubCount = 0;
-            pWriter.WriteByte(clubCount); // # Clubs
-            for (int i = 0; i < clubCount; i++)
-            {
-                bool clubBool = true;
-                pWriter.WriteBool(clubBool);
-                if (clubBool)
-                {
-                    pWriter.WriteLong();
-                    pWriter.WriteUnicodeString("club name");
-                }
-            }
-            pWriter.WriteByte();
-            for (int i = 0; i < 12; i++)
-            {
-                pWriter.WriteInt(); // ???
-            }
-
-
-            // Some function call on CCharacterList property
-            pWriter.WriteUnicodeString("");
-            pWriter.WriteLong(player.UnknownId); // THIS MUST BE CORRECT... BYPASS KEY...
-            pWriter.WriteLong(2000);
-            pWriter.WriteLong(3000);
-            pWriter.WriteInt();
-            pWriter.WriteInt(player.PrestigeLevel);
         }
 
         //Had to copy this method because of the last short being written.
