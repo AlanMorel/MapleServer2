@@ -19,6 +19,8 @@ namespace MapleServer2.Data.Static
             }
         }
 
+        // TODO: Get Skills from JobId
+
         public static IEnumerable<SkillLevel> GetSkills(int level)
         {
             return skillLevel.GetValueOrDefault(level);

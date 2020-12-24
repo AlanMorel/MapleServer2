@@ -112,7 +112,6 @@ namespace GameDataParser.Parsers
             return skillList;
         }
 
-
         public static void Write(List<SkillMetadata> skills)
         {
             using (FileStream writeStream = File.OpenWrite(OUTPUT))

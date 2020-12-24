@@ -11,7 +11,7 @@ namespace Maple2Storage.Types
         [XmlElement(Order = 1)]
         public int SkillId;
         [XmlElement(Order = 2)]
-        public string Feature="";
+        public string Feature = "";
         [XmlElement(Order = 3)]
         public int AttackType;
         [XmlElement(Order = 4)]
@@ -34,7 +34,6 @@ namespace Maple2Storage.Types
 
         public SkillMetadata(int skillId)
         {
-
             this.SkillId = skillId;
             this.SkillLevel = new List<SkillLevel>();
         }
@@ -59,19 +58,23 @@ namespace Maple2Storage.Types
                 && DefaultSkill.Equals(other.DefaultSkill)
                 && SkillLevel.Equals(other.SkillLevel);
         }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(SkillId, Feature, AttackType, Type, SubType, RangeType, Element, SkillLevel);
         }
+
         public static bool operator ==(SkillMetadata left, SkillMetadata right)
         {
             return Equals(left, right);
         }
+
         public static bool operator !=(SkillMetadata left, SkillMetadata right)
         {
             return !Equals(left, right);
         }
-        public override string ToString() => 
+
+        public override string ToString() =>
             $"Skill:(Id:{SkillId},Feature:{Feature},AttackType:{AttackType},Type:{Type},SubType:{SubType},Range:{RangeType},Element:{Element},Default:{DefaultSkill},SkillLevel:{string.Join(",", SkillLevel)}";
     }
 
@@ -92,7 +95,7 @@ namespace Maple2Storage.Types
         public readonly List<SkillMotion> SkillMotion;
 
         // Required for deserialization
-        public SkillLevel() 
+        public SkillLevel()
         {
             this.SkillMotion = new List<SkillMotion>();
         }
@@ -139,6 +142,7 @@ namespace Maple2Storage.Types
         {
             return !Equals(left, right);
         }
+
         public override string ToString() =>
             $"SkillLevel(Level:{Level},Spirit:{Spirit},UpgradeLevel:{UpgradeLevel},SkillRequired:{UpgradeSkillId},SkillLevelRequired:{UpgradeSkillLevel},Motions:{string.Join(",", SkillMotion)})";
     }
@@ -189,6 +193,7 @@ namespace Maple2Storage.Types
         {
             return !Equals(left, right);
         }
+
         public override string ToString() =>
             $"SkillMotion(Name:{SequenceName},MotionEffect:{MotionEffect},TagEffect:{StrTagEffects})";
     }
