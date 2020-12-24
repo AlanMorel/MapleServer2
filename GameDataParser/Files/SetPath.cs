@@ -2,10 +2,10 @@
 
 namespace GameDataParser.Files
 {
-    public class SetPath
+    public static class SetPath
     {
         // Set path of the Xml.m2d, Xml.m2h & Exported.m2d, Exported.m2h
-        public string XML_PATH = ConfigurationManager.AppSettings["XML_PATH"];
-        public string EXPORTED_PATH = ConfigurationManager.AppSettings["EXPORTED_PATH"];
+        public static string XML_PATH = ConfigurationManager.AppSettings["XML_PATH"];
+        public static string EXPORTED_PATH = ConfigurationManager.AppSettings["EXPORTED_PATH"];
     }
 }
