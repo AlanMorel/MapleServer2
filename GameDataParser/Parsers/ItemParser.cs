@@ -11,7 +11,6 @@ using System.Configuration;
 
 namespace GameDataParser.Parsers
 {
-
     public static class ItemParser
     {
         private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "/ms2-item-metadata";

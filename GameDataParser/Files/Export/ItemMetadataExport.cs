@@ -7,7 +7,6 @@ using Maple2Storage.Types;
 
 namespace GameDataParser.Files.Export
 {
-
     public class ItemMetadataExport
     {
 

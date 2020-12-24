@@ -11,10 +11,8 @@ using System.Xml;
 
 namespace GameDataParser.Parsers
 {
-
     public static class SkillParser
     {
-
         private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "ms2-skill-metadata";
 
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
@@ -125,7 +123,7 @@ namespace GameDataParser.Parsers
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));
             }
-            Console.WriteLine("Successfully parsed item metadata!");
+            Console.WriteLine("Successfully parsed skill metadata!");
         }
     }
 }
