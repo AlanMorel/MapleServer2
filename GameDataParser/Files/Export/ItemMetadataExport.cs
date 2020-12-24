@@ -12,9 +12,9 @@ namespace GameDataParser.Files.Export
 
         public void Export()
         {
-            string headerFile = SetPath.XML_PATH.Replace(".m2d", ".m2h");
+            string headerFile = VariableDefines.XML_PATH.Replace(".m2d", ".m2h");
             List<PackFileEntry> files = FileList.ReadFile(File.OpenRead(headerFile));
-            MemoryMappedFile memFile = MemoryMappedFile.CreateFromFile(SetPath.XML_PATH);
+            MemoryMappedFile memFile = MemoryMappedFile.CreateFromFile(VariableDefines.XML_PATH);
 
             // Parse and save some item data from xml file
             List<ItemMetadata> items = ItemParser.Parse(memFile, files);
