@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
             {
                 if (!entry.Name.StartsWith("item/")) continue;
 
-                var metadata = new ItemMetadata();
+                ItemMetadata metadata = new ItemMetadata();
                 string itemId = Path.GetFileNameWithoutExtension(entry.Name);
                 metadata.Id = int.Parse(itemId);
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");

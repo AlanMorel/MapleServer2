@@ -21,7 +21,6 @@ namespace GameDataParser
             Skill.Export();
         }
 
-
         public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)
         {
             return XmlReader.Create(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
@@ -29,7 +28,7 @@ namespace GameDataParser
 
         public static XmlDocument GetDocument(this MemoryMappedFile m2dFile, IPackFileHeader header)
         {
-            var document = new XmlDocument();
+            XmlDocument document = new XmlDocument();
             document.Load(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
             return document;
         }

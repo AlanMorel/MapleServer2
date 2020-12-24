@@ -11,8 +11,8 @@ namespace GameDataParser.Files
     {
         public static List<PackFileEntry> ReadFile(Stream headerFile)
         {
-            using var headerReader = new BinaryReader(headerFile);
-            var stream = IPackStream.CreateStream(headerReader);
+            using BinaryReader headerReader = new BinaryReader(headerFile);
+            IPackStream stream = IPackStream.CreateStream(headerReader);
 
             string fileString =
                 Encoding.UTF8.GetString(CryptoManager.DecryptFileString(stream, headerReader.BaseStream));
@@ -22,8 +22,8 @@ namespace GameDataParser.Files
             // Load the file allocation table and assign each file header to the entry within the list
             byte[] fileTable = CryptoManager.DecryptFileTable(stream, headerReader.BaseStream);
 
-            using var tableStream = new MemoryStream(fileTable);
-            using var reader = new BinaryReader(tableStream);
+            using MemoryStream tableStream = new MemoryStream(fileTable);
+            using BinaryReader reader = new BinaryReader(tableStream);
             stream.InitFileList(reader);
 
             return stream.FileList;

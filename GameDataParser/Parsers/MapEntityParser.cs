@@ -31,7 +31,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
                 maps.Add(mapIdStr, entry.Name);
-                var metadata = new MapEntityMetadata(mapId);
+                MapEntityMetadata metadata = new MapEntityMetadata(mapId);
 
                 XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
 
