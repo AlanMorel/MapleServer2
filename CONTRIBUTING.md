@@ -44,12 +44,15 @@ We actively welcome your pull requests:
 5. Issue that pull request!
 
 
-## Use a Consistent Coding Style
-Make sure your code with [C# Standards](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with the exceptions of:
-  * 4 spaces for indentation rather than tabs
-  * Instead of `var player` use `Player player`
-  * In Visual Studio you can `CTRL+K` then `CTRL+D` for style unification.
-
+## Before opening a PR, follow every step
+1. Make sure you code follows the [C# Standards](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)
+2. Use 4 spaces for indentation rather than tabs
+3. Instead of `var player`, use `Player player`
+4. In Visual Studio you can `CTRL+K` then `CTRL+D` for formatting
+5. Add a blank line in between all methods
+6. Review all your code, line by line
+7. Review all your code, line by line, again
+8. Open your PR
 
 ## Report bugs using Github's [issues](https://github.com/AlanMorel/MapleServer2/issues).
 We use GitHub issues to track public bugs. 
