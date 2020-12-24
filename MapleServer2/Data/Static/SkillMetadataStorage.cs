@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Types.Metadata;
 using System.Collections.Generic;
 using System.IO;
 using ProtoBuf;

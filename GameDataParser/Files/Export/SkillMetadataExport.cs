@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Parsers;
-using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Files.Export
 {

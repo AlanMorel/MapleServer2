@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 
 
-namespace Maple2Storage.Types
+namespace Maple2Storage.Types.Metadata
 {
     [XmlType]
     public class SkillMetadata

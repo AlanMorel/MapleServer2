@@ -1,5 +1,5 @@
 ﻿using GameDataParser.Crypto.Common;
-using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;

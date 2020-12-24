@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
 using GameDataParser.Crypto.Common;
+using Maple2Storage.Types.Metadata;
 using Maple2Storage.Types;
 using ProtoBuf;
 using System.Configuration;
