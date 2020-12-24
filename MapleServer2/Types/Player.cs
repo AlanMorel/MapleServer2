@@ -38,6 +38,8 @@ namespace MapleServer2.Types
         public long Merets;
         public int PrestigeLevel = 100;
         public long PrestigeExperience;
+        public int TitleId;
+        public short InsigniaId;
         public byte Animation;
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
@@ -134,7 +136,9 @@ namespace MapleServer2.Types
                 HaviFruit = 4,
                 MesoToken = 5,
                 Inventory = new Inventory(48),
-                Mailbox = new Mailbox()
+                Mailbox = new Mailbox(),
+                TitleId = 10000292,
+                InsigniaId = 29
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;

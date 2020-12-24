@@ -1,0 +1,35 @@
+### Features
+- Achieve
+- Quest system
+- Mobs (different behavior, moving around, spawning on field)
+- Attributes on Player
+- Dungeons (Instance of dungeons, rewards, more)
+- Exp System (Leveling up, get exp from quest, mob exp, more)
+- Battle System (Dealing damage, taking damage, damage, affecting stats, more)
+- Black Market (selling item, buying item, list on market, retrieving currency, more)
+- Pets (affecting stats, more)
+- Mounts
+- Cutscenes
+- Gathering
+- Housing
+- Crafting system
+- Prestige system
+- Adventure system
+- Reputation
+- Traits
+- Lapenshards
+- World Map
+- Minimap
+- CharacterInfo (Title, insignia, Mastery, more)
+- Networking (needs to be rewritten)
+- Guild system
+- Club system
+- Separate Channels
+- NPC Script loading system
+
+### Misc
+- Implement unknown mode logging on handlers
+- Create methods for common actions like warping and removing mesos/merets
+- Format all files in the codebase
+- Use 1 packet file per SendOp
+- Replace all hard-coded modes with enums

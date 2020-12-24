@@ -120,8 +120,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt();
                 pWriter.WriteByte();
                 pWriter.WriteByte();
-                pWriter.WriteInt(); // TitleId
-                pWriter.WriteShort();
+                pWriter.WriteInt(player.TitleId);
+                pWriter.WriteShort(player.InsigniaId);
                 pWriter.WriteByte();
                 pWriter.WriteInt();
                 pWriter.WriteByte();

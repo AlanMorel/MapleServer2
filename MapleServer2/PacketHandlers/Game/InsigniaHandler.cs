@@ -14,8 +14,14 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            short insigniaID = packet.ReadShort();
-            session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaID));
+            short insigniaId = packet.ReadShort();
+
+            if (insigniaId < 0) {
+                return;
+            }
+
+            session.Player.InsigniaId = insigniaId;
+            session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaId, true));
         }
     }
 }
