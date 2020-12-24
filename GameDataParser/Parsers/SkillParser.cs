@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Configuration;
 using System.Xml;
 
 namespace GameDataParser.Parsers
 {
+
     public static class SkillParser
     {
-        private const string OUTPUT = "Resources/ms2-skill-metadata";
+
+        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "ms2-skill-metadata";
 
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
@@ -49,6 +50,7 @@ namespace GameDataParser.Parsers
                     metadata.RangeType = kinds.Attributes["rangeType"].Value != null ? int.Parse(kinds.Attributes["rangeType"].Value) : 0;
                     metadata.Element = kinds.Attributes["element"].Value != null ? int.Parse(kinds.Attributes["element"].Value) : 0;
                 }
+
                 XmlNodeList levels = document.SelectNodes("/ms2/level");
                 foreach (XmlNode node in levels)
                 {

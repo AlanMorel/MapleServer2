@@ -7,12 +7,14 @@ using System.Xml;
 using GameDataParser.Crypto.Common;
 using Maple2Storage.Types;
 using ProtoBuf;
+using System.Configuration;
 
 namespace GameDataParser.Parsers
 {
+
     public static class ItemParser
     {
-        private const string OUTPUT = "Resources/ms2-item-metadata";
+        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "/ms2-item-metadata";
 
         public static List<ItemMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {

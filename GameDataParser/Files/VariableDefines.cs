@@ -2,6 +2,7 @@
 
 namespace GameDataParser.Files
 {
+
     public static class VariableDefines
     {
         // Set path of the Xml.m2d, Xml.m2h & Exported.m2d, Exported.m2h

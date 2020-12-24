@@ -7,12 +7,14 @@ using System.Xml;
 using GameDataParser.Crypto.Common;
 using Maple2Storage.Types;
 using ProtoBuf;
+using System.Configuration;
 
 namespace GameDataParser.Parsers
 {
+
     public static class MapEntityParser
     {
-        private const string OUTPUT = "Resources/ms2-map-entity-metadata";
+        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "ms2-map-entity-metadata";
 
         public static List<MapEntityMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
@@ -31,10 +33,9 @@ namespace GameDataParser.Parsers
                     continue;
                 }
                 maps.Add(mapIdStr, entry.Name);
+
                 MapEntityMetadata metadata = new MapEntityMetadata(mapId);
-
                 XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
-
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
                 foreach (XmlNode node in mapEntities)
