@@ -4,18 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
+using GameDataParser.Files;
 using GameDataParser.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 using Maple2Storage.Types;
 using ProtoBuf;
-using System.Configuration;
 
 namespace GameDataParser.Parsers
 {
     public static class ItemParser
     {
-        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "/ms2-item-metadata";
-
+        
         public static List<ItemMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
             List<ItemMetadata> items = new List<ItemMetadata>();
@@ -69,11 +68,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<ItemMetadata> items)
         {
-            using (FileStream writeStream = File.OpenWrite(OUTPUT))
+            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT+ "ms2-item-metadata"))
             {
                 Serializer.Serialize(writeStream, items);
             }
-            using (FileStream readStream = File.OpenRead(OUTPUT))
+            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-item-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(items.SequenceEqual(Serializer.Deserialize<List<ItemMetadata>>(readStream)));

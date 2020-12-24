@@ -1,4 +1,5 @@
 ﻿using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 using System;
@@ -6,14 +7,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
-using System.Configuration;
 using System.Xml;
 
 namespace GameDataParser.Parsers
 {
     public static class SkillParser
     {
-        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "ms2-skill-metadata";
 
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
@@ -114,11 +113,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<SkillMetadata> skills)
         {
-            using (FileStream writeStream = File.OpenWrite(OUTPUT))
+            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT + "ms2-skill-metadata"))
             {
                 Serializer.Serialize(writeStream, skills);
             }
-            using (FileStream readStream = File.OpenRead(OUTPUT))
+            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-skill-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));

@@ -4,17 +4,16 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Text.RegularExpressions;
 using System.Xml;
+using GameDataParser.Files;
 using GameDataParser.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
-using System.Configuration;
 
 namespace GameDataParser.Parsers
 {
     public static class MapEntityParser
     {
-        private static readonly string OUTPUT = ConfigurationManager.AppSettings["OUTPUT"] + "ms2-map-entity-metadata";
 
         public static List<MapEntityMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
@@ -159,11 +158,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<MapEntityMetadata> entities)
         {
-            using (FileStream writeStream = File.OpenWrite(OUTPUT))
+            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
-            using (FileStream readStream = File.OpenRead(OUTPUT))
+            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(entities.SequenceEqual(Serializer.Deserialize<List<MapEntityMetadata>>(readStream)));
