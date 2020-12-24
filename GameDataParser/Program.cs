@@ -5,7 +5,6 @@ using GameDataParser.Crypto;
 using GameDataParser.Crypto.Stream;
 using GameDataParser.Files.Export;
 
-
 namespace GameDataParser
 {
     internal static class Program
