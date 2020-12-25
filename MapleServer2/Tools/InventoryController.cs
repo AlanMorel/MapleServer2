@@ -46,7 +46,7 @@ public class InventoryController
     }
 
     // Removes Item from inventory by reference
-    public static void Remove(GameSession session, long uid, out Item item)
+    public static void Remove(GameSession session, out Item item, long uid)
     {
         session.Player.Inventory.Remove(uid, out item);
         session.Send(ItemInventoryPacket.Remove(uid));
@@ -98,7 +98,7 @@ public class InventoryController
     }
 
     // Sorts inventory items
-    public static void SortInventory(GameSession session, Inventory inventory, InventoryTab tab)
+    public static void SortInventory(GameSession session, Inventory inventory, InventoryType tab)
     {
         inventory.Sort(tab);
         session.Send(ItemInventoryPacket.ResetTab(tab));
@@ -106,7 +106,7 @@ public class InventoryController
     }
 
     // Loads all inventory tabs
-    public static void LoadInventoryTabs(GameSession session, InventoryTab tab)
+    public static void LoadInventoryTabs(GameSession session, InventoryType tab)
     {
         session.Send(ItemInventoryPacket.ResetTab(tab));
         session.Send(ItemInventoryPacket.LoadTab(tab));

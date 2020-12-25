@@ -17,12 +17,30 @@ namespace MapleServer2.Types
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] slotMaps;
+        private readonly Dictionary<InventoryType, short> TabSizes = new Dictionary<InventoryType, short>
+        {
+            {InventoryType.Gear, 48},
+            {InventoryType.Outfit, 150},
+            {InventoryType.Mount, 48},
+            {InventoryType.Catalyst, 48},
+            {InventoryType.FishingMusic, 48},
+            {InventoryType.Quest, 48},
+            {InventoryType.Gemstone, 48},
+            {InventoryType.Misc, 84},
+            {InventoryType.LifeSkill, 126},
+            {InventoryType.Pets, 60},
+            {InventoryType.Consumable, 84},
+            {InventoryType.Currency, 48},
+            {InventoryType.Badge, 60},
+            {InventoryType.Lapenshard, 48},
+            {InventoryType.Fragment, 48},
+        };
 
         public Inventory(short size)
         {
             this.Size = size;
             this.items = new Dictionary<long, Item>();
-            byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
+            byte maxTabs = Enum.GetValues(typeof(InventoryType)).Cast<byte>().Max();
             this.slotMaps = new Dictionary<short, long>[maxTabs + 1];
             for (byte i = 0; i <= maxTabs; i++)
             {
@@ -38,7 +56,7 @@ namespace MapleServer2.Types
             }
         }
 
-        public ICollection<Item> GetItems(InventoryTab tab)
+        public ICollection<Item> GetItems(InventoryType tab)
         {
             return GetSlots(tab).Select(kvp => items[kvp.Value])
                 .ToImmutableList();
@@ -126,7 +144,7 @@ namespace MapleServer2.Types
 
             short srcSlot = srcItem.Slot;
             // Move dstItem to srcSlot if removed
-            bool dstResult = RemoveInternal(srcItem.InventoryType, dstSlot, out Item dstItem);
+            bool dstResult = RemoveInternal(srcItem.InventoryTab, dstSlot, out Item dstItem);
             if (dstResult)
             {
                 dstItem.Slot = srcSlot;
@@ -139,7 +157,7 @@ namespace MapleServer2.Types
             return new Tuple<long, short>(dstItem?.Uid ?? 0, srcSlot);
         }
 
-        public void Sort(InventoryTab tab)
+        public void Sort(InventoryType tab)
         {
             // Get all items in tab and sort by Id
             Dictionary<short, long> slots = GetSlots(tab);
@@ -162,18 +180,18 @@ namespace MapleServer2.Types
                 "Error adding an item that already exists");
             items[item.Uid] = item;
 
-            Debug.Assert(!GetSlots(item.InventoryType).ContainsKey(item.Slot),
+            Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot),
                 "Error adding item to slot that is already taken.");
-            GetSlots(item.InventoryType)[item.Slot] = item.Uid;
+            GetSlots(item.InventoryTab)[item.Slot] = item.Uid;
         }
 
         private bool RemoveInternal(long uid, out Item item)
         {
             return items.Remove(uid, out item)
-                   && GetSlots(item.InventoryType).Remove(item.Slot);
+                   && GetSlots(item.InventoryTab).Remove(item.Slot);
         }
 
-        private bool RemoveInternal(InventoryTab tab, short slot, out Item item)
+        private bool RemoveInternal(InventoryType tab, short slot, out Item item)
         {
             if (!GetSlots(tab).TryGetValue(slot, out long uid))
             {
@@ -186,10 +204,11 @@ namespace MapleServer2.Types
 
         private bool SlotTaken(Item item, short slot = -1)
         {
-            return GetSlots(item.InventoryType).ContainsKey(slot < 0 ? item.Slot : slot);
+            Debug.WriteLine(item.InventoryTab);
+            return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
         }
 
-        private Dictionary<short, long> GetSlots(InventoryTab tab)
+        private Dictionary<short, long> GetSlots(InventoryType tab)
         {
             return slotMaps[(int)tab];
         }

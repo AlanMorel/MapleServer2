@@ -45,8 +45,8 @@ namespace MapleServer2.Tools
 
             // Add some bonus attributes to equips and pets
             var stats = new ItemStats();
-            if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
-                    || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
+            if (ItemMetadataStorage.GetTab(itemId) == InventoryType.Gear
+                    || ItemMetadataStorage.GetTab(itemId) == InventoryType.Pets)
             {
                 var rng = new Random();
                 stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute)rng.Next(35), 0.01f));

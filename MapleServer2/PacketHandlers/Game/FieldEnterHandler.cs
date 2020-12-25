@@ -49,19 +49,22 @@ namespace MapleServer2.PacketHandlers.Game
 
             var item = new Item(40100001)
             {
-                Amount = 99999
+                Amount = 99999,
+                Slot = 47
             };
             var item2 = new Item(40100001)
             {
-                Amount = 90000
+                Amount = 90000,
+                Slot = 30
             };
             var item3 = new Item(40100001)
             {
-                Amount = 10000
+                Amount = 10000,
+                Slot = 20
             };
-            InventoryController.Add(session, item);
-            InventoryController.Add(session, item2);
-            InventoryController.Add(session, item3);
+            InventoryController.Add(session, item, true);
+            InventoryController.Add(session, item2, true);
+            InventoryController.Add(session, item3, true);
 
             //Add mail for testing
             //System mail without any item

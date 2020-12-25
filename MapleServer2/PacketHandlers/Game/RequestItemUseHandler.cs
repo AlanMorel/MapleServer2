@@ -28,8 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Remove box if amount is 1 or less
             if (box.Amount <= 1)
             {
-                session.Player.Inventory.Remove(boxUid, out Item removed);
-                session.Send(ItemInventoryPacket.Remove(boxUid));
+                InventoryController.Remove(session, out Item removed, boxUid);
             }
             // Decrement box amount to otherwise
             else
@@ -40,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Normally would look up which item to create, instead always add poisonous mushroom
             Item item = new Item(30001001);
-            InventoryController.Add(session, item);
+            InventoryController.Add(session, item, true);
         }
     }
 }

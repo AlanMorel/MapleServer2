@@ -22,48 +22,21 @@ namespace MapleServer2.PacketHandlers.Game {
                     break;
                 }
                 case 3: { // Move
-                    long uid = packet.ReadLong();
-                    short dstSlot = packet.ReadShort();
-                    Tuple<long, short> result = inventory.Move(uid, dstSlot);
-                    if (result == null) {
-                        break;
-                    }
-
-                    // send updated move
-                    session.Send(ItemInventoryPacket.Move(result.Item1, result.Item2, uid, dstSlot));
+                    InventoryController.MoveItem(session, packet);
                     break;
                 }
                 case 4: { // Drop
-                    // TODO: Make sure items are tradable?
-                    long uid = packet.ReadLong();
-                    int amount = packet.ReadInt();
-                    int remaining = inventory.Remove(uid, out Item droppedItem, amount);
-                    if (remaining < 0) {
-                        break; // Removal failed
-                    }
-
-                    session.Send(remaining > 0
-                        ? ItemInventoryPacket.Update(uid, remaining)
-                        : ItemInventoryPacket.Remove(uid));
-                    session.FieldManager.AddItem(session, droppedItem);
+                          // TODO: Make sure items are tradable?
+                    InventoryController.DropItem(session, packet, false);
                     break;
                 }
                 case 5: { // Drop Bound
-                    long uid = packet.ReadLong();
-                    if (inventory.Remove(uid, out Item droppedItem) != 0) {
-                        break; // Removal from inventory failed
-                    }
-
-                    session.Send(ItemInventoryPacket.Remove(uid));
-                    // Allow dropping bound items for now
-                    session.FieldManager.AddItem(session, droppedItem);
+                    InventoryController.DropItem(session, packet, true);
                     break;
                 }
                 case 10: { // Sort
-                    var tab = (InventoryTab) packet.ReadShort();
-                    inventory.Sort(tab);
-                    session.Send(ItemInventoryPacket.ResetTab(tab));
-                    session.Send(ItemInventoryPacket.LoadItemsToTab(tab, inventory.GetItems(tab)));
+                    var tab = (InventoryType) packet.ReadShort();
+                    InventoryController.SortInventory(session, inventory, tab);
                     break;
                 }
             }

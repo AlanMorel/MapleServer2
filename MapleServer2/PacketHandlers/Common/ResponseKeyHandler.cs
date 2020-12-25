@@ -66,11 +66,8 @@ namespace MapleServer2.PacketHandlers.Common {
             session.Send(AdventureLevelPacket.Prestige(session.Player));
 
             // Load inventory tabs
-            foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab))) {
-                session.Send(ItemInventoryPacket.ResetTab(tab));
-                session.Send(ItemInventoryPacket.LoadTab(tab));
-                // Load items for above tab
-                //session.Send(ItemInventoryPacket.LoadItem());
+            foreach (InventoryType tab in Enum.GetValues(typeof(InventoryType))) {
+                InventoryController.LoadInventoryTabs(session, tab);
             }
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
             session.Send(MarketInventoryPacket.StartList());

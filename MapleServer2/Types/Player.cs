@@ -183,7 +183,7 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mesos = 10,
-                Inventory = new Inventory(48),
+                Inventory = new Inventory(100),
                 Mailbox = new Mailbox()
             };
         }

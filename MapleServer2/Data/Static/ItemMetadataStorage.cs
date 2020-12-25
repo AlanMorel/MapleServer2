@@ -29,7 +29,7 @@ namespace MapleServer2.Data.Static {
             return map.GetValueOrDefault(itemId).Slot;
         }
 
-        public static InventoryTab GetTab(int itemId) {
+        public static InventoryType GetTab(int itemId) {
             return map.GetValueOrDefault(itemId).Tab;
         }
 
