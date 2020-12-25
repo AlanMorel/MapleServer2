@@ -28,18 +28,17 @@ namespace MapleServer2.PacketHandlers.Game
             RequestTaxiMode mode = (RequestTaxiMode)packet.ReadByte();
 
             int mapId = 0;
+            long mesoPrice = 60000;
 
             if (mode != RequestTaxiMode.DiscoverTaxi)
             {
                 mapId = packet.ReadInt();
             }
 
-            long mesoPrice = 60000;
-
             switch (mode)
             {
                 case RequestTaxiMode.Car:
-                    mesoPrice = 5000; //For now make all car taxi's cost 5k, as we don't know the formula to calculate it yet.
+                    mesoPrice = 5000; //For now make all car taxis cost 5k, as we don't know the formula to calculate it yet.
                     goto case RequestTaxiMode.RotorsMeso;
                 case RequestTaxiMode.RotorsMeso:
                     if (session.Player.Mesos >= mesoPrice)
