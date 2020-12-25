@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
 {
     public static class VibratePacket
     {
-        public static Packet Vibrate(string objectHash, long someId, int objectId, int flag, Player player, int clienTicks)
+        public static Packet Vibrate(string objectHash, long someId, int objectId, int flag, Player player, int clientTicks)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE)
                 .WriteByte(1)
@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
                 .WriteInt(objectId)
                 .WriteInt(flag)
                 .Write<CoordS>(player.Coord.ToShort())
-                .WriteInt(clienTicks)
+                .WriteInt(clientTicks)
                 .WriteMapleString("")
                 .WriteByte();
             return pWriter;

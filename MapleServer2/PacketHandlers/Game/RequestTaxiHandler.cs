@@ -5,6 +5,7 @@ using MapleServer2.Packets;
 using Microsoft.Extensions.Logging;
 using Maple2Storage.Types;
 using MapleServer2.Data.Static;
+using System;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,62 +15,65 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestTaxiHandler(ILogger<RequestTaxiHandler> logger) : base(logger) { }
 
+        private enum RequestTaxiMode : byte
+        {
+            Car = 0x1,
+            RotorsMeso = 0x3,
+            RotorsMeret = 0x4,
+            DiscoverTaxi = 0x5
+        };
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
-            long price = 0;
-            bool paid = false;
+            RequestTaxiMode mode = (RequestTaxiMode)packet.ReadByte();
+
             int mapId = 0;
 
-            if (mode != 5)
+            if (mode != RequestTaxiMode.DiscoverTaxi)
             {
                 mapId = packet.ReadInt();
             }
 
+            long mesoPrice = 60000;
+
             switch (mode)
             {
-                case 1: // car taxi
-                    price = packet.ReadShort();
-                    if (session.Player.Mesos >= price)
+                case RequestTaxiMode.Car:
+                    mesoPrice = 5000; //For now make all car taxi's cost 5k, as we don't know the formula to calculate it yet.
+                    goto case RequestTaxiMode.RotorsMeso;
+                case RequestTaxiMode.RotorsMeso:
+                    if (session.Player.Mesos >= mesoPrice)
                     {
-                        session.Player.Mesos -= price;
+                        session.Player.Mesos -= mesoPrice;
                         session.Send(MesosPacket.UpdateMesos(session));
-                        paid = true;
+                        HandleTeleport(session, mapId);
                     }
                     break;
-                case 3: // rotors using mesos
-                    price = 60000;
-                    if (session.Player.Mesos >= price)
+                case RequestTaxiMode.RotorsMeret:
+                    if (session.Player.Merets >= 15)
                     {
-                        session.Player.Mesos -= price;
-                        session.Send(MesosPacket.UpdateMesos(session));
-                        paid = true;
-                    }
-                    break;
-                case 4: // rotors using merets
-                    price = 15;
-                    if (session.Player.Merets >= price)
-                    {
-                        session.Player.Merets -= price;
+                        session.Player.Merets -= 15;
                         session.Send(MeretsPacket.UpdateMerets(session));
-                        paid = true;
+                        HandleTeleport(session, mapId);
                     }
                     break;
-                case 5: // is sent after using rotors with meret, idk why..
-                    return;
+                case RequestTaxiMode.DiscoverTaxi:
+                    //TODO: Save somewhere and load somewhere? Perhaps on login.
+                    session.Send(TaxiPacket.DiscoverTaxi(session.Player.MapId));
+                    break;
             }
+        }
 
-            if (paid)
+        private void HandleTeleport(GameSession session, int mapId)
+        {
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+
+            if (spawn != null)
             {
-                MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-
-                if (spawn != null)
-                {
-                    session.Player.MapId = mapId;
-                    session.Player.Coord = spawn.Coord.ToFloat();
-                    session.Player.Rotation = spawn.Rotation.ToFloat();
-                    session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
-                }
+                session.Player.MapId = mapId;
+                session.Player.Coord = spawn.Coord.ToFloat();
+                session.Player.Rotation = spawn.Rotation.ToFloat();
+                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
     }
