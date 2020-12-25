@@ -15,3 +15,6 @@ MaplePacketLib2/obj/
 MapleServer2/obj/
 MapleServer2/Properties/launchSettings.json
 Maple2Storage/Resources
+*.m2d
+*.m2h
+GameDataParser/Resources
