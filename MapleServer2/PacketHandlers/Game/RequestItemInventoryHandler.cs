@@ -104,7 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
         {
-            var tab = (InventoryTab)packet.ReadShort();
+            var tab = (InventoryType)packet.ReadShort();
             inventory.Sort(tab);
 
             session.Send(ItemInventoryPacket.ResetTab(tab));
