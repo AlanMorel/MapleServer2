@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleSort(session, packet, inventory);
                     break;
                 default:
-                    logger.LogDebug($"Unknown RequestItemInventoryMode: " + mode);
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
