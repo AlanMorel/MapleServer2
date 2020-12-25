@@ -1,61 +1,33 @@
-using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
-using System.Text;
 using System.Xml;
 using GameDataParser.Crypto;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Crypto.Stream;
-using GameDataParser.Parsers;
-using Maple2Storage.Types;
+using GameDataParser.Files.Export;
 
-namespace GameDataParser {
-    internal static class Program {
-        private const string XML_PATH = @"D:\Projects\MapleStory2 Client\appdata\Data\Xml.m2d";
-        private const string EXPORTED_PATH = @"D:\Projects\MapleStory2 Client\appdata\Data\Resource\Exported.m2d";
+namespace GameDataParser
+{
+    internal static class Program
+    {
+        public static ItemMetadataExport Item = new ItemMetadataExport();
+        public static MapMetadataExport MapEntity = new MapMetadataExport();
+        public static SkillMetadataExport Skill = new SkillMetadataExport();
 
-
-        private static void Main() {
-            /*string headerFile = XML_PATH.Replace(".m2d", ".m2h");
-            List<PackFileEntry> files = ReadFile(File.OpenRead(headerFile));
-            var memFile = MemoryMappedFile.CreateFromFile(XML_PATH);
-
-            // Parse and save some item data from xml file
-            List<ItemMetadata> items = ItemParser.Parse(memFile, files);
-            ItemParser.Write(items);*/
-
-            string headerFile = EXPORTED_PATH.Replace(".m2d", ".m2h");
-            List<PackFileEntry> files = ReadFile(File.OpenRead(headerFile));
-            var memFile = MemoryMappedFile.CreateFromFile(EXPORTED_PATH);
-            List<MapEntityMetadata> entities = MapEntityParser.Parse(memFile, files);
-            MapEntityParser.Write(entities);
+        private static void Main()
+        {
+            Item.Export();
+            MapEntity.Export();
+            Skill.Export();
         }
 
-        private static List<PackFileEntry> ReadFile(Stream headerFile) {
-            using var headerReader = new BinaryReader(headerFile);
-            var stream = IPackStream.CreateStream(headerReader);
-
-            string fileString =
-                Encoding.UTF8.GetString(CryptoManager.DecryptFileString(stream, headerReader.BaseStream));
-            stream.FileList.AddRange(PackFileEntry.CreateFileList(fileString));
-            stream.FileList.Sort();
-
-            // Load the file allocation table and assign each file header to the entry within the list
-            byte[] fileTable = CryptoManager.DecryptFileTable(stream, headerReader.BaseStream);
-
-            using var tableStream = new MemoryStream(fileTable);
-            using var reader = new BinaryReader(tableStream);
-            stream.InitFileList(reader);
-
-            return stream.FileList;
-        }
-
-        public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header) {
+        public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)
+        {
             return XmlReader.Create(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
         }
 
-        public static XmlDocument GetDocument(this MemoryMappedFile m2dFile, IPackFileHeader header) {
-            var document = new XmlDocument();
+        public static XmlDocument GetDocument(this MemoryMappedFile m2dFile, IPackFileHeader header)
+        {
+            XmlDocument document = new XmlDocument();
             document.Load(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
             return document;
         }

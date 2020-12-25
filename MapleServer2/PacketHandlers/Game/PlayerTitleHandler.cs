@@ -15,8 +15,14 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             byte function = packet.ReadByte();
-            int playerTitleID = packet.ReadInt();
-            session.FieldManager.BroadcastPacket(PlayerTitlePacket.UpdatePlayerTitle(session, playerTitleID));
+            int titleId = packet.ReadInt();
+
+            if (titleId < 0) {
+                return;
+            }
+
+            session.Player.TitleId = titleId;
+            session.FieldManager.BroadcastPacket(PlayerTitlePacket.UpdatePlayerTitle(session, titleId));
         }
     }
 }

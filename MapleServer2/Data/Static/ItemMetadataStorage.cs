@@ -2,6 +2,7 @@
 using System.IO;
 using ProtoBuf;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Data.Static {
     // This is an in-memory storage to help with determining some metadata of items

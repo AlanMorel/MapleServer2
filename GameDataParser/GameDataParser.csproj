@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetZip" Version="1.13.7" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Files\m2dFiles\" />
       <Folder Include="Properties\" />
     </ItemGroup>
 
