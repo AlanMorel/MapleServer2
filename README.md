@@ -4,22 +4,3 @@ This is an open source MapleStory2 server emulation project created in C#. It is
 This software is licensed under the GNU GPL. Because of this, every user is free to use this software and choose how they want to use it, and assume all liability and risks themselves for that choice. Please read the license if you are unsure about your rights.
 
 Join the [community discord](https://discord.gg/eVGMGydwgm) if you are interested in contributing to this project or would like assistance getting set up.
-
-## Setup
-
-### Requirements
-Download and install **[Visual Studio or Visual Studio Code](https://visualstudio.microsoft.com/)**.
->Visual Studio is only for Windows, and make sure you get the community edition if you choose to install Visual Studio.
-
-**[Download](https://github.com/AlanMorel/MapleServer2/archive/master.zip)** or clone/fork this GitHub repository.
->If you are familiar with Git then it is recommended to clone or fork the repository, otherwise, use the download link.
-
-### Configuration (Visual Studio)
-Open the solution in Visual Studio and then go to `Project > Properties > Configuration Properties > Debugging`.
-
-Then change the working directory to `$(SolutionDir)`.
-
-### Configuration (Visual Studio Code)
-Open the solution as a workspace and then go to `Extensions` and install the `C#` extension.
-
-Then go to `Run > Open Configurations` and change the value of `"cwd"` to `"${workspaceFolder}"`.

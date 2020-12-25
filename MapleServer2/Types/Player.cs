@@ -112,7 +112,7 @@ namespace MapleServer2.Types
                 Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800), //Little Harbor
+                Coord = CoordF.From(2850, 2550, 1800), // Little Harbor (2000062)
                 //Coord = CoordF.From(500, 500, 15000), // tria
                 JobGroupId = job,
                 SkinColor = new SkinColor()
@@ -205,13 +205,13 @@ namespace MapleServer2.Types
                 Gender = gender,
                 JobGroupId = job,
                 Level = 1,
-                MapId = 2000062,
+                MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
                 Equips = (Dictionary<ItemSlot, Item>)equips,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800),
+                Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
                 GameOptions = new GameOptions(),
                 Mesos = 10,
                 Inventory = new Inventory(48),
