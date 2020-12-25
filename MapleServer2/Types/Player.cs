@@ -112,8 +112,8 @@ namespace MapleServer2.Types
                 Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800), // Little Harbor (2000062)
-                //Coord = CoordF.From(500, 500, 15000), // tria
+                Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
+                // Coord = CoordF.From(500, 500, 15000), // Tria
                 JobGroupId = job,
                 SkinColor = new SkinColor()
                 {
