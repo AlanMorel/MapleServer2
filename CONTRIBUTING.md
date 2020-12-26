@@ -10,7 +10,6 @@ We want to make contributing to this project simple and easy for everybody, whet
 - Proposing an implementation
 - Packet provider
 
-
 ## Rules
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation 
 in our project and our community a harassment-free experience for everyone!
@@ -21,20 +20,7 @@ in our project and our community a harassment-free experience for everyone!
 - Focusing on what is best for the community
 - Showing empathy towards other community members
 
-
-## State of the project
-This project is only at the beginning stages, but we are willing to keep accepting new people that can help.
-
-
-# Guidelines
-In order to contribute, we establish some guidelines to keep the code organized and simple.
-
-
-## We Develop with Github
-We use github to host code, to track issues and feature requests, as well as accept pull requests.
-
-
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
+## We use [Github Flow](https://guides.github.com/introduction/flow/index.html)
 Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). 
 We actively welcome your pull requests:
 1. Fork the repo and create your branch from `master` and Do the changes in your fork.
@@ -42,7 +28,6 @@ We actively welcome your pull requests:
 3. Your commit messages should be clear and descriptive (for example: "Fixed bug XY", "Added feature YZ", "Fixed suggestion: using class instead of var").
 4. The PR should be based on a resonably recent fork of the `master` branch.
 5. Issue that pull request!
-
 
 ## Before opening a PR, follow every step
 1. Make sure you code follows the [C# Standards](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)
@@ -64,6 +49,5 @@ Report a bug by opening a new issue but make sure to follow this:
 Please try to be as detailed as possible in your report. What is your environment? What steps will reproduce the issue? 
 What would you expect to be the outcome? All these details will help people to fix any potential bugs.
 
-
 ### Any contributions made will be open-source with this project
-In short, when you submit code changes, your submissions are understood to be open-source.
+In short, when you submit code changes, your submissions are understood to be open-source in accordance with the LICENSE.

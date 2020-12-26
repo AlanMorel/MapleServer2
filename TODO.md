@@ -20,17 +20,17 @@
 - Lapenshards
 - World Map
 - Minimap
-- CharacterInfo (Title, insignia, Mastery, more)
-- Networking (needs to be rewritten)
+- CharacterInfo (Mastery, more)
+- Networking + Sessions (needs to be rewritten)
 - Guild system
 - Club system
-- Separate Channels
+- Channels system
 - NPC Script loading system
 - Taxi system
 - Fishing system
 - Full inventory handling
 
-### Misc
+### Miscellaneous
 - Implement unknown mode logging on handlers (ex: RequestItemInventoryHandler.cs)
 - Make each mode in handler handled in a different method (ex: RequestItemInventoryHandler.cs)
 - Create methods for common actions like warping and removing mesos/merets
