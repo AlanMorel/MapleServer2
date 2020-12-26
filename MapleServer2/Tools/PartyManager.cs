@@ -25,6 +25,24 @@ namespace MapleServer2.Data
             partyList.Remove(party.Id);
         }
 
+        public List<Party> GetPartyFinderList(Player player)
+        {
+            List<Party> temp = new();
+            foreach (KeyValuePair<long, Party> entry in partyList)
+            {
+                if (entry.Value.PartyFinderId != 0)
+                {
+                    Party newParty = (Party)entry.Value.Clone();
+                    if (newParty.Members.Contains(player))
+                    {
+                        newParty.Approval = false;
+                    }
+                    temp.Add(newParty);
+                }
+            }
+            return temp;
+        }
+
         public Party GetPartyById(long id)
         {
             Party foundParty;
