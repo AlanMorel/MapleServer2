@@ -51,7 +51,8 @@ namespace MapleServer2 {
                         break;
                     case "resolve":
                         PacketStructureResolver resolver = PacketStructureResolver.Parse(input[1]);
-                        resolver.Start(GetSessions(loginServer, gameServer).Single());
+                        GameSession first = gameServer.GetSessions().Single();
+                        resolver.Start(first);
                         break;
                     default:
                         logger.Info($"Unknown command:{input[0]} args:{(input.Length > 1 ? input[1] : "N/A")}");

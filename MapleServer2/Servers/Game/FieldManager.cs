@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -196,6 +197,16 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldPacket.RemoveItem(objectId));
             });
             return true;
+        }
+
+        //Broadcast a packet after the specified delay.
+        public async Task DelayBroadcastPacket(Packet packet, int delay)
+        {
+            await Task.Factory.StartNew(async () =>
+            {
+                await Task.Delay(delay);
+                BroadcastPacket(packet);
+            });
         }
 
         // Providing a session will result in packet not being broadcast to self.
