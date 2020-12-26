@@ -17,42 +17,50 @@ namespace MapleServer2.PacketHandlers.Game
 
         public PartyHandler(ILogger<PartyHandler> logger) : base(logger) { }
 
+        private enum PartyMode : byte
+        {
+            Invite = 0x1,
+            Join = 0x2,
+            Leave = 0x3,
+            Kick = 0x4,
+            SetLeader = 0x11,
+            VoteKick = 0x2D,
+            ReadyCheck = 0x2E,
+            ReadyCheckUpdate = 0x30
+        };
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte(); //Mode
+            PartyMode mode = (PartyMode)packet.ReadByte(); //Mode
 
             switch (mode)
             {
-                //Party invite
-                case 0x1:
+                case PartyMode.Invite:
                     HandleInvite(session, packet);
                     break;
-                //Party join
-                case 0x2:
+                case PartyMode.Join:
                     HandleJoin(session, packet);
                     break;
-                //Party leave
-                case 0x3:
+                case PartyMode.Leave:
                     HandleLeave(session, packet);
                     break;
-                //Kick player
-                case 0x4:
+                case PartyMode.Kick:
                     HandleKick(session, packet);
                     break;
-                //Set party leader
-                case 0x11:
+                case PartyMode.SetLeader:
                     HandleSetLeader(session, packet);
                     break;
-                //Vote kicking
-                case 0x2D:
+                case PartyMode.VoteKick:
                     HandleVoteKick(session, packet);
                     break;
-                //Ready check start
-                case 0x2E:
+                case PartyMode.ReadyCheck:
                     HandleStartReadyCheck(session, packet);
                     break;
-                case 0x30:
+                case PartyMode.ReadyCheckUpdate:
                     HandleReadyCheckUpdate(session, packet);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
