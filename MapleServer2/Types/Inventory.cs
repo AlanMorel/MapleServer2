@@ -17,24 +17,7 @@ namespace MapleServer2.Types
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] slotMaps;
-        private readonly Dictionary<InventoryType, short> TabSizes = new Dictionary<InventoryType, short>
-        {
-            {InventoryType.Gear, 48},
-            {InventoryType.Outfit, 150},
-            {InventoryType.Mount, 48},
-            {InventoryType.Catalyst, 48},
-            {InventoryType.FishingMusic, 48},
-            {InventoryType.Quest, 48},
-            {InventoryType.Gemstone, 48},
-            {InventoryType.Misc, 84},
-            {InventoryType.LifeSkill, 126},
-            {InventoryType.Pets, 60},
-            {InventoryType.Consumable, 84},
-            {InventoryType.Currency, 48},
-            {InventoryType.Badge, 60},
-            {InventoryType.Lapenshard, 48},
-            {InventoryType.Fragment, 48},
-        };
+
 
         public Inventory(short size)
         {
