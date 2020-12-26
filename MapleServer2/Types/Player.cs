@@ -6,6 +6,8 @@ using MapleServer2.Enums;
 using MapleServer2.Tools;
 using MapleServer2.Data;
 using MapleServer2.Servers.Game;
+using MapleServer2.Packets;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
@@ -92,7 +94,7 @@ namespace MapleServer2.Types
 
         public long PartyId;
 
-        public static Player Char1(long accountId, long characterId, string name = "Char1") 
+        public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
 
@@ -217,6 +219,14 @@ namespace MapleServer2.Types
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
             };
+        }
+
+        public void Warp(MapPlayerSpawn spawn, int mapId)
+        {
+            MapId = mapId;
+            Coord = spawn.Coord.ToFloat();
+            Rotation = spawn.Rotation.ToFloat();
+            Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
         }
     }
 }
