@@ -50,9 +50,10 @@ We actively welcome your pull requests:
 3. Instead of `var player`, use `Player player`
 4. In Visual Studio you can `CTRL+K` then `CTRL+D` for formatting
 5. Add a blank line in between all methods
-6. Review all your code, line by line
-7. Review all your code, line by line, again
-8. Open your PR
+6. Check that all new methods and variables and class names are named appropriately
+7. Review all your code, line by line
+8. Review all your code, line by line, again
+9. Open your PR
 
 ## Report bugs using Github's [issues](https://github.com/AlanMorel/MapleServer2/issues).
 We use GitHub issues to track public bugs. 

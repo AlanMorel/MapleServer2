@@ -2,7 +2,7 @@
 - Achieve
 - Quest system
 - Mobs (different behavior, moving around, spawning on field)
-- Attributes on Player
+- Attributes/stats on Player
 - Dungeons (Instance of dungeons, rewards, more)
 - Exp System (Leveling up, get exp from quest, mob exp, more)
 - Battle System (Dealing damage, taking damage, damage, affecting stats, more)
@@ -26,10 +26,15 @@
 - Club system
 - Separate Channels
 - NPC Script loading system
+- Taxi system
+- Fishing system
+- Full inventory handling
 
 ### Misc
-- Implement unknown mode logging on handlers
+- Implement unknown mode logging on handlers (ex: RequestItemInventoryHandler.cs)
+- Make each mode in handler handled in a different method (ex: RequestItemInventoryHandler.cs)
 - Create methods for common actions like warping and removing mesos/merets
 - Format all files in the codebase
 - Use 1 packet file per SendOp
-- Replace all hard-coded modes with enums
+- Replace all hard-coded modes in send packets with enums
+- Move handshake packet code to Packet file
