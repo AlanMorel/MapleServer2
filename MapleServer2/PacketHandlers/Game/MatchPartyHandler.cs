@@ -1,4 +1,6 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -6,15 +8,12 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MapleServer2.PacketHandlers.Game
 {
     public class MatchPartyHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.MATCH_PARTY;
-
         public MatchPartyHandler(ILogger<MatchPartyHandler> logger) : base(logger) { }
 
         private enum MatchPartyMode : byte
@@ -22,11 +21,19 @@ namespace MapleServer2.PacketHandlers.Game
             CreateListing = 0x0,
             RemoveListing = 0x1,
             Refresh = 0x2
-        };
+        }
+
+        private enum SearchFilter : byte
+        {
+            MostMembers = 0xC,
+            LeastMembers = 0xB,
+            OldestFirst = 0x16,
+            NewestFirst = 0x15
+        }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            MatchPartyMode mode = (MatchPartyMode)packet.ReadByte();
+            MatchPartyMode mode = (MatchPartyMode) packet.ReadByte();
             switch (mode)
             {
                 case MatchPartyMode.CreateListing:
@@ -54,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (party == null)
             {
-                Party newParty = new Party(maxMembers, new List<Player> { session.Player }, partyName, approval);
+                Party newParty = new(maxMembers, new List<Player> {session.Player}, partyName, approval);
                 GameServer.PartyManager.AddParty(newParty);
 
                 session.Send(PartyPacket.Create(session.Player));
@@ -70,13 +77,17 @@ namespace MapleServer2.PacketHandlers.Game
                 party.Approval = approval;
                 party.MaxMembers = maxMembers;
             }
+
             party.BroadcastPacketParty(MatchPartyPacket.CreateListing(party));
             party.BroadcastPacketParty(PartyPacket.MatchParty(party));
-            if (party.Members.Count >= maxMembers)
+
+            if (party.Members.Count < maxMembers)
             {
-                session.Send(ChatPacket.Send(session.Player, "The party is full.", ChatType.NoticeAlert2));
-                HandleRemoveListing(session, packet);
+                return;
             }
+
+            session.Send(ChatPacket.Send(session.Player, "The party is full.", ChatType.NoticeAlert2));
+            HandleRemoveListing(session, packet);
         }
 
         public void HandleRemoveListing(GameSession session, PacketReader packet)
@@ -94,38 +105,30 @@ namespace MapleServer2.PacketHandlers.Game
             party.CheckDisband();
         }
 
-        private enum SearchFilter : byte
-        {
-            MostMembers = 0xC,
-            LeastMembers = 0xB,
-            OldestFirst = 0x16,
-            NewestFirst = 0x15
-        }
-
         public void HandleRefresh(GameSession session, PacketReader packet)
         {
             //Get search terms:
             long unk = packet.ReadLong();
-            SearchFilter filterMode = (SearchFilter)packet.ReadByte();
+            SearchFilter filterMode = (SearchFilter) packet.ReadByte();
             string searchText = packet.ReadUnicodeString().ToLower();
             long unk2 = packet.ReadLong();
 
-            List<Party> partyList = GameServer.PartyManager.GetPartyFinderList(session.Player);
+            List<Party> partyList = GameServer.PartyManager.GetPartyFinderList();
 
             //Filter
             switch (filterMode)
             {
                 case SearchFilter.MostMembers:
-                    partyList = partyList.OrderByDescending(o => o.Members.Count).ToList();
+                    partyList = partyList.OrderByDescending(p => p.Members.Count).ToList();
                     break;
                 case SearchFilter.LeastMembers:
-                    partyList = partyList.OrderBy(o => o.Members.Count).ToList();
+                    partyList = partyList.OrderBy(p => p.Members.Count).ToList();
                     break;
                 case SearchFilter.OldestFirst:
-                    partyList = partyList.OrderBy(o => o.CreationTimestamp).ToList();
+                    partyList = partyList.OrderBy(p => p.CreationTimestamp).ToList();
                     break;
                 case SearchFilter.NewestFirst:
-                    partyList = partyList.OrderByDescending(o => o.CreationTimestamp).ToList();
+                    partyList = partyList.OrderByDescending(p => p.CreationTimestamp).ToList();
                     break;
             }
 

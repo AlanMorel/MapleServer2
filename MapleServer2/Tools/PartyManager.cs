@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using MaplePacketLib2.Tools;
-using MapleServer2.Servers.Game;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MapleServer2.Types;
 
-namespace MapleServer2.Data
+namespace MapleServer2.Tools
 {
     public class PartyManager
     {
@@ -12,7 +10,7 @@ namespace MapleServer2.Data
 
         public PartyManager()
         {
-            this.partyList = new Dictionary<long, Party>();
+            partyList = new Dictionary<long, Party>();
         }
 
         public void AddParty(Party party)
@@ -25,48 +23,21 @@ namespace MapleServer2.Data
             partyList.Remove(party.Id);
         }
 
-        public List<Party> GetPartyFinderList(Player player)
+        public List<Party> GetPartyFinderList()
         {
-            List<Party> results = new();
-            foreach (KeyValuePair<long, Party> entry in partyList)
-            {
-                if (entry.Value.PartyFinderId == 0)
-                {
-                    continue;
-                }
-
-                //Hide Join Party button for self.
-                Party newParty = (Party)entry.Value.Clone();
-                if (newParty.Members.Contains(player))
-                {
-                    newParty.Approval = false;
-                }
-
-                results.Add(newParty);
-            }
-            return results;
+            return partyList.Cast<Party>().Where(party => party.PartyFinderId != 0).ToList();
         }
 
         public Party GetPartyById(long id)
         {
-            Party foundParty;
-            if (partyList.TryGetValue(id, out foundParty))
-            {
-                return foundParty;
-            }
-            return null;
+            return partyList.TryGetValue(id, out Party foundParty) ? foundParty : null;
         }
 
         public Party GetPartyByLeader(Player leader)
         {
-            foreach (KeyValuePair<long, Party> entry in partyList)
-            {
-                if (entry.Value.Leader.CharacterId == leader.CharacterId)
-                {
-                    return entry.Value;
-                }
-            }
-            return null;
+            return (from entry in partyList
+                where entry.Value.Leader.CharacterId == leader.CharacterId
+                select entry.Value).FirstOrDefault();
         }
     }
 }

@@ -1,20 +1,18 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MapleServer2.PacketHandlers.Game
 {
     public class PartyHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.PARTY;
-
         public PartyHandler(ILogger<PartyHandler> logger) : base(logger) { }
 
         private enum PartyMode : byte
@@ -28,11 +26,11 @@ namespace MapleServer2.PacketHandlers.Game
             VoteKick = 0x2D,
             ReadyCheck = 0x2E,
             ReadyCheckUpdate = 0x30
-        };
+        }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            PartyMode mode = (PartyMode)packet.ReadByte(); //Mode
+            PartyMode mode = (PartyMode) packet.ReadByte(); //Mode
 
             switch (mode)
             {
@@ -43,7 +41,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleJoin(session, packet);
                     break;
                 case PartyMode.Leave:
-                    HandleLeave(session, packet);
+                    HandleLeave(session);
                     break;
                 case PartyMode.Kick:
                     HandleKick(session, packet);
@@ -58,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleVoteKick(session, packet);
                     break;
                 case PartyMode.ReadyCheck:
-                    HandleStartReadyCheck(session, packet);
+                    HandleStartReadyCheck(session);
                     break;
                 case PartyMode.ReadyCheckUpdate:
                     HandleReadyCheckUpdate(session, packet);
@@ -78,9 +76,11 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+
             if (other.PartyId != 0)
             {
-                session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
+                session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.",
+                    ChatType.NoticeAlert2));
                 return;
             }
 
@@ -89,11 +89,12 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Send(PartyPacket.Create(session.Player));
             }
-            else if ((party.Members.Count + 1) >= party.MaxMembers)
+            else if (party.Members.Count >= party.MaxMembers)
             {
                 session.Send(ChatPacket.Send(session.Player, "Your party is full!", ChatType.NoticeAlert2));
                 return;
             }
+
             other.Session.Send(PartyPacket.SendInvite(session.Player));
         }
 
@@ -118,7 +119,8 @@ namespace MapleServer2.PacketHandlers.Game
             if (!accept)
             {
                 //Send Decline message to inviting player
-                leaderSession.Send(ChatPacket.Send(partyLeader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
+                leaderSession.Send(ChatPacket.Send(partyLeader, session.Player.Name + " declined the invitation.",
+                    ChatType.NoticeAlert2));
                 return;
             }
 
@@ -137,12 +139,14 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         party.PartyFinderId = 0; //Hide from party finder if full
                         party.BroadcastPacketParty(MatchPartyPacket.RemoveListing(party));
-                        party.BroadcastPacketParty(MatchPartyPacket.SendListings(GameServer.PartyManager.GetPartyFinderList(session.Player)));
+                        party.BroadcastPacketParty(
+                            MatchPartyPacket.SendListings(GameServer.PartyManager.GetPartyFinderList()));
                         party.BroadcastPacketParty(PartyPacket.MatchParty(null));
                     }
                     else
                     {
-                        session.Send(MatchPartyPacket.CreateListing(party)); //Add recruitment listing for newly joining player
+                        session.Send(
+                            MatchPartyPacket.CreateListing(party)); //Add recruitment listing for newly joining player
                         session.Send(PartyPacket.MatchParty(party));
                     }
                 }
@@ -150,7 +154,7 @@ namespace MapleServer2.PacketHandlers.Game
             else
             {
                 //Create new party
-                Party newParty = new Party(10, new List<Player> { partyLeader, session.Player });
+                Party newParty = new(10, new List<Player> {partyLeader, session.Player});
                 GameServer.PartyManager.AddParty(newParty);
 
                 //Send the party leader all the stuff for the joining player
@@ -160,12 +164,8 @@ namespace MapleServer2.PacketHandlers.Game
 
                 leaderSession.Send(PartyPacket.UpdateHitpoints(partyLeader));
 
-                partyLeader.PartyId = newParty.Id;
-
                 party = newParty;
             }
-
-            session.Player.PartyId = party.Id;
 
             //Create existing party based on the list of party members
             session.Send(PartyPacket.CreateExisting(partyLeader, party.Members));
@@ -178,20 +178,17 @@ namespace MapleServer2.PacketHandlers.Game
                     //Adds the party member to the UI
                     session.Send(PartyPacket.Join(partyMember));
                 }
+
                 //Update the HP for each party member.
                 session.Send(PartyPacket.UpdateHitpoints(partyMember));
             }
         }
 
-        private void HandleLeave(GameSession session, PacketReader packet)
+        private void HandleLeave(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
-            if (party == null)
-            {
-                return;
-            }
-            party.RemoveMember(session.Player);
+            party?.RemoveMember(session.Player);
         }
 
         private void HandleSetLeader(GameSession session, PacketReader packet)
@@ -220,13 +217,13 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int partyId = packet.ReadInt();
             string leaderName = packet.ReadUnicodeString();
-            long partyFinderId = packet.ReadLong();
 
             Party party = GameServer.PartyManager.GetPartyById(partyId);
             if (party == null || !party.Approval)
             {
                 return;
             }
+
             if (session.Player.PartyId != 0)
             {
                 //Disband old party
@@ -234,6 +231,7 @@ namespace MapleServer2.PacketHandlers.Game
                 oldParty.PartyFinderId = 0;
                 oldParty.CheckDisband();
             }
+
             //Join party
             JoinParty(session, leaderName, true, 0);
         }
@@ -274,17 +272,19 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            party.BroadcastPacketParty(ChatPacket.Send(session.Player, session.Player.Name + " voted to kick " + kickedPlayer.Name, ChatType.NoticeAlert3));
+            party.BroadcastPacketParty(ChatPacket.Send(session.Player,
+                session.Player.Name + " voted to kick " + kickedPlayer.Name, ChatType.NoticeAlert3));
             //TODO: Keep a counter of vote kicks for a player?
         }
 
-        private void HandleStartReadyCheck(GameSession session, PacketReader packet)
+        private void HandleStartReadyCheck(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
             if (party == null)
             {
                 return;
             }
+
             party.BroadcastPacketParty(PartyPacket.StartReadyCheck(session.Player, party.Members, party.ReadyChecks++));
             party.RemainingMembers = party.Members.Count - 1;
         }
@@ -299,10 +299,12 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+
             if (checkNum != party.ReadyChecks)
             {
                 return;
             }
+
             party.BroadcastPacketParty(PartyPacket.ReadyCheck(session.Player, accept));
             party.RemainingMembers -= 1;
             if (party.RemainingMembers == 0)

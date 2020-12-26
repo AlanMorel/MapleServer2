@@ -1,8 +1,7 @@
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
-using System;
-using System.Collections.Generic;
 
 namespace MapleServer2.Packets
 {
@@ -13,12 +12,12 @@ namespace MapleServer2.Packets
             Create = 0x0,
             Remove = 0x1,
             Refresh = 0x2
-        };
+        }
 
         public static Packet CreateListing(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY)
-                .WriteByte((byte)MatchPartyPacketMode.Create);
+                .WriteByte((byte) MatchPartyPacketMode.Create);
             WritePartyInformation(pWriter, party, false);
             return pWriter;
         }
@@ -26,7 +25,7 @@ namespace MapleServer2.Packets
         public static Packet RemoveListing(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY)
-                .WriteByte((byte)MatchPartyPacketMode.Remove)
+                .WriteByte((byte) MatchPartyPacketMode.Remove)
                 .WriteLong(party.PartyFinderId);
             return pWriter;
         }
@@ -34,12 +33,13 @@ namespace MapleServer2.Packets
         public static Packet SendListings(List<Party> parties)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY)
-               .WriteByte((byte)MatchPartyPacketMode.Refresh)
-               .WriteInt(parties.Count);
+                .WriteByte((byte) MatchPartyPacketMode.Refresh)
+                .WriteInt(parties.Count);
             foreach (Party party in parties)
             {
                 WritePartyInformation(pWriter, party);
             }
+
             return pWriter;
         }
 
@@ -49,6 +49,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteByte(1);
             }
+
             pWriter.WriteLong(party.PartyFinderId)
                 .WriteInt(party.Id)
                 .WriteLong()
