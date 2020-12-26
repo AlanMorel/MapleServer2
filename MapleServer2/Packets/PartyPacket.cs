@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0xB) //Invite
                 .WriteUnicodeString(sender.Name)
-                .WriteShort(3843) //Unk
+                .WriteShort() //Unk
                 .WriteByte() //Unk
                 .WriteByte(); //Unk
             return pWriter;
@@ -30,9 +30,7 @@ namespace MapleServer2.Packets
             CharacterListPacket.WriteCharacter(leader, pWriter);
             pWriter.WriteLong();
             pWriter.WriteInt();
-            pWriter.WriteShort();
-            pWriter.WriteByte();
-            WriteSkills(pWriter, leader);
+            JobPacket.WriteSkills(pWriter, leader);
             pWriter.WriteLong();
             return pWriter;
         }
@@ -46,26 +44,21 @@ namespace MapleServer2.Packets
             foreach (Player member in members)
             {
                 CharacterListPacket.WriteCharacter(member, pWriter);
-                pWriter.WriteLong();
                 pWriter.WriteInt();
-                pWriter.WriteShort();
-                pWriter.WriteByte();
-                WriteSkills(pWriter, member);
-                pWriter.WriteByte(15);
+                JobPacket.WriteSkills(pWriter, member);
             }
             pWriter.WriteLong();
             return pWriter;
         }
 
         //Generates the header code for Create
-        public static Packet CreatePartyHeader(Player player, PacketWriter pWriter, short members)
+        public static void CreatePartyHeader(Player player, PacketWriter pWriter, short members)
         {
             pWriter.WriteByte(0x9) //Creates party with the # of members
                 .WriteByte(0)
                 .WriteInt(0)
                 .WriteLong(player.CharacterId)
-                .WriteShort(1); //# of Party members I think, but it's scuffed
-            return pWriter;
+                .WriteShort(1); //# of Party member. but it's scuffed atm
         }
 
         public static Packet Join(Player player)
@@ -75,7 +68,7 @@ namespace MapleServer2.Packets
 
             CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteInt();
-            WriteSkills(pWriter, player);
+            JobPacket.WriteSkills(pWriter, player);
             pWriter.WriteLong();
             return pWriter;
         }
@@ -88,7 +81,7 @@ namespace MapleServer2.Packets
 
             CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteInt();
-            WriteSkills(pWriter, player);
+            JobPacket.WriteSkills(pWriter, player);
             pWriter.WriteLong();
             return pWriter;
         }
@@ -153,8 +146,8 @@ namespace MapleServer2.Packets
                 .WriteLong(leader.CharacterId)
                 .WriteInt(0); //unk
             return pWriter;
-
         }
+
         public static Packet ReadyCheck(Player player, byte accept)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
@@ -163,42 +156,12 @@ namespace MapleServer2.Packets
                 .WriteByte(accept);
             return pWriter;
         }
+
         public static Packet EndReadyCheck()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
                 .WriteByte(0x31);
             return pWriter;
         }
-
-        //Had to copy this method because of the last short being written.
-        public static Packet WriteSkills(PacketWriter pWriter, Player character)
-        {
-            // Get skills
-            Dictionary<int, Skill> skills = character.SkillTabs[0].Skills; // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
-
-            // Ordered list of skill ids (must be sent in this order)
-            int[] ids = character.SkillTabs[0].Order;
-            byte split = character.SkillTabs[0].Split;
-            int countId = ids[ids.Length - split]; // Split to last skill id
-
-            pWriter.WriteByte((byte)(ids.Length - split)); // Skill count minus split
-
-            // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
-            foreach (int id in ids)
-            {
-                if (id == countId)
-                {
-                    pWriter.WriteByte(split); // Write that there are (split) skills left
-                }
-                pWriter.WriteByte();
-                pWriter.WriteByte(skills[id].Learned);
-                pWriter.WriteInt(id);
-                pWriter.WriteInt((int)skills[id].Level);
-                pWriter.WriteByte();
-            }
-
-            return pWriter;
-        }
-
     }
 }
