@@ -53,8 +53,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
-
         //Generates the header code for Create
         public static void CreatePartyHeader(Player player, PacketWriter pWriter, short members)
         {

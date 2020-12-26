@@ -78,104 +78,108 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            if (other.PartyId == 0)
-            {
-                other.Session.Send(PartyPacket.SendInvite(session.Player));
-                if (session.Player.PartyId == 0)
-                {
-                    session.Send(PartyPacket.Create(session.Player));
-                }
-                //pSession.Send(ChatPacket.Send(session.Player, "You were invited to a party by " + session.Player.Name, ChatType.NoticeAlert));
-            }
-            else
+            if (other.PartyId != 0)
             {
                 session.Send(ChatPacket.Send(session.Player, other.Session.Player.Name + " is already in a party.", ChatType.NoticeAlert2));
+                return;
             }
+
+            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            if (party == null)
+            {
+                session.Send(PartyPacket.Create(session.Player));
+            }
+            else if ((party.Members.Count + 1) >= party.MaxMembers)
+            {
+                session.Send(ChatPacket.Send(session.Player, "Your party is full!", ChatType.NoticeAlert2));
+                return;
+            }
+            other.Session.Send(PartyPacket.SendInvite(session.Player));
         }
 
         private void HandleJoin(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString(); //Who invited the player
-            int accept = packet.ReadByte(); //If the player accepted
+            bool accept = packet.ReadBool(); //If the player accepted
             int unknown = packet.ReadInt(); //Something something I think it's dungeon not sure
             JoinParty(session, target, accept, unknown);
         }
 
-        private void JoinParty(GameSession session, string leaderName, int accept, int unknown)
+        private void JoinParty(GameSession session, string leaderName, bool accept, int unknown)
         {
             Player partyLeader = GameServer.Storage.GetPlayerByName(leaderName);
             if (partyLeader == null)
             {
                 return;
             }
+
             GameSession leaderSession = partyLeader.Session;
-            if (accept == 1)
-            {
-                Party party = GameServer.PartyManager.GetPartyByLeader(partyLeader);
-                if (party != null)
-                {
-                    //Existing party, add joining player to all other party members.
-                    party.BroadcastPacketParty(PartyPacket.Join(session.Player));
-                    party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
-                    party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(session.Player));
-                    party.AddMember(session.Player);
 
-                    if (party.PartyFinderId != 0)
-                    {
-                        if (party.Members.Count >= party.MaxMembers)
-                        {
-                            party.PartyFinderId = 0; //Hide from party finder if full
-                            party.BroadcastPacketParty(MatchPartyPacket.RemoveListing(party));
-                            party.BroadcastPacketParty(MatchPartyPacket.SendListings(GameServer.PartyManager.GetPartyFinderList(session.Player)));
-                            party.BroadcastPacketParty(PartyPacket.MatchParty(null));
-                        }
-                        else
-                        {
-                            session.Send(MatchPartyPacket.CreateListing(party)); //Add recruitment listing for newly joining player
-                            session.Send(PartyPacket.MatchParty(party));
-                        }
-                    }
-                }
-                else
-                {
-                    //Create new party
-                    Party newParty = new Party(GuidGenerator.Int(), 10, new List<Player> { partyLeader, session.Player });
-                    GameServer.PartyManager.AddParty(newParty);
-
-                    //Send the party leader all the stuff for the joining player
-                    leaderSession.Send(PartyPacket.Join(session.Player));
-                    leaderSession.Send(PartyPacket.UpdatePlayer(session.Player));
-                    leaderSession.Send(PartyPacket.UpdateHitpoints(session.Player));
-
-                    leaderSession.Send(PartyPacket.UpdateHitpoints(partyLeader));
-
-                    partyLeader.PartyId = newParty.Id;
-
-                    party = newParty;
-                }
-
-                session.Player.PartyId = party.Id;
-
-                //Create existing party based on the list of party members
-                session.Send(PartyPacket.CreateExisting(partyLeader, party.Members));
-                session.Send(PartyPacket.UpdatePlayer(session.Player));
-                foreach (Player partyMember in party.Members)
-                {
-                    //Skip first character because of the scuffed Create packet. For now this is a workaround and functions the same.
-                    if (partyMember.CharacterId != party.Members.First().CharacterId)
-                    {
-                        //Adds the party member to the UI
-                        session.Send(PartyPacket.Join(partyMember));
-                    }
-                    //Update the HP for each party member.
-                    session.Send(PartyPacket.UpdateHitpoints(partyMember));
-                }
-                //Sometimes the party leader doesn't get set correctly. Not sure how to fix.
-            }
-            else
+            if (!accept)
             {
                 //Send Decline message to inviting player
                 leaderSession.Send(ChatPacket.Send(partyLeader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
+                return;
+            }
+
+            Party party = GameServer.PartyManager.GetPartyByLeader(partyLeader);
+            if (party != null)
+            {
+                //Existing party, add joining player to all other party members.
+                party.BroadcastPacketParty(PartyPacket.Join(session.Player));
+                party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+                party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(session.Player));
+                party.AddMember(session.Player);
+
+                if (party.PartyFinderId != 0)
+                {
+                    if (party.Members.Count >= party.MaxMembers)
+                    {
+                        party.PartyFinderId = 0; //Hide from party finder if full
+                        party.BroadcastPacketParty(MatchPartyPacket.RemoveListing(party));
+                        party.BroadcastPacketParty(MatchPartyPacket.SendListings(GameServer.PartyManager.GetPartyFinderList(session.Player)));
+                        party.BroadcastPacketParty(PartyPacket.MatchParty(null));
+                    }
+                    else
+                    {
+                        session.Send(MatchPartyPacket.CreateListing(party)); //Add recruitment listing for newly joining player
+                        session.Send(PartyPacket.MatchParty(party));
+                    }
+                }
+            }
+            else
+            {
+                //Create new party
+                Party newParty = new Party(10, new List<Player> { partyLeader, session.Player });
+                GameServer.PartyManager.AddParty(newParty);
+
+                //Send the party leader all the stuff for the joining player
+                leaderSession.Send(PartyPacket.Join(session.Player));
+                leaderSession.Send(PartyPacket.UpdatePlayer(session.Player));
+                leaderSession.Send(PartyPacket.UpdateHitpoints(session.Player));
+
+                leaderSession.Send(PartyPacket.UpdateHitpoints(partyLeader));
+
+                partyLeader.PartyId = newParty.Id;
+
+                party = newParty;
+            }
+
+            session.Player.PartyId = party.Id;
+
+            //Create existing party based on the list of party members
+            session.Send(PartyPacket.CreateExisting(partyLeader, party.Members));
+            session.Send(PartyPacket.UpdatePlayer(session.Player));
+            foreach (Player partyMember in party.Members)
+            {
+                //Skip first character because of the scuffed Create packet. For now this is a workaround and functions the same.
+                if (partyMember.CharacterId != party.Members.First().CharacterId)
+                {
+                    //Adds the party member to the UI
+                    session.Send(PartyPacket.Join(partyMember));
+                }
+                //Update the HP for each party member.
+                session.Send(PartyPacket.UpdateHitpoints(partyMember));
             }
         }
 
@@ -183,18 +187,11 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
-            session.Player.PartyId = 0;
             if (party == null)
             {
                 return;
             }
             party.RemoveMember(session.Player);
-            party.BroadcastPacketParty(PartyPacket.Leave(session.Player, 0));
-            if (party.Leader.CharacterId == session.Player.CharacterId)
-            {
-                party.FindNewLeader();
-            }
-            party.CheckDisband();
         }
 
         private void HandleSetLeader(GameSession session, PacketReader packet)
@@ -226,23 +223,19 @@ namespace MapleServer2.PacketHandlers.Game
             long partyFinderId = packet.ReadLong();
 
             Party party = GameServer.PartyManager.GetPartyById(partyId);
-            if (party == null)
+            if (party == null || !party.Approval)
             {
                 return;
             }
-
-            if (party.Approval)
+            if (session.Player.PartyId != 0)
             {
-                if (session.Player.PartyId != 0)
-                {
-                    //Disband old party
-                    Party oldParty = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
-                    oldParty.PartyFinderId = 0;
-                    oldParty.CheckDisband();
-                }
-                //Join party
-                JoinParty(session, leaderName, 1, 0);
+                //Disband old party
+                Party oldParty = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                oldParty.PartyFinderId = 0;
+                oldParty.CheckDisband();
             }
+            //Join party
+            JoinParty(session, leaderName, true, 0);
         }
 
         private void HandleKick(GameSession session, PacketReader packet)
@@ -263,13 +256,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             party.BroadcastPacketParty(PartyPacket.Kick(kickedPlayer));
             party.RemoveMember(kickedPlayer);
-            kickedPlayer.PartyId = 0;
-
-            if (party.Leader.CharacterId == kickedPlayer.CharacterId)
-            {
-                party.FindNewLeader();
-            }
-            party.CheckDisband();
         }
 
         private void HandleVoteKick(GameSession session, PacketReader packet)

@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (party == null)
             {
-                Party newParty = new Party(GuidGenerator.Int(), GuidGenerator.Long(), maxMembers, new List<Player> { session.Player }, partyName, approval);
+                Party newParty = new Party(maxMembers, new List<Player> { session.Player }, partyName, approval);
                 GameServer.PartyManager.AddParty(newParty);
 
                 session.Send(PartyPacket.Create(session.Player));
@@ -65,12 +65,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-
                 party.PartyFinderId = GuidGenerator.Long();
                 party.Name = partyName;
                 party.Approval = approval;
                 party.MaxMembers = maxMembers;
-
             }
             party.BroadcastPacketParty(MatchPartyPacket.CreateListing(party));
             party.BroadcastPacketParty(PartyPacket.MatchParty(party));

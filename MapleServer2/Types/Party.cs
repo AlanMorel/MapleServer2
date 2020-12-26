@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace MapleServer2.Types
         //List of players and their session.
         public List<Player> Members { get; private set; }
 
-        public Party(int pId, int pMaxMembers, List<Player> pPlayers)
+        public Party(int pMaxMembers, List<Player> pPlayers)
         {
-            Id = pId;
+            Id = GuidGenerator.Int();
             MaxMembers = pMaxMembers;
             Leader = pPlayers.First();
             Members = pPlayers;
@@ -35,11 +36,11 @@ namespace MapleServer2.Types
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount; 
         }
 
-        public Party(int pId, long pFinderId, int pMaxMembers, List<Player> pPlayers, string pName, bool pApproval) : this(pId, pMaxMembers, pPlayers)
+        public Party(int pMaxMembers, List<Player> pPlayers, string pName, bool pApproval) : this(pMaxMembers, pPlayers)
         {
             Name = pName;
             Approval = pApproval;
-            PartyFinderId = pFinderId;
+            PartyFinderId = GuidGenerator.Long();
         }
 
         public void AddMember(Player player)
@@ -50,6 +51,13 @@ namespace MapleServer2.Types
         public void RemoveMember(Player player)
         {
             Members.Remove(player);
+            player.PartyId = 0;
+
+            if (Leader.CharacterId == player.CharacterId)
+            {
+                FindNewLeader();
+            }
+            CheckDisband();
         }
 
         public void FindNewLeader()

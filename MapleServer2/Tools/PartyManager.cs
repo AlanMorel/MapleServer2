@@ -27,20 +27,24 @@ namespace MapleServer2.Data
 
         public List<Party> GetPartyFinderList(Player player)
         {
-            List<Party> temp = new();
+            List<Party> results = new();
             foreach (KeyValuePair<long, Party> entry in partyList)
             {
-                if (entry.Value.PartyFinderId != 0)
+                if (entry.Value.PartyFinderId == 0)
                 {
-                    Party newParty = (Party)entry.Value.Clone();
-                    if (newParty.Members.Contains(player))
-                    {
-                        newParty.Approval = false;
-                    }
-                    temp.Add(newParty);
+                    continue;
                 }
+
+                //Hide Join Party button for self.
+                Party newParty = (Party)entry.Value.Clone();
+                if (newParty.Members.Contains(player))
+                {
+                    newParty.Approval = false;
+                }
+
+                results.Add(newParty);
             }
-            return temp;
+            return results;
         }
 
         public Party GetPartyById(long id)
