@@ -40,3 +40,6 @@
 - Move handshake packet code to Packet file
 - Remove ability to chain PacketWriter, make each write be its own line of code
 - Remove all uses of `var` from the source
+- Rewrite logging system
+- Rewrite broadcast packet system
+- Implement database
