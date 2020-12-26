@@ -34,15 +34,15 @@ namespace MapleServer2.Packets {
             for (int i = 0; i < count; i++) {
                 pWriter.WriteShort()
                     .WriteInt()
-                    .Write<float>(0f);
+                    .Write(0f);
             }
 
             if (type == 1) {
-                pWriter.Write<float>(90f) // SuccessRate
-                    .Write<float>(0f)
-                    .Write<float>(0f)
-                    .Write<float>(0f)
-                    .Write<float>(0f)
+                pWriter.Write(90f) // SuccessRate
+                    .Write(0f)
+                    .Write(0f)
+                    .Write(0f)
+                    .Write(0f)
                     .WriteLong()
                     .WriteLong()
                     .WriteByte(1);
@@ -77,7 +77,7 @@ namespace MapleServer2.Packets {
             for (int i = 0; i < count; i++) {
                 pWriter.WriteShort()
                     .WriteInt()
-                    .Write<float>(0f);
+                    .Write(0f);
             }
 
             return pWriter;

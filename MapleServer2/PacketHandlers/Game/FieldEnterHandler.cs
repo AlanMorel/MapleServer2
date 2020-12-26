@@ -45,8 +45,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Add catalysts for testing
 
-            int[] catalysts = { 40100001, 40100002, 40100003, 40100021, 40100023, 40100024, 40100026 };
-
             var item = new Item(40100001)
             {
                 Amount = 99999

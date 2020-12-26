@@ -159,7 +159,7 @@ namespace MapleServer2.PacketHandlers.Login {
             // Check if name is in use (currently just on local account)
             bool taken = false;
             
-            foreach (var character in AccountStorage.characters.Values) {
+            foreach (var character in AccountStorage.Characters.Values) {
                 if (character.Name.ToLower().Equals(name.ToLower())) {
                     taken = true;
                 }

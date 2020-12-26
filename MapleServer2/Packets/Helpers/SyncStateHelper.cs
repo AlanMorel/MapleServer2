@@ -65,21 +65,21 @@ namespace MapleServer2.Packets.Helpers {
                     .WriteShort(entry.Flag1Unknown2);
             }
 
-            pWriter.Write<CoordS>(entry.Coord)
+            pWriter.Write(entry.Coord)
                 .WriteShort(entry.Rotation)
                 .WriteByte(entry.Animation3);
 
             if (entry.Animation3 > 127) {
-                pWriter.Write<float>(entry.UnknownFloat1)
-                    .Write<float>(entry.UnknownFloat2);
+                pWriter.Write(entry.UnknownFloat1)
+                    .Write(entry.UnknownFloat2);
             }
 
-            pWriter.Write<CoordS>(entry.Speed)
+            pWriter.Write(entry.Speed)
                 .WriteByte(entry.Unknown1)
                 .WriteShort(entry.Unknown2)
                 .WriteShort(entry.Unknown3);
             if (entry.Flag.HasFlag(SyncStateFlag.Flag2)) {
-                pWriter.Write<CoordF>(entry.Flag2Unknown1)
+                pWriter.Write(entry.Flag2Unknown1)
                     .WriteUnicodeString(entry.Flag2Unknown2 ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag3)) {
@@ -97,8 +97,8 @@ namespace MapleServer2.Packets.Helpers {
                 pWriter.WriteInt(entry.Flag6Unknown1)
                     .WriteInt(entry.Flag6Unknown2)
                     .WriteByte(entry.Flag6Unknown3)
-                    .Write<CoordF>(entry.Flag6Unknown4)
-                    .Write<CoordF>(entry.Flag6Unknown5);
+                    .Write(entry.Flag6Unknown4)
+                    .Write(entry.Flag6Unknown5);
             }
 
             return pWriter.WriteInt(entry.Unknown4);

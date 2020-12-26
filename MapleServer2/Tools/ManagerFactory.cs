@@ -7,7 +7,7 @@ namespace MapleServer2.Tools {
         private readonly Dictionary<int, CacheItem> managers;
 
         public ManagerFactory() {
-            this.managers = new Dictionary<int, CacheItem>();
+            managers = new Dictionary<int, CacheItem>();
         }
 
         public T GetManager(int key) {
@@ -46,8 +46,8 @@ namespace MapleServer2.Tools {
             private int count;
 
             public CacheItem(T value) {
-                this.Value = value;
-                this.count = 0;
+                Value = value;
+                count = 0;
             }
 
             public int Pin() {

@@ -22,7 +22,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case 0: // Open
-                    HandleOpen(session, packet);
+                    HandleOpen(session);
                     break;
                 case 1: // Send
                     HandleSend(session, packet);
@@ -42,7 +42,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpen(GameSession session, PacketReader packet)
+        private void HandleOpen(GameSession session)
         {
             session.Player.Mailbox.ClearExpired();
 
@@ -107,6 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
                 // Inventory packets
                 session.Send(ItemInventoryPacket.Add(item));
                 session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
+                // TODO remove these inventory packets
             }
 
             session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));

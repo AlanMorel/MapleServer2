@@ -58,7 +58,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
                 pWriter.WriteInt(id);
-                pWriter.WriteInt((int)skills[id].Level);
+                pWriter.WriteInt(skills[id].Level);
                 pWriter.WriteByte();
             }
 

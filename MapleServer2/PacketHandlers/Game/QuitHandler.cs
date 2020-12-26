@@ -11,10 +11,10 @@ namespace MapleServer2.PacketHandlers.Game {
     public class QuitHandler : GamePacketHandler {
         public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
 
-        private IPEndPoint loginEndpoint;
+        private readonly IPEndPoint loginEndpoint;
 
         public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger) {
-            this.loginEndpoint = new IPEndPoint(IPAddress.Loopback, LoginServer.PORT);
+            loginEndpoint = new IPEndPoint(IPAddress.Loopback, LoginServer.PORT);
         }
 
         public override void Handle(GameSession session, PacketReader packet) {

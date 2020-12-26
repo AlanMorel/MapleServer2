@@ -13,11 +13,11 @@ namespace MapleServer2.Types
 
         public SkillTab(string name, int[] order = null, byte split = 8, Dictionary<int, Skill> skills = null)
         {
-            this.Id = 0x000032DF995949B9; // temporary hard coded id
-            this.Name = name;
-            this.Order = order;
-            this.Split = split;
-            this.Skills = (skills != null && skills.Any()) ? skills : new Dictionary<int, Skill>();
+            Id = 0x000032DF995949B9; // temporary hard coded id
+            Name = name;
+            Order = order;
+            Split = split;
+            Skills = (skills != null && skills.Any()) ? skills : new Dictionary<int, Skill>();
 
             // Add default skills
             AddOrUpdate(new Skill(20000001, 1, 1)); // Swift Swimming

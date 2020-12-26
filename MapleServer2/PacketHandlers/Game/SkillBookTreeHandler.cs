@@ -18,20 +18,20 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case 0: // Open skill tree
-                    HandleOpen(session, packet);
+                    HandleOpen(session);
                     break;
                 case 1: // Save skill tree
-                    HandleSave(session, packet);
+                    HandleSave(session);
                     break;
             }
         }
 
-        private void HandleOpen(GameSession session, PacketReader packet)
+        private void HandleOpen(GameSession session)
         {
             session.Send(SkillBookTreePacket.Open(session.Player));
         }
 
-        private void HandleSave(GameSession session, PacketReader packet)
+        private void HandleSave(GameSession session)
         {
             session.Send(SkillBookTreePacket.Save(session.Player));
         }

@@ -82,9 +82,9 @@ namespace MapleServer2.Types {
         }
 
         public PlayerStat(int total, int min, int max) {
-            this.Total = total;
-            this.Min = min;
-            this.Max = max;
+            Total = total;
+            Min = min;
+            Max = max;
         }
     }
 }

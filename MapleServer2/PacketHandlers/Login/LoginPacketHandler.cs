@@ -15,6 +15,6 @@ namespace MapleServer2.PacketHandlers.Login {
 
         public abstract void Handle(LoginSession session, PacketReader packet);
 
-        public override string ToString() => $"[{OpCode.ToString()}] Login.{GetType().Name}";
+        public override string ToString() => $"[{OpCode}] Login.{GetType().Name}";
     }
 }

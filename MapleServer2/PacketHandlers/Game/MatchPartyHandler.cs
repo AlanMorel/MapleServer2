@@ -40,7 +40,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleCreateListing(session, packet);
                     break;
                 case MatchPartyMode.RemoveListing:
-                    HandleRemoveListing(session, packet);
+                    HandleRemoveListing(session);
                     break;
                 case MatchPartyMode.Refresh:
                     HandleRefresh(session, packet);
@@ -87,10 +87,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(ChatPacket.Send(session.Player, "The party is full.", ChatType.NoticeAlert2));
-            HandleRemoveListing(session, packet);
+            HandleRemoveListing(session);
         }
 
-        public void HandleRemoveListing(GameSession session, PacketReader packet)
+        public void HandleRemoveListing(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             if (party == null)

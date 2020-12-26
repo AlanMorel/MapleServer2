@@ -38,3 +38,4 @@
 - Use 1 packet file per SendOp
 - Replace all hard-coded modes in send packets with enums
 - Move handshake packet code to Packet file
+- Remove ability to chain PacketWriter, make each write be its own line of code

@@ -15,6 +15,6 @@ namespace MapleServer2.PacketHandlers.Game {
 
         public abstract void Handle(GameSession session, PacketReader packet);
 
-        public override string ToString() => $"[{OpCode.ToString()}] Game.{GetType().Name}";
+        public override string ToString() => $"[{OpCode}] Game.{GetType().Name}";
     }
 }
