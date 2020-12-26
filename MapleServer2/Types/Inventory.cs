@@ -18,7 +18,6 @@ namespace MapleServer2.Types
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] slotMaps;
 
-
         public Inventory(short size)
         {
             this.Size = size;
