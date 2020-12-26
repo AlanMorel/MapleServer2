@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using Microsoft.Extensions.Logging;
-using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using System;
 
