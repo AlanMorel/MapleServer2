@@ -27,28 +27,10 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(BreakablePacket.Break(entityId, 3)); //3 = Break
 
             //After 3 seconds, send despawn - TODO: Check if some objects shouldn't despawn?
-            Despawn(session.FieldManager, BreakablePacket.Break(entityId, 4)); //4 = Despawn debris
+            _ = session.FieldManager.DelayBroadcastPacket(BreakablePacket.Break(entityId, 4), 3000);  //4 = Despawn debris
 
             //After 3 minutes, send respawn - TODO: Get respawn time from metadata if available?
-            Respawn(session.FieldManager, BreakablePacket.Break(entityId, 2)); //2 = Respawn box
-        }
-
-        public async Task Despawn(FieldManager manager, Packet packet)
-        {
-            await Task.Factory.StartNew(async () =>
-            {
-                await Task.Delay(3000);
-                manager.BroadcastPacket(packet);
-            });
-        }
-
-        public async Task Respawn(FieldManager manager, Packet packet)
-        {
-            await Task.Factory.StartNew(async () =>
-            {
-                await Task.Delay(180000);
-                manager.BroadcastPacket(packet);
-            });
+            _ = session.FieldManager.DelayBroadcastPacket(BreakablePacket.Break(entityId, 2), 180000); //2 = Respawn
         }
     }
 }

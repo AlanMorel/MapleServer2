@@ -3,9 +3,10 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
 using Microsoft.Extensions.Logging;
-using Maple2Storage.Types.Metadata;
+using Maple2Storage.Types;
 using MapleServer2.Data.Static;
 using System;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -60,19 +61,18 @@ namespace MapleServer2.PacketHandlers.Game
                     //TODO: Save somewhere and load somewhere? Perhaps on login.
                     session.Send(TaxiPacket.DiscoverTaxi(session.Player.MapId));
                     break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
+                    break;
             }
         }
 
         private void HandleTeleport(GameSession session, int mapId)
         {
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-
             if (spawn != null)
             {
-                session.Player.MapId = mapId;
-                session.Player.Coord = spawn.Coord.ToFloat();
-                session.Player.Rotation = spawn.Rotation.ToFloat();
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Player.Warp(spawn, mapId);
             }
         }
     }
