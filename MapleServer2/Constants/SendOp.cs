@@ -240,6 +240,7 @@ namespace MapleServer2.Constants {
         ADVENTURE_LEVEL = 0x011E,
         WORLD_CHAMPION = 0x0121,
         SYNC_VALUE = 0x0122,
-        NO = 0x0123
+        NO = 0x0123,
+        UNKNOWN_SYNC = 0x0132
     }
 }
