@@ -11,10 +11,10 @@ namespace MapleServer2.Servers.Game
 
         public PlayerStorage()
         {
-            this.idStorage = new Dictionary<long, Player>();
+            idStorage = new Dictionary<long, Player>();
 
             StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
-            this.nameStorage = new Dictionary<string, Player>(ignoreCase);
+            nameStorage = new Dictionary<string, Player>(ignoreCase);
         }
 
         public void AddPlayer(Player player)
@@ -31,22 +31,12 @@ namespace MapleServer2.Servers.Game
 
         public Player GetPlayerByName(string name)
         {
-            Player foundPlayer;
-            if (nameStorage.TryGetValue(name, out foundPlayer))
-            {
-                return foundPlayer;
-            }
-            return null;
+            return nameStorage.TryGetValue(name, out Player foundPlayer) ? foundPlayer : null;
         }
 
         public Player GetPlayerById(long id)
         {
-            Player foundPlayer;
-            if (idStorage.TryGetValue(id, out foundPlayer))
-            {
-                return foundPlayer;
-            }
-            return null;
+            return idStorage.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
         }
     }
 }

@@ -1,30 +1,48 @@
-﻿using MaplePacketLib2.Tools;
-using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MaplePacketLib2.Tools;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
     public class Party
     {
-        public int Id { get; private set; }
-        public int MaxMembers { get; set; }
+        public int Id { get; }
+        public long PartyFinderId { get; set; } //Show on party finder or not
+        public long CreationTimestamp { get; set; }
+        public string Name { get; set; }
+        public bool Approval { get; set; } //Require approval before someone can join
         public Player Leader { get; set; }
+        public int MaxMembers { get; set; }
         public int ReadyChecks { get; set; }
         public int RemainingMembers { get; set; } //# of members left to reply to ready check
+        public int Dungeon { get; set; }
 
         //List of players and their session.
-        public List<Player> Members { get; private set; }
+        public List<Player> Members { get; }
 
-        public Party(int pId, int pMaxMembers, List<Player> pPlayers)
+        public Party(int pMaxMembers, List<Player> pPlayers)
         {
-            Id = pId;
+            Id = GuidGenerator.Int();
             MaxMembers = pMaxMembers;
             Leader = pPlayers.First();
             Members = pPlayers;
             ReadyChecks = 0;
+            PartyFinderId = 0;
+            Approval = true;
+            CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+
+            Members.ForEach(member => member.PartyId = Id);
+        }
+
+        public Party(int pMaxMembers, List<Player> pPlayers, string pName, bool pApproval) : this(pMaxMembers, pPlayers)
+        {
+            Name = pName;
+            Approval = pApproval;
+            PartyFinderId = GuidGenerator.Long();
         }
 
         public void AddMember(Player player)
@@ -35,6 +53,14 @@ namespace MapleServer2.Types
         public void RemoveMember(Player player)
         {
             Members.Remove(player);
+            player.PartyId = 0;
+
+            if (Leader.CharacterId == player.CharacterId)
+            {
+                FindNewLeader();
+            }
+
+            CheckDisband();
         }
 
         public void FindNewLeader()
@@ -48,15 +74,17 @@ namespace MapleServer2.Types
 
         public void CheckDisband()
         {
-            if (Members.Count < 2)
+            if (Members.Count >= 2 || PartyFinderId != 0)
             {
-                BroadcastParty(session =>
-                {
-                    session.Player.PartyId = 0;
-                    session.Send(PartyPacket.Disband());
-                });
-                GameServer.PartyManager.RemoveParty(this);
+                return;
             }
+
+            BroadcastParty(session =>
+            {
+                session.Player.PartyId = 0;
+                session.Send(PartyPacket.Disband());
+            });
+            GameServer.PartyManager.RemoveParty(this);
         }
 
         public void BroadcastPacketParty(Packet packet, GameSession sender = null)
@@ -67,6 +95,7 @@ namespace MapleServer2.Types
                 {
                     return;
                 }
+
                 session.Send(packet);
             });
         }
@@ -85,16 +114,7 @@ namespace MapleServer2.Types
 
         private List<GameSession> GetSessions()
         {
-            List<GameSession> sessions = new List<GameSession>();
-
-            foreach (Player partyMember in Members)
-            {
-                if (partyMember.Session.Connected())
-                {
-                    sessions.Add(partyMember.Session);
-                }
-            }
-            return sessions;
+            return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
         }
     }
 }
