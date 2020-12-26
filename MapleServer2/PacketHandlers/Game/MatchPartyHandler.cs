@@ -26,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            MatchPartyMode mode = (MatchPartyMode)packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.
+            MatchPartyMode mode = (MatchPartyMode)packet.ReadByte();
             switch (mode)
             {
                 case MatchPartyMode.CreateListing:
@@ -91,7 +91,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             party.BroadcastPacketParty(MatchPartyPacket.RemoveListing(party));
             party.PartyFinderId = 0;
-            //party.BroadcastPacketParty(MatchPartyPacket.SendListings(GameServer.PartyManager.GetPartyFinderList()));
             party.BroadcastPacketParty(PartyPacket.MatchParty(null));
 
             party.CheckDisband();

@@ -49,8 +49,8 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteByte(1);
             }
-            pWriter.WriteLong(party.PartyFinderId) //unk
-                .WriteInt(party.Id) //Party ID ?
+            pWriter.WriteLong(party.PartyFinderId)
+                .WriteInt(party.Id)
                 .WriteLong()
                 .WriteUnicodeString(party.Name)
                 .WriteBool(party.Approval)
