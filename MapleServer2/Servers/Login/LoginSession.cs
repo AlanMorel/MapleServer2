@@ -11,7 +11,7 @@ namespace MapleServer2.Servers.Login {
         private readonly Random rng;
 
         public LoginSession(ILogger<LoginSession> logger) : base(logger) {
-            this.rng = new Random();
+            rng = new Random();
         }
 
         public int GetToken() {

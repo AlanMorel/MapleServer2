@@ -1,7 +1,5 @@
-﻿using System;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using MapleServer2.Packets;
-using System.Diagnostics;
 using MapleServer2.Servers.Game;
 
 public class InventoryController
@@ -23,7 +21,7 @@ public class InventoryController
                 {
                     int added = i.SlotMax - i.Amount; // For marking item new with correct added amount
 
-                    item.Amount = item.Amount - (i.SlotMax - i.Amount);
+                    item.Amount -= added;
                     i.Amount = i.SlotMax;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                     session.Send(ItemInventoryPacket.MarkItemNew(i, added));
@@ -31,7 +29,7 @@ public class InventoryController
                 // Updates item amount
                 else
                 {
-                    i.Amount = i.Amount + item.Amount;
+                    i.Amount += item.Amount;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                     session.Send(ItemInventoryPacket.MarkItemNew(i, item.Amount));
                     return;

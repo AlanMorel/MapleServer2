@@ -12,8 +12,8 @@ namespace MapleServer2.Types
 
         public Mob(int id)
         {
-            this.Id = id;
-            this.Animation = 255;
+            Id = id;
+            Animation = 255;
         }
     }
 }

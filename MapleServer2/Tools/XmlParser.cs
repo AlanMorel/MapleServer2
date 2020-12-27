@@ -16,9 +16,9 @@ namespace MapleServer2.Tools
 
             // Parse skill id order and count split num
             XmlAttribute oAttr = xmlDoc.DocumentElement.Attributes["order"];
-            int[] order = oAttr != null ? Array.ConvertAll(oAttr.Value.Split(","), Int32.Parse) : null;
+            int[] order = oAttr != null ? Array.ConvertAll(oAttr.Value.Split(","), int.Parse) : null;
             XmlAttribute splitAttr = xmlDoc.DocumentElement.Attributes["split"];
-            byte split  = splitAttr != null ? Byte.Parse(splitAttr.Value) : (byte) 8;
+            byte split  = splitAttr != null ? byte.Parse(splitAttr.Value) : (byte) 8;
 
             // Create new skill tab with name and skill order
             SkillTab skillTab = new SkillTab(name, order, split);
@@ -31,16 +31,16 @@ namespace MapleServer2.Tools
                 XmlNode currentNode = (XmlNode)ienum.Current;
 
                 // Skill id
-                int id = Int32.Parse(currentNode.Attributes["id"].Value);
+                int id = int.Parse(currentNode.Attributes["id"].Value);
                 // Default
                 XmlAttribute dAttr = currentNode.Attributes["default"];
-                int DefaultSkill = dAttr != null ? Int32.Parse(dAttr.Value) : 0;
+                int DefaultSkill = dAttr != null ? int.Parse(dAttr.Value) : 0;
                 // Skill feature (awakening)
                 XmlAttribute fAttr = currentNode.Attributes["feature"];
                 string feature = fAttr != null ? fAttr.Value : "";
                 // Skill sub skills
                 XmlAttribute subAttr = currentNode.Attributes["sub"];
-                int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), Int32.Parse) : null;
+                int[] sub = subAttr != null ? Array.ConvertAll(subAttr.Value.Split(","), int.Parse) : null;
 
                 if (DefaultSkill > 0)
                 {

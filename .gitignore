@@ -13,8 +13,8 @@ Maple2.Sql/obj/
 Maple2Storage/obj/
 MaplePacketLib2/obj/
 MapleServer2/obj/
-MapleServer2/Properties/launchSettings.json
-Maple2Storage/Resources
+MapleServer2/Properties/
+Maple2Storage/Resources/
+GameDataParser/Resources/
 *.m2d
 *.m2h
-GameDataParser/Resources

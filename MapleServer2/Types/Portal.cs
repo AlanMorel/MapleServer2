@@ -10,7 +10,7 @@ namespace MapleServer2.Types {
         public int TargetMapId;
 
         public Portal(int id) {
-            this.Id = id;
+            Id = id;
         }
     }
 }

@@ -1,6 +1,4 @@
-using System;
 using MaplePacketLib2.Tools;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 using MapleServer2.Data;
 

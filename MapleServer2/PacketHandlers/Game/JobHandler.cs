@@ -17,7 +17,7 @@ namespace MapleServer2.PacketHandlers.Game {
             switch (mode)
             {
                 case 8: // Close Skill Tree
-                    HandleCloseSkillTree(session, packet);
+                    HandleCloseSkillTree(session);
                     break;
                 case 9: // Save Skill Tree
                     HandleSaveSkillTree(session, packet);
@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game {
             }
         }
 
-        private void HandleCloseSkillTree(GameSession session, PacketReader packet)
+        private void HandleCloseSkillTree(GameSession session)
         {
             session.Send(JobPacket.Close());
         }

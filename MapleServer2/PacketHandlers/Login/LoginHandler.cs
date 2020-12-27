@@ -30,12 +30,12 @@ namespace MapleServer2.PacketHandlers.Login {
 
         public override void Handle(LoginSession session, PacketReader packet) {
             byte mode = packet.ReadByte();
-            string user = packet.ReadUnicodeString();
+            string username = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
-            logger.Debug($"Logging in with user:{user} pass:{pass}");
+            logger.Debug($"Logging in with username: '{username}' pass:'{pass}'");
 
             // TODO: From this user/pass lookup we should be able to find the accountId
-            if (string.IsNullOrEmpty(user) && string.IsNullOrEmpty(pass)) {
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass)) {
                 // send error / account credentials not found
             }
 
@@ -53,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Login {
                         characters.Add(AccountStorage.GetCharacter(characterId));
                     }
 
-                    Console.WriteLine("Initializing login with " + session.AccountId);
+                    logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));
                     session.Send(UgcPacket.SetEndpoint("http://127.0.0.1/ws.asmx?wsdl", "http://127.0.0.1"));
                     session.Send(CharacterListPacket.SetMax(4, 6));

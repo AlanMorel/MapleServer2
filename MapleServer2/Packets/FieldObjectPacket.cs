@@ -17,7 +17,7 @@ namespace MapleServer2.Packets {
                 .WriteUnicodeString(player.ProfileUrl)
                 .WriteUnicodeString(player.Motto)
                 .WriteByte()
-                .Write<CoordF>(fieldPlayer.Coord)
+                .Write(fieldPlayer.Coord)
                 .WriteShort(player.Level)
                 .WriteShort((short) player.JobGroupId)
                 .WriteInt(player.JobId)
@@ -45,7 +45,7 @@ namespace MapleServer2.Packets {
                 pWriter.WriteByte();
             }
             if (flag.HasFlag(FieldObjectUpdate.Move)) {
-                pWriter.Write<CoordF>(player.Coord);
+                pWriter.Write(player.Coord);
             }
             if (flag.HasFlag(FieldObjectUpdate.Type3)) {
                 pWriter.WriteShort();
@@ -69,21 +69,21 @@ namespace MapleServer2.Packets {
 
         public static Packet LoadNpc(IFieldObject<Npc> npc) {
             return PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
-                .WriteByte(0x06)
+                .WriteByte(0x6)
                 .WriteInt(npc.ObjectId)
                 .WriteInt(npc.Value.Id)
                 .WriteByte()
                 .WriteInt(200)
-                .Write<CoordF>(npc.Coord);
+                .Write(npc.Coord);
         }
 
         public static Packet ControlNpc(IFieldObject<Npc> npc) {
             var npcBuffer = new PacketWriter()
                 .WriteInt(npc.ObjectId)
                 .WriteByte()
-                .Write<CoordS>(npc.Coord.ToShort())
+                .Write(npc.Coord.ToShort())
                 .WriteShort(npc.Value.Rotation)
-                .Write<CoordS>(npc.Value.Speed) // XYZ Speed
+                .Write(npc.Value.Speed) // XYZ Speed
                 .WriteShort(100) // Unknown
                 .WriteByte(1) // Flag ?
                 .WriteShort(npc.Value.Animation)
@@ -101,7 +101,7 @@ namespace MapleServer2.Packets {
                 .WriteByte(0x05)
                 .WriteInt(objectId)
                 .WriteByte()
-                .Write<CoordF>(coord);
+                .Write(coord);
         }
 
         public static Packet SetStats(IFieldObject<Player> player) {
@@ -109,7 +109,7 @@ namespace MapleServer2.Packets {
                 .WriteInt(player.ObjectId)
                 .WriteByte()
                 .WriteByte(0x23)
-                .Write<PlayerStats>(player.Value.Stats);
+                .Write(player.Value.Stats);
         }
     }
 

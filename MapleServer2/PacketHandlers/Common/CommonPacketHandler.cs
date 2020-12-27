@@ -25,6 +25,6 @@ namespace MapleServer2.PacketHandlers.Common {
 
         protected abstract void HandleCommon(Session session, PacketReader packet);
 
-        public override string ToString() => $"[{OpCode.ToString()}] Common.{GetType().Name}";
+        public override string ToString() => $"[{OpCode}] Common.{GetType().Name}";
     }
 }

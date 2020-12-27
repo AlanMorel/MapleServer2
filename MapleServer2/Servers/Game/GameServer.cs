@@ -16,7 +16,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            base.Start(PORT);
+            Start(PORT);
         }
     }
 }
