@@ -304,7 +304,7 @@ namespace MapleServer2.Packets
                 .WriteBool(portal.Value.IsEnabled)
                 .Write(portal.Coord)
                 .Write(portal.Value.Rotation)
-                .Write(default) // not sure (200,200,250) was used a lot
+                .Write<CoordF>(default) // not sure (200,200,250) was used a lot
                 .WriteUnicodeString("")
                 .WriteInt(portal.Value.TargetMapId)
                 .WriteInt(portal.ObjectId)

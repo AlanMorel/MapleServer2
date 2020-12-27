@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -12,7 +13,7 @@ namespace MapleServer2.Packets
                 .WriteInt(player.ObjectId)
                 .WriteLong(player.Value.CharacterId)
                 .Write(player.Coord.ClosestBlock())
-                .Write(default); // Unknown
+                .Write<CoordF>(default); // Unknown
         }
 
         public static Packet Remove(IFieldObject<Player> player) {

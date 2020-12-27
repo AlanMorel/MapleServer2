@@ -1,4 +1,4 @@
-### Features
+### Features TODO
 - Achieve
 - Quest system
 - Mobs (different behavior, moving around, spawning on field)
@@ -21,16 +21,13 @@
 - World Map
 - Minimap
 - CharacterInfo (Mastery, more)
-- Networking + Sessions (needs to be rewritten)
 - Guild system
 - Club system
-- Channels system
-- NPC Script loading system
 - Taxi system
 - Fishing system
-- Full inventory handling
+- NPC scripts
 
-### Miscellaneous
+### Engineering TODO
 - Implement unknown mode logging on handlers (ex: RequestItemInventoryHandler.cs)
 - Make each mode in handler handled in a different method (ex: RequestItemInventoryHandler.cs)
 - Create methods for common actions like warping and removing mesos/merets
@@ -43,3 +40,6 @@
 - Rewrite logging system
 - Rewrite broadcast packet system
 - Implement database
+- Implement full inventory handling
+- Implement separate Channels
+- Rewrite Networking + Sessions
