@@ -67,17 +67,16 @@ public class InventoryController
     }
 
     // Drops item with option to drop bound items.
-    public static void DropItem(GameSession session, PacketReader packet, Boolean isbound)
+    public static void DropItem(GameSession session, long uid, int amount, Boolean isbound)
     {
         if (!isbound) // Drops Item.
         {
-            long uid = packet.ReadLong(); // Grabs incoming item packet uid
-            int amount = packet.ReadInt(); // Grabs incoming item packet amount
             int remaining = session.Player.Inventory.Remove(uid, out Item droppedItem, amount); // returns remaining amount of item.
             if (remaining < 0)
             {
                 return; // Removal failed
             }
+
             // Updates item amount and removes item.
             session.Send(remaining > 0
                             ? ItemInventoryPacket.Update(uid, remaining)
@@ -86,12 +85,12 @@ public class InventoryController
         }
         else // Drops bound item.
         {
-            long uid = packet.ReadLong(); // Grabs incoming item packet uid
             if (session.Player.Inventory.Remove(uid, out Item droppedItem) != 0)
             {
                 return; // Removal from inventory failed
             }
             session.Send(ItemInventoryPacket.Remove(uid));
+
             // Allow dropping bound items for now
             session.FieldManager.AddItem(session, droppedItem);
         }
@@ -113,10 +112,8 @@ public class InventoryController
     }
 
     // Moves Item to destination slot
-    public static void MoveItem(GameSession session, PacketReader packet)
+    public static void MoveItem(GameSession session, long uid, short dstSlot)
     {
-        long uid = packet.ReadLong();
-        short dstSlot = packet.ReadShort();
         Tuple<long, short> srcSlot = session.Player.Inventory.Move(uid, dstSlot);
 
         if (srcSlot == null)

@@ -51,18 +51,23 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleMove(GameSession session, PacketReader packet)
         {
-            InventoryController.MoveItem(session, packet);
+            long uid = packet.ReadLong(); // Grabs incoming item packet uid
+            short dstSlot = packet.ReadShort(); // Grabs incoming item packet slot
+            InventoryController.MoveItem(session, uid, dstSlot);
         }
 
         private void HandleDrop(GameSession session, PacketReader packet, Inventory inventory)
         {
             // TODO: Make sure items are tradable?
-            InventoryController.DropItem(session, packet, false);
+            long uid = packet.ReadLong();
+            int amount = packet.ReadInt(); // Grabs incoming item packet amount
+            InventoryController.DropItem(session, uid, amount, false);
         }
 
         private void HandleDropBound(GameSession session, PacketReader packet, Inventory inventory)
         {
-            InventoryController.DropItem(session, packet, true);
+            long uid = packet.ReadLong();
+            InventoryController.DropItem(session, uid, 0, true);
         }
 
         private void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
