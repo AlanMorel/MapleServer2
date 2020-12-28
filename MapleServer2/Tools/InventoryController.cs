@@ -126,6 +126,7 @@ public class InventoryController
         session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
     }
 
+    // Todo: implement when stoorage and trade is implemented.
     public static void split(GameSession session, Item item)
     {
 

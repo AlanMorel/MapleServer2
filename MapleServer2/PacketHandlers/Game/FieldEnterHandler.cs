@@ -49,18 +49,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             var item = new Item(40100001)
             {
-                Amount = 99999,
-                Slot = 47
+                Amount = 99999
             };
             var item2 = new Item(40100001)
             {
-                Amount = 90000,
-                Slot = 30
+                Amount = 90000
             };
             var item3 = new Item(40100001)
             {
-                Amount = 10000,
-                Slot = 20
+                Amount = 10000
             };
             InventoryController.Add(session, item, true);
             InventoryController.Add(session, item2, true);

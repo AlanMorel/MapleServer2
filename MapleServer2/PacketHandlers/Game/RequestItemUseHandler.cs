@@ -34,7 +34,7 @@ namespace MapleServer2.PacketHandlers.Game
             else
             {
                 box.Amount -= 1;
-                session.Send(ItemInventoryPacket.Update(boxUid, box.Amount));
+                InventoryController.Update(session, boxUid, box.Amount);
             }
 
             // Normally would look up which item to create, instead always add poisonous mushroom

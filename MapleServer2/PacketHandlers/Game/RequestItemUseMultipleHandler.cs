@@ -49,7 +49,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                     // Update box amount if there is more than 1
                     item.Amount -= 1;
-                    session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+                    InventoryController.Update(session, item.Uid, item.Amount);
                     InventoryController.Add(session, newItem, true);
 
                     opened++;
