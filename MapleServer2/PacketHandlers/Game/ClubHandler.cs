@@ -32,6 +32,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case ClubMode.Join:
                     HandleJoin(session, packet);
                     break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
+                    break;
             }
         }
 
