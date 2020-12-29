@@ -45,23 +45,39 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+
             string clubName = packet.ReadUnicodeString();
-            party.BroadcastPacketParty(ClubPacket.CreateClub(session.Player, party.Leader, clubName, party.Members));
-            party.BroadcastPacketParty(ClubPacket.UpdateClubs(session.Player));
+
+            long clubId = 0; // TODO generate unique club id
+
+            party.BroadcastPacketParty(ClubPacket.CreateClub(party, clubName, clubId));
+
+            foreach (Player member in party.Members) {
+                party.BroadcastPacketParty(ClubPacket.UpdateClub(member, clubId));
+            }
         }
 
         private void HandleJoin(GameSession session, PacketReader packet)
         {
-            Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             if (party == null)
             {
                 return;
             }
+
             long clubId = packet.ReadLong();
-            party.BroadcastPacketParty(ClubPacket.Invite());
-            session.Send(ClubPacket.AssignLeader(session.Player));
-            session.Send(ClubPacket.EstablishClub(session.Player));
+            int response = packet.ReadInt(); // 0 = accept, 76 (0x4C) = reject??? lol
+
+            string clubName = ""; // TODO get club name from club
+
+            // TODO handle rejections
+
+            if (session.Player.CharacterId == party.Leader.CharacterId) {
+                session.Send(ClubPacket.AssignLeader(session.Player, clubId, clubName));
+                session.Send(ClubPacket.EstablishClub(clubId, clubName));
+            } 
+
+            session.Send(ClubPacket.ClubCreated(clubId)); // TODO only send after invite accepted, broadcast to entire party?
         }
     }
-
 }

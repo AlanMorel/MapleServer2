@@ -43,3 +43,6 @@
 - Implement full inventory handling
 - Implement separate Channels
 - Rewrite Networking + Sessions
+- Remove all PacketWriter instances outside of standalone Packet files
+- Set unlocked titles as array in Player, replace hard-coded list
+- Remove public void Send(params byte[] packet) inside Session.cs
