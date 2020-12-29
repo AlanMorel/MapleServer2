@@ -48,13 +48,11 @@ namespace MapleServer2.Packets
         public static void AddStatPoint(Player character, byte statType)
         {
             character.StatPointDistribution.AddPoint(statType);
-            //call WriteStatPointDistribution - it takes the character's StatDistribution and converts it to a packet
         }
 
         public static void ResetStatPoints(Player character)
         {
             character.StatPointDistribution.ResetPoints();
-            //call WriteStatPointDistribution
 
         }
     }
