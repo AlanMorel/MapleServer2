@@ -67,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Common {
 
             // Load inventory tabs
             foreach (InventoryType tab in Enum.GetValues(typeof(InventoryType))) {
-                InventoryController.LoadInventoryTabs(session, tab);
+                InventoryController.LoadInventoryTab(session, tab);
             }
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
             session.Send(MarketInventoryPacket.StartList());

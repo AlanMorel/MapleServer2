@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO remove these inventory packets
             if (box.Amount <= 1)
             {
-                InventoryController.Remove(session, out Item removed, boxUid);
+                InventoryController.Remove(session, boxUid, out Item removed);
             }
             // Decrement box amount to otherwise
             else

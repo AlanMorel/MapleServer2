@@ -57,6 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Amount = 10000
             };
+
             InventoryController.Add(session, item, true);
             InventoryController.Add(session, item2, true);
             InventoryController.Add(session, item3, true);
@@ -82,7 +83,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Owner = session.Player,
-                    Amount = 10
+                    Amount = 10000
                 }
             };
             Mail sysItemMail = new Mail

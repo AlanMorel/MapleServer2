@@ -6,7 +6,7 @@ using MapleServer2.Tools;
 
 namespace MapleServer2.Types {
     public class Item {
-        public InventoryType InventoryTab { get; private set; }
+        public InventoryType InventoryType { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
         public int SlotMax { get; private set; }
         public bool IsTemplate { get; set; }
@@ -50,7 +50,7 @@ namespace MapleServer2.Types {
         public Item(int id) {
             this.Id = id;
             this.Uid = GuidGenerator.Long();
-            this.InventoryTab = ItemMetadataStorage.GetTab(id);
+            this.InventoryType = ItemMetadataStorage.GetType(id);
             this.ItemSlot = ItemMetadataStorage.GetSlot(id);
             this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
             this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
@@ -63,7 +63,7 @@ namespace MapleServer2.Types {
         // Make a copy of item
         public Item(Item other) {
             Id = other.Id;
-            InventoryTab = other.InventoryTab;
+            InventoryType = other.InventoryType;
             ItemSlot = other.ItemSlot;
             SlotMax = other.SlotMax;
             Uid = other.Uid;

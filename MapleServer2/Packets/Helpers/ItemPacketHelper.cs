@@ -36,7 +36,7 @@ namespace MapleServer2.Packets.Helpers {
                 pWriter.WriteTemplate();
             }
 
-            if (item.InventoryTab == InventoryType.Pets) {
+            if (item.InventoryType == InventoryType.Pets) {
                 pWriter.WritePet();
             }
 

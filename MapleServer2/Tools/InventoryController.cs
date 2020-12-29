@@ -2,13 +2,14 @@
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Maple2Storage.Types;
+using System;
 
 public class InventoryController
 {
     // Adds item
-    public static void Add(GameSession session, Item item, Boolean isNew)
+    public static void Add(GameSession session, Item item, bool isNew)
     {
-        // Checks if item is stackable or not.
+        // Checks if item is stackable or not
         if (item.SlotMax > 1)
         {
             foreach (Item i in session.Player.Inventory.Items.Values)
@@ -18,25 +19,27 @@ public class InventoryController
                 {
                     continue;
                 }
-                // Updates inventory for item amount overflow.
+                // Updates inventory for item amount overflow
                 if ((i.Amount + item.Amount) > i.SlotMax)
                 {
-                    item.Amount -= (i.SlotMax - i.Amount);
+                    int added = i.SlotMax - i.Amount;
+                    item.Amount -= added;
                     i.Amount = i.SlotMax;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
+                    session.Send(ItemInventoryPacket.MarkItemNew(i, added));
                 }
                 // Updates item amount
                 else
                 {
                     i.Amount += item.Amount;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
+                    session.Send(ItemInventoryPacket.MarkItemNew(i, item.Amount));
                     return;
                 }
             }
         }
-        session.Player.Inventory.Add(item); // adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // sends packet to add item clientside.
-
+        session.Player.Inventory.Add(item); // Adds item into internal database
+        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
         if (isNew)
         {
             session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
@@ -44,14 +47,7 @@ public class InventoryController
     }
 
     // Removes Item from inventory by reference
-    public static void Remove(GameSession session, out Item item, long uid)
-    {
-        session.Player.Inventory.Remove(uid, out item);
-        session.Send(ItemInventoryPacket.Remove(uid));
-    }
-
-    // Removes Item from inventory
-    public static void Remove(GameSession session, Item item, long uid)
+    public static void Remove(GameSession session, long uid, out Item item)
     {
         session.Player.Inventory.Remove(uid, out item);
         session.Send(ItemInventoryPacket.Remove(uid));
@@ -60,26 +56,26 @@ public class InventoryController
     // Picks up item
     public static void PickUp(GameSession session, Item item)
     {
-        session.Player.Inventory.Add(item); // adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // sends packet to add item clientside.
+        session.Player.Inventory.Add(item); // Adds item into internal database
+        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
     }
 
-    // Drops item with option to drop bound items.
-    public static void DropItem(GameSession session, long uid, int amount, Boolean isbound)
+    // Drops item with option to drop bound items
+    public static void DropItem(GameSession session, long uid, int amount, bool isbound)
     {
-        if (!isbound) // Drops Item.
+        if (!isbound) // Drops Item
         {
-            int remaining = session.Player.Inventory.Remove(uid, out Item droppedItem, amount); // returns remaining amount of item.
+            int remaining = session.Player.Inventory.Remove(uid, out Item droppedItem, amount); // Returns remaining amount of item
             if (remaining < 0)
             {
                 return; // Removal failed
             }
 
-            // Updates item amount and removes item.
+            // Updates item amount and removes item
             session.Send(remaining > 0
                             ? ItemInventoryPacket.Update(uid, remaining)
                             : ItemInventoryPacket.Remove(uid));
-            session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor.
+            session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
         }
         else // Drops bound item.
         {
@@ -102,8 +98,8 @@ public class InventoryController
         session.Send(ItemInventoryPacket.LoadItemsToTab(tab, inventory.GetItems(tab)));
     }
 
-    // Loads all inventory tabs
-    public static void LoadInventoryTabs(GameSession session, InventoryType tab)
+    // Loads a Inventory Tab
+    public static void LoadInventoryTab(GameSession session, InventoryType tab)
     {
         session.Send(ItemInventoryPacket.ResetTab(tab));
         session.Send(ItemInventoryPacket.LoadTab(tab));
@@ -121,7 +117,7 @@ public class InventoryController
         session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
     }
 
-    // Todo: implement when stoorage and trade is implemented.
+    // Todo: implement when stoorage and trade is implemented
     public static void split(GameSession session, Item item)
     {
 
