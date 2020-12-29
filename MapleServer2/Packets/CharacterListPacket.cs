@@ -98,7 +98,7 @@ namespace MapleServer2.Packets {
             pWriter.WriteInt();
             pWriter.Write(player.Rotation); // NOT char Coord/UnknownCoord
             pWriter.WriteInt();
-            pWriter.Write<SkinColor>(player.SkinColor);
+            pWriter.Write(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);
             foreach (int trophyCount in player.Trophy) {
                 pWriter.WriteInt(trophyCount);
