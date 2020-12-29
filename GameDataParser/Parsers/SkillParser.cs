@@ -77,7 +77,7 @@ namespace GameDataParser.Parsers
                         }
                         if (upgrade.Attributes.GetNamedItem("skillLevels") != null)
                         {
-                            upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillLevels").Value.Split(","), Int32.Parse);
+                            upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillLevels").Value.Split(","), int.Parse);
                         }
                     }
 

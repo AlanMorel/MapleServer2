@@ -40,7 +40,7 @@ namespace MapleServer2.PacketHandlers.Login {
         {
             long charId = packet.ReadLong();
             packet.ReadShort(); // 01 00
-            logger.Info($"Logging in to game with charId:{charId}");
+            logger.Info($"Logging in to game with char id: {charId}");
 
             var endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
             var authData = new AuthData
@@ -159,7 +159,7 @@ namespace MapleServer2.PacketHandlers.Login {
             // Check if name is in use (currently just on local account)
             bool taken = false;
             
-            foreach (var character in AccountStorage.characters.Values) {
+            foreach (var character in AccountStorage.Characters.Values) {
                 if (character.Name.ToLower().Equals(name.ToLower())) {
                     taken = true;
                 }

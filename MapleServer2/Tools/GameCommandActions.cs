@@ -29,6 +29,9 @@ namespace MapleServer2.Tools
                 case "coord":
                     session.SendNotice(session.FieldPlayer.Coord.ToString());
                     break;
+                case "battleof":
+                    session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+                    break;
             }
         }
 

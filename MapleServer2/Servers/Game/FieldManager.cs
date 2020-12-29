@@ -252,8 +252,8 @@ namespace MapleServer2.Servers.Game
 
             public FieldObject(int objectId, T value)
             {
-                this.ObjectId = objectId;
-                this.Value = value;
+                ObjectId = objectId;
+                Value = value;
             }
         }
     }

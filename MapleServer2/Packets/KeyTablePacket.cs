@@ -47,7 +47,7 @@ namespace MapleServer2.Packets {
                 pWriter.WriteInt(hotbar.Slots.Length);
                 for (int slotIndex = 0; slotIndex < hotbar.Slots.Length; slotIndex++) {
                     pWriter.WriteInt(slotIndex);
-                    pWriter.Write<QuickSlot>(hotbar.Slots[slotIndex]);
+                    pWriter.Write(hotbar.Slots[slotIndex]);
                 }
             }
 

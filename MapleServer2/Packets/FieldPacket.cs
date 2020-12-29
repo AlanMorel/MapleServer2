@@ -19,8 +19,8 @@ namespace MapleServer2.Packets
                 .WriteByte()
                 .WriteInt()
                 .WriteInt()
-                .Write<CoordF>(player.Coord)
-                .Write<CoordF>(player.Value.Rotation)
+                .Write(player.Coord)
+                .Write(player.Value.Rotation)
                 .WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
         }
 
@@ -38,8 +38,8 @@ namespace MapleServer2.Packets
             JobPacket.WriteSkills(pWriter, player);
 
             // Coords
-            pWriter.Write<CoordF>(fieldPlayer.Coord);
-            pWriter.Write<CoordF>(player.Rotation);
+            pWriter.Write(fieldPlayer.Coord);
+            pWriter.Write(player.Rotation);
             pWriter.WriteByte();
 
             pWriter.WriteTotalStats(ref player.Stats);
@@ -203,7 +203,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong();
             }
 
-            return pWriter.Write<CoordF>(item.Coord) // drop location
+            return pWriter.Write(item.Coord) // drop location
                 .WriteInt(userObjectId)
                 .WriteInt()
                 .WriteByte(2)
@@ -233,8 +233,8 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
                 .WriteInt(npc.ObjectId)
                 .WriteInt(npc.Value.Id)
-                .Write<CoordF>(npc.Coord)
-                .Write<CoordF>(CoordF.From(0, 0, 0)); // Unknown
+                .Write(npc.Coord)
+                .Write(CoordF.From(0, 0, 0)); // Unknown
             // If NPC is not valid, the packet seems to stop here
 
             // NPC Stat
@@ -302,8 +302,8 @@ namespace MapleServer2.Packets
                 .WriteInt(portal.Value.Id)
                 .WriteBool(portal.Value.IsVisible)
                 .WriteBool(portal.Value.IsEnabled)
-                .Write<CoordF>(portal.Coord)
-                .Write<CoordF>(portal.Value.Rotation)
+                .Write(portal.Coord)
+                .Write(portal.Value.Rotation)
                 .Write<CoordF>(default) // not sure (200,200,250) was used a lot
                 .WriteUnicodeString("")
                 .WriteInt(portal.Value.TargetMapId)

@@ -58,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Game {
             long itemUid = packet.ReadLong();
 
             if (session.StateStorage.TryGetValue(NEW_ITEM_KEY, out object obj)) {
-                if (!(obj is Item item) || itemUid != item.Uid) {
+                if (obj is not Item item || itemUid != item.Uid) {
                     return;
                 }
 

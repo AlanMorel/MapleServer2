@@ -24,12 +24,13 @@ namespace MapleServer2.Network {
         public Server(PacketRouter<T> router, ILogger<Server<T>> logger, IComponentContext context) {
             Trace.Assert(context != null);
 
-            this.source = new CancellationTokenSource();
-            this.clientConnected = new ManualResetEvent(false);
             this.router = router;
-            this.sessions = new List<T>();
             this.logger = logger;
             this.context = context;
+
+            source = new CancellationTokenSource();
+            clientConnected = new ManualResetEvent(false);
+            sessions = new List<T>();
         }
 
         public void Start(ushort port) {

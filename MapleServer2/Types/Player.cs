@@ -85,7 +85,7 @@ namespace MapleServer2.Types
                         || DefaultEquipSlot == ItemSlot.ER;
 
         public Job jobType;
-        public JobCode jobCode => jobType != Job.GameMaster ? (JobCode)((int)jobType / 10) : JobCode.GameMaster;
+        public JobCode JobCode => jobType != Job.GameMaster ? (JobCode)((int)jobType / 10) : JobCode.GameMaster;
 
         public GameOptions GameOptions { get; private set; }
 
@@ -100,8 +100,10 @@ namespace MapleServer2.Types
 
             PlayerStats stats = PlayerStats.Default();
 
-            List<SkillTab> skillTabs = new List<SkillTab>();
-            skillTabs.Add(XmlParser.ParseSkills(job));
+            List<SkillTab> skillTabs = new List<SkillTab>
+            {
+                XmlParser.ParseSkills(job)
+            };
 
             Player player = new Player
             {
@@ -152,8 +154,10 @@ namespace MapleServer2.Types
 
             PlayerStats stats = PlayerStats.Default();
 
-            List<SkillTab> skillTabs = new List<SkillTab>();
-            skillTabs.Add(XmlParser.ParseSkills(job));
+            List<SkillTab> skillTabs = new List<SkillTab>
+            {
+                XmlParser.ParseSkills(job)
+            };
 
             return new Player
             {
@@ -194,8 +198,10 @@ namespace MapleServer2.Types
         {
             PlayerStats stats = PlayerStats.Default();
 
-            List<SkillTab> skillTabs = new List<SkillTab>();
-            skillTabs.Add(XmlParser.ParseSkills(job));
+            List<SkillTab> skillTabs = new List<SkillTab>
+            {
+                XmlParser.ParseSkills(job)
+            };
 
             return new Player
             {

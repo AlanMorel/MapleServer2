@@ -1,7 +1,5 @@
-﻿using System;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using MapleServer2.Packets;
-using MaplePacketLib2.Tools;
 using MapleServer2.Servers.Game;
 using Maple2Storage.Types;
 
@@ -23,14 +21,14 @@ public class InventoryController
                 // Updates inventory for item amount overflow.
                 if ((i.Amount + item.Amount) > i.SlotMax)
                 {
-                    item.Amount = item.Amount - (i.SlotMax - i.Amount);
+                    item.Amount -= (i.SlotMax - i.Amount);
                     i.Amount = i.SlotMax;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                 }
                 // Updates item amount
                 else
                 {
-                    i.Amount = i.Amount + item.Amount;
+                    i.Amount += item.Amount;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                     return;
                 }

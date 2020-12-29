@@ -26,6 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item box = session.Player.Inventory.Items[boxUid];
 
             // Remove box if amount is 1 or less
+            // TODO remove these inventory packets
             if (box.Amount <= 1)
             {
                 InventoryController.Remove(session, out Item removed, boxUid);

@@ -48,7 +48,7 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteByte(1);
 
             // CharBound means untradable, unsellable, bound to char (ignores TransferFlag)
-            bool isCharBound = (item.Owner != null);
+            bool isCharBound = item.Owner != null;
             pWriter.WriteBool(isCharBound);
             if (isCharBound) {
                 pWriter.WriteLong(item.Owner.CharacterId);
@@ -76,14 +76,14 @@ namespace MapleServer2.Packets.Helpers {
             switch (item.ItemSlot) {
                 case ItemSlot.CP:
                     for (int i = 0; i < 13; i++) {
-                        pWriter.Write<float>(0);
+                        pWriter.Write(0);
                     }
                     break;
                 case ItemSlot.HR:
                     //pWriter.Write<HairData>(item.HairD);
-                    pWriter.Write<float>(item.HairD.BackLength);
+                    pWriter.Write(item.HairD.BackLength);
                     pWriter.Write(item.HairD.BackPositionArray);
-                    pWriter.Write<float>(item.HairD.FrontLength);
+                    pWriter.Write(item.HairD.FrontLength);
                     pWriter.Write(item.HairD.FrontPositionArray);
                     break;
                 case ItemSlot.FD:
@@ -99,7 +99,7 @@ namespace MapleServer2.Packets.Helpers {
             List<ItemStat> basicAttributes = stats.BasicAttributes;
             pWriter.WriteShort((short)basicAttributes.Count);
             foreach (ItemStat stat in basicAttributes) {
-                pWriter.Write<ItemStat>(stat);
+                pWriter.Write(stat);
             }
             pWriter.WriteShort().WriteInt(); // SpecialAttributes
 
@@ -109,7 +109,7 @@ namespace MapleServer2.Packets.Helpers {
             List<ItemStat> bonusAttributes = stats.BonusAttributes;
             pWriter.WriteShort((short)bonusAttributes.Count);
             foreach (ItemStat stat in bonusAttributes) {
-                pWriter.Write<ItemStat>(stat);
+                pWriter.Write(stat);
             }
             pWriter.WriteShort().WriteInt(); // SpecialAttributes
 
@@ -130,7 +130,7 @@ namespace MapleServer2.Packets.Helpers {
             List<ItemStat> generalStatDiff = new List<ItemStat>();
             pWriter.WriteByte((byte)generalStatDiff.Count);
             foreach (ItemStat stat in generalStatDiff) {
-                pWriter.Write<ItemStat>(stat);
+                pWriter.Write(stat);
             }
 
             pWriter.WriteInt(); // ???
@@ -138,13 +138,13 @@ namespace MapleServer2.Packets.Helpers {
             List<ItemStat> statDiff = new List<ItemStat>();
             pWriter.WriteInt(statDiff.Count);
             foreach (ItemStat stat in statDiff) {
-                pWriter.Write<ItemStat>(stat);
+                pWriter.Write(stat);
             }
 
             List<SpecialItemStat> bonusStatDiff = new List<SpecialItemStat>();
             pWriter.WriteInt(bonusStatDiff.Count);
             foreach (SpecialItemStat stat in bonusStatDiff) {
-                pWriter.Write<SpecialItemStat>(stat);
+                pWriter.Write(stat);
             }
 
             return pWriter;

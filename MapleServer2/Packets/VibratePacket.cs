@@ -1,8 +1,6 @@
-using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
-using System;
 
 namespace MapleServer2.Packets
 {
@@ -16,7 +14,7 @@ namespace MapleServer2.Packets
                 .WriteLong(someId)
                 .WriteInt(objectId)
                 .WriteInt(flag)
-                .Write<CoordS>(player.Coord.ToShort())
+                .Write(player.Coord.ToShort())
                 .WriteInt(clientTicks)
                 .WriteMapleString("")
                 .WriteByte();

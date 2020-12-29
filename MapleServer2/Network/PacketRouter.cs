@@ -18,7 +18,7 @@ namespace MapleServer2.Network {
                 Register(builder, packetHandler);
             }
 
-            this.handlers = builder.ToImmutable();
+            handlers = builder.ToImmutable();
         }
 
         public void OnPacket(object sender, Packet packet) {

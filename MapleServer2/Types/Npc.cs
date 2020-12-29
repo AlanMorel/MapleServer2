@@ -9,9 +9,9 @@ namespace MapleServer2.Types {
         public PlayerStats stats;
 
         public Npc(int id) {
-            this.Id = id;
-            this.Animation = 255;
-            this.stats = PlayerStats.Default();
+            Id = id;
+            Animation = 255;
+            stats = PlayerStats.Default();
         }
     }
 }
