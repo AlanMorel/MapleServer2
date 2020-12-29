@@ -13,7 +13,7 @@ namespace MapleServer2.Types
         // naming convention: PointsFromQuest, PointsFromTrophy, PointsFromExploration, PointsFromPrestige
 
         public Dictionary<byte, int> AllocatedStats { get; private set; }
-        // key = index of the stat 
+        // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
 
         public StatDistribution()
