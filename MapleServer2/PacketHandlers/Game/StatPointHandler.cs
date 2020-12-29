@@ -22,12 +22,10 @@ namespace MapleServer2.PacketHandlers.Game
                 case 2: 
                 // Increment attribute point
                     HandleStatIncrement(session, packet);
-                    // follow up SendStat packet to refresh updated stats
                     break;
                 case 3:
                 // Reset attribute distribution
                     HandleResetStatDistribtuion(session, packet);
-                    // follow up SendStat packet to refresh updated stats
                     break;
             }
         }
@@ -35,7 +33,6 @@ namespace MapleServer2.PacketHandlers.Game
         private void HandleStatIncrement(GameSession session, PacketReader packet)
         {
             byte statTypeIndex = packet.ReadByte();
-            Console.WriteLine("statIndex value: " + statTypeIndex);
             StatPointPacket.AddStatPoint(session.Player, statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         }
