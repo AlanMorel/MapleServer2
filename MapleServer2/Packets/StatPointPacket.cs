@@ -17,7 +17,6 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(0);
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
 
-
             return pWriter;
         }
 
