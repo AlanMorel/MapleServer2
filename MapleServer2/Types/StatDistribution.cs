@@ -53,7 +53,7 @@ namespace MapleServer2.Types
         {
             // returns a count of how many types of Stats have had points added to them
             // ex. a character has Strength and Intelligence points allocated - function returns 2 
-            byte statTypeCount = (byte)AllocatedStats.Count; ;
+            byte statTypeCount = (byte) AllocatedStats.Count;
 
             return statTypeCount;
         }
