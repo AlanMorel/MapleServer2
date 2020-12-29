@@ -112,7 +112,6 @@ namespace MapleServer2.Types
                 XmlParser.ParseSkills(job)
             };
 
-
             Player player = new Player
             {
                 SkillTabs = skillTabs,
