@@ -24,6 +24,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(); //unk
             pWriter.WriteByte((byte)members.Count); //loop amount
 
+
             foreach (Player member in members)
             {
                 pWriter.WriteByte((byte)members.Count); // loop
@@ -50,6 +51,7 @@ namespace MapleServer2.Packets
             }
             return pWriter;
         }
+
         public static Packet UpdateClubs(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
@@ -73,6 +75,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(); //lifestyle trophy count
             return pWriter;
         }
+
         public static Packet Invite()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
@@ -82,6 +85,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort();
             return pWriter;
         }
+
         public static Packet AssignLeader(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
@@ -91,6 +95,7 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString("Test"); //clubName
             return pWriter;
         }
+
         public static Packet EstablishClub(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);

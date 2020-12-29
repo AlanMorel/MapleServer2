@@ -14,35 +14,39 @@ namespace MapleServer2.PacketHandlers.Game
 
         public ClubHandler(ILogger<ClubHandler> logger) : base(logger) { }
 
+        private enum ClubMode : byte
+        {
+            Create = 0x1,
+            Join = 0x3,
+        }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte(); //Mode
+            ClubMode mode = (ClubMode)packet.ReadByte();
 
             switch (mode)
             {
-                //Club Create
-                case 0x1:
+                case ClubMode.Create:
                     HandleCreate(session, packet);
                     break;
-                //Club Join
-                case 0x3:
+                case ClubMode.Join:
                     HandleJoin(session, packet);
                     break;
             }
         }
+
         private void HandleCreate(GameSession session, PacketReader packet)
         {
-            string clubName = packet.ReadUnicodeString();
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
             if (party == null)
             {
                 return;
             }
-            List<Player> members = party.Members;
-            party.BroadcastPacketParty(ClubPacket.CreateClub(session.Player, party.Leader, clubName, members));
+            string clubName = packet.ReadUnicodeString();
+            party.BroadcastPacketParty(ClubPacket.CreateClub(session.Player, party.Leader, clubName, party.Members));
             party.BroadcastPacketParty(ClubPacket.UpdateClubs(session.Player));
         }
+
         private void HandleJoin(GameSession session, PacketReader packet)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
@@ -50,7 +54,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            List<Player> members = party.Members;
             long clubId = packet.ReadLong();
             party.BroadcastPacketParty(ClubPacket.Invite());
             session.Send(ClubPacket.AssignLeader(session.Player));
