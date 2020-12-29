@@ -52,7 +52,6 @@ namespace MapleServer2.Packets
         public static void ResetStatPoints(Player character)
         {
             character.StatPointDistribution.ResetPoints();
-
         }
     }
 }
