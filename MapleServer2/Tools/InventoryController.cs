@@ -1,6 +1,7 @@
 ﻿using MapleServer2.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using Maple2Storage.Types;
 using System;
 
@@ -70,11 +71,14 @@ public class InventoryController
             {
                 return; // Removal failed
             }
-
-            // Updates item amount and removes item
-            session.Send(remaining > 0
-                            ? ItemInventoryPacket.Update(uid, remaining)
-                            : ItemInventoryPacket.Remove(uid));
+            else if (remaining > 0) // Updates item
+            {
+                session.Send(ItemInventoryPacket.Update(uid, remaining));
+            }
+            else // Removes item
+            {
+                session.Send(ItemInventoryPacket.Remove(uid));
+            }
             session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
         }
         else // Drops bound item.
@@ -117,7 +121,7 @@ public class InventoryController
         session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
     }
 
-    // Todo: implement when stoorage and trade is implemented
+    // Todo: implement when storage and trade is implemented
     public static void split(GameSession session, Item item)
     {
 

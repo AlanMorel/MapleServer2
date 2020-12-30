@@ -53,9 +53,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Amount = 90000
             };
-            var item3 = new Item(20000022)
+            var item3 = new Item(20302228)
             {
-                Amount = 50
+                Amount = 1
             };
 
             InventoryController.Add(session, item, true);
@@ -79,7 +79,7 @@ namespace MapleServer2.PacketHandlers.Game
             // System mail with an item
             List<Item> items = new List<Item>
             {
-                new Item(20302228)
+                new Item(40100001) // 20302228
                 {
                     CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Owner = session.Player,

@@ -33,7 +33,6 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestItemInventoryMode.Move:
                     HandleMove(session, packet);
                     break;
-
                 case RequestItemInventoryMode.Drop:
                     HandleDrop(session, packet, inventory);
                     break;
