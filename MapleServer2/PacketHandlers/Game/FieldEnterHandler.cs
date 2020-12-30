@@ -53,9 +53,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Amount = 90000
             };
-            var item3 = new Item(40100001)
+            var item3 = new Item(20000022)
             {
-                Amount = 10000
+                Amount = 50
             };
 
             InventoryController.Add(session, item, true);

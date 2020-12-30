@@ -36,7 +36,7 @@ namespace MapleServer2.PacketHandlers.Game {
             }
 
             // Remove the item from the users inventory
-            InventoryController.Remove(session, out Item item, itemUid);
+            InventoryController.Remove(session, itemUid, out Item item);
 
             // TODO: Move unequipped item into the correct slot
             // Move previously equipped item back to inventory

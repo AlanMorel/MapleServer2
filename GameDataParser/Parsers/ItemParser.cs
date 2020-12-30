@@ -81,43 +81,43 @@ namespace GameDataParser.Parsers
         }
 
         // This is an approximation and may not be 100% correct
-        public static InventoryType GetTab(byte type, byte subType, bool skin = false)
+        public static InventoryTab GetTab(byte type, byte subType, bool skin = false)
         {
             if (skin)
             {
-                return InventoryType.Outfit;
+                return InventoryTab.Outfit;
             }
 
             switch (type)
             {
                 case 0: // Unknown
-                    return InventoryType.Misc;
+                    return InventoryTab.Misc;
                 case 1:
-                    return InventoryType.Gear;
+                    return InventoryTab.Gear;
                 case 2: // "Usable"
                     switch (subType)
                     {
                         case 2:
-                            return InventoryType.Consumable;
+                            return InventoryTab.Consumable;
                         case 8: // Skill book for mount?
-                            return InventoryType.Mount;
+                            return InventoryTab.Mount;
                         case 14: // Emote
-                            return InventoryType.Misc;
+                            return InventoryTab.Misc;
                     }
 
                     break;
                 case 3:
-                    return InventoryType.Quest;
+                    return InventoryTab.Quest;
                 case 4:
-                    return InventoryType.Misc;
+                    return InventoryTab.Misc;
                 case 5: // Air mount
-                    return InventoryType.Mount;
+                    return InventoryTab.Mount;
                 case 6: // Furnishing shows up in FishingMusic
-                    return InventoryType.FishingMusic;
+                    return InventoryTab.FishingMusic;
                 case 7:
-                    return InventoryType.Badge;
+                    return InventoryTab.Badge;
                 case 9: // Ground mount
-                    return InventoryType.Mount;
+                    return InventoryTab.Mount;
                 case 10:
                     switch (subType)
                     {
@@ -129,32 +129,32 @@ namespace GameDataParser.Parsers
                         case 17: // Packages
                         case 18: // Packages
                         case 19:
-                            return InventoryType.Misc;
+                            return InventoryTab.Misc;
                         case 20: // Fishing Pole / Instrument
-                            return InventoryType.FishingMusic;
+                            return InventoryTab.FishingMusic;
                     }
 
                     break;
                 case 11:
-                    return InventoryType.Pets;
+                    return InventoryTab.Pets;
                 case 12: // Music Score
-                    return InventoryType.FishingMusic;
+                    return InventoryTab.FishingMusic;
                 case 13:
-                    return InventoryType.Gemstone;
+                    return InventoryTab.Gemstone;
                 case 14: // Gem dust
-                    return InventoryType.Catalyst;
+                    return InventoryTab.Catalyst;
                 case 15:
-                    return InventoryType.Catalyst;
+                    return InventoryTab.Catalyst;
                 case 16:
-                    return InventoryType.LifeSkill;
+                    return InventoryTab.LifeSkill;
                 case 19:
-                    return InventoryType.Misc;
+                    return InventoryTab.Misc;
                 case 20:
-                    return InventoryType.Currency;
+                    return InventoryTab.Currency;
                 case 21:
-                    return InventoryType.Currency;
+                    return InventoryTab.Currency;
                 case 22: // Blueprint
-                    return InventoryType.Misc;
+                    return InventoryTab.Misc;
             }
 
             throw new ArgumentException($"Unknown Tab for: {type},{subType}");

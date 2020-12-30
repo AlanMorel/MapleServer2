@@ -91,7 +91,7 @@ public class InventoryController
     }
 
     // Sorts inventory items
-    public static void SortInventory(GameSession session, Inventory inventory, InventoryType tab)
+    public static void SortInventory(GameSession session, Inventory inventory, InventoryTab tab)
     {
         inventory.Sort(tab);
         session.Send(ItemInventoryPacket.ResetTab(tab));
@@ -99,7 +99,7 @@ public class InventoryController
     }
 
     // Loads a Inventory Tab
-    public static void LoadInventoryTab(GameSession session, InventoryType tab)
+    public static void LoadInventoryTab(GameSession session, InventoryTab tab)
     {
         session.Send(ItemInventoryPacket.ResetTab(tab));
         session.Send(ItemInventoryPacket.LoadTab(tab));

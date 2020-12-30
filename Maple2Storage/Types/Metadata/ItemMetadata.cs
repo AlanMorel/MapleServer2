@@ -10,7 +10,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public ItemSlot Slot;
         [XmlElement(Order = 3)]
-        public InventoryType Tab;
+        public InventoryTab Tab;
         [XmlElement(Order = 4)]
         public int SlotMax;
         [XmlElement(Order = 5)]

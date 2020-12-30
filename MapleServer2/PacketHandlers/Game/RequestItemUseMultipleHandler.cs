@@ -39,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game
                     // Remove box if there is only 1 left
                     if (item.Amount <= 1)
                     {
-                        InventoryController.Remove(session, out Item removed, item.Uid);
+                        InventoryController.Remove(session, item.Uid, out Item removed);
                         InventoryController.Add(session, newItem, true);
 
                         opened++;

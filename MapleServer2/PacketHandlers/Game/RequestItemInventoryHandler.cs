@@ -72,7 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
         {
-            InventoryType tab = (InventoryType)packet.ReadShort();
+            InventoryTab tab = (InventoryTab)packet.ReadShort();
             InventoryController.SortInventory(session, inventory, tab);
         }
     }
