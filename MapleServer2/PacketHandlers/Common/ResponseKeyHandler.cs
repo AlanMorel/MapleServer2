@@ -142,7 +142,7 @@ namespace MapleServer2.PacketHandlers.Common {
                 throw new ArgumentException("Attempted login with invalid tokens...");
             }
 
-            session.Send(0x0D, 0x00, 0x00); // SendOp.MOVE_RESULT
+            session.Send((byte) SendOp.MOVE_RESULT, 0x00, 0x00);
         }
     }
 }

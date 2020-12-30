@@ -24,15 +24,16 @@ namespace MapleServer2.PacketHandlers.Login {
             var builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
 
-            this.serverIps = builder.ToImmutable();
-            this.serverName = "Paperwood";
+            serverIps = builder.ToImmutable();
+            serverName = "Paperwood";
         }
 
         public override void Handle(LoginSession session, PacketReader packet) {
             byte mode = packet.ReadByte();
             string username = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
-            logger.Debug($"Logging in with username: '{username}' pass:'{pass}'");
+
+            logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
 
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass)) {
