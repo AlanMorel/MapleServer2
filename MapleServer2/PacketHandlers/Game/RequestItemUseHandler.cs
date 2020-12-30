@@ -29,19 +29,18 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO remove these inventory packets
             if (box.Amount <= 1)
             {
-                session.Player.Inventory.Remove(boxUid, out Item removed);
-                session.Send(ItemInventoryPacket.Remove(boxUid));
+                InventoryController.Remove(session, boxUid, out Item removed);
             }
             // Decrement box amount to otherwise
             else
             {
                 box.Amount -= 1;
-                session.Send(ItemInventoryPacket.Update(boxUid, box.Amount));
+                InventoryController.Update(session, boxUid, box.Amount);
             }
 
             // Normally would look up which item to create, instead always add poisonous mushroom
             Item item = new Item(30001001);
-            InventoryController.Add(session, item);
+            InventoryController.Add(session, item, true);
         }
     }
 }

@@ -67,11 +67,12 @@ namespace MapleServer2.Tools
             int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
 
             // Simulate looting item
-            if (session.Player.Inventory.Add(item))
+            InventoryController.Add(session, item, true);
+            /*if (session.Player.Inventory.Add(item))
             {
                 session.Send(ItemInventoryPacket.Add(item));
                 session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-            }
+            }*/
         }
 
         // Example: "map -> return current map id"
