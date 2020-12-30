@@ -20,11 +20,11 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case 2: 
-                // Increment attribute point
+                    // Increment attribute point
                     HandleStatIncrement(session, packet);
                     break;
                 case 3:
-                // Reset attribute distribution
+                    // Reset attribute distribution
                     HandleResetStatDistribtuion(session, packet);
                     break;
             }
@@ -35,11 +35,14 @@ namespace MapleServer2.PacketHandlers.Game
             byte statTypeIndex = packet.ReadByte();
             StatPointPacket.AddStatPoint(session.Player, statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
+            session.Send(SendStatPacket.WriteCharacterStats(session.Player));
         }
+
         private void HandleResetStatDistribtuion(GameSession session, PacketReader packet)
         {
             StatPointPacket.ResetStatPoints(session.Player);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
+            session.Send(SendStatPacket.WriteCharacterStats(session.Player));
         }
     }
 }
