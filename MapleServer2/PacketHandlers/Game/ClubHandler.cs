@@ -62,7 +62,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             party.BroadcastPacketParty(ClubPacket.CreateClub(party, club));
 
-
         }
 
         private void HandleJoin(GameSession session, PacketReader packet)
@@ -104,8 +103,6 @@ namespace MapleServer2.PacketHandlers.Game
                     party.Leader.Session.Send(ChatPacket.Send(party.Leader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
                 }
             }
-
-            // TODO only send after invite accepted, broadcast to entire party?
         }
 
         private void HandleInvite(GameSession session, PacketReader packet)
