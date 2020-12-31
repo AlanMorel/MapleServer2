@@ -18,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
         private enum ClubMode : byte
         {
             Create = 0x1,
-            Join = 0x3, //for creating
+            Join = 0x3,
             Invite = 0x6,
             InviteResponse = 0x8,
         }
@@ -89,7 +89,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                // you are not leader but have responded to the invitation
                 int response = packet.ReadInt(); // 0 = accept, 76 (0x4C) = reject
 
                 if (response == 0)
