@@ -17,7 +17,6 @@ namespace MapleServer2.Packets
             UpdateList = 0x18,
             ClubCreated = 0xF,
             Join = 0x1E,
-
         }
 
         public static Packet UpdateClub(long clubId, string clubName)
@@ -153,7 +152,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte)ClubPacketMode.InviteResponse);
             pWriter.WriteLong(clubId);
             pWriter.WriteUnicodeString(clubName);
-            pWriter.WriteUnicodeString(""); //clubLeader
+            pWriter.WriteUnicodeString(clubLeader);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte(response); //00 = accept
             return pWriter;
