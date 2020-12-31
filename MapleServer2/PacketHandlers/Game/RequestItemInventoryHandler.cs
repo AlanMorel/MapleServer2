@@ -31,7 +31,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case RequestItemInventoryMode.Move:
-                    HandleMove(session, packet, inventory);
+                    HandleMove(session, packet);
                     break;
                 case RequestItemInventoryMode.Drop:
                     HandleDrop(session, packet, inventory);
@@ -48,66 +48,31 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleMove(GameSession session, PacketReader packet, Inventory inventory)
+        private void HandleMove(GameSession session, PacketReader packet)
         {
-            long uid = packet.ReadLong();
-            short dstSlot = packet.ReadShort();
-
-            Tuple<long, short> result = inventory.Move(uid, dstSlot);
-            if (result == null)
-            {
-                return;
-            }
-
-            session.Send(ItemInventoryPacket.Move(result.Item1, result.Item2, uid, dstSlot));
+            long uid = packet.ReadLong(); // Grabs incoming item packet uid
+            short dstSlot = packet.ReadShort(); // Grabs incoming item packet slot
+            InventoryController.MoveItem(session, uid, dstSlot);
         }
 
         private void HandleDrop(GameSession session, PacketReader packet, Inventory inventory)
         {
             // TODO: Make sure items are tradable?
             long uid = packet.ReadLong();
-            int amount = packet.ReadInt();
-            int remaining = inventory.Remove(uid, out Item droppedItem, amount);
-
-            if (remaining < 0)
-            {
-                return; // Removal failed
-            }
-
-            if (remaining > 0)
-            {
-                session.Send(ItemInventoryPacket.Update(uid, remaining));
-            }
-            else
-            {
-                session.Send(ItemInventoryPacket.Remove(uid));
-            }
-
-            session.FieldManager.AddItem(session, droppedItem);
+            int amount = packet.ReadInt(); // Grabs incoming item packet amount
+            InventoryController.DropItem(session, uid, amount, false);
         }
 
         private void HandleDropBound(GameSession session, PacketReader packet, Inventory inventory)
         {
             long uid = packet.ReadLong();
-
-            if (inventory.Remove(uid, out Item droppedItem) != 0)
-            {
-                return; // Removal from inventory failed
-            }
-
-            session.Send(ItemInventoryPacket.Remove(uid));
-
-            // Allow dropping bound items for now
-            session.FieldManager.AddItem(session, droppedItem);
+            InventoryController.DropItem(session, uid, 0, true);
         }
 
         private void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
         {
-            var tab = (InventoryTab)packet.ReadShort();
-            inventory.Sort(tab);
-
-            session.Send(ItemInventoryPacket.ResetTab(tab));
-            session.Send(ItemInventoryPacket.LoadItemsToTab(tab, inventory.GetItems(tab)));
+            InventoryTab tab = (InventoryTab)packet.ReadShort();
+            InventoryController.SortInventory(session, inventory, tab);
         }
     }
 }

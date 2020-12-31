@@ -126,7 +126,7 @@ namespace MapleServer2.Types
 
             short srcSlot = srcItem.Slot;
             // Move dstItem to srcSlot if removed
-            bool dstResult = RemoveInternal(srcItem.InventoryType, dstSlot, out Item dstItem);
+            bool dstResult = RemoveInternal(srcItem.InventoryTab, dstSlot, out Item dstItem);
             if (dstResult)
             {
                 dstItem.Slot = srcSlot;
@@ -162,15 +162,15 @@ namespace MapleServer2.Types
                 "Error adding an item that already exists");
             items[item.Uid] = item;
 
-            Debug.Assert(!GetSlots(item.InventoryType).ContainsKey(item.Slot),
+            Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot),
                 "Error adding item to slot that is already taken.");
-            GetSlots(item.InventoryType)[item.Slot] = item.Uid;
+            GetSlots(item.InventoryTab)[item.Slot] = item.Uid;
         }
 
         private bool RemoveInternal(long uid, out Item item)
         {
             return items.Remove(uid, out item)
-                   && GetSlots(item.InventoryType).Remove(item.Slot);
+                   && GetSlots(item.InventoryTab).Remove(item.Slot);
         }
 
         private bool RemoveInternal(InventoryTab tab, short slot, out Item item)
@@ -186,7 +186,8 @@ namespace MapleServer2.Types
 
         private bool SlotTaken(Item item, short slot = -1)
         {
-            return GetSlots(item.InventoryType).ContainsKey(slot < 0 ? item.Slot : slot);
+            Debug.WriteLine(item.InventoryTab);
+            return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
         }
 
         private Dictionary<short, long> GetSlots(InventoryTab tab)
