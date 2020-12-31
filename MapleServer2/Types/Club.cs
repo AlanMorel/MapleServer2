@@ -15,25 +15,15 @@ namespace MapleServer2.Types
         public bool Approval { get; set; } //Require approval before someone can join
         public Player Leader { get; set; }
         public int MaxMembers { get; set; }
-
-        //List of players and their session.
         public List<Player> Members { get; }
 
-        public Club(List<Player> cPlayers)
-        {
-            Id = GuidGenerator.Long();
-            MaxMembers = 10;
-            Leader = cPlayers.First();
-            Members = cPlayers;
-            Approval = true;
-        }
         public Club(Party party, string name)
         {
             Id = GuidGenerator.Int();
             Name = name;
             MaxMembers = 10;
             Leader = party.Leader;
-            Members = party.Members;
+            Members = party.Members; // TODO change from out of party
             Approval = false;
             Leader.ClubId = Id;
         }

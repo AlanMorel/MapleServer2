@@ -25,10 +25,8 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
             pWriter.WriteByte((byte)ClubPacketMode.UpdateClub);
 
-
             return pWriter;
         }
-
 
         public static Packet EstablishClub(Club club)
         {

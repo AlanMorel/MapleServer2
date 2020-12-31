@@ -116,7 +116,7 @@ namespace MapleServer2.PacketHandlers.Game
             long clubId = packet.ReadLong();
             string clubName = packet.ReadUnicodeString();
             string clubLeader = packet.ReadUnicodeString();
-            packet.ReadUnicodeString(); //playerName
+            packet.ReadUnicodeString(); //playerName. TODO: verify player name
             byte response = packet.ReadByte(); // 0 = accept
             session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
             //TODO handle response
