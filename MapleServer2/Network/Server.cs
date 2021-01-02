@@ -71,7 +71,7 @@ namespace MapleServer2.Network {
         }
 
         private void AcceptTcpClient(IAsyncResult result) {
-            var session = context.Resolve<T>();
+            T session = context.Resolve<T>();
             TcpClient client = listener.EndAcceptTcpClient(result);
             session.Init(client);
             session.OnPacket += router.OnPacket;

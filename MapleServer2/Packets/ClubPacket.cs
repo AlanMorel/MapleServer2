@@ -39,20 +39,22 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(club.Leader.AccountId);
             pWriter.WriteLong(club.Leader.CharacterId);
             pWriter.WriteUnicodeString(club.Leader.Name);
-            pWriter.WriteLong(); //unk
-            pWriter.WriteByte(0x2); //unk
-            pWriter.WriteLong(); //unk
-            pWriter.WriteLong(); //unk
-            pWriter.WriteByte((byte)club.Members.Count); //loop amount
+            pWriter.WriteLong(); // timestamp
+            pWriter.WriteByte(0x2); // 0x1 create, 0x2 update?
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteByte((byte)club.Members.Count);
 
             foreach (Player member in club.Members)
             {
+                // TODO convert this to a method to share with Create
                 pWriter.WriteByte(0x2);
                 pWriter.WriteLong(club.Id);
                 pWriter.WriteLong(member.AccountId);
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
-                pWriter.WriteByte(); //unk
+                pWriter.WriteByte();
                 pWriter.WriteInt(member.JobGroupId);
                 pWriter.WriteInt(member.JobId);
                 pWriter.WriteShort(member.Level);
@@ -60,17 +62,17 @@ namespace MapleServer2.Packets
                 pWriter.WriteShort(); // member.Channel
                 pWriter.WriteUnicodeString(member.ProfileUrl);
                 pWriter.WriteInt(); // member house mapId
-                pWriter.WriteInt(); // unk
-                pWriter.WriteInt(); // unk
+                pWriter.WriteInt();
+                pWriter.WriteInt();
                 pWriter.WriteLong(); // member house plot expiration timestamp
                 pWriter.WriteInt(); // combat trophy count
                 pWriter.WriteInt(); // adventure trophy count
                 pWriter.WriteInt(); // lifestyle trophy count
                 pWriter.WriteLong(); // joined timestamp
                 pWriter.WriteLong(); // current timestamp
-                pWriter.WriteByte(); // filler
+                pWriter.WriteByte();
             }
-            pWriter.WriteByte(0x1); //unk
+            pWriter.WriteByte(0x1);
             return pWriter;
         }
 
@@ -93,14 +95,15 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(party.Leader.CharacterId);
             pWriter.WriteUnicodeString(party.Leader.Name);
             pWriter.WriteLong(); // timestamp
-            pWriter.WriteByte(0x1); // all hail the magic boolean ;)
+            pWriter.WriteByte(0x1); // 0x1 create, 0x2 update?
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteLong();
-            pWriter.WriteByte((byte)party.Members.Count); //loop
+            pWriter.WriteByte((byte)party.Members.Count);
 
             foreach (Player member in party.Members)
             {
+                // TODO convert this to a method to share with UpdateClub
                 pWriter.WriteByte(0x2);
                 pWriter.WriteLong(club.Id);
                 pWriter.WriteLong(member.AccountId);
@@ -213,6 +216,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte)ClubPacketMode.ConfirmInvite);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Leader.Name);
+            // TODO use method used in the loop inside Create and UpdateClub
             pWriter.WriteByte(0x2); //unk
             pWriter.WriteLong(); //unk
             pWriter.WriteLong(other.AccountId);
