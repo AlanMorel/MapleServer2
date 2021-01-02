@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -105,9 +104,11 @@ namespace MapleServer2.PacketHandlers.Game
                     party.BroadcastPacketParty(ClubPacket.ConfirmCreate(club.Id));
                     club.Leader.Session.Send(ClubPacket.Join(session.Player, club));
                     club.Leader.Session.Send(ClubPacket.Establish(club));
+                    // TODO add member to club (club.AddMember(session.Player);)
                 }
                 else
                 {
+                    // TODO update to proper rejection packet
                     party.Leader.Session.Send(ChatPacket.Send(party.Leader, session.Player.Name + " declined the invitation.", ChatType.NoticeAlert2));
                 }
             }
@@ -129,6 +130,8 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+            
+            // TODO check that the club can fit more people, if it's at max members, return/leave error
 
             session.Send(ClubPacket.InviteSentReceipt(clubId, other));
             other.Session.Send(ClubPacket.Invite(club, other));
@@ -162,6 +165,7 @@ namespace MapleServer2.PacketHandlers.Game
                 other.Session.Send(ClubPacket.Join(session.Player, club));
                 other.Session.Send(ClubPacket.UpdateClub(club, invitee));
                 club.BroadcastPacketClub(ClubPacket.UpdatePlayerClubList(session.Player, club));
+                // TODO add member to club (club.AddMember(other);)
             }
             else
             {
@@ -200,6 +204,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Send(ClubPacket.LeaveClub(club));
                 club.BroadcastPacketClub(ClubPacket.LeaveNotice(club, session.Player));
+                // TODO remove member from club (club.RemoveMember(session.Player);)
             }
         }
 
@@ -231,6 +236,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             club.BroadcastPacketClub(ClubPacket.Rename(club, clubNewName));
+            // TODO rename club (club.SetName(clubNewName);)
         }
     }
 }
