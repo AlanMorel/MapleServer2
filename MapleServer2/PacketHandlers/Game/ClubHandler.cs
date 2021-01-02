@@ -94,10 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (club.Leader.CharacterId == session.Player.CharacterId)
             {
-                foreach (Player member in party.Members)
-                {
-                    party.BroadcastPacketParty(ClubPacket.UpdatePlayerClubList(session.Player, club));
-                }
+                party.BroadcastPacketParty(ClubPacket.UpdatePlayerClubList(session.Player, club));
             }
             else
             {
@@ -133,8 +130,8 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            session.Send(ClubPacket.InviteSentReceipt(clubId, other.Session.Player));
-            other.Session.Send(ClubPacket.Invite(club, other.Session.Player));
+            session.Send(ClubPacket.InviteSentReceipt(clubId, other));
+            other.Session.Send(ClubPacket.Invite(club, other));
         }
 
         private void HandleInviteResponse(GameSession session, PacketReader packet)
@@ -159,17 +156,17 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (response == 1)
             {
-                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(clubId, invitee, response));
-                club.BroadcastPacketClub(ClubPacket.ConfirmInvite(clubId, other.Session.Player, response, clubLeader));
-                other.Session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
+                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(club, invitee, response));
+                club.BroadcastPacketClub(ClubPacket.ConfirmInvite(club, other.Session.Player, response));
+                other.Session.Send(ClubPacket.InviteResponse(club, session.Player, response));
                 other.Session.Send(ClubPacket.Join(session.Player, club));
                 other.Session.Send(ClubPacket.UpdateClub(club, invitee));
                 club.BroadcastPacketClub(ClubPacket.UpdatePlayerClubList(session.Player, club));
             }
             else
             {
-                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(clubId, invitee, response));
-                other.Session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
+                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(club, invitee, response));
+                other.Session.Send(ClubPacket.InviteResponse(club, session.Player, response));
             }
         }
 
