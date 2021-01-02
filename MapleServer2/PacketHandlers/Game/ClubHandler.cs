@@ -217,6 +217,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            // TODO add buff effect packet
             club.Leader.Session.Send(ClubPacket.ChangeBuffReceipt(club, buffId));
             club.BroadcastPacketClub(ClubPacket.ChangeBuff(club, buffId));
         }
