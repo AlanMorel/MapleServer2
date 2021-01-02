@@ -19,8 +19,11 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Create = 0x1,
             Join = 0x3,
-            Invite = 0x6,
+            SendInvite = 0x6,
             InviteResponse = 0x8,
+            Leave = 0xA,
+            Buff = 0xD,
+            Rename = 0xE,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -35,11 +38,20 @@ namespace MapleServer2.PacketHandlers.Game
                 case ClubMode.Join:
                     HandleJoin(session, packet);
                     break;
-                case ClubMode.Invite:
-                    HandleInvite(session, packet);
+                case ClubMode.SendInvite:
+                    HandleSendInvite(session, packet);
                     break;
                 case ClubMode.InviteResponse:
                     HandleInviteResponse(session, packet);
+                    break;
+                case ClubMode.Leave:
+                    HandleLeave(session, packet);
+                    break;
+                case ClubMode.Buff:
+                    HandleBuff(session, packet);
+                    break;
+                case ClubMode.Rename:
+                    HandleRename(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -49,6 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleCreate(GameSession session, PacketReader packet)
         {
+            // TODO fix creating for a party of more than 2. Currently if a member does not respond, despite atleast one other member accepting, it does not get created.
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
             if (party == null)
             {
@@ -60,8 +73,7 @@ namespace MapleServer2.PacketHandlers.Game
             Club club = new Club(party, clubName);
             GameServer.ClubManager.AddClub(club);
 
-            party.BroadcastPacketParty(ClubPacket.CreateClub(party, club));
-
+            party.BroadcastPacketParty(ClubPacket.Create(party, club));
         }
 
         private void HandleJoin(GameSession session, PacketReader packet)
@@ -84,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 foreach (Player member in party.Members)
                 {
-                    party.BroadcastPacketParty(ClubPacket.UpdatePlayerClubList(member, club.Id));
+                    party.BroadcastPacketParty(ClubPacket.UpdatePlayerClubList(session.Player, club));
                 }
             }
             else
@@ -93,9 +105,9 @@ namespace MapleServer2.PacketHandlers.Game
 
                 if (response == 0)
                 {
-                    party.BroadcastPacketParty(ClubPacket.ClubCreated(club.Id));
+                    party.BroadcastPacketParty(ClubPacket.ConfirmCreate(club.Id));
                     club.Leader.Session.Send(ClubPacket.Join(session.Player, club));
-                    club.Leader.Session.Send(ClubPacket.EstablishClub(club));
+                    club.Leader.Session.Send(ClubPacket.Establish(club));
                 }
                 else
                 {
@@ -104,11 +116,25 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleInvite(GameSession session, PacketReader packet)
+        private void HandleSendInvite(GameSession session, PacketReader packet)
         {
             long clubId = packet.ReadLong();
             string invitee = packet.ReadUnicodeString();
-            session.Send(ClubPacket.InviteSentReceipt(clubId, invitee));
+
+            Player other = GameServer.Storage.GetPlayerByName(invitee);
+            if (other == null)
+            {
+                return;
+            }
+
+            Club club = GameServer.ClubManager.GetClubById(clubId);
+            if (club == null)
+            {
+                return;
+            }
+
+            session.Send(ClubPacket.InviteSentReceipt(clubId, other.Session.Player));
+            other.Session.Send(ClubPacket.Invite(club, other.Session.Player));
         }
 
         private void HandleInviteResponse(GameSession session, PacketReader packet)
@@ -116,10 +142,97 @@ namespace MapleServer2.PacketHandlers.Game
             long clubId = packet.ReadLong();
             string clubName = packet.ReadUnicodeString();
             string clubLeader = packet.ReadUnicodeString();
-            packet.ReadUnicodeString(); //playerName. TODO: verify player name
-            byte response = packet.ReadByte(); // 0 = accept
-            session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
-            //TODO handle response
+            string invitee = packet.ReadUnicodeString(); //playerName. TODO: verify player name
+            byte response = packet.ReadByte(); // 1 = accept
+
+            Club club = GameServer.ClubManager.GetClubById(clubId);
+            if (club == null)
+            {
+                return;
+            }
+
+            Player other = GameServer.Storage.GetPlayerByName(invitee);
+            if (other == null)
+            {
+                return;
+            }
+
+            if (response == 1)
+            {
+                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(clubId, invitee, response));
+                club.BroadcastPacketClub(ClubPacket.ConfirmInvite(clubId, other.Session.Player, response, clubLeader));
+                other.Session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
+                other.Session.Send(ClubPacket.Join(session.Player, club));
+                other.Session.Send(ClubPacket.UpdateClub(club, invitee));
+                club.BroadcastPacketClub(ClubPacket.UpdatePlayerClubList(session.Player, club));
+            }
+            else
+            {
+                club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(clubId, invitee, response));
+                other.Session.Send(ClubPacket.InviteResponse(clubId, clubName, clubLeader, session.Player, response));
+            }
+        }
+
+        private void HandleLeave(GameSession session, PacketReader packet)
+        {
+            long clubId = packet.ReadLong();
+
+            Club club = GameServer.ClubManager.GetClubById(clubId);
+            if (club == null)
+            {
+                return;
+            }
+
+            if (session.Player.CharacterId == club.Leader.CharacterId)
+            {
+                if (club.Members.Count < 2)
+                {
+                    // TODO fix disbanding
+                    club.BroadcastPacketClub(ClubPacket.Disband(club));
+                    club.BroadcastPacketClub(ClubPacket.UpdatePlayerClubList(session.Player, club));
+                }
+                else
+                {
+                    // TODO fix reassigning leader
+                    session.Send(ClubPacket.LeaveClub(club));
+                    club.BroadcastPacketClub(ClubPacket.LeaveNotice(club, session.Player));
+                    club.BroadcastPacketClub(ClubPacket.AssignNewLeader(session.Player, club));
+                }
+            }
+            else
+            {
+                session.Send(ClubPacket.LeaveClub(club));
+                club.BroadcastPacketClub(ClubPacket.LeaveNotice(club, session.Player));
+            }
+        }
+
+        private void HandleBuff(GameSession session, PacketReader packet)
+        {
+            long clubId = packet.ReadLong();
+            int buffId = packet.ReadInt();
+
+            Club club = GameServer.ClubManager.GetClubById(clubId);
+            if (club == null)
+            {
+                return;
+            }
+
+            club.Leader.Session.Send(ClubPacket.ChangeBuffReceipt(club, buffId));
+            club.BroadcastPacketClub(ClubPacket.ChangeBuff(club, buffId));
+        }
+
+        private void HandleRename(GameSession session, PacketReader packet)
+        {
+            long clubId = packet.ReadLong();
+            string clubNewName = packet.ReadUnicodeString();
+
+            Club club = GameServer.ClubManager.GetClubById(clubId);
+            if (club == null)
+            {
+                return;
+            }
+
+            club.BroadcastPacketClub(ClubPacket.Rename(club, clubNewName));
         }
     }
 }
