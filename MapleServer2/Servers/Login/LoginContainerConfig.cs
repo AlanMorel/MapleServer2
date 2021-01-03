@@ -3,9 +3,12 @@ using Autofac;
 using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 
-namespace MapleServer2.Servers.Login {
-    public static class LoginContainerConfig {
-        public static IContainer Configure() {
+namespace MapleServer2.Servers.Login
+{
+    public static class LoginContainerConfig
+    {
+        public static IContainer Configure()
+        {
             var builder = new ContainerBuilder();
             builder.RegisterLogger();
             builder.RegisterType<LoginServer>()

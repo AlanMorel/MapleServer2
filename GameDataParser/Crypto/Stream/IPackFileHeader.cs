@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using GameDataParser.Crypto.Common;
 
-namespace GameDataParser.Crypto.Stream {
-    public interface IPackFileHeader {
+namespace GameDataParser.Crypto.Stream
+{
+    public interface IPackFileHeader
+    {
         // Represents the format of the packed stream (MS2F/NS2F/etc)
         public PackVersion Version { get; }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -95,7 +95,7 @@ namespace MapleServer2.Packets
             if (true)
             {
                 PacketWriter appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte)player.Equips.Count); // num equips
+                appearanceBuffer.WriteByte((byte) player.Equips.Count); // num equips
                 foreach ((ItemSlot slot, Item equip) in player.Equips)
                 {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);

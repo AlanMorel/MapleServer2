@@ -27,7 +27,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            ClubMode mode = (ClubMode)packet.ReadByte();
+            ClubMode mode = (ClubMode) packet.ReadByte();
 
             switch (mode)
             {
@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            
+
             // TODO check that the club can fit more people, if it's at max members, return/leave error
 
             session.Send(ClubPacket.InviteSentReceipt(clubId, other));

@@ -4,8 +4,10 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
 
-namespace MapleServer2.Types {
-    public class Item {
+namespace MapleServer2.Types
+{
+    public class Item
+    {
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
         public int SlotMax { get; private set; }
@@ -47,7 +49,8 @@ namespace MapleServer2.Types {
 
         public ItemStats Stats;
 
-        public Item(int id) {
+        public Item(int id)
+        {
             this.Id = id;
             this.Uid = GuidGenerator.Long();
             this.InventoryTab = ItemMetadataStorage.GetTab(id);
@@ -61,7 +64,8 @@ namespace MapleServer2.Types {
         }
 
         // Make a copy of item
-        public Item(Item other) {
+        public Item(Item other)
+        {
             Id = other.Id;
             InventoryTab = other.InventoryTab;
             ItemSlot = other.ItemSlot;
@@ -91,8 +95,10 @@ namespace MapleServer2.Types {
             Stats = new ItemStats(other.Stats);
         }
 
-        public static Item Ear() {
-            return new Item(10500001) {
+        public static Item Ear()
+        {
+            return new Item(10500001)
+            {
                 Uid = 2754959794416496488,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
@@ -100,8 +106,10 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Item Hair() {
-            return new Item(10200148) {
+        public static Item Hair()
+        {
+            return new Item(10200148)
+            {
                 Uid = 2867972925711604442,
                 CreationTime = 1565575851,
                 Color = EquipColor.Custom(
@@ -116,8 +124,10 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Item Face() {
-            return new Item(10300004) {
+        public static Item Face()
+        {
+            return new Item(10300004)
+            {
                 Uid = 2754959794416496483,
                 CreationTime = 1558494660,
                 Color = EquipColor.Custom(
@@ -131,8 +141,10 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Item FaceDecoration() {
-            return new Item(10400000) {
+        public static Item FaceDecoration()
+        {
+            return new Item(10400000)
+            {
                 Uid = 2754959794416496484,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
@@ -141,7 +153,8 @@ namespace MapleServer2.Types {
             };
         }
 
-        public static Item TutorialBow(Player owner) {
+        public static Item TutorialBow(Player owner)
+        {
             // bow 15100216
             // [longsword]  Tairen Royal Longsword - 13200309
             // [shield] Tairen Royal Shield - 14100279
@@ -156,7 +169,8 @@ namespace MapleServer2.Types {
             // [blade] Tairen Royal Blade - 15400294
             // [knuckles] Tairen Royal Knuckles - 15500226
             // [orb] Tairen Royal Spirit - 15600228
-            return new Item(15100216) {
+            return new Item(15100216)
+            {
                 Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -168,7 +182,8 @@ namespace MapleServer2.Types {
                     0x13
                 ),
                 AppearanceFlag = 0x5,
-                Stats = new ItemStats {
+                Stats = new ItemStats
+                {
                     BasicAttributes = {
                         ItemStat.Of(Enums.ItemAttribute.CriticalRate, 12),
                         ItemStat.Of(Enums.ItemAttribute.MinWeaponAtk, 15),
@@ -179,8 +194,10 @@ namespace MapleServer2.Types {
             };
         }
 
-        public bool TrySplit(int amount, out Item splitItem) {
-            if (this.Amount <= amount) {
+        public bool TrySplit(int amount, out Item splitItem)
+        {
+            if (this.Amount <= amount)
+            {
                 splitItem = null;
                 return false;
             }

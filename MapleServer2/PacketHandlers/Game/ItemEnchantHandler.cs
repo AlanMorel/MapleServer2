@@ -5,16 +5,20 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class ItemEnchantHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class ItemEnchantHandler : GamePacketHandler
+    {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
 
         public ItemEnchantHandler(ILogger<ItemEnchantHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             byte function = packet.ReadByte();
 
-            switch (function) {
+            switch (function)
+            {
                 case 0: // Sent when opening up enchant ui
                     break;
                 case 1:
@@ -29,31 +33,38 @@ namespace MapleServer2.PacketHandlers.Game {
             }
         }
 
-        private void HandleBeginEnchant(GameSession session, PacketReader packet) {
+        private void HandleBeginEnchant(GameSession session, PacketReader packet)
+        {
             byte type = packet.ReadByte();
             long itemUid = packet.ReadLong();
 
-            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            {
                 session.Send(ItemEnchantPacket.BeginEnchant(type, item));
             }
         }
 
-        private void HandleOpheliaEnchant(GameSession session, PacketReader packet) {
+        private void HandleOpheliaEnchant(GameSession session, PacketReader packet)
+        {
             long itemUid = packet.ReadLong();
 
-            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            {
                 item.Enchants += 5;
                 item.Charges += 10;
                 session.Send(ItemEnchantPacket.EnchantResult(item));
             }
         }
 
-        private void HandlePeachyEnchant(GameSession session, PacketReader packet) {
+        private void HandlePeachyEnchant(GameSession session, PacketReader packet)
+        {
             long itemUid = packet.ReadLong();
 
-            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item)) {
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            {
                 item.EnchantExp += 5000;
-                if (item.EnchantExp >= 10000) {
+                if (item.EnchantExp >= 10000)
+                {
                     item.EnchantExp %= 10000;
                     item.Enchants++;
                 }

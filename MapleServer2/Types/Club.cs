@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Approval = false;
             Leader = party.Leader;
             MaxMembers = 10;
-            Members = new List<Player>{ Leader };
+            Members = new List<Player> { Leader };
             Leader.ClubId = Id;
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace MapleServer2.Tools
 {
