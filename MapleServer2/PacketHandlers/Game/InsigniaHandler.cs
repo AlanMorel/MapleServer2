@@ -16,7 +16,8 @@ namespace MapleServer2.PacketHandlers.Game
         {
             short insigniaId = packet.ReadShort();
 
-            if (insigniaId < 0) {
+            if (insigniaId < 0)
+            {
                 return;
             }
 

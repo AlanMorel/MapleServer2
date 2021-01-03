@@ -1,19 +1,23 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class CharacterListPacket {
+namespace MapleServer2.Packets
+{
+    public static class CharacterListPacket
+    {
 
         // TODO: Load real data
-        public static Packet AddEntries(List<Player> players) {
+        public static Packet AddEntries(List<Player> players)
+        {
             var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x00)
-                .WriteByte((byte)players.Count); // CharCount
-            foreach (Player player in players) {
+                .WriteByte((byte) players.Count); // CharCount
+            foreach (Player player in players)
+            {
                 pWriter.WriteCharacterEntry(player);
             }
 
@@ -21,7 +25,8 @@ namespace MapleServer2.Packets {
         }
 
         // Sent after creating a character to append to list
-        public static Packet AppendEntry(Player player) {
+        public static Packet AppendEntry(Player player)
+        {
             var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x01);
             WriteCharacterEntry(pWriter, player);
@@ -29,26 +34,30 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet SetMax(int unlocked, int total) {
+        public static Packet SetMax(int unlocked, int total)
+        {
             return PacketWriter.Of(SendOp.CHAR_MAX_COUNT)
                 .WriteInt(unlocked)
                 .WriteInt(total);
         }
 
-        private static void WriteCharacterEntry(this PacketWriter pWriter, Player player) {
+        private static void WriteCharacterEntry(this PacketWriter pWriter, Player player)
+        {
             WriteCharacter(player, pWriter);
 
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
-            pWriter.WriteByte((byte)player.Equips.Count); // num equips
-            foreach ((ItemSlot slot, Item equip) in player.Equips) {
+            pWriter.WriteByte((byte) player.Equips.Count); // num equips
+            foreach ((ItemSlot slot, Item equip) in player.Equips)
+            {
                 WriteEquip(slot, equip, pWriter);
             }
 
             byte badgeCount = 0;
             pWriter.WriteByte(badgeCount);
-            for (int i = 0; i < badgeCount; i++) {
+            for (int i = 0; i < badgeCount; i++)
+            {
                 pWriter.WriteByte();
 
                 pWriter.WriteInt(); // BRANCH HERE if Badge
@@ -59,12 +68,14 @@ namespace MapleServer2.Packets {
 
             var boolValue = false;
             pWriter.WriteBool(boolValue);
-            if (boolValue) {
+            if (boolValue)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteLong();
                 var otherBoolValue = true;
                 pWriter.WriteBool(otherBoolValue);
-                if (otherBoolValue) {
+                if (otherBoolValue)
+                {
                     pWriter.WriteInt();
                     pWriter.WriteLong();
                     pWriter.WriteUnicodeString("abc");
@@ -73,7 +84,8 @@ namespace MapleServer2.Packets {
             }
         }
 
-        public static void WriteCharacter(Player player, PacketWriter pWriter) {
+        public static void WriteCharacter(Player player, PacketWriter pWriter)
+        {
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
@@ -100,7 +112,8 @@ namespace MapleServer2.Packets {
             pWriter.WriteInt();
             pWriter.Write(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);
-            foreach (int trophyCount in player.Trophy) {
+            foreach (int trophyCount in player.Trophy)
+            {
                 pWriter.WriteInt(trophyCount);
             }
 
@@ -112,16 +125,19 @@ namespace MapleServer2.Packets {
 
             byte clubCount = 0;
             pWriter.WriteByte(clubCount); // # Clubs
-            for (int i = 0; i < clubCount; i++) {
+            for (int i = 0; i < clubCount; i++)
+            {
                 bool clubBool = true;
                 pWriter.WriteBool(clubBool);
-                if (clubBool) {
+                if (clubBool)
+                {
                     pWriter.WriteLong();
                     pWriter.WriteUnicodeString("club name");
                 }
             }
             pWriter.WriteByte();
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 12; i++)
+            {
                 pWriter.WriteInt(); // ???
             }
 
@@ -135,7 +151,8 @@ namespace MapleServer2.Packets {
 
             int countA = 0;
             pWriter.WriteInt(countA);
-            for (int i = 0; i < countA; i++) {
+            for (int i = 0; i < countA; i++)
+            {
                 pWriter.WriteLong();
             }
 
@@ -150,13 +167,15 @@ namespace MapleServer2.Packets {
 
             int countB = 0;
             pWriter.WriteInt(countB);
-            for (int i = 0; i < countB; i++) {
+            for (int i = 0; i < countB; i++)
+            {
                 pWriter.WriteLong();
             }
 
             int countC = 0;
             pWriter.WriteInt(countC);
-            for (int i = 0; i < countC; i++) {
+            for (int i = 0; i < countC; i++)
+            {
                 pWriter.WriteLong();
             }
 
@@ -165,7 +184,8 @@ namespace MapleServer2.Packets {
         }
 
         // Note, the client actually uses item id to determine type
-        public static void WriteEquip(ItemSlot slot, Item item, PacketWriter pWriter) {
+        public static void WriteEquip(ItemSlot slot, Item item, PacketWriter pWriter)
+        {
             pWriter.WriteInt(item.Id)
                 .WriteLong(item.Uid)
                 .WriteUnicodeString(slot.ToString())
@@ -173,19 +193,22 @@ namespace MapleServer2.Packets {
                 .WriteItem(item);
         }
 
-        public static void WriteBadge(PacketWriter pWriter) {
+        public static void WriteBadge(PacketWriter pWriter)
+        {
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteItem(new Item(70100000));
         }
 
-        public static Packet StartList() {
+        public static Packet StartList()
+        {
             return PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x03);
         }
 
         // This only needs to be sent if char count > 0
-        public static Packet EndList() {
+        public static Packet EndList()
+        {
             return PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x04)
                 .WriteBool(false);

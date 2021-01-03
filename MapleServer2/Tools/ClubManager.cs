@@ -31,8 +31,8 @@ namespace MapleServer2.Tools
         public Club GetClubByLeader(Player leader)
         {
             return (from entry in clubList
-                where entry.Value.Leader.CharacterId == leader.CharacterId
-                select entry.Value).FirstOrDefault();
+                    where entry.Value.Leader.CharacterId == leader.CharacterId
+                    select entry.Value).FirstOrDefault();
         }
     }
 }

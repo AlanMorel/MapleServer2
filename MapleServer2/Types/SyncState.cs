@@ -1,8 +1,10 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Enums;
 
-namespace MapleServer2.Types {
-    public class SyncState {
+namespace MapleServer2.Types
+{
+    public class SyncState
+    {
         public byte Animation1;
         public byte Animation2;
         public SyncStateFlag Flag = SyncStateFlag.None;

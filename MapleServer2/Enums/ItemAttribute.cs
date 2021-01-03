@@ -1,5 +1,7 @@
-﻿namespace MapleServer2.Enums {
-    public enum ItemAttribute : short {
+﻿namespace MapleServer2.Enums
+{
+    public enum ItemAttribute : short
+    {
         Strength = 0,
         Dexterity = 1,
         Intelligence = 2,

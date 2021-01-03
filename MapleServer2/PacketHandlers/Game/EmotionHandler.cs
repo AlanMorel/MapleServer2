@@ -3,13 +3,16 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game {
-    public class EmotionHandler : GamePacketHandler {
+namespace MapleServer2.PacketHandlers.Game
+{
+    public class EmotionHandler : GamePacketHandler
+    {
         public override RecvOp OpCode => RecvOp.EMOTION;
 
         public EmotionHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet) {
+        public override void Handle(GameSession session, PacketReader packet)
+        {
             byte function = packet.ReadByte();
             packet.ReadInt(); // ??
             string emotion = packet.ReadUnicodeString();

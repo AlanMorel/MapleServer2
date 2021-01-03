@@ -4,9 +4,12 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets {
-    public static class FieldObjectPacket {
-        public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer) {
+namespace MapleServer2.Packets
+{
+    public static class FieldObjectPacket
+    {
+        public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer)
+        {
             Player player = fieldPlayer.Value;
             var pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x03)
@@ -27,47 +30,57 @@ namespace MapleServer2.Packets {
                 .WriteUnicodeString(player.HomeName)
                 .WriteInt()
                 .WriteShort();
-            foreach (int trophyCount in player.Trophy) {
+            foreach (int trophyCount in player.Trophy)
+            {
                 pWriter.WriteInt(trophyCount);
             }
 
             return pWriter;
         }
 
-        public static Packet UpdatePlayer(IFieldObject<Player> player) {
+        public static Packet UpdatePlayer(IFieldObject<Player> player)
+        {
             FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
             var pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x05)
                 .WriteInt(player.ObjectId)
-                .WriteByte((byte)flag);
+                .WriteByte((byte) flag);
 
-            if (flag.HasFlag(FieldObjectUpdate.Type1)) {
+            if (flag.HasFlag(FieldObjectUpdate.Type1))
+            {
                 pWriter.WriteByte();
             }
-            if (flag.HasFlag(FieldObjectUpdate.Move)) {
+            if (flag.HasFlag(FieldObjectUpdate.Move))
+            {
                 pWriter.Write(player.Coord);
             }
-            if (flag.HasFlag(FieldObjectUpdate.Type3)) {
+            if (flag.HasFlag(FieldObjectUpdate.Type3))
+            {
                 pWriter.WriteShort();
             }
-            if (flag.HasFlag(FieldObjectUpdate.Type4)) {
+            if (flag.HasFlag(FieldObjectUpdate.Type4))
+            {
                 pWriter.WriteShort()
                     .WriteInt();
             }
-            if (flag.HasFlag(FieldObjectUpdate.Type5)) {
+            if (flag.HasFlag(FieldObjectUpdate.Type5))
+            {
                 pWriter.WriteUnicodeString("Unknown");
             }
-            if (flag.HasFlag(FieldObjectUpdate.Type6)) {
+            if (flag.HasFlag(FieldObjectUpdate.Type6))
+            {
                 pWriter.WriteInt();
             }
-            if (flag.HasFlag(FieldObjectUpdate.Animate)) {
+            if (flag.HasFlag(FieldObjectUpdate.Animate))
+            {
                 pWriter.WriteShort(player.Value.Animation);
             }
 
             return pWriter;
         }
 
-        public static Packet LoadNpc(IFieldObject<Npc> npc) {
+        public static Packet LoadNpc(IFieldObject<Npc> npc)
+        {
             return PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x6)
                 .WriteInt(npc.ObjectId)
@@ -77,7 +90,8 @@ namespace MapleServer2.Packets {
                 .Write(npc.Coord);
         }
 
-        public static Packet ControlNpc(IFieldObject<Npc> npc) {
+        public static Packet ControlNpc(IFieldObject<Npc> npc)
+        {
             var npcBuffer = new PacketWriter()
                 .WriteInt(npc.ObjectId)
                 .WriteByte()
@@ -96,7 +110,8 @@ namespace MapleServer2.Packets {
                 .Write(npcBuffer.ToArray());
         }
 
-        public static Packet MoveNpc(int objectId, CoordF coord) {
+        public static Packet MoveNpc(int objectId, CoordF coord)
+        {
             return PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x05)
                 .WriteInt(objectId)
@@ -104,7 +119,8 @@ namespace MapleServer2.Packets {
                 .Write(coord);
         }
 
-        public static Packet SetStats(IFieldObject<Player> player) {
+        public static Packet SetStats(IFieldObject<Player> player)
+        {
             return PacketWriter.Of(SendOp.STAT)
                 .WriteInt(player.ObjectId)
                 .WriteByte()
@@ -113,7 +129,8 @@ namespace MapleServer2.Packets {
         }
     }
 
-    public class FieldPlayerUpdateData {
+    public class FieldPlayerUpdateData
+    {
         public FieldObjectUpdate Flags;
         public CoordF Coord;
         public short Animation;

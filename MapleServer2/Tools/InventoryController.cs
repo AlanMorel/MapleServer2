@@ -1,9 +1,9 @@
-﻿using MapleServer2.Types;
+﻿using System;
+using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
-using Maple2Storage.Types;
-using System;
+using MapleServer2.Types;
 
 public class InventoryController
 {

@@ -53,7 +53,7 @@ namespace MapleServer2.Types
             if (item.Slot >= 0)
             {
                 if (!SlotTaken(item, item.Slot))
-                {                 
+                {
                     AddInternal(item);
                     return true;
                 }
@@ -192,7 +192,7 @@ namespace MapleServer2.Types
 
         private Dictionary<short, long> GetSlots(InventoryTab tab)
         {
-            return slotMaps[(int)tab];
+            return slotMaps[(int) tab];
         }
     }
 }
