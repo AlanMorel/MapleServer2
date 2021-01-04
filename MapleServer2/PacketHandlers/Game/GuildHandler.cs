@@ -18,10 +18,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Create = 0x1,
             CheckIn = 0xF,
-            EnterHouse = 0x64,
             GuildWindow = 0x54,
             List = 0x55,
             GuildNotice = 0x3E,
+            EnterHouse = 0x64,
             GuildDonate = 0x6E,
         }
 
@@ -61,19 +61,26 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            session.Player.Mesos -= 2000;
+            if (session.Player.Mesos >= 2000)
+            {
+                session.Player.Mesos -= 2000;
 
-            session.Send(MesosPacket.UpdateMesos(session));
-            session.Send(GuildPacket.Invite(session.Player, guildName));
-            session.Send(GuildPacket.Create(guildName));
-            session.Send(GuildPacket.UpdateGuild(session, guildName));
-            session.Send(GuildPacket.Create2(session.Player, guildName));
-            session.Send(GuildPacket.Create3(session.Player, guildName));
+                session.Send(MesosPacket.UpdateMesos(session));
+                session.Send(GuildPacket.Invite(session.Player, guildName));
+                session.Send(GuildPacket.Create(guildName));
+                session.Send(GuildPacket.UpdateGuild(session, guildName));
+                session.Send(GuildPacket.Create2(session.Player, guildName));
+                session.Send(GuildPacket.Create3(session.Player, guildName));
 
-            Guild newGuild = new(guildName, new List<Player> { session.Player });
-            GameServer.GuildManager.AddGuild(newGuild);
+                Guild newGuild = new(guildName, new List<Player> { session.Player });
+                GameServer.GuildManager.AddGuild(newGuild);
+            }
+            else
+            {
+                // TODO: Reject packets
+                return;
+            }
 
-            newGuild.AddMember(session.Player);
         }
 
         private void HandleCheckIn(GameSession session, PacketReader packet)
@@ -93,11 +100,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.GuildWindow());
         }
 
-        private void HandleEnterHouse(GameSession session, PacketReader packet)
-        {
-            // TODO
-        }
-
         private void HandleList(GameSession session, PacketReader packet)
         {
             session.Send(GuildPacket.List());
@@ -110,6 +112,11 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(GuildPacket.GuildNoticeConfirm(notice));
             session.Send(GuildPacket.GuildNoticeChange(session.Player, notice)); // TODO: Change to Broadcast to Guild
+        }
+
+        private void HandleEnterHouse(GameSession session, PacketReader packet)
+        {
+            // TODO
         }
 
         private void HandleGuildDonate(GameSession session, PacketReader packet)

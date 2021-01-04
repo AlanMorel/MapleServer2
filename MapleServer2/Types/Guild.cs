@@ -10,6 +10,7 @@ namespace MapleServer2.Types
 {
     public class Guild
     {
+        // TODO: Add ranks, rank names, guildExp, guildFunds, Member contribution
         public long Id { get; }
         public string Name { get; set; }
         public bool Approval { get; set; } //Require approval before someone can join
@@ -25,6 +26,7 @@ namespace MapleServer2.Types
             Leader = gPlayers.First();
             Members = gPlayers;
             Approval = false;
+            Members.Add(Leader);
         }
 
         public void AddMember(Player player)
