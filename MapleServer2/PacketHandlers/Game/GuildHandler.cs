@@ -18,9 +18,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Create = 0x1,
             CheckIn = 0xF,
+            GuildNotice = 0x3E,
             GuildWindow = 0x54,
             List = 0x55,
-            GuildNotice = 0x3E,
             EnterHouse = 0x64,
             GuildDonate = 0x6E,
         }
@@ -61,7 +61,12 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.Mesos >= 2000)
+            if (session.Player.Mesos < 2000)
+            {
+                // TODO: Reject packets
+                return;
+            }
+            else
             {
                 session.Player.Mesos -= 2000;
 
@@ -74,11 +79,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 Guild newGuild = new(guildName, new List<Player> { session.Player });
                 GameServer.GuildManager.AddGuild(newGuild);
-            }
-            else
-            {
-                // TODO: Reject packets
-                return;
+
             }
 
         }
@@ -95,6 +96,15 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.UpdatePlayerContribution(session.Player));
         }
 
+        private void HandleGuildNotice(GameSession session, PacketReader packet)
+        {
+            packet.ReadByte();
+            string notice = packet.ReadUnicodeString();
+
+            session.Send(GuildPacket.GuildNoticeConfirm(notice));
+            session.Send(GuildPacket.GuildNoticeChange(session.Player, notice)); // TODO: Change to Broadcast to Guild
+        }
+
         private void HandleGuildWindowRequest(GameSession session, PacketReader packet)
         {
             session.Send(GuildPacket.GuildWindow());
@@ -103,15 +113,6 @@ namespace MapleServer2.PacketHandlers.Game
         private void HandleList(GameSession session, PacketReader packet)
         {
             session.Send(GuildPacket.List());
-        }
-
-        private void HandleGuildNotice(GameSession session, PacketReader packet)
-        {
-            packet.ReadByte();
-            string notice = packet.ReadUnicodeString();
-
-            session.Send(GuildPacket.GuildNoticeConfirm(notice));
-            session.Send(GuildPacket.GuildNoticeChange(session.Player, notice)); // TODO: Change to Broadcast to Guild
         }
 
         private void HandleEnterHouse(GameSession session, PacketReader packet)
