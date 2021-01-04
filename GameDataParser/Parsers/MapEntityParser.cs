@@ -19,22 +19,24 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             Dictionary<string, string> mapObjects = new Dictionary<string, string>();
-
             foreach (PackFileEntry entry in entries)
             {
                 if (!entry.Name.StartsWith("flat/presets/presets object/"))
+                {
                     continue;
+                }
 
                 string objStr = entry.Name.ToLower();
 
                 if (string.IsNullOrEmpty(objStr))
+                {
                     continue;
+                }
                 if (mapObjects.ContainsKey(objStr))
                 {
                     Console.WriteLine($"Duplicate {entry.Name} was already added as {mapObjects[objStr]}");
                     continue;
                 }
-
 
                 XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
 
@@ -104,8 +106,9 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-                        CoordB coord = ParseCoordB(Regex.Match(nameCoord, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+").Value);
-                        metadata.Objects.Add(new MapObject(nameCoord, coord, int.Parse(mapObjects[modelName])));
+
+                        CoordB coord = ParseCoordB(coordMatch.Value);
+                        metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName])));
                     }
                 }
 

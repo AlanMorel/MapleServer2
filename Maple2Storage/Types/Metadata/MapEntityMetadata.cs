@@ -76,28 +76,25 @@ namespace Maple2Storage.Types.Metadata
     public class MapObject
     {
         [XmlElement(Order = 1)]
-        public readonly string NameCoord;
-        [XmlElement(Order = 2)]
         public readonly CoordB Coord;
-        [XmlElement(Order = 3)]
+        [XmlElement(Order = 2)]
         public readonly int WeaponId;
 
         // Required for deserialization
         public MapObject() { }
 
-        public MapObject(string nameCoord, CoordB coord, int weaponId)
+        public MapObject(CoordB coord, int weaponId)
         {
-            this.NameCoord = nameCoord;
             this.Coord = coord;
             this.WeaponId = weaponId;
         }
 
         public override string ToString() =>
-            $"MapObject(NameCoord:{NameCoord},Coord:{Coord},WeaponId:{WeaponId})";
+            $"MapObject(Coord:{Coord},WeaponId:{WeaponId})";
 
         protected bool Equals(MapObject other)
         {
-            return NameCoord.Equals(other.NameCoord) && Coord.Equals(other.Coord) && WeaponId == other.WeaponId;
+            return Coord.Equals(other.Coord) && WeaponId == other.WeaponId;
         }
 
         public override bool Equals(object obj)
@@ -113,7 +110,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(NameCoord, Coord, WeaponId);
+            return HashCode.Combine(Coord, WeaponId);
         }
 
         public static bool operator ==(MapObject left, MapObject right)
