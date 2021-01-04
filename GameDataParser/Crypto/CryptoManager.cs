@@ -63,8 +63,7 @@ namespace GameDataParser.Crypto
         }
 
         // Decryption Routine: Base64 -> AES -> Zlib
-        private static byte[] Decrypt(PackVersion version, uint size, uint sizeCompressed, Encryption flag,
-            byte[] src)
+        private static byte[] Decrypt(PackVersion version, uint size, uint sizeCompressed, Encryption flag, byte[] src)
         {
             if (flag.HasFlag(Encryption.Aes))
             {
@@ -88,8 +87,7 @@ namespace GameDataParser.Crypto
         }
 
         // Encryption Routine: Zlib -> AES -> Base64
-        public static byte[] Encrypt(PackVersion version, byte[] src, Encryption flag, out uint size,
-                out uint sizeCompressed, out uint sizeEncoded)
+        public static byte[] Encrypt(PackVersion version, byte[] src, Encryption flag, out uint size, out uint sizeCompressed, out uint sizeEncoded)
         {
             byte[] pEncrypted;
             if (flag.HasFlag(Encryption.Zlib))
