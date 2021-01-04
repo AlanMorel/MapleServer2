@@ -1,0 +1,3 @@
+﻿Generated model file: MS2DBModel.edmx.
+Loading metadata from the database took 00:00:00.2892736.
+Generating the model took 00:00:00.2762191.
