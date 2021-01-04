@@ -1,4 +1,5 @@
 ﻿using System;
+using DatabaseHandler;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
@@ -30,17 +31,21 @@ namespace MapleServer2.PacketHandlers.Login {
 
         public override void Handle(LoginSession session, PacketReader packet) {
             byte mode = packet.ReadByte();
-            string username = packet.ReadUnicodeString();
-            string pass = packet.ReadUnicodeString();
+            DatabaseController DB = new DatabaseController();
+            Account User = DB.GetAccountByUser(packet.ReadUnicodeString());
+
+            string username = User.Username;
+            string pass = User.Password;
 
             logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
 
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass)) {
+               
                 // send error / account credentials not found
             }
 
-            session.AccountId = AccountStorage.DEFAULT_ACCOUNT_ID;
+            session.AccountId = User.Account_ID;
 
             switch (mode) {
                 case 1:
