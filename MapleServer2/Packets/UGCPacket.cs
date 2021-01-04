@@ -1,9 +1,12 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets {
-    public static class UgcPacket {
-        public static Packet SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na") {
+namespace MapleServer2.Packets
+{
+    public static class UgcPacket
+    {
+        public static Packet SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11); // Function
             pWriter.WriteUnicodeString(unknownEndpoint); // Serves some random irrq.aspx
@@ -14,12 +17,14 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown0() {
+        public static Packet Unknown0()
+        {
             // SO MANY CASES...
             return null;
         }
 
-        public static Packet Unknown4() {
+        public static Packet Unknown4()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x04);
             pWriter.WriteByte();
@@ -30,7 +35,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown7() {
+        public static Packet Unknown7()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x07);
             pWriter.WriteLong();
@@ -43,7 +49,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown8() {
+        public static Packet Unknown8()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x08);
             SharedSubUGC2(pWriter);
@@ -51,19 +58,22 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown9() {
+        public static Packet Unknown9()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x09);
             pWriter.WriteLong();
             pWriter.WriteInt(); // counter for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 pWriter.WriteLong();
             }
 
             return pWriter;
         }
 
-        public static Packet Unknown11() {
+        public static Packet Unknown11()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x0B);
             pWriter.WriteInt();
@@ -74,7 +84,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown13To15() {
+        public static Packet Unknown13To15()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x0D); // Also 0x0E, 0x0F
             pWriter.WriteInt();
@@ -92,7 +103,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown16() {
+        public static Packet Unknown16()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x10);
             pWriter.WriteInt();
@@ -107,7 +119,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown17() {
+        public static Packet Unknown17()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11);
             pWriter.WriteUnicodeString("WstrA");
@@ -118,7 +131,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown18() {
+        public static Packet Unknown18()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x12);
             // sub1
@@ -141,7 +155,8 @@ namespace MapleServer2.Packets {
 
             // One some random condition jump to this block
             pWriter.WriteInt(); // counter for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteByte();
                 // If some condition (can't read)
@@ -149,19 +164,22 @@ namespace MapleServer2.Packets {
                 // EndIf
             }
             pWriter.WriteInt(); // counter for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 SharedSubUGC2(pWriter);
             }
 
             return pWriter;
         }
 
-        public static Packet Unknown20() {
+        public static Packet Unknown20()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x14);
             pWriter.WriteLong();
             pWriter.WriteInt(); // some count for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteInt();
                 pWriter.WriteLong();
@@ -173,11 +191,13 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown21() {
+        public static Packet Unknown21()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x15);
             pWriter.WriteInt(); // some count for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteInt();
             }
@@ -185,7 +205,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Unknown22() {
+        public static Packet Unknown22()
+        {
             var pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x16);
             pWriter.WriteInt();
@@ -193,7 +214,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        private static void SharedSub661B00(PacketWriter pWriter) {
+        private static void SharedSub661B00(PacketWriter pWriter)
+        {
             pWriter.WriteLong();
             pWriter.WriteUnicodeString("WstrA");
             pWriter.WriteUnicodeString("StrW");
@@ -207,16 +229,19 @@ namespace MapleServer2.Packets {
             pWriter.WriteByte();
         }
 
-        private static void SharedSubUGC(PacketWriter pWriter) {
+        private static void SharedSubUGC(PacketWriter pWriter)
+        {
             pWriter.WriteByte();
             pWriter.WriteUnicodeString("WstrA");
             // unknown call to invalid memory using packet
         }
 
-        private static void SharedSubUGC2(PacketWriter pWriter) {
+        private static void SharedSubUGC2(PacketWriter pWriter)
+        {
             pWriter.WriteLong();
             pWriter.WriteInt(); // counter for loop
-            for (int i = 0; i < 0; i++) {
+            for (int i = 0; i < 0; i++)
+            {
                 pWriter.WriteLong();
                 pWriter.WriteUnicodeString("StrW");
                 // unknown call to invalid memory using packet

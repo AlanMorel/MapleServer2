@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MapleServer2.Types;
 
-namespace MapleServer2.Data {
+namespace MapleServer2.Data
+{
     // Class for retrieving and storing account data
-    public static class AccountStorage {
+    public static class AccountStorage
+    {
         // Temp account and character ids
         public const long DEFAULT_ACCOUNT_ID = 1;
 
@@ -12,7 +14,8 @@ namespace MapleServer2.Data {
         public static readonly Dictionary<long, List<long>> AccountCharacters = new();
         public static readonly Dictionary<long, Player> Characters = new();
 
-        static AccountStorage() {
+        static AccountStorage()
+        {
             // Add temp characters
             long defaultCharId1 = 1;
             long defaultCharId2 = 2;
@@ -24,22 +27,26 @@ namespace MapleServer2.Data {
         }
 
         // Retrieves a list of character ids for an account
-        public static List<long> ListCharacters(long accountId) {
+        public static List<long> ListCharacters(long accountId)
+        {
             return AccountCharacters.GetValueOrDefault(accountId, new List<long>());
         }
 
         // Adds new character
-        public static void AddCharacter(Player data) {
+        public static void AddCharacter(Player data)
+        {
             Characters.Add(data.CharacterId, data);
         }
 
         // Retrieves a specific character for an account
-        public static Player GetCharacter(long characterId) {
+        public static Player GetCharacter(long characterId)
+        {
             return Characters.GetValueOrDefault(characterId);
         }
 
         // Updates a character
-        public static void UpdateCharacter(Player data) {
+        public static void UpdateCharacter(Player data)
+        {
             Characters.Remove(data.CharacterId);
             Characters.Add(data.CharacterId, data);
         }

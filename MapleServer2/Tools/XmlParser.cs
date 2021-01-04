@@ -1,6 +1,6 @@
-using System;
-using System.Xml;
+﻿using System;
 using System.Collections;
+using System.Xml;
 using MapleServer2.Types;
 
 namespace MapleServer2.Tools
@@ -18,7 +18,7 @@ namespace MapleServer2.Tools
             XmlAttribute oAttr = xmlDoc.DocumentElement.Attributes["order"];
             int[] order = oAttr != null ? Array.ConvertAll(oAttr.Value.Split(","), int.Parse) : null;
             XmlAttribute splitAttr = xmlDoc.DocumentElement.Attributes["split"];
-            byte split  = splitAttr != null ? byte.Parse(splitAttr.Value) : (byte) 8;
+            byte split = splitAttr != null ? byte.Parse(splitAttr.Value) : (byte) 8;
 
             // Create new skill tab with name and skill order
             SkillTab skillTab = new SkillTab(name, order, split);
@@ -28,7 +28,7 @@ namespace MapleServer2.Tools
             IEnumerator ienum = skills.GetEnumerator();
             while (ienum.MoveNext())
             {
-                XmlNode currentNode = (XmlNode)ienum.Current;
+                XmlNode currentNode = (XmlNode) ienum.Current;
 
                 // Skill id
                 int id = int.Parse(currentNode.Attributes["id"].Value);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
 
-namespace MaplePacketLib2.Tools {
-    public static class HexEncoding {
+namespace MaplePacketLib2.Tools
+{
+    public static class HexEncoding
+    {
         private static int seed = Environment.TickCount;
 
         private static readonly ThreadLocal<Random> rng =
@@ -42,114 +44,145 @@ namespace MaplePacketLib2.Tools {
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
         };
 
-        public static bool IsHexDigit(this char c) {
+        public static bool IsHexDigit(this char c)
+        {
             return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
         }
 
-        public static unsafe byte ToByte(this string hex) {
-            if (hex.Length != 1 && hex.Length != 2) {
+        public static unsafe byte ToByte(this string hex)
+        {
+            if (hex.Length != 1 && hex.Length != 2)
+            {
                 throw new ArgumentException("Hex byte string must have 1-2 characters");
             }
-            fixed (byte* lookupPtr = nybbleLookup) {
-                return hex.Length == 1 ? lookupPtr[hex[0]] : (byte)(lookupPtr[hex[0]] << 4 | lookupPtr[hex[1]]);
+            fixed (byte* lookupPtr = nybbleLookup)
+            {
+                return hex.Length == 1 ? lookupPtr[hex[0]] : (byte) (lookupPtr[hex[0]] << 4 | lookupPtr[hex[1]]);
             }
         }
 
-        public static unsafe string ToHex(this byte b) {
+        public static unsafe string ToHex(this byte b)
+        {
             string result = new string('\0', 2);
             fixed (char* ptr = result)
-            fixed (uint* lookupPtr = hexLookup) {
-                *(uint*)ptr = lookupPtr[b];
+            fixed (uint* lookupPtr = hexLookup)
+            {
+                *(uint*) ptr = lookupPtr[b];
             }
             return result;
         }
 
-        public static unsafe byte[] ToByteArray(this string hex) {
+        public static unsafe byte[] ToByteArray(this string hex)
+        {
             hex = hex.Replace(" ", string.Empty);
-            if (hex.Length % 2 != 0) {
+            if (hex.Length % 2 != 0)
+            {
                 throw new ArgumentException("Hex string must have even number of characters");
             }
             byte[] result = new byte[hex.Length / 2];
-            fixed (byte* lookupPtr = nybbleLookup) {
-                for (int i = 0, j = 0; i < result.Length; i++) {
-                    result[i] = (byte)(lookupPtr[hex[j++]] << 4 | lookupPtr[hex[j++]]);
+            fixed (byte* lookupPtr = nybbleLookup)
+            {
+                for (int i = 0, j = 0; i < result.Length; i++)
+                {
+                    result[i] = (byte) (lookupPtr[hex[j++]] << 4 | lookupPtr[hex[j++]]);
                 }
             }
             return result;
         }
 
-        public static unsafe string ToAsciiString(this byte[] bytes) {
+        public static unsafe string ToAsciiString(this byte[] bytes)
+        {
             string result = new string('\0', bytes.Length);
-            fixed (char* resultPtr = result) {
-                for (int i = 0; i < bytes.Length; i++) {
-                    resultPtr[i] = bytes[i] < 32 ? '.' : (char)bytes[i];
+            fixed (char* resultPtr = result)
+            {
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    resultPtr[i] = bytes[i] < 32 ? '.' : (char) bytes[i];
                 }
             }
             return result;
         }
 
-        public static unsafe string ToHexString(this byte[] bytes) {
-            fixed (byte* bytesPtr = bytes) {
+        public static unsafe string ToHexString(this byte[] bytes)
+        {
+            fixed (byte* bytesPtr = bytes)
+            {
                 return ToHexString(bytesPtr, bytes.Length);
             }
         }
 
-        public static unsafe string ToHexString(byte* bytes, int length) {
+        public static unsafe string ToHexString(byte* bytes, int length)
+        {
             string result = new string('\0', length * 2);
             fixed (char* resultPtr = result)
-            fixed (uint* lookupPtr = hexLookup) {
-                for (int i = 0, j = 0; i < length; i++) {
-                    *(uint*)(resultPtr + j) = lookupPtr[bytes[i]];
+            fixed (uint* lookupPtr = hexLookup)
+            {
+                for (int i = 0, j = 0; i < length; i++)
+                {
+                    *(uint*) (resultPtr + j) = lookupPtr[bytes[i]];
                     j += 2;
                 }
             }
             return result;
         }
 
-        public static string ToHexString(this byte[] bytes, char sep) {
+        public static string ToHexString(this byte[] bytes, char sep)
+        {
             return ToHexString(bytes, bytes.Length, sep);
         }
 
-        public static unsafe string ToHexString(this byte[] bytes, int length, char sep) {
-            fixed (byte* bytesPtr = bytes) {
+        public static unsafe string ToHexString(this byte[] bytes, int length, char sep)
+        {
+            fixed (byte* bytesPtr = bytes)
+            {
                 return ToHexString(bytesPtr, length, sep);
             }
         }
 
-        public static unsafe string ToHexString(byte* bytes, int length, char sep) {
-            if (length <= 0) {
+        public static unsafe string ToHexString(byte* bytes, int length, char sep)
+        {
+            if (length <= 0)
+            {
                 return string.Empty;
             }
 
             string result = new string(sep, length * 3 - 1);
             fixed (char* resultPtr = result)
-            fixed (uint* lookupPtr = hexLookup) {
-                for (int i = 0, j = 0; i < length; i++) {
-                    *(uint*)(resultPtr + j) = lookupPtr[bytes[i]];
+            fixed (uint* lookupPtr = hexLookup)
+            {
+                for (int i = 0, j = 0; i < length; i++)
+                {
+                    *(uint*) (resultPtr + j) = lookupPtr[bytes[i]];
                     j += 3;
                 }
             }
             return result;
         }
 
-        public static string RandomHexString(int length) {
+        public static string RandomHexString(int length)
+        {
             byte[] buffer = new byte[length];
             rng.Value.NextBytes(buffer);
 
             return ToHexString(buffer, ' ');
         }
 
-        public static string RandomHexString(int length, char sep) {
+        public static string RandomHexString(int length, char sep)
+        {
             byte[] buffer = new byte[length];
             rng.Value.NextBytes(buffer);
 
             return ToHexString(buffer, sep);
         }
 
-        public static unsafe string FillRandom(this string packet) {
-            fixed (char* pch = packet) {
-                for (int i = 0; i < packet.Length; i++) { // randomizes wildcards
-                    if (pch[i] == '*') {
+        public static unsafe string FillRandom(this string packet)
+        {
+            fixed (char* pch = packet)
+            {
+                for (int i = 0; i < packet.Length; i++)
+                { // randomizes wildcards
+                    if (pch[i] == '*')
+                    {
                         pch[i] = $"{rng.Value.Next(0xF):X}"[0];
                     }
                 }
