@@ -246,7 +246,6 @@ namespace MapleServer2.Types
         // Add mesos, return true or false
         public bool AddMesos(long amount)
         {
-
             if (Mesos + amount < 0 || amount < 0)
             {
                 return false;
