@@ -11,6 +11,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
+        private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
 
         static MapEntityStorage()
         {
@@ -21,6 +22,7 @@ namespace MapleServer2.Data.Static
                 npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
+                objects.Add(entity.MapId, entity.Objects);
             }
         }
 
@@ -37,6 +39,11 @@ namespace MapleServer2.Data.Static
         public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId)
         {
             return playerSpawns.GetValueOrDefault(mapId);
+        }
+
+        public static IEnumerable<MapObject> GetObjects(int mapId)
+        {
+            return objects.GetValueOrDefault(mapId);
         }
 
         public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)

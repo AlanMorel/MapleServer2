@@ -84,4 +84,53 @@ namespace Maple2Storage.Types
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";
     }
+
+    [XmlType]
+    [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 3)]
+    public struct CoordB
+    {
+        [XmlElement(Order = 1)]
+        public sbyte X { get; private set; }
+        [XmlElement(Order = 2)]
+        public sbyte Y { get; private set; }
+        [XmlElement(Order = 3)]
+        public sbyte Z { get; private set; }
+
+        public static CoordB From(sbyte x, sbyte y, sbyte z)
+        {
+            return new CoordB
+            {
+                X = x,
+                Y = y,
+                Z = z,
+            };
+        }
+
+        public readonly CoordF ToFloat()
+        {
+            return CoordF.From(X, Y, Z);
+        }
+
+        public readonly CoordB Add(CoordB other)
+        {
+            return From((sbyte) (X + other.X), (sbyte) (Y + other.Y), (sbyte) (Z + other.Z));
+        }
+
+        public readonly bool Equals(sbyte x, sbyte y, sbyte z)
+        {
+            return X == x && Y == y && Z == z;
+        }
+
+        public static CoordB Parse(string value, string separator)
+        {
+            string[] coord = value.Split(separator);
+            return CoordB.From(
+                (sbyte) sbyte.Parse(coord[0]),
+                (sbyte) sbyte.Parse(coord[1]),
+                (sbyte) sbyte.Parse(coord[2])
+            );
+        }
+
+        public override string ToString() => $"CoordB({X}, {Y}, {Z})";
+    }
 }

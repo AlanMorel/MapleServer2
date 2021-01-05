@@ -16,6 +16,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapPortal> Portals;
         [XmlElement(Order = 4)]
         public readonly List<MapPlayerSpawn> PlayerSpawns;
+        [XmlElement(Order = 5)]
+        public readonly List<MapObject> Objects;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -23,6 +25,7 @@ namespace Maple2Storage.Types.Metadata
             this.PlayerSpawns = new List<MapPlayerSpawn>();
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
+            this.Objects = new List<MapObject>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -31,6 +34,7 @@ namespace Maple2Storage.Types.Metadata
             this.PlayerSpawns = new List<MapPlayerSpawn>();
             this.Npcs = new List<MapNpc>();
             this.Portals = new List<MapPortal>();
+            this.Objects = new List<MapObject>();
         }
 
         public override string ToString() =>
@@ -63,6 +67,58 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public static bool operator !=(MapEntityMetadata left, MapEntityMetadata right)
+        {
+            return !Equals(left, right);
+        }
+    }
+
+    [XmlType]
+    public class MapObject
+    {
+        [XmlElement(Order = 1)]
+        public readonly CoordB Coord;
+        [XmlElement(Order = 2)]
+        public readonly int WeaponId;
+
+        // Required for deserialization
+        public MapObject() { }
+
+        public MapObject(CoordB coord, int weaponId)
+        {
+            this.Coord = coord;
+            this.WeaponId = weaponId;
+        }
+
+        public override string ToString() =>
+            $"MapObject(Coord:{Coord},WeaponId:{WeaponId})";
+
+        protected bool Equals(MapObject other)
+        {
+            return Coord.Equals(other.Coord) && WeaponId == other.WeaponId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((MapObject) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Coord, WeaponId);
+        }
+
+        public static bool operator ==(MapObject left, MapObject right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(MapObject left, MapObject right)
         {
             return !Equals(left, right);
         }

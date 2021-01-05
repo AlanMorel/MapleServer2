@@ -17,16 +17,64 @@ namespace GameDataParser.Parsers
 
         public static List<MapEntityMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
+            // Iterate over preset objects to later reference while iterating over exported maps
+            Dictionary<string, string> mapObjects = new Dictionary<string, string>();
+            foreach (PackFileEntry entry in entries)
+            {
+                if (!entry.Name.StartsWith("flat/presets/presets object/"))
+                {
+                    continue;
+                }
+
+                // Check if file is valid
+                string objStr = entry.Name.ToLower();
+                if (string.IsNullOrEmpty(objStr))
+                {
+                    continue;
+                }
+                if (mapObjects.ContainsKey(objStr))
+                {
+                    Console.WriteLine($"Duplicate {entry.Name} was already added as {mapObjects[objStr]}");
+                    continue;
+                }
+
+                // Parse XML
+                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlElement root = document.DocumentElement;
+                XmlNodeList objProperties = document.SelectNodes("/model/property");
+
+                string objectName = root.Attributes["name"].Value.ToLower();
+
+                foreach (XmlNode node in objProperties)
+                {
+                    // Storing only weapon item code for now, but there are other uses
+                    if (node.Attributes["name"].Value.Contains("ObjectWeaponItemCode"))
+                    {
+                        string weaponId = node?.FirstChild.Attributes["value"].Value ?? "0";
+
+                        if (!weaponId.Equals("0"))
+                        {
+                            mapObjects.Add(objectName, weaponId);
+                        }
+                    }
+                }
+            }
+
+            // Iterate over map xblocks
             List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
             Dictionary<string, string> maps = new Dictionary<string, string>();
             foreach (PackFileEntry entry in entries)
             {
                 if (!entry.Name.StartsWith("xblock/"))
+                {
                     continue;
+                }
 
                 string mapIdStr = Regex.Match(entry.Name, @"\d{8}").Value;
                 if (string.IsNullOrEmpty(mapIdStr))
+                {
                     continue;
+                }
                 int mapId = int.Parse(mapIdStr);
                 if (maps.ContainsKey(mapIdStr))
                 {
@@ -41,6 +89,8 @@ namespace GameDataParser.Parsers
 
                 foreach (XmlNode node in mapEntities)
                 {
+                    string modelName = node.Attributes["modelName"].Value.ToLower();
+
                     if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
                     {
                         XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
@@ -50,6 +100,20 @@ namespace GameDataParser.Parsers
                         string playerRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
                         metadata.PlayerSpawns.Add(new MapPlayerSpawn(ParseCoord(playerPositionValue), ParseCoord(playerRotationValue)));
+                    }
+                    else if (mapObjects.ContainsKey(modelName))
+                    {
+                        string nameCoord = node.Attributes["name"].Value.ToLower();
+
+                        Match coordMatch = Regex.Match(nameCoord, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+");
+
+                        if (!coordMatch.Success)
+                        {
+                            continue;
+                        }
+
+                        CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
+                        metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName])));
                     }
                 }
 
