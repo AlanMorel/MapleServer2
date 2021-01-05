@@ -32,6 +32,13 @@ namespace MapleServer2.Tools
                 case "battleof":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
                     break;
+                case "notice":
+                    if (args.Length <= 1)
+                    {
+                        break;
+                    }
+                    MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
+                    break;
             }
         }
 

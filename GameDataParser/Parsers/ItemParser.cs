@@ -69,7 +69,7 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<ItemMetadata> items)
         {
-            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT + "ms2-item-metadata"))
+            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-item-metadata"))
             {
                 Serializer.Serialize(writeStream, items);
             }
