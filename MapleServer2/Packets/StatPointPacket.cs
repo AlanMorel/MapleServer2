@@ -47,15 +47,5 @@ namespace MapleServer2.Packets
 
             return pWriter;
         }
-
-        public static void AddStatPoint(Player character, byte statType)
-        {
-            character.StatPointDistribution.AddPoint(statType);
-        }
-
-        public static void ResetStatPoints(Player character)
-        {
-            character.StatPointDistribution.ResetPoints();
-        }
     }
 }

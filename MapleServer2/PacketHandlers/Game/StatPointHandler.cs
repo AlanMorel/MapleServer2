@@ -31,19 +31,22 @@ namespace MapleServer2.PacketHandlers.Game
                 case StatPointMode.Reset:
                     HandleResetStatDistribution(session);
                     break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
+                    break;
             }
         }
 
         private void HandleStatIncrement(GameSession session, PacketReader packet)
         {
             byte statTypeIndex = packet.ReadByte();
-            StatPointPacket.AddStatPoint(session.Player, statTypeIndex);
+            session.Player.StatPointDistribution.AddPoint(statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         }
 
         private void HandleResetStatDistribution(GameSession session)
         {
-            StatPointPacket.ResetStatPoints(session.Player);
+            session.Player.StatPointDistribution.ResetPoints();
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         }
     }
