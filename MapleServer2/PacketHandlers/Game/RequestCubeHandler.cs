@@ -15,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestCubeHandler(ILogger<RequestCubeHandler> logger) : base(logger) { }
 
-        private enum Mode : byte
+        private enum RequestCubeMode : byte
         {
             Pickup = 0x11,
             Drop = 0x12
@@ -23,14 +23,14 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            Mode mode = (Mode) packet.ReadByte();
+            RequestCubeMode mode = (RequestCubeMode) packet.ReadByte();
 
             switch (mode)
             {
-                case Mode.Pickup:
+                case RequestCubeMode.Pickup:
                     HandlePickup(session, packet);
                     break;
-                case Mode.Drop:
+                case RequestCubeMode.Drop:
                     HandleDrop(session);
                     break;
             }

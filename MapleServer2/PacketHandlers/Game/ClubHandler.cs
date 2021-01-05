@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public ClubHandler(ILogger<ClubHandler> logger) : base(logger) { }
 
-        private enum Mode : byte
+        private enum ClubMode : byte
         {
             Create = 0x1,
             Join = 0x3,
@@ -27,29 +27,29 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            Mode mode = (Mode) packet.ReadByte();
+            ClubMode mode = (ClubMode) packet.ReadByte();
 
             switch (mode)
             {
-                case Mode.Create:
+                case ClubMode.Create:
                     HandleCreate(session, packet);
                     break;
-                case Mode.Join:
+                case ClubMode.Join:
                     HandleJoin(session, packet);
                     break;
-                case Mode.SendInvite:
+                case ClubMode.SendInvite:
                     HandleSendInvite(session, packet);
                     break;
-                case Mode.InviteResponse:
+                case ClubMode.InviteResponse:
                     HandleInviteResponse(session, packet);
                     break;
-                case Mode.Leave:
+                case ClubMode.Leave:
                     HandleLeave(session, packet);
                     break;
-                case Mode.Buff:
+                case ClubMode.Buff:
                     HandleBuff(session, packet);
                     break;
-                case Mode.Rename:
+                case ClubMode.Rename:
                     HandleRename(session, packet);
                     break;
                 default:

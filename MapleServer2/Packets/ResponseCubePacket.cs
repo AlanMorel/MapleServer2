@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
 {
     public static class ResponseCubePacket
     {
-        private enum Mode : byte
+        private enum ResponseCubePacketMode : byte
         {
             Pickup = 0x11,
             Drop = 0x12
@@ -18,7 +18,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteByte((byte) Mode.Pickup);
+            pWriter.WriteByte((byte) ResponseCubePacketMode.Pickup);
             pWriter.WriteZero(1);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(coords);
@@ -33,7 +33,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteByte((byte) Mode.Drop);
+            pWriter.WriteByte((byte) ResponseCubePacketMode.Drop);
             pWriter.WriteZero(1);
             pWriter.WriteInt(player.ObjectId);
 
