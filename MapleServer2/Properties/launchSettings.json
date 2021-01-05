@@ -2,7 +2,7 @@
   "profiles": {
     "MapleServer2": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Users\\adria\\Documents\\GitHub\\MapleServer2-ZinFork\\MapleServer2"
+      "workingDirectory": "$(SolutionDir)"
     }
   }
 }
