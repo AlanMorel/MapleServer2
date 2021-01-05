@@ -19,6 +19,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
             // sends back 41 character length packet which represents the total number of stat points gained and
             // how each stat point was obtained (ie quest, trophy, exploration, prestige)
+
             pWriter.WriteByte((byte) StatPointPacketMode.TotalPoints);
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
 

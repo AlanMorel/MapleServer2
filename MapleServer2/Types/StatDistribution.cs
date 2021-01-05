@@ -8,7 +8,6 @@ namespace MapleServer2.Types
 {
     public class StatDistribution
     {
-
         public int TotalStatPoints { get; private set; }
         // TODO: implement Dictionary to keep track of points earned from quest, trophy, exploration, prestige
         // naming convention: PointsFromQuest, PointsFromTrophy, PointsFromExploration, PointsFromPrestige
