@@ -35,11 +35,11 @@ namespace MapleServer2.PacketHandlers.Login
         public override void Handle(LoginSession session, PacketReader packet)
         {
             byte mode = packet.ReadByte();
-            DatabaseController DB = new DatabaseController();
-            Account User = DB.GetAccountByUser(packet.ReadUnicodeString());
+            DB_AccController DB = new DB_AccController();
+            Account account = DB.GetAccountByUser(packet.ReadUnicodeString());
 
-            string username = User.Username;
-            string pass = User.Password;
+            string username = account.Username;
+            string pass = account.Password;
 
             logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
 
@@ -49,7 +49,7 @@ namespace MapleServer2.PacketHandlers.Login
                 // send error / account credentials not found
             }
 
-            session.AccountId = User.Account_ID;
+            session.AccountId = account.Account_ID;
 
             switch (mode)
             {

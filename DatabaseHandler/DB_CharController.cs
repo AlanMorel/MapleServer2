@@ -6,17 +6,8 @@ using System.Threading.Tasks;
 
 namespace DatabaseHandler
 {
-    public class DatabaseController
+    public class DB_CharController
     {
-        public Account GetAccountByUser(string username)
-        {           
-            using (Maplestory2DBEntities context = new Maplestory2DBEntities())
-            {
-                Account accountInfo = context.Accounts.FirstOrDefault(r => r.Username == username);
-                return accountInfo;
-            }
-        }
-
         public void CreateChar(long AccID, string name, byte gender, int JobId, int MapId)
         {
             using (Maplestory2DBEntities context = new Maplestory2DBEntities())

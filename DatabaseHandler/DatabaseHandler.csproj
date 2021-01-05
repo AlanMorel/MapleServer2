@@ -73,7 +73,8 @@
     <Compile Include="Character.cs">
       <DependentUpon>MS2DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseController.cs" />
+    <Compile Include="DB_CharController.cs" />
+    <Compile Include="DB_AccController.cs" />
     <Compile Include="MS2DBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
