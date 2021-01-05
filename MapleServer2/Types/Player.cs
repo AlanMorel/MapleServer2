@@ -71,6 +71,7 @@ namespace MapleServer2.Types
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
         public List<SkillTab> SkillTabs = new List<SkillTab>();
+        public StatDistribution StatPointDistribution = new StatDistribution();
 
         public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
@@ -104,6 +105,7 @@ namespace MapleServer2.Types
             int job = 50; // Archer
 
             PlayerStats stats = PlayerStats.Default();
+            StatDistribution StatPointDistribution = new StatDistribution();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -113,6 +115,7 @@ namespace MapleServer2.Types
             Player player = new Player
             {
                 SkillTabs = skillTabs,
+                StatPointDistribution = StatPointDistribution,
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
