@@ -36,8 +36,8 @@ namespace MapleServer2.Types
         public short Level = 1;
         public long Experience;
         public long RestExperience;
-        public long Mesos;
-        public long Merets;
+        private long Mesos;
+        private long Merets;
         public int PrestigeLevel = 100;
         public long PrestigeExperience;
         public int TitleId;
@@ -241,6 +241,95 @@ namespace MapleServer2.Types
             Coord = spawn.Coord.ToFloat();
             Rotation = spawn.Rotation.ToFloat();
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
+        }
+
+        // Add mesos, return true or false
+        public bool AddMesos(long amount)
+        {
+
+            if (Mesos + amount < 0 || amount < 0)
+            {
+                return false;
+            }
+            Mesos += amount;
+            UpdateMesos();
+            return true;
+        }
+
+        // Deduct mesos, return true or false
+        public bool DeductMesos(long amount)
+        {
+            if (Mesos - amount < 0 || amount < 0)
+            {
+                return false;
+            }
+            Mesos -= amount;
+            UpdateMesos();
+            return true;
+        }
+
+        public long GetMesos()
+        {
+            return Mesos;
+        }
+
+        public void SetMesos(long amount)
+        {
+            if (amount < 0)
+            {
+                return;
+            }
+            Mesos = amount;
+            UpdateMesos();
+        }
+
+        // Add merets, return true or false
+        public bool AddMerets(long amount)
+        {
+            if (Merets + amount < 0 || amount < 0)
+            {
+                return false;
+            }
+            Merets += amount;
+            UpdateMerets();
+            return true;
+        }
+
+        // Deduct merets, return true or false
+        public bool DeductMerets(long amount)
+        {
+            if (Merets - amount < 0 || amount < 0)
+            {
+                return false;
+            }
+            Merets -= amount;
+            UpdateMerets();
+            return true;
+        }
+
+        public long GetMerets()
+        {
+            return Merets;
+        }
+
+        public void SetMerets(long amount)
+        {
+            if (amount < 0)
+            {
+                return;
+            }
+            Merets = amount;
+            UpdateMerets();
+        }
+
+        private void UpdateMesos()
+        {
+            Session.Send(MesosPacket.UpdateMesos(Session));
+        }
+
+        private void UpdateMerets()
+        {
+            Session.Send(MeretsPacket.UpdateMerets(Session));
         }
     }
 }

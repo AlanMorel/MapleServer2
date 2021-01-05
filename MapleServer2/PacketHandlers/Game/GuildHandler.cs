@@ -61,16 +61,8 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.Mesos < 2000)
+            if (session.Player.DeductMesos(2000))
             {
-                // TODO: Reject packets
-                return;
-            }
-            else
-            {
-                session.Player.Mesos -= 2000;
-
-                session.Send(MesosPacket.UpdateMesos(session));
                 session.Send(GuildPacket.Invite(session.Player, guildName));
                 session.Send(GuildPacket.Create(guildName));
                 session.Send(GuildPacket.UpdateGuild(session, guildName));
@@ -80,6 +72,10 @@ namespace MapleServer2.PacketHandlers.Game
                 Guild newGuild = new(guildName, new List<Player> { session.Player });
                 GameServer.GuildManager.AddGuild(newGuild);
 
+            }
+            else
+            {
+                // TODO: Reject packets
             }
 
         }

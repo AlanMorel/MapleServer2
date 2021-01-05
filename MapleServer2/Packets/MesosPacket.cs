@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY);
 
-            pWriter.WriteLong(session.Player.Mesos); // Total amount of mesos
+            pWriter.WriteLong(session.Player.GetMesos()); // Total amount of mesos
             pWriter.WriteInt(); // unknown int
 
             return pWriter;

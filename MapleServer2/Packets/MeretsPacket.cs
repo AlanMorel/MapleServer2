@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET);
 
-            pWriter.WriteLong(session.Player.Merets); // Total amount of merets
+            pWriter.WriteLong(session.Player.GetMerets()); // Total amount of merets
             pWriter.WriteLong(); // expects another long
             pWriter.WriteLong(); // expects another long
             pWriter.WriteLong(); // expects another long

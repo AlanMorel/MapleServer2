@@ -15,9 +15,9 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(1); // channel
             pWriter.WriteLong(session.Player.Experience);
             pWriter.WriteLong(session.Player.RestExperience);
-            pWriter.WriteLong(session.Player.Mesos);
+            pWriter.WriteLong(session.Player.GetMesos());
 
-            pWriter.WriteLong(session.Player.Merets); // Merets
+            pWriter.WriteLong(session.Player.GetMerets()); // Merets
             pWriter.WriteLong(); // Merets
             // These Merets are added up. If set, previous are ignored.
 
