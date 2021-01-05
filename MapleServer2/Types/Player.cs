@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using DatabaseHandler.Model;
+using DatabaseHandler;
 using System.Collections.Generic;
 using System.Numerics;
 using Maple2Storage.Types;

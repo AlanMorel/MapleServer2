@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DatabaseHandler.Model
+namespace DatabaseHandler
 {
     public class DB_CharController
     {

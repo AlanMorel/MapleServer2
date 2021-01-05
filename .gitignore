@@ -5,7 +5,15 @@ obj/
 *.cache
 GameDataParser/Resources
 Maple2Storage/Resources
+DatabaseHandler/Character.cs
+DatabaseHandler/Account.cs
 packages
 DatabaseHandler/packages.config
-DatabaseHandler/Model
+DatabaseHandler/MS2DBModel.edmx
+DatabaseHandler/MS2DBModel.edmx.diagram
+DatabaseHandler/MS2DBModel.tt
+DatabaseHandler/MS2DBModel.cs
+DatabaseHandler/MS2DBModel.Designer.cs
+DatabaseHandler/MS2DBModel.Context.tt
+DatabaseHandler/MS2DBModel.Context.cs
 DatabaseHandler/DatabaseHandler.csproj.user
