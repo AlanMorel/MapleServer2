@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using DatabaseHandler;
 using System.Collections.Generic;
 using System.Numerics;
 using Maple2Storage.Types;
@@ -104,7 +103,7 @@ namespace MapleServer2.Types
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
-            DatabaseController DBcontrol = new DatabaseController();
+
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
@@ -112,22 +111,20 @@ namespace MapleServer2.Types
                 XmlParser.ParseSkills(job)
             };
 
-            Character CharInfo = DBcontrol.GetCharByID(1);
-
             Player player = new Player
             {
                 SkillTabs = skillTabs,
-                MapId = (int)CharInfo.Map_ID,
-                AccountId = CharInfo.Account_ID,
-                CharacterId = CharInfo.Character_ID,
-                Level = CharInfo.Level,
-                Name = CharInfo.Name,
-                Gender = (byte)CharInfo.Gender,
+                MapId = 2000062,
+                AccountId = accountId,
+                CharacterId = characterId,
+                Level = 70,
+                Name = name,
+                Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
                 // Coord = CoordF.From(500, 500, 15000), // Tria
-                JobGroupId = (int)CharInfo.Job_ID,
+                JobGroupId = job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -141,7 +138,7 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = (long)CharInfo.Mesos,
+                Mesos = 200000,
                 Merets = 50,
                 ValorToken = 1,
                 Treva = 2,
