@@ -4,12 +4,9 @@ using MapleServer2.Network;
 using MapleServer2.PacketHandlers;
 using MapleServer2.Tools;
 
-namespace MapleServer2.Servers.Game
-{
-    public static class GameContainerConfig
-    {
-        public static IContainer Configure()
-        {
+namespace MapleServer2.Servers.Game {
+    public static class GameContainerConfig {
+        public static IContainer Configure() {
             var builder = new ContainerBuilder();
             builder.RegisterLogger();
             builder.RegisterType<GameServer>()

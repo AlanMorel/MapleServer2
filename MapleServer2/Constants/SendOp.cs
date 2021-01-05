@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Constants
-{
-    public enum SendOp : ushort
-    {
+namespace MapleServer2.Constants {
+    public enum SendOp : ushort {
         NULL = 0x0000,
         REQUEST_VERSION = 0x0001,
         VERSION_RESULT = 0x0002,

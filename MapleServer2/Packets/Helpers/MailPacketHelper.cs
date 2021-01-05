@@ -1,6 +1,6 @@
-﻿using MaplePacketLib2.Tools;
-using MapleServer2.Data;
+using MaplePacketLib2.Tools;
 using MapleServer2.Types;
+using MapleServer2.Data;
 
 namespace MapleServer2.Packets.Helpers
 {

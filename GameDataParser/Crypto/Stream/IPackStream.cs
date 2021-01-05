@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using GameDataParser.Crypto.Common;
 
-namespace GameDataParser.Crypto.Stream
-{
-    public interface IPackStream
-    {
+namespace GameDataParser.Crypto.Stream {
+    public interface IPackStream {
         // Represents the format of the packed stream (MS2F/NS2F/etc)
         public PackVersion Version { get; }
 
@@ -41,11 +39,9 @@ namespace GameDataParser.Crypto.Stream
          * @return A packed stream with header sizes decoded
          *
         */
-        public static IPackStream CreateStream(BinaryReader pHeader)
-        {
+        public static IPackStream CreateStream(BinaryReader pHeader) {
             var version = (PackVersion) pHeader.ReadUInt32();
-            return version switch
-            {
+            return version switch {
                 PackVersion.MS2F => PackStreamVer1.ParseHeader(pHeader),
                 PackVersion.NS2F => PackStreamVer2.ParseHeader(pHeader),
                 PackVersion.OS2F => PackStreamVer3.ParseHeader(pHeader, version),

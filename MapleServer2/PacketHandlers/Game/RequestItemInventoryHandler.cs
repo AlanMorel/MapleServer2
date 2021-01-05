@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            RequestItemInventoryMode mode = (RequestItemInventoryMode) packet.ReadByte();
+            RequestItemInventoryMode mode = (RequestItemInventoryMode)packet.ReadByte();
             Inventory inventory = session.Player.Inventory;
 
             switch (mode)
@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
         {
-            InventoryTab tab = (InventoryTab) packet.ReadShort();
+            InventoryTab tab = (InventoryTab)packet.ReadShort();
             InventoryController.SortInventory(session, inventory, tab);
         }
     }

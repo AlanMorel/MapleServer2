@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
+using MapleServer2.Servers.Game;
 using MapleServer2.Data;
 using MapleServer2.Packets.Helpers;
-using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -47,7 +47,7 @@ namespace MapleServer2.Packets
         public static Packet StartOpen()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
+            
             pWriter.WriteByte(16);
 
             return pWriter;

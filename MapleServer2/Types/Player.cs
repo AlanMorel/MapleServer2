@@ -2,14 +2,13 @@ using System;
 using System.Numerics;
 using DatabaseHandler;
 using System.Collections.Generic;
-using System.Numerics;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
-using MapleServer2.Data;
 using MapleServer2.Enums;
-using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Data;
+using MapleServer2.Servers.Game;
+using MapleServer2.Packets;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
@@ -87,7 +86,7 @@ namespace MapleServer2.Types
                         || DefaultEquipSlot == ItemSlot.ER;
 
         public Job jobType;
-        public JobCode JobCode => jobType != Job.GameMaster ? (JobCode) ((int) jobType / 10) : JobCode.GameMaster;
+        public JobCode JobCode => jobType != Job.GameMaster ? (JobCode)((int)jobType / 10) : JobCode.GameMaster;
 
         public GameOptions GameOptions { get; private set; }
 
@@ -95,11 +94,6 @@ namespace MapleServer2.Types
         public Mailbox Mailbox;
 
         public long PartyId;
-
-        public long ClubId;
-        // TODO make this as an array
-
-        public long GuildId;
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
@@ -225,7 +219,7 @@ namespace MapleServer2.Types
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
-                Equips = (Dictionary<ItemSlot, Item>) equips,
+                Equips = (Dictionary<ItemSlot, Item>)equips,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)

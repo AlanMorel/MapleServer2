@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Enums
-{
-    public enum ChatType
-    {
+﻿namespace MapleServer2.Enums {
+    public enum ChatType {
         All = 0,
         WhisperFrom = 3,
         WhisperTo = 4,

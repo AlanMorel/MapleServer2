@@ -1,13 +1,13 @@
-﻿using System;
+﻿using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
+using Maple2Storage.Types.Metadata;
+using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
-using GameDataParser.Crypto.Common;
-using GameDataParser.Files;
-using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
@@ -20,8 +20,7 @@ namespace GameDataParser.Parsers
 
             foreach (PackFileEntry skill in entries)
             {
-                if (!skill.Name.StartsWith("skill/10"))
-                    continue;
+                if (!skill.Name.StartsWith("skill/10")) continue;
 
                 string skillId = Path.GetFileNameWithoutExtension(skill.Name);
                 SkillMetadata metadata = new SkillMetadata();

@@ -1,9 +1,7 @@
 ﻿using System.Security.Cryptography;
 
-namespace GameDataParser.Crypto
-{
-    public class AESCipher
-    {
+namespace GameDataParser.Crypto {
+    public class AESCipher {
         private readonly byte[] iv;
         private readonly SymmetricAlgorithm algorithm;
         private readonly ICryptoTransform encryptor;
@@ -17,11 +15,9 @@ namespace GameDataParser.Crypto
          * @param iv A 16-byte IV Chain
          *
         */
-        public AESCipher(byte[] userKey, byte[] iv)
-        {
+        public AESCipher(byte[] userKey, byte[] iv) {
             this.iv = iv;
-            this.algorithm = new AesManaged
-            {
+            this.algorithm = new AesManaged {
                 Mode = CipherMode.ECB,
                 Padding = PaddingMode.None
             };
@@ -40,18 +36,14 @@ namespace GameDataParser.Crypto
          * @return The length of the block that was transformed
          *
         */
-        public uint TransformBlock(byte[] src, int offset, uint size, byte[] dst, int initialOffset)
-        {
-            for (int i = 0; i < size; i += BlockSize)
-            {
+        public uint TransformBlock(byte[] src, int offset, uint size, byte[] dst, int initialOffset) {
+            for (int i = 0; i < size; i += BlockSize) {
                 byte[] xorBlock = new byte[BlockSize];
                 encryptor.TransformBlock(iv, 0, iv.Length, xorBlock, 0);
                 IncrementCounter();
 
-                for (int j = 0; j < xorBlock.Length; j++)
-                {
-                    if ((i + j) >= dst.Length)
-                    {
+                for (int j = 0; j < xorBlock.Length; j++) {
+                    if ((i + j) >= dst.Length) {
                         break;
                     }
 
@@ -63,10 +55,8 @@ namespace GameDataParser.Crypto
         }
 
         // Increments the XOR block counter.
-        private void IncrementCounter()
-        {
-            for (int i = iv.Length - 1; i >= 0; i--)
-            {
+        private void IncrementCounter() {
+            for (int i = iv.Length - 1; i >= 0; i--) {
                 if (++iv[i] != 0)
                     break;
             }

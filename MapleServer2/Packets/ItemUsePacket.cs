@@ -1,4 +1,4 @@
-﻿using MaplePacketLib2.Tools;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
 namespace MapleServer2.Packets

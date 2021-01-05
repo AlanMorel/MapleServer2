@@ -1,30 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using Maple2Storage.Types;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using Maple2Storage.Types;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Login
-{
-    public class CharacterManagementHandler : LoginPacketHandler
-    {
+namespace MapleServer2.PacketHandlers.Login {
+    public class CharacterManagementHandler : LoginPacketHandler {
         public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) { }
+        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) {}
 
-        public override void Handle(LoginSession session, PacketReader packet)
-        {
+        public override void Handle(LoginSession session, PacketReader packet) {
             byte mode = packet.ReadByte();
-            switch (mode)
-            {
+            switch (mode) {
                 case 0: // Login
                     HandleSelect(session, packet);
                     break;
@@ -57,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Login
             AuthStorage.SetData(session.AccountId, authData);
 
             session.SendFinal(MigrationPacket.LoginToGame(endpoint, authData));
-
+            
             // LoginPacket.LoginError("message?");
         }
 
@@ -74,7 +70,7 @@ namespace MapleServer2.PacketHandlers.Login
             var Equips = new Dictionary<ItemSlot, Item>();
 
             logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {jobCode}");
-
+            
             int equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
             {
@@ -96,18 +92,16 @@ namespace MapleServer2.PacketHandlers.Login
                         float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
                         byte[] frontPositionArray = packet.Read(24);
 
-                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             HairD = HairData.hairData(backLength, frontLength, backPositionArray, frontPositionArray),
                             Stats = new ItemStats(),
-                            IsTemplate = false,
+                            IsTemplate=false,
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -116,8 +110,7 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             FaceDecorationD = faceDecoration,
@@ -126,8 +119,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -135,8 +127,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -144,8 +135,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -154,8 +144,7 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
-                        {
+                        Equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id)) {
                             CreationTime = 1565575851,
                             Color = equipColor,
                             Stats = new ItemStats(),
@@ -169,17 +158,14 @@ namespace MapleServer2.PacketHandlers.Login
 
             // Check if name is in use (currently just on local account)
             bool taken = false;
-
-            foreach (var character in AccountStorage.Characters.Values)
-            {
-                if (character.Name.ToLower().Equals(name.ToLower()))
-                {
+            
+            foreach (var character in AccountStorage.Characters.Values) {
+                if (character.Name.ToLower().Equals(name.ToLower())) {
                     taken = true;
                 }
             }
 
-            if (taken)
-            {
+            if (taken) {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
             }

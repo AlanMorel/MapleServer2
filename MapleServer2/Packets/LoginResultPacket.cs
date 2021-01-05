@@ -2,12 +2,9 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
-{
-    public static class LoginResultPacket
-    {
-        public static Packet InitLogin(long accountId)
-        {
+namespace MapleServer2.Packets {
+    public static class LoginResultPacket {
+        public static Packet InitLogin(long accountId) {
             return PacketWriter.Of(SendOp.LOGIN_RESULT)
                 .WriteByte() // Login State
                 .WriteInt() // Const
@@ -23,8 +20,7 @@ namespace MapleServer2.Packets
         }
 
         // Set 0 for all values in login packet
-        public static Packet Timeout(long accountId)
-        {
+        public static Packet Timeout(long accountId) {
             return PacketWriter.Of(SendOp.LOGIN_RESULT)
                 .WriteByte(0x19) // Login State
                 .WriteInt() // Const

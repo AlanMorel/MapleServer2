@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Packets;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -21,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
             int amount = packet.ReadInt();
 
             short opened = 0; // Amount of opened boxes
-            List<Item> items = new List<Item>(session.Player.Inventory.Items.Values); // Make copy of items in-case new item is added
+            List<Item> items = new List<Item> (session.Player.Inventory.Items.Values); // Make copy of items in-case new item is added
 
             foreach (Item item in items)
             {

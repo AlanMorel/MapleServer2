@@ -1,7 +1,5 @@
-﻿namespace Maple2Storage.Types
-{
-    public enum InventoryTab : byte
-    {
+﻿namespace Maple2Storage.Types {
+    public enum InventoryTab : byte {
         Gear = 0,
         Outfit = 1,
         Mount = 2,

@@ -154,7 +154,7 @@ namespace MapleServer2.PacketHandlers.Game
             else
             {
                 //Create new party
-                Party newParty = new(10, new List<Player> { partyLeader, session.Player });
+                Party newParty = new(10, new List<Player> {partyLeader, session.Player});
                 GameServer.PartyManager.AddParty(newParty);
 
                 //Send the party leader all the stuff for the joining player

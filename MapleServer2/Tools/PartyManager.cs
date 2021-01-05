@@ -36,8 +36,8 @@ namespace MapleServer2.Tools
         public Party GetPartyByLeader(Player leader)
         {
             return (from entry in partyList
-                    where entry.Value.Leader.CharacterId == leader.CharacterId
-                    select entry.Value).FirstOrDefault();
+                where entry.Value.Leader.CharacterId == leader.CharacterId
+                select entry.Value).FirstOrDefault();
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Enums
-{
-    public enum NpcState
-    {
+﻿namespace MapleServer2.Enums {
+    public enum NpcState {
         None = 0,
         Idle = 1,
         Walk = 2,

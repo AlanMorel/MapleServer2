@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Enums
-{
-    public enum Job
-    {
+﻿namespace MapleServer2.Enums {
+    public enum Job {
         None = 0,
         Knight = 100,
         Berserker = 200,
@@ -17,8 +15,7 @@
         GameMaster = 999
     }
 
-    public enum JobCode
-    {
+    public enum JobCode {
         None = 0,
         Knight = 101,
         Berserker = 201,

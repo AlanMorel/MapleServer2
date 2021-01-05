@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Enums
-{
-    public enum ItemSpecialAttribute : short
-    {
+﻿namespace MapleServer2.Enums {
+    public enum ItemSpecialAttribute : short {
         None = 0,
         Experience = 1,
         EnemyExp = 2,

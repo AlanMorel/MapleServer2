@@ -1,10 +1,8 @@
 ﻿using System;
 
-namespace MapleServer2.Enums
-{
+namespace MapleServer2.Enums {
     [Flags]
-    public enum FieldObjectUpdate : byte
-    {
+    public enum FieldObjectUpdate : byte {
         None = 0,
         Type1 = 1,
         Move = 2,

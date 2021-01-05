@@ -1,10 +1,8 @@
 ﻿using System;
 using GameDataParser.Crypto.Common;
 
-namespace GameDataParser.Crypto.Keys
-{
-    public static class CipherKeys
-    {
+namespace GameDataParser.Crypto.Keys {
+    public static class CipherKeys {
         private const int BITS = 128; //128-bit AES
         private const int IV_LEN = 16; //16-byte IV (CTR)
         private const int KEY_LEN = 32; //32-byte UserKey
@@ -47,13 +45,11 @@ namespace GameDataParser.Crypto.Keys
          * @param ivChain The outputted IV (CTR) block
          *
         */
-        public static void GetKeyAndIV(PackVersion version, uint keyOffset, out byte[] userKey, out byte[] ivChain)
-        {
+        public static void GetKeyAndIV(PackVersion version, uint keyOffset, out byte[] userKey, out byte[] ivChain) {
             IMultiArray key;
             IMultiArray iv;
 
-            switch (version)
-            {
+            switch (version) {
                 case PackVersion.MS2F:
                     key = MS2F_KEY;
                     iv = MS2F_IV;
@@ -70,20 +66,17 @@ namespace GameDataParser.Crypto.Keys
                     key = PS2F_KEY;
                     iv = PS2F_IV;
                     break;
-                default:
-                    {
-                        throw new Exception("ERROR generating Key/IV: the specified package version does not exist!");
-                    }
+                default: {
+                    throw new Exception("ERROR generating Key/IV: the specified package version does not exist!");
+                }
             }
 
             userKey = new byte[KEY_LEN];
             ivChain = new byte[IV_LEN];
-            for (int i = 0; i < KEY_LEN; i++)
-            {
+            for (int i = 0; i < KEY_LEN; i++) {
                 userKey[i] = key[(keyOffset & 0x7F)][i];
 
-                if (i < IV_LEN)
-                {
+                if (i < IV_LEN) {
                     ivChain[i] = iv[(keyOffset & 0x7F)][i];
                 }
             }
@@ -96,10 +89,8 @@ namespace GameDataParser.Crypto.Keys
          * @param key The outputted key block
          *
         */
-        public static void GetXorKey(PackVersion version, out byte[] key)
-        {
-            switch (version)
-            {
+        public static void GetXorKey(PackVersion version, out byte[] key) {
+            switch (version) {
                 case PackVersion.MS2F:
                     key = MS2F_XOR.Value;
                     break;
@@ -112,12 +103,11 @@ namespace GameDataParser.Crypto.Keys
                 case PackVersion.PS2F:
                     key = PS2F_XOR.Value;
                     break;
-                default:
-                    {
-                        // Nexon always defaults to MS2F here.
-                        key = MS2F_XOR.Value;
-                        break;
-                    }
+                default: {
+                    // Nexon always defaults to MS2F here.
+                    key = MS2F_XOR.Value;
+                    break;
+                }
             }
         }
     }

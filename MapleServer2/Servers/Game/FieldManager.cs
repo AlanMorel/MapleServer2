@@ -33,7 +33,7 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
                 {
-                    Rotation = (short) (npc.Rotation.Z * 10)
+                    Rotation = (short)(npc.Rotation.Z * 10)
                 });
                 fieldNpc.Coord = npc.Coord.ToFloat();
                 AddNpc(fieldNpc);
@@ -132,7 +132,7 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldPacket.RemovePlayer(player));
             });
 
-            ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
+            ((FieldObject<Player>)player).ObjectId = -1; // Reset object id
         }
 
         // Spawned NPCs will not appear until controlled
@@ -153,7 +153,7 @@ namespace MapleServer2.Servers.Game
 
             Broadcast(session =>
             {
-
+                
             });
         }
 

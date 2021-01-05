@@ -1,11 +1,8 @@
 ﻿using MaplePacketLib2.Tools;
 
-namespace MapleServer2.Packets.Helpers
-{
-    public static class UgcPacketHelper
-    {
-        public static PacketWriter WriteUgc(this PacketWriter pWriter)
-        {
+namespace MapleServer2.Packets.Helpers {
+    public static class UgcPacketHelper {
+        public static PacketWriter WriteUgc(this PacketWriter pWriter) {
             return pWriter.WriteLong()
                 .WriteUnicodeString("") // UUID (filename)
                 .WriteUnicodeString("") // Name (itemname)

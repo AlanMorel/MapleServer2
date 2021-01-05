@@ -2,26 +2,21 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
-{
-    public static class UserEnvPacket
-    {
+namespace MapleServer2.Packets {
+    public static class UserEnvPacket {
         // Unlocked Titles
-        public static Packet SetTitles(List<int> titleIds)
-        {
+        public static Packet SetTitles(List<int> titleIds) {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x02);
             pWriter.WriteInt(titleIds.Count);
-            foreach (int titleId in titleIds)
-            {
+            foreach (int titleId in titleIds) {
                 pWriter.WriteInt(titleId);
             }
 
             return pWriter;
         }
 
-        public static Packet Send03()
-        {
+        public static Packet Send03() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x03);
             pWriter.WriteInt();
@@ -30,8 +25,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send04()
-        {
+        public static Packet Send04() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x04);
             pWriter.WriteInt();
@@ -40,8 +34,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send05()
-        {
+        public static Packet Send05() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x05);
             pWriter.WriteInt();
@@ -49,8 +42,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send08()
-        {
+        public static Packet Send08() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x08);
             pWriter.WriteInt();
@@ -61,8 +53,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send09()
-        {
+        public static Packet Send09() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x09);
             pWriter.WriteInt();
@@ -71,8 +62,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send10()
-        {
+        public static Packet Send10() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0A);
             pWriter.WriteInt();
@@ -81,8 +71,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send11()
-        {
+        public static Packet Send11() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0B);
             pWriter.WriteShort();
@@ -91,8 +80,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send12()
-        {
+        public static Packet Send12() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0C);
             pWriter.WriteInt();
@@ -101,8 +89,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send13()
-        {
+        public static Packet Send13() {
             var pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0D);
             pWriter.WriteInt();

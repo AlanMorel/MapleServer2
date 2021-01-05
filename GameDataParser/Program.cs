@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
 using GameDataParser.Crypto;

@@ -2,13 +2,10 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
-{
+namespace MapleServer2.Packets {
 
-    public static class EmotePacket
-    {
-        public static Packet LoadEmotes()
-        {
+    public static class EmotePacket {
+        public static Packet LoadEmotes() {
             var pWriter = PacketWriter.Of(SendOp.EMOTION)
                 .WriteByte(0x00); // Function
 
@@ -23,8 +20,7 @@ namespace MapleServer2.Packets
                 90200018, 90200093
             };
             pWriter.WriteInt(emoteList.Count);
-            foreach (int emoteId in emoteList)
-            {
+            foreach (int emoteId in emoteList) {
                 pWriter.WriteInt(emoteId)
                     .WriteInt(1)
                     .WriteLong();

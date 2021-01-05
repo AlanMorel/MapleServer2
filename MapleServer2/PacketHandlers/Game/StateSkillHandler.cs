@@ -3,19 +3,15 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Game
-{
-    public class StateSkillHandler : GamePacketHandler
-    {
+namespace MapleServer2.PacketHandlers.Game {
+    public class StateSkillHandler : GamePacketHandler {
         public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
         public StateSkillHandler(ILogger<StateSkillHandler> logger) : base(logger) { }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
+        public override void Handle(GameSession session, PacketReader packet) {
             byte function = packet.ReadByte();
-            if (function == 0)
-            {
+            if (function == 0) {
                 // This count seems to increase for each skill used
                 int counter = packet.ReadInt();
                 // objectId for climb, 13641 (0x3549 for swim dash)
@@ -23,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
                 int clientTime = packet.ReadInt();
                 int skillId = packet.ReadInt();
                 packet.ReadShort(); // 1
-                session.Player.Animation = (byte) packet.ReadInt(); // Animation
+                session.Player.Animation = (byte)packet.ReadInt(); // Animation
                 int clientTick = packet.ReadInt();
                 packet.ReadLong(); // 0
 

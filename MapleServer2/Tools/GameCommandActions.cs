@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -52,8 +52,8 @@ namespace MapleServer2.Tools
                     || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
             {
                 var rng = new Random();
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
+                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute)rng.Next(35), 0.01f));
+                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute)rng.Next(35), 0.01f));
             }
 
             var item = new Item(itemId)

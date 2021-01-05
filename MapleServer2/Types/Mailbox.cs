@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MapleServer2.Types
@@ -52,7 +52,7 @@ namespace MapleServer2.Types
             }
 
             return items;
-
+            
         }
 
         public int GetUnreadCount()

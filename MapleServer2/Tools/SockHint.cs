@@ -2,10 +2,8 @@
 using System.Diagnostics;
 using MaplePacketLib2.Tools;
 
-namespace MapleServer2.Tools
-{
-    public enum SockHint
-    {
+namespace MapleServer2.Tools {
+    public enum SockHint {
         Decode1,
         Decode2,
         Decode4,
@@ -15,8 +13,7 @@ namespace MapleServer2.Tools
         DecodeStrA
     }
 
-    public struct SockHintInfo
-    {
+    public struct SockHintInfo {
         public SockHint Hint;
         // Values
         public byte ByteValue;
@@ -27,8 +24,7 @@ namespace MapleServer2.Tools
 
         public string Name; // Name of node
 
-        public SockHintInfo(SockHint hint, string value, string name = "Unknown")
-        {
+        public SockHintInfo(SockHint hint, string value, string name = "Unknown") {
             this.Hint = hint;
             byte.TryParse(value, out ByteValue);
             short.TryParse(value, out ShortValue);
@@ -38,10 +34,8 @@ namespace MapleServer2.Tools
             Name = name;
         }
 
-        public void Update(PacketWriter packet)
-        {
-            switch (Hint)
-            {
+        public void Update(PacketWriter packet){
+            switch (Hint) {
                 case SockHint.Decode1:
                     packet.WriteByte(ByteValue);
                     break;
@@ -67,12 +61,10 @@ namespace MapleServer2.Tools
         }
     }
 
-    public static class SockHintExtensions
-    {
+    public static class SockHintExtensions {
         // MapleShark Script Code
         public static string GetScript(this SockHint hint, string name = "Unknown") =>
-            hint switch
-            {
+            hint switch {
                 SockHint.Decode1 => $"AddByte(\"{name}\");",
                 SockHint.Decode2 => $"AddShort(\"{name}\");",
                 SockHint.Decode4 => $"AddInt(\"{name}\");",
@@ -85,8 +77,7 @@ namespace MapleServer2.Tools
 
         // PacketWriter Code
         public static string GetCode(this SockHint hint) =>
-            hint switch
-            {
+            hint switch {
                 SockHint.Decode1 => $"pWriter.WriteByte();",
                 SockHint.Decode2 => $"pWriter.WriteShort();",
                 SockHint.Decode4 => $"pWriter.WriteInt();",
@@ -97,10 +88,8 @@ namespace MapleServer2.Tools
                 _ => throw new ArgumentException($"Unexpected hint: {hint}")
             };
 
-        public static SockHint ToSockHint(this string sockHint)
-        {
-            sockHint = sockHint switch
-            {
+        public static SockHint ToSockHint(this string sockHint) {
+            sockHint = sockHint switch {
                 "1" => SockHint.Decode1.ToString(),
                 "2" => SockHint.Decode2.ToString(),
                 "4" => SockHint.Decode4.ToString(),

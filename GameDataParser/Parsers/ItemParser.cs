@@ -4,24 +4,23 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
-using Maple2Storage.Types;
+using GameDataParser.Crypto.Common;
 using Maple2Storage.Types.Metadata;
+using Maple2Storage.Types;
 using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
     public static class ItemParser
     {
-
+        
         public static List<ItemMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
             List<ItemMetadata> items = new List<ItemMetadata>();
             foreach (PackFileEntry entry in entries)
             {
-                if (!entry.Name.StartsWith("item/"))
-                    continue;
+                if (!entry.Name.StartsWith("item/")) continue;
 
                 ItemMetadata metadata = new ItemMetadata();
                 string itemId = Path.GetFileNameWithoutExtension(entry.Name);

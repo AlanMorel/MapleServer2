@@ -19,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            StateHandlerMode mode = (StateHandlerMode) packet.ReadByte();
+            StateHandlerMode mode = (StateHandlerMode)packet.ReadByte();
 
             switch (mode)
             {

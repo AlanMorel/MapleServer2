@@ -1,12 +1,12 @@
-﻿using System;
-using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Packets;
 using Microsoft.Extensions.Logging;
+using Maple2Storage.Types;
+using MapleServer2.Data.Static;
+using System;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -26,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
+            RequestTaxiMode mode = (RequestTaxiMode)packet.ReadByte();
 
             int mapId = 0;
             long mesoPrice = 60000;

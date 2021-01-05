@@ -1,7 +1,5 @@
-﻿namespace MapleServer2.Enums
-{
-    public enum PlayerState
-    {
+﻿namespace MapleServer2.Enums {
+    public enum PlayerState {
         None = 0,
         Idle = 1,
         Walk = 2,

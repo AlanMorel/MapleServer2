@@ -2,10 +2,8 @@
 using System.IO;
 using GameDataParser.Crypto.Common;
 
-namespace GameDataParser.Crypto.Stream
-{
-    public class PackStreamVer3 : IPackStream
-    {
+namespace GameDataParser.Crypto.Stream {
+    public class PackStreamVer3 : IPackStream {
         // OS2F/PS2F
         public PackVersion Version { get; }
 
@@ -22,16 +20,13 @@ namespace GameDataParser.Crypto.Stream
 
         private uint reserved;
 
-        private PackStreamVer3(PackVersion version)
-        {
+        private PackStreamVer3(PackVersion version) {
             this.Version = version;
             this.FileList = new List<PackFileEntry>();
         }
 
-        public static PackStreamVer3 ParseHeader(BinaryReader reader, PackVersion version)
-        {
-            return new PackStreamVer3(version)
-            {
+        public static PackStreamVer3 ParseHeader(BinaryReader reader, PackVersion version) {
+            return new PackStreamVer3(version) {
                 FileListCount = reader.ReadUInt32(),
                 reserved = reader.ReadUInt32(),
                 CompressedDataSize = reader.ReadUInt64(),
@@ -43,8 +38,7 @@ namespace GameDataParser.Crypto.Stream
             };
         }
 
-        public void Encode(BinaryWriter pWriter)
-        {
+        public void Encode(BinaryWriter pWriter) {
             pWriter.Write(this.FileListCount);
             pWriter.Write(this.reserved);
             pWriter.Write(this.CompressedDataSize);
@@ -55,10 +49,8 @@ namespace GameDataParser.Crypto.Stream
             pWriter.Write(this.HeaderSize);
         }
 
-        public void InitFileList(BinaryReader reader)
-        {
-            for (ulong i = 0; i < FileListCount; i++)
-            {
+        public void InitFileList(BinaryReader reader) {
+            for (ulong i = 0; i < FileListCount; i++) {
                 IPackFileHeader fileHeader = new PackFileHeaderVer3(Version, reader);
                 FileList[fileHeader.FileIndex - 1].FileHeader = fileHeader;
             }

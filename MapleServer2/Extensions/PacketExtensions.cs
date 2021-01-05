@@ -1,17 +1,13 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression;
 using MaplePacketLib2.Tools;
 
-namespace MapleServer2.Extensions
-{
-    public static class PacketExtensions
-    {
+namespace MapleServer2.Extensions {
+    public static class PacketExtensions {
         private const int INT_SIZE = 4;
 
         // Write data deflated using Zlib
-        public static PacketWriter WriteDeflated(this PacketWriter pWriter, byte[] data, int offset, int length)
-        {
-            if (length <= 4)
-            {
+        public static PacketWriter WriteDeflated(this PacketWriter pWriter, byte[] data, int offset, int length) {
+            if (length <= 4) {
                 return pWriter.WriteInt(length).Write(data);
             }
 
@@ -26,11 +22,9 @@ namespace MapleServer2.Extensions
             deflater.SetInput(data, offset, length);
             deflater.Finish();
 
-            while (true)
-            {
+            while (true) {
                 int count = deflater.Deflate(pWriter.Buffer, pWriter.Length, pWriter.Remaining);
-                if (count <= 0)
-                {
+                if (count <= 0) {
                     break;
                 }
 
@@ -47,8 +41,7 @@ namespace MapleServer2.Extensions
             return pWriter;
         }
 
-        private static PacketWriter WriteIntBigEndian(this PacketWriter pWriter, int value)
-        {
+        private static PacketWriter WriteIntBigEndian(this PacketWriter pWriter, int value) {
             return pWriter.WriteByte((byte) (value >> 24))
                 .WriteByte((byte) (value >> 16))
                 .WriteByte((byte) (value >> 8))

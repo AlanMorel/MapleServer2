@@ -12,16 +12,13 @@ using MapleServer2.Servers.Login;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.PacketHandlers.Common
-{
-    public class ResponseKeyHandler : CommonPacketHandler
-    {
+namespace MapleServer2.PacketHandlers.Common {
+    public class ResponseKeyHandler : CommonPacketHandler {
         public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 
-        public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) { }
+        public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) {}
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
+        public override void Handle(GameSession session, PacketReader packet) {
             long accountId = packet.ReadLong();
             AuthData authData = AuthStorage.GetData(accountId);
 
@@ -69,8 +66,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(AdventureLevelPacket.Prestige(session.Player));
 
             // Load inventory tabs
-            foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
-            {
+            foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab))) {
                 InventoryController.LoadInventoryTab(session, tab);
             }
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
@@ -125,8 +121,7 @@ namespace MapleServer2.PacketHandlers.Common
             //session.Send(ServerEnterPacket.Confirm());
         }
 
-        public override void Handle(LoginSession session, PacketReader packet)
-        {
+        public override void Handle(LoginSession session, PacketReader packet) {
             session.AccountId = packet.ReadLong();
 
             // Backwards seeking because we read accountId here
@@ -134,20 +129,16 @@ namespace MapleServer2.PacketHandlers.Common
             HandleCommon(session, packet);
         }
 
-        protected override void HandleCommon(Session session, PacketReader packet)
-        {
+        protected override void HandleCommon(Session session, PacketReader packet) {
             long accountId = packet.ReadLong();
             int tokenA = packet.ReadInt();
             int tokenB = packet.ReadInt();
 
             logger.Info($"LOGIN USER: {accountId}");
             AuthData authData = AuthStorage.GetData(accountId);
-            if (authData == null)
-            {
+            if (authData == null) {
                 throw new ArgumentException("Attempted connection to game with unauthorized account");
-            }
-            else if (tokenA != authData.TokenA || tokenB != authData.TokenB)
-            {
+            } else if (tokenA != authData.TokenA || tokenB != authData.TokenB) {
                 throw new ArgumentException("Attempted login with invalid tokens...");
             }
 
