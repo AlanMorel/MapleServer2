@@ -1,5 +1,5 @@
 ﻿using System;
-using DatabaseHandler;
+using DatabaseHandler.Model;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
