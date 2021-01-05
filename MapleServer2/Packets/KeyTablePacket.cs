@@ -22,7 +22,7 @@ namespace MapleServer2.Packets
 
         public static Packet SendFullOptions(GameOptions options)
         {
-            var pWriter = PacketWriter.Of(SendOp.KEY_TABLE)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE)
                 .WriteByte(0x00)
                 .WriteBool(false);
 

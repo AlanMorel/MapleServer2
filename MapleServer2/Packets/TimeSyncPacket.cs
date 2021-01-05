@@ -12,7 +12,7 @@ namespace MapleServer2.Packets
     {
         public static Packet Response(int key)
         {
-            var pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
             pWriter.WriteByte(0x00); // Response
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
@@ -26,7 +26,7 @@ namespace MapleServer2.Packets
         // Request client to make a request
         public static Packet Request()
         {
-            var pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
             pWriter.WriteByte(0x02); // 1 and 2
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
@@ -38,7 +38,7 @@ namespace MapleServer2.Packets
 
         public static Packet SetInitial1()
         {
-            var pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
             pWriter.WriteByte(0x01); // 1 and 2
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
@@ -50,7 +50,7 @@ namespace MapleServer2.Packets
 
         public static Packet SetInitial2()
         {
-            var pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
             pWriter.WriteByte(0x03);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 

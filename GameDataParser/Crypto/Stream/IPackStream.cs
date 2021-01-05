@@ -43,7 +43,7 @@ namespace GameDataParser.Crypto.Stream
         */
         public static IPackStream CreateStream(BinaryReader pHeader)
         {
-            var version = (PackVersion) pHeader.ReadUInt32();
+            PackVersion version = (PackVersion) pHeader.ReadUInt32();
             return version switch
             {
                 PackVersion.MS2F => PackStreamVer1.ParseHeader(pHeader),

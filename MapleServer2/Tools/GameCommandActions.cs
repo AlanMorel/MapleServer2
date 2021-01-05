@@ -54,16 +54,16 @@ namespace MapleServer2.Tools
             }
 
             // Add some bonus attributes to equips and pets
-            var stats = new ItemStats();
+            ItemStats stats = new ItemStats();
             if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
                     || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
             {
-                var rng = new Random();
+                Random rng = new Random();
                 stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
                 stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
             }
 
-            var item = new Item(itemId)
+            Item item = new Item(itemId)
             {
                 Uid = Environment.TickCount64,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -119,7 +119,7 @@ namespace MapleServer2.Tools
         {
             Dictionary<string, string> config = command.ToMap();
             int.TryParse(config.GetValueOrDefault("id", "11003146"), out int npcId);
-            var npc = new Npc(npcId);
+            Npc npc = new Npc(npcId);
             byte.TryParse(config.GetValueOrDefault("ani", "-1"), out npc.Animation);
             short.TryParse(config.GetValueOrDefault("dir", "2700"), out npc.Rotation);
 
@@ -140,7 +140,7 @@ namespace MapleServer2.Tools
         {
             string[] args = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            var map = new Dictionary<string, string>();
+            Dictionary<string, string> map = new Dictionary<string, string>();
             foreach (string arg in args)
             {
                 string[] entry = arg.Split(new[] { ':', '=' }, StringSplitOptions.RemoveEmptyEntries);

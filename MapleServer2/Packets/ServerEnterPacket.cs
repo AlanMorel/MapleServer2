@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     {
         public static Packet Enter(GameSession session)
         {
-            var pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteLong(session.Player.CharacterId);
             pWriter.WriteShort(1); // channel

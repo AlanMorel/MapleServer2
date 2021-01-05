@@ -46,8 +46,8 @@ namespace MapleServer2.PacketHandlers.Login
             packet.ReadShort(); // 01 00
             logger.Info($"Logging in to game with char id: {charId}");
 
-            var endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
-            var authData = new AuthData
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
+            AuthData authData = new AuthData
             {
                 TokenA = session.GetToken(),
                 TokenB = session.GetToken(),
@@ -68,10 +68,10 @@ namespace MapleServer2.PacketHandlers.Login
             // var jobCode = (Job)packet.ReadShort();
             int jobCode = packet.ReadShort();
             string name = packet.ReadUnicodeString();
-            var skinColor = packet.Read<SkinColor>();
+            SkinColor skinColor = packet.Read<SkinColor>();
             //packet.ReadShort(); // const?
             packet.Skip(2);
-            var Equips = new Dictionary<ItemSlot, Item>();
+            Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
 
             logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {jobCode}");
 
@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Login
                 {
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
-                var equipColor = packet.Read<EquipColor>();
+                EquipColor equipColor = packet.Read<EquipColor>();
                 int colorIndex = packet.ReadInt();
 
                 switch (type)
@@ -170,7 +170,7 @@ namespace MapleServer2.PacketHandlers.Login
             // Check if name is in use (currently just on local account)
             bool taken = false;
 
-            foreach (var character in AccountStorage.Characters.Values)
+            foreach (Player character in AccountStorage.Characters.Values)
             {
                 if (character.Name.ToLower().Equals(name.ToLower()))
                 {

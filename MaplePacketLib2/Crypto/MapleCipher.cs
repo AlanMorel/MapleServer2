@@ -30,14 +30,14 @@ namespace MaplePacketLib2.Crypto
 
         public static MapleCipher Encryptor(uint version, uint iv, uint blockIV)
         {
-            var cipher = new MapleCipher(version, iv, blockIV);
+            MapleCipher cipher = new MapleCipher(version, iv, blockIV);
             cipher.Transform = cipher.Encrypt;
             return cipher;
         }
 
         public static MapleCipher Decryptor(uint version, uint iv, uint blockIV)
         {
-            var cipher = new MapleCipher(version, iv, blockIV);
+            MapleCipher cipher = new MapleCipher(version, iv, blockIV);
             cipher.Transform = cipher.Decrypt;
             return cipher;
         }
@@ -51,7 +51,7 @@ namespace MaplePacketLib2.Crypto
         {
             ushort encSeq = EncodeSeqBase();
 
-            var writer = new PacketWriter(packet.Length + HEADER_SIZE);
+            PacketWriter writer = new PacketWriter(packet.Length + HEADER_SIZE);
             writer.Write(encSeq);
             writer.Write(packet.Length);
             writer.Write(packet);
@@ -86,7 +86,7 @@ namespace MaplePacketLib2.Crypto
             List<ICrypter> cryptSeq = new List<ICrypter>();
             while (blockIV > 0)
             {
-                var crypter = crypt[blockIV % 10];
+                ICrypter crypter = crypt[blockIV % 10];
                 if (crypter != null)
                 {
                     cryptSeq.Add(crypter);
@@ -109,7 +109,7 @@ namespace MaplePacketLib2.Crypto
 
         private Packet Decrypt(byte[] packet)
         {
-            var reader = new PacketReader(packet);
+            PacketReader reader = new PacketReader(packet);
             int packetSize = ReadHeader(reader);
 
             packet = reader.Read(packetSize);

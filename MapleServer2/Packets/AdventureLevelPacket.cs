@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
     {
         public static Packet Prestige(Player player)
         {
-            var pWriter = PacketWriter.Of(SendOp.ADVENTURE_LEVEL)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ADVENTURE_LEVEL)
                 .WriteByte(0x00)
                 .WriteLong(player.PrestigeExperience) // PrestigeExp
                 .WriteInt(player.PrestigeLevel) // PrestigeLevel

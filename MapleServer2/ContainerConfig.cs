@@ -10,7 +10,7 @@ namespace MapleServer2
         {
             builder.Register((c) =>
             {
-                var factory = new LoggerFactory();
+                LoggerFactory factory = new LoggerFactory();
                 factory.AddProvider(new NLogLoggerProvider());
                 return factory;
             })

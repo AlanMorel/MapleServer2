@@ -14,7 +14,7 @@
 
         public PacketReader Reader()
         {
-            var pReader = new PacketReader(Buffer) { Length = Length };
+            PacketReader pReader = new PacketReader(Buffer) { Length = Length };
             return pReader;
         }
 

@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
     {
         public static Packet Open(Player player)
         {
-            var pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
 
             // Expect 4 bytes
             // 0X 00 00 00 breaks map

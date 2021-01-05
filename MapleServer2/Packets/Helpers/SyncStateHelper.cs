@@ -9,7 +9,7 @@ namespace MapleServer2.Packets.Helpers
     {
         public static SyncState ReadSyncState(this PacketReader packet)
         {
-            var state = new SyncState();
+            SyncState state = new SyncState();
 
             state.Animation1 = packet.ReadByte();
             state.Animation2 = packet.ReadByte();

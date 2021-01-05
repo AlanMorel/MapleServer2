@@ -51,7 +51,7 @@ namespace MaplePacketLib2.Crypto
 
         private static void Shuffle(byte[] data, uint version)
         {
-            var rand32 = new Rand32((uint) Math.Pow(version, 2));
+            Rand32 rand32 = new Rand32((uint) Math.Pow(version, 2));
             for (int i = TABLE_SIZE - 1; i >= 1; i--)
             {
                 byte rand = (byte) (rand32.Random() % (i + 1));

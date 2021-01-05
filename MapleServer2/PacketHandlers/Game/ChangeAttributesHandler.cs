@@ -47,9 +47,9 @@ namespace MapleServer2.PacketHandlers.Game
             if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
             {
                 item.TimesAttributesChanged++;
-                var newItem = new Item(item);
+                Item newItem = new Item(item);
                 int attributeCount = newItem.Stats.BonusAttributes.Count;
-                var rng = new Random();
+                Random rng = new Random();
                 for (int i = 0; i < attributeCount; i++)
                 {
                     if (i == lockIndex)

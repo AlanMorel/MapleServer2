@@ -31,7 +31,7 @@ namespace GameDataParser.Crypto.Common
             byte[][] result = new byte[this.Count][];
 
             byte[] data = (byte[]) this.resourceManager.GetObject(this.resourceName);
-            using (var reader = new BinaryReader(new MemoryStream(data)))
+            using (BinaryReader reader = new BinaryReader(new MemoryStream(data)))
             {
                 for (int i = 0; i < this.Count; i++)
                 {

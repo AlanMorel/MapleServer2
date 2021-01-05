@@ -22,7 +22,7 @@ namespace MapleServer2.Extensions
             // Length of inflated buffer for client to use.
             pWriter.WriteIntBigEndian(length);
 
-            var deflater = new Deflater(Deflater.BEST_SPEED);
+            Deflater deflater = new Deflater(Deflater.BEST_SPEED);
             deflater.SetInput(data, offset, length);
             deflater.Finish();
 

@@ -34,7 +34,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleStartRide(GameSession session, PacketReader packet)
         {
-            var type = (RideType) packet.ReadByte();
+            RideType type = (RideType) packet.ReadByte();
             int mountId = packet.ReadInt();
             packet.ReadLong();
             long mountUid = packet.ReadLong();
