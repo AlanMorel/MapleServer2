@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Numerics;
 using DatabaseHandler;
 using System.Collections.Generic;
@@ -104,7 +104,7 @@ namespace MapleServer2.Types
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
-            DatabaseController DBcontrol = new DatabaseController();
+            DB_CharController DBcontrol = new DB_CharController();
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
@@ -112,7 +112,7 @@ namespace MapleServer2.Types
                 XmlParser.ParseSkills(job)
             };
 
-            Character CharInfo = DBcontrol.GetCharByID(1);
+            Character CharInfo = DBcontrol.GetCharByID(accountId);
 
             Player player = new Player
             {
