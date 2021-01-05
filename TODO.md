@@ -1,0 +1,48 @@
+### Features TODO
+- Achieve
+- Quest system
+- Mobs (different behavior, moving around, spawning on field)
+- Attributes/stats on Player
+- Dungeons (Instance of dungeons, rewards, more)
+- Exp System (Leveling up, get exp from quest, mob exp, more)
+- Battle System (Dealing damage, taking damage, damage, affecting stats, more)
+- Black Market (selling item, buying item, list on market, retrieving currency, more)
+- Pets (affecting stats, more)
+- Mounts
+- Cutscenes
+- Gathering
+- Housing
+- Crafting system
+- Prestige system
+- Adventure system
+- Reputation
+- Traits
+- Lapenshards
+- World Map
+- Minimap
+- CharacterInfo (Mastery, more)
+- Guild system
+- Club system
+- Taxi system
+- Fishing system
+- NPC scripts
+
+### Engineering TODO
+- Implement unknown mode logging on handlers (ex: RequestItemInventoryHandler.cs)
+- Make each mode in handler handled in a different method (ex: RequestItemInventoryHandler.cs)
+- Create methods for common actions like warping and removing mesos/merets
+- Format all files in the codebase
+- Use 1 packet file per SendOp
+- Replace all hard-coded modes in send packets with enums
+- Move handshake packet code to Packet file
+- Remove ability to chain PacketWriter, make each write be its own line of code
+- Remove all uses of `var` from the source
+- Rewrite logging system
+- Rewrite broadcast packet system
+- Implement database
+- Implement full inventory handling
+- Implement separate Channels
+- Rewrite Networking + Sessions
+- Remove all PacketWriter instances outside of standalone Packet files
+- Set unlocked titles as array in Player, replace hard-coded list
+- Remove public void Send(params byte[] packet) inside Session.cs
