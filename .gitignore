@@ -5,3 +5,5 @@ obj/
 *.cache
 GameDataParser/Resources
 Maple2Storage/Resources
+/DatabaseHandler/Character.cs
+/DatabaseHandler/Account.cs
