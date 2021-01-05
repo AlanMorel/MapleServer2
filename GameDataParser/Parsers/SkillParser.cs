@@ -114,15 +114,7 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<SkillMetadata> skills)
         {
-            try
-            {
-                File.Delete(VariableDefines.OUTPUT + "ms2-skill-metadata");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT + "ms2-skill-metadata"))
+            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-skill-metadata"))
             {
                 Serializer.Serialize(writeStream, skills);
             }

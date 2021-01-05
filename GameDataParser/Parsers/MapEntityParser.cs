@@ -225,15 +225,7 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<MapEntityMetadata> entities)
         {
-            try
-            {
-                File.Delete(VariableDefines.OUTPUT + "ms2-map-entity-metadata");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            using (FileStream writeStream = File.OpenWrite(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
+            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
