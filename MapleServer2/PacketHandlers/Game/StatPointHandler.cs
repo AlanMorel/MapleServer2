@@ -13,19 +13,23 @@ namespace MapleServer2.PacketHandlers.Game
 
         public StatPointHandler(ILogger<StatPointHandler> logger) : base(logger) { }
 
+        private enum StatPointMode : byte
+        {
+            Increment = 0x2,
+            Reset = 0x3
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            StatPointMode mode = (StatPointMode) packet.ReadByte();
 
             switch (mode)
             {
-                case 2: 
-                    // Increment attribute point
+                case StatPointMode.Increment:
                     HandleStatIncrement(session, packet);
                     break;
-                case 3:
-                    // Reset attribute distribution
-                    HandleResetStatDistribtuion(session, packet);
+                case StatPointMode.Reset:
+                    HandleResetStatDistribution(session);
                     break;
             }
         }
@@ -35,14 +39,12 @@ namespace MapleServer2.PacketHandlers.Game
             byte statTypeIndex = packet.ReadByte();
             StatPointPacket.AddStatPoint(session.Player, statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
-            session.Send(SendStatPacket.WriteCharacterStats(session.Player));
         }
 
-        private void HandleResetStatDistribtuion(GameSession session, PacketReader packet)
+        private void HandleResetStatDistribution(GameSession session)
         {
             StatPointPacket.ResetStatPoints(session.Player);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
-            session.Send(SendStatPacket.WriteCharacterStats(session.Player));
         }
     }
 }

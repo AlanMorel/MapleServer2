@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MapleServer2.Types
 {
-    public class StatDistribution    {
+    public class StatDistribution
+    {
 
         public int TotalStatPoints { get; private set; }
         // TODO: implement Dictionary to keep track of points earned from quest, trophy, exploration, prestige
@@ -39,9 +40,6 @@ namespace MapleServer2.Types
             {
                 AllocatedStats[StatType] = 1;
             }
-
-            Console.WriteLine("Stat Distribution: " + ToDebugString(AllocatedStats));
-
         }
 
         public void ResetPoints()
@@ -53,9 +51,8 @@ namespace MapleServer2.Types
         {
             // returns a count of how many types of Stats have had points added to them
             // ex. a character has Strength and Intelligence points allocated - function returns 2 
-            byte statTypeCount = (byte) AllocatedStats.Count;
 
-            return statTypeCount;
+            return (byte) AllocatedStats.Count;
         }
 
         public static string ToDebugString<TKey, TValue>(Dictionary<TKey, TValue> dictionary)

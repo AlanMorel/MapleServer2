@@ -8,13 +8,18 @@ namespace MapleServer2.Packets
 {
     public static class StatPointPacket
     {
+        private enum StatPointPacketMode : byte
+        {
+            TotalPoints = 0x0,
+            StatDistribution = 0x1
+        }
+
         public static Packet WriteTotalStatPoints(Player character)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
-            // sends back some 41 character length packet with mode 00
-            // this represents the total number of stat points gained and how each stat point was obtained (ie quest, trophy, exploration, prestige)
-            // sent when FieldEnterHandler is called?
-            pWriter.WriteByte(0);
+            // sends back 41 character length packet which represents the total number of stat points gained and
+            // how each stat point was obtained (ie quest, trophy, exploration, prestige)
+            pWriter.WriteByte((byte) StatPointPacketMode.TotalPoints);
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
 
             return pWriter;
@@ -25,20 +30,18 @@ namespace MapleServer2.Packets
             // sends back a packet that updates or loads the character's current stat distribution
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
 
-            // write mode
-            pWriter.WriteByte(1);
+            pWriter.WriteByte((byte) StatPointPacketMode.StatDistribution);
             // write number of attribute points the character has
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints); //TODO: FIGURE OUT HOW TO SAVE TOTAL NUMBER OF ATTRIBUTE POINTS 
 
             // write the number of types of stat points that have points allocated
             pWriter.WriteInt(character.StatPointDistribution.GetStatTypeCount());
 
-            // run through each entry in the character's AllocatedStats dictionary
-            foreach (var StatType in character.StatPointDistribution.AllocatedStats.Keys.ToList())
+            foreach (byte statType in character.StatPointDistribution.AllocatedStats.Keys.ToList())
             {
                 // write the Stat Type (ex. Strength), then int value of points allocated
-                pWriter.WriteByte(StatType);
-                pWriter.WriteInt(character.StatPointDistribution.AllocatedStats[StatType]);
+                pWriter.WriteByte(statType);
+                pWriter.WriteInt(character.StatPointDistribution.AllocatedStats[statType]);
             }
 
             return pWriter;
