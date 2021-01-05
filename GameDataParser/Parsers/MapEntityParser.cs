@@ -26,8 +26,8 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
+                // Check if file is valid
                 string objStr = entry.Name.ToLower();
-
                 if (string.IsNullOrEmpty(objStr))
                 {
                     continue;
@@ -38,12 +38,12 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
+                // Parse XML
                 XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
-
                 XmlElement root = document.DocumentElement;
-                string objectName = root.Attributes["name"].Value.ToLower();
-
                 XmlNodeList objProperties = document.SelectNodes("/model/property");
+
+                string objectName = root.Attributes["name"].Value.ToLower();
 
                 foreach (XmlNode node in objProperties)
                 {
@@ -60,16 +60,21 @@ namespace GameDataParser.Parsers
                 }
             }
 
+            // Iterate over map xblocks
             List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
             Dictionary<string, string> maps = new Dictionary<string, string>();
             foreach (PackFileEntry entry in entries)
             {
                 if (!entry.Name.StartsWith("xblock/"))
+                {
                     continue;
+                }
 
                 string mapIdStr = Regex.Match(entry.Name, @"\d{8}").Value;
                 if (string.IsNullOrEmpty(mapIdStr))
+                {
                     continue;
+                }
                 int mapId = int.Parse(mapIdStr);
                 if (maps.ContainsKey(mapIdStr))
                 {
@@ -107,7 +112,7 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
-                        CoordB coord = ParseCoordB(coordMatch.Value);
+                        CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
                         metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName])));
                     }
                 }
@@ -215,16 +220,6 @@ namespace GameDataParser.Parsers
                 (short) float.Parse(coord[0]),
                 (short) float.Parse(coord[1]),
                 (short) float.Parse(coord[2])
-            );
-        }
-
-        private static CoordB ParseCoordB(string value)
-        {
-            string[] coord = value.Split(", ");
-            return CoordB.From(
-                (sbyte) sbyte.Parse(coord[0]),
-                (sbyte) sbyte.Parse(coord[1]),
-                (sbyte) sbyte.Parse(coord[2])
             );
         }
 

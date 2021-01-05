@@ -3,6 +3,8 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Data.Static;
+using Maple2Storage.Types.Metadata;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -13,16 +15,22 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestCubeHandler(ILogger<RequestCubeHandler> logger) : base(logger) { }
 
+        private enum Mode : byte
+        {
+            Pickup = 0x11,
+            Drop = 0x12
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            Mode mode = (Mode) packet.ReadByte();
 
             switch (mode)
             {
-                case 0x11: // Pickup item
+                case Mode.Pickup:
                     HandlePickup(session, packet);
                     break;
-                case 0x12: // Drop item
+                case Mode.Drop:
                     HandleDrop(session);
                     break;
             }
@@ -32,8 +40,23 @@ namespace MapleServer2.PacketHandlers.Game
         {
             byte[] coords = packet.Read(3);
 
+            // Convert to signed byte array
+            sbyte[] sCoords = Array.ConvertAll(coords, b => unchecked((sbyte) b));
+            // Default to rainbow tree
+            int weaponId = 18000004;
+
+            // Find matching mapObject
+            foreach (MapObject mapObject in MapEntityStorage.GetObjects(session.Player.MapId))
+            {
+                if (mapObject.Coord.Equals(sCoords[0], sCoords[1], sCoords[2]))
+                {
+                    weaponId = mapObject.WeaponId;
+                    break;
+                }
+            }
+
             // Pickup item then set battle state to true
-            session.Send(ResponseCubePacket.Pickup(session, coords));
+            session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
             session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
 

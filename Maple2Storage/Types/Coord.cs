@@ -116,6 +116,21 @@ namespace Maple2Storage.Types
             return From((sbyte) (X + other.X), (sbyte) (Y + other.Y), (sbyte) (Z + other.Z));
         }
 
+        public readonly bool Equals(sbyte x, sbyte y, sbyte z)
+        {
+            return X == x && Y == y && Z == z;
+        }
+
+        public static CoordB Parse(string value, string separator)
+        {
+            string[] coord = value.Split(separator);
+            return CoordB.From(
+                (sbyte) sbyte.Parse(coord[0]),
+                (sbyte) sbyte.Parse(coord[1]),
+                (sbyte) sbyte.Parse(coord[2])
+            );
+        }
+
         public override string ToString() => $"CoordB({X}, {Y}, {Z})";
     }
 }
