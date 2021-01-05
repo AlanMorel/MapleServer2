@@ -1,8 +1,10 @@
 ﻿using System;
 
-namespace GameDataParser.Crypto.Common {
+namespace GameDataParser.Crypto.Common
+{
     [Flags]
-    public enum Encryption : uint {
+    public enum Encryption : uint
+    {
         // Standard crypto: Base64 Encoded + AES Encrypted buffers.
         Aes = 0xEE000000,
         // Zlib compression.

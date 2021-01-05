@@ -13,7 +13,7 @@ namespace DatabaseHandler
         {
             using(Maplestory2DBEntities context = new Maplestory2DBEntities()) 
             {
-                Character account = new Character() 
+                Character character = new Character() 
                 {
                     Account_ID = 1,
                     Name = "DBCharTest",
@@ -22,7 +22,7 @@ namespace DatabaseHandler
                     Job_ID = 50,
                     Map_ID = 2000062
                 };
-                context.Characters.Add(account);
+                context.Characters.Add(character);
                 context.SaveChanges();
             }
         }

@@ -1,22 +1,28 @@
 ﻿using System;
 
-namespace MaplePacketLib2.Tools {
+namespace MaplePacketLib2.Tools
+{
     // Converts a stream of bytes into individual packets
-    public class MapleStream {
+    public class MapleStream
+    {
         private const int DEFAULT_SIZE = 4096;
         private const int HEADER_SIZE = 6;
 
         private byte[] buffer = new byte[DEFAULT_SIZE];
         private int cursor;
 
-        public void Write(byte[] packet) {
+        public void Write(byte[] packet)
+        {
             Write(packet, 0, packet.Length);
         }
 
-        public void Write(byte[] packet, int offset, int length) {
-            if (buffer.Length - cursor < length) {
+        public void Write(byte[] packet, int offset, int length)
+        {
+            if (buffer.Length - cursor < length)
+            {
                 int newSize = buffer.Length * 2;
-                while (newSize < cursor + length) {
+                while (newSize < cursor + length)
+                {
                     newSize *= 2;
                 }
                 byte[] newBuffer = new byte[newSize];
@@ -27,15 +33,18 @@ namespace MaplePacketLib2.Tools {
             cursor += length;
         }
 
-        public bool TryRead(out byte[] packet) {
-            if (cursor < HEADER_SIZE) {
+        public bool TryRead(out byte[] packet)
+        {
+            if (cursor < HEADER_SIZE)
+            {
                 packet = null;
                 return false;
             }
 
             int packetSize = BitConverter.ToInt32(buffer, 2);
             int bufferSize = HEADER_SIZE + packetSize;
-            if (cursor < bufferSize) {
+            if (cursor < bufferSize)
+            {
                 packet = null;
                 return false;
             }

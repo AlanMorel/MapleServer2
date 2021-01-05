@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using GameDataParser.Crypto.Common;
 
-namespace GameDataParser.Crypto.Stream {
-    public class PackFileHeaderVer3 : IPackFileHeader {
+namespace GameDataParser.Crypto.Stream
+{
+    public class PackFileHeaderVer3 : IPackFileHeader
+    {
         // OS2F/PS2F
         public PackVersion Version { get; }
 
@@ -15,12 +17,14 @@ namespace GameDataParser.Crypto.Stream {
 
         private readonly int[] reserved;
 
-        private PackFileHeaderVer3(PackVersion version) {
+        private PackFileHeaderVer3(PackVersion version)
+        {
             this.Version = version;
             this.reserved = new int[1];
         }
 
-        public PackFileHeaderVer3(PackVersion version, BinaryReader reader) : this(version) {
+        public PackFileHeaderVer3(PackVersion version, BinaryReader reader) : this(version)
+        {
             this.BufferFlag = (Encryption) reader.ReadUInt32(); //[ecx+8]
             this.FileIndex = reader.ReadInt32(); //[ecx+12]
             this.EncodedFileSize = reader.ReadUInt32(); //[ecx+16]
@@ -31,10 +35,12 @@ namespace GameDataParser.Crypto.Stream {
         }
 
         public static PackFileHeaderVer3 CreateHeader(PackVersion version, int index, Encryption flag, ulong offset,
-                byte[] data) {
+                byte[] data)
+        {
             CryptoManager.Encrypt(version, data, flag, out uint size, out uint compressedSize, out uint encodedSize);
 
-            return new PackFileHeaderVer3(version) {
+            return new PackFileHeaderVer3(version)
+            {
                 BufferFlag = flag,
                 FileIndex = index,
                 EncodedFileSize = encodedSize,
@@ -44,7 +50,8 @@ namespace GameDataParser.Crypto.Stream {
             };
         }
 
-        public void Encode(BinaryWriter pWriter) {
+        public void Encode(BinaryWriter pWriter)
+        {
             pWriter.Write((uint) this.BufferFlag);
             pWriter.Write(this.FileIndex);
             pWriter.Write(this.EncodedFileSize);

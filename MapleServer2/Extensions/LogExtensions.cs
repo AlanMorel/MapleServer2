@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.Extensions {
+namespace MapleServer2.Extensions
+{
     /// <summary>
     /// Copy of <see cref="Microsoft.Extensions.Logging.LoggerExtensions"/> with simpler interface.
     /// </summary>
-    public static class LogExtensions {
+    public static class LogExtensions
+    {
         //------------------------------------------DEBUG------------------------------------------//
 
         /// <summary>

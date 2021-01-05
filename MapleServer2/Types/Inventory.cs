@@ -45,6 +45,7 @@ namespace MapleServer2.Types
         }
 
         // TODO: precompute next free slot to avoid iteration on Add
+        // TODO: Stack items when they are the same
         // Returns false if inventory is full
         public bool Add(Item item)
         {
@@ -52,7 +53,7 @@ namespace MapleServer2.Types
             if (item.Slot >= 0)
             {
                 if (!SlotTaken(item, item.Slot))
-                {                 
+                {
                     AddInternal(item);
                     return true;
                 }
@@ -191,7 +192,7 @@ namespace MapleServer2.Types
 
         private Dictionary<short, long> GetSlots(InventoryTab tab)
         {
-            return slotMaps[(int)tab];
+            return slotMaps[(int) tab];
         }
     }
 }

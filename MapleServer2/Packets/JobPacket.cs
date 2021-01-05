@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -46,7 +46,7 @@ namespace MapleServer2.Packets
             byte split = character.SkillTabs[0].Split;
             int countId = ids[ids.Length - split]; // Split to last skill id
 
-            pWriter.WriteByte((byte)(ids.Length - split)); // Skill count minus split
+            pWriter.WriteByte((byte) (ids.Length - split)); // Skill count minus split
 
             // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
             foreach (int id in ids)

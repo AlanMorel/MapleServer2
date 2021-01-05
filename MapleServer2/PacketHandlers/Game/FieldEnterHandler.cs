@@ -64,17 +64,17 @@ namespace MapleServer2.PacketHandlers.Game
 
             //Add mail for testing
             //System mail without any item
-           Mail sysMail = new Mail
-           (
-               101,
-               session.Player.CharacterId,
-               "50000002",
-               "",
-               "",
-               0,
-               DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-               null
-           );
+            Mail sysMail = new Mail
+            (
+                101,
+                session.Player.CharacterId,
+                "50000002",
+                "",
+                "",
+                0,
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                null
+            );
 
             // System mail with an item
             List<Item> items = new List<Item>

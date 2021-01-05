@@ -4,8 +4,8 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Text.RegularExpressions;
 using System.Xml;
-using GameDataParser.Files;
 using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
@@ -21,10 +21,12 @@ namespace GameDataParser.Parsers
             Dictionary<string, string> maps = new Dictionary<string, string>();
             foreach (PackFileEntry entry in entries)
             {
-                if (!entry.Name.StartsWith("xblock/")) continue;
+                if (!entry.Name.StartsWith("xblock/"))
+                    continue;
 
                 string mapIdStr = Regex.Match(entry.Name, @"\d{8}").Value;
-                if (string.IsNullOrEmpty(mapIdStr)) continue;
+                if (string.IsNullOrEmpty(mapIdStr))
+                    continue;
                 int mapId = int.Parse(mapIdStr);
                 if (maps.ContainsKey(mapIdStr))
                 {
@@ -93,7 +95,8 @@ namespace GameDataParser.Parsers
                             XmlNode targetNode = parent.SelectSingleNode("property[@name='TargetFieldSN']");
                             XmlNode coordNode = parent.SelectSingleNode("property[@name='Position']");
                             XmlNode rotationNode = parent.SelectSingleNode("property[@name='Rotation']");
-                            if (targetNode == null) continue;
+                            if (targetNode == null)
+                                continue;
 
                             if (!bool.TryParse(visibleNode?.FirstChild.Attributes["value"].Value,
                                     out bool visibleValue))
@@ -150,9 +153,9 @@ namespace GameDataParser.Parsers
         {
             string[] coord = value.Split(", ");
             return CoordS.From(
-                (short)float.Parse(coord[0]),
-                (short)float.Parse(coord[1]),
-                (short)float.Parse(coord[2])
+                (short) float.Parse(coord[0]),
+                (short) float.Parse(coord[1]),
+                (short) float.Parse(coord[2])
             );
         }
 

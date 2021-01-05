@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MapleServer2.Tools;
 
 namespace MapleServer2.Types
@@ -11,7 +11,7 @@ namespace MapleServer2.Types
         public string SenderName { get; private set; }
         public string Title { get; private set; }
         public string Body { get; private set; }
-        public long ReadTimestamp {get; private set;}
+        public long ReadTimestamp { get; private set; }
         public long SentTimestamp { get; private set; }
         public List<Item> Items { get; private set; }
 

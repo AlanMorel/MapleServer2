@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
                 .WriteUnicodeString(player.Name)
                 .WriteByte()
                 .WriteUnicodeString(message)
-                .WriteInt((int)type)
+                .WriteInt((int) type)
                 .WriteByte()
                 .WriteInt(); // Channel
 

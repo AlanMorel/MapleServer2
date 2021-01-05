@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -43,10 +43,13 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((MapEntityMetadata)obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((MapEntityMetadata) obj);
         }
 
         public override int GetHashCode()
@@ -95,10 +98,13 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((MapNpc)obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((MapNpc) obj);
         }
 
         public override int GetHashCode()
@@ -157,15 +163,18 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((MapPortal)obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((MapPortal) obj);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, (byte)Flags, Target, Coord, Rotation);
+            return HashCode.Combine(Id, (byte) Flags, Target, Coord, Rotation);
         }
 
         public static bool operator ==(MapPortal left, MapPortal right)
