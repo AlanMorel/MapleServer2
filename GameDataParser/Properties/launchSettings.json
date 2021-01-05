@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GameDataParser": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)"
+    }
+  }
+}

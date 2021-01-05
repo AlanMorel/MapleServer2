@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DotNetZip" Version="1.15.0" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Files\m2dFiles\" />
+      <Folder Include="Properties\" />
+    </ItemGroup>
+
+</Project>
