@@ -99,6 +99,8 @@ namespace MapleServer2.Types
         public long ClubId;
         // TODO make this as an array
 
+        public long GuildId;
+
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
