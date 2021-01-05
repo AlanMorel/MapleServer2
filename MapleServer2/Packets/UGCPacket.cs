@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
     {
         public static Packet SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11); // Function
             pWriter.WriteUnicodeString(unknownEndpoint); // Serves some random irrq.aspx
             pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
@@ -25,7 +25,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown4()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x04);
             pWriter.WriteByte();
             pWriter.WriteLong();
@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown7()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x07);
             pWriter.WriteLong();
             pWriter.WriteByte(); // condition
@@ -51,7 +51,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown8()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x08);
             SharedSubUGC2(pWriter);
 
@@ -60,7 +60,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown9()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x09);
             pWriter.WriteLong();
             pWriter.WriteInt(); // counter for loop
@@ -74,7 +74,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown11()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x0B);
             pWriter.WriteInt();
             pWriter.WriteLong();
@@ -86,7 +86,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown13To15()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x0D); // Also 0x0E, 0x0F
             pWriter.WriteInt();
             // sub1
@@ -105,7 +105,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown16()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x10);
             pWriter.WriteInt();
             // sub1
@@ -121,7 +121,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown17()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11);
             pWriter.WriteUnicodeString("WstrA");
             pWriter.WriteUnicodeString("WstrA");
@@ -133,7 +133,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown18()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x12);
             // sub1
             pWriter.WriteInt();
@@ -174,7 +174,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown20()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x14);
             pWriter.WriteLong();
             pWriter.WriteInt(); // some count for loop
@@ -193,7 +193,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown21()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x15);
             pWriter.WriteInt(); // some count for loop
             for (int i = 0; i < 0; i++)
@@ -207,7 +207,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unknown22()
         {
-            var pWriter = PacketWriter.Of(SendOp.UGC);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x16);
             pWriter.WriteInt();
 

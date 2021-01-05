@@ -21,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Login
 
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
         {
-            var builder = ImmutableList.CreateBuilder<IPEndPoint>();
+            ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
 
             this.serverIps = builder.ToImmutable();

@@ -31,13 +31,13 @@ namespace MapleServer2.Tools
         // Example: resolve 1500 (4,Decode8,100)
         public static PacketStructureResolver Parse(string input)
         {
-            var overrideRegex = new Regex(@"\((\d+),(\w+),(-?\w+)(?:,(\w+))?\)");
+            Regex overrideRegex = new Regex(@"\((\d+),(\w+),(-?\w+)(?:,(\w+))?\)");
             string[] args = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
             // TODO: fix this opcode parsing (it's backwards for 2 bytes...)
             ushort opCode = args[0].Length == 2 ? args[0].ToByte() : BitConverter.ToUInt16(args[0].ToByteArray());
 
-            var resolver = new PacketStructureResolver(opCode);
+            PacketStructureResolver resolver = new PacketStructureResolver(opCode);
             for (int i = 1; i < args.Length; i++)
             {
                 Match match = overrideRegex.Match(args[i]);
@@ -48,7 +48,7 @@ namespace MapleServer2.Tools
                 else
                 {
                     uint offset = uint.Parse(match.Groups[1].Value);
-                    var type = match.Groups[2].Value.ToSockHint();
+                    SockHint type = match.Groups[2].Value.ToSockHint();
                     string value = match.Groups[3].Value;
                     string name = "Override";
                     if (match.Groups.Count > 4 && !string.IsNullOrEmpty(match.Groups[4].Value))

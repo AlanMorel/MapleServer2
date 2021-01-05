@@ -13,7 +13,7 @@ namespace MapleServer2.Packets
         // TODO: Load real data
         public static Packet AddEntries(List<Player> players)
         {
-            var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x00)
                 .WriteByte((byte) players.Count); // CharCount
             foreach (Player player in players)
@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
         // Sent after creating a character to append to list
         public static Packet AppendEntry(Player player)
         {
-            var pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST)
                 .WriteByte(0x01);
             WriteCharacterEntry(pWriter, player);
 
@@ -66,13 +66,13 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt();
             }
 
-            var boolValue = false;
+            bool boolValue = false;
             pWriter.WriteBool(boolValue);
             if (boolValue)
             {
                 pWriter.WriteLong();
                 pWriter.WriteLong();
-                var otherBoolValue = true;
+                bool otherBoolValue = true;
                 pWriter.WriteBool(otherBoolValue);
                 if (otherBoolValue)
                 {

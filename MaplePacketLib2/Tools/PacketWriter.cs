@@ -17,7 +17,7 @@ namespace MaplePacketLib2.Tools
 
         public static PacketWriter Of(Object opcode, int size = DEFAULT_SIZE)
         {
-            var packet = new PacketWriter(size);
+            PacketWriter packet = new PacketWriter(size);
             packet.WriteUShort(Convert.ToUInt16(opcode));
             return packet;
         }

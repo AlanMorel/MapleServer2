@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
         {
             short count = 0; // TODO: Load banners
 
-            var pWriter = PacketWriter.Of(SendOp.BANNER_LIST);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BANNER_LIST);
             pWriter.WriteShort(count);
             for (int i = 0; i < count; i++)
             {

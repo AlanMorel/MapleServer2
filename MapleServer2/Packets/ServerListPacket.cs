@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     {
         public static Packet SetServers(string serverName, ImmutableList<IPEndPoint> serverIps)
         {
-            var pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
             pWriter.Write(01, 01, 00, 00, 00);
             pWriter.WriteUnicodeString(serverName);
             pWriter.WriteByte(4); // IPv4?

@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
     {
         public static Packet AddEntry()
         {
-            var pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
             pWriter.WriteByte(0x03);
             // ...
 

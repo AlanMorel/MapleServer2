@@ -46,15 +46,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Add catalysts for testing
 
-            var item = new Item(40100001)
+            Item item = new Item(40100001)
             {
                 Amount = 99999
             };
-            var item2 = new Item(40100001)
+            Item item2 = new Item(40100001)
             {
                 Amount = 90000
             };
-            var item3 = new Item(20302228)
+            Item item3 = new Item(20302228)
             {
                 Amount = 1
             };

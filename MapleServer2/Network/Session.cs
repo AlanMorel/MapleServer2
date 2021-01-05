@@ -156,7 +156,7 @@ namespace MapleServer2.Network
                 throw new InvalidOperationException("Cannot start a session without a client.");
             }
 
-            var pWriter = PacketWriter.Of(SendOp.REQUEST_VERSION);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_VERSION);
             pWriter.WriteUInt(VERSION);
             pWriter.WriteUInt(riv);
             pWriter.WriteUInt(siv);

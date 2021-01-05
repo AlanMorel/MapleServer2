@@ -11,7 +11,7 @@ namespace MapleServer2.Packets
         public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer)
         {
             Player player = fieldPlayer.Value;
-            var pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x03)
                 .WriteInt(fieldPlayer.ObjectId)
                 .WriteLong(player.AccountId)
@@ -41,7 +41,7 @@ namespace MapleServer2.Packets
         public static Packet UpdatePlayer(IFieldObject<Player> player)
         {
             FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
-            var pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
                 .WriteByte(0x05)
                 .WriteInt(player.ObjectId)
                 .WriteByte((byte) flag);
@@ -92,7 +92,7 @@ namespace MapleServer2.Packets
 
         public static Packet ControlNpc(IFieldObject<Npc> npc)
         {
-            var npcBuffer = new PacketWriter()
+            PacketWriter npcBuffer = new PacketWriter()
                 .WriteInt(npc.ObjectId)
                 .WriteByte()
                 .Write(npc.Coord.ToShort())

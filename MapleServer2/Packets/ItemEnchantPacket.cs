@@ -11,7 +11,7 @@ namespace MapleServer2.Packets
         // Sent when putting item into enchant window
         public static Packet BeginEnchant(byte type, Item item)
         {
-            var pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
                 .WriteByte(0x05)
                 .WriteShort(type)
                 .WriteLong(item.Uid);
@@ -75,7 +75,7 @@ namespace MapleServer2.Packets
 
         public static Packet EnchantResult(Item item)
         {
-            var pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
                 .WriteByte(0x0A)
                 .WriteLong(item.Uid)
                 .WriteItem(item);

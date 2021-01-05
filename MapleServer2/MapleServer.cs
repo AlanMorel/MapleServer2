@@ -23,7 +23,7 @@ namespace MapleServer2
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
-            var loginServer = loginScope.Resolve<LoginServer>();
+            LoginServer loginServer = loginScope.Resolve<LoginServer>();
             loginServer.Start();
 
             IContainer gameContainer = GameContainerConfig.Configure();
@@ -44,7 +44,7 @@ namespace MapleServer2
                         return;
                     case "send":
                         string packet = input[1].Replace(" ", "");
-                        var pWriter = new PacketWriter();
+                        PacketWriter pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
                         logger.Info(pWriter);
 
