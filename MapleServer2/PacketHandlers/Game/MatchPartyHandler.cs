@@ -61,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (party == null)
             {
-                Party newParty = new(maxMembers, new List<Player> {session.Player}, partyName, approval);
+                Party newParty = new(maxMembers, new List<Player> { session.Player }, partyName, approval);
                 GameServer.PartyManager.AddParty(newParty);
 
                 session.Send(PartyPacket.Create(session.Player));

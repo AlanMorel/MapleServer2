@@ -10,8 +10,10 @@ using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
-namespace MapleServer2.Servers.Game {
-    public class GameSession : Session {
+namespace MapleServer2.Servers.Game
+{
+    public class GameSession : Session
+    {
         protected override SessionType Type => SessionType.Game;
 
         // TODO: Come up with a better solution
@@ -31,16 +33,21 @@ namespace MapleServer2.Servers.Game {
         // TODO: Replace this with a scheduler.
         private readonly CancellationTokenSource cancellationToken;
 
-        public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger) {
+        public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
+        {
             this.fieldManagerFactory = fieldManagerFactory;
             this.cancellationToken = new CancellationTokenSource();
             this.StateStorage = new Dictionary<string, object>();
 
             // Continuously sends field updates to client
-            new Thread(() => {
-                while (!cancellationToken.IsCancellationRequested) {
-                    if (FieldManager != null) {
-                        foreach (Packet update in FieldManager.GetUpdates()) {
+            new Thread(() =>
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    if (FieldManager != null)
+                    {
+                        foreach (Packet update in FieldManager.GetUpdates())
+                        {
                             this.Send(update);
                         }
                     }
@@ -49,21 +56,25 @@ namespace MapleServer2.Servers.Game {
             }).Start();
         }
 
-        public void SendNotice(string message) {
+        public void SendNotice(string message)
+        {
             Send(ChatPacket.Send(Player, message, ChatType.NoticeAlert));
         }
 
         // Called first time when starting a new session
-        public void InitPlayer(Player player) {
+        public void InitPlayer(Player player)
+        {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
             FieldManager = fieldManagerFactory.GetManager(player.MapId);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
         }
 
-        public void EnterField(int newMapId) {
+        public void EnterField(int newMapId)
+        {
             // If moving maps, need to get the FieldManager for new map
-            if (newMapId != FieldManager.MapId) {
+            if (newMapId != FieldManager.MapId)
+            {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
                 fieldManagerFactory.Release(FieldManager.MapId);
 
@@ -75,7 +86,8 @@ namespace MapleServer2.Servers.Game {
             FieldManager.AddPlayer(this, FieldPlayer); // Add player
         }
 
-        public void SyncTicks() {
+        public void SyncTicks()
+        {
             ServerTick = Environment.TickCount;
             Send(RequestPacket.TickSync(ServerTick));
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -52,8 +52,8 @@ namespace MapleServer2.Tools
                     || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
             {
                 var rng = new Random();
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute)rng.Next(35), 0.01f));
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute)rng.Next(35), 0.01f));
+                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
+                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
             }
 
             var item = new Item(itemId)
@@ -67,11 +67,12 @@ namespace MapleServer2.Tools
             int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
 
             // Simulate looting item
-            if (session.Player.Inventory.Add(item))
+            InventoryController.Add(session, item, true);
+            /*if (session.Player.Inventory.Add(item))
             {
                 session.Send(ItemInventoryPacket.Add(item));
                 session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-            }
+            }*/
         }
 
         // Example: "map -> return current map id"

@@ -1,8 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace MapleServer2.Types {
+namespace MapleServer2.Types
+{
     [StructLayout(LayoutKind.Sequential, Size = 432)]
-    public struct PlayerStats {
+    public struct PlayerStats
+    {
         // Total 36 Stats MUST be in this order (Struct)
         public PlayerStat Str;
         public PlayerStat Dex;
@@ -41,7 +43,8 @@ namespace MapleServer2.Types {
         public PlayerStat BonusAtk;
         public PlayerStat Unknown35;
 
-        public static PlayerStats Default() {
+        public static PlayerStats Default()
+        {
             return new PlayerStats
             {
                 Hp = new PlayerStat(1000, 0, 1000),
@@ -66,14 +69,18 @@ namespace MapleServer2.Types {
      * Decrease CurrentHp Min when you lose Hp.
      */
     [StructLayout(LayoutKind.Sequential, Size = 12)]
-    public struct PlayerStat {
+    public struct PlayerStat
+    {
         public int Total;
         public int Min;
         public int Max;
 
-        public int this[int i] {
-            get {
-                return i switch {
+        public int this[int i]
+        {
+            get
+            {
+                return i switch
+                {
                     1 => Min,
                     2 => Max,
                     _ => Total
@@ -81,7 +88,8 @@ namespace MapleServer2.Types {
             }
         }
 
-        public PlayerStat(int total, int min, int max) {
+        public PlayerStat(int total, int min, int max)
+        {
             Total = total;
             Min = min;
             Max = max;

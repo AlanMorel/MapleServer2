@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -100,14 +100,10 @@ namespace MapleServer2.PacketHandlers.Game
             foreach (Item item in items)
             {
                 session.Player.Inventory.Remove(item.Uid, out Item removed);
-                session.Player.Inventory.Add(item);
+                InventoryController.Add(session, item, true);
 
                 // Item packet, not sure if this is only used for mail, it also doesn't seem to do anything
                 session.Send(ItemPacket.ItemData(item));
-                // Inventory packets
-                session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-                // TODO remove these inventory packets
             }
 
             session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));

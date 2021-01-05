@@ -3,9 +3,12 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets.Helpers {
-    public static class ItemPacketHelper {
-        public static PacketWriter WriteItem(this PacketWriter pWriter, Item item) {
+namespace MapleServer2.Packets.Helpers
+{
+    public static class ItemPacketHelper
+    {
+        public static PacketWriter WriteItem(this PacketWriter pWriter, Item item)
+        {
             pWriter.WriteInt(item.Amount)
                 .WriteInt()
                 .WriteInt(-1)
@@ -31,16 +34,18 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteInt(item.Charges)
                 .WriteStatDiff(item.Stats, item.Stats);
 
-            if (item.IsTemplate) {
+            if (item.IsTemplate)
+            {
                 // Not implemented, causes issues for non-default character creation outfits
                 pWriter.WriteTemplate();
             }
 
-            if (item.InventoryType == InventoryTab.Pets) {
+            if (item.InventoryTab == InventoryTab.Pets)
+            {
                 pWriter.WritePet();
             }
 
-            pWriter.WriteInt((int)item.TransferFlag)
+            pWriter.WriteInt((int) item.TransferFlag)
                 .WriteByte()
                 .WriteInt()
                 .WriteInt()
@@ -50,7 +55,8 @@ namespace MapleServer2.Packets.Helpers {
             // CharBound means untradable, unsellable, bound to char (ignores TransferFlag)
             bool isCharBound = item.Owner != null;
             pWriter.WriteBool(isCharBound);
-            if (isCharBound) {
+            if (isCharBound)
+            {
                 pWriter.WriteLong(item.Owner.CharacterId);
                 pWriter.WriteUnicodeString(item.Owner.Name);
             }
@@ -60,7 +66,8 @@ namespace MapleServer2.Packets.Helpers {
             pWriter.WriteSockets(item.Stats);
 
             pWriter.WriteLong(item.PairedCharacterId);
-            if (item.PairedCharacterId != 0) {
+            if (item.PairedCharacterId != 0)
+            {
                 pWriter.WriteUnicodeString(item.PairedCharacterName);
             }
 
@@ -69,13 +76,16 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteUnicodeString("");
         }
 
-        private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item) {
+        private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
+        {
             pWriter.Write<EquipColor>(item.Color);
             pWriter.WriteInt(item.AppearanceFlag);
             // Positioning Data
-            switch (item.ItemSlot) {
+            switch (item.ItemSlot)
+            {
                 case ItemSlot.CP:
-                    for (int i = 0; i < 13; i++) {
+                    for (int i = 0; i < 13; i++)
+                    {
                         pWriter.Write(0);
                     }
                     break;
@@ -95,10 +105,12 @@ namespace MapleServer2.Packets.Helpers {
         }
 
         // 9 Blocks of stats, Only handling Basic and Bonus attributes for now
-        private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats) {
+        private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
+        {
             List<ItemStat> basicAttributes = stats.BasicAttributes;
-            pWriter.WriteShort((short)basicAttributes.Count);
-            foreach (ItemStat stat in basicAttributes) {
+            pWriter.WriteShort((short) basicAttributes.Count);
+            foreach (ItemStat stat in basicAttributes)
+            {
                 pWriter.Write(stat);
             }
             pWriter.WriteShort().WriteInt(); // SpecialAttributes
@@ -107,8 +119,9 @@ namespace MapleServer2.Packets.Helpers {
             pWriter.WriteShort().WriteShort().WriteInt();
 
             List<ItemStat> bonusAttributes = stats.BonusAttributes;
-            pWriter.WriteShort((short)bonusAttributes.Count);
-            foreach (ItemStat stat in bonusAttributes) {
+            pWriter.WriteShort((short) bonusAttributes.Count);
+            foreach (ItemStat stat in bonusAttributes)
+            {
                 pWriter.Write(stat);
             }
             pWriter.WriteShort().WriteInt(); // SpecialAttributes
@@ -125,11 +138,13 @@ namespace MapleServer2.Packets.Helpers {
             return pWriter;
         }
 
-        private static PacketWriter WriteStatDiff(this PacketWriter pWriter, ItemStats old, ItemStats @new) {
+        private static PacketWriter WriteStatDiff(this PacketWriter pWriter, ItemStats old, ItemStats @new)
+        {
             // TODO: Find stat diffs (low priority)
             List<ItemStat> generalStatDiff = new List<ItemStat>();
-            pWriter.WriteByte((byte)generalStatDiff.Count);
-            foreach (ItemStat stat in generalStatDiff) {
+            pWriter.WriteByte((byte) generalStatDiff.Count);
+            foreach (ItemStat stat in generalStatDiff)
+            {
                 pWriter.Write(stat);
             }
 
@@ -137,13 +152,15 @@ namespace MapleServer2.Packets.Helpers {
 
             List<ItemStat> statDiff = new List<ItemStat>();
             pWriter.WriteInt(statDiff.Count);
-            foreach (ItemStat stat in statDiff) {
+            foreach (ItemStat stat in statDiff)
+            {
                 pWriter.Write(stat);
             }
 
             List<SpecialItemStat> bonusStatDiff = new List<SpecialItemStat>();
             pWriter.WriteInt(bonusStatDiff.Count);
-            foreach (SpecialItemStat stat in bonusStatDiff) {
+            foreach (SpecialItemStat stat in bonusStatDiff)
+            {
                 pWriter.Write(stat);
             }
 
@@ -151,7 +168,8 @@ namespace MapleServer2.Packets.Helpers {
         }
 
         // Writes UGC template data
-        private static PacketWriter WriteTemplate(this PacketWriter pWriter) {
+        private static PacketWriter WriteTemplate(this PacketWriter pWriter)
+        {
             return pWriter.WriteUgc()
                 .WriteLong()
                 .WriteInt()
@@ -164,7 +182,8 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteUnicodeString("");
         }
 
-        private static PacketWriter WritePet(this PacketWriter pWriter) {
+        private static PacketWriter WritePet(this PacketWriter pWriter)
+        {
             return pWriter.WriteUnicodeString("") // Name
                 .WriteLong() // Exp
                 .WriteInt()
@@ -172,10 +191,13 @@ namespace MapleServer2.Packets.Helpers {
                 .WriteByte();
         }
 
-        private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats) {
+        private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
+        {
             pWriter.WriteByte(stats.TotalSockets);
-            for (int i = 0; i < stats.TotalSockets; i++) {
-                if (i >= stats.Gemstones.Count) {
+            for (int i = 0; i < stats.TotalSockets; i++)
+            {
+                if (i >= stats.Gemstones.Count)
+                {
                     pWriter.WriteBool(false); // Locked
                     continue;
                 }
@@ -184,13 +206,15 @@ namespace MapleServer2.Packets.Helpers {
                 Gemstone gem = stats.Gemstones[i];
                 pWriter.WriteInt(gem.Id);
                 pWriter.WriteBool(gem.OwnerId != 0);
-                if (gem.OwnerId != 0) {
+                if (gem.OwnerId != 0)
+                {
                     pWriter.WriteLong(gem.OwnerId)
                         .WriteUnicodeString(gem.OwnerName);
                 }
 
                 pWriter.WriteBool(gem.Unknown != 0);
-                if (gem.Unknown != 0) {
+                if (gem.Unknown != 0)
+                {
                     pWriter.WriteByte()
                         .WriteLong(gem.Unknown);
                 }

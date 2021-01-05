@@ -1,11 +1,14 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.Packets {
-    public static class ServerEnterPacket {
-        public static Packet Enter(GameSession session) {
+namespace MapleServer2.Packets
+{
+    public static class ServerEnterPacket
+    {
+        public static Packet Enter(GameSession session)
+        {
             var pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteLong(session.Player.CharacterId);
@@ -38,14 +41,16 @@ namespace MapleServer2.Packets {
             // REQUIRED OR CRASH
             // Unlocked Hidden Maps (Not on WorldMap)
             List<int> unlockedHiddenMaps = new List<int> { 52000065 };
-            pWriter.WriteShort((short)unlockedHiddenMaps.Count);
-            foreach (int mapId in unlockedHiddenMaps) {
+            pWriter.WriteShort((short) unlockedHiddenMaps.Count);
+            foreach (int mapId in unlockedHiddenMaps)
+            {
                 pWriter.WriteInt(mapId);
             }
             // Unlocked Maps (On WorldMap)
             List<int> unlockedMaps = new List<int> { 2000062 };
-            pWriter.WriteShort((short)unlockedMaps.Count);
-            foreach (int mapId in unlockedMaps) {
+            pWriter.WriteShort((short) unlockedMaps.Count);
+            foreach (int mapId in unlockedMaps)
+            {
                 pWriter.WriteInt(mapId);
             }
             pWriter.WriteLong();
@@ -59,7 +64,8 @@ namespace MapleServer2.Packets {
             return pWriter;
         }
 
-        public static Packet Confirm() {
+        public static Packet Confirm()
+        {
             return PacketWriter.Of(SendOp.FINALIZE_SERVER_ENTER);
         }
     }

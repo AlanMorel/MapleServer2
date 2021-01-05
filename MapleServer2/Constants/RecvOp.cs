@@ -1,5 +1,7 @@
-namespace MapleServer2.Constants {
-    public enum RecvOp : ushort {
+﻿namespace MapleServer2.Constants
+{
+    public enum RecvOp : ushort
+    {
         NULL = 0x0000,
         RESPONSE_VERSION = 0x0001,
         RESPONSE_LOGIN = 0x0003,
