@@ -45,6 +45,7 @@ namespace MapleServer2.Types
         }
 
         // TODO: precompute next free slot to avoid iteration on Add
+        // TODO: Stack items when they are the same
         // Returns false if inventory is full
         public bool Add(Item item)
         {
