@@ -21,7 +21,7 @@ namespace MapleServer2.Packets
             UpdateGuildFunds = 0x32,
             UpdatePlayerContribution = 0x33,
             GuildNoticeConfirm = 0x3E,
-            Invite = 0x4C,
+            Invite = 0x4B,
             GuildWindow = 0x54,
             UpdateGuildFunds2 = 0x59, //unk
             List = 0x5A,
@@ -35,7 +35,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(1); // guild ID
             pWriter.WriteUnicodeString(guildName);
             pWriter.WriteUnicodeString(""); // guildMark Url
-            pWriter.WriteByte(0x3C); // guildC.apacity
+            pWriter.WriteByte(0x3C); // guild.Capacity
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString(""); // guild.Notice
             pWriter.WriteLong(session.Player.AccountId); // guild.Leader.AccountId
@@ -139,7 +139,7 @@ namespace MapleServer2.Packets
         public static Packet Create(string guildName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.Create);
+            pWriter.WriteMode(GuildPacketMode.Create);
             pWriter.WriteByte(0x0);
             pWriter.WriteUnicodeString(guildName);
             return pWriter;
@@ -148,14 +148,14 @@ namespace MapleServer2.Packets
         public static Packet CheckInConfirm()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.CheckInConfirm);
+            pWriter.WriteMode(GuildPacketMode.CheckInConfirm);
             return pWriter;
         }
 
         public static Packet Create2(Player player, string guildName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.Create2);
+            pWriter.WriteMode(GuildPacketMode.Create2);
             pWriter.WriteShort();
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte(); //unk
@@ -194,7 +194,7 @@ namespace MapleServer2.Packets
         public static Packet GuildNoticeChange(Player player, string notice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.GuildNoticeChange);
+            pWriter.WriteMode(GuildPacketMode.GuildNoticeChange);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte(0x1);
             pWriter.WriteUnicodeString(notice);
@@ -204,7 +204,7 @@ namespace MapleServer2.Packets
         public static Packet Create3(Player player, string guildName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.Create3);
+            pWriter.WriteMode(GuildPacketMode.Create3);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
@@ -230,7 +230,7 @@ namespace MapleServer2.Packets
         public static Packet Unk1(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.Unk1);
+            pWriter.WriteMode(GuildPacketMode.Unk1);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteInt();
             pWriter.WriteInt();
@@ -240,7 +240,7 @@ namespace MapleServer2.Packets
         public static Packet UpdateGuildExp()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.UpdateGuildExp);
+            pWriter.WriteMode(GuildPacketMode.UpdateGuildExp);
             pWriter.WriteInt(50000); // guildExp
             return pWriter;
         }
@@ -248,7 +248,7 @@ namespace MapleServer2.Packets
         public static Packet UpdateGuildFunds()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.UpdateGuildFunds);
+            pWriter.WriteMode(GuildPacketMode.UpdateGuildFunds);
             pWriter.WriteInt(10000000); // guildFunds
             return pWriter;
         }
@@ -256,7 +256,7 @@ namespace MapleServer2.Packets
         public static Packet UpdatePlayerContribution(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.UpdatePlayerContribution);
+            pWriter.WriteMode(GuildPacketMode.UpdatePlayerContribution);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteInt();
             pWriter.WriteInt(20); // Contribution today
@@ -267,7 +267,7 @@ namespace MapleServer2.Packets
         public static Packet GuildNoticeConfirm(string notice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.GuildNoticeConfirm);
+            pWriter.WriteMode(GuildPacketMode.GuildNoticeConfirm);
             pWriter.WriteByte(0x1);
             pWriter.WriteUnicodeString(notice);
             return pWriter;
@@ -276,7 +276,7 @@ namespace MapleServer2.Packets
         public static Packet Invite(Player player, string guildName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.Invite);
+            pWriter.WriteMode(GuildPacketMode.Invite);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(guildName);
             return pWriter;
@@ -285,7 +285,7 @@ namespace MapleServer2.Packets
         public static Packet GuildWindow()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.GuildWindow);
+            pWriter.WriteMode(GuildPacketMode.GuildWindow);
             pWriter.WriteInt();
             return pWriter;
         }
@@ -293,7 +293,7 @@ namespace MapleServer2.Packets
         public static Packet UpdateGuildFunds2()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.UpdateGuildFunds2);
+            pWriter.WriteMode(GuildPacketMode.UpdateGuildFunds2);
             pWriter.WriteInt(80); //guildExp gain
             pWriter.WriteInt(10000); // guildFunds gain
             return pWriter;
@@ -302,7 +302,7 @@ namespace MapleServer2.Packets
         public static Packet List()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.List);
+            pWriter.WriteMode(GuildPacketMode.List);
             pWriter.WriteByte(0x1);
             pWriter.WriteLong();
             pWriter.WriteLong();
@@ -319,7 +319,7 @@ namespace MapleServer2.Packets
         public static Packet UpdatePlayerDonation()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte((byte) GuildPacketMode.UpdatePlayerDonation);
+            pWriter.WriteMode(GuildPacketMode.UpdatePlayerDonation);
             pWriter.WriteInt(0x3); // total amount of donations today
             pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount); // timestamp now
             return pWriter;
