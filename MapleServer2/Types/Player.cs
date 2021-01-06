@@ -254,7 +254,6 @@ namespace MapleServer2.Types
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
         }
 
-
         public bool ModifyCurrency(CurrencyType type, long amount)
         {
             switch (type)
