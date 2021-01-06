@@ -144,6 +144,7 @@ namespace MapleServer2.Types
                 Rue = new Currency(5),
                 HaviFruit = new Currency(5),
                 MesoToken = new Currency(5),
+                Stats = stats,
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
@@ -199,6 +200,7 @@ namespace MapleServer2.Types
                 Rue = new Currency(5),
                 HaviFruit = new Currency(5),
                 MesoToken = new Currency(5),
+                Stats = stats,
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
