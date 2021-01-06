@@ -30,98 +30,125 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            short skillLevel;
-            long skillCount;
-            int skillId;
-            int value;
-            int playerObjectId;
-            CoordF coords;
-            CoordF coords2;
-            CoordF coords3;
-
-            SkillHandlerMode mode = (SkillHandlerMode)packet.ReadByte();
+            SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
             switch (mode)
             {
                 case SkillHandlerMode.FirstSent:
-                    skillCount = packet.ReadLong();
-                    value = packet.ReadInt();
-                    skillId = packet.ReadInt();
-                    skillLevel = packet.ReadShort();
-                    packet.ReadByte();
-                    coords = packet.Read<CoordF>();
-                    packet.ReadShort();
-                    session.Send(SkillUsePacket.SkillUse(value, skillCount, skillId, skillLevel, coords));
+                    HandleFirstSent(session, packet);
                     break;
                 case SkillHandlerMode.Damage:
-                    DamagingMode type = (DamagingMode)packet.ReadByte();
-                    switch (type)
-                    {
-                        case DamagingMode.TypeOfDamage:
-                            skillCount = packet.ReadLong();
-                            packet.ReadByte();
-                            coords = packet.Read<CoordF>();
-                            coords2 = packet.Read<CoordF>();
-                            int count2 = packet.ReadByte();
-                            packet.ReadInt();
-                            for (int i = 0; i < count2; i++)
-                            {
-                                packet.ReadLong();
-                                packet.ReadInt();
-                                packet.ReadByte();
-                                if (packet.ReadBool())
-                                {
-                                    packet.ReadLong();
-                                }
-                            }
-                            break;
-                        case DamagingMode.AoeDamage:
-                            skillCount = packet.ReadLong();
-                            int someValue = packet.ReadInt();
-                            playerObjectId = packet.ReadInt();
-                            coords = packet.Read<CoordF>();
-                            coords2 = packet.Read<CoordF>();
-                            coords3 = packet.Read<CoordF>();
-                            packet.ReadByte();
-                            byte count3 = packet.ReadByte();
-                            packet.ReadInt();
-                            /*for (int i = 0; i < count3; i++)
-                            {
-                                EntityNpc.Add(session.FieldNpc);
-                                packet.ReadByte();
-                            }
-                            if (EntityNpc.Count > 0)
-                            {
-                                logger.LogInformation($"entities: "+ EntityNpc.Count);
-                            }*/
-                            int objectId = packet.ReadInt();
-                            packet.ReadByte();
-
-                            // Hardcoded SkillId(bow), SkillLeve(1)
-                            session.Send(SkillUsePacket.SkillDamage(session.FieldPlayer, skillCount, someValue, 600001, 1, coords, objectId));
-                            break;
-                        case DamagingMode.TypeOfDamage2:
-                            skillCount = packet.ReadLong();
-                            packet.ReadByte();
-                            packet.ReadInt();
-                            packet.ReadInt();
-                            packet.Read<CoordF>();
-                            packet.Read<CoordF>();
-                            break;
-                        default:
-                            break;
-                    }
+                    HandleDamage(session, packet);
                     break;
                 case SkillHandlerMode.Mode3:
-                    packet.ReadLong();
-                    packet.ReadInt();
+                    HandleMode3(session, packet);
                     break;
                 case SkillHandlerMode.Mode4:
-                    packet.ReadLong();
+                    HandleMode4(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
+        }
+
+        public static void HandleFirstSent(GameSession session, PacketReader packet)
+        {
+            long skillCount = packet.ReadLong();
+            int value = packet.ReadInt();
+            int skillId = packet.ReadInt();
+            short skillLevel = packet.ReadShort();
+            packet.ReadByte();
+            CoordF coords = packet.Read<CoordF>();
+            packet.ReadShort();
+            session.Send(SkillUsePacket.SkillUse(value, skillCount, skillId, skillLevel, coords));
+        }
+
+        public static void HandleDamage(GameSession session, PacketReader packet)
+        {
+            DamagingMode type = (DamagingMode) packet.ReadByte();
+            switch (type)
+            {
+                case DamagingMode.TypeOfDamage:
+                    HandleTypeOfDamage(session, packet);
+                    break;
+                case DamagingMode.AoeDamage:
+                    HandleAoeDamage(session, packet);
+                    break;
+                case DamagingMode.TypeOfDamage2:
+                    HandleTypeOfDamage2(session, packet);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(type);
+                    break;
+            }
+        }
+
+        public static void HandleMode3(GameSession session, PacketReader packet)
+        {
+            packet.ReadLong();
+            packet.ReadInt();
+        }
+
+        public static void HandleMode4(GameSession session, PacketReader packet)
+        {
+            packet.ReadLong();
+        }
+
+        public static void HandleTypeOfDamage(GameSession session, PacketReader packet)
+        {
+            long skillCount = packet.ReadLong();
+            packet.ReadByte();
+            CoordF coords = packet.Read<CoordF>();
+            CoordF coords2 = packet.Read<CoordF>();
+            int count = packet.ReadByte();
+            packet.ReadInt();
+            for (int i = 0; i < count; i++)
+            {
+                packet.ReadLong();
+                packet.ReadInt();
+                packet.ReadByte();
+                if (packet.ReadBool())
+                {
+                    packet.ReadLong();
+                }
+            }
+        }
+
+        public static void HandleAoeDamage(GameSession session, PacketReader packet)
+        {
+            long skillCount = packet.ReadLong();
+            int someValue = packet.ReadInt();
+            int playerObjectId = packet.ReadInt();
+            CoordF coords = packet.Read<CoordF>();
+            CoordF coords2 = packet.Read<CoordF>();
+            CoordF coords3 = packet.Read<CoordF>();
+            packet.ReadByte();
+            byte count3 = packet.ReadByte();
+            packet.ReadInt();
+            /*for (int i = 0; i < count3; i++)
+            {
+                EntityNpc.Add(session.FieldNpc);
+                packet.ReadByte();
+            }
+            if (EntityNpc.Count > 0)
+            {
+                logger.LogInformation($"entities: "+ EntityNpc.Count);
+            }*/
+            int objectId = packet.ReadInt();
+            packet.ReadByte();
+
+            // Hardcoded SkillId(bow), SkillLeve(1)
+            session.Send(SkillDamagePacket.SkillDamage(session.FieldPlayer, skillCount, someValue, 600001, 1, coords, objectId));
+        }
+
+        public static void HandleTypeOfDamage2(GameSession session, PacketReader packet)
+        {
+            long skillCount = packet.ReadLong();
+            packet.ReadByte();
+            packet.ReadInt();
+            packet.ReadInt();
+            packet.Read<CoordF>();
+            packet.Read<CoordF>();
         }
     }
 }
