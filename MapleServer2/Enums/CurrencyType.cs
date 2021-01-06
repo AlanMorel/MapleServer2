@@ -9,6 +9,13 @@
         Rue,
         HaviFruit,
         MesoToken,
+        BlueStar,
+        RedStar,
+        EventDungeonCoin,
+        GuildCoins,
+        KayCoin,
+        MapleCoin,
+        PremiumCoin,
     }
 
     /* All currencies from wiki:
