@@ -106,14 +106,6 @@ namespace MapleServer2.Types
             PlayerStats stats = PlayerStats.Default();
             StatDistribution StatPointDistribution = new StatDistribution();
 
-            Currency meso = new Currency(20000);
-            Currency meret = new Currency(2000);
-            Currency valorToken = new Currency(5);
-            Currency treva = new Currency(5);
-            Currency rue = new Currency(5);
-            Currency haviFruit = new Currency(5);
-            Currency mesoToken = new Currency(5);
-
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 XmlParser.ParseSkills(job)
@@ -145,14 +137,12 @@ namespace MapleServer2.Types
                     { ItemSlot.FA, Item.Face() },
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
-                Meso = meso,
-                Meret = meret,
-                ValorToken = valorToken,
-                Treva = treva,
-                Rue = rue,
-                HaviFruit = haviFruit,
-                MesoToken = mesoToken,
-                Stats = stats,
+                Meso = new Currency(20000),
+                Meret = new Currency(2000),
+                ValorToken = new Currency(5),
+                Treva = new Currency(5),
+                Rue = new Currency(5),
+                HaviFruit = new Currency(5),
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
@@ -168,14 +158,6 @@ namespace MapleServer2.Types
             int job = 50;
 
             PlayerStats stats = PlayerStats.Default();
-
-            Currency meso = new Currency(20000);
-            Currency meret = new Currency(2000);
-            Currency valorToken = new Currency(5);
-            Currency treva = new Currency(5);
-            Currency rue = new Currency(5);
-            Currency haviFruit = new Currency(5);
-            Currency mesoToken = new Currency(5);
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -209,14 +191,12 @@ namespace MapleServer2.Types
                     { ItemSlot.SH, Item.ShoesMale() },
 
                 },
-                Meso = meso,
-                Meret = meret,
-                ValorToken = valorToken,
-                Treva = treva,
-                Rue = rue,
-                HaviFruit = haviFruit,
-                MesoToken = mesoToken,
-                Stats = stats,
+                Meso = new Currency(20000),
+                Meret = new Currency(2000),
+                ValorToken = new Currency(5),
+                Treva = new Currency(5),
+                Rue = new Currency(5),
+                HaviFruit = new Currency(5),
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
@@ -226,14 +206,6 @@ namespace MapleServer2.Types
         public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
-
-            Currency meso = new Currency(20000);
-            Currency meret = new Currency(2000);
-            Currency valorToken = new Currency(5);
-            Currency treva = new Currency(5);
-            Currency rue = new Currency(5);
-            Currency haviFruit = new Currency(5);
-            Currency mesoToken = new Currency(5);
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -257,13 +229,13 @@ namespace MapleServer2.Types
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
-                Meso = meso,
-                Meret = meret,
-                ValorToken = valorToken,
-                Treva = treva,
-                Rue = rue,
-                HaviFruit = haviFruit,
-                MesoToken = mesoToken,
+                Meso = new Currency(20000),
+                Meret = new Currency(2000),
+                ValorToken = new Currency(5),
+                Treva = new Currency(5),
+                Rue = new Currency(5),
+                HaviFruit = new Currency(5),
+                MesoToken = new Currency(5),
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
