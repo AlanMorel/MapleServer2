@@ -5,6 +5,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
+using MapleServer2.Enums;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -61,7 +62,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.DeductMesos(2000))
+            if (session.Player.ModifyCurrency(CurrencyType.Meso, -2000))
             {
                 session.Send(GuildPacket.Invite(session.Player, guildName));
                 session.Send(GuildPacket.Create(guildName));

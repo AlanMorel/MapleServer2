@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
@@ -42,7 +43,7 @@ namespace MapleServer2.PacketHandlers.Game
                     mesoPrice = 5000; //For now make all car taxis cost 5k, as we don't know the formula to calculate it yet.
                     goto case RequestTaxiMode.RotorsMeso;
                 case RequestTaxiMode.RotorsMeso:
-                    if (session.Player.DeductMesos(mesoPrice))
+                    if (session.Player.ModifyCurrency(CurrencyType.Meso, -mesoPrice))
                     {
                         HandleTeleport(session, mapId);
                     }
@@ -52,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
                     }
                     break;
                 case RequestTaxiMode.RotorsMeret:
-                    if (session.Player.DeductMerets(15))
+                    if (session.Player.ModifyCurrency(CurrencyType.Meso, -15))
                     {
                         HandleTeleport(session, mapId);
                     }

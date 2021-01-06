@@ -17,11 +17,11 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
-                case "setmesos":
-                    session.Player.SetMesos(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                case "setmeso":
+                    session.Player.ModifyCurrency(CurrencyType.Meso, ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
-                case "setmerets":
-                    session.Player.SetMerets(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                case "setmeret":
+                    session.Player.ModifyCurrency(CurrencyType.Meret, ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "item":
                     ProcessItemCommand(session, args.Length > 1 ? args[1] : "");
@@ -179,25 +179,25 @@ namespace MapleServer2.Tools
 
         private static long ParseLong(GameSession session, string s)
         {
+            long temp = -1;
             try
             {
-                long.Parse(s);
+                return long.Parse(s);
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type long.");
-                return -1;
+                return temp;
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return -1;
+                return temp;
             }
             catch (Exception)
             {
-                return -1;
+                return temp;
             }
-            return long.Parse(s);
         }
     }
 }

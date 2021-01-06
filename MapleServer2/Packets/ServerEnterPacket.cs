@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Packets
@@ -15,9 +16,9 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(1); // channel
             pWriter.WriteLong(session.Player.Experience);
             pWriter.WriteLong(session.Player.RestExperience);
-            pWriter.WriteLong(session.Player.GetMesos());
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Meso));
 
-            pWriter.WriteLong(session.Player.GetMerets()); // Merets
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Meret)); // Merets
             pWriter.WriteLong(); // Merets
             // These Merets are added up. If set, previous are ignored.
 
@@ -26,15 +27,15 @@ namespace MapleServer2.Packets
 
             pWriter.WriteLong();
 
-            pWriter.WriteLong(session.Player.ValorToken);
-            pWriter.WriteLong(session.Player.Treva);
-            pWriter.WriteLong(session.Player.Rue);
-            pWriter.WriteLong(session.Player.HaviFruit);
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.ValorToken));
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Treva));
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Rue));
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.HaviFruit));
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteLong(session.Player.MesoToken);
+            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.MesoToken));
             pWriter.WriteUnicodeString(""); // Profile Url
             pWriter.WriteByte();
             pWriter.WriteByte();

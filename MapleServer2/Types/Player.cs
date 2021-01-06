@@ -36,8 +36,6 @@ namespace MapleServer2.Types
         public short Level = 1;
         public long Experience;
         public long RestExperience;
-        private long Mesos;
-        private long Merets;
         public int PrestigeLevel = 100;
         public long PrestigeExperience;
         public int TitleId;
@@ -61,12 +59,6 @@ namespace MapleServer2.Types
         public string HomeName = "";
 
         public Vector3 ReturnPosition;
-
-        public long ValorToken;
-        public long Treva;
-        public long Rue;
-        public long HaviFruit;
-        public long MesoToken;
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
@@ -100,12 +92,15 @@ namespace MapleServer2.Types
 
         public long GuildId;
 
+        public Currency Currency;
+
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
 
             PlayerStats stats = PlayerStats.Default();
             StatDistribution StatPointDistribution = new StatDistribution();
+            Currency currency = new Currency();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -138,15 +133,9 @@ namespace MapleServer2.Types
                     { ItemSlot.FA, Item.Face() },
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
+                Currency = currency,
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 200000,
-                Merets = 50,
-                ValorToken = 1,
-                Treva = 2,
-                Rue = 3,
-                HaviFruit = 4,
-                MesoToken = 5,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
                 TitleId = 10000292,
@@ -161,6 +150,7 @@ namespace MapleServer2.Types
             int job = 50;
 
             PlayerStats stats = PlayerStats.Default();
+            Currency currency = new Currency();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -194,9 +184,9 @@ namespace MapleServer2.Types
                     { ItemSlot.SH, Item.ShoesMale() },
 
                 },
+                Currency = currency,
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 10,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
             };
@@ -205,6 +195,7 @@ namespace MapleServer2.Types
         public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
+            Currency currency = new Currency();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -229,7 +220,7 @@ namespace MapleServer2.Types
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
                 GameOptions = new GameOptions(),
-                Mesos = 10,
+                Currency = currency,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
             };
@@ -243,82 +234,124 @@ namespace MapleServer2.Types
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
         }
 
-        // Add mesos, return true or false
-        public bool AddMesos(long amount)
+        public bool ModifyCurrency(CurrencyType type, long amount)
         {
-            if (Mesos + amount < 0 || amount < 0)
+            switch (type)
             {
-                return false;
+                case CurrencyType.Meso:
+                    if (amount + Currency.Meso < 0)
+                    {
+                        return false;
+                    }
+                    Currency.Meso += amount;
+                    UpdateMesos();
+                    break;
+                case CurrencyType.Meret:
+                    if (amount + Currency.Meret < 0)
+                    {
+                        return false;
+                    }
+                    Currency.Meret += amount;
+                    UpdateMerets();
+                    break;
+                case CurrencyType.ValorToken:
+                    if (amount + Currency.ValorToken < 0)
+                    {
+                        return false;
+                    }
+                    Currency.ValorToken += amount;
+                    break;
+                case CurrencyType.Treva:
+                    if (amount + Currency.Treva < 0)
+                    {
+                        return false;
+                    }
+                    Currency.Treva += amount;
+                    break;
+                case CurrencyType.Rue:
+                    if (amount + Currency.Rue < 0)
+                    {
+                        return false;
+                    }
+                    Currency.Rue += amount;
+                    break;
+                case CurrencyType.HaviFruit:
+                    if (amount + Currency.HaviFruit < 0)
+                    {
+                        return false;
+                    }
+                    Currency.HaviFruit += amount;
+                    break;
+                case CurrencyType.MesoToken:
+                    if (amount + Currency.MesoToken < 0)
+                    {
+                        return false;
+                    }
+                    Currency.MesoToken += amount;
+                    break;
+                default:
+                    break;
             }
-            Mesos += amount;
-            UpdateMesos();
             return true;
         }
 
-        // Deduct mesos, return true or false
-        public bool DeductMesos(long amount)
-        {
-            if (Mesos - amount < 0 || amount < 0)
-            {
-                return false;
-            }
-            Mesos -= amount;
-            UpdateMesos();
-            return true;
-        }
-
-        public long GetMesos()
-        {
-            return Mesos;
-        }
-
-        public void SetMesos(long amount)
+        public void SetCurrency(CurrencyType type, long amount)
         {
             if (amount < 0)
             {
                 return;
             }
-            Mesos = amount;
-            UpdateMesos();
-        }
 
-        // Add merets, return true or false
-        public bool AddMerets(long amount)
-        {
-            if (Merets + amount < 0 || amount < 0)
+            switch (type)
             {
-                return false;
+                case CurrencyType.Meso:
+                    Currency.Meso = amount;
+                    UpdateMesos();
+                    break;
+                case CurrencyType.Meret:
+                    Currency.Meret = amount;
+                    UpdateMerets();
+                    break;
+                case CurrencyType.ValorToken:
+                    Currency.ValorToken = amount;
+                    break;
+                case CurrencyType.Treva:
+                    Currency.Treva = amount;
+                    break;
+                case CurrencyType.Rue:
+                    Currency.Rue = amount;
+                    break;
+                case CurrencyType.HaviFruit:
+                    Currency.HaviFruit = amount;
+                    break;
+                case CurrencyType.MesoToken:
+                    Currency.MesoToken = amount;
+                    break;
+                default:
+                    break;
             }
-            Merets += amount;
-            UpdateMerets();
-            return true;
         }
-
-        // Deduct merets, return true or false
-        public bool DeductMerets(long amount)
+        public long GetCurrency(CurrencyType type)
         {
-            if (Merets - amount < 0 || amount < 0)
+            switch (type)
             {
-                return false;
+                case CurrencyType.Meso:
+                    return Currency.Meso;
+                case CurrencyType.Meret:
+                    return Currency.Meret;
+                case CurrencyType.ValorToken:
+                    return Currency.ValorToken;
+                case CurrencyType.Treva:
+                    return Currency.Treva;
+                case CurrencyType.Rue:
+                    return Currency.Rue;
+                case CurrencyType.HaviFruit:
+                    return Currency.HaviFruit;
+                case CurrencyType.MesoToken:
+                    return Currency.MesoToken;
+                default:
+                    return -1;
             }
-            Merets -= amount;
-            UpdateMerets();
-            return true;
-        }
-
-        public long GetMerets()
-        {
-            return Merets;
-        }
-
-        public void SetMerets(long amount)
-        {
-            if (amount < 0)
-            {
-                return;
-            }
-            Merets = amount;
-            UpdateMerets();
         }
 
         private void UpdateMesos()
