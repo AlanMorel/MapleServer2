@@ -75,6 +75,11 @@ namespace MaplePacketLib2.Tools
             return this;
         }
 
+        public PacketWriter WriteMode(Enum value)
+        {
+            return Write(Convert.ToSByte(value));
+        }
+
         public PacketWriter WriteBool(bool value)
         {
             return WriteByte(value ? (byte) 1 : (byte) 0);
