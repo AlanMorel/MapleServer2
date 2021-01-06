@@ -77,7 +77,7 @@ namespace MaplePacketLib2.Tools
 
         public PacketWriter WriteMode(Enum value)
         {
-            return Write(Convert.ToSByte(value));
+            return Write(Convert.ToByte(value));
         }
 
         public PacketWriter WriteBool(bool value)
