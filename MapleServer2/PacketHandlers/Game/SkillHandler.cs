@@ -123,7 +123,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF coords2 = packet.Read<CoordF>();
             CoordF coords3 = packet.Read<CoordF>();
             packet.ReadByte();
-            byte count3 = packet.ReadByte();
+            byte count = packet.ReadByte();
             packet.ReadInt();
             /*for (int i = 0; i < count3; i++)
             {
