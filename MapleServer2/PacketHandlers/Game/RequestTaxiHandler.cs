@@ -53,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
                     }
                     break;
                 case RequestTaxiMode.RotorsMeret:
-                    if (session.Player.ModifyCurrency(CurrencyType.Meso, -15))
+                    if (session.Player.ModifyCurrency(CurrencyType.Meret, -15))
                     {
                         HandleTeleport(session, mapId);
                     }

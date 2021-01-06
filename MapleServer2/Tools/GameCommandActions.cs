@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -179,7 +180,6 @@ namespace MapleServer2.Tools
 
         private static long ParseLong(GameSession session, string s)
         {
-            long temp = -1;
             try
             {
                 return long.Parse(s);
@@ -187,16 +187,16 @@ namespace MapleServer2.Tools
             catch (FormatException)
             {
                 session.SendNotice("The input is not type long.");
-                return temp;
+                return -1;
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return temp;
+                return -1;
             }
             catch (Exception)
             {
-                return temp;
+                return -1;
             }
         }
     }

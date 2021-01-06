@@ -1,4 +1,7 @@
-﻿namespace MapleServer2.Enums
+﻿using MapleServer2.Servers.Game;
+using MapleServer2.Types;
+
+namespace MapleServer2.Enums
 {
     public enum CurrencyType
     {
