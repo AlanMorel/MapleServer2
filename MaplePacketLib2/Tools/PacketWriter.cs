@@ -140,6 +140,19 @@ namespace MaplePacketLib2.Tools
             return this;
         }
 
+        public unsafe PacketWriter WriteFloat(float value = 0.0f)
+        {
+            EnsureCapacity(4);
+            fixed (byte* ptr = Buffer)
+            {
+                *(float*) (ptr + Length) = value;
+                Length += 4;
+            }
+
+            return this;
+        }
+
+
         public unsafe PacketWriter WriteLong(long value = 0)
         {
             EnsureCapacity(8);
