@@ -116,7 +116,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleAoeDamage(GameSession session, PacketReader packet)
         {
-            long skillCount = packet.ReadLong();
+            long skillUid = packet.ReadLong();
             int someValue = packet.ReadInt();
             int playerObjectId = packet.ReadInt();
             CoordF coords = packet.Read<CoordF>();
@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadByte();
 
             // Hardcoded SkillId(bow), SkillLeve(1)
-            session.Send(SkillDamagePacket.SkillDamage(session.FieldPlayer, skillCount, someValue, 600001, 1, coords, objectId));
+            session.Send(SkillDamagePacket.SkillDamage(session.FieldPlayer, skillUid, someValue, 600001, 1, coords, objectId));
         }
 
         private void HandleTypeOfDamage2(GameSession session, PacketReader packet)

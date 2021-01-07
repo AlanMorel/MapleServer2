@@ -7,26 +7,25 @@ namespace MapleServer2.Packets
 {
     public static class SkillDamagePacket
     {
-        public static Packet SkillDamage(IFieldObject<Player> player, long skillCount, int someValue, int skillId, short skillLevel, CoordF coords, int objectId)
+        public static Packet SkillDamage(IFieldObject<Player> player, long skillUid, int someValue, int skillId, short skillLevel, CoordF coords, int objectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             pWriter.WriteByte(1);
-            pWriter.WriteLong(skillCount);
+            pWriter.WriteLong(skillUid);
             pWriter.WriteInt(someValue);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(skillId);
-            pWriter.WriteShort(skillLevel);
-            pWriter.WriteShort(1);
-            pWriter.Write(coords);
-            pWriter.WriteInt();
-            pWriter.WriteByte(9); // Heal or Damage
-            pWriter.WriteByte(1); //
-            pWriter.WriteByte(1); // How many mobs where hit
+            pWriter.WriteInt(skillLevel);
+            pWriter.Write(coords.ToShort());
+            pWriter.WriteShort(); // coords2
+            pWriter.WriteShort(); // coords2
+            pWriter.WriteShort(); // coords2 not always 0? 2B 01 => 11009
+            pWriter.WriteByte(1); // Mob count
             pWriter.WriteInt(objectId);
-            pWriter.WriteByte(1);
-            pWriter.WriteBool(false);
-            pWriter.WriteLong(-1 * 1); // Probably damage deduct
+            pWriter.WriteByte(1); // Unknown
+            pWriter.WriteBool(false); // Crit flag
+            pWriter.WriteLong(-1 * 1); // Damage
             return pWriter;
         }
     }
