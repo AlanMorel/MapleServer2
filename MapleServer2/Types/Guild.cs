@@ -42,7 +42,7 @@ namespace MapleServer2.Types
         public void RemoveMember(Player player)
         {
             Members.Remove(player);
-            player.ClubId = 0;
+            player.GuildId = 0;
         }
 
 

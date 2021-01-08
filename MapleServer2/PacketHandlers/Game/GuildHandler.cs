@@ -135,14 +135,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleInvite(GameSession session, PacketReader packet)
         {
-            // TODO: Check if user is online. Check if guild is full.
-            string invitee = packet.ReadUnicodeString();
-
-            Player other = GameServer.Storage.GetPlayerByName(invitee);
-            if (other == null)
-            {
-                return;
-            }
+            string targetPlayer = packet.ReadUnicodeString();
 
             Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
             if (guild == null)
@@ -150,17 +143,28 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (other.GuildId != 0)
+            Player playerInvited = GameServer.Storage.GetPlayerByName(targetPlayer);
+            if (playerInvited == null)
+            {
+                short NoticeCode = 2563;
+                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+            }
+
+            if (playerInvited.GuildId != 0)
             {
                 short NoticeCode = 1027;
                 session.Send(GuildPacket.ErrorNotice(NoticeCode));
             }
+            else if (guild.Members.Count >= guild.MaxMembers)
+            {
+                //TODO Plug in 'full guild' error packets
+                return;
+            }
             else
             {
-                session.Send(GuildPacket.InviteConfirm(other));
-                other.Session.Send(GuildPacket.SendInvite(session.Player, other, guild));
+                session.Send(GuildPacket.InviteConfirm(playerInvited));
+                playerInvited.Session.Send(GuildPacket.SendInvite(session.Player, playerInvited, guild));
             }
-            // TODO check if player is online, else send an error
         }
 
         private void HandleInviteResponse(GameSession session, PacketReader packet)
@@ -186,7 +190,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (response == 01)
             {
-
                 inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
                 session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
                 session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
@@ -240,8 +243,6 @@ namespace MapleServer2.PacketHandlers.Game
             else
             {
                 session.Send(GuildPacket.KickConfirm(member));
-
-
                 member.Session.Send(GuildPacket.KickNotification(session.Player));
                 member.Session.Send(GuildPacket.MemberNotice(member));
                 guild.RemoveMember(member);
@@ -278,19 +279,19 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            GameSession oldLeader = session;
+            Player oldLeader = session.Player;
 
-            Guild guild = GameServer.GuildManager.GetGuildByLeader(oldLeader.Player);
+            Guild guild = GameServer.GuildManager.GetGuildByLeader(oldLeader);
             if (guild == null)
             {
                 return;
             }
 
             session.Send(GuildPacket.TransferLeaderConfirm(newLeader));
-            guild.BroadcastPacketGuild(GuildPacket.AssignNewLeader(newLeader, oldLeader.Player));
+            guild.BroadcastPacketGuild(GuildPacket.AssignNewLeader(newLeader, oldLeader));
             guild.Members.Insert(0, newLeader);
-            guild.Members.Remove(oldLeader.Player);
-            guild.Members.Add(oldLeader.Player);
+            guild.Members.Remove(oldLeader);
+            guild.Members.Add(oldLeader);
         }
 
         private void HandleGuildNotice(GameSession session, PacketReader packet)
