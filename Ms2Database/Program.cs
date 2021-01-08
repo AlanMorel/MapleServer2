@@ -15,8 +15,8 @@ namespace Ms2Database
             {
                 Account account = new Account()
                 {
-                    Username = "test",
-                    Password = "test"
+                    Username = "localhost",
+                    Password = ""
                 };
                 context.Accounts.Add(account);
                 context.SaveChanges();

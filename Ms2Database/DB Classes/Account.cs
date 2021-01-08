@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace Ms2Database.DB_Classes
 {
     public class Account
     {
+        public Account()
+        {
+            CreationTime = DateTime.Now;
+        }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         [Key]
@@ -20,8 +25,7 @@ namespace Ms2Database.DB_Classes
         [Column(TypeName = "nvarchar")]
         [StringLength(12)]
         public string Password { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        [Column("Creation Time", TypeName = "DateTime2")]
+        [Column("Creation Time", TypeName = "datetime2")]
         public DateTime? CreationTime { get; set; }
     }
 }
