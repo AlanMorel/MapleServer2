@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ms2Database.DB_Classes
+namespace Ms2Database.DBClasses
 {
     public class Ms2DBContext : DbContext
     {
