@@ -189,23 +189,20 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (response == 01)
-            {
-                inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
-                session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
-                session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
-                guild.AddMember(session.Player);
-                guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviterName, response));
-                guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player, guildName));
-                session.Send(GuildPacket.UpdateGuild(session, guild));
-            }
-
             if (response == 00)
             {
                 inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, 256));
                 session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
                 return;
             }
+
+            inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
+            session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
+            session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
+            guild.AddMember(session.Player);
+            guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviterName, response));
+            guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player, guildName));
+            session.Send(GuildPacket.UpdateGuild(session, guild));
         }
 
         private void HandleLeave(GameSession session, PacketReader packet)
