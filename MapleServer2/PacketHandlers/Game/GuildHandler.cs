@@ -5,7 +5,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
-using MapleServer2.Enums;
 
 namespace MapleServer2.PacketHandlers.Game
 {
