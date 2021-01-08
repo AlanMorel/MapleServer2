@@ -10,21 +10,21 @@ namespace Ms2Database.Controllers
 {
     public class AccountManager
     {
-        public Tuple<string, string> GetAccInfoById(long id)
+        public Tuple<string, string> GetAccInfoById(long id) // Queries db and retrieves account entry by Id
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id);
+                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
                 return new Tuple<string, string>(account.Username, account.Password);
             }
         }
 
-        public void SetAccInfo(long id, string username, string password)
+        public void SetAccInfo(long id, string username, string password) // Allows account entry changes
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id);
-                if (!string.IsNullOrEmpty(username))
+                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
+                if (!string.IsNullOrEmpty(username)) // Prevents empty entries
                 {
                     account.Username = username;
                 }
@@ -32,7 +32,7 @@ namespace Ms2Database.Controllers
                 {
                     account.Password = password;
                 }
-                context.SaveChanges();
+                context.SaveChanges(); // Updates database with changes.
             }
         }
 
