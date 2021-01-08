@@ -11,7 +11,7 @@ namespace Ms2Database.DB_Classes
     {
         public Ms2DBContext() : base("name=DatabaseConnectionString")
         {
-            Database.SetInitializer<Ms2DBContext>(new DropCreateDatabaseAlways<Ms2DBContext>());
+            //Database.SetInitializer<Ms2DBContext>(new DropCreateDatabaseAlways<Ms2DBContext>());
         }
         public DbSet<Account> Accounts { get; set; }
     }
