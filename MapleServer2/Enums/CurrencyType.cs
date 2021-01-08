@@ -4,6 +4,8 @@
     {
         Meso,
         Meret,
+        GameMeret,
+        EventMeret,
         ValorToken,
         Treva,
         Rue,

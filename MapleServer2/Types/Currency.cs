@@ -1,24 +1,30 @@
 ﻿using MapleServer2.Enums;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types
 {
     public class Currency
     {
 
-        private long amount;
+        public long Amount { get; private set; }
+        private readonly CurrencyType Type;
+        private readonly Player Player;
 
-        public Currency(long input)
+        public Currency(CurrencyType type, long input, Player player)
         {
-            amount = input;
+            Player = player;
+            Type = type;
+            Amount = input;
         }
 
         public bool Modify(long input)
         {
-            if (amount + input < 0)
+            if (Amount + input < 0)
             {
                 return false;
             }
-            amount += input;
+            Amount += input;
+            UpdateUi();
             return true;
         }
 
@@ -28,12 +34,53 @@ namespace MapleServer2.Types
             {
                 return;
             }
-            amount = input;
+            Amount = input;
+            UpdateUi();
         }
 
-        public long GetAmount()
+        private void UpdateUi()
         {
-            return amount;
+            switch (Type)
+            {
+                case CurrencyType.Meso:
+                    Player.Session.Send(MesosPacket.UpdateMesos(Player.Session));
+                    break;
+                case CurrencyType.Meret:
+                    Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
+                    break;
+                case CurrencyType.GameMeret:
+                    Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
+                    break;
+                case CurrencyType.EventMeret:
+                    Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
+                    break;
+                case CurrencyType.ValorToken:
+                    break;
+                case CurrencyType.Treva:
+                    break;
+                case CurrencyType.Rue:
+                    break;
+                case CurrencyType.HaviFruit:
+                    break;
+                case CurrencyType.MesoToken:
+                    break;
+                case CurrencyType.BlueStar:
+                    break;
+                case CurrencyType.RedStar:
+                    break;
+                case CurrencyType.EventDungeonCoin:
+                    break;
+                case CurrencyType.GuildCoins:
+                    break;
+                case CurrencyType.KayCoin:
+                    break;
+                case CurrencyType.MapleCoin:
+                    break;
+                case CurrencyType.PremiumCoin:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

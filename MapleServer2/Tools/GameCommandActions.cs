@@ -18,10 +18,10 @@ namespace MapleServer2.Tools
             switch (args[0])
             {
                 case "setmeso":
-                    session.Player.ModifyCurrency(CurrencyType.Meso, ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Wallet.Meso.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "setmeret":
-                    session.Player.ModifyCurrency(CurrencyType.Meret, ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Wallet.Meret.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "item":
                     ProcessItemCommand(session, args.Length > 1 ? args[1] : "");

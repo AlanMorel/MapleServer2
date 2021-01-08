@@ -91,13 +91,12 @@ namespace MapleServer2.Types
         // TODO make this as an array
 
         public long GuildId;
-        private Currency Meso;
-        private Currency Meret;
-        private Currency ValorToken;
-        private Currency Treva;
-        private Currency Rue;
-        private Currency HaviFruit;
-        private Currency MesoToken;
+        public Wallet Wallet { get; private set; }
+
+        public Player()
+        {
+            Wallet = new Wallet(this);
+        }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
@@ -105,7 +104,6 @@ namespace MapleServer2.Types
 
             PlayerStats stats = PlayerStats.Default();
             StatDistribution StatPointDistribution = new StatDistribution();
-
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 XmlParser.ParseSkills(job)
@@ -137,13 +135,6 @@ namespace MapleServer2.Types
                     { ItemSlot.FA, Item.Face() },
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
-                Meso = new Currency(20000),
-                Meret = new Currency(2000),
-                ValorToken = new Currency(5),
-                Treva = new Currency(5),
-                Rue = new Currency(5),
-                HaviFruit = new Currency(5),
-                MesoToken = new Currency(5),
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
@@ -158,7 +149,6 @@ namespace MapleServer2.Types
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
             int job = 50;
-
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
@@ -193,13 +183,6 @@ namespace MapleServer2.Types
                     { ItemSlot.SH, Item.ShoesMale() },
 
                 },
-                Meso = new Currency(20000),
-                Meret = new Currency(2000),
-                ValorToken = new Currency(5),
-                Treva = new Currency(5),
-                Rue = new Currency(5),
-                HaviFruit = new Currency(5),
-                MesoToken = new Currency(5),
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
@@ -233,13 +216,6 @@ namespace MapleServer2.Types
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
-                Meso = new Currency(20000),
-                Meret = new Currency(2000),
-                ValorToken = new Currency(5),
-                Treva = new Currency(5),
-                Rue = new Currency(5),
-                HaviFruit = new Currency(5),
-                MesoToken = new Currency(5),
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
@@ -252,126 +228,6 @@ namespace MapleServer2.Types
             Coord = spawn.Coord.ToFloat();
             Rotation = spawn.Rotation.ToFloat();
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
-        }
-
-        public bool ModifyCurrency(CurrencyType type, long amount)
-        {
-            switch (type)
-            {
-                case CurrencyType.Meso:
-                    if (Meso.Modify(amount))
-                    {
-                        UpdateMesos();
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.Meret:
-                    if (Meret.Modify(amount))
-                    {
-                        UpdateMerets();
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.ValorToken:
-                    if (ValorToken.Modify(amount))
-                    {
-                        // missing packet to update UI.
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.Treva:
-                    if (Treva.Modify(amount))
-                    {
-                        // missing packet to update UI.
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.Rue:
-                    if (Rue.Modify(amount))
-                    {
-                        // missing packet to update UI.
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.HaviFruit:
-                    if (HaviFruit.Modify(amount))
-                    {
-                        // missing packet to update UI.
-                        return true;
-                    }
-                    return false;
-                case CurrencyType.MesoToken:
-                    if (MesoToken.Modify(amount))
-                    {
-                        // missing packet to update UI.
-                        return true;
-                    }
-                    return false;
-                default:
-                    return false;
-            }
-        }
-
-        public long GetCurrency(CurrencyType type)
-        {
-            return type switch
-            {
-                CurrencyType.Meso => Meso.GetAmount(),
-                CurrencyType.Meret => Meret.GetAmount(),
-                CurrencyType.ValorToken => ValorToken.GetAmount(),
-                CurrencyType.Treva => Treva.GetAmount(),
-                CurrencyType.Rue => Rue.GetAmount(),
-                CurrencyType.HaviFruit => HaviFruit.GetAmount(),
-                CurrencyType.MesoToken => MesoToken.GetAmount(),
-                _ => -1,
-            };
-        }
-
-        public void SetCurrency(CurrencyType type, long amount)
-        {
-            switch (type)
-            {
-                case CurrencyType.Meso:
-                    Meso.SetAmount(amount);
-                    UpdateMesos();
-                    break;
-                case CurrencyType.Meret:
-                    Meret.SetAmount(amount);
-                    UpdateMerets();
-                    break;
-                case CurrencyType.ValorToken:
-                    ValorToken.SetAmount(amount);
-                    // missing packet to update UI.
-                    break;
-                case CurrencyType.Treva:
-                    Treva.SetAmount(amount);
-                    // missing packet to update UI.
-                    break;
-                case CurrencyType.Rue:
-                    Rue.SetAmount(amount);
-                    // missing packet to update UI.
-                    break;
-                case CurrencyType.HaviFruit:
-                    HaviFruit.SetAmount(amount);
-                    // missing packet to update UI.
-                    break;
-                case CurrencyType.MesoToken:
-                    MesoToken.SetAmount(amount);
-                    // missing packet to update UI.
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void UpdateMesos()
-        {
-            Session.Send(MesosPacket.UpdateMesos(Session));
-        }
-
-        private void UpdateMerets()
-        {
-            Session.Send(MeretsPacket.UpdateMerets(Session));
         }
     }
 }

@@ -16,26 +16,24 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(1); // channel
             pWriter.WriteLong(session.Player.Experience);
             pWriter.WriteLong(session.Player.RestExperience);
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Meso));
+            pWriter.WriteLong(session.Player.Wallet.Meso.Amount);
 
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Meret)); // Merets
-            pWriter.WriteLong(); // Merets
-            // These Merets are added up. If set, previous are ignored.
-
-            pWriter.WriteLong(); // Game Merets
-            pWriter.WriteLong(); // Event Merets
+            pWriter.WriteLong(); // Total Merets
+            pWriter.WriteLong(session.Player.Wallet.Meret.Amount); // Merets
+            pWriter.WriteLong(session.Player.Wallet.GameMeret.Amount); // Game Merets
+            pWriter.WriteLong(session.Player.Wallet.EventMeret.Amount); // Event Merets
 
             pWriter.WriteLong();
 
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.ValorToken));
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Treva));
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.Rue));
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.HaviFruit));
+            pWriter.WriteLong(session.Player.Wallet.ValorToken.Amount);
+            pWriter.WriteLong(session.Player.Wallet.Treva.Amount);
+            pWriter.WriteLong(session.Player.Wallet.Rue.Amount);
+            pWriter.WriteLong(session.Player.Wallet.HaviFruit.Amount);
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteLong(session.Player.GetCurrency(CurrencyType.MesoToken));
+            pWriter.WriteLong(session.Player.Wallet.MesoToken.Amount);
             pWriter.WriteUnicodeString(""); // Profile Url
             pWriter.WriteByte();
             pWriter.WriteByte();
