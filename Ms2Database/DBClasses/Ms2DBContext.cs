@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ms2Database.DBClasses
+namespace Ms2Database.DbClasses
 {
-    public class Ms2DBContext : DbContext
+    public class Ms2DbContext : DbContext
     {
-        public Ms2DBContext() : base("name=DatabaseConnectionString")
+        public Ms2DbContext() : base("name=DatabaseConnectionString")
         {
-            //Database.SetInitializer<Ms2DBContext>(new DropCreateDatabaseAlways<Ms2DBContext>());
+            //Database.SetInitializer<Ms2DbContext>(new DropCreateDatabaseAlways<Ms2DbContext>());
         }
         public DbSet<Account> Accounts { get; set; }
     }
