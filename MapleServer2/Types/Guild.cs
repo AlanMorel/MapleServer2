@@ -10,13 +10,16 @@ namespace MapleServer2.Types
 {
     public class Guild
     {
-        // TODO: Add ranks, rank names, guildExp, guildFunds, Member contribution
+        // TODO: Add ranks, rank names, Member contribution
         public long Id { get; }
         public string Name { get; set; }
         public bool Approval { get; set; } //Require approval before someone can join
         public Player Leader { get; set; }
         public int MaxMembers { get; set; }
         public List<Player> Members { get; }
+        public int Funds { get; set; }
+        public int Exp { get; set; }
+        public bool Searchable { get; set; }
 
         public Guild(string name, List<Player> gPlayers)
         {
@@ -26,13 +29,22 @@ namespace MapleServer2.Types
             Leader = gPlayers.First();
             Members = gPlayers;
             Approval = false;
-            Members.Add(Leader);
+            Exp = 0;
+            Funds = 0;
+            Searchable = true;
         }
 
         public void AddMember(Player player)
         {
             Members.Add(player);
         }
+
+        public void RemoveMember(Player player)
+        {
+            Members.Remove(player);
+            player.ClubId = 0;
+        }
+
 
         public void BroadcastPacketGuild(Packet packet, GameSession sender = null)
         {

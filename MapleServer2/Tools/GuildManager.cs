@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MapleServer2.Types;
 
@@ -16,6 +17,7 @@ namespace MapleServer2.Tools
         public void AddGuild(Guild guild)
         {
             guildList.Add(guild.Id, guild);
+            Console.WriteLine(string.Join(Environment.NewLine, guild.Id));
         }
 
         public void RemoveGuild(Guild guild)
