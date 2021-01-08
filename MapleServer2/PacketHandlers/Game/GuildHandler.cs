@@ -5,7 +5,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Types;
-using System;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -154,8 +153,10 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 short NoticeCode = 1027;
                 session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                return;
             }
-            else if (guild.Members.Count >= guild.MaxMembers)
+
+            if (guild.Members.Count >= guild.MaxMembers)
             {
                 //TODO Plug in 'full guild' error packets
                 return;
@@ -198,10 +199,12 @@ namespace MapleServer2.PacketHandlers.Game
                 guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player, guildName));
                 session.Send(GuildPacket.UpdateGuild(session, guild));
             }
-            else
+
+            if (response == 00)
             {
                 inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, 256));
                 session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
+                return;
             }
         }
 
@@ -240,14 +243,13 @@ namespace MapleServer2.PacketHandlers.Game
                 //TODO: Error packets
                 return;
             }
-            else
-            {
-                session.Send(GuildPacket.KickConfirm(member));
-                member.Session.Send(GuildPacket.KickNotification(session.Player));
-                member.Session.Send(GuildPacket.MemberNotice(member));
-                guild.RemoveMember(member);
-                guild.BroadcastPacketGuild(GuildPacket.KickMember(member, session.Player));
-            }
+
+            session.Send(GuildPacket.KickConfirm(member));
+            member.Session.Send(GuildPacket.KickNotification(session.Player));
+            member.Session.Send(GuildPacket.MemberNotice(member));
+            guild.RemoveMember(member);
+            guild.BroadcastPacketGuild(GuildPacket.KickMember(member, session.Player));
+
         }
 
         private void HandlePlayerMessage(GameSession session, PacketReader packet)
