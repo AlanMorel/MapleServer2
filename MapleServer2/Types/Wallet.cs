@@ -2,7 +2,6 @@
 
 namespace MapleServer2.Types
 {
-
     public class Wallet
     {
         public Currency Meso { get; private set; }
@@ -24,22 +23,22 @@ namespace MapleServer2.Types
 
         public Wallet(Player player)
         {
-            Meso = new Currency(CurrencyType.Meso, 2000, player);
-            Meret = new Currency(CurrencyType.Meret, 2000, player);
-            GameMeret = new Currency(CurrencyType.GameMeret, 2000, player);
-            EventMeret = new Currency(CurrencyType.EventMeret, 2000, player);
-            ValorToken = new Currency(CurrencyType.ValorToken, 2000, player);
-            Treva = new Currency(CurrencyType.Treva, 2000, player);
-            Rue = new Currency(CurrencyType.Rue, 2000, player);
-            HaviFruit = new Currency(CurrencyType.HaviFruit, 2000, player);
-            MesoToken = new Currency(CurrencyType.MesoToken, 2000, player);
-            BlueStar = new Currency(CurrencyType.BlueStar, 2000, player);
-            RedStar = new Currency(CurrencyType.RedStar, 2000, player);
-            EventDungeonCoin = new Currency(CurrencyType.EventDungeonCoin, 2000, player);
-            GuildCoins = new Currency(CurrencyType.GuildCoins, 2000, player);
-            KayCoin = new Currency(CurrencyType.KayCoin, 2000, player);
-            MapleCoin = new Currency(CurrencyType.MapleCoin, 2000, player);
-            PremiumCoin = new Currency(CurrencyType.PremiumCoin, 2000, player);
+            Meso = new Currency(player, CurrencyType.Meso, 2000);
+            Meret = new Currency(player, CurrencyType.Meret, 2000);
+            GameMeret = new Currency(player, CurrencyType.GameMeret, 2000);
+            EventMeret = new Currency(player, CurrencyType.EventMeret, 2000);
+            ValorToken = new Currency(player, CurrencyType.ValorToken, 2000);
+            Treva = new Currency(player, CurrencyType.Treva, 2000);
+            Rue = new Currency(player, CurrencyType.Rue, 2000);
+            HaviFruit = new Currency(player, CurrencyType.HaviFruit, 2000);
+            MesoToken = new Currency(player, CurrencyType.MesoToken, 2000);
+            BlueStar = new Currency(player, CurrencyType.BlueStar, 2000);
+            RedStar = new Currency(player, CurrencyType.RedStar, 2000);
+            EventDungeonCoin = new Currency(player, CurrencyType.EventDungeonCoin, 2000);
+            GuildCoins = new Currency(player, CurrencyType.GuildCoins, 2000);
+            KayCoin = new Currency(player, CurrencyType.KayCoin, 2000);
+            MapleCoin = new Currency(player, CurrencyType.MapleCoin, 2000);
+            PremiumCoin = new Currency(player, CurrencyType.PremiumCoin, 2000);
         }
     }
 }
