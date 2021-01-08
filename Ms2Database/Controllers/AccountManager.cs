@@ -1,5 +1,5 @@
 ﻿using System;
-using Ms2Database.DbClasses;
+using Ms2Database.DBClasses;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Ms2Database.Controllers
     {
         public Tuple<string, string> GetAccInfoById(long id)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DBContext context = new Ms2DBContext())
             {
                 Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id);
                 return new Tuple<string, string>(account.Username, account.Password);
@@ -21,7 +21,7 @@ namespace Ms2Database.Controllers
 
         public void SetAccInfo(long id, string username, string password)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DBContext context = new Ms2DBContext())
             {
                 Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id);
                 if (!string.IsNullOrEmpty(username))

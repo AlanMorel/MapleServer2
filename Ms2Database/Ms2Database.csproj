@@ -54,8 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountManager.cs" />
-    <Compile Include="DbClasses\Account.cs" />
-    <Compile Include="DbClasses\Ms2DbContext.cs" />
+    <Compile Include="DBClasses\Account.cs" />
+    <Compile Include="DBClasses\Ms2DBContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

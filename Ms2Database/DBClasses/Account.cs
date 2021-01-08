@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ms2Database.DbClasses
+namespace Ms2Database.DBClasses
 {
     public class Account
     {

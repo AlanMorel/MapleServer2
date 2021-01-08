@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ms2Database.DbClasses;
+using Ms2Database.DBClasses;
 
 namespace Ms2Database
 {
@@ -11,7 +11,7 @@ namespace Ms2Database
     {
         static void Main(string[] args)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DBContext context = new Ms2DBContext())
             {
                 Account account = new Account()
                 {
