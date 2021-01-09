@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
     public static class UserEnvPacket
     {
         // Unlocked Titles
-        public static Packet SetTitles(List<int> titleIds)
+        public static Packet SetTitles(Player player)
         {
+            List<int> titleIds = player.AvaliableTitles;
+
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x02);
             pWriter.WriteInt(titleIds.Count);
