@@ -14,9 +14,21 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
-            string[] args = command.ToLower().Split(" ", 2);
+            string[] args = command.ToLower().Split(" ");
             switch (args[0])
             {
+                case "setvalor":
+                    session.Player.Wallet.ValorToken.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "settreva":
+                    session.Player.Wallet.Treva.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setrue":
+                    session.Player.Wallet.Rue.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "sethavi":
+                    session.Player.Wallet.HaviFruit.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "setmeso":
                     session.Player.Wallet.Meso.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
