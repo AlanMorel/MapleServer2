@@ -2,6 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -12,36 +13,53 @@ namespace MapleServer2.Packets
         {
             UpdateGuild = 0x0,
             Create = 0x1,
+            DisbandConfirm = 0x2,
+            InviteConfirm = 0x3,
+            SendInvite = 0x4,
+            InviteResponseConfirm = 0x5,
+            InviteNotification = 0x6,
+            LeaveConfirm = 0x7,
+            KickConfirm = 0x8,
+            KickNotification = 0x9,
             CheckInConfirm = 0xF,
-            Create2 = 0x12,
+            MemberBroadcastJoinNotice = 0x12,
+            MemberLeaveNotice = 0x13,
+            KickMember = 0x14,
+            UpdatePlayerMessage = 0x16,
+            AssignNewLeader = 0x19,
             GuildNoticeChange = 0x1A,
-            Create3 = 0x20,
+            ListGuildUpdate = 0x1E,
+            MemberJoin = 0x20,
             Unk1 = 0x24,
             UpdateGuildExp = 0x31,
             UpdateGuildFunds = 0x32,
             UpdatePlayerContribution = 0x33,
+            TransferLeaderConfirm = 0x3D,
             GuildNoticeConfirm = 0x3E,
-            Invite = 0x4B,
+            ListGuildConfirm = 0x42,
+            UpdateGuildTag = 0x4B,
+            MemberNotice = 0x4C,
+            ErrorNotice = 0x4D,
             GuildWindow = 0x54,
             UpdateGuildFunds2 = 0x59, //unk
             List = 0x5A,
             UpdatePlayerDonation = 0x6E,
         }
 
-        public static Packet UpdateGuild(GameSession session, string guildName)
+        public static Packet UpdateGuild(GameSession session, Guild guild)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteByte(0x0);
-            pWriter.WriteLong(1); // guild ID
-            pWriter.WriteUnicodeString(guildName);
+            pWriter.WriteMode(GuildPacketMode.UpdateGuild);
+            pWriter.WriteLong(guild.Id);
+            pWriter.WriteUnicodeString(guild.Name);
             pWriter.WriteUnicodeString(""); // guildMark Url
             pWriter.WriteByte(0x3C); // guild.Capacity
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString(""); // guild.Notice
-            pWriter.WriteLong(session.Player.AccountId); // guild.Leader.AccountId
-            pWriter.WriteLong(session.Player.CharacterId); // guild.Leader.CharacterId
-            pWriter.WriteUnicodeString(session.Player.Name); // guild.Leader.Player.Name
-            pWriter.WriteLong(1609108139); // guild creation timestamp
+            pWriter.WriteLong(guild.Leader.AccountId);
+            pWriter.WriteLong(guild.Leader.CharacterId);
+            pWriter.WriteUnicodeString(guild.Leader.Name);
+            pWriter.WriteLong(2609722438); // guild creation timestamp
             pWriter.WriteByte(0x0);
             pWriter.WriteInt(1000);
             pWriter.WriteInt(0);
@@ -53,11 +71,49 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(0);
             pWriter.WriteByte(0x1);
             pWriter.WriteInt(0);
-            pWriter.WriteInt(0); // guild.Exp
-            pWriter.WriteInt(0); // guild.Funds
+            pWriter.WriteInt(guild.Exp);
+            pWriter.WriteInt(guild.Funds);
             pWriter.WriteByte(0x0);
             pWriter.WriteInt(0);
-            pWriter.WriteByte(0x0); // guild.Members.Count and also loop for each member ?
+            pWriter.WriteByte((byte) guild.Members.Count);
+
+            foreach (Player member in guild.Members)
+            {
+                pWriter.WriteByte(0x3);
+                pWriter.WriteByte(); // rank?
+                pWriter.WriteLong(1); // guildmember UID?
+                pWriter.WriteLong(member.AccountId);
+                pWriter.WriteLong(member.CharacterId);
+                pWriter.WriteUnicodeString(member.Name);
+                pWriter.WriteByte();
+                pWriter.WriteInt(member.JobGroupId);
+                pWriter.WriteInt(member.JobId);
+                pWriter.WriteShort(member.Level);
+                pWriter.WriteInt(member.MapId);
+                pWriter.WriteInt(); // last seen mapID?
+                pWriter.WriteShort(); // player.channel
+                pWriter.WriteUnicodeString(member.ProfileUrl);
+                pWriter.WriteInt(); // member house mapId
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteLong(); // member house plot expiration timestamp
+                pWriter.WriteInt(); // combat trophy count
+                pWriter.WriteInt(); // adventure trophy count
+                pWriter.WriteInt(); // lifestyle trophy count
+                pWriter.WriteUnicodeString("");
+                pWriter.WriteLong(); // joined timestamp
+                pWriter.WriteLong(); // last seen timestamp
+                pWriter.WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteByte(0); // 00 = online, 01 = offline
+            }
+
             pWriter.WriteByte(0x6); // loop for guild ranks ?
             pWriter.WriteByte(0x0);
             pWriter.WriteUnicodeString("Leader");
@@ -132,7 +188,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
-
             return pWriter;
         }
 
@@ -145,6 +200,80 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet DisbandConfirm()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.DisbandConfirm);
+            pWriter.WriteByte();
+            return pWriter;
+        }
+
+        public static Packet InviteConfirm(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.InviteConfirm);
+            pWriter.WriteUnicodeString(player.Name);
+            return pWriter;
+        }
+
+        public static Packet SendInvite(Player inviter, Player invitee, Guild guild)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.SendInvite);
+            pWriter.WriteLong(guild.Id);
+            pWriter.WriteUnicodeString(guild.Name);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteUnicodeString(inviter.Name);
+            pWriter.WriteUnicodeString(invitee.Name);
+            return pWriter;
+        }
+
+        public static Packet InviteResponseConfirm(Player inviter, Player invitee, Guild guild, short response)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.InviteResponseConfirm);
+            pWriter.WriteLong(guild.Id);
+            pWriter.WriteUnicodeString(guild.Name);
+            pWriter.WriteShort();
+            pWriter.WriteUnicodeString(inviter.Name);
+            pWriter.WriteUnicodeString(invitee.Name);
+            pWriter.WriteShort(response);
+            return pWriter;
+        }
+
+        public static Packet InviteNotification(string inviteeName, short response)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.InviteNotification);
+            pWriter.WriteUnicodeString(inviteeName);
+            pWriter.WriteShort(response);
+            return pWriter;
+        }
+
+        public static Packet LeaveConfirm()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.LeaveConfirm);
+            return pWriter;
+        }
+
+        public static Packet KickConfirm(Player member)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.KickConfirm);
+            pWriter.WriteUnicodeString(member.Name);
+            return pWriter;
+        }
+
+        public static Packet KickNotification(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.KickNotification);
+            pWriter.WriteUnicodeString(player.Name);
+            return pWriter;
+        }
+
         public static Packet CheckInConfirm()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -152,42 +281,78 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Create2(Player player, string guildName)
+        public static Packet MemberBroadcastJoinNotice(Player member, string inviterName, byte response)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteMode(GuildPacketMode.Create2);
-            pWriter.WriteShort();
-            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteMode(GuildPacketMode.MemberBroadcastJoinNotice);
+            pWriter.WriteUnicodeString(inviterName);
+            pWriter.WriteUnicodeString(member.Name);
+            pWriter.WriteByte(response); // 01 = display notice
+            pWriter.WriteByte(0x3);
+            pWriter.WriteByte();
+            pWriter.WriteLong(GuidGenerator.Long()); // unk guild member UID?
+            pWriter.WriteLong(member.AccountId);
+            pWriter.WriteLong(member.CharacterId);
+            pWriter.WriteUnicodeString(member.Name);
             pWriter.WriteByte(); //unk
-            pWriter.WriteShort(0x3);
-            pWriter.WriteLong(0x24161B5EC67A0400); //unk guildId?
-            pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(player.CharacterId);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteByte(); //unk
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
-            pWriter.WriteShort(player.Level);
+            pWriter.WriteInt(member.JobGroupId);
+            pWriter.WriteInt(member.JobId);
+            pWriter.WriteShort(member.Level);
             pWriter.WriteInt(); //unk
-            pWriter.WriteInt(player.MapId);
-            pWriter.WriteShort(); //player.Channel
-            pWriter.WriteUnicodeString(player.ProfileUrl);
-            pWriter.WriteInt(); //player home mapID
+            pWriter.WriteInt(member.MapId);
+            pWriter.WriteShort(); // player.Channel
+            pWriter.WriteUnicodeString(member.ProfileUrl);
+            pWriter.WriteInt(); // player home mapID
             pWriter.WriteInt(); // unk
             pWriter.WriteInt(); // unk
-            pWriter.WriteLong(); //player home mapID expiration time
-            pWriter.WriteInt(); //combat trophy count
-            pWriter.WriteInt(); //adventure trophy count
-            pWriter.WriteInt(); //lifestyle trophy count
-            pWriter.WriteShort(); //unk, filler?
-            pWriter.WriteLong(); //timestamp
-            pWriter.WriteLong(); //timestamp
-            pWriter.WriteLong(); //timestamp
-            pWriter.WriteLong(); //unk
-            pWriter.WriteLong(); //unk
-            pWriter.WriteLong(); //unk
-            pWriter.WriteLong(); //unk
-            pWriter.WriteByte(); //unk
+            pWriter.WriteLong(); // player home mapID expiration time
+            pWriter.WriteInt(); // combat trophy count
+            pWriter.WriteInt(); // adventure trophy count
+            pWriter.WriteInt(); // lifestyle trophy count
+            pWriter.WriteShort(); // unk, filler?
+            pWriter.WriteLong(); // timestamp
+            pWriter.WriteLong(); // timestamp
+            pWriter.WriteLong(); // timestamp
+            pWriter.WriteLong(); // unk
+            pWriter.WriteLong(); // unk
+            pWriter.WriteLong(); // unk
+            pWriter.WriteLong(); // unk
+            pWriter.WriteByte(); // unk 
+            return pWriter;
+        }
+
+        public static Packet MemberLeaveNotice(Player member)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.MemberLeaveNotice);
+            pWriter.WriteUnicodeString(member.Name);
+            return pWriter;
+        }
+
+        public static Packet KickMember(Player member, Player leader)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.KickMember);
+            pWriter.WriteUnicodeString(leader.Name);
+            pWriter.WriteUnicodeString(member.Name);
+            return pWriter;
+        }
+
+        public static Packet UpdatePlayerMessage(Player player, string message)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.UpdatePlayerMessage);
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteUnicodeString(message);
+            return pWriter;
+        }
+
+        public static Packet AssignNewLeader(Player newLeader, Player oldLeader)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.AssignNewLeader);
+            pWriter.WriteUnicodeString(oldLeader.Name);
+            pWriter.WriteUnicodeString(newLeader.Name);
             return pWriter;
         }
 
@@ -201,10 +366,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Create3(Player player, string guildName)
+        public static Packet ListGuildUpdate(Player player, byte toggle)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteMode(GuildPacketMode.Create3);
+            pWriter.WriteMode(GuildPacketMode.ListGuildUpdate);
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte(0x1);
+            pWriter.WriteInt();
+            return pWriter;
+        }
+
+        public static Packet MemberJoin(Player player, string guildName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.MemberJoin);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
@@ -241,7 +416,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteMode(GuildPacketMode.UpdateGuildExp);
-            pWriter.WriteInt(50000); // guildExp
+            pWriter.WriteInt(50000); // new guildExp total
             return pWriter;
         }
 
@@ -249,7 +424,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteMode(GuildPacketMode.UpdateGuildFunds);
-            pWriter.WriteInt(10000000); // guildFunds
+            pWriter.WriteInt(10000000); // new guildFunds total
             return pWriter;
         }
 
@@ -264,6 +439,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet TransferLeaderConfirm(Player newLeader)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.TransferLeaderConfirm);
+            pWriter.WriteUnicodeString(newLeader.Name);
+            return pWriter;
+        }
+
         public static Packet GuildNoticeConfirm(string notice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -273,12 +456,43 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Invite(Player player, string guildName)
+        public static Packet ListGuildConfirm(byte toggle)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
-            pWriter.WriteMode(GuildPacketMode.Invite);
+            pWriter.WriteMode(GuildPacketMode.ListGuildConfirm);
+            pWriter.WriteByte(toggle);
+            pWriter.WriteInt();
+            return pWriter;
+        }
+
+        public static Packet UpdateGuildTag(Player player, string guildName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.UpdateGuildTag);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(guildName);
+            return pWriter;
+        }
+
+        public static Packet MemberNotice(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.MemberNotice);
+            pWriter.WriteUnicodeString(player.Name);
+            return pWriter;
+        }
+
+        public static Packet ErrorNotice(short code)
+        {
+            /*
+            1027 = Unable to invite a member in a guild 
+            2563 = Unable to invite a member if not online.
+            5121 = Deny guild create
+             */
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+            pWriter.WriteMode(GuildPacketMode.ErrorNotice);
+            pWriter.WriteShort(code);
+            pWriter.WriteInt();
             return pWriter;
         }
 

@@ -17,6 +17,12 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "setmeso":
+                    session.Player.Wallet.Meso.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setmeret":
+                    session.Player.Wallet.Meret.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "item":
                     ProcessItemCommand(session, args.Length > 1 ? args[1] : "");
                     break;
@@ -169,6 +175,28 @@ namespace MapleServer2.Tools
 
             result = default;
             return false;
+        }
+
+        private static long ParseLong(GameSession session, string s)
+        {
+            try
+            {
+                return long.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type long.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
     }
 }
