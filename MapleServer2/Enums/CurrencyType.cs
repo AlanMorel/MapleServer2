@@ -6,7 +6,6 @@
         Meret,
         GameMeret,
         EventMeret,
-        RedMeret,
         ValorToken,
         Treva,
         Rue,

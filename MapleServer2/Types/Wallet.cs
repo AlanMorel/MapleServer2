@@ -21,7 +21,6 @@ namespace MapleServer2.Types
             Meret = new Currency(player, CurrencyType.Meret, 2000);
             GameMeret = new Currency(player, CurrencyType.GameMeret, 2000);
             EventMeret = new Currency(player, CurrencyType.EventMeret, 2000);
-            RedMeret = new Currency(player, CurrencyType.RedMeret, 2000);
             ValorToken = new Currency(player, CurrencyType.ValorToken, 2000);
             Treva = new Currency(player, CurrencyType.Treva, 2000);
             Rue = new Currency(player, CurrencyType.Rue, 2000);

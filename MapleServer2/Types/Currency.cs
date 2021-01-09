@@ -49,7 +49,6 @@ namespace MapleServer2.Types
                 case CurrencyType.EventMeret:
                     Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
                     break;
-                case CurrencyType.RedMeret:
                 case CurrencyType.ValorToken:
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
