@@ -6,3 +6,5 @@ Properties/
 *.cache
 GameDataParser/Resources
 Maple2Storage/Resources
+packages
+Ms2Database/packages.config

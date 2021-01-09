@@ -14,7 +14,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
 
-            pWriter.WriteByte((byte) NoticePacketMode.Red); // Only known mode atm
+            pWriter.WriteMode(NoticePacketMode.Red); // Only known mode atm
             /* Known types
             00 chat
             01 chat

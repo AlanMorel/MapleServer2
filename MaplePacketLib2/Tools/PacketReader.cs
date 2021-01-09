@@ -100,6 +100,17 @@ namespace MaplePacketLib2.Tools
             }
         }
 
+        public unsafe float ReadFloat()
+        {
+            CheckLength(4);
+            fixed (byte* ptr = Buffer)
+            {
+                float value = *(float*) (ptr + Position);
+                Position += 4;
+                return value;
+            }
+        }
+
         public unsafe long ReadLong()
         {
             CheckLength(8);

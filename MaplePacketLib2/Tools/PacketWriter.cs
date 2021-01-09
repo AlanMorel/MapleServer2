@@ -75,6 +75,11 @@ namespace MaplePacketLib2.Tools
             return this;
         }
 
+        public PacketWriter WriteMode(Enum value)
+        {
+            return Write(Convert.ToByte(value));
+        }
+
         public PacketWriter WriteBool(bool value)
         {
             return WriteByte(value ? (byte) 1 : (byte) 0);
@@ -139,6 +144,19 @@ namespace MaplePacketLib2.Tools
 
             return this;
         }
+
+        public unsafe PacketWriter WriteFloat(float value = 0.0f)
+        {
+            EnsureCapacity(4);
+            fixed (byte* ptr = Buffer)
+            {
+                *(float*) (ptr + Length) = value;
+                Length += 4;
+            }
+
+            return this;
+        }
+
 
         public unsafe PacketWriter WriteLong(long value = 0)
         {
