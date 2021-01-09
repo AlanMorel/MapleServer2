@@ -93,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.Mesos < 2000)
+            if (session.Player.Wallet.Meso.Modify(-2000))
             {
                 short NoticeCode = 5121;
                 session.Send(GuildPacket.ErrorNotice(NoticeCode));
@@ -101,9 +101,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                session.Player.Mesos -= 2000;
-
-                session.Send(MesosPacket.UpdateMesos(session));
                 session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
                 session.Send(GuildPacket.Create(guildName));
 
@@ -194,6 +191,10 @@ namespace MapleServer2.PacketHandlers.Game
                 inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, 256));
                 session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
                 return;
+            }
+            else
+            {
+                // TODO: Reject packets
             }
 
             inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
