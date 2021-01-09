@@ -23,7 +23,7 @@ namespace MapleServer2.Types
                 return false;
             }
             Amount += input;
-            UpdateUi();
+            UpdateWallet();
             return true;
         }
 
@@ -34,10 +34,10 @@ namespace MapleServer2.Types
                 return;
             }
             Amount = input;
-            UpdateUi();
+            UpdateWallet();
         }
 
-        private void UpdateUi()
+        private void UpdateWallet()
         {
             switch (Type)
             {
@@ -49,18 +49,12 @@ namespace MapleServer2.Types
                 case CurrencyType.EventMeret:
                     Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
                     break;
+                case CurrencyType.RedMeret:
                 case CurrencyType.ValorToken:
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
                 case CurrencyType.HaviFruit:
                 case CurrencyType.MesoToken:
-                case CurrencyType.BlueStar:
-                case CurrencyType.RedStar:
-                case CurrencyType.EventDungeonCoin:
-                case CurrencyType.GuildCoins:
-                case CurrencyType.KayCoin:
-                case CurrencyType.MapleCoin:
-                case CurrencyType.PremiumCoin:
                     break;
                 default:
                     break;

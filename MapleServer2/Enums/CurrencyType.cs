@@ -6,17 +6,11 @@
         Meret,
         GameMeret,
         EventMeret,
+        RedMeret,
         ValorToken,
         Treva,
         Rue,
         HaviFruit,
         MesoToken,
-        BlueStar,
-        RedStar,
-        EventDungeonCoin,
-        GuildCoins,
-        KayCoin,
-        MapleCoin,
-        PremiumCoin,
     }
 }
