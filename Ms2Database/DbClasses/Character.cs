@@ -87,7 +87,7 @@ namespace Ms2Database.DbClasses
         public long? GuildId { get; set; }
 
         [StringLength(20)]
-        public string GuildeName { get; set; }
+        public string GuildName { get; set; }
 
         public string ProfileUrl { get; set; }
 

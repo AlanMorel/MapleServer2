@@ -12,11 +12,11 @@ namespace Ms2Database
     {
         static void Main(string[] args)
         {
-            AccountManager accmanage = new AccountManager();
-            CharacterManager charmanage = new CharacterManager();
+            AccountManager accountManager = new AccountManager();
+            CharacterManager characterManager = new CharacterManager();
 
-            accmanage.CreateAccount("localhost", ""); // Creates Account (username, password)
-            charmanage.CreateCharacter(1, "Char1", 50); // Creates character (accId, name, jobid)
+            accountManager.CreateAccount("localhost", ""); // Creates Account (username, password)
+            characterManager.CreateCharacter(1, "Char1", 50); // Creates character (accId, name, jobid)
 
             Console.WriteLine("Database has been created");
             Console.WriteLine("Test Data has been loaded");
