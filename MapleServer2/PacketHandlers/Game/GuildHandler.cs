@@ -117,7 +117,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.Wallet.Meso.Amount < 2000)
+            if (!session.Player.Wallet.Meso.Modify(-2000))
             {
                 short NoticeCode = 5121;
                 session.Send(GuildPacket.ErrorNotice(NoticeCode));
@@ -125,7 +125,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                session.Player.Wallet.Meso.Modify(-2000);
                 session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
                 session.Send(GuildPacket.Create(guildName));
 
@@ -423,12 +422,11 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int buffID = packet.ReadInt();
 
-            if (session.Player.Wallet.Meso.Amount < 100000)
+            if (!session.Player.Wallet.Meso.Modify(-100000))
             {
                 return;
             }
 
-            session.Player.Wallet.Meso.Modify(-100000);
             session.Send(GuildPacket.ActivateBuff(buffID));
             // TODO: Send buff packet
         }
