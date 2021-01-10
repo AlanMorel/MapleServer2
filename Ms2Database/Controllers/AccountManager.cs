@@ -11,7 +11,7 @@ namespace Ms2Database.Controllers
 {
     public class AccountManager
     {
-        public void CreateAccount(string username, string password) // Creates account entry
+        public void CreateAccount(string username, string password)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -31,10 +31,6 @@ namespace Ms2Database.Controllers
             using (Ms2DbContext context = new Ms2DbContext())
             {
                 Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
-                if (account == null) // Checks if accountId exists (Possibly just make a error box appear instead of returning null)
-                {
-                    return null;
-                }
                 return account;
             }
         }
