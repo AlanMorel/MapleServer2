@@ -8,30 +8,11 @@ namespace MapleServer2.Packets
     {
         public static Packet UpdateWallet(CurrencyType type, long amount)
         {
-            byte currency = 0;
-            switch (type)
-            {
-                case CurrencyType.ValorToken:
-                    currency = 3;
-                    break;
-                case CurrencyType.Treva:
-                    currency = 4;
-                    break;
-                case CurrencyType.Rue:
-                    currency = 5;
-                    break;
-                case CurrencyType.HaviFruit:
-                    currency = 6;
-                    break;
-                default:
-                    break;
-            }
-
             PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY_TOKEN);
 
-            pWriter.WriteByte(currency); // type of currency
+            pWriter.WriteByte((byte) type); // type of currency
             pWriter.WriteLong(amount); // currency amount
-            pWriter.Write("FF FF FF FF FF FF FF FF".ToByteArray()); // always the same
+            pWriter.WriteLong(-1); // always the same
             pWriter.WriteShort(52); // always the same
             pWriter.WriteLong(); // unk
             pWriter.WriteShort(); // unk

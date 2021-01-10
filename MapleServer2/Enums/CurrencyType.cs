@@ -1,15 +1,15 @@
 ﻿namespace MapleServer2.Enums
 {
-    public enum CurrencyType
+    public enum CurrencyType : byte
     {
         Meso,
+        ValorToken = 3,
+        Treva = 4,
+        Rue = 5,
+        HaviFruit = 6,
         Meret,
         GameMeret,
         EventMeret,
-        ValorToken,
-        Treva,
-        Rue,
-        HaviFruit,
         MesoToken,
     }
 }
