@@ -8,7 +8,6 @@ namespace MapleServer2.Types
         public Currency Meret { get; private set; }
         public Currency GameMeret { get; private set; }
         public Currency EventMeret { get; private set; }
-        public Currency RedMeret { get; private set; }
         public Currency ValorToken { get; private set; }
         public Currency Treva { get; private set; }
         public Currency Rue { get; private set; }
