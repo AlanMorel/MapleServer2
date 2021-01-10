@@ -90,6 +90,17 @@ namespace MapleServer2.Packets
                 .Write(npc.Coord);
         }
 
+        public static Packet LoadMob(IFieldObject<Mob> mob)
+        {
+            return PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
+                .WriteByte(0x6)
+                .WriteInt(mob.ObjectId)
+                .WriteInt(mob.Value.Id)
+                .WriteByte()
+                .WriteInt(200)
+                .Write(mob.Coord);
+        }
+
         public static Packet ControlNpc(IFieldObject<Npc> npc)
         {
             PacketWriter npcBuffer = new PacketWriter()
@@ -110,6 +121,26 @@ namespace MapleServer2.Packets
                 .Write(npcBuffer.ToArray());
         }
 
+        public static Packet ControlMob(IFieldObject<Mob> mob)
+        {
+            PacketWriter npcBuffer = new PacketWriter()
+                .WriteInt(mob.ObjectId)
+                .WriteByte()
+                .Write(mob.Coord.ToShort())
+                .WriteShort(mob.Value.Rotation)
+                .Write(mob.Value.Speed) // XYZ Speed
+                .WriteShort(100) // Unknown
+                .WriteByte(1) // Flag ?
+                .WriteShort(mob.Value.Animation)
+                .WriteShort(1); // counter (increments every packet)
+            // There can be more to this packet, probably dependent on Flag.
+
+            return PacketWriter.Of(SendOp.NPC_CONTROL)
+                .WriteShort(1) // Segments
+                .WriteShort((short) npcBuffer.Length)
+                .Write(npcBuffer.ToArray());
+        }
+
         public static Packet MoveNpc(int objectId, CoordF coord)
         {
             return PacketWriter.Of(SendOp.PROXY_GAME_OBJ)
@@ -117,15 +148,6 @@ namespace MapleServer2.Packets
                 .WriteInt(objectId)
                 .WriteByte()
                 .Write(coord);
-        }
-
-        public static Packet SetStats(IFieldObject<Player> player)
-        {
-            return PacketWriter.Of(SendOp.STAT)
-                .WriteInt(player.ObjectId)
-                .WriteByte()
-                .WriteByte(0x23)
-                .Write(player.Value.Stats);
         }
     }
 

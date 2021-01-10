@@ -14,6 +14,11 @@ namespace MapleServer2.Types
         {
             Id = id;
             Animation = 255;
+            stats = new PlayerStats()
+            {
+                Hp = new PlayerStat(10, 0, 10),
+                CurrentHp = new PlayerStat(0, 10, 0),
+            };
         }
     }
 }
