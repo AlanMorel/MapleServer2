@@ -123,22 +123,20 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(GuildPacket.ErrorNotice(NoticeCode));
                 return;
             }
-            else
-            {
-                session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
-                session.Send(GuildPacket.Create(guildName));
 
-                string inviter = ""; // nobody because nobody invited the guild leader
-                byte response = 0; // 0 to not display invite notification
-                byte rank = 0; // set to leader rank
+            session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
+            session.Send(GuildPacket.Create(guildName));
 
-                Guild newGuild = new(guildName, new List<Player> { session.Player });
-                GameServer.GuildManager.AddGuild(newGuild);
+            string inviter = ""; // nobody because nobody invited the guild leader
+            byte response = 0; // 0 to not display invite notification
+            byte rank = 0; // set to leader rank
 
-                session.Send(GuildPacket.UpdateGuild(session, newGuild));
-                session.Send(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviter, response, rank));
-                session.Send(GuildPacket.MemberJoin(session.Player, guildName));
-            }
+            Guild newGuild = new(guildName, new List<Player> { session.Player });
+            GameServer.GuildManager.AddGuild(newGuild);
+
+            session.Send(GuildPacket.UpdateGuild(session, newGuild));
+            session.Send(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviter, response, rank));
+            session.Send(GuildPacket.MemberJoin(session.Player, guildName));
         }
 
         private void HandleDisband(GameSession session, PacketReader packet)
