@@ -8,15 +8,14 @@ namespace MapleServer2.Packets
     {
         public static Packet SetStats(IFieldObject<Player> player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteByte();
-            pWriter.WriteByte(0x23);
-            pWriter.Write(player.Value.Stats);
-            return pWriter;
+            return PacketWriter.Of(SendOp.STAT)
+                .WriteInt(player.ObjectId)
+                .WriteByte()
+                .WriteByte(0x23)
+                .Write(player.Value.Stats);
         }
 
-        public static Packet UpdateMobStats(IFieldObject<Mob> mob)
+        public static Packet UpdateMobStats(IFieldObject<Mob> mob, int damage)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(mob.ObjectId);
@@ -24,10 +23,13 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             pWriter.WriteByte(4); // value
             // Stats 
-            // Damage should be update through this packet
-            for (int i = 0; i < 3; i++)
+            pWriter.WriteLong(mob.Value.stats.Hp.Total);
+            pWriter.WriteLong(mob.Value.stats.Hp.Max);
+            pWriter.WriteLong(mob.Value.stats.CurrentHp.Min -= damage);
+            // Reset to 0 for each mob when dead.
+            if (mob.Value.stats.CurrentHp.Min == 0)
             {
-                pWriter.WriteLong(mob.Value.stats.Hp[i]);
+                mob.Value.stats.CurrentHp.Min = 10;
             }
             return pWriter;
         }

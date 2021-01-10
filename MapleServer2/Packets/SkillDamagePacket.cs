@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
 {
     public static class SkillDamagePacket
     {
-        public static Packet ApplyDamage(IFieldObject<Player> player, long skillUid, int someValue, CoordF coords, List<IFieldObject<Mob>> mobs)
+        public static Packet ApplyDamage(IFieldObject<Player> player, long skillUid, int someValue, int skillId, short skillLevel, CoordF coords, List<IFieldObject<Mob>> mobs)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             pWriter.WriteByte(1);
@@ -16,8 +16,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(someValue);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.Value.ActiveSkillId);
-            pWriter.WriteInt(player.Value.ActiveSkillLevel);
+            pWriter.WriteInt(skillId);
+            pWriter.WriteInt(skillLevel);
             pWriter.Write(coords.ToShort());
             pWriter.Write(CoordS.From(0, 0, 0));
             /*pWriter.WriteInt(0); // Set as Int because 2 bytes after will set something.
