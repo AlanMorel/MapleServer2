@@ -14,7 +14,7 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
-            string[] args = command.ToLower().Split(" ");
+            string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
                 case "setvalor":
