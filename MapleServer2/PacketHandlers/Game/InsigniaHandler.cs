@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
             int[] trophy = player.Trophy;
             List<int> avaliableTitles = player.AvaliableTitles;
-            List<short> avaliableInsignias = player.AvaliableInsignias;
+            List<short> tempInsignias = new List<short> { };
             Dictionary<ItemSlot, Item> equips = player.Equips;
 
             Dictionary<int, short> titlesThatGiveInsignias = new Dictionary<int, short> {
@@ -56,39 +56,41 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO: Missing checks for Mushking Royale lv 5 and Premium Club member
             int trophyCount = trophy[0] + trophy[1] + trophy[2];
 
-            if (avaliableTitles.Contains(10000171) && trophyCount >= 1000 && !avaliableInsignias.Contains(5))
+            if (avaliableTitles.Contains(10000171) && trophyCount >= 1000 && !tempInsignias.Contains(5))
             {
-                avaliableInsignias.Add(5);
+                tempInsignias.Add(5);
             }
 
-            if (player.Level >= 50 && !avaliableInsignias.Contains(11))
+            if (player.Level >= 50 && !tempInsignias.Contains(11))
             {
-                avaliableInsignias.Add(11);
+                tempInsignias.Add(11);
             }
 
-            if (player.PrestigeLevel == 100 && !avaliableInsignias.Contains(29))
+            if (player.PrestigeLevel == 100 && !tempInsignias.Contains(29))
             {
-                avaliableInsignias.Add(29);
+                tempInsignias.Add(29);
             }
 
             foreach (KeyValuePair<int, short> item in titlesThatGiveInsignias)
             {
-                if (!avaliableInsignias.Contains(item.Value) && avaliableTitles.Contains(item.Key))
+                if (!tempInsignias.Contains(item.Value) && avaliableTitles.Contains(item.Key))
                 {
-                    avaliableInsignias.Add(item.Value);
+                    tempInsignias.Add(item.Value);
                 }
             }
 
-            if (!avaliableInsignias.Contains(1))
+            foreach (KeyValuePair<ItemSlot, Item> item in equips)
             {
-                foreach (KeyValuePair<ItemSlot, Item> item in equips)
+                if (tempInsignias.Contains(1))
+                { break; }
+
+                if (item.Value.Enchants >= 12 && item.Value.Rarity >= 4 && !tempInsignias.Contains(1))
                 {
-                    if (item.Value.Enchants >= 12 && item.Value.Rarity >= 4 && !avaliableInsignias.Contains(1))
-                    {
-                        avaliableInsignias.Add(1);
-                    }
+                    tempInsignias.Add(1);
                 }
             }
+
+            player.AvaliableInsignias = tempInsignias;
         }
     }
 }
