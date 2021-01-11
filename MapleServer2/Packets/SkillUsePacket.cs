@@ -8,13 +8,13 @@ namespace MapleServer2.Packets
 {
     public static class SkillUsePacket
     {
-        public static Packet SkillUse(int value, long count, int skillId, short skillLevel, CoordF coords)
+        public static Packet SkillUse(IFieldObject<Player> player, int value, long count, CoordF coords)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
             pWriter.WriteLong(count);
             pWriter.WriteInt(value);    // Unknown
-            pWriter.WriteInt(skillId);
-            pWriter.WriteShort(skillLevel);
+            pWriter.WriteInt(player.Value.ActiveSkillId);
+            pWriter.WriteShort(player.Value.ActiveSkillLevel);
             pWriter.WriteByte();
             pWriter.Write(coords);
             pWriter.WriteLong();
