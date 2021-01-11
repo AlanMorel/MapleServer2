@@ -53,6 +53,8 @@ namespace MapleServer2.Types
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
                 case CurrencyType.HaviFruit:
+                    Player.Session.Send(WalletPacket.UpdateWallet(Type, Amount));
+                    break;
                 case CurrencyType.MesoToken:
                     break;
                 default:
