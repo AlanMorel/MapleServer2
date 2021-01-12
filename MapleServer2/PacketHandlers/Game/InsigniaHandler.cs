@@ -27,20 +27,15 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (!CanEquipInsignia(session, insigniaId))
-            {
-                insigniaId = 0;
-            }
-
             session.Player.InsigniaId = insigniaId;
-            session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaId, insigniaId != 0));
+            session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaId, CanEquipInsignia(session, insigniaId)));
         }
 
         private bool CanEquipInsignia(GameSession session, short insigniaId)
         {
             string type = InsigniaMetadataStorage.GetConditionType(insigniaId);
 
-            switch (type)
+            switch (type) // TODO: handling survivallevel and vip
             {
                 case "level":
                     return session.Player.Level >= 50;
@@ -60,7 +55,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "adventure_level":
                     return session.Player.PrestigeLevel >= 100;
                 default:
-                    Console.WriteLine("Unhandled condition type for insigniaid: " + insigniaId);
+                    Console.WriteLine("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
                     break;
             }
             return false;
