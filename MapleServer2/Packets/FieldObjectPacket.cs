@@ -8,11 +8,18 @@ namespace MapleServer2.Packets
 {
     public static class FieldObjectPacket
     {
+        private enum ProxyGameObjMode : byte
+        {
+            LoadPlayer = 0x03,
+            UpdateEntity = 0x05,
+            LoadNpc = 0x6,
+        }
+
         public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer)
         {
             Player player = fieldPlayer.Value;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteByte(0x03);
+            pWriter.WriteMode(ProxyGameObjMode.LoadPlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
@@ -42,7 +49,7 @@ namespace MapleServer2.Packets
         {
             FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteByte(0x05);
+            pWriter.WriteMode(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte((byte) flag);
 
@@ -82,7 +89,7 @@ namespace MapleServer2.Packets
         public static Packet LoadNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteByte(0x6);
+            pWriter.WriteMode(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.WriteByte();
@@ -94,7 +101,7 @@ namespace MapleServer2.Packets
         public static Packet LoadMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteByte(0x6);
+            pWriter.WriteMode(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.WriteByte();
@@ -148,7 +155,7 @@ namespace MapleServer2.Packets
         public static Packet MoveNpc(int objectId, CoordF coord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteByte(0x05);
+            pWriter.WriteMode(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(objectId);
             pWriter.WriteByte();
             pWriter.Write(coord);
