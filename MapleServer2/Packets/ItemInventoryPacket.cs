@@ -33,7 +33,8 @@ namespace MapleServer2.Packets
                 .WriteShort(item.Slot)
                 .WriteInt(item.Rarity)
                 .WriteUnicodeString("")
-                .WriteItem(item);
+                .WriteItem(item)
+                .WriteUnicodeString("");
         }
 
         public static Packet Remove(long uid)
@@ -63,7 +64,7 @@ namespace MapleServer2.Packets
 
         public static Packet LoadItem(List<Item> items)
         {
-            var pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x07);
             pWriter.WriteShort((short) items.Count);
             foreach (Item item in items)
@@ -86,7 +87,7 @@ namespace MapleServer2.Packets
 
         public static Packet LoadItemsToTab(InventoryTab tab, ICollection<Item> items)
         {
-            var pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY)
                 .WriteByte(0x0A)
                 .WriteInt((int) tab);
             pWriter.WriteShort((short) items.Count);

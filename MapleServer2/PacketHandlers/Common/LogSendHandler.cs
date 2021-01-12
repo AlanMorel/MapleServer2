@@ -27,7 +27,7 @@ namespace MapleServer2.PacketHandlers.Common
             }
             try
             {
-                var builder = new StringBuilder();
+                StringBuilder builder = new StringBuilder();
                 while (packet.Available > 2)
                 {
                     string message = packet.ReadUnicodeString();

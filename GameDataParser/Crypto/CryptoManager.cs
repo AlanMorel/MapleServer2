@@ -74,7 +74,7 @@ namespace GameDataParser.Crypto
                 src = Convert.FromBase64String(Encoding.UTF8.GetString(src));
 
                 // Decrypt the AES encrypted block
-                var pCipher = new AESCipher(key, iv);
+                AESCipher pCipher = new AESCipher(key, iv);
                 pCipher.TransformBlock(src, 0, size, src, 0);
             }
             else if (flag.HasFlag(Encryption.Xor))
@@ -109,7 +109,7 @@ namespace GameDataParser.Crypto
                 CipherKeys.GetKeyAndIV(version, sizeCompressed, out byte[] key, out byte[] iv);
 
                 // Perform AES block encryption
-                var pCipher = new AESCipher(key, iv);
+                AESCipher pCipher = new AESCipher(key, iv);
                 pCipher.TransformBlock(pEncrypted, 0, size, pEncrypted, 0);
 
                 // Encode the encrypted data into a base64 encoded string

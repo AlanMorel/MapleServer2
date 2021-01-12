@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             for (int i = 0; i < numBindings; i++)
             {
-                var keyBind = packet.Read<KeyBind>();
+                KeyBind keyBind = packet.Read<KeyBind>();
                 session.Player.GameOptions.SetKeyBind(ref keyBind);
             }
         }
@@ -59,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Adds or moves a quickslot around
-            var quickSlot = packet.Read<QuickSlot>();
+            QuickSlot quickSlot = packet.Read<QuickSlot>();
             int targetSlot = packet.ReadInt();
             targetHotbar.MoveQuickSlot(targetSlot, quickSlot);
 

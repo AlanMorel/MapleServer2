@@ -38,7 +38,7 @@ namespace MapleServer2.Packets
 
         public static Packet CatchFish(int fishId, int fishSize, bool success)
         {
-            var pWriter = PacketWriter.Of(SendOp.FISHING)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING)
                 .Write(0x08)
                 .WriteInt(fishId)
                 .WriteInt(fishSize)
@@ -59,7 +59,7 @@ namespace MapleServer2.Packets
         // Used for catching those trash coral/clam/wheel things
         public static Packet CatchItem(params int[] itemIds)
         {
-            var pWriter = PacketWriter.Of(SendOp.FISHING)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING)
                 .Write(0x05)
                 .WriteInt(itemIds.Length); // Count
 

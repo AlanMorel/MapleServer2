@@ -9,32 +9,30 @@ namespace MapleServer2.Packets
     {
         public static Packet Enter(GameSession session)
         {
-            var pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteLong(session.Player.CharacterId);
             pWriter.WriteShort(1); // channel
             pWriter.WriteLong(session.Player.Experience);
             pWriter.WriteLong(session.Player.RestExperience);
-            pWriter.WriteLong(session.Player.Mesos);
+            pWriter.WriteLong(session.Player.Wallet.Meso.Amount);
 
-            pWriter.WriteLong(session.Player.Merets); // Merets
-            pWriter.WriteLong(); // Merets
-            // These Merets are added up. If set, previous are ignored.
-
-            pWriter.WriteLong(); // Game Merets
-            pWriter.WriteLong(); // Event Merets
+            pWriter.WriteLong(); // Total Merets
+            pWriter.WriteLong(session.Player.Wallet.Meret.Amount); // Merets
+            pWriter.WriteLong(session.Player.Wallet.GameMeret.Amount); // Game Merets
+            pWriter.WriteLong(session.Player.Wallet.EventMeret.Amount); // Event Merets
 
             pWriter.WriteLong();
 
-            pWriter.WriteLong(session.Player.ValorToken);
-            pWriter.WriteLong(session.Player.Treva);
-            pWriter.WriteLong(session.Player.Rue);
-            pWriter.WriteLong(session.Player.HaviFruit);
+            pWriter.WriteLong(session.Player.Wallet.ValorToken.Amount);
+            pWriter.WriteLong(session.Player.Wallet.Treva.Amount);
+            pWriter.WriteLong(session.Player.Wallet.Rue.Amount);
+            pWriter.WriteLong(session.Player.Wallet.HaviFruit.Amount);
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteLong(session.Player.MesoToken);
+            pWriter.WriteLong(session.Player.Wallet.MesoToken.Amount);
             pWriter.WriteUnicodeString(""); // Profile Url
             pWriter.WriteByte();
             pWriter.WriteByte();

@@ -28,16 +28,40 @@ namespace MapleServer2.Tools
         }
 
         // resolve opcode (offset,type,value) (offset2,type2,value2) ...
-        // Example: resolve 1500 (4,Decode8,100)
+        // Example: resolve 0015 (8,Decode8,100)
         public static PacketStructureResolver Parse(string input)
         {
-            var overrideRegex = new Regex(@"\((\d+),(\w+),(-?\w+)(?:,(\w+))?\)");
+            Regex overrideRegex = new Regex(@"\((\d+),(\w+),(-?\w+)(?:,(\w+))?\)");
             string[] args = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-            // TODO: fix this opcode parsing (it's backwards for 2 bytes...)
-            ushort opCode = args[0].Length == 2 ? args[0].ToByte() : BitConverter.ToUInt16(args[0].ToByteArray());
+            // Parse opCode: 81 0081 0x81 0x0081
+            ushort opCode = 0;
+            if (args[0].ToLower().StartsWith("0x"))
+            {
+                opCode = Convert.ToUInt16(args[0], 16);
+            }
+            else
+            {
+                if (args[0].Length == 2)
+                {
+                    opCode = args[0].ToByte();
+                }
+                else if (args[0].Length == 4)
+                {
+                    // Reverse bytes
+                    byte[] bytes = args[0].ToByteArray();
+                    Array.Reverse(bytes);
 
-            var resolver = new PacketStructureResolver(opCode);
+                    opCode = BitConverter.ToUInt16(bytes);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid opcode.");
+                    return null;
+                }
+            }
+
+            PacketStructureResolver resolver = new PacketStructureResolver(opCode);
             for (int i = 1; i < args.Length; i++)
             {
                 Match match = overrideRegex.Match(args[i]);
@@ -48,7 +72,7 @@ namespace MapleServer2.Tools
                 else
                 {
                     uint offset = uint.Parse(match.Groups[1].Value);
-                    var type = match.Groups[2].Value.ToSockHint();
+                    SockHint type = match.Groups[2].Value.ToSockHint();
                     string value = match.Groups[3].Value;
                     string name = "Override";
                     if (match.Groups.Count > 4 && !string.IsNullOrEmpty(match.Groups[4].Value))

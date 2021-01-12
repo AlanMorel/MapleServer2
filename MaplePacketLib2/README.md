@@ -11,7 +11,7 @@ Credits to [@EricSoftTM](https://github.com/EricSoftTM) for packet encryption al
 
 Sending Packets
 ```C#
-var sendCipher = MapleCipher.Encryptor(VERSION, SIV, BLOCK_IV);
+MapleCipher sendCipher = MapleCipher.Encryptor(VERSION, SIV, BLOCK_IV);
 ...
 // Handshake is NOT encrypted
 PacketWriter writer = PacketWriter.Of(HANDSHAKE_OPCODE);
@@ -27,7 +27,7 @@ SendPacket(encryptedSendPacket);
 
 Receiving Packets
 ```C#
-var recvCipher = MapleCipher.Decryptor(VERSION, RIV, BLOCK_IV);
+MapleCipher recvCipher = MapleCipher.Decryptor(VERSION, RIV, BLOCK_IV);
 MapleStream stream = new MapleStream();
 ...
 while (IS_READING) {

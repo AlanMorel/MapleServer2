@@ -4,12 +4,18 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    public static class AdventureLevelPacket
+    public static class PrestigePacket
     {
+        private enum PrestigePacketMode : byte
+        {
+            Prestige = 0x00,
+            Reward = 0x04
+        }
+
         public static Packet Prestige(Player player)
         {
-            var pWriter = PacketWriter.Of(SendOp.ADVENTURE_LEVEL)
-                .WriteByte(0x00)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE)
+                .WriteMode(PrestigePacketMode.Prestige)
                 .WriteLong(player.PrestigeExperience) // PrestigeExp
                 .WriteInt(player.PrestigeLevel) // PrestigeLevel
                 .WriteLong(player.PrestigeExperience); // Same Prestige Exp??
@@ -21,6 +27,18 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(rank);
             }
+
+            return pWriter;
+        }
+
+        public static Packet Reward(int rank)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+
+            pWriter.WriteMode(PrestigePacketMode.Reward);
+            pWriter.WriteByte(0x01); // Unknown maybe boolean for whether to accept?
+            pWriter.WriteInt(1); // Amount of rewards to accept (multiple ranks)
+            pWriter.WriteInt(rank);
 
             return pWriter;
         }

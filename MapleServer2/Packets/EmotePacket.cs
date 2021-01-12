@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     {
         public static Packet LoadEmotes()
         {
-            var pWriter = PacketWriter.Of(SendOp.EMOTION)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION)
                 .WriteByte(0x00); // Function
 
             // Some random hardcoded emotes for now

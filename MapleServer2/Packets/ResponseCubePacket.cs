@@ -18,7 +18,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteByte((byte) ResponseCubePacketMode.Pickup);
+            pWriter.WriteMode(ResponseCubePacketMode.Pickup);
             pWriter.WriteZero(1);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(coords);
@@ -33,7 +33,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteByte((byte) ResponseCubePacketMode.Drop);
+            pWriter.WriteMode(ResponseCubePacketMode.Drop);
             pWriter.WriteZero(1);
             pWriter.WriteInt(player.ObjectId);
 

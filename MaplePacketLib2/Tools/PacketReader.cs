@@ -30,7 +30,7 @@ namespace MaplePacketLib2.Tools
             CheckLength(size);
             fixed (byte* ptr = &Buffer[Position])
             {
-                var value = (T) Marshal.PtrToStructure((IntPtr) ptr, typeof(T));
+                T value = (T) Marshal.PtrToStructure((IntPtr) ptr, typeof(T));
                 Position += size;
                 return value;
             }

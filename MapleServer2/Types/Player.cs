@@ -36,8 +36,6 @@ namespace MapleServer2.Types
         public short Level = 1;
         public long Experience;
         public long RestExperience;
-        public long Mesos;
-        public long Merets;
         public int PrestigeLevel = 100;
         public long PrestigeExperience;
         public int TitleId;
@@ -62,15 +60,14 @@ namespace MapleServer2.Types
 
         public Vector3 ReturnPosition;
 
-        public long ValorToken;
-        public long Treva;
-        public long Rue;
-        public long HaviFruit;
-        public long MesoToken;
-
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
+
+        public int ActiveSkillId = 1;
+        public short ActiveSkillLevel = 1;
+
         public List<SkillTab> SkillTabs = new List<SkillTab>();
+        public StatDistribution StatPointDistribution = new StatDistribution();
 
         public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
@@ -98,13 +95,19 @@ namespace MapleServer2.Types
         // TODO make this as an array
 
         public long GuildId;
+        public Wallet Wallet { get; private set; }
+
+        public Player()
+        {
+            Wallet = new Wallet(this);
+        }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
 
             PlayerStats stats = PlayerStats.Default();
-
+            StatDistribution StatPointDistribution = new StatDistribution();
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 XmlParser.ParseSkills(job)
@@ -113,6 +116,7 @@ namespace MapleServer2.Types
             Player player = new Player
             {
                 SkillTabs = skillTabs,
+                StatPointDistribution = StatPointDistribution,
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
@@ -137,13 +141,6 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 200000,
-                Merets = 50,
-                ValorToken = 1,
-                Treva = 2,
-                Rue = 3,
-                HaviFruit = 4,
-                MesoToken = 5,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
                 TitleId = 10000292,
@@ -156,7 +153,6 @@ namespace MapleServer2.Types
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
             int job = 50;
-
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
@@ -193,7 +189,6 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Mesos = 10,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
             };
@@ -226,7 +221,6 @@ namespace MapleServer2.Types
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
                 GameOptions = new GameOptions(),
-                Mesos = 10,
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox()
             };

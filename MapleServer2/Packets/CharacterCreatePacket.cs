@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
     {
         public static Packet NameTaken()
         {
-            var pWriter = PacketWriter.Of(SendOp.CHARACTER_CREATE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_CREATE);
             pWriter.WriteByte(0x0B); // Name is taken
             pWriter.WriteShort(); // idk
 

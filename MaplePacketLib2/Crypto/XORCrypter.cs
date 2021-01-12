@@ -11,8 +11,8 @@
             this.table = new byte[2];
 
             // Init
-            var rand1 = new Rand32(version);
-            var rand2 = new Rand32(2 * version);
+            Rand32 rand1 = new Rand32(version);
+            Rand32 rand2 = new Rand32(2 * version);
 
             table[0] = (byte) (rand1.RandomFloat() * 255.0f);
             table[1] = (byte) (rand2.RandomFloat() * 255.0f);

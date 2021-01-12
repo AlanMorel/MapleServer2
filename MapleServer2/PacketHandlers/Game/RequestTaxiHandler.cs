@@ -42,19 +42,23 @@ namespace MapleServer2.PacketHandlers.Game
                     mesoPrice = 5000; //For now make all car taxis cost 5k, as we don't know the formula to calculate it yet.
                     goto case RequestTaxiMode.RotorsMeso;
                 case RequestTaxiMode.RotorsMeso:
-                    if (session.Player.Mesos >= mesoPrice)
+                    if (session.Player.Wallet.Meso.Modify(-mesoPrice))
                     {
-                        session.Player.Mesos -= mesoPrice;
-                        session.Send(MesosPacket.UpdateMesos(session));
                         HandleTeleport(session, mapId);
+                    }
+                    else
+                    {
+                        // TODO: Reject packets
                     }
                     break;
                 case RequestTaxiMode.RotorsMeret:
-                    if (session.Player.Merets >= 15)
+                    if (session.Player.Wallet.Meret.Modify(-15))
                     {
-                        session.Player.Merets -= 15;
-                        session.Send(MeretsPacket.UpdateMerets(session));
                         HandleTeleport(session, mapId);
+                    }
+                    else
+                    {
+                        // TODO: Reject packets
                     }
                     break;
                 case RequestTaxiMode.DiscoverTaxi:
