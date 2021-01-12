@@ -89,9 +89,10 @@ namespace MapleServer2.Tools
                 Uid = Environment.TickCount64,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                Stats = stats
+                Stats = stats,
+                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
             };
-            int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);
+            // int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);
             int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
 
             // Simulate looting item

@@ -28,6 +28,11 @@ namespace MapleServer2.Types
             this.AllocatedStats = AllocatedStats;
         }
 
+        public void AddTotalStatPoints(int amount)
+        {
+            this.TotalStatPoints += amount;
+        }
+
         public void AddPoint(byte statType)
         {
             if (AllocatedStats.ContainsKey(statType))
