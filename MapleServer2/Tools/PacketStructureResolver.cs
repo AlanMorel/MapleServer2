@@ -28,14 +28,38 @@ namespace MapleServer2.Tools
         }
 
         // resolve opcode (offset,type,value) (offset2,type2,value2) ...
-        // Example: resolve 1500 (4,Decode8,100)
+        // Example: resolve 0015 (8,Decode8,100)
         public static PacketStructureResolver Parse(string input)
         {
             Regex overrideRegex = new Regex(@"\((\d+),(\w+),(-?\w+)(?:,(\w+))?\)");
             string[] args = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-            // TODO: fix this opcode parsing (it's backwards for 2 bytes...)
-            ushort opCode = args[0].Length == 2 ? args[0].ToByte() : BitConverter.ToUInt16(args[0].ToByteArray());
+            // Parse opCode: 81 0081 0x81 0x0081
+            ushort opCode = 0;
+            if (args[0].ToLower().StartsWith("0x"))
+            {
+                opCode = Convert.ToUInt16(args[0], 16);
+            }
+            else
+            {
+                if (args[0].Length == 2)
+                {
+                    opCode = args[0].ToByte();
+                }
+                else if (args[0].Length == 4)
+                {
+                    // Reverse bytes
+                    byte[] bytes = args[0].ToByteArray();
+                    Array.Reverse(bytes);
+
+                    opCode = BitConverter.ToUInt16(bytes);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid opcode.");
+                    return null;
+                }
+            }
 
             PacketStructureResolver resolver = new PacketStructureResolver(opCode);
             for (int i = 1; i < args.Length; i++)
