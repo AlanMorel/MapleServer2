@@ -8,15 +8,15 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class PremiumClubHandler : GamePacketHandler
     {
-        public override RecvOp OpCode => RecvOp.VIP_GOODS_SHOP;
+        public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
 
-        public PremiumClubHandler(ILogger<ClubHandler> logger) : base(logger) { }
+        public PremiumClubHandler(ILogger<PremiumClubHandler> logger) : base(logger) { }
 
         private enum PremiumClubMode : byte
         {
-            OpenUI = 0x1,
+            Open = 0x1,
             ClaimItems = 0x2,
-            PurchaseWindow = 0x3,
+            OpenPurchaseWindow = 0x3,
             PurchaseMembership = 0x4,
         }
 
@@ -26,14 +26,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case PremiumClubMode.OpenUI:
-                    HandleOpenUI(session, packet);
+                case PremiumClubMode.Open:
+                    HandleOpen(session, packet);
                     break;
                 case PremiumClubMode.ClaimItems:
                     HandleClaimItems(session, packet);
                     break;
-                case PremiumClubMode.PurchaseWindow:
-                    HandlePurchaseWindow(session, packet);
+                case PremiumClubMode.OpenPurchaseWindow:
+                    HandleOpenPurchaseWindow(session, packet);
                     break;
                 case PremiumClubMode.PurchaseMembership:
                     HandlePurchaseMembership(session, packet);
@@ -44,30 +44,31 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpenUI(GameSession session, PacketReader packet)
+        private void HandleOpen(GameSession session, PacketReader packet)
         {
-            session.Send(PremiumClubPacket.OpenUIConfirm());
+            session.Send(PremiumClubPacket.Open());
         }
 
         private void HandleClaimItems(GameSession session, PacketReader packet)
         {
             int benefitId = packet.ReadInt();
-            session.Send(PremiumClubPacket.ClaimItemConfirm(benefitId));
+            session.Send(PremiumClubPacket.ClaimItem(benefitId));
             // TODO grab data from \table\vipbenefititemtable.xml for item ID, quantity, rank
             // TODO only claim once a day
         }
 
-        private void HandlePurchaseWindow(GameSession session, PacketReader packet)
+        private void HandleOpenPurchaseWindow(GameSession session, PacketReader packet)
         {
-            session.Send(PremiumClubPacket.PurchaseWindowConfirm());
+            session.Send(PremiumClubPacket.OpenPurchaseWindow());
         }
 
         private void HandlePurchaseMembership(GameSession session, PacketReader packet)
         {
             int packageId = packet.ReadInt();
-            session.Send(PremiumClubPacket.PurchaseMembershipConfirm(packageId));
+            session.Send(PremiumClubPacket.PurchaseMembership(packageId));
             // TODO grab data from \table\vipgoodstable.xml for pricing, buff duration, and bonus items
-            session.Send(PremiumClubPacket.ActivatePremium(session));
+            long expiration = 2592847227; // temporarilyy plugging in expiration time
+            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, expiration));
         }
     }
 }

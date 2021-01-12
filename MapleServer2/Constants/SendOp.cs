@@ -224,7 +224,7 @@
         DICE_GAME = 0x00E7,
         BYPASS_KEY = 0x00E8,
         LOCAL_CAMERA = 0x00EB,
-        VIP_GOODS_SHOP = 0x00ED,
+        PREMIUM_CLUB = 0x00ED,
         STEAM_CASH_SHOP = 0x00EF,
         RESET_CAMERA = 0x00F1,
         ONE_TIME_EFFECT = 0x00F3,
