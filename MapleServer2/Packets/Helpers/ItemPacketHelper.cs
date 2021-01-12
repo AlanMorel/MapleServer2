@@ -16,7 +16,7 @@ namespace MapleServer2.Packets.Helpers
                 .WriteLong(item.ExpiryTime)
                 .WriteLong()
                 .WriteInt(item.TimesAttributesChanged)
-                .WriteInt()
+                .WriteInt(item.PlayCount)
                 .WriteBool(item.IsLocked)
                 .WriteLong(item.UnlockTime)
                 .WriteShort(item.RemainingGlamorForges)
@@ -71,9 +71,11 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteUnicodeString(item.PairedCharacterName);
             }
 
-            // Bound to character
-            return pWriter.WriteLong()
-                .WriteUnicodeString("");
+            // Unknwon
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString("");
+
+            return pWriter;
         }
 
         private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)

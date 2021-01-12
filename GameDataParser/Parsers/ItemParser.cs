@@ -21,43 +21,135 @@ namespace GameDataParser.Parsers
             foreach (PackFileEntry entry in entries)
             {
                 if (!entry.Name.StartsWith("item/"))
+                {
                     continue;
+                }
 
                 ItemMetadata metadata = new ItemMetadata();
                 string itemId = Path.GetFileNameWithoutExtension(entry.Name);
+
+                if (items.Exists(item => item.Id.ToString() == itemId))
+                {
+                    Console.WriteLine($"Duplicate {entry.Name} was already added.");
+                    continue;
+                }
+
                 metadata.Id = int.Parse(itemId);
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
+                    if (reader.NodeType != XmlNodeType.Element)
                     {
-                        if (reader.Name == "slot")
+                        continue;
+                    }
+
+                    if (reader.Name == "slot")
+                    {
+                        bool result = Enum.TryParse<ItemSlot>(reader["name"], out metadata.Slot);
+                        if (!result && !string.IsNullOrEmpty(reader["name"]))
                         {
-                            bool result = Enum.TryParse<ItemSlot>(reader["name"], out metadata.Slot);
-                            if (!result && !string.IsNullOrEmpty(reader["name"]))
-                            {
-                                throw new ArgumentException("Failed to parse item slot:" + reader["name"]);
-                            }
+                            throw new ArgumentException("Failed to parse item slot:" + reader["name"]);
                         }
-                        else if (reader.Name == "property")
+                    }
+
+                    else if (reader.Name == "gem")
+                    {
+                        bool result = Enum.TryParse<GemSlot>(reader["system"], out metadata.Gem);
+                        if (!result && !string.IsNullOrEmpty(reader["system"]))
                         {
-                            try
+                            throw new ArgumentException("Failed to parse item slot:" + reader["system"]);
+                        }
+                    }
+
+                    else if (reader.Name == "property")
+                    {
+                        try
+                        {
+                            byte type = byte.Parse(reader["type"]);
+                            byte subType = byte.Parse(reader["subtype"]);
+                            bool skin = byte.Parse(reader["skin"]) != 0;
+                            metadata.Tab = GetTab(type, subType, skin);
+                            metadata.IsTemplate = byte.Parse(reader["skinType"] ?? "0") == 99;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Failed {itemId}: {e.Message}");
+                        }
+
+                        metadata.SlotMax = int.Parse(reader["slotMax"]);
+                    }
+
+                    else if (reader.Name == "option")
+                    {
+                        int rarity = int.Parse(reader["constant"]);
+
+                        metadata.Rarity = rarity;
+                    }
+
+                    else if (reader.Name == "function")
+                    {
+                        string contentType = reader["name"];
+
+                        if (contentType != "OpenItemBox" && contentType != "SelectItemBox")
+                        {
+                            continue;
+                        }
+                        Console.WriteLine(itemId);
+
+                        // selection boxes are SelectItemBox and 1,boxid
+                        // normal boxes are OpenItemBox and 0,1,0,boxid
+                        // fragments are OpenItemBox and 0,1,0,boxid,required_amount
+
+                        List<string> parameters = new List<string>(reader["parameter"].Split(","));
+                        // Remove empty params
+                        parameters.RemoveAll(param => param.Length == 0);
+
+                        if (parameters.Count < 2)
+                        {
+                            continue;
+                        }
+
+                        string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
+
+                        foreach (PackFileEntry innerEntry in entries)
+                        {
+                            if (!innerEntry.Name.StartsWith("table/individualitemdrop") && !innerEntry.Name.StartsWith("table/na/individualitemdrop"))
                             {
-                                byte type = byte.Parse(reader["type"]);
-                                byte subType = byte.Parse(reader["subtype"]);
-                                bool skin = byte.Parse(reader["skin"]) != 0;
-                                metadata.Tab = GetTab(type, subType, skin);
-                                metadata.IsTemplate = byte.Parse(reader["skinType"] ?? "0") == 99;
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine($"Failed {itemId}: {e.Message}");
+                                continue;
                             }
 
-                            metadata.SlotMax = int.Parse(reader["slotMax"]);
+                            if (metadata.Content.Count > 0)
+                            {
+                                continue;
+                            }
+
+                            // Parse XML
+                            XmlDocument document = m2dFile.GetDocument(innerEntry.FileHeader);
+                            XmlNodeList individualBoxItems = document.SelectNodes($"/ms2/individualDropBox[@individualDropBoxID={boxId}]");
+
+                            foreach (XmlNode individualBoxItem in individualBoxItems)
+                            {
+                                int id = int.Parse(individualBoxItem.Attributes["item"].Value);
+                                int amount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
+
+                                // Skip already existing item, this may need to check for locales but not certain
+                                if (metadata.Content.Exists(content => content.Id == id))
+                                {
+                                    continue;
+                                }
+
+                                metadata.Content.Add(new ItemContent(id, amount));
+                            }
                         }
+                    }
+
+                    else if (reader.Name == "MusicScore")
+                    {
+                        int playCount = int.Parse(reader["playCount"]);
+
+                        metadata.PlayCount = playCount;
                     }
                 }
 

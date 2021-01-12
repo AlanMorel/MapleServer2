@@ -239,7 +239,7 @@
         SURVIVAL_EVENT = 0x0118,
         LOGIN_REQUIRED = 0x011B,
         ITEM_LAPENSHARD = 0x011D,
-        ADVENTURE_LEVEL = 0x011E,
+        PRESTIGE = 0x011E,
         WORLD_CHAMPION = 0x0121,
         SYNC_VALUE = 0x0122,
         NO = 0x0123,
