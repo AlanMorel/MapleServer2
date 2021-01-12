@@ -62,6 +62,10 @@ namespace MapleServer2.Types
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
+
+        public int ActiveSkillId = 1;
+        public short ActiveSkillLevel = 1;
+
         public List<SkillTab> SkillTabs = new List<SkillTab>();
         public StatDistribution StatPointDistribution = new StatDistribution();
 

@@ -41,13 +41,16 @@ namespace MapleServer2.Tools
                 case "npc":
                     ProcessNpcCommand(session, args.Length > 1 ? args[1] : "");
                     break;
+                case "mob":
+                    ProcessMobCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
                 case "map":
                     ProcessMapCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "coord":
                     session.SendNotice(session.FieldPlayer.Coord.ToString());
                     break;
-                case "battleof":
+                case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
                     break;
                 case "notice":
@@ -152,6 +155,27 @@ namespace MapleServer2.Tools
             }
 
             session.FieldManager.AddNpc(fieldNpc);
+        }
+
+        private static void ProcessMobCommand(GameSession session, string command)
+        {
+            Dictionary<string, string> config = command.ToMap();
+            int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId);
+            Mob mob = new Mob(mobId);
+            byte.TryParse(config.GetValueOrDefault("ani", "-1"), out mob.Animation);
+            short.TryParse(config.GetValueOrDefault("dir", "2700"), out mob.Rotation);
+
+            IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);
+            if (TryParseCoord(config.GetValueOrDefault("coord", ""), out CoordF coord))
+            {
+                fieldMob.Coord = coord;
+            }
+            else
+            {
+                fieldMob.Coord = session.FieldPlayer.Coord;
+            }
+
+            session.FieldManager.AddMob(fieldMob);
         }
 
         private static Dictionary<string, string> ToMap(this string command)
