@@ -11,8 +11,10 @@ namespace Ms2Database.DbClasses
     {
         public Ms2DbContext() : base("name=DatabaseConnectionString") // Creates context for database via connection string
         {
-            //Database.SetInitializer<Ms2DBContext>(new DropCreateDatabaseAlways<Ms2DBContext>());
+            //Database.SetInitializer<Ms2DbContext>(new DropCreateDatabaseAlways<Ms2DbContext>());
         }
         public DbSet<Account> Accounts { get; set; } // Creates account table during database generation
+
+        public DbSet<Character> Characters { get; set; } // Create character table during database generation
     }
 }

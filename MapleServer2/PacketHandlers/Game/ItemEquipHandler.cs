@@ -66,7 +66,10 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Stats.MaxAtk.Max += 17;
             session.Player.Stats.MaxAtk.Total += 17;
 
-            session.Send(FieldObjectPacket.SetStats(session.FieldPlayer));
+            session.Player.Stats.MagAtk.Max += 15;
+            session.Player.Stats.MagAtk.Total += 15;
+
+            session.Send(StatPacket.SetStats(session.FieldPlayer));
         }
 
         private void HandleUnequipItem(GameSession session, PacketReader packet)
