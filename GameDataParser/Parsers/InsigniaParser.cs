@@ -28,15 +28,18 @@ namespace GameDataParser.Parsers
                 while (reader.Read())
                 {
                     InsigniaMetadata metadata = new InsigniaMetadata();
-                    if (reader.NodeType == XmlNodeType.Element)
+                    if (reader.NodeType != XmlNodeType.Element)
                     {
-                        if (reader.Name == "symbol")
-                        {
-                            metadata.InsigniaId = short.Parse(reader["id"]);
-                            metadata.ConditionType = reader["conditionType"];
-                            metadata.TitleId = reader["code"] == "" ? 0 : int.Parse(reader["code"]);
-                        }
+                        continue;
                     }
+
+                    if (reader.Name == "symbol")
+                    {
+                        metadata.InsigniaId = short.Parse(reader["id"]);
+                        metadata.ConditionType = reader["conditionType"];
+                        metadata.TitleId = reader["code"] == "" ? 0 : int.Parse(reader["code"]);
+                    }
+
                     insignias.Add(metadata);
                 }
             }

@@ -15,7 +15,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum UserEnvMode : byte
         {
-            Unk = 0x0,
             Change = 0x1,
             Trophies = 0x3,
         }
