@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -12,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestUserEnvHandler(ILogger<RequestUserEnvHandler> logger) : base(logger) { }
 
-        private enum TitleMode : byte
+        private enum UserEnvMode : byte
         {
             Unk = 0x0,
             Change = 0x1,
@@ -21,17 +22,18 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            TitleMode mode = (TitleMode) packet.ReadByte();
+            UserEnvMode mode = (UserEnvMode) packet.ReadByte();
 
             switch (mode)
             {
-                case TitleMode.Unk:
-                    break;
-                case TitleMode.Change:
+                case UserEnvMode.Change:
                     HandleTitleChange(session, packet);
                     break;
-                case TitleMode.Trophies:
+                case UserEnvMode.Trophies:
                     //Load trophies
+                    break;
+                default:
+                    Console.WriteLine("Unhandled Mode: " + mode);
                     break;
             }
         }
@@ -46,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Player.TitleId = titleID;
-            session.FieldManager.BroadcastPacket(PlayerTitlePacket.UpdatePlayerTitle(session, titleID));
+            session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session, titleID));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -10,7 +11,7 @@ namespace MapleServer2.Packets
         // Unlocked Titles
         public static Packet SetTitles(Player player)
         {
-            List<int> titleIds = player.AvaliableTitles;
+            List<int> titleIds = player.Titles;
 
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x02);
@@ -20,6 +21,15 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(titleId);
             }
 
+            return pWriter;
+        }
+
+        public static Packet UpdateTitle(GameSession session, int titleId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
+            pWriter.WriteByte(01); // Mode update
+            pWriter.WriteInt(session.FieldPlayer.ObjectId);
+            pWriter.WriteInt(titleId);
             return pWriter;
         }
 
