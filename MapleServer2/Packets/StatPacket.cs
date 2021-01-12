@@ -8,11 +8,12 @@ namespace MapleServer2.Packets
     {
         public static Packet SetStats(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.STAT)
-                .WriteInt(player.ObjectId)
-                .WriteByte()
-                .WriteByte(0x23)
-                .Write(player.Value.Stats);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteByte();
+            pWriter.WriteByte(0x23);
+            pWriter.Write(player.Value.Stats);
+            return pWriter;
         }
 
         public static Packet UpdateMobStats(IFieldObject<Mob> mob)
