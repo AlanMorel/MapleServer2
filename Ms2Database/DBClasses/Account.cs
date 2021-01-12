@@ -31,5 +31,7 @@ namespace Ms2Database.DbClasses
 
         [Column("Creation Time", TypeName = "datetime2")] // Sets column name and data type
         public DateTime? CreationTime { get; set; }
+
+        public ICollection<Character> Characters { get; set; }
     }
 }
