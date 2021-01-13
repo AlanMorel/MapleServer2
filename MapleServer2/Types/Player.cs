@@ -47,6 +47,8 @@ namespace MapleServer2.Types
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3];
 
+        public List<short> Stickers = new List<short> { 0 };
+
         public CoordF Coord;
         public CoordF Rotation; // Rotation?
 
@@ -143,6 +145,10 @@ namespace MapleServer2.Types
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
+                Stickers = new List<short>
+                {
+                    1, 2, 3, 4, 5, 6, 7
+                },
                 TitleId = 10000292,
                 InsigniaId = 29
             };
