@@ -9,16 +9,18 @@ namespace MapleServer2.Packets
         private enum PrestigePacketMode : byte
         {
             Prestige = 0x00,
+            PrestigeExp = 0x01,
+            PrestigeLevel = 0x02,
             Reward = 0x04
         }
 
         public static Packet Prestige(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE)
-                .WriteMode(PrestigePacketMode.Prestige)
-                .WriteLong(player.PrestigeExperience) // PrestigeExp
-                .WriteInt(player.PrestigeLevel) // PrestigeLevel
-                .WriteLong(player.PrestigeExperience); // Same Prestige Exp??
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+            pWriter.WriteMode(PrestigePacketMode.Prestige);
+            pWriter.WriteLong(player.PrestigeExp); // PrestigeExp
+            pWriter.WriteInt(player.PrestigeLevel); // PrestigeLevel
+            pWriter.WriteLong(player.PrestigeExp); // Same Prestige Exp??
 
             // Ranks: 2, 4, 6, 8, 10, 12, 20, 30, 40, 50, 60, 70, 80, 90
             int[] rankRewardsClaimed = { };
@@ -27,6 +29,28 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(rank);
             }
+
+            return pWriter;
+        }
+
+        public static Packet SendPrestigeExpUp(Player player, long amount)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+
+            pWriter.WriteMode(PrestigePacketMode.PrestigeExp);
+            pWriter.WriteLong(player.PrestigeExp); // total
+            pWriter.WriteLong(amount); // exp gained
+
+            return pWriter;
+        }
+
+        public static Packet SendPrestigeLevelUp(IFieldObject<Player> player, int level)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
+
+            pWriter.WriteMode(PrestigePacketMode.PrestigeLevel);
+            pWriter.WriteInt(player.ObjectId); // field player objectid
+            pWriter.WriteInt(level); // level
 
             return pWriter;
         }
