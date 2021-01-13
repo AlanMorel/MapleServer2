@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
 using GameDataParser.Crypto;
@@ -16,6 +17,9 @@ namespace GameDataParser
 
         private static void Main()
         {
+            // Force Globalization to en-US because we use periods instead of commas for decimals
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
             Item.Export();
             MapEntity.Export();
             Skill.Export();
