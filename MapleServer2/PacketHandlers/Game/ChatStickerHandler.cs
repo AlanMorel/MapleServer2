@@ -12,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.STICKER;
 
-        public ChatStickerHandler(ILogger<ClubHandler> logger) : base(logger) { }
+        public ChatStickerHandler(ILogger<ChatStickerHandler> logger) : base(logger) { }
 
         private enum ChatStickerMode : byte
         {
