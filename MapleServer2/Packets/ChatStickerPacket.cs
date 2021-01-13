@@ -25,7 +25,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
             pWriter.WriteMode(ChatStickerMode.LoadChatSticker);
             pWriter.WriteShort();
-            pWriter.WriteShort((short)stickerSetIds.Count);
+            pWriter.WriteShort((short) stickerSetIds.Count);
             foreach (int sticker in stickerSetIds)
             {
                 pWriter.WriteInt(sticker);
