@@ -32,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
                     //Load trophies
                     break;
                 default:
-                    Console.WriteLine("Unhandled Mode: " + mode);
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
