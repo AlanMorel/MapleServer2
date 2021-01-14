@@ -19,7 +19,7 @@ namespace MapleServer2.Types
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
         public GameSession Session;
 
-        private readonly short MAX_LEVEL = 70; // Max Level can't be greater than 99
+        public short MAX_LEVEL { get; private set; } = 70; // Max Level can't be greater than 99
 
         // Constant Values
         public long AccountId { get; private set; }
@@ -35,12 +35,9 @@ namespace MapleServer2.Types
         public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
 
         // Mutable Values
+        public Exp Exp { get; private set; }
+        public Level Level { get; private set; }
         public int MapId;
-        public short Level { get; private set; }
-        public long Experience { get; private set; }
-        public long RestExp { get; private set; }
-        public int PrestigeLevel { get; private set; }
-        public long PrestigeExp { get; private set; }
         public int TitleId;
         public short InsigniaId;
         public byte Animation;
@@ -103,6 +100,8 @@ namespace MapleServer2.Types
         public Player()
         {
             Wallet = new Wallet(this);
+            Level = new Level(this, 70, 100);
+            Exp = new Exp(this, 0, 0, 0);
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
@@ -123,9 +122,6 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
-                RestExp = 0,
-                PrestigeLevel = 100,
                 Name = name,
                 Gender = 1,
                 Motto = "Motto",
@@ -171,7 +167,6 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
                 Name = name,
                 Gender = 0,
                 Motto = "Motto",
@@ -217,7 +212,6 @@ namespace MapleServer2.Types
                 Name = name,
                 Gender = gender,
                 JobGroupId = job,
-                Level = 1,
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
@@ -237,84 +231,6 @@ namespace MapleServer2.Types
             Coord = spawn.Coord.ToFloat();
             Rotation = spawn.Rotation.ToFloat();
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
-        }
-
-        public void SetPrestigeLevel(int level)
-        {
-            PrestigeLevel = level;
-            Session.Send(PrestigePacket.SendPrestigeLevelUp(Session.FieldPlayer, PrestigeLevel));
-        }
-
-        public void SetLevel(short level)
-        {
-            Level = level;
-            Experience = 0;
-            Session.Send(ExperiencePacket.SendExpUp(0, Experience, 0));
-            Session.Send(ExperiencePacket.SendLevelUp(Session.FieldPlayer, Level));
-        }
-
-        public void GainExp(int amount)
-        {
-            if (amount <= 0 || Level >= MAX_LEVEL)
-            {
-                return;
-            }
-
-            long newExp = Experience + amount + RestExp;
-
-            if (RestExp > 0)
-            {
-                RestExp -= amount;
-
-            }
-            else
-            {
-                RestExp = 0;
-            }
-
-            while (newExp >= ExpMetadataStorage.GetExpToLevel(Level))
-            {
-                newExp -= ExpMetadataStorage.GetExpToLevel(Level);
-                HandleLevelUp();
-                if (Level >= MAX_LEVEL)
-                {
-                    newExp = 0;
-                    break;
-                }
-            }
-
-            Experience = newExp;
-            Session.Send(ExperiencePacket.SendExpUp(amount, newExp, RestExp));
-        }
-
-        private void HandleLevelUp()
-        {
-            Level++;
-            // TODO: Gain max HP and heal to max hp
-            StatPointDistribution.AddTotalStatPoints(5);
-            Session.Send(StatPointPacket.WriteTotalStatPoints(this));
-            Session.Send(ExperiencePacket.SendLevelUp(Session.FieldPlayer, Level));
-        }
-
-        public void GainPrestigeExp(long amount)
-        {
-            if (Level < 50) // Can only gain prestige exp after level 50.
-            {
-                return;
-            }
-            // Prestige exp can only be earned 1M exp per day. 
-            // TODO: After 1M exp, reduce the gain and reset the exp gained every midnight.
-
-            long newPrestigeExp = PrestigeExp + amount;
-
-            if (newPrestigeExp >= 1000000)
-            {
-                newPrestigeExp -= 1000000;
-                PrestigeLevel++;
-                Session.Send(PrestigePacket.SendPrestigeLevelUp(Session.FieldPlayer, PrestigeLevel));
-            }
-            PrestigeExp = newPrestigeExp;
-            Session.Send(PrestigePacket.SendPrestigeExpUp(this, amount));
         }
     }
 }

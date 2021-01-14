@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class ExperiencePacket
     {
-        public static Packet SendExpUp(int expGained, long expTotal, long restExp)
+        public static Packet ExpUp(int expGained, long expTotal, long restExp)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.EXP_UP);
 
@@ -15,14 +15,14 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteShort();
             pWriter.WriteLong(expTotal);
-            pWriter.WriteLong(restExp); // rest exp
+            pWriter.WriteLong(restExp);
             pWriter.WriteInt(); // counter? increments after every exp_up
             pWriter.WriteByte();
 
             return pWriter;
         }
 
-        public static Packet SendLevelUp(IFieldObject<Player> fieldPlayer, int level)
+        public static Packet LevelUp(IFieldObject<Player> fieldPlayer, int level)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LEVEL_UP);
 

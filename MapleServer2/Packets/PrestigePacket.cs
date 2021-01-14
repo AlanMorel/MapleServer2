@@ -18,9 +18,9 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
             pWriter.WriteMode(PrestigePacketMode.Prestige);
-            pWriter.WriteLong(player.PrestigeExp); // PrestigeExp
-            pWriter.WriteInt(player.PrestigeLevel); // PrestigeLevel
-            pWriter.WriteLong(player.PrestigeExp); // Same Prestige Exp??
+            pWriter.WriteLong(player.Exp.PrestigeExp); // PrestigeExp
+            pWriter.WriteInt(player.Level.PrestigeLevel); // PrestigeLevel
+            pWriter.WriteLong(player.Exp.PrestigeExp); // Same Prestige Exp??
 
             // Ranks: 2, 4, 6, 8, 10, 12, 20, 30, 40, 50, 60, 70, 80, 90
             int[] rankRewardsClaimed = { };
@@ -33,24 +33,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendPrestigeExpUp(Player player, long amount)
+        public static Packet ExpUp(Player player, long amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
             pWriter.WriteMode(PrestigePacketMode.PrestigeExp);
-            pWriter.WriteLong(player.PrestigeExp); // total
-            pWriter.WriteLong(amount); // exp gained
+            pWriter.WriteLong(player.Exp.PrestigeExp);
+            pWriter.WriteLong(amount);
 
             return pWriter;
         }
 
-        public static Packet SendPrestigeLevelUp(IFieldObject<Player> player, int level)
+        public static Packet LevelUp(IFieldObject<Player> player, int level)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
             pWriter.WriteMode(PrestigePacketMode.PrestigeLevel);
-            pWriter.WriteInt(player.ObjectId); // field player objectid
-            pWriter.WriteInt(level); // level
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(level);
 
             return pWriter;
         }

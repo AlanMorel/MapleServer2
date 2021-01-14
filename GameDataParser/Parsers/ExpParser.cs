@@ -23,7 +23,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
+                XmlReader reader = m2dFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
                     ExpMetadata expTable = new ExpMetadata();
