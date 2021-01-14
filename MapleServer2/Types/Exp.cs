@@ -5,7 +5,6 @@ namespace MapleServer2.Types
 {
     public class Exp
     {
-
         private readonly Player Player;
         public long PlayerExp { get; set; }
         public long RestExp { get; set; }
@@ -21,7 +20,7 @@ namespace MapleServer2.Types
 
         public void GainExp(int amount)
         {
-            if (amount <= 0 || Player.Level.PlayerLevel >= Player.MAX_LEVEL)
+            if (amount <= 0 || Player.Levels.PlayerLevel >= Player.MAX_LEVEL)
             {
                 return;
             }
@@ -38,11 +37,11 @@ namespace MapleServer2.Types
                 RestExp = 0;
             }
 
-            while (newExp >= ExpMetadataStorage.GetExpToLevel(Player.Level.PlayerLevel))
+            while (newExp >= ExpMetadataStorage.GetExpToLevel(Player.Levels.PlayerLevel))
             {
-                newExp -= ExpMetadataStorage.GetExpToLevel(Player.Level.PlayerLevel);
-                Player.Level.PlayerLevelUp();
-                if (Player.Level.PlayerLevel >= Player.MAX_LEVEL)
+                newExp -= ExpMetadataStorage.GetExpToLevel(Player.Levels.PlayerLevel);
+                Player.Levels.PlayerLevelUp();
+                if (Player.Levels.PlayerLevel >= Player.MAX_LEVEL)
                 {
                     newExp = 0;
                     break;
@@ -55,7 +54,7 @@ namespace MapleServer2.Types
 
         public void GainPrestigeExp(long amount)
         {
-            if (Player.Level.PlayerLevel < 50) // Can only gain prestige exp after level 50.
+            if (Player.Levels.PlayerLevel < 50) // Can only gain prestige exp after level 50.
             {
                 return;
             }
@@ -67,7 +66,7 @@ namespace MapleServer2.Types
             if (newPrestigeExp >= 1000000)
             {
                 newPrestigeExp -= 1000000;
-                Player.Level.PrestigeLevelUp();
+                Player.Levels.PrestigeLevelUp();
             }
 
             PrestigeExp = newPrestigeExp;

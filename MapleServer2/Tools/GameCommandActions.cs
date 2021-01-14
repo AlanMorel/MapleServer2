@@ -18,10 +18,10 @@ namespace MapleServer2.Tools
             switch (args[0])
             {
                 case "setprestigelevel":
-                    session.Player.Level.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "setlevel":
-                    session.Player.Level.SetPlayerlevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Levels.SetPlayerlevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "gainprestigeexp":
                     session.Player.Exp.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));

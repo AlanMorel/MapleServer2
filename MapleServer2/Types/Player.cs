@@ -36,7 +36,7 @@ namespace MapleServer2.Types
 
         // Mutable Values
         public Exp Exp { get; private set; }
-        public Level Level { get; private set; }
+        public Level Levels { get; private set; }
         public int MapId;
         public int TitleId;
         public short InsigniaId;
@@ -100,7 +100,7 @@ namespace MapleServer2.Types
         public Player()
         {
             Wallet = new Wallet(this);
-            Level = new Level(this, 70, 100);
+            Levels = new Level(this, 70, 100);
             Exp = new Exp(this, 0, 0, 0);
         }
 

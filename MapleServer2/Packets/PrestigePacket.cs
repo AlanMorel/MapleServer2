@@ -19,7 +19,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
             pWriter.WriteMode(PrestigePacketMode.Prestige);
             pWriter.WriteLong(player.Exp.PrestigeExp); // PrestigeExp
-            pWriter.WriteInt(player.Level.PrestigeLevel); // PrestigeLevel
+            pWriter.WriteInt(player.Levels.PrestigeLevel); // PrestigeLevel
             pWriter.WriteLong(player.Exp.PrestigeExp); // Same Prestige Exp??
 
             // Ranks: 2, 4, 6, 8, 10, 12, 20, 30, 40, 50, 60, 70, 80, 90
