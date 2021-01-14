@@ -10,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class ChatStickerHandler : GamePacketHandler
     {
-        public override RecvOp OpCode => RecvOp.STICKER;
+        public override RecvOp OpCode => RecvOp.CHAT_STICKER;
 
         public ChatStickerHandler(ILogger<ChatStickerHandler> logger) : base(logger) { }
 

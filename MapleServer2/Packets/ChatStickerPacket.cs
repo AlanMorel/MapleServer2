@@ -22,7 +22,7 @@ namespace MapleServer2.Packets
         {
             List<short> stickerSetIds = player.Stickers;
 
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.LoadChatSticker);
             pWriter.WriteShort();
             pWriter.WriteShort((short) stickerSetIds.Count);
@@ -36,7 +36,7 @@ namespace MapleServer2.Packets
 
         public static Packet ExpiredStickerNotification()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.ExpiredStickerNotification);
             pWriter.WriteInt();
             pWriter.WriteInt(1);
@@ -45,7 +45,7 @@ namespace MapleServer2.Packets
 
         public static Packet AddSticker(int itemId, int stickerGroupId, long expiration)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.AddSticker);
             pWriter.WriteInt(itemId);
             pWriter.WriteInt(1);
@@ -56,7 +56,7 @@ namespace MapleServer2.Packets
 
         public static Packet UseSticker(int stickerId, string script)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.UseSticker);
             pWriter.WriteInt(stickerId);
             pWriter.WriteUnicodeString(script);
@@ -66,7 +66,7 @@ namespace MapleServer2.Packets
 
         public static Packet Favorite(int stickerId)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.Favorite);
             pWriter.WriteInt(stickerId);
             return pWriter;
@@ -74,7 +74,7 @@ namespace MapleServer2.Packets
 
         public static Packet Unfavorite(int stickerId)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.STICKER);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteMode(ChatStickerMode.Unfavorite);
             pWriter.WriteInt(stickerId);
             return pWriter;
