@@ -151,6 +151,7 @@
         PRESTIGE = 0x00AE,
         RESPONSE_SERVER_ENTER = 0x00B2,
         SYSTEM_INFO = 0x00B7,
+        CHAT_STICKER = 0x00B9,
         FILE_HASH = 0x00BB
     }
 }
