@@ -97,7 +97,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.MapId);
             pWriter.WriteInt(player.MapId); // Sometimes 0
             pWriter.WriteInt();
-            pWriter.WriteShort(player.Levels.PlayerLevel);
+            pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteShort();
             pWriter.WriteInt(player.JobGroupId);
             pWriter.WriteInt(player.JobId);

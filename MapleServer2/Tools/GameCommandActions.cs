@@ -21,13 +21,13 @@ namespace MapleServer2.Tools
                     session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "setlevel":
-                    session.Player.Levels.SetPlayerlevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Levels.SetLevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "gainprestigeexp":
-                    session.Player.Exp.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Levels.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "gainexp":
-                    session.Player.Exp.GainExp(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Levels.GainExp(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "setvalor":
                     session.Player.Wallet.ValorToken.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));

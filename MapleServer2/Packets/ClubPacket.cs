@@ -57,7 +57,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteInt(member.JobGroupId);
                 pWriter.WriteInt(member.JobId);
-                pWriter.WriteShort(member.Levels.PlayerLevel);
+                pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
                 pWriter.WriteUnicodeString(member.ProfileUrl);
@@ -112,7 +112,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteInt(member.JobGroupId);
                 pWriter.WriteInt(member.JobId);
-                pWriter.WriteShort(member.Levels.PlayerLevel);
+                pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
                 pWriter.WriteUnicodeString(member.ProfileUrl);
@@ -225,7 +225,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteInt(other.JobGroupId);
             pWriter.WriteInt(other.JobId);
-            pWriter.WriteShort(other.Levels.PlayerLevel);
+            pWriter.WriteShort(other.Levels.Level);
             pWriter.WriteInt(other.MapId);
             pWriter.WriteShort(); // member.Channel
             pWriter.WriteUnicodeString(other.ProfileUrl);
@@ -294,7 +294,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteInt(player.JobGroupId);
             pWriter.WriteInt(player.JobId);
-            pWriter.WriteShort(player.Levels.PlayerLevel);
+            pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteInt(player.MapId);
             pWriter.WriteShort(); // player.Channel
             pWriter.WriteUnicodeString(player.ProfileUrl);

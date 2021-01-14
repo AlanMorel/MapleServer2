@@ -35,8 +35,7 @@ namespace MapleServer2.Types
         public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
 
         // Mutable Values
-        public Exp Exp { get; private set; }
-        public Level Levels { get; private set; }
+        public Levels Levels { get; private set; }
         public int MapId;
         public int TitleId;
         public short InsigniaId;
@@ -100,8 +99,7 @@ namespace MapleServer2.Types
         public Player()
         {
             Wallet = new Wallet(this);
-            Levels = new Level(this, 70, 100);
-            Exp = new Exp(this, 0, 0, 0);
+            Levels = new Levels(this, 70, 0, 0, 100, 0);
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")

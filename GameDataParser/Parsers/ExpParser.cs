@@ -32,13 +32,13 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    if (reader.Name == "exp")
+                    if (reader.Name == "exp" && reader["level"] != "0")
                     {
                         expTable.Level = byte.Parse(reader["level"]);
                         expTable.Experience = long.Parse(reader["value"]);
-                    }
 
-                    expList.Add(expTable);
+                        expList.Add(expTable);
+                    }
                 }
             }
 
