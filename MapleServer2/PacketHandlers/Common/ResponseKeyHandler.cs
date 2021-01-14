@@ -79,10 +79,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(FurnishingInventoryPacket.StartList());
             session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
-
-            session.Send(UserEnvPacket.SetTitles(new List<int> {
-                10000565, 10000251, 10000291, 10000292
-            }));
+            session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());
             session.Send(UserEnvPacket.Send05());
             session.Send(UserEnvPacket.Send08());
