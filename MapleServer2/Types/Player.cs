@@ -19,8 +19,6 @@ namespace MapleServer2.Types
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
         public GameSession Session;
 
-        public short MAX_LEVEL { get; private set; } = 70; // Max Level can't be greater than 99
-
         // Constant Values
         public long AccountId { get; private set; }
         public long CharacterId { get; private set; }
