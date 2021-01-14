@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -39,7 +40,8 @@ namespace MapleServer2.Packets
         public static Packet WriteSkills(PacketWriter pWriter, Player character)
         {
             // Get skills
-            Dictionary<int, Skill> skills = character.SkillTabs[0].Skills; // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
+            // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
+            Dictionary<int, SkillMetadata> skills = character.SkillTabs[0].SkillJob;
 
             // Ordered list of skill ids (must be sent in this order)
             int[] ids = character.SkillTabs[0].Order;
@@ -58,10 +60,9 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
                 pWriter.WriteInt(id);
-                pWriter.WriteInt(skills[id].Level);
+                pWriter.WriteInt(skills[id].SkillLevel.Level);
                 pWriter.WriteByte();
             }
-
             pWriter.WriteShort(); // Ends with zero short
 
             return pWriter;
