@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Player.Session.Send(PrestigePacket.LevelUp(Player.Session.FieldPlayer, PrestigeLevel));
         }
 
-        public void SetLevel(short level)
+        public void SetPlayerlevel(short level)
         {
             PlayerLevel = level;
             Player.Exp.PlayerExp = 0;

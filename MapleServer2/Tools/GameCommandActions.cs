@@ -21,7 +21,7 @@ namespace MapleServer2.Tools
                     session.Player.Level.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "setlevel":
-                    session.Player.Level.SetLevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    session.Player.Level.SetPlayerlevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
                     break;
                 case "gainprestigeexp":
                     session.Player.Exp.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
