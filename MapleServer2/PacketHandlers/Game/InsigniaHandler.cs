@@ -38,7 +38,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (type) // TODO: handling survivallevel and vip
             {
                 case "level":
-                    return session.Player.Level >= 50;
+                    return session.Player.Levels.Level >= 50;
                 case "enchant":
                     foreach (KeyValuePair<ItemSlot, Item> item in session.Player.Equips)
                     {
@@ -53,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "title":
                     return session.Player.Titles.Contains(InsigniaMetadataStorage.GetTitleId(insigniaId));
                 case "adventure_level":
-                    return session.Player.PrestigeLevel >= 100;
+                    return session.Player.Levels.PrestigeLevel >= 100;
                 default:
                     Console.WriteLine("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
                     break;
