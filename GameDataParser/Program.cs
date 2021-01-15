@@ -16,6 +16,7 @@ namespace GameDataParser
         public static InsigniaMetadataExport Insignia = new InsigniaMetadataExport();
         public static PrestigeMetadataExport Prestige = new PrestigeMetadataExport();
         public static ExpMetadataExport ExpTable = new ExpMetadataExport();
+        public static QuestMetadataExport Quest = new QuestMetadataExport();
 
         private static void Main()
         {
@@ -28,6 +29,7 @@ namespace GameDataParser
             Insignia.Export();
             Prestige.Export();
             ExpTable.Export();
+            Quest.Export();
         }
 
         public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)
