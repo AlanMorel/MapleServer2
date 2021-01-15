@@ -69,10 +69,7 @@ namespace MapleServer2.Servers.Game
             {
                 updates.Add(FieldObjectPacket.UpdatePlayer(player));
             }
-            foreach (IFieldObject<Mob> mob in State.Mobs.Values)
-            {
-                updates.Add(FieldObjectPacket.ControlMob(mob));
-            }
+
             return updates;
         }
 
@@ -110,11 +107,6 @@ namespace MapleServer2.Servers.Game
             foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
             {
                 sender.Send(FieldPacket.AddPortal(existingPortal));
-            }
-            foreach (IFieldObject<Mob> existingMob in State.Mobs.Values)
-            {
-                sender.Send(FieldPacket.AddMob(existingMob));
-                sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
             State.AddPlayer(player);
 
@@ -161,8 +153,7 @@ namespace MapleServer2.Servers.Game
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.AddMob(fieldMob));
-                session.Send(FieldObjectPacket.LoadMob(fieldMob));
+
             });
         }
 

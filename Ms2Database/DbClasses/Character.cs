@@ -1,14 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
-    public class Character // Table structure for Character
+    public class Character
     {
         public Character() // Constructor to catch any fields that are not entered
         {
@@ -41,7 +39,7 @@ namespace Ms2Database.DbClasses
         [Column("Creation Time", TypeName = "datetime2")]
         public DateTime? CreationTime { get; set; }
 
-        [StringLength(20)]
+        [StringLength(25)]
         public string Name { get; set; }
 
         public byte Gender { get; set; }
@@ -86,15 +84,15 @@ namespace Ms2Database.DbClasses
 
         public long? GuildId { get; set; }
 
-        [StringLength(20)]
+        [StringLength(25)]
         public string GuildName { get; set; }
 
         public string ProfileUrl { get; set; }
 
-        [StringLength(20)]
+        [StringLength(25)]
         public string Motto { get; set; }
 
-        [StringLength(20)]
+        [StringLength(25)]
         public string HomeName { get; set; }
 
         [Required]
@@ -108,6 +106,5 @@ namespace Ms2Database.DbClasses
 
         [Required]
         public float CoordZ { get; set; }
-
     }
 }

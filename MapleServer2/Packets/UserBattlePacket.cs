@@ -10,7 +10,14 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_BATTLE);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteBool(flag);
+            if (flag)
+            {
+                pWriter.WriteBool(flag);
+            }
+            else
+            {
+                pWriter.WriteBool(flag);
+            }
             return pWriter;
         }
     }

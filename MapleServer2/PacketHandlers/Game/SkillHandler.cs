@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -55,14 +53,14 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleFirstSent(GameSession session, PacketReader packet)
         {
-            long skillUid = packet.ReadLong();
+            long skillCount = packet.ReadLong();
             int value = packet.ReadInt();
             int skillId = packet.ReadInt();
             short skillLevel = packet.ReadShort();
             packet.ReadByte();
             CoordF coords = packet.Read<CoordF>();
             packet.ReadShort();
-            session.Send(SkillUsePacket.SkillUse(session.FieldPlayer, value, skillUid, coords));
+            session.Send(SkillUsePacket.SkillUse(value, skillCount, skillId, skillLevel, coords));
         }
 
         private void HandleDamage(GameSession session, PacketReader packet)
@@ -98,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleTypeOfDamage(GameSession session, PacketReader packet)
         {
-            long skillUid = packet.ReadLong();
+            long skillCount = packet.ReadLong();
             packet.ReadByte();
             CoordF coords = packet.Read<CoordF>();
             CoordF coords2 = packet.Read<CoordF>();
@@ -118,7 +116,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleAoeDamage(GameSession session, PacketReader packet)
         {
-            List<IFieldObject<Mob>> mobs = new List<IFieldObject<Mob>>();
             long skillUid = packet.ReadLong();
             int someValue = packet.ReadInt();
             int playerObjectId = packet.ReadInt();
@@ -128,19 +125,25 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadByte();
             byte count = packet.ReadByte();
             packet.ReadInt();
-            for (int i = 0; i < count; i++)
+            /*for (int i = 0; i < count3; i++)
             {
-                mobs.Add(session.FieldManager.State.Mobs.GetValueOrDefault(packet.ReadInt()));
+                EntityNpc.Add(session.FieldNpc);
                 packet.ReadByte();
-                session.Send(StatPacket.UpdateMobStats(mobs[i]));
             }
+            if (EntityNpc.Count > 0)
+            {
+                logger.LogInformation($"entities: "+ EntityNpc.Count);
+            }*/
+            int objectId = packet.ReadInt();
+            packet.ReadByte();
 
-            session.Send(SkillDamagePacket.ApplyDamage(session.FieldPlayer, skillUid, someValue, coords, mobs));
+            // Hardcoded SkillId(bow), SkillLeve(1)
+            session.Send(SkillDamagePacket.SkillDamage(session.FieldPlayer, skillUid, someValue, 600001, 1, coords, objectId));
         }
 
         private void HandleTypeOfDamage2(GameSession session, PacketReader packet)
         {
-            long skillUid = packet.ReadLong();
+            long skillCount = packet.ReadLong();
             packet.ReadByte();
             packet.ReadInt();
             packet.ReadInt();
