@@ -1,10 +1,8 @@
 ﻿using System;
-using Ms2Database.DbClasses;
-using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
 {
@@ -12,7 +10,7 @@ namespace Ms2Database.Controllers
     {
         public void CreateCharacter(long accId, string charName, int jobId)
         {
-            using(Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
                 Character character = new Character() // Set default values here (Refer to character.cs for column names)
                 {

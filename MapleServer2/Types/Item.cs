@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
@@ -12,17 +10,14 @@ namespace MapleServer2.Types
     {
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
-        public GemSlot GemSlot { get; private set; }
-        public int Rarity { get; set; }
         public int SlotMax { get; private set; }
         public bool IsTemplate { get; set; }
-        public int PlayCount { get; set; }
-        public List<ItemContent> Content { get; private set; }
 
         public readonly int Id;
         public long Uid;
         public short Slot;
         public int Amount;
+        public int Rarity;
 
         public long CreationTime;
         public long ExpiryTime;
@@ -60,12 +55,8 @@ namespace MapleServer2.Types
             this.Uid = GuidGenerator.Long();
             this.InventoryTab = ItemMetadataStorage.GetTab(id);
             this.ItemSlot = ItemMetadataStorage.GetSlot(id);
-            this.GemSlot = ItemMetadataStorage.GetGem(id);
-            this.Rarity = ItemMetadataStorage.GetRarity(id);
             this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
             this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
-            this.PlayCount = ItemMetadataStorage.GetPlayCount(id);
-            this.Content = ItemMetadataStorage.GetContent(id);
             this.Slot = -1;
             this.Amount = 1;
             this.Stats = new ItemStats();
@@ -78,14 +69,11 @@ namespace MapleServer2.Types
             Id = other.Id;
             InventoryTab = other.InventoryTab;
             ItemSlot = other.ItemSlot;
-            GemSlot = other.GemSlot;
-            Rarity = other.Rarity;
             SlotMax = other.SlotMax;
-            PlayCount = other.PlayCount;
-            Content = other.Content;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
+            Rarity = other.Rarity;
             CreationTime = other.CreationTime;
             ExpiryTime = other.ExpiryTime;
             TimesAttributesChanged = other.TimesAttributesChanged;

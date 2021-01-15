@@ -23,7 +23,7 @@ namespace MapleServer2.PacketHandlers.Game
             // SendBreakable
             // Self
             session.EnterField(session.Player.MapId);
-            session.Send(StatPacket.SetStats(session.FieldPlayer));
+            session.Send(FieldObjectPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
             session.Send(EmotePacket.LoadEmotes());
 

@@ -38,11 +38,11 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
+            $"MapEntityMetadata(Id:{MapId},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)})";
 
         protected bool Equals(MapEntityMetadata other)
         {
-            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
+            return MapId == other.MapId && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals);
         }
 
         public override bool Equals(object obj)
@@ -58,7 +58,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MapId, PlayerSpawns, Npcs, Portals, Objects);
+            return HashCode.Combine(MapId, Npcs, Portals);
         }
 
         public static bool operator ==(MapEntityMetadata left, MapEntityMetadata right)

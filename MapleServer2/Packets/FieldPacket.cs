@@ -42,9 +42,7 @@ namespace MapleServer2.Packets
             pWriter.Write(player.Rotation);
             pWriter.WriteByte();
 
-            // Stats
-            StatPacket.WriteTotalStats(pWriter, ref player.Stats);
-
+            pWriter.WriteTotalStats(ref player.Stats);
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteInt();
@@ -148,6 +146,28 @@ namespace MapleServer2.Packets
                 .WriteInt(player.ObjectId);
         }
 
+        private static void WriteTotalStats(this PacketWriter pWriter, ref PlayerStats stats)
+        {
+            pWriter.WriteByte(0x23);
+            for (int i = 0; i < 3; i++)
+            {
+                pWriter.WriteLong(stats.Hp[i])
+                    .WriteInt(stats.AtkSpd[i])
+                    .WriteInt(stats.MoveSpd[i])
+                    .WriteInt(stats.MountSpeed[i])
+                    .WriteInt(stats.JumpHeight[i]);
+            }
+
+            /* Alternative Stat Struct
+            pWriter.WriteByte(); // Count
+            for (int i = 0; i < count; i++) {
+                pWriter.WriteByte(); // Type
+                if (type == 4) pWriter.WriteLong();
+                else pWriter.WriteInt();
+            }
+            */
+        }
+
         private static void WritePassiveSkills(PacketWriter pWriter)
         {
             pWriter.Write(
@@ -218,10 +238,38 @@ namespace MapleServer2.Packets
             // If NPC is not valid, the packet seems to stop here
 
             // NPC Stat
-            StatPacket.DefaultStatsNpc(pWriter);
+            byte flag = 0x23;
+            pWriter.WriteByte(flag);
+            if (flag == 1)
+            {
+                byte value = 0;
+                pWriter.WriteByte(value); // value
+                if (value == 4)
+                {
+                    pWriter.WriteLong()
+                        .WriteLong()
+                        .WriteLong();
+                }
+                else
+                {
+                    pWriter.WriteInt()
+                        .WriteInt()
+                        .WriteInt();
+                }
+            }
+            else
+            {
+                pWriter.WriteLong(29)
+                    .WriteInt()
+                    .WriteLong(29)
+                    .WriteInt()
+                    .WriteLong(29)
+                    .WriteInt();
+            }
             // NPC Stat
 
             pWriter.WriteByte();
+
             short count = 0;
             pWriter.WriteShort(count); // branch
             for (int i = 0; i < count; i++)
@@ -238,44 +286,6 @@ namespace MapleServer2.Packets
                     .WriteLong();
             }
 
-            pWriter.WriteLong() // uid
-                .WriteByte()
-                .WriteInt(1)
-                .WriteInt()
-                .WriteByte();
-
-            return pWriter;
-        }
-
-        public static Packet AddMob(IFieldObject<Mob> mob)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
-                .WriteInt(mob.ObjectId)
-                .WriteInt(mob.Value.Id)
-                .Write(mob.Coord)
-                .Write(CoordF.From(0, 0, 0)); // Unknown
-            // If NPC is not valid, the packet seems to stop here
-
-            // NPC Stat
-            StatPacket.DefaultStatsMob(pWriter, mob);
-            // NPC Stat
-
-            pWriter.WriteByte();
-            short count = 0;
-            pWriter.WriteShort(count); // branch
-            for (int i = 0; i < count; i++)
-            {
-                pWriter.WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteShort()
-                    .WriteInt()
-                    .WriteByte()
-                    .WriteLong();
-            }
             pWriter.WriteLong() // uid
                 .WriteByte()
                 .WriteInt(1)

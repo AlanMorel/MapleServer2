@@ -36,19 +36,9 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Slot;
         }
 
-        public static GemSlot GetGem(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Gem;
-        }
-
         public static InventoryTab GetTab(int itemId)
         {
             return map.GetValueOrDefault(itemId).Tab;
-        }
-
-        public static int GetRarity(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Rarity;
         }
 
         public static int GetSlotMax(int itemId)
@@ -59,16 +49,6 @@ namespace MapleServer2.Data.Static
         public static bool GetIsTemplate(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTemplate;
-        }
-
-        public static int GetPlayCount(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).PlayCount;
-        }
-
-        public static List<ItemContent> GetContent(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Content;
         }
     }
 }

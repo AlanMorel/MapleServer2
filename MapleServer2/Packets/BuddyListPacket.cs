@@ -7,13 +7,10 @@ namespace MapleServer2.Packets
     {
         public static Packet AddEntry()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-
-            pWriter.WriteByte(0x01);
-            pWriter.WriteInt(); // Count
-            // ...
-
-            return pWriter;
+            return PacketWriter.Of(SendOp.BUDDY)
+                .WriteByte(0x01)
+                .WriteInt(); // Count
+                             // ...
         }
 
         public static Packet StartList()

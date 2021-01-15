@@ -14,7 +14,6 @@ namespace MapleServer2.Types
         public long Id { get; }
         public string Name { get; set; }
         public bool Approval { get; set; } //Require approval before someone can join
-        public long CreationTimestamp { get; set; }
         public Player Leader { get; set; }
         public int MaxMembers { get; set; }
         public List<Player> Members { get; }
@@ -33,7 +32,6 @@ namespace MapleServer2.Types
             Exp = 0;
             Funds = 0;
             Searchable = true;
-            CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
         }
 
         public void AddMember(Player player)
