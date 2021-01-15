@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
-    public class Account // Table structure for account
+    public class Account
     {
         public Account() // Constructor for account table
         {
@@ -22,11 +19,11 @@ namespace Ms2Database.DbClasses
         public long AccountId { get; set; }
 
         [Column(TypeName = "nvarchar")]
-        [StringLength(10)]
+        [StringLength(25)]
         public string Username { get; set; }
 
         [Column(TypeName = "nvarchar")]
-        [StringLength(12)]
+        [StringLength(25)]
         public string Password { get; set; }
 
         [Column("Creation Time", TypeName = "datetime2")] // Sets column name and data type
