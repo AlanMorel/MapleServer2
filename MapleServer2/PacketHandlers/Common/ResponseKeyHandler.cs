@@ -65,8 +65,8 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
             session.Send(PacketWriter.Of(SendOp.SYNC_NUMBER).WriteByte());
-            // 0x112, AdventureLevel f(0x00, 0x07)
-            session.Send(AdventureLevelPacket.Prestige(session.Player));
+            // 0x112, Prestige f(0x00, 0x07)
+            session.Send(PrestigePacket.Prestige(session.Player));
 
             // Load inventory tabs
             foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
@@ -79,10 +79,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(FurnishingInventoryPacket.StartList());
             session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
-
-            session.Send(UserEnvPacket.SetTitles(new List<int> {
-                10000565, 10000251, 10000291, 10000292
-            }));
+            session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());
             session.Send(UserEnvPacket.Send05());
             session.Send(UserEnvPacket.Send08());
