@@ -36,6 +36,8 @@ namespace MapleServer2.Types
         public Levels Levels { get; private set; }
         public int MapId;
         public int TitleId;
+        public List<int> Titles = new List<int> { 0 };
+        public List<short> Insignias = new List<short> { 0 };
         public short InsigniaId;
         public byte Animation;
         public PlayerStats Stats;
@@ -43,6 +45,8 @@ namespace MapleServer2.Types
 
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3];
+
+        public List<short> Stickers = new List<short> { 0 };
 
         public CoordF Coord;
         public CoordF Rotation; // Rotation?
@@ -140,8 +144,17 @@ namespace MapleServer2.Types
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
-                TitleId = 10000292,
-                InsigniaId = 29
+                Stickers = new List<short>
+                {
+                    1, 2, 3, 4, 5, 6, 7
+                },
+                TitleId = 10000503,
+                InsigniaId = 33,
+                Titles = new List<int> {
+                    10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
+                    10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
+                    10000603, 10000638, 10000644
+                },
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;

@@ -104,7 +104,8 @@ namespace MapleServer2.Tools
                 Stats = stats,
                 PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
             };
-            // int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);
+            //int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);
+            int.TryParse(config.GetValueOrDefault("enchants", "0"), out item.Enchants);
             int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
 
             // Simulate looting item

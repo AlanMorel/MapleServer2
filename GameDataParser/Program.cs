@@ -13,6 +13,7 @@ namespace GameDataParser
         public static ItemMetadataExport Item = new ItemMetadataExport();
         public static MapMetadataExport MapEntity = new MapMetadataExport();
         public static SkillMetadataExport Skill = new SkillMetadataExport();
+        public static InsigniaMetadataExport Insignia = new InsigniaMetadataExport();
         public static PrestigeMetadataExport Prestige = new PrestigeMetadataExport();
         public static ExpMetadataExport ExpTable = new ExpMetadataExport();
 
@@ -24,6 +25,7 @@ namespace GameDataParser
             Item.Export();
             MapEntity.Export();
             Skill.Export();
+            Insignia.Export();
             Prestige.Export();
             ExpTable.Export();
         }
