@@ -48,10 +48,17 @@ public class InventoryController
     }
 
     // Removes Item from inventory by reference
-    public static void Remove(GameSession session, long uid, out Item item)
+    public static bool Remove(GameSession session, long uid, out Item item)
     {
-        session.Player.Inventory.Remove(uid, out item);
+        int amountRemoved = session.Player.Inventory.Remove(uid, out item);
+
+        if (amountRemoved == -1)
+        {
+            return false;
+        }
+
         session.Send(ItemInventoryPacket.Remove(uid));
+        return true;
     }
 
     // Picks up item

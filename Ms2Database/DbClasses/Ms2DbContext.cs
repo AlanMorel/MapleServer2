@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
     public class Ms2DbContext : DbContext
     {
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Character> Characters { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public Ms2DbContext() : base("name=DatabaseConnectionString") // Creates context for database via connection string
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=Maplestory2DB; Trusted_Connection=True;");
+            //Database.SetInitializer<Ms2DbContext>(new DropCreateDatabaseAlways<Ms2DbContext>());
         }
+        public DbSet<Account> Accounts { get; set; } // Creates account table during database generation
+
+        public DbSet<Character> Characters { get; set; } // Create character table during database generation
     }
 }

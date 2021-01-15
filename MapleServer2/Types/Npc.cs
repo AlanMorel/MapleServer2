@@ -14,7 +14,6 @@ namespace MapleServer2.Types
         {
             Id = id;
             Animation = 255;
-            stats = PlayerStats.Default();
         }
     }
 }

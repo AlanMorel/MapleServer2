@@ -33,7 +33,8 @@ namespace MapleServer2.Packets
                 .WriteShort(item.Slot)
                 .WriteInt(item.Rarity)
                 .WriteUnicodeString("")
-                .WriteItem(item);
+                .WriteItem(item)
+                .WriteUnicodeString("");
         }
 
         public static Packet Remove(long uid)
