@@ -26,7 +26,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
       <ProjectReference Include="..\MaplePacketLib2\MaplePacketLib2.csproj" />
-      <ProjectReference Include="..\Ms2Database\Ms2Database.csproj" />
     </ItemGroup>
 
 </Project>

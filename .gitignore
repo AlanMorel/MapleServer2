@@ -7,5 +7,4 @@ GameDataParser/Resources
 GameDataParser/Properties
 MapleServer2/Properties
 Maple2Storage/Resources
-packages
-Ms2Database/packages.config
+Ms2Database/Migrations
