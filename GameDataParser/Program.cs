@@ -15,6 +15,7 @@ namespace GameDataParser
         public static SkillMetadataExport Skill = new SkillMetadataExport();
         public static InsigniaMetadataExport Insignia = new InsigniaMetadataExport();
         public static PrestigeMetadataExport Prestige = new PrestigeMetadataExport();
+        public static ExpMetadataExport ExpTable = new ExpMetadataExport();
 
         private static void Main()
         {
@@ -26,6 +27,7 @@ namespace GameDataParser
             Skill.Export();
             Insignia.Export();
             Prestige.Export();
+            ExpTable.Export();
         }
 
         public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)

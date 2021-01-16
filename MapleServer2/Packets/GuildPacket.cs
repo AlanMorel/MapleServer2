@@ -97,7 +97,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteInt(member.JobGroupId);
                 pWriter.WriteInt(member.JobId);
-                pWriter.WriteShort(member.Level);
+                pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteInt(); // last seen mapID?
                 pWriter.WriteShort(); // player.channel
@@ -315,7 +315,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(); //unk
             pWriter.WriteInt(member.JobGroupId);
             pWriter.WriteInt(member.JobId);
-            pWriter.WriteShort(member.Level);
+            pWriter.WriteShort(member.Levels.Level);
             pWriter.WriteInt(); //unk
             pWriter.WriteInt(member.MapId);
             pWriter.WriteShort(); // player.Channel
@@ -415,7 +415,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(); //unk
             pWriter.WriteInt(player.JobGroupId);
             pWriter.WriteInt(player.JobId);
-            pWriter.WriteShort(player.Level);
+            pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteInt(); //unk
             pWriter.WriteInt(player.MapId);
             pWriter.WriteShort(); // player.Channel
@@ -452,7 +452,7 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteInt(player.JobGroupId);
             pWriter.WriteInt(player.JobId);
-            pWriter.WriteInt(player.Level);
+            pWriter.WriteInt(player.Levels.Level);
             pWriter.WriteInt(); // combat trophy count
             pWriter.WriteInt(); // adventure trophy count
             pWriter.WriteInt(); // lifestyle trophy count

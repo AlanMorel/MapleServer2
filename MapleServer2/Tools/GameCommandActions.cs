@@ -17,6 +17,18 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "setprestigelevel":
+                    session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setlevel":
+                    session.Player.Levels.SetLevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "gainprestigeexp":
+                    session.Player.Levels.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "gainexp":
+                    session.Player.Levels.GainExp(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "setvalor":
                     session.Player.Wallet.ValorToken.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
                     break;
@@ -224,6 +236,50 @@ namespace MapleServer2.Tools
             catch (FormatException)
             {
                 session.SendNotice("The input is not type long.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int ParseInt(GameSession session, string s)
+        {
+            try
+            {
+                return int.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type int.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static short ParseShort(GameSession session, string s)
+        {
+            try
+            {
+                return short.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type short.");
                 return -1;
             }
             catch (OverflowException)

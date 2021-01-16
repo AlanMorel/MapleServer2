@@ -97,7 +97,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.MapId);
             pWriter.WriteInt(player.MapId); // Sometimes 0
             pWriter.WriteInt();
-            pWriter.WriteShort(player.Level);
+            pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteShort();
             pWriter.WriteInt(player.JobGroupId);
             pWriter.WriteInt(player.JobId);
@@ -162,7 +162,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteLong(); // Timestamp
-            pWriter.WriteInt(player.PrestigeLevel);
+            pWriter.WriteInt(player.Levels.PrestigeLevel);
             pWriter.WriteLong(); // Timestamp
 
             int countB = 0;
