@@ -54,7 +54,7 @@ namespace GameDataParser.Parsers
             using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-exptable-metadata"))
             {
             }
-            Console.WriteLine("Successfully parsed exp table metadata!");
+            Console.WriteLine("\rSuccessfully parsed exp table metadata!");
         }
     }
 }

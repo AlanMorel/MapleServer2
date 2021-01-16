@@ -54,7 +54,7 @@ namespace GameDataParser.Parsers
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));
             }
-            Console.WriteLine("Successfully parsed prestige metadata!");
+            Console.WriteLine("\rSuccessfully parsed prestige metadata!");
         }
     }
 }
