@@ -1,11 +1,9 @@
 ﻿using System;
-using Ms2Database.DbClasses;
-using System.Data.Entity;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
 {
