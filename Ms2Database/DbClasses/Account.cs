@@ -18,12 +18,10 @@ namespace Ms2Database.DbClasses
         [Key]
         public long AccountId { get; set; }
 
-        [Column(TypeName = "nvarchar")]
-        [StringLength(25)]
+        [MaxLength(25)]
         public string Username { get; set; }
 
-        [Column(TypeName = "nvarchar")]
-        [StringLength(25)]
+        [MaxLength(25)]
         public string Password { get; set; }
 
         [Column("Creation Time", TypeName = "datetime2")] // Sets column name and data type
