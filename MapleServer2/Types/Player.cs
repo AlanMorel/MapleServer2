@@ -4,6 +4,7 @@ using System.Numerics;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -32,12 +33,8 @@ namespace MapleServer2.Types
         public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
 
         // Mutable Values
+        public Levels Levels { get; private set; }
         public int MapId;
-        public short Level = 1;
-        public long Experience;
-        public long RestExperience;
-        public int PrestigeLevel = 100;
-        public long PrestigeExperience;
         public int TitleId;
         public List<int> Titles = new List<int> { 0 };
         public List<short> Insignias = new List<short> { 0 };
@@ -104,6 +101,7 @@ namespace MapleServer2.Types
         public Player()
         {
             Wallet = new Wallet(this);
+            Levels = new Levels(this, 70, 0, 0, 100, 0);
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
@@ -124,7 +122,6 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
                 Name = name,
                 Gender = 1,
                 Motto = "Motto",
@@ -179,7 +176,6 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
                 Name = name,
                 Gender = 0,
                 Motto = "Motto",
@@ -225,7 +221,6 @@ namespace MapleServer2.Types
                 Name = name,
                 Gender = gender,
                 JobGroupId = job,
-                Level = 1,
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
