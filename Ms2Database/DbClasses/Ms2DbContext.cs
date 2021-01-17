@@ -11,6 +11,9 @@ namespace Ms2Database.DbClasses
     {
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Character> Characters { get; set; }
+        public DbSet<InventoryTab> InventoryTabs { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<SkillTree> SkillTrees { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
