@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants.Skills;
 using MapleServer2.Enums;
 using ProtoBuf;
 
@@ -38,14 +35,6 @@ namespace MapleServer2.Data.Static
                 if (skills.Value.Job == (int) job)
                 {
                     jobSkill.Add(skills.Value);
-                    List<int> defaultSkills = SkillTreeOrdered.GetDefaultLearnedSkill(job);
-                    for (int i = 0; i < defaultSkills.Count; i++)
-                    {
-                        if (skills.Value.SkillId == defaultSkills[i])
-                        {
-                            skills.Value.Learned = 1;
-                        }
-                    }
                 }
                 else if (skills.Value.SkillId == 20000001) // Swiming
                 {

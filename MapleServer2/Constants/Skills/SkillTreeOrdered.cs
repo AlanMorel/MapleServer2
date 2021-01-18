@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Constants.Skills
@@ -6,6 +7,7 @@ namespace MapleServer2.Constants.Skills
     public static class SkillTreeOrdered
     {
         // TODO: Get a better solution for Ordered List, Split and DefaulSkills
+        //
         #region Ordered list of skills.
         private static readonly List<int> None = new List<int>
         {
@@ -112,57 +114,12 @@ namespace MapleServer2.Constants.Skills
         };
         #endregion
 
-        #region Default skills learned.
-        private static readonly List<int> KnightDefault = new List<int>
-        {
-            10100061,10100091
-        };
-        private static readonly List<int> BerserkerDefault = new List<int>
-        {
-            10200031,10200091
-        };
-        private static readonly List<int> WizardDefault = new List<int>
-        {
-            10300061,10300081
-        };
-        private static readonly List<int> PriestDefault = new List<int>
-        {
-            10400111,10400151
-        };
-        private static readonly List<int> ArcherDefault = new List<int>
-        {
-            10500111,10500151
-        };
-        private static readonly List<int> HeavyGunnerDefault = new List<int>
-        {
-            10600071,10600081
-        };
-        private static readonly List<int> ThiefDefault = new List<int>
-        {
-            10700041,10700042,10700061
-        };
-        private static readonly List<int> AssassinDefault = new List<int>
-        {
-            10800071,10800081
-        };
-        private static readonly List<int> RunebladeDefault = new List<int>
-        {
-            10900041,10900051
-        };
-        private static readonly List<int> StrikerDefault = new List<int>
-        {
-            11000051,11000053,11000055,11000081
-        };
-        private static readonly List<int> SoulBinderDefault = new List<int>
-        {
-            11100051,11100061
-        };
-        #endregion
         /// <summary>
         /// Get the specific ordered skill list of each Job. Requiered for SkillBookTree
         /// </summary>
         public static List<int> GetListOrdered(Job job)
         {
+
             switch (job)
             {
                 case Job.Knight:
@@ -231,40 +188,6 @@ namespace MapleServer2.Constants.Skills
                     return (byte) JobSkillSplit.None;
                 default:
                     return (byte) JobSkillSplit.None;
-            }
-        }
-
-        /// <summary>
-        /// Get the specific list of Skills, learned by default on each Job. Requiered for SkillBookTree
-        /// </summary>
-        public static List<int> GetDefaultLearnedSkill(Job job)
-        {
-            switch (job)
-            {
-                case Job.Knight:
-                    return KnightDefault;
-                case Job.Berserker:
-                    return BerserkerDefault;
-                case Job.Wizard:
-                    return WizardDefault;
-                case Job.Priest:
-                    return PriestDefault;
-                case Job.Archer:
-                    return ArcherDefault;
-                case Job.HeavyGunner:
-                    return HeavyGunnerDefault;
-                case Job.Thief:
-                    return ThiefDefault;
-                case Job.Assassin:
-                    return AssassinDefault;
-                case Job.Runeblade:
-                    return RunebladeDefault;
-                case Job.Striker:
-                    return StrikerDefault;
-                case Job.SoulBinder:
-                    return SoulBinderDefault;
-                default:
-                    return None;
             }
         }
     }

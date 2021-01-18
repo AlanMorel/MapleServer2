@@ -75,8 +75,6 @@ namespace GameDataParser.Parsers
                             if (feature == "JobChange_02") // Getting JobChange_02 skillList for now until better handle Awakening system.
                             {
                                 XmlNode skills = job.SelectSingleNode("skills");
-                                XmlNode learn = job.SelectSingleNode("learn");
-
                                 int jobCode = int.Parse(job.Attributes["code"].Value);
                                 for (int i = 0; i < skills.ChildNodes.Count; i++)
                                 {
@@ -100,9 +98,10 @@ namespace GameDataParser.Parsers
                                         }
                                     }
                                 }
+                                XmlNode learn = job.SelectSingleNode("learn");
                                 for (int i = 0; i < learn.ChildNodes.Count; i++)
                                 {
-                                    int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
+                                    int id = int.Parse(learn.ChildNodes[i].Attributes["id"].Value);
                                     skillList.Find(x => x.SkillId == id).Learned = 1;
                                 }
                             }
