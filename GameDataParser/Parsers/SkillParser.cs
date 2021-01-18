@@ -17,7 +17,6 @@ namespace GameDataParser.Parsers
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
-            List<ListSubSkill> subSkillList = new List<ListSubSkill>();
             foreach (PackFileEntry xmlFile in entries)
             {
                 // Parsing Skills
@@ -94,20 +93,29 @@ namespace GameDataParser.Parsers
                             string feature = node.Attributes["feature"].Value;
                             if (feature == "JobChange_02")
                             {
+                                int jobCode = int.Parse(node.Attributes.GetNamedItem("code").Value);
                                 XmlNode skills = node.SelectSingleNode("skills");
                                 for (int i = 0; i < skills.ChildNodes.Count; i++)
                                 {
                                     int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
                                     int[] sub = new int[0];
+                                    SkillMetadata skill = skillList.Find(x => x.SkillId == id);
+                                    skill.Job = jobCode;
                                     if (skills.ChildNodes[i].Attributes["sub"] != null)
                                     {
                                         if (skillList.Select(x => x.SkillId).Contains(id))
                                         {
                                             sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
-                                            skillList.Find(x => x.SkillId == id).SubSkill = sub;
+                                            skill.SubSkill = sub;
+                                            for (int n = 0; n < sub.Length; n++)
+                                            {
+                                                if (skillList.Select(x => x.SkillId).Contains(sub[n]))
+                                                {
+                                                    skillList.Find(x => x.SkillId == sub[n]).Job = jobCode;
+                                                }
+                                            }
                                         }
                                     }
-                                    subSkillList.Add(new ListSubSkill(id, sub));
                                 }
                             }
                         }
@@ -123,12 +131,10 @@ namespace GameDataParser.Parsers
                                 {
                                     sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
                                 }
-                                subSkillList.Add(new ListSubSkill(id, sub));
                             }
                         }
                     }
                 }
-                // Add SubSkills to Skills
             }
             return skillList;
         }
