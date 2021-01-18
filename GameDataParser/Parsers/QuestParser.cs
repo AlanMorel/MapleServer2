@@ -24,8 +24,7 @@ namespace GameDataParser.Parsers
                 }
 
                 QuestMetadata metadata = new QuestMetadata();
-                string questId = Path.GetFileNameWithoutExtension(entry.Name);
-                Console.WriteLine(questId);
+
                 using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
