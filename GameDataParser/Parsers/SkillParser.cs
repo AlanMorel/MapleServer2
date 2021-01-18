@@ -29,40 +29,33 @@ namespace GameDataParser.Parsers
                     metadata.SkillId = int.Parse(skillId);
                     XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
-                    foreach (XmlNode node in levels)
+                    foreach (XmlNode level in levels)
                     {
-                        if (node.Attributes.GetNamedItem("feature") == null || node.Attributes.GetNamedItem("feature").Value == "JobChange_01")
+                        if (level.Attributes["feature"] == null || level.Attributes["feature"].Value == "JobChange_01" || level.Attributes["feature"].Value == "JobChange_02")
                         {
-                            int level = node.Attributes["value"].Value != null ? int.Parse(node.Attributes["value"].Value) : 1;
-                            XmlNode consume = node.SelectSingleNode("consume/stat");
-
-                            int spirit = 0;
+                            int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
+                            int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                             int upgradeLevel = 0;
                             int[] upgradeSkillId = new int[0];
                             int[] upgradeSkillLevel = new int[0];
 
-                            if (consume.Attributes.GetNamedItem("sp") != null)
-                            {
-                                spirit = int.Parse(consume.Attributes["sp"].Value);
-                            }
-
-                            XmlNode upgrade = node.SelectSingleNode("upgrade");
+                            XmlNode upgrade = level.SelectSingleNode("upgrade");
                             if (upgrade.Attributes != null)
                             {
-                                if (upgrade.Attributes.GetNamedItem("level") != null)
+                                if (upgrade.Attributes["level"] != null)
                                 {
                                     upgradeLevel = int.Parse(upgrade.Attributes["level"].Value);
                                 }
-                                if (upgrade.Attributes.GetNamedItem("skillIDs") != null)
+                                if (upgrade.Attributes["skillIDs"] != null)
                                 {
-                                    upgradeSkillId = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillIDs").Value.Split(","), int.Parse);
+                                    upgradeSkillId = Array.ConvertAll(upgrade.Attributes["skillIDs"].Value.Split(","), int.Parse);
                                 }
-                                if (upgrade.Attributes.GetNamedItem("skillLevels") != null)
+                                if (upgrade.Attributes["skillLevels"] != null)
                                 {
-                                    upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillLevels").Value.Split(","), int.Parse);
+                                    upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes["skillLevels"].Value.Split(","), int.Parse);
                                 }
                             }
-                            skillLevel.Add(new SkillLevel(level, spirit, upgradeLevel, upgradeSkillId, upgradeSkillLevel));
+                            skillLevel.Add(new SkillLevel(levelValue, spirit, upgradeLevel, upgradeSkillId, upgradeSkillLevel));
                             metadata.SkillLevel = skillLevel[0];
                         }
                     }
@@ -72,16 +65,16 @@ namespace GameDataParser.Parsers
                 else if (entry.Name.StartsWith("table/job"))
                 {
                     XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
-                    XmlNodeList job = document.SelectNodes("/ms2/job");
-                    foreach (XmlNode node in job)
+                    XmlNodeList jobs = document.SelectNodes("/ms2/job");
+                    foreach (XmlNode job in jobs)
                     {
-                        if (node.Attributes.GetNamedItem("feature") != null)
+                        if (job.Attributes["feature"] != null)
                         {
-                            string feature = node.Attributes["feature"].Value;
+                            string feature = job.Attributes["feature"].Value;
                             if (feature == "JobChange_02")
                             {
-                                int jobCode = int.Parse(node.Attributes.GetNamedItem("code").Value);
-                                XmlNode skills = node.SelectSingleNode("skills");
+                                int jobCode = int.Parse(job.Attributes["code"].Value);
+                                XmlNode skills = job.SelectSingleNode("skills");
                                 for (int i = 0; i < skills.ChildNodes.Count; i++)
                                 {
                                     int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
@@ -106,9 +99,9 @@ namespace GameDataParser.Parsers
                                 }
                             }
                         }
-                        else if (node.Attributes.GetNamedItem("code").Value == "001")
+                        else if (job.Attributes["code"].Value == "001")
                         {
-                            XmlNode skills = node.SelectSingleNode("skills");
+                            XmlNode skills = job.SelectSingleNode("skills");
 
                             for (int i = 0; i < skills.ChildNodes.Count; i++)
                             {
