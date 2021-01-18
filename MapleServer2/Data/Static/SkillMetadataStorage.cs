@@ -28,6 +28,7 @@ namespace MapleServer2.Data.Static
             return skill.GetValueOrDefault(id);
         }
 
+        // Get a List of Skills corresponding to the Job
         public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
         {
             List<SkillMetadata> jobSkill = new List<SkillMetadata>();

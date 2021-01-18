@@ -11,14 +11,12 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int SkillId;
         [XmlElement(Order = 2)]
-        public string Feature = "";
-        [XmlElement(Order = 3)]
         public SkillLevel SkillLevel;
-        [XmlElement(Order = 4)]
+        [XmlElement(Order = 3)]
         public int[] SubSkill = new int[0];
-        [XmlElement(Order = 5)]
+        [XmlElement(Order = 4)]
         public int Job;
-        [XmlElement(Order = 6)]
+        [XmlElement(Order = 5)]
         public byte Learned = 0;
 
         public SkillMetadata()
@@ -28,11 +26,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SkillId, Feature, SkillLevel, Job, Learned);
+            return HashCode.Combine(SkillId, SkillLevel, Job, Learned);
         }
 
         public override string ToString() =>
-            $"Skill:(Id:{SkillId},Job:{Job},Feature:{Feature},SkillLevel:{string.Join(",", SkillLevel)},Learned:{Learned}";
+            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel)},Learned:{Learned}";
     }
 
     [XmlType]

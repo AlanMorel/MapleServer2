@@ -17,34 +17,21 @@ namespace GameDataParser.Parsers
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
-            foreach (PackFileEntry xmlFile in entries)
+            foreach (PackFileEntry entry in entries)
             {
                 // Parsing Skills
-                if (xmlFile.Name.StartsWith("skill"))
+                if (entry.Name.StartsWith("skill"))
                 {
-                    string skillId = Path.GetFileNameWithoutExtension(xmlFile.Name);
+                    string skillId = Path.GetFileNameWithoutExtension(entry.Name);
                     SkillMetadata metadata = new SkillMetadata();
                     List<SkillLevel> skillLevel = new List<SkillLevel>();
 
                     metadata.SkillId = int.Parse(skillId);
-                    Debug.Assert(metadata.SkillId > 0, $"Invalid Id {metadata.SkillId} from {skillId}");
-
-                    XmlDocument document = m2dFile.GetDocument(xmlFile.FileHeader);
-
-                    XmlNodeList basic = document.SelectNodes("/ms2/basic");
-                    foreach (XmlNode node in basic)
-                    {
-                        if (node.Attributes.GetNamedItem("feature") != null)
-                        {
-                            // Get Rank
-                            metadata.Feature = node.Attributes["feature"].Value;
-                        }
-                    }
-
+                    XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode node in levels)
                     {
-                        if (node.Attributes.GetNamedItem("feature") == null || node.Attributes.GetNamedItem("feature").Value == metadata.Feature)
+                        if (node.Attributes.GetNamedItem("feature") == null || node.Attributes.GetNamedItem("feature").Value == "JobChange_01")
                         {
                             int level = node.Attributes["value"].Value != null ? int.Parse(node.Attributes["value"].Value) : 1;
                             XmlNode consume = node.SelectSingleNode("consume/stat");
@@ -82,9 +69,9 @@ namespace GameDataParser.Parsers
                     skillList.Add(metadata);
                 }
                 // Parsing SubSkills
-                else if (xmlFile.Name.StartsWith("table/job"))
+                else if (entry.Name.StartsWith("table/job"))
                 {
-                    XmlDocument document = m2dFile.GetDocument(xmlFile.FileHeader);
+                    XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
                     XmlNodeList job = document.SelectNodes("/ms2/job");
                     foreach (XmlNode node in job)
                     {
