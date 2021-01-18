@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
-using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -14,7 +12,7 @@ namespace MapleServer2.Packets
         {
             CompleteExplorationGoal = 0x03,
             CompleteQuest = 0x04,
-            SendQuests = 0x16, // send the status of every quest
+            SendQuests = 0x16 // send the status of every quest
         }
 
         // Client has some sort of caching for this packet resulting subsequent packets to not change anything
@@ -22,7 +20,7 @@ namespace MapleServer2.Packets
         public static Packet SendQuests(List<QuestMetadata> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteByte((byte) QuestType.SendQuests);
+            pWriter.WriteMode(QuestType.SendQuests);
             pWriter.WriteInt(questList.Count);
 
             foreach (QuestMetadata item in questList)
@@ -48,8 +46,8 @@ namespace MapleServer2.Packets
         public static Packet CompleteQuest(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteByte((byte) QuestType.CompleteQuest);
-            pWriter.WriteInt(questId);
+            pWriter.WriteMode(QuestType.CompleteQuest);
+            pWriter.WriteInt (questId);
             pWriter.WriteInt(1);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
@@ -59,8 +57,8 @@ namespace MapleServer2.Packets
         public static Packet CompleteExplorationGoal(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteByte((byte) QuestType.CompleteExplorationGoal);
-            pWriter.WriteInt(questId);
+            pWriter.WriteMode(QuestType.CompleteExplorationGoal);
+            pWriter.WriteInt (questId);
             pWriter.WriteInt(1);
             pWriter.WriteInt(1);
 
