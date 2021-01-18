@@ -31,6 +31,7 @@ namespace GameDataParser.Parsers
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode level in levels)
                     {
+                        // Get values ​​that are different from null and other "feature"
                         if (level.Attributes["feature"] == null || level.Attributes["feature"].Value == "JobChange_01" || level.Attributes["feature"].Value == "JobChange_02")
                         {
                             int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
@@ -68,13 +69,15 @@ namespace GameDataParser.Parsers
                     XmlNodeList jobs = document.SelectNodes("/ms2/job");
                     foreach (XmlNode job in jobs)
                     {
-                        if (job.Attributes["feature"] != null)
+                        if (job.Attributes["feature"] != null) // Getting attribute that just have "feature"
                         {
                             string feature = job.Attributes["feature"].Value;
-                            if (feature == "JobChange_02")
+                            if (feature == "JobChange_02") // Getting JobChange_02 skillList for now until better handle Awakening system.
                             {
-                                int jobCode = int.Parse(job.Attributes["code"].Value);
                                 XmlNode skills = job.SelectSingleNode("skills");
+                                XmlNode learn = job.SelectSingleNode("learn");
+
+                                int jobCode = int.Parse(job.Attributes["code"].Value);
                                 for (int i = 0; i < skills.ChildNodes.Count; i++)
                                 {
                                     int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
@@ -96,6 +99,11 @@ namespace GameDataParser.Parsers
                                             }
                                         }
                                     }
+                                }
+                                for (int i = 0; i < learn.ChildNodes.Count; i++)
+                                {
+                                    int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
+                                    skillList.Find(x => x.SkillId == id).Learned = 1;
                                 }
                             }
                         }

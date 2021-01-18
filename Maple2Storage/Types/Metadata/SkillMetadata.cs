@@ -30,7 +30,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel)},Learned:{Learned}";
+            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel.ToString())},Learned:{Learned}";
     }
 
     [XmlType]
@@ -78,18 +78,21 @@ namespace Maple2Storage.Types.Metadata
         public int Id { get; set; }
         [XmlElement(Order = 2)]
         public int[] Sub { get; set; }
+        [XmlElement(Order = 3)]
+        public int[] DefaultSkillLearn { get; set; }
 
         public ListSubSkill()
         {
 
         }
 
-        public ListSubSkill(int id, int[] sub)
+        public ListSubSkill(int id, int[] sub, int[] defaultSkillLearn)
         {
             Id = id;
             Sub = sub;
+            DefaultSkillLearn = defaultSkillLearn;
         }
 
-        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Sub)})";
+        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Sub.ToString())},Default:{string.Join(",", DefaultSkillLearn.ToString())})";
     }
 }
