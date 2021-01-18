@@ -55,7 +55,7 @@ namespace GameDataParser.Parsers
             using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-insignia-metadata"))
             {
             }
-            Console.WriteLine("Successfully parsed insignia metadata!");
+            Console.WriteLine("\rSuccessfully parsed insignia metadata!");
         }
     }
 }

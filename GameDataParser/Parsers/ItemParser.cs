@@ -30,7 +30,7 @@ namespace GameDataParser.Parsers
 
                 if (items.Exists(item => item.Id.ToString() == itemId))
                 {
-                    Console.WriteLine($"Duplicate {entry.Name} was already added.");
+                    //Console.WriteLine($"Duplicate {entry.Name} was already added.");
                     continue;
                 }
 
@@ -83,7 +83,12 @@ namespace GameDataParser.Parsers
 
                     else if (reader.Name == "option")
                     {
-                        int rarity = int.Parse(reader["constant"]);
+                        int rarity = 1;
+
+                        if (reader["constant"].Length == 1)
+                        {
+                            rarity = int.Parse(reader["constant"]);
+                        }
 
                         metadata.Rarity = rarity;
                     }
@@ -96,7 +101,6 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-                        Console.WriteLine(itemId);
 
                         // selection boxes are SelectItemBox and 1,boxid
                         // normal boxes are OpenItemBox and 0,1,0,boxid
@@ -170,7 +174,7 @@ namespace GameDataParser.Parsers
                 // Ensure the file is read equivalent
                 // Debug.Assert(items.SequenceEqual(Serializer.Deserialize<List<ItemMetadata>>(readStream)));
             }
-            Console.WriteLine("Successfully parsed item metadata!");
+            Console.WriteLine("\rSuccessfully parsed item metadata!");
         }
 
         // This is an approximation and may not be 100% correct
