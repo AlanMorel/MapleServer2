@@ -152,43 +152,5 @@ namespace MapleServer2.Constants.Skills
                     return None;
             }
         }
-
-        /// <summary>
-        /// Get the specific Split value for each Job. Requiered for SkillBookTree
-        /// </summary>
-        public static byte GetListOrderedSplit(Job job)
-        {
-            switch (job)
-            {
-                case Job.Knight:
-                    return (byte) JobSkillSplit.Knight;
-                case Job.Berserker:
-                    return (byte) JobSkillSplit.Berserker;
-                case Job.Wizard:
-                    return (byte) JobSkillSplit.Wizard;
-                case Job.Priest:
-                    return (byte) JobSkillSplit.Priest;
-                case Job.Archer:
-                    return (byte) JobSkillSplit.Archer;
-                case Job.HeavyGunner:
-                    return (byte) JobSkillSplit.HeavyGunner;
-                case Job.Thief:
-                    return (byte) JobSkillSplit.Thief;
-                case Job.Assassin:
-                    return (byte) JobSkillSplit.Assassin;
-                case Job.Runeblade:
-                    return (byte) JobSkillSplit.Runeblade;
-                case Job.Striker:
-                    return (byte) JobSkillSplit.Striker;
-                case Job.SoulBinder:
-                    return (byte) JobSkillSplit.SoulBinder;
-                case Job.GameMaster:
-                    return (byte) JobSkillSplit.GameMaster;
-                case Job.None:
-                    return (byte) JobSkillSplit.None;
-                default:
-                    return (byte) JobSkillSplit.None;
-            }
-        }
     }
 }

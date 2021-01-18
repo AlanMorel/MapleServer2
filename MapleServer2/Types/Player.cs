@@ -31,6 +31,7 @@ namespace MapleServer2.Types
         public int JobGroupId { get; private set; }
         public bool Awakened { get; private set; }
         public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
+        public Job Job { get; private set; }
 
         // Mutable Values
         public Levels Levels { get; private set; }
@@ -125,6 +126,7 @@ namespace MapleServer2.Types
                 Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
                 // Coord = CoordF.From(500, 500, 15000), // Tria
                 JobGroupId = job,
+                Job = (Job) job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)

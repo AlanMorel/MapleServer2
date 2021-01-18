@@ -11,7 +11,6 @@ namespace MapleServer2.Types
     {
         public long Id { get; set; }
         public string Name { get; private set; }
-        public byte Split { get; private set; }
         public List<int> Order { get; private set; }
         public List<SkillMetadata> Skills { get; private set; }
         public Dictionary<int, SkillMetadata> SkillJob { get; set; }
@@ -20,7 +19,6 @@ namespace MapleServer2.Types
         {
             Id = 0x000032DF995949B9; // temporary hard coded id
             Name = "Build";
-            Split = SkillTreeOrdered.GetListOrderedSplit(job);
             Skills = SkillMetadataStorage.GetJobSkills(job);
             Order = SkillTreeOrdered.GetListOrdered(job);
             SkillJob = AddOnDictionary();

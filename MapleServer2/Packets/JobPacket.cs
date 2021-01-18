@@ -3,6 +3,8 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using System;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Packets
 {
@@ -45,7 +47,7 @@ namespace MapleServer2.Packets
 
             // Ordered list of skill ids (must be sent in this order)
             List<int> ids = character.SkillTabs[0].Order;
-            byte split = character.SkillTabs[0].Split;
+            byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(character.Job));
             int countId = ids[ids.Count - split]; // Split to last skill id
             pWriter.WriteByte((byte) (ids.Count - split)); // Skill count minus split
 
