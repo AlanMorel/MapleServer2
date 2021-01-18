@@ -108,7 +108,7 @@ namespace MapleServer2.Types
             StatDistribution StatPointDistribution = new StatDistribution();
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job*10))
+                new SkillTab((Job) (job))
             };
 
             Player player = new Player
@@ -163,7 +163,7 @@ namespace MapleServer2.Types
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job*10))
+                new SkillTab((Job) (job))
             };
 
             return new Player
@@ -205,7 +205,7 @@ namespace MapleServer2.Types
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job*10))
+                new SkillTab((Job) (job))
             };
 
             return new Player

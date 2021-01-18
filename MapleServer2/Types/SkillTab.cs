@@ -3,7 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
-using System.Reflection;
+using System.Linq;
 
 namespace MapleServer2.Types
 {
@@ -11,9 +11,9 @@ namespace MapleServer2.Types
     {
         public long Id { get; set; }
         public string Name { get; private set; }
-        public int[] Order { get; private set; }
         public byte Split { get; private set; }
-        public List<SkillMetadata> SkillsM { get; private set; }
+        public List<int> Order { get; private set; }
+        public List<SkillMetadata> Skills { get; private set; }
         public Dictionary<int, SkillMetadata> SkillJob { get; set; }
 
         public SkillTab(Job job)
@@ -21,7 +21,7 @@ namespace MapleServer2.Types
             Id = 0x000032DF995949B9; // temporary hard coded id
             Name = "Build";
             Split = SkillTreeOrdered.GetListOrderedSplit(job);
-            SkillsM = SkillMetadataStorage.GetJobSkills(job);
+            Skills = SkillMetadataStorage.GetJobSkills(job);
             Order = SkillTreeOrdered.GetListOrdered(job);
             SkillJob = AddOnDictionary();
         }
@@ -29,7 +29,8 @@ namespace MapleServer2.Types
         public Dictionary<int, SkillMetadata> AddOnDictionary()
         {
             Dictionary<int, SkillMetadata> skillJob = new Dictionary<int, SkillMetadata>();
-            foreach (SkillMetadata skill in SkillsM)
+
+            foreach (SkillMetadata skill in Skills)
             {
                 skillJob[skill.SkillId] = skill;
             }
@@ -40,6 +41,15 @@ namespace MapleServer2.Types
         {
             SkillJob[id].Learned = learned;
             SkillJob[id].SkillLevel.Level = level;
+            if (SkillJob[id].SubSkill.Length != 0)
+            {
+                foreach (int sub in SkillJob[id].SubSkill.Select(x => x))
+                {
+                    SkillJob[sub].Learned = learned;
+                    SkillJob[sub].SkillLevel.Level = level;
+                }
+            }
+
         }
 
         public void Rename(string name)

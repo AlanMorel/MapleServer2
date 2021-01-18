@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Enums;
@@ -30,15 +31,14 @@ namespace MapleServer2.Data.Static
         public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
         {
             List<SkillMetadata> jobSkill = new List<SkillMetadata>();
-            int jobCode = ((Convert.ToInt32(job) / 100) + 100) * 100000; // 10X0000 10100000
 
             foreach (KeyValuePair<int, SkillMetadata> skills in skill)
             {
-                if (skills.Value.SkillId > jobCode && skills.Value.SkillId < jobCode + 400)
+                if (skills.Value.Job == (int) job)
                 {
                     jobSkill.Add(skills.Value);
-                    int[] defaultSkills = SkillTreeOrdered.GetDefaultLearnedSkill(job);
-                    for (int i = 0; i < defaultSkills.Length; i++)
+                    List<int> defaultSkills = SkillTreeOrdered.GetDefaultLearnedSkill(job);
+                    for (int i = 0; i < defaultSkills.Count; i++)
                     {
                         if (skills.Value.SkillId == defaultSkills[i])
                         {

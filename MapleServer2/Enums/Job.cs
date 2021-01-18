@@ -3,17 +3,17 @@
     public enum Job : int
     {
         None = 0,
-        Knight = 100,
-        Berserker = 200,
-        Wizard = 300,
-        Priest = 400,
-        Archer = 500,
-        HeavyGunner = 600,
-        Thief = 700,
-        Assassin = 800,
-        Runeblade = 900,
-        Striker = 1000,
-        SoulBinder = 1100,
+        Knight = 10,
+        Berserker = 20,
+        Wizard = 30,
+        Priest = 40,
+        Archer = 50,
+        HeavyGunner = 60,
+        Thief = 70,
+        Assassin = 80,
+        Runeblade = 90,
+        Striker = 100,
+        SoulBinder = 110,
         GameMaster = 999
     }
 
@@ -21,16 +21,16 @@
     {
         None = 0,
         Knight = 101,
-        Berserker = 102,
-        Wizard = 103,
-        Priest = 104,
-        Archer = 105,
-        HeavyGunner = 106,
-        Thief = 107,
-        Assassin = 108,
-        Runeblade = 109,
-        Striker = 110,
-        SoulBinder = 111,
+        Berserker = 201,
+        Wizard = 301,
+        Priest = 401,
+        Archer = 501,
+        HeavyGunner = 601,
+        Thief = 701,
+        Assassin = 801,
+        Runeblade = 901,
+        Striker = 1001,
+        SoulBinder = 1101,
         GameMaster = 999
     }
 
