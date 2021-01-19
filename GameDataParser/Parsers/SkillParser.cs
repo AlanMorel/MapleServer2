@@ -34,7 +34,7 @@ namespace GameDataParser.Parsers
                         // Get values ​​that are different from null and other "feature"
                         if (level.Attributes["feature"] == null || level.Attributes["feature"].Value == "JobChange_01" || level.Attributes["feature"].Value == "JobChange_02")
                         {
-                            int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
+                            int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 1;
                             int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                             int upgradeLevel = 0;
                             int[] upgradeSkillId = new int[0];
