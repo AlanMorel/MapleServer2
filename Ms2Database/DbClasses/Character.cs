@@ -107,8 +107,8 @@ namespace Ms2Database.DbClasses
         [Required]
         public float CoordZ { get; set; }
 
-        public ICollection<InventoryTab> InventoryTabs { get; set; }
-		
+        public ICollection<Inventory> Inventories { get; set; }
+
         public ICollection<SkillTree> SkillTrees { get; set; }
     }
 }

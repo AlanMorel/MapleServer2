@@ -8,7 +8,7 @@ namespace Ms2Database.Controllers
 {
     public class CharacterManager
     {
-        public void CreateCharacter(long accId, string charName, int jobId)
+        public void CreateCharacter(long accId, string charName, int jobId) // Creates Character and Inventory
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -29,6 +29,21 @@ namespace Ms2Database.Controllers
                     TitleId = 10000292
                 };
                 context.Characters.Add(character);
+                context.SaveChanges();
+
+                InventoryManager inventory = new InventoryManager();
+
+                character = context.Characters.First(c => c.Name.ToLower() == charName.ToLower());
+                inventory.CreateInventory(character.CharacterId);
+            }
+        }
+
+        public void DeleteCharacter(long charId, string charName = "")
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                Character character = context.Characters.FirstOrDefault(a => (a.CharacterId == charId) || (a.Name.ToLower() == charName.ToLower()));
+                context.Remove(character);
                 context.SaveChanges();
             }
         }

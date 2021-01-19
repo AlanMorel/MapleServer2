@@ -24,11 +24,30 @@ namespace Ms2Database.Controllers
             }
         }
 
+        public void DeleteAccount(long id)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                Account account = context.Accounts.Find(id);
+                context.Remove(account);
+                context.SaveChanges();
+            }
+        }
+
         public Account GetAccInfoById(long id) // Queries db and retrieves account entry by Id
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
                 Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
+                return account;
+            }
+        }
+
+        public Account GetAccInfoByUser(string username)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                Account account = context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by Id
                 return account;
             }
         }

@@ -12,6 +12,7 @@ namespace Ms2Database.DbClasses
     {
         public Item()
         {
+            Tab = 0;
             Slot = 0;
             Rarity = 1;
             Amount = 1;
@@ -30,18 +31,21 @@ namespace Ms2Database.DbClasses
             ExpirationTime = DateTime.Now.AddDays(1);
         }
 
-        [ForeignKey("InventoryTab")]
-        [Required]
-        public int TabId { get; set; }
-        public InventoryTab InventoryTab { get; set; }
-
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         [Key]
         public long UniqueId { get; set; }
 
+        [ForeignKey("Inventory")]
+        [Required]
+        public long InventoryId { get; set; }
+        public Inventory Inventory { get; set; }
+
         [Required]
         public long Id { get; set; }
+
+        [Required]
+        public int Tab { get; set; }
 
         [Required]
         public int Slot { get; set; }
