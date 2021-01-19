@@ -28,10 +28,9 @@ namespace MapleServer2.Types
         public byte Gender { get; private set; }
 
         // Job Group, according to jobgroupname.xml
-        public int JobGroupId { get; private set; }
         public bool Awakened { get; private set; }
-        public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
         public Job Job { get; private set; }
+        public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
 
         // Mutable Values
         public Levels Levels { get; private set; }
@@ -125,7 +124,6 @@ namespace MapleServer2.Types
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
                 // Coord = CoordF.From(500, 500, 15000), // Tria
-                JobGroupId = job,
                 Job = (Job) job,
                 SkinColor = new SkinColor()
                 {
@@ -179,7 +177,7 @@ namespace MapleServer2.Types
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800),
-                JobGroupId = job,
+                Job = (Job) job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -218,7 +216,7 @@ namespace MapleServer2.Types
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
                 Gender = gender,
-                JobGroupId = job,
+                Job = (Job) job,
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,

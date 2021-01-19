@@ -95,8 +95,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
                 pWriter.WriteByte();
-                pWriter.WriteInt(member.JobGroupId);
-                pWriter.WriteInt(member.JobId);
+                pWriter.WriteInt((int) member.Job);
+                pWriter.WriteInt((int) member.JobCode);
                 pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteInt(); // last seen mapID?
@@ -313,8 +313,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(member.CharacterId);
             pWriter.WriteUnicodeString(member.Name);
             pWriter.WriteByte(); //unk
-            pWriter.WriteInt(member.JobGroupId);
-            pWriter.WriteInt(member.JobId);
+            pWriter.WriteInt((int) member.Job);
+            pWriter.WriteInt((int) member.JobCode);
             pWriter.WriteShort(member.Levels.Level);
             pWriter.WriteInt(); //unk
             pWriter.WriteInt(member.MapId);
@@ -413,8 +413,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte(); //unk
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteInt((int) player.Job);
+            pWriter.WriteInt((int) player.JobCode);
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteInt(); //unk
             pWriter.WriteInt(player.MapId);
@@ -450,8 +450,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(player.ProfileUrl);
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteInt((int) player.Job);
+            pWriter.WriteInt((int) player.JobCode);
             pWriter.WriteInt(player.Levels.Level);
             pWriter.WriteInt(); // combat trophy count
             pWriter.WriteInt(); // adventure trophy count

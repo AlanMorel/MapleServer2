@@ -55,8 +55,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
                 pWriter.WriteByte();
-                pWriter.WriteInt(member.JobGroupId);
-                pWriter.WriteInt(member.JobId);
+                pWriter.WriteInt((int) member.Job);
+                pWriter.WriteInt((int) member.JobCode);
                 pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
@@ -110,8 +110,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
                 pWriter.WriteByte();
-                pWriter.WriteInt(member.JobGroupId);
-                pWriter.WriteInt(member.JobId);
+                pWriter.WriteInt((int) member.Job);
+                pWriter.WriteInt((int) member.JobCode);
                 pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
@@ -223,8 +223,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(other.CharacterId);
             pWriter.WriteUnicodeString(other.Name);
             pWriter.WriteByte();
-            pWriter.WriteInt(other.JobGroupId);
-            pWriter.WriteInt(other.JobId);
+            pWriter.WriteInt((int) other.Job);
+            pWriter.WriteInt((int) other.JobCode);
             pWriter.WriteShort(other.Levels.Level);
             pWriter.WriteInt(other.MapId);
             pWriter.WriteShort(); // member.Channel
@@ -292,8 +292,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte();
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteInt((int) player.Job);
+            pWriter.WriteInt((int) player.JobCode);
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteInt(player.MapId);
             pWriter.WriteShort(); // player.Channel

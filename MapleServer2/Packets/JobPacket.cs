@@ -29,9 +29,9 @@ namespace MapleServer2.Packets
             // Identifier info
             pWriter.WriteInt(objectId);
             pWriter.WriteByte(0x09); // Unknown, changes to 08 when closing skill tree after saving
-            pWriter.WriteInt(character.JobId);
+            pWriter.WriteInt((int) character.JobCode);
             pWriter.WriteByte(1); // Possibly always 01 byte
-            pWriter.WriteInt(character.JobGroupId);
+            pWriter.WriteInt((int) character.Job);
 
             // Skill info
             WriteSkills(pWriter, character);

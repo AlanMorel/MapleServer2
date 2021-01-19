@@ -99,8 +99,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteShort();
-            pWriter.WriteInt(player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteInt((int) player.Job);
+            pWriter.WriteInt((int) player.JobCode);
             pWriter.WriteInt(); // CurHp?
             pWriter.WriteInt(); // MaxHp?
             pWriter.WriteShort();
