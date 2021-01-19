@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System;
 using MapleServer2.Enums;
+using System.Linq;
 
 namespace MapleServer2.Constants.Skills
 {
     public static class SkillTreeOrdered
     {
-        // TODO: Get a better solution for Ordered List, Split and DefaulSkills
-        //
+        // TODO: Get a better solution for Ordered List
         #region Ordered list of skills.
         private static readonly List<int> None = new List<int>
         {
@@ -114,43 +114,28 @@ namespace MapleServer2.Constants.Skills
         };
         #endregion
 
+        private static readonly Dictionary<Job, List<int>> ListOrdered = new Dictionary<Job, List<int>>()
+        {
+            {Job.None, None },
+            {Job.Knight, Knight },
+            {Job.Berserker, Berserker },
+            {Job.Wizard, Wizard },
+            {Job.Priest, Priest },
+            {Job.Archer, Archer },
+            {Job.HeavyGunner, HeavyGunner },
+            {Job.Thief, Thief },
+            {Job.Assassin, Assassin },
+            {Job.Runeblade, Runeblade },
+            {Job.Striker, Striker },
+            {Job.SoulBinder, SoulBinder },
+            {Job.GameMaster, GameMaster },
+        };
         /// <summary>
         /// Get the specific ordered skill list of each Job. Requiered for SkillBookTree
         /// </summary>
         public static List<int> GetListOrdered(Job job)
         {
-
-            switch (job)
-            {
-                case Job.Knight:
-                    return Knight;
-                case Job.Berserker:
-                    return Berserker;
-                case Job.Wizard:
-                    return Wizard;
-                case Job.Priest:
-                    return Priest;
-                case Job.Archer:
-                    return Archer;
-                case Job.HeavyGunner:
-                    return HeavyGunner;
-                case Job.Thief:
-                    return Thief;
-                case Job.Assassin:
-                    return Assassin;
-                case Job.Runeblade:
-                    return Runeblade;
-                case Job.Striker:
-                    return Striker;
-                case Job.SoulBinder:
-                    return SoulBinder;
-                case Job.GameMaster:
-                    return GameMaster;
-                case Job.None:
-                    return None;
-                default:
-                    return None;
-            }
+            return ListOrdered[job];
         }
     }
 }
