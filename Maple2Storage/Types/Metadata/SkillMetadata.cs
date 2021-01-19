@@ -40,12 +40,7 @@ namespace Maple2Storage.Types.Metadata
         public int Level;
         [XmlElement(Order = 2)]
         public int Spirit;
-        [XmlElement(Order = 3)]
-        public int UpgradeLevel;
-        [XmlElement(Order = 4)]
-        public int[] UpgradeSkillId;
-        [XmlElement(Order = 5)]
-        public int[] UpgradeSkillLevel;
+
 
         // Required for deserialization
         public SkillLevel()
@@ -53,22 +48,20 @@ namespace Maple2Storage.Types.Metadata
 
         }
 
-        public SkillLevel(int _Level, int _Spirit, int _UpgradeLevel, int[] _UpgradeSkillId, int[] _UpgradeSkillLevel)
+        public SkillLevel(int _Level, int _Spirit)
         {
             Level = _Level;
             Spirit = _Spirit;
-            UpgradeLevel = _UpgradeLevel;
-            UpgradeSkillId = _UpgradeSkillId;
-            UpgradeSkillLevel = _UpgradeSkillLevel;
+
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Level, Spirit, UpgradeLevel, UpgradeSkillId, UpgradeSkillLevel);
+            return HashCode.Combine(Level, Spirit);
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit},UpgradeLevel:{UpgradeLevel},SkillRequired:{UpgradeSkillId},SkillLevelRequired:{UpgradeSkillLevel})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit})";
     }
 
     [XmlType]

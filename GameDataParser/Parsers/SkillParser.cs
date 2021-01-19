@@ -36,27 +36,7 @@ namespace GameDataParser.Parsers
                         {
                             int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 1;
                             int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
-                            int upgradeLevel = 0;
-                            int[] upgradeSkillId = new int[0];
-                            int[] upgradeSkillLevel = new int[0];
-
-                            XmlNode upgrade = level.SelectSingleNode("upgrade");
-                            if (upgrade.Attributes != null)
-                            {
-                                if (upgrade.Attributes["level"] != null)
-                                {
-                                    upgradeLevel = int.Parse(upgrade.Attributes["level"].Value);
-                                }
-                                if (upgrade.Attributes["skillIDs"] != null)
-                                {
-                                    upgradeSkillId = Array.ConvertAll(upgrade.Attributes["skillIDs"].Value.Split(","), int.Parse);
-                                }
-                                if (upgrade.Attributes["skillLevels"] != null)
-                                {
-                                    upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes["skillLevels"].Value.Split(","), int.Parse);
-                                }
-                            }
-                            skillLevel.Add(new SkillLevel(levelValue, spirit, upgradeLevel, upgradeSkillId, upgradeSkillLevel));
+                            skillLevel.Add(new SkillLevel(levelValue, spirit));
                             metadata.SkillLevel = skillLevel[0];
                         }
                     }
