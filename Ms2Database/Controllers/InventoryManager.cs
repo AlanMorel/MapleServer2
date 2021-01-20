@@ -22,13 +22,14 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void AddItem(long inventoryId, long itemId, long amount, int tab, int slot, int rarity)
+        public void AddItem(long characterId, long itemId, long amount, int tab, int slot, int rarity)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
+                Inventory inventory = context.Inventories.Find(characterId);
                 Item item = new Item()
                 {
-                    InventoryId = inventoryId,
+                    InventoryId = inventory.InventoryId,
                     Id = itemId,
                     Amount = amount,
                     Tab = tab,
@@ -40,12 +41,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteItem(long inventoryId, long itemId)
+        public void DeleteItem(long Uid)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Item item = context.Items.Where(i => i.InventoryId == inventoryId)
-                                         .FirstOrDefault(i => i.Id == itemId);
+                Item item = context.Items.Find(Uid);
 
                 context.Remove(item);
                 context.SaveChanges();
@@ -59,6 +59,15 @@ namespace Ms2Database.Controllers
                 Item item = context.Items.Find(Uid);
 
                 return item;
+            }
+        }
+
+        public void EditItem(Item item)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                Item OriginItem = item;
+                context.SaveChanges();
             }
         }
     }

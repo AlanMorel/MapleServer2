@@ -52,7 +52,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void SetAccInfo(long id, string username = "", string password = "") // Allows account entry changes
+        public void EditAccInfo(long id, string username = "", string password = "") // Allows account entry changes
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

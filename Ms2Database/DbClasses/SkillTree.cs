@@ -10,21 +10,17 @@ namespace Ms2Database.DbClasses
 {
     public class SkillTree
     {
-        public SkillTree()
-        {
-            SkillName = "";
-            Level = 0;
-            Learned = false;
-        }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required]
+        [Key]
+        public long UniqueId { get; set; }
 
         [ForeignKey("Character")]
         [Required]
         public long CharacterId { get; set; }
         public Character Character { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Required]
-        [Key]
         public long SkillId { get; set; }
 
         public string SkillName { get; set; }
