@@ -40,7 +40,8 @@ namespace Maple2Storage.Types.Metadata
         public int Level;
         [XmlElement(Order = 2)]
         public int Spirit;
-
+        [XmlElement(Order = 3)]
+        public float DamageRate;
 
         // Required for deserialization
         public SkillLevel()
@@ -48,11 +49,11 @@ namespace Maple2Storage.Types.Metadata
 
         }
 
-        public SkillLevel(int _Level, int _Spirit)
+        public SkillLevel(int _Level, int _Spirit, float _DamageRate)
         {
             Level = _Level;
             Spirit = _Spirit;
-
+            DamageRate = _DamageRate;
         }
 
         public override int GetHashCode()
@@ -61,7 +62,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate})";
     }
 
     [XmlType]

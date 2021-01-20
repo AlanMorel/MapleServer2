@@ -31,14 +31,13 @@ namespace GameDataParser.Parsers
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode level in levels)
                     {
+                        int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
+                        int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
+                        float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
+                        skillLevel.Add(new SkillLevel(levelValue, spirit, damageRate));
+                        metadata.SkillLevel = skillLevel[0];
+
                         // Get values ​​that are different from null and other "feature"
-                        if (level.Attributes["feature"] == null || level.Attributes["feature"].Value == "JobChange_01" || level.Attributes["feature"].Value == "JobChange_02")
-                        {
-                            int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 1;
-                            int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
-                            skillLevel.Add(new SkillLevel(levelValue, spirit));
-                            metadata.SkillLevel = skillLevel[0];
-                        }
                     }
                     skillList.Add(metadata);
                 }
@@ -60,7 +59,7 @@ namespace GameDataParser.Parsers
                                 {
                                     int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
                                     int[] sub = new int[0];
-                                    SkillMetadata skill = skillList.Find(x => x.SkillId == id);
+                                    SkillMetadata skill = skillList.Find(x => x.SkillId == id); // This find the skill in the SkillList
                                     skill.Job = jobCode;
                                     if (skills.ChildNodes[i].Attributes["sub"] != null)
                                     {
