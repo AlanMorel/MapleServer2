@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
-    public class Item
+    public class Item // Items table structure
     {
-        public Item()
+        public Item() // Autofills these attributes currently when items are added, edit InventoryManager.cs if you need more attributes set manually
         {
             Tab = 0;
             Slot = 0;

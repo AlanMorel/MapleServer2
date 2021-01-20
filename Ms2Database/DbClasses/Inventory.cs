@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
-    public class Inventory
+    public class Inventory // Inventory table structure
     {
         public Inventory()
         {
