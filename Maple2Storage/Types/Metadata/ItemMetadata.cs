@@ -25,6 +25,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public int PlayCount;
         [XmlElement(Order = 9)]
+        public List<int> RecommendJobs = new List<int>();
+        [XmlElement(Order = 10)]
         public List<ItemContent> Content;
 
         // Required for deserialization
@@ -34,7 +36,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},SlotMax:{SlotMax},IsTemplate:{IsTemplate},PlayCount:{PlayCount},Content:{string.Join(",", Content)})";
+            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},SlotMax:{SlotMax},IsTemplate:{IsTemplate},PlayCount:{PlayCount},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)})";
 
         protected bool Equals(ItemMetadata other)
         {

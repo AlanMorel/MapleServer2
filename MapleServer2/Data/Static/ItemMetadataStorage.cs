@@ -66,6 +66,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).PlayCount;
         }
 
+        public static List<int> GetRecommendJobs(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).RecommendJobs;
+        }
+
         public static List<ItemContent> GetContent(int itemId)
         {
             return map.GetValueOrDefault(itemId).Content;

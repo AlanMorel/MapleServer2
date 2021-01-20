@@ -155,8 +155,19 @@ namespace GameDataParser.Parsers
 
                         metadata.PlayCount = playCount;
                     }
-                }
 
+                    else if (reader.Name == "limit")
+                    {
+                        if (!string.IsNullOrEmpty(reader["recommendJobs"]))
+                        {
+                            List<string> temp = new List<string>(reader["recommendJobs"].Split(","));
+                            foreach (string item in temp)
+                            {
+                                metadata.RecommendJobs.Add(int.Parse(item));
+                            }
+                        }
+                    }
+                }
                 items.Add(metadata);
             }
 

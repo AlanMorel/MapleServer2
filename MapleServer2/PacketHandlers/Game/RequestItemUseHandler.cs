@@ -4,6 +4,7 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Maple2Storage.Types.Metadata;
 using Microsoft.Extensions.Logging;
+using MapleServer2.Data.Static;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -65,7 +66,10 @@ namespace MapleServer2.PacketHandlers.Game
             // Handle open box
             foreach (ItemContent content in box.Content)
             {
-                OpenBox(session, content);
+                if (ItemMetadataStorage.GetRecommendJobs(content.Id).Contains(session.Player.JobGroupId) || ItemMetadataStorage.GetRecommendJobs(content.Id).Contains(0))
+                {
+                    OpenBox(session, content);
+                }
             }
         }
 
