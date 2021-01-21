@@ -136,7 +136,13 @@ namespace GameDataParser.Parsers
                             foreach (XmlNode individualBoxItem in individualBoxItems)
                             {
                                 int id = int.Parse(individualBoxItem.Attributes["item"].Value);
-                                int amount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
+                                int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
+                                int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
+                                int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
+                                int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
+                                int rarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
+                                int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
+                                int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
 
                                 // Skip already existing item, this may need to check for locales but not certain
                                 if (metadata.Content.Exists(content => content.Id == id))
@@ -144,7 +150,7 @@ namespace GameDataParser.Parsers
                                     continue;
                                 }
 
-                                metadata.Content.Add(new ItemContent(id, amount));
+                                metadata.Content.Add(new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, rarity, enchant, id2));
                             }
                         }
                     }
@@ -168,6 +174,7 @@ namespace GameDataParser.Parsers
                         }
                     }
                 }
+
                 items.Add(metadata);
             }
 
