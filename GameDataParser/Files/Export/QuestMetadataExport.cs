@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.IO.MemoryMappedFiles;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Parsers;

@@ -37,14 +37,12 @@ namespace GameDataParser.Parsers
                     {
                         reader.Skip();
                     }
-
-                    if (reader.Name == "environment")
+                    else if (reader.Name == "environment")
                     {
                         metadata.Feature = reader["feature"];
                         metadata.Locale = reader["locale"];
                     }
-
-                    if (reader.Name == "basic")
+                    else if (reader.Name == "basic")
                     {
                         metadata.Basic.ChapterID = string.IsNullOrEmpty(reader["chapterID"]) ? 0 : int.Parse(reader["chapterID"]);
                         metadata.Basic.QuestID = string.IsNullOrEmpty(reader["questID"]) ? 0 : int.Parse(reader["questID"]);
@@ -62,15 +60,13 @@ namespace GameDataParser.Parsers
                         metadata.Basic.ForceRegistGuide = string.IsNullOrEmpty(reader["forceRegistGuide"]) ? 0 : byte.Parse(reader["forceRegistGuide"]);
                         metadata.Basic.UseNavigation = reader["useNavi"] == "FALSE" ? false : true;
                     }
-
-                    if (reader.Name == "notify")
+                    else if (reader.Name == "notify")
                     {
                         metadata.Notify.CompleteUiEffect = reader["completeUiEffect"];
                         metadata.Notify.AcceptSoundKey = reader["acceptSoundKey"];
                         metadata.Notify.CompleteSoundKey = reader["completeSoundKey"];
                     }
-
-                    if (reader.Name == "require")
+                    else if (reader.Name == "require")
                     {
                         metadata.Require.Level = string.IsNullOrEmpty(reader["level"]) ? 0 : short.Parse(reader["level"]);
                         metadata.Require.MaxLevel = string.IsNullOrEmpty(reader["maxLevel"]) ? 0 : short.Parse(reader["maxLevel"]);
@@ -127,18 +123,15 @@ namespace GameDataParser.Parsers
                         metadata.Require.DayOfWeek = reader["dayOfWeek"];
                         metadata.Require.GearScore = string.IsNullOrEmpty(reader["gearScore"]) ? 0 : int.Parse(reader["gearScore"]);
                     }
-
-                    if (reader.Name == "start")
+                    else if (reader.Name == "start")
                     {
                         metadata.StartNpc = int.Parse(reader["npc"]);
                     }
-
-                    if (reader.Name == "complete")
+                    else if (reader.Name == "complete")
                     {
                         metadata.CompleteNpc = int.Parse(reader["npc"]);
                     }
-
-                    if (reader.Name == "completeReward")
+                    else if (reader.Name == "completeReward")
                     {
                         metadata.Reward.Exp = string.IsNullOrEmpty(reader["exp"]) ? 0 : int.Parse(reader["exp"]);
                         metadata.Reward.RelativeExp = reader["relativeExp"];
@@ -146,8 +139,7 @@ namespace GameDataParser.Parsers
                         metadata.Reward.Karma = string.IsNullOrEmpty(reader["karma"]) ? 0 : int.Parse(reader["karma"]);
                         metadata.Reward.Lu = string.IsNullOrEmpty(reader["lu"]) ? 0 : int.Parse(reader["lu"]);
                     }
-
-                    if (reader.Name == "essentialJobItem" || reader.Name == "globalEssentialItem" || reader.Name == "globalEssentialJobItem")
+                    else if (reader.Name == "essentialJobItem" || reader.Name == "globalEssentialItem" || reader.Name == "globalEssentialJobItem")
                     {
                         int itemid = string.IsNullOrEmpty(reader["code"]) ? 0 : int.Parse(reader["code"]);
                         byte rank = string.IsNullOrEmpty(reader["rank"]) ? 0 : byte.Parse(reader["rank"]);
@@ -155,8 +147,7 @@ namespace GameDataParser.Parsers
                         QuestRewardItem item = new QuestRewardItem(itemid, rank, count);
                         metadata.RewardItem.Add(item);
                     }
-
-                    if (reader.Name == "progressMap")
+                    else if (reader.Name == "progressMap")
                     {
                         if (!string.IsNullOrEmpty(reader["progressMap"]))
                         {
@@ -167,8 +158,7 @@ namespace GameDataParser.Parsers
                             }
                         }
                     }
-
-                    if (reader.Name == "guide")
+                    else if (reader.Name == "guide")
                     {
                         metadata.Guide.Type = reader["guideType"];
                         metadata.Guide.Icon = reader["guideIcon"];
@@ -176,46 +166,39 @@ namespace GameDataParser.Parsers
                         metadata.Guide.MaxLevel = string.IsNullOrEmpty(reader["guideMaxLevel"]) ? 0 : byte.Parse(reader["guideMaxLevel"]);
                         metadata.Guide.Group = reader["guideGroup"];
                     }
-
-                    if (reader.Name == "gotoNpc")
+                    else if (reader.Name == "gotoNpc")
                     {
                         metadata.Npc.Enable = string.IsNullOrEmpty(reader["enable"]) ? 0 : byte.Parse(reader["enable"]);
                         metadata.Npc.GoToField = string.IsNullOrEmpty(reader["gotoField"]) ? 0 : int.Parse(reader["gotoField"]);
                         metadata.Npc.GoToPortal = string.IsNullOrEmpty(reader["gotoPortal"]) ? 0 : int.Parse(reader["gotoPortal"]);
                     }
-
-                    if (reader.Name == "gotoDungeon")
+                    else if (reader.Name == "gotoDungeon")
                     {
                         metadata.Dungeon.State = string.IsNullOrEmpty(reader["state"]) ? 0 : byte.Parse(reader["state"]);
                         metadata.Dungeon.GoToDungeon = string.IsNullOrEmpty(reader["gotoDungeon"]) ? 0 : int.Parse(reader["gotoDungeon"]);
                         metadata.Dungeon.GoToInstanceID = string.IsNullOrEmpty(reader["gotoInstanceID"]) ? 0 : int.Parse(reader["gotoInstanceID"]);
                     }
-
-                    if (reader.Name == "remoteAccept")
+                    else if (reader.Name == "remoteAccept")
                     {
                         metadata.RemoteAccept.UseRemote = reader["useRemote"];
                         metadata.RemoteAccept.RequireField = string.IsNullOrEmpty(reader["requireField"]) ? 0 : int.Parse(reader["requireField"]);
                     }
-
-                    if (reader.Name == "remoteComplete")
+                    else if (reader.Name == "remoteComplete")
                     {
                         metadata.RemoteComplete.UseRemote = reader["useRemote"];
                         metadata.RemoteComplete.RequireField = string.IsNullOrEmpty(reader["requireField"]) ? 0 : int.Parse(reader["requireField"]);
                         metadata.RemoteComplete.RequireDungeonClear = string.IsNullOrEmpty(reader["requireDungeonClear"]) ? 0 : int.Parse(reader["requireDungeonClear"]);
                     }
-
-                    if (reader.Name == "summonPortal")
+                    else if (reader.Name == "summonPortal")
                     {
                         metadata.SummonPortal.FieldID = string.IsNullOrEmpty(reader["fieldID"]) ? 0 : int.Parse(reader["fieldID"]);
                         metadata.SummonPortal.PortalID = string.IsNullOrEmpty(reader["portalID"]) ? 0 : int.Parse(reader["portalID"]);
                     }
-
-                    if (reader.Name == "eventMission")
+                    else if (reader.Name == "eventMission")
                     {
                         metadata.Event = reader["event"];
                     }
-
-                    if (reader.Name == "condition")
+                    else if (reader.Name == "condition")
                     {
                         string Type = reader["type"];
                         string Code = reader["code"];
@@ -228,8 +211,7 @@ namespace GameDataParser.Parsers
                         }
                         metadata.Condition.Add(new QuestCondition(Type, Code, Value, temp));
                     }
-
-                    if (reader.Name == "navi")
+                    else if (reader.Name == "navi")
                     {
                         string NaviType = reader["type"];
                         string NaviCode = reader["code"];
