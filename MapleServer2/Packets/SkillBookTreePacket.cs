@@ -3,6 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using System.Linq;
 
 namespace MapleServer2.Packets
 {
@@ -30,7 +31,7 @@ namespace MapleServer2.Packets
             for (int i = 0; i < skills.Count; i++)
             {
                 pWriter.WriteInt(skills[i].SkillId);
-                pWriter.WriteInt(skills[i].SkillLevel.Level);
+                pWriter.WriteInt(skills[i].SkillLevel.Select(x => x.Level).FirstOrDefault());
             }
 
             return pWriter;

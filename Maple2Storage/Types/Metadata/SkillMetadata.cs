@@ -11,7 +11,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int SkillId;
         [XmlElement(Order = 2)]
-        public SkillLevel SkillLevel;
+        public List<SkillLevel> SkillLevel;
         [XmlElement(Order = 3)]
         public int[] SubSkill = new int[0];
         [XmlElement(Order = 4)]
@@ -21,7 +21,7 @@ namespace Maple2Storage.Types.Metadata
 
         public SkillMetadata()
         {
-            SkillLevel = new SkillLevel();
+            SkillLevel = new List<SkillLevel>();
         }
 
         public override int GetHashCode()
@@ -30,7 +30,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel.ToString())},Learned:{Learned}";
+            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel)}";
     }
 
     [XmlType]
@@ -42,6 +42,8 @@ namespace Maple2Storage.Types.Metadata
         public int Spirit;
         [XmlElement(Order = 3)]
         public float DamageRate;
+        [XmlElement(Order = 4)]
+        public string Feature = "";
 
         // Required for deserialization
         public SkillLevel()
@@ -49,11 +51,12 @@ namespace Maple2Storage.Types.Metadata
 
         }
 
-        public SkillLevel(int _Level, int _Spirit, float _DamageRate)
+        public SkillLevel(int _Level, int _Spirit, float _DamageRate, string _Feature)
         {
             Level = _Level;
             Spirit = _Spirit;
             DamageRate = _DamageRate;
+            Feature = _Feature;
         }
 
         public override int GetHashCode()
@@ -62,7 +65,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature})";
     }
 
     [XmlType]

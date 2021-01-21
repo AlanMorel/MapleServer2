@@ -5,6 +5,7 @@ using MapleServer2.Constants;
 using MapleServer2.Types;
 using System;
 using MapleServer2.Enums;
+using System.Linq;
 
 namespace MapleServer2.Packets
 {
@@ -61,7 +62,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
                 pWriter.WriteInt(id);
-                pWriter.WriteInt(skills[id].SkillLevel.Level);
+                pWriter.WriteInt(skills[id].SkillLevel.Select(x => x.Level).FirstOrDefault());
                 pWriter.WriteByte();
             }
             pWriter.WriteShort(); // Ends with zero short

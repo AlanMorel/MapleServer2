@@ -38,16 +38,15 @@ namespace MapleServer2.Types
         public void AddOrUpdate(int id, short level, byte learned)
         {
             SkillJob[id].Learned = learned;
-            SkillJob[id].SkillLevel.Level = level;
+            SkillJob[id].SkillLevel.Find(x => x.Level != 0).Level = level;
             if (SkillJob[id].SubSkill.Length != 0)
             {
                 foreach (int sub in SkillJob[id].SubSkill.Select(x => x))
                 {
                     SkillJob[sub].Learned = learned;
-                    SkillJob[sub].SkillLevel.Level = level;
+                    SkillJob[sub].SkillLevel.Find(x => x.Level != 0).Level = level;
                 }
             }
-
         }
 
         public void Rename(string name)

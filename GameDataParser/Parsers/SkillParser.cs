@@ -31,13 +31,13 @@ namespace GameDataParser.Parsers
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode level in levels)
                     {
+                        // Getting all skills level
+                        string feature = level.Attributes["feature"] != null ? level.Attributes["feature"].Value : "";
                         int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
                         int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                         float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
-                        skillLevel.Add(new SkillLevel(levelValue, spirit, damageRate));
-                        metadata.SkillLevel = skillLevel[0];
-
-                        // Get values ​​that are different from null and other "feature"
+                        skillLevel.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
+                        metadata.SkillLevel = skillLevel;
                     }
                     skillList.Add(metadata);
                 }
