@@ -9,13 +9,13 @@ namespace Ms2Database.Controllers
 {
     public class InventoryManager
     {
-        public void CreateInventory(long CharId)
+        public void CreateInventory(long characterId)
         {
             using (Ms2DbContext Context = new Ms2DbContext())
             {
                 Inventory Inventory = new Inventory()
                 {
-                    CharacterId = CharId
+                    CharacterId = characterId
                 };
                 Context.Add(Inventory);
                 Context.SaveChanges();

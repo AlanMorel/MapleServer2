@@ -9,13 +9,13 @@ namespace Ms2Database.Controllers
 {
     public class SkillTreeManager
     {
-        public void AddSkill(long charId, long skillId, string skillName = "", int level = 0, bool learned = false)
+        public void AddSkill(long characterId, long skillId, string skillName = "", int level = 0, bool learned = false)
         {
             using (Ms2DbContext Context = new Ms2DbContext())
             {
                 SkillTree Skill = new SkillTree()
                 {
-                    CharacterId = charId,
+                    CharacterId = characterId,
                     SkillId = skillId,
                     SkillName = skillName,
                     Level = level,
@@ -26,11 +26,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteSkill(long charId, long skillId)
+        public void DeleteSkill(long characterId, long skillId)
         {
             using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == charId)
+                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == characterId)
                                                    .FirstOrDefault(s => s.SkillId == skillId);
 
                 Context.Remove(Skill);
@@ -47,11 +47,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public SkillTree FindSkill(long charId, long skillId)
+        public SkillTree FindSkill(long characterId, long skillId)
         {
             using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == charId)
+                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == characterId)
                                                     .FirstOrDefault(s => s.SkillId == skillId);
 
                 return Skill;

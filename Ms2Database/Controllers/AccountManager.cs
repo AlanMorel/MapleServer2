@@ -13,13 +13,13 @@ namespace Ms2Database.Controllers
         {
             using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Account account = new Account()
+                Account Account = new Account()
                 {
                     Username = username,
                     Password = password
                 };
 
-                Context.Accounts.Add(account);
+                Context.Accounts.Add(Account);
                 Context.SaveChanges();
             }
         }
