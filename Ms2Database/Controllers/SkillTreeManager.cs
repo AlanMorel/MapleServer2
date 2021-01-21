@@ -11,9 +11,9 @@ namespace Ms2Database.Controllers
     {
         public void AddSkill(long charId, long skillId, string skillName = "", int level = 0, bool learned = false)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree tree = new SkillTree()
+                SkillTree Skill = new SkillTree()
                 {
                     CharacterId = charId,
                     SkillId = skillId,
@@ -21,38 +21,40 @@ namespace Ms2Database.Controllers
                     Level = level,
                     Learned = learned
                 };
+                Context.Add(Skill);
+                Context.SaveChanges();
             }
         }
 
         public void DeleteSkill(long charId, long skillId)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree skill = context.SkillTrees.Where(c => c.CharacterId == charId)
+                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == charId)
                                                    .FirstOrDefault(s => s.SkillId == skillId);
 
-                context.Remove(skill);
-                context.SaveChanges();
+                Context.Remove(Skill);
+                Context.SaveChanges();
             }
         }
 
-        public void EditSkill(SkillTree skillIn)
+        public void EditSkill(SkillTree skill)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree skill = skillIn;
-                context.SaveChanges();
+                SkillTree Skill = skill;
+                Context.SaveChanges();
             }
         }
 
         public SkillTree FindSkill(long charId, long skillId)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                SkillTree skill = context.SkillTrees.Where(c => c.CharacterId == charId)
+                SkillTree Skill = Context.SkillTrees.Where(c => c.CharacterId == charId)
                                                     .FirstOrDefault(s => s.SkillId == skillId);
 
-                return skill;
+                return Skill;
             }
         }
     }

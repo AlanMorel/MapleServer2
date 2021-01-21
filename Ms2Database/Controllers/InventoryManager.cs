@@ -11,63 +11,63 @@ namespace Ms2Database.Controllers
     {
         public void CreateInventory(long CharId)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Inventory inventory = new Inventory()
+                Inventory Inventory = new Inventory()
                 {
                     CharacterId = CharId
                 };
-                context.Add(inventory);
-                context.SaveChanges();
+                Context.Add(Inventory);
+                Context.SaveChanges();
             }
         }
 
         public void AddItem(long characterId, long itemId, long amount, int tab, int slot, int rarity)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Inventory inventory = context.Inventories.Find(characterId);
-                Item item = new Item()
+                Inventory Inventory = Context.Inventories.Find(characterId);
+                Item Item = new Item()
                 {
-                    InventoryId = inventory.InventoryId,
+                    InventoryId = Inventory.InventoryId,
                     Id = itemId,
                     Amount = amount,
                     Tab = tab,
                     Slot = slot,
                     Rarity = rarity
                 };
-                context.Add(item);
-                context.SaveChanges();
+                Context.Add(Item);
+                Context.SaveChanges();
             }
         }
 
-        public void DeleteItem(long Uid)
+        public void DeleteItem(long uid)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Item item = context.Items.Find(Uid);
+                Item Item = Context.Items.Find(uid);
 
-                context.Remove(item);
-                context.SaveChanges();
+                Context.Remove(Item);
+                Context.SaveChanges();
             }
         }
 
-        public Item findItem(long Uid)
+        public Item findItem(long uid)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Item item = context.Items.Find(Uid);
+                Item Item = Context.Items.Find(uid);
 
-                return item;
+                return Item;
             }
         }
 
-        public void EditItem(Item itemIn)
+        public void EditItem(Item item)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Item Item = itemIn;
-                context.SaveChanges();
+                Item Item = item;
+                Context.SaveChanges();
             }
         }
     }

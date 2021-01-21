@@ -11,7 +11,7 @@ namespace Ms2Database.Controllers
     {
         public void CreateAccount(string username, string password)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
                 Account account = new Account()
                 {
@@ -19,58 +19,58 @@ namespace Ms2Database.Controllers
                     Password = password
                 };
 
-                context.Accounts.Add(account);
-                context.SaveChanges();
+                Context.Accounts.Add(account);
+                Context.SaveChanges();
             }
         }
 
         public void DeleteAccount(long id)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Account account = context.Accounts.Find(id);
-                context.Remove(account);
-                context.SaveChanges();
+                Account Account = Context.Accounts.Find(id);
+                Context.Remove(Account);
+                Context.SaveChanges();
             }
         }
 
         public Account GetAccInfoById(long id) // Queries db and retrieves account entry by Id
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
-                return account;
+                Account Account = Context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
+                return Account;
             }
         }
 
         public Account GetAccInfoByUser(string username)
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by username
-                return account;
+                Account Account = Context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by username
+                return Account;
             }
         }
 
         public void EditAccInfo(long id, string username = "", string password = "") // Allows account entry changes
         {
-            using (Ms2DbContext context = new Ms2DbContext())
+            using (Ms2DbContext Context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
-                if (account == null) // Checks to see if account Id exists
+                Account Account = Context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
+                if (Account == null) // Checks to see if account Id exists
                 {
-                    Debug.Assert(account != null, "No entry starting with account ID: " + id);
+                    Debug.Assert(Account != null, "No entry starting with account ID: " + id);
                     return;
                 }
                 if (!string.IsNullOrEmpty(username)) // Prevents empty entries
                 {
-                    account.Username = username;
+                    Account.Username = username;
                 }
                 if (!string.IsNullOrEmpty(password))
                 {
-                    account.Password = password;
+                    Account.Password = password;
                 }
-                context.SaveChanges(); // Updates database with changes.
+                Context.SaveChanges(); // Updates database with changes.
             }
         }
     }
