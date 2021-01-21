@@ -47,7 +47,7 @@ namespace Ms2Database.Controllers
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by Id
+                Account account = context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by username
                 return account;
             }
         }

@@ -36,11 +36,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void EditSkill(SkillTree skill)
+        public void EditSkill(SkillTree skillIn)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                SkillTree OriginSkill = skill;
+                SkillTree skill = skillIn;
                 context.SaveChanges();
             }
         }

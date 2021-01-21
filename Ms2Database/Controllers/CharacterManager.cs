@@ -57,11 +57,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void EditCharInfo(Character character)
+        public void EditCharInfo(Character charIn)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character OriginCharacter = character;
+                Character character = charIn;
                 context.SaveChanges();
             }
         }

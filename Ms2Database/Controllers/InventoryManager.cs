@@ -62,11 +62,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void EditItem(Item item)
+        public void EditItem(Item itemIn)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Item OriginItem = item;
+                Item Item = itemIn;
                 context.SaveChanges();
             }
         }
