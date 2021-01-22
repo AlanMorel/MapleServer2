@@ -32,9 +32,9 @@ namespace MapleServer2.Packets
             CharacterListPacket.WriteCharacter(player, pWriter);
 
             // Skills
-            pWriter.WriteInt((int) player.JobCode);
+            pWriter.WriteEnum(player.JobCode);
             pWriter.WriteByte(1);
-            pWriter.WriteInt((int) player.Job);
+            pWriter.WriteEnum(player.Job);
             JobPacket.WriteSkills(pWriter, player);
 
             // Coords

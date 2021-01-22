@@ -11,9 +11,9 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int SkillId;
         [XmlElement(Order = 2)]
-        public List<SkillLevel> SkillLevel;
+        public List<SkillLevel> SkillLevels;
         [XmlElement(Order = 3)]
-        public int[] SubSkill = new int[0];
+        public int[] SubSkills = new int[0];
         [XmlElement(Order = 4)]
         public int Job;
         [XmlElement(Order = 5)]
@@ -21,16 +21,16 @@ namespace Maple2Storage.Types.Metadata
 
         public SkillMetadata()
         {
-            SkillLevel = new List<SkillLevel>();
+            SkillLevels = new List<SkillLevel>();
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SkillId, SkillLevel, Job, Learned);
+            return HashCode.Combine(SkillId, SkillLevels, Job, Learned);
         }
 
         public override string ToString() =>
-            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevel)}";
+            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevels)}";
     }
 
     [XmlType]
@@ -51,12 +51,12 @@ namespace Maple2Storage.Types.Metadata
 
         }
 
-        public SkillLevel(int _Level, int _Spirit, float _DamageRate, string _Feature)
+        public SkillLevel(int level, int spirit, float damageRate, string feature)
         {
-            Level = _Level;
-            Spirit = _Spirit;
-            DamageRate = _DamageRate;
-            Feature = _Feature;
+            Level = level;
+            Spirit = spirit;
+            DamageRate = damageRate;
+            Feature = feature;
         }
 
         public override int GetHashCode()
@@ -74,9 +74,9 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id { get; set; }
         [XmlElement(Order = 2)]
-        public int[] Sub { get; set; }
+        public int[] Subs { get; set; }
         [XmlElement(Order = 3)]
-        public int[] DefaultSkillLearn { get; set; }
+        public int[] DefaultSkillLearns { get; set; }
 
         public ListSubSkill()
         {
@@ -86,10 +86,10 @@ namespace Maple2Storage.Types.Metadata
         public ListSubSkill(int id, int[] sub, int[] defaultSkillLearn)
         {
             Id = id;
-            Sub = sub;
-            DefaultSkillLearn = defaultSkillLearn;
+            Subs = sub;
+            DefaultSkillLearns = defaultSkillLearn;
         }
 
-        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Sub.ToString())},Default:{string.Join(",", DefaultSkillLearn.ToString())})";
+        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Subs.ToString())},Default:{string.Join(",", DefaultSkillLearns.ToString())})";
     }
 }

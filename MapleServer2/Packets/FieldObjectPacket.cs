@@ -30,7 +30,7 @@ namespace MapleServer2.Packets
             pWriter.Write(fieldPlayer.Coord);
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteShort((short) player.Job);
-            pWriter.WriteInt((int) player.JobCode);
+            pWriter.WriteEnum(player.JobCode);
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteInt();

@@ -31,7 +31,7 @@ namespace MapleServer2.Packets
             for (int i = 0; i < skills.Count; i++)
             {
                 pWriter.WriteInt(skills[i].SkillId);
-                pWriter.WriteInt(skills[i].SkillLevel.Select(x => x.Level).FirstOrDefault());
+                pWriter.WriteInt(skills[i].SkillLevels.Select(x => x.Level).FirstOrDefault());
             }
 
             return pWriter;

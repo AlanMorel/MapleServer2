@@ -30,9 +30,9 @@ namespace MapleServer2.Packets
             // Identifier info
             pWriter.WriteInt(objectId);
             pWriter.WriteByte(0x09); // Unknown, changes to 08 when closing skill tree after saving
-            pWriter.WriteInt((int) character.JobCode);
+            pWriter.WriteEnum(character.JobCode);
             pWriter.WriteByte(1); // Possibly always 01 byte
-            pWriter.WriteInt((int) character.Job);
+            pWriter.WriteEnum(character.Job);
 
             // Skill info
             WriteSkills(pWriter, character);
@@ -62,7 +62,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteByte(skills[id].Learned);
                 pWriter.WriteInt(id);
-                pWriter.WriteInt(skills[id].SkillLevel.Select(x => x.Level).FirstOrDefault());
+                pWriter.WriteInt(skills[id].SkillLevels.Select(x => x.Level).FirstOrDefault());
                 pWriter.WriteByte();
             }
             pWriter.WriteShort(); // Ends with zero short
