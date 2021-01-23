@@ -8,6 +8,7 @@ using Maple2Storage.Types.Metadata;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Data.Static;
 using System;
+using Maple2Storage.Types;
 
 namespace MapleServer2.PacketHandlers.Game
 {
