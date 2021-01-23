@@ -42,7 +42,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 {
                     foreach (ItemContent item in content)
                     {
-                        if (ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(session.Player.JobGroupId) || ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(0))
+                        List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
+                        if (recommendJobs.Contains(session.Player.JobGroupId) || recommendJobs.Contains(0)) // recommendJob 0 means the item don't have a recommended job
                         {
                             GiveItem(session, item);
                         }
@@ -51,39 +52,36 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 else
                 {
                     bool success = rng.Next(0, 100) > smartDropRate;
-
+                    List<ItemContent> filteredList = new List<ItemContent>();
                     foreach (ItemContent item in content)
                     {
+                        List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
                         if (success)
                         {
-                            if (ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(session.Player.JobGroupId)) // maybe this need to a random call instead to get the next item on Content
+                            if (recommendJobs.Contains(session.Player.JobGroupId))
                             {
-                                GiveItem(session, item);
-                                break;
+                                filteredList.Add(item);
                             }
                         }
                         else
                         {
-                            if (ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(session.Player.JobGroupId))
+                            if (!recommendJobs.Contains(session.Player.JobGroupId))
                             {
-                                content.Remove(item);
-                                break;
+                                filteredList.Add(item);
                             }
                         }
                     }
 
-                    if (!success)
-                    {
-                        int rand = rng.Next(0, content.Count);
-                        GiveItem(session, content[rand]);
-                    }
+                    int rand = rng.Next(0, filteredList.Count);
+                    GiveItem(session, filteredList[rand]);
                 }
             }
             else
             {
                 foreach (ItemContent item in content)
                 {
-                    if (ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(session.Player.JobGroupId) || ItemMetadataStorage.GetRecommendJobs(item.Id).Contains(0))
+                    List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
+                    if (recommendJobs.Contains(session.Player.JobGroupId) || recommendJobs.Contains(0))
                     {
                         GiveItem(session, item);
                     }
@@ -120,10 +118,6 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     Rarity = content.Rarity,
                     Enchants = content.EnchantLevel,
                 };
-                if (item.SlotMax == 1)
-                {
-                    item.Amount = content.MaxAmount;
-                }
                 InventoryController.Add(session, item, true);
 
                 if (content.Id2 != 0)

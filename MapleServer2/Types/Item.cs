@@ -310,16 +310,5 @@ namespace MapleServer2.Types
                 Stats = new ItemStats(),
             };
         }
-
-        public static Item CreateNew(Item other)
-        {
-            Item item = new Item(other)
-            {
-                Amount = 1,
-                Slot = -1,
-                Uid = GuidGenerator.Long()
-            };
-            return item;
-        }
     }
 }
