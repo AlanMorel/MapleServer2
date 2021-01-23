@@ -21,7 +21,16 @@ namespace MapleServer2.Packets
             // how each stat point was obtained (ie quest, trophy, exploration, prestige)
 
             pWriter.WriteByte((byte) StatPointPacketMode.TotalPoints);
+            // write number of attribute points the character has
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
+            // write the number of sources from which stat points have been received
+            pWriter.WriteInt(character.StatPointDistribution.OtherStats.Count);
+        
+            foreach (byte pointSrc in character.StatPointDistribution.OtherStats.Keys.ToList())
+            {
+                pWriter.WriteInt((int)pointSrc);
+                pWriter.WriteInt(character.StatPointDistribution.OtherStats[pointSrc]);
+            }
 
             return pWriter;
         }
