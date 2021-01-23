@@ -83,12 +83,6 @@ namespace MaplePacketLib2.Tools
             return Write(converted);
         }
 
-        public PacketWriter WriteEnum(Enum value)
-        {
-            byte[] bytes = BitConverter.GetBytes(Convert.ToInt32(value));
-            return Write(bytes);
-        }
-
         public PacketWriter WriteBool(bool value)
         {
             return WriteByte(value ? (byte) 1 : (byte) 0);
