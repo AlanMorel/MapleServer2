@@ -13,7 +13,7 @@ namespace MapleServer2.Packets.Helpers
                 .WriteInt()
                 .WriteInt(-1)
                 .WriteLong(item.CreationTime)
-                .WriteLong(item.ExpiryTime)
+                .WriteLong(0)
                 .WriteLong()
                 .WriteInt(item.TimesAttributesChanged)
                 .WriteInt(item.PlayCount)
@@ -21,9 +21,13 @@ namespace MapleServer2.Packets.Helpers
                 .WriteLong(item.UnlockTime)
                 .WriteShort(item.RemainingGlamorForges)
                 .WriteByte()
-                .WriteInt()
-                .WriteAppearance(item)
-                .WriteStats(item.Stats)
+                .WriteInt();
+
+            // Write Appearance 
+            pWriter.WriteAppearance(item);
+
+            // Write Stats 0x0582B10
+            pWriter.WriteStats(item.Stats)
                 .WriteInt(item.Enchants)
                 .WriteInt(item.EnchantExp)
                 .WriteBool(true) // Enchant based peachy charges, otherwise always require 10 charges
@@ -45,14 +49,24 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WritePet();
             }
 
-            pWriter.WriteInt((int) item.TransferFlag)
-                .WriteByte()
-                .WriteInt()
-                .WriteInt()
-                .WriteByte()
-                .WriteByte(1);
+            if (item.GemSlot != 0)
+            {
+                // Now deviate from WriteItem
+                pWriter.WriteBool(true);
+                pWriter.WriteByte((byte) item.GemSlot);
+                pWriter.WriteUnicodeString(item.Id.ToString());
+            }
 
-            // CharBound means untradable, unsellable, bound to char (ignores TransferFlag)
+
+            // Item Transfer Data 0x058AD00 item id:70200131
+            pWriter.WriteInt((int) item.TransferFlag); //
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteByte(); // 2nd flag, use to skip charbound
+
+            // CharBound means untradable, unsellable, bound to char (ignores TransferFlag, but not 2nd flag!!)
             bool isCharBound = item.Owner != null;
             pWriter.WriteBool(isCharBound);
             if (isCharBound)
@@ -61,17 +75,16 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteUnicodeString(item.Owner.Name);
             }
 
-            pWriter.WriteByte();
-
             pWriter.WriteSockets(item.Stats);
 
             pWriter.WriteLong(item.PairedCharacterId);
             if (item.PairedCharacterId != 0)
             {
                 pWriter.WriteUnicodeString(item.PairedCharacterName);
+                pWriter.WriteBool(false);
             }
 
-            // Unknwon
+            // Unknwon | BoundCharacter?
             pWriter.WriteLong();
             pWriter.WriteUnicodeString("");
 
@@ -80,6 +93,15 @@ namespace MapleServer2.Packets.Helpers
 
         private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
         {
+            // TODO: make WriteAppearance proper for GEM, this is hacky.
+            if (item.GemSlot != 0)
+            {
+                pWriter.WriteInt().WriteInt().WriteInt();
+                pWriter.WriteInt(-1); // Flag
+                pWriter.WriteInt(); // unknown
+                return pWriter;
+            }
+
             pWriter.Write<EquipColor>(item.Color);
             pWriter.WriteInt(item.AppearanceFlag);
             // Positioning Data
@@ -103,12 +125,13 @@ namespace MapleServer2.Packets.Helpers
                     break;
             }
 
-            return pWriter.WriteByte();
+            return pWriter;
         }
 
         // 9 Blocks of stats, Only handling Basic and Bonus attributes for now
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
+            pWriter.WriteByte(); // Not part of appearance sub!
             List<ItemStat> basicAttributes = stats.BasicAttributes;
             pWriter.WriteShort((short) basicAttributes.Count);
             foreach (ItemStat stat in basicAttributes)
@@ -195,6 +218,7 @@ namespace MapleServer2.Packets.Helpers
 
         private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
         {
+            pWriter.WriteByte();
             pWriter.WriteByte(stats.TotalSockets);
             for (int i = 0; i < stats.TotalSockets; i++)
             {
