@@ -4,8 +4,8 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Maple2Storage.Types.Metadata;
 using Microsoft.Extensions.Logging;
+using MapleServer2.PacketHandlers.Game.Helpers;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -32,8 +32,11 @@ namespace MapleServer2.PacketHandlers.Game
             if (boxType == BoxType.SELECT)
             {
                 index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+                if (index < 0)
+                {
+                    return;
+                }
             }
-
 
             short opened = 0; // Amount of opened boxes
             List<Item> items = new List<Item>(session.Player.Inventory.Items.Values); // Make copy of items in-case new item is added
@@ -54,7 +57,6 @@ namespace MapleServer2.PacketHandlers.Game
                     if (item.Amount <= 1)
                     {
                         InventoryController.Remove(session, item.Uid, out Item removed);
-
                         opened++;
 
                         breakOut = true; // Break out of the amount loop because this stack of boxes is empty, look for next stack
@@ -73,17 +75,14 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         if (index < item.Content.Count)
                         {
-                            OpenBox(session, item.Content[index]);
+                            ItemUseHelper.GiveItem(session, item.Content[index]);
                         }
                     }
 
                     // Handle open box
                     else if (boxType == BoxType.OPEN)
                     {
-                        foreach (ItemContent content in item.Content)
-                        {
-                            OpenBox(session, content);
-                        }
+                        ItemUseHelper.OpenBox(session, item.Content);
                     }
 
                     if (breakOut)
@@ -94,35 +93,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(ItemUsePacket.Use(boxId, amount));
-        }
-
-        private void OpenBox(GameSession session, ItemContent content)
-        {
-            // Currency
-            if (content.Id.ToString().StartsWith("9"))
-            {
-                switch (content.Id)
-                {
-                    case 90000001: // Meso
-                        session.Player.Wallet.Meso.Modify(content.Amount);
-                        break;
-                    case 90000004: // Meret
-                    case 90000011: // Meret
-                    case 90000015: // Meret
-                    case 90000016: // Meret
-                        session.Player.Wallet.Meret.Modify(content.Amount);
-                        break;
-                }
-            }
-            // Items
-            else
-            {
-                Item item = new Item(content.Id)
-                {
-                    Amount = content.Amount
-                };
-                InventoryController.Add(session, item, true);
-            }
         }
     }
 }

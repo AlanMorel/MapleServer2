@@ -17,6 +17,7 @@ namespace MapleServer2.Types
         public int SlotMax { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
+        public List<int> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
 
         public readonly int Id;
@@ -65,6 +66,7 @@ namespace MapleServer2.Types
             this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
             this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             this.PlayCount = ItemMetadataStorage.GetPlayCount(id);
+            this.RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             this.Content = ItemMetadataStorage.GetContent(id);
             this.Slot = -1;
             this.Amount = 1;

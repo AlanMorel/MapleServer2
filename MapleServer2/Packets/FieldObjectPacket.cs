@@ -29,8 +29,8 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.Write(fieldPlayer.Coord);
             pWriter.WriteShort(player.Levels.Level);
-            pWriter.WriteShort((short) player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteEnum(player.Job); // short
+            pWriter.WriteEnum(player.JobCode);
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteInt();
