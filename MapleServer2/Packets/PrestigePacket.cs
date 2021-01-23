@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
         public static Packet Prestige(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
-            pWriter.WriteMode(PrestigePacketMode.Prestige);
+            pWriter.WriteEnum(PrestigePacketMode.Prestige);
             pWriter.WriteLong(player.Levels.PrestigeExp); // PrestigeExp
             pWriter.WriteInt(player.Levels.PrestigeLevel); // PrestigeLevel
             pWriter.WriteLong(player.Levels.PrestigeExp); // Same Prestige Exp??
@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
-            pWriter.WriteMode(PrestigePacketMode.PrestigeExp);
+            pWriter.WriteEnum(PrestigePacketMode.PrestigeExp);
             pWriter.WriteLong(player.Levels.PrestigeExp);
             pWriter.WriteLong(amount);
 
@@ -48,7 +48,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
-            pWriter.WriteMode(PrestigePacketMode.PrestigeLevel);
+            pWriter.WriteEnum(PrestigePacketMode.PrestigeLevel);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(level);
 
@@ -59,7 +59,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
-            pWriter.WriteMode(PrestigePacketMode.Reward);
+            pWriter.WriteEnum(PrestigePacketMode.Reward);
             pWriter.WriteByte(0x01); // Unknown maybe boolean for whether to accept?
             pWriter.WriteInt(1); // Amount of rewards to accept (multiple ranks)
             pWriter.WriteInt(rank);

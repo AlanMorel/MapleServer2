@@ -75,9 +75,12 @@ namespace MaplePacketLib2.Tools
             return this;
         }
 
-        public PacketWriter WriteMode(Enum value)
+        public PacketWriter WriteEnum(Enum value)
         {
-            return Write(Convert.ToByte(value));
+            Type type = Enum.GetUnderlyingType(value.GetType());
+            dynamic converted = Convert.ChangeType(value, type);
+
+            return Write(converted);
         }
 
         public PacketWriter WriteBool(bool value)
@@ -184,6 +187,7 @@ namespace MaplePacketLib2.Tools
 
         public PacketWriter WriteString(string value)
         {
+            Write((ushort) value.Length);
             byte[] bytes = Encoding.UTF8.GetBytes(value);
             return Write(bytes);
         }
