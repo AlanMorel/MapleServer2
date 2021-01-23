@@ -38,6 +38,13 @@ public class InventoryController
                     return;
                 }
             }
+
+            session.Player.Inventory.Add(item); // Adds item into internal database
+            session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
+            if (isNew)
+            {
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+            }
         }
         else
         {
@@ -51,13 +58,6 @@ public class InventoryController
                     session.Send(ItemInventoryPacket.MarkItemNew(temp, temp.Amount)); // Marks Item as New
                 }
             }
-        }
-
-        session.Player.Inventory.Add(item); // Adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
-        if (isNew)
-        {
-            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
         }
     }
 

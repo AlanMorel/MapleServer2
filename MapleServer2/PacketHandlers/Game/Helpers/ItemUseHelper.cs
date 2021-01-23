@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 }
             }
 
-            if (!oneGroup)
+            if (oneGroup)
             {
                 int smartDropRate = content[0].SmartDropRate;
 
