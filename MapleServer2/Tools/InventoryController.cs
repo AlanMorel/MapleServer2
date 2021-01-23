@@ -50,7 +50,12 @@ public class InventoryController
         {
             for (int i = 0; i < item.Amount; i++)
             {
-                Item newItem = CreateNew(item);
+                Item newItem = new Item(item)
+                {
+                    Amount = 1,
+                    Slot = -1,
+                    Uid = GuidGenerator.Long()
+                };
                 session.Player.Inventory.Add(newItem);
                 session.Send(ItemInventoryPacket.Add(newItem));
                 if (isNew)
@@ -168,16 +173,5 @@ public class InventoryController
     private static int GetItemMax(GameSession session, long uid)
     {
         return session.Player.Inventory.Items[uid].SlotMax;
-    }
-
-    private static Item CreateNew(Item other)
-    {
-        Item item = new Item(other)
-        {
-            Amount = 1,
-            Slot = -1,
-            Uid = GuidGenerator.Long()
-        };
-        return item;
     }
 }
