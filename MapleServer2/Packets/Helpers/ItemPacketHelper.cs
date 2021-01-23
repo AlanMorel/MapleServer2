@@ -13,7 +13,7 @@ namespace MapleServer2.Packets.Helpers
                 .WriteInt()
                 .WriteInt(-1)
                 .WriteLong(item.CreationTime)
-                .WriteLong(0)
+                .WriteLong(item.ExpiryTime)
                 .WriteLong()
                 .WriteInt(item.TimesAttributesChanged)
                 .WriteInt(item.PlayCount)
