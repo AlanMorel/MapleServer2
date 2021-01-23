@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -13,101 +14,93 @@ namespace GameDataParser.Parsers
 {
     public static class SkillParser
     {
-
         public static List<SkillMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
-
-            foreach (PackFileEntry skill in entries)
+            foreach (PackFileEntry entry in entries)
             {
-                if (!skill.Name.StartsWith("skill/10"))
-                    continue;
-
-                string skillId = Path.GetFileNameWithoutExtension(skill.Name);
-                SkillMetadata metadata = new SkillMetadata();
-                List<SkillMotion> motions = new List<SkillMotion>();
-                List<SkillLevel> skillLevel = new List<SkillLevel>();
-
-                metadata.SkillId = int.Parse(skillId);
-                Debug.Assert(metadata.SkillId > 0, $"Invalid Id {metadata.SkillId} from {skillId}");
-
-                //using XmlReader reader = m2dFile.GetReader(skill.FileHeader);
-                XmlDocument document = m2dFile.GetDocument(skill.FileHeader);
-
-                XmlNodeList basic = document.SelectNodes("/ms2/basic");
-                foreach (XmlNode node in basic)
+                // Parsing Skills
+                if (entry.Name.StartsWith("skill"))
                 {
-                    if (node.Attributes.GetNamedItem("feature") != null)
-                    {
-                        // Get Rank
-                        metadata.Feature = node.Attributes["feature"].Value;
-                    }
-                    XmlNode kinds = node.SelectSingleNode("kinds");
-                    metadata.Type = kinds.Attributes["type"].Value != null ? int.Parse(kinds.Attributes["type"].Value) : 0;
-                    metadata.SubType = kinds.Attributes["subType"].Value != null ? int.Parse(kinds.Attributes["subType"].Value) : 0;
-                    metadata.RangeType = kinds.Attributes["rangeType"].Value != null ? int.Parse(kinds.Attributes["rangeType"].Value) : 0;
-                    metadata.Element = kinds.Attributes["element"].Value != null ? int.Parse(kinds.Attributes["element"].Value) : 0;
-                }
+                    string skillId = Path.GetFileNameWithoutExtension(entry.Name);
+                    SkillMetadata metadata = new SkillMetadata();
+                    List<SkillLevel> skillLevel = new List<SkillLevel>();
 
-                XmlNodeList levels = document.SelectNodes("/ms2/level");
-                foreach (XmlNode node in levels)
+                    metadata.SkillId = int.Parse(skillId);
+                    XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                    XmlNodeList levels = document.SelectNodes("/ms2/level");
+                    foreach (XmlNode level in levels)
+                    {
+                        // Getting all skills level
+                        string feature = level.Attributes["feature"] != null ? level.Attributes["feature"].Value : "";
+                        int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
+                        int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
+                        float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
+                        skillLevel.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
+                        metadata.SkillLevel = skillLevel;
+                    }
+                    skillList.Add(metadata);
+                }
+                // Parsing SubSkills
+                else if (entry.Name.StartsWith("table/job"))
                 {
-                    int level = node.Attributes["value"].Value != null ? int.Parse(node.Attributes["value"].Value) : 1;
-                    XmlNode consume = node.SelectSingleNode("consume/stat");
-
-                    int spirit = 0;
-                    int upgradeLevel = 0;
-                    int[] upgradeSkillId = new int[0];
-                    int[] upgradeSkillLevel = new int[0];
-
-                    if (consume.Attributes.GetNamedItem("sp") != null)
+                    XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                    XmlNodeList jobs = document.SelectNodes("/ms2/job");
+                    foreach (XmlNode job in jobs)
                     {
-                        spirit = int.Parse(consume.Attributes["sp"].Value);
+                        if (job.Attributes["feature"] != null) // Getting attribute that just have "feature"
+                        {
+                            string feature = job.Attributes["feature"].Value;
+                            if (feature == "JobChange_02") // Getting JobChange_02 skillList for now until better handle Awakening system.
+                            {
+                                XmlNode skills = job.SelectSingleNode("skills");
+                                int jobCode = int.Parse(job.Attributes["code"].Value);
+                                for (int i = 0; i < skills.ChildNodes.Count; i++)
+                                {
+                                    int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
+                                    int[] sub = new int[0];
+                                    SkillMetadata skill = skillList.Find(x => x.SkillId == id); // This find the skill in the SkillList
+                                    skill.Job = jobCode;
+                                    if (skills.ChildNodes[i].Attributes["sub"] != null)
+                                    {
+                                        if (skillList.Select(x => x.SkillId).Contains(id))
+                                        {
+                                            sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
+                                            skill.SubSkill = sub;
+                                            for (int n = 0; n < sub.Length; n++)
+                                            {
+                                                if (skillList.Select(x => x.SkillId).Contains(sub[n]))
+                                                {
+                                                    skillList.Find(x => x.SkillId == sub[n]).Job = jobCode;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                XmlNode learn = job.SelectSingleNode("learn");
+                                for (int i = 0; i < learn.ChildNodes.Count; i++)
+                                {
+                                    int id = int.Parse(learn.ChildNodes[i].Attributes["id"].Value);
+                                    skillList.Find(x => x.SkillId == id).Learned = 1;
+                                }
+                            }
+                        }
+                        else if (job.Attributes["code"].Value == "001")
+                        {
+                            XmlNode skills = job.SelectSingleNode("skills");
+
+                            for (int i = 0; i < skills.ChildNodes.Count; i++)
+                            {
+                                int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
+                                int[] sub = new int[0];
+                                if (skills.ChildNodes[i].Attributes["sub"] != null)
+                                {
+                                    sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
+                                }
+                            }
+                        }
                     }
-
-                    XmlNode upgrade = node.SelectSingleNode("upgrade");
-                    if (upgrade.Attributes != null)
-                    {
-                        if (upgrade.Attributes.GetNamedItem("level") != null)
-                        {
-                            upgradeLevel = int.Parse(upgrade.Attributes["level"].Value);
-                        }
-                        if (upgrade.Attributes.GetNamedItem("skillIDs") != null)
-                        {
-                            upgradeSkillId = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillIDs").Value.Split(","), int.Parse);
-                        }
-                        if (upgrade.Attributes.GetNamedItem("skillLevels") != null)
-                        {
-                            upgradeSkillLevel = Array.ConvertAll(upgrade.Attributes.GetNamedItem("skillLevels").Value.Split(","), int.Parse);
-                        }
-                    }
-
-                    XmlNode motion = node.SelectSingleNode("motion/motionProperty");
-
-                    string sequenceName = "";
-                    string motionEffect = "";
-                    string strTagEffects = "";
-
-                    if (motion.Attributes != null)
-                    {
-                        if (motion.Attributes.GetNamedItem("sequenceName") != null)
-                        {
-                            sequenceName = motion.Attributes["sequenceName"].Value;
-                        }
-                        if (motion.Attributes.GetNamedItem("motionEffect") != null)
-                        {
-                            motionEffect = motion.Attributes["motionEffect"].Value;
-                        }
-                        if (motion.Attributes.GetNamedItem("strTagEffects") != null)
-                        {
-                            strTagEffects = motion.Attributes["strTagEffects"].Value;
-                        }
-                    }
-                    motions.Add(new SkillMotion(sequenceName, motionEffect, strTagEffects));
-                    metadata.SkillLevel.Add(new SkillLevel(level, spirit, upgradeLevel, upgradeSkillId, upgradeSkillLevel, motions));
                 }
-
-                skillList.Add(metadata);
             }
             return skillList;
         }
