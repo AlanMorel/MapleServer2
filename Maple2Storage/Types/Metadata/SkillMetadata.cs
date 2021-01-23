@@ -11,74 +11,26 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int SkillId;
         [XmlElement(Order = 2)]
-        public string Feature = "";
+        public List<SkillLevel> SkillLevels;
         [XmlElement(Order = 3)]
-        public int AttackType;
+        public int[] SubSkills = new int[0];
         [XmlElement(Order = 4)]
-        public int Type;
+        public int Job;
         [XmlElement(Order = 5)]
-        public int SubType;
-        [XmlElement(Order = 6)]
-        public int RangeType;
-        [XmlElement(Order = 7)]
-        public int Element;
-        [XmlElement(Order = 8)]
-        public byte DefaultSkill;
-        [XmlElement(Order = 9)]
-        public readonly List<SkillLevel> SkillLevel;
+        public byte Learned = 0;
 
         public SkillMetadata()
         {
-            this.SkillLevel = new List<SkillLevel>();
-        }
-
-        public SkillMetadata(int skillId)
-        {
-            this.SkillId = skillId;
-            this.SkillLevel = new List<SkillLevel>();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            if (obj.GetType() != this.GetType())
-                return false;
-            return Equals((SkillMetadata) obj);
-        }
-
-        protected bool Equals(SkillMetadata other)
-        {
-            return SkillId == other.SkillId
-                && Feature.Equals(other.Feature)
-                && AttackType.Equals(other.AttackType)
-                && Type.Equals(other.Type)
-                && SubType.Equals(other.SubType)
-                && RangeType.Equals(other.RangeType)
-                && Element.Equals(other.Element)
-                && DefaultSkill.Equals(other.DefaultSkill)
-                && SkillLevel.Equals(other.SkillLevel);
+            SkillLevels = new List<SkillLevel>();
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SkillId, Feature, AttackType, Type, SubType, RangeType, Element, SkillLevel);
-        }
-
-        public static bool operator ==(SkillMetadata left, SkillMetadata right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(SkillMetadata left, SkillMetadata right)
-        {
-            return !Equals(left, right);
+            return HashCode.Combine(SkillId, SkillLevels, Job, Learned);
         }
 
         public override string ToString() =>
-            $"Skill:(Id:{SkillId},Feature:{Feature},AttackType:{AttackType},Type:{Type},SubType:{SubType},Range:{RangeType},Element:{Element},Default:{DefaultSkill},SkillLevel:{string.Join(",", SkillLevel)}";
+            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevels)}";
     }
 
     [XmlType]
@@ -89,121 +41,55 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int Spirit;
         [XmlElement(Order = 3)]
-        public int UpgradeLevel;
+        public float DamageRate;
         [XmlElement(Order = 4)]
-        public int[] UpgradeSkillId;
-        [XmlElement(Order = 5)]
-        public int[] UpgradeSkillLevel;
-        [XmlElement(Order = 6)]
-        public readonly List<SkillMotion> SkillMotion;
+        public string Feature = "";
 
         // Required for deserialization
         public SkillLevel()
         {
-            this.SkillMotion = new List<SkillMotion>();
+
         }
 
-        public SkillLevel(int _Level, int _Spirit, int _UpgradeLevel, int[] _UpgradeSkillId, int[] _UpgradeSkillLevel, List<SkillMotion> motion)
+        public SkillLevel(int level, int spirit, float damageRate, string feature)
         {
-            this.Level = _Level;
-            this.Spirit = _Spirit;
-            this.UpgradeLevel = _UpgradeLevel;
-            this.UpgradeSkillId = _UpgradeSkillId;
-            this.UpgradeSkillLevel = _UpgradeSkillLevel;
-            this.SkillMotion = motion;
-        }
-
-        protected bool Equals(SkillLevel other)
-        {
-            return Level == other.Level
-                && Spirit.Equals(other.Spirit)
-                && UpgradeLevel.Equals(other.UpgradeLevel)
-                && UpgradeSkillId.Equals(other.UpgradeSkillId)
-                && UpgradeSkillLevel.Equals(other.UpgradeSkillLevel)
-                && SkillMotion.Equals(other.SkillMotion);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            if (obj.GetType() != this.GetType())
-                return false;
-            return Equals((SkillLevel) obj);
+            Level = level;
+            Spirit = spirit;
+            DamageRate = damageRate;
+            Feature = feature;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Level, Spirit, UpgradeLevel, UpgradeSkillId, UpgradeSkillLevel, SkillMotion);
-        }
-
-        public static bool operator ==(SkillLevel left, SkillLevel right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(SkillLevel left, SkillLevel right)
-        {
-            return !Equals(left, right);
+            return HashCode.Combine(Level, Spirit);
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit},UpgradeLevel:{UpgradeLevel},SkillRequired:{UpgradeSkillId},SkillLevelRequired:{UpgradeSkillLevel},Motions:{string.Join(",", SkillMotion)})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature})";
     }
 
     [XmlType]
-    public class SkillMotion
+    public class ListSubSkill
     {
         [XmlElement(Order = 1)]
-        public string SequenceName;
+        public int Id { get; set; }
         [XmlElement(Order = 2)]
-        public string MotionEffect;
+        public int[] Subs { get; set; }
         [XmlElement(Order = 3)]
-        public string StrTagEffects;
+        public int[] DefaultSkillLearns { get; set; }
 
-        public SkillMotion() { }
-
-        public SkillMotion(string _SequenceName, string _MotionEffect, string _StrTagEffects)
+        public ListSubSkill()
         {
-            this.SequenceName = _SequenceName;
-            this.MotionEffect = _MotionEffect;
-            this.StrTagEffects = _StrTagEffects;
+
         }
 
-        protected bool Equals(SkillMotion other)
+        public ListSubSkill(int id, int[] sub, int[] defaultSkillLearn)
         {
-            return SequenceName == other.SequenceName && MotionEffect.Equals(other.MotionEffect) && StrTagEffects.Equals(other.StrTagEffects);
+            Id = id;
+            Subs = sub;
+            DefaultSkillLearns = defaultSkillLearn;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            if (obj.GetType() != this.GetType())
-                return false;
-            return Equals((SkillMotion) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(SequenceName, MotionEffect, StrTagEffects);
-        }
-
-        public static bool operator ==(SkillMotion left, SkillMotion right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(SkillMotion left, SkillMotion right)
-        {
-            return !Equals(left, right);
-        }
-
-        public override string ToString() =>
-            $"SkillMotion(Name:{SequenceName},MotionEffect:{MotionEffect},TagEffect:{StrTagEffects})";
+        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Subs.ToString())},Default:{string.Join(",", DefaultSkillLearns.ToString())})";
     }
 }
