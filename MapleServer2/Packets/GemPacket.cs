@@ -50,6 +50,7 @@ namespace MapleServer2.Packets
 
             return pWriter;
         }
+
         public static Packet EquipError(GemEquipError type)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);

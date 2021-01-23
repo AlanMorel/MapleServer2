@@ -93,15 +93,6 @@ namespace MapleServer2.Packets.Helpers
 
         private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
         {
-            // TODO: make WriteAppearance proper for GEM, this is hacky.
-            if (item.GemSlot != 0)
-            {
-                pWriter.WriteInt().WriteInt().WriteInt();
-                pWriter.WriteInt(-1); // Flag
-                pWriter.WriteInt(); // unknown
-                return pWriter;
-            }
-
             pWriter.Write<EquipColor>(item.Color);
             pWriter.WriteInt(item.AppearanceFlag);
             // Positioning Data
