@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using MapleServer2.Data.Static;
 using System.Collections.Generic;
 using System;
+using Maple2Storage.Types;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -166,15 +167,27 @@ namespace MapleServer2.PacketHandlers.Game
                     Enchants = content.EnchantLevel,
                 };
                 InventoryController.Add(session, item, true);
-                if (content.Id2 != 0)
+
+                if ((item.RecommendJobs.Contains(70) || item.RecommendJobs.Contains(80)) && item.ItemSlot == ItemSlot.OH)
                 {
-                    Item item2 = new Item(content.Id2)
+                    item = new Item(content.Id)
                     {
                         Amount = rng.Next(content.MinAmount, content.MaxAmount),
                         Rarity = content.Rarity,
                         Enchants = content.EnchantLevel,
                     };
-                    InventoryController.Add(session, item2, true);
+                    InventoryController.Add(session, item, true);
+                }
+
+                if (content.Id2 != 0)
+                {
+                    item = new Item(content.Id2)
+                    {
+                        Amount = rng.Next(content.MinAmount, content.MaxAmount),
+                        Rarity = content.Rarity,
+                        Enchants = content.EnchantLevel,
+                    };
+                    InventoryController.Add(session, item, true);
                 }
             }
         }
