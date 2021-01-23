@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
-            pWriter.WriteMode(GemMode.EquipItem);
+            pWriter.WriteEnum(GemMode.EquipItem);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
@@ -141,7 +141,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
-            pWriter.WriteMode(GemMode.UnequipItem);
+            pWriter.WriteEnum(GemMode.UnequipItem);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteByte(index);
 
