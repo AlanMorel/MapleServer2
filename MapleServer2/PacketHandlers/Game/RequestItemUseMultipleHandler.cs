@@ -32,8 +32,11 @@ namespace MapleServer2.PacketHandlers.Game
             if (boxType == BoxType.SELECT)
             {
                 index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+                if (index < 0)
+                {
+                    return;
+                }
             }
-
 
             short opened = 0; // Amount of opened boxes
             List<Item> items = new List<Item>(session.Player.Inventory.Items.Values); // Make copy of items in-case new item is added

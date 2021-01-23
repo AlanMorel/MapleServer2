@@ -1,7 +1,5 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
@@ -20,17 +18,18 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
         public static void OpenBox(GameSession session, List<ItemContent> content)
         {
             Random rng = new Random();
-            List<int> groupCount = new List<int>();
+            bool oneGroup = true;
 
             foreach (ItemContent item in content)
             {
-                if (!groupCount.Contains(item.DropGroup))
+                if (item.DropGroup != content[0].DropGroup)
                 {
-                    groupCount.Add(item.DropGroup);
+                    oneGroup = false;
+                    break;
                 }
             }
 
-            if (groupCount.Count == 1)
+            if (!oneGroup)
             {
                 int smartDropRate = content[0].SmartDropRate;
 
@@ -121,26 +120,18 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     Rarity = content.Rarity,
                     Enchants = content.EnchantLevel,
                 };
-                InventoryController.Add(session, item, true);
-
-                if ((item.RecommendJobs.Contains(70) || item.RecommendJobs.Contains(80)) && item.ItemSlot == ItemSlot.OH)
+                if (item.SlotMax == 1)
                 {
-                    item = new Item(content.Id)
-                    {
-                        Amount = rng.Next(content.MinAmount, content.MaxAmount),
-                        Rarity = content.Rarity,
-                        Enchants = content.EnchantLevel,
-                    };
-                    InventoryController.Add(session, item, true);
+                    item.Amount = content.MaxAmount;
                 }
+                InventoryController.Add(session, item, true);
 
                 if (content.Id2 != 0)
                 {
                     item = new Item(content.Id2)
                     {
                         Amount = rng.Next(content.MinAmount, content.MaxAmount),
-                        Rarity = content.Rarity,
-                        Enchants = content.EnchantLevel,
+                        Rarity = content.Rarity
                     };
                     InventoryController.Add(session, item, true);
                 }

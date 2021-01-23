@@ -28,6 +28,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (boxType == BoxType.SELECT)
             {
                 index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+                if (index < 0)
+                {
+                    return;
+                }
             }
 
             if (!session.Player.Inventory.Items.ContainsKey(boxUid))

@@ -39,6 +39,20 @@ public class InventoryController
                 }
             }
         }
+        else
+        {
+            for (int i = 0; i < item.Amount; i++)
+            {
+                Item temp = Item.CreateNew(item);
+                session.Player.Inventory.Add(temp); // Adds item into internal database
+                session.Send(ItemInventoryPacket.Add(temp)); // Sends packet to add item clientside
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(temp, temp.Amount)); // Marks Item as New
+                }
+            }
+        }
+
         session.Player.Inventory.Add(item); // Adds item into internal database
         session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
         if (isNew)
