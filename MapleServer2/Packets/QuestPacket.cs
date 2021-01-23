@@ -20,7 +20,7 @@ namespace MapleServer2.Packets
         public static Packet SendQuests(List<QuestMetadata> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteMode(QuestType.SendQuests);
+            pWriter.WriteEnum(QuestType.SendQuests);
             pWriter.WriteInt(questList.Count);
 
             foreach (QuestMetadata item in questList)
@@ -46,7 +46,7 @@ namespace MapleServer2.Packets
         public static Packet CompleteQuest(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteMode(QuestType.CompleteQuest);
+            pWriter.WriteEnum(QuestType.CompleteQuest);
             pWriter.WriteInt (questId);
             pWriter.WriteInt(1);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
@@ -57,7 +57,7 @@ namespace MapleServer2.Packets
         public static Packet CompleteExplorationGoal(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteMode(QuestType.CompleteExplorationGoal);
+            pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
             pWriter.WriteInt (questId);
             pWriter.WriteInt(1);
             pWriter.WriteInt(1);
