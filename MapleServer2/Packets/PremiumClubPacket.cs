@@ -19,7 +19,7 @@ namespace MapleServer2.Packets
         public static Packet Open()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteMode(PremiumClubPacketMode.Open);
+            pWriter.WriteEnum(PremiumClubPacketMode.Open);
             pWriter.WriteInt();
             return pWriter;
         }
@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
         public static Packet ClaimItem(int benefitId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteMode(PremiumClubPacketMode.ClaimItem);
+            pWriter.WriteEnum(PremiumClubPacketMode.ClaimItem);
             pWriter.WriteInt(benefitId);
             return pWriter;
         }
@@ -35,7 +35,7 @@ namespace MapleServer2.Packets
         public static Packet OpenPurchaseWindow()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteMode(PremiumClubPacketMode.OpenPurchaseWindow);
+            pWriter.WriteEnum(PremiumClubPacketMode.OpenPurchaseWindow);
             pWriter.WriteInt();
             return pWriter;
         }
@@ -43,7 +43,7 @@ namespace MapleServer2.Packets
         public static Packet PurchaseMembership(int packageId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteMode(PremiumClubPacketMode.PurchaseMembership);
+            pWriter.WriteEnum(PremiumClubPacketMode.PurchaseMembership);
             pWriter.WriteInt(packageId);
             return pWriter;
         }
@@ -51,7 +51,7 @@ namespace MapleServer2.Packets
         public static Packet ActivatePremium(IFieldObject<Player> player, long expiration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteMode(PremiumClubPacketMode.ActivatePremium);
+            pWriter.WriteEnum(PremiumClubPacketMode.ActivatePremium);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(expiration);
             return pWriter;

@@ -12,7 +12,7 @@ namespace Ms2Database.DbClasses
         {
             CreationTime = DateTime.Now;
             Gender = 0;
-            Awakened = 0;
+            Awakened = false;
             Level = 1;
             Exp = 0;
             RestExp = 0;
@@ -39,14 +39,14 @@ namespace Ms2Database.DbClasses
         [Column("Creation Time", TypeName = "datetime2")]
         public DateTime? CreationTime { get; set; }
 
-        [StringLength(25)]
+        [MaxLength(25)]
         public string Name { get; set; }
 
         public byte Gender { get; set; }
 
         public int JobId { get; set; }
 
-        public byte Awakened { get; set; }
+        public bool Awakened { get; set; }
 
         [Column(TypeName = "smallint")]
         public short Level { get; set; }
@@ -84,15 +84,15 @@ namespace Ms2Database.DbClasses
 
         public long? GuildId { get; set; }
 
-        [StringLength(25)]
+        [MaxLength(25)]
         public string GuildName { get; set; }
 
         public string ProfileUrl { get; set; }
 
-        [StringLength(25)]
+        [MaxLength(25)]
         public string Motto { get; set; }
 
-        [StringLength(25)]
+        [MaxLength(25)]
         public string HomeName { get; set; }
 
         [Required]
@@ -106,5 +106,9 @@ namespace Ms2Database.DbClasses
 
         [Required]
         public float CoordZ { get; set; }
+
+        public ICollection<Inventory> Inventories { get; set; }
+
+        public ICollection<SkillTree> SkillTrees { get; set; }
     }
 }
