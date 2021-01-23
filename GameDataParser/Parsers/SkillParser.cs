@@ -24,7 +24,7 @@ namespace GameDataParser.Parsers
                 {
                     string skillId = Path.GetFileNameWithoutExtension(entry.Name);
                     SkillMetadata metadata = new SkillMetadata();
-                    List<SkillLevel> skillLevel = new List<SkillLevel>();
+                    List<SkillLevel> skillLevels = new List<SkillLevel>();
 
                     metadata.SkillId = int.Parse(skillId);
                     XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
@@ -36,9 +36,9 @@ namespace GameDataParser.Parsers
                         int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
                         int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                         float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
-                        skillLevel.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
-                        metadata.SkillLevel = skillLevel;
+                        skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
                     }
+                    metadata.SkillLevels = skillLevels;
                     skillList.Add(metadata);
                 }
                 // Parsing SubSkills
@@ -66,7 +66,7 @@ namespace GameDataParser.Parsers
                                         if (skillList.Select(x => x.SkillId).Contains(id))
                                         {
                                             sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
-                                            skill.SubSkill = sub;
+                                            skill.SubSkills = sub;
                                             for (int n = 0; n < sub.Length; n++)
                                             {
                                                 if (skillList.Select(x => x.SkillId).Contains(sub[n]))

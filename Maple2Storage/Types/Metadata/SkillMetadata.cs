@@ -67,29 +67,4 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature})";
     }
-
-    [XmlType]
-    public class ListSubSkill
-    {
-        [XmlElement(Order = 1)]
-        public int Id { get; set; }
-        [XmlElement(Order = 2)]
-        public int[] Subs { get; set; }
-        [XmlElement(Order = 3)]
-        public int[] DefaultSkillLearns { get; set; }
-
-        public ListSubSkill()
-        {
-
-        }
-
-        public ListSubSkill(int id, int[] sub, int[] defaultSkillLearn)
-        {
-            Id = id;
-            Subs = sub;
-            DefaultSkillLearns = defaultSkillLearn;
-        }
-
-        public override string ToString() => $"Skill(Id:{Id},Sub:{string.Join(",", Subs.ToString())},Default:{string.Join(",", DefaultSkillLearns.ToString())})";
-    }
 }
