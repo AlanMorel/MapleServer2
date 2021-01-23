@@ -1,1 +1,0 @@
-dotnet run --project MapleServer2/MapleServer2.csproj
