@@ -34,7 +34,7 @@ namespace GameDataParser.Parsers
                 }
                 if (mapObjects.ContainsKey(objStr))
                 {
-                    Console.WriteLine($"Duplicate {entry.Name} was already added as {mapObjects[objStr]}");
+                    //Console.WriteLine($"Duplicate {entry.Name} was already added as {mapObjects[objStr]}");
                     continue;
                 }
 
@@ -78,7 +78,7 @@ namespace GameDataParser.Parsers
                 int mapId = int.Parse(mapIdStr);
                 if (maps.ContainsKey(mapIdStr))
                 {
-                    Console.WriteLine($"Duplicate {entry.Name} was already added as {maps[mapIdStr]}");
+                    //Console.WriteLine($"Duplicate {entry.Name} was already added as {maps[mapIdStr]}");
                     continue;
                 }
                 maps.Add(mapIdStr, entry.Name);
@@ -234,7 +234,7 @@ namespace GameDataParser.Parsers
                 // Ensure the file is read equivalent
                 // Debug.Assert(entities.SequenceEqual(Serializer.Deserialize<List<MapEntityMetadata>>(readStream)));
             }
-            Console.WriteLine("Successfully parsed map entity metadata!");
+            Console.WriteLine("\rSuccessfully parsed map entity metadata!");
         }
     }
 }

@@ -19,7 +19,7 @@ namespace MapleServer2.Packets
         {
             Player player = fieldPlayer.Value;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteMode(ProxyGameObjMode.LoadPlayer);
+            pWriter.WriteEnum(ProxyGameObjMode.LoadPlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
@@ -28,9 +28,9 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(player.Motto);
             pWriter.WriteByte();
             pWriter.Write(fieldPlayer.Coord);
-            pWriter.WriteShort(player.Level);
-            pWriter.WriteShort((short) player.JobGroupId);
-            pWriter.WriteInt(player.JobId);
+            pWriter.WriteShort(player.Levels.Level);
+            pWriter.WriteEnum(player.Job); // short
+            pWriter.WriteEnum(player.JobCode);
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteInt();
@@ -49,7 +49,7 @@ namespace MapleServer2.Packets
         {
             FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteMode(ProxyGameObjMode.UpdateEntity);
+            pWriter.WriteEnum(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte((byte) flag);
 
@@ -89,7 +89,7 @@ namespace MapleServer2.Packets
         public static Packet LoadNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteMode(ProxyGameObjMode.LoadNpc);
+            pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.WriteByte();
@@ -101,7 +101,7 @@ namespace MapleServer2.Packets
         public static Packet LoadMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteMode(ProxyGameObjMode.LoadNpc);
+            pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.WriteByte();
@@ -155,7 +155,7 @@ namespace MapleServer2.Packets
         public static Packet MoveNpc(int objectId, CoordF coord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteMode(ProxyGameObjMode.UpdateEntity);
+            pWriter.WriteEnum(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(objectId);
             pWriter.WriteByte();
             pWriter.Write(coord);

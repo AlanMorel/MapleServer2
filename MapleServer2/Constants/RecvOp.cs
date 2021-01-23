@@ -104,7 +104,7 @@
         REQUEST_MANUFACTURER = 0x0069,
         REQUEST_USER_ENV = 0x006A,
         CASH = 0x006B,
-        NAMETAG_SYMBOL = 0x006C,
+        INSIGNIA = 0x006C,
         REQUEST_MOVE_FIELD = 0x006D,
         WAITING_TICKET = 0x006E,
         MATCH_PARTY = 0x006F,
@@ -151,6 +151,7 @@
         PRESTIGE = 0x00AE,
         RESPONSE_SERVER_ENTER = 0x00B2,
         SYSTEM_INFO = 0x00B7,
+        CHAT_STICKER = 0x00B9,
         FILE_HASH = 0x00BB
     }
 }

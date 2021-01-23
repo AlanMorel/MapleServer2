@@ -1,23 +1,23 @@
 ﻿namespace MapleServer2.Enums
 {
-    public enum Job
+    public enum Job : int
     {
         None = 0,
-        Knight = 100,
-        Berserker = 200,
-        Wizard = 300,
-        Priest = 400,
-        Archer = 500,
-        HeavyGunner = 600,
-        Thief = 700,
-        Assassin = 800,
-        Runeblade = 900,
-        Striker = 1000,
-        SoulBinder = 1100,
+        Knight = 10,
+        Berserker = 20,
+        Wizard = 30,
+        Priest = 40,
+        Archer = 50,
+        HeavyGunner = 60,
+        Thief = 70,
+        Assassin = 80,
+        Runeblade = 90,
+        Striker = 100,
+        SoulBinder = 110,
         GameMaster = 999
     }
 
-    public enum JobCode
+    public enum JobCode : int
     {
         None = 0,
         Knight = 101,
@@ -32,7 +32,23 @@
         Striker = 1001,
         SoulBinder = 1101,
         GameMaster = 999
+    }
 
+    public enum JobSkillSplit : byte
+    {
+        None = 0,
+        Knight = 9,
+        Berserker = 15,
+        Wizard = 17,
+        Priest = 10,
+        Archer = 14,
+        HeavyGunner = 13,
+        Thief = 13,
+        Assassin = 8,
+        Runeblade = 8,
+        Striker = 12,
+        SoulBinder = 16,
+        GameMaster = 0
     }
 }
 

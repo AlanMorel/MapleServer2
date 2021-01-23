@@ -3,4 +3,4 @@ This is an open source MapleStory2 server emulation project created in C#. It is
 
 This software is licensed under the GNU GPL. Because of this, every user is free to use this software and choose how they want to use it, and assume all liability and risks themselves for that choice. Please read the license if you are unsure about your rights.
 
-Join the [community discord](https://discord.gg/eVGMGydwgm) if you are interested in contributing to this project or would like assistance getting set up.
+Join the [community discord](https://discord.gg/mABkFFhBuU) if you are interested in contributing to this project or would like assistance getting set up.

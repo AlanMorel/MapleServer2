@@ -4,6 +4,7 @@ using System.Numerics;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -27,18 +28,16 @@ namespace MapleServer2.Types
         public byte Gender { get; private set; }
 
         // Job Group, according to jobgroupname.xml
-        public int JobGroupId { get; private set; }
         public bool Awakened { get; private set; }
-        public int JobId => JobGroupId * 10 + (Awakened ? 1 : 0);
+        public Job Job { get; private set; }
+        public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
 
         // Mutable Values
+        public Levels Levels { get; private set; }
         public int MapId;
-        public short Level = 1;
-        public long Experience;
-        public long RestExperience;
-        public int PrestigeLevel = 100;
-        public long PrestigeExperience;
         public int TitleId;
+        public List<int> Titles = new List<int> { 0 };
+        public List<short> Insignias = new List<short> { 0 };
         public short InsigniaId;
         public byte Animation;
         public PlayerStats Stats;
@@ -46,6 +45,8 @@ namespace MapleServer2.Types
 
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3];
+
+        public List<short> Stickers = new List<short> { 0 };
 
         public CoordF Coord;
         public CoordF Rotation; // Rotation?
@@ -81,9 +82,6 @@ namespace MapleServer2.Types
                         || DefaultEquipSlot == ItemSlot.SH
                         || DefaultEquipSlot == ItemSlot.ER;
 
-        public Job jobType;
-        public JobCode JobCode => jobType != Job.GameMaster ? (JobCode) ((int) jobType / 10) : JobCode.GameMaster;
-
         public GameOptions GameOptions { get; private set; }
 
         public Inventory Inventory;
@@ -100,17 +98,17 @@ namespace MapleServer2.Types
         public Player()
         {
             Wallet = new Wallet(this);
+            Levels = new Levels(this, 70, 0, 0, 100, 0);
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             int job = 50; // Archer
-
             PlayerStats stats = PlayerStats.Default();
             StatDistribution StatPointDistribution = new StatDistribution();
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                XmlParser.ParseSkills(job)
+                new SkillTab((Job) (job))
             };
 
             Player player = new Player
@@ -120,14 +118,13 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
                 Name = name,
                 Gender = 1,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
                 // Coord = CoordF.From(500, 500, 15000), // Tria
-                JobGroupId = job,
+                Job = (Job) job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -143,8 +140,17 @@ namespace MapleServer2.Types
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
-                TitleId = 10000292,
-                InsigniaId = 29
+                Stickers = new List<short>
+                {
+                    1, 2, 3, 4, 5, 6, 7
+                },
+                TitleId = 10000503,
+                InsigniaId = 33,
+                Titles = new List<int> {
+                    10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
+                    10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
+                    10000603, 10000638, 10000644
+                },
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
@@ -152,12 +158,12 @@ namespace MapleServer2.Types
 
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
-            int job = 50;
+            int job = 50; // Archer
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                XmlParser.ParseSkills(job)
+                new SkillTab((Job) (job))
             };
 
             return new Player
@@ -166,13 +172,12 @@ namespace MapleServer2.Types
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
-                Level = 70,
                 Name = name,
                 Gender = 0,
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800),
-                JobGroupId = job,
+                Job = (Job) job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -200,7 +205,7 @@ namespace MapleServer2.Types
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                XmlParser.ParseSkills(job)
+                new SkillTab((Job) (job))
             };
 
             return new Player
@@ -211,8 +216,7 @@ namespace MapleServer2.Types
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
                 Gender = gender,
-                JobGroupId = job,
-                Level = 1,
+                Job = (Job) job,
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
