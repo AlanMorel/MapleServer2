@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Threading;
 using System.Xml;
-using System.Collections.Generic;
 using GameDataParser.Crypto;
-using GameDataParser.Crypto.Stream;
-using GameDataParser.Files.Export;
 using GameDataParser.Crypto.Common;
+using GameDataParser.Crypto.Stream;
 using GameDataParser.Files;
+using GameDataParser.Files.Export;
 
 namespace GameDataParser
 {
