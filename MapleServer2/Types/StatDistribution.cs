@@ -11,8 +11,6 @@ namespace MapleServer2.Types
     {
         public int TotalStatPoints { get; private set; }
         public Dictionary<OtherStatsIndex, int> OtherStats { get; private set; }
-        // key: 01 PointsFromTrophy, 02 PointsFromQuest, 03 PointsFromExploration, 04 PointsFromPrestige
-        // value: attribute points received from that category
 
         public Dictionary<byte, int> AllocatedStats { get; private set; }
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
@@ -36,7 +34,6 @@ namespace MapleServer2.Types
             this.TotalStatPoints += amount;
         }
 
-        // invoked whenever stat points are gained when not leveling up
         public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc)
         {
             if (OtherStats.ContainsKey(pointSrc))
