@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
     public class StatDistribution
     {
         public int TotalStatPoints { get; private set; }
-        public Dictionary<byte, int> OtherStats { get; private set; }
+        public Dictionary<OtherStatsIndex, int> OtherStats { get; private set; }
         // key: 01 PointsFromTrophy, 02 PointsFromQuest, 03 PointsFromExploration, 04 PointsFromPrestige
         // value: attribute points received from that category
 
@@ -17,28 +18,17 @@ namespace MapleServer2.Types
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
 
-        public StatDistribution()
+        public StatDistribution(Dictionary<byte, int> AllocatedStats = null, Dictionary<OtherStatsIndex, int> OtherStats = null)
         {
             // hardcode the amount of stat points the character starts with temporarily
             this.TotalStatPoints = 18;
-            this.OtherStats = new Dictionary<byte, int>();
-            this.AllocatedStats = new Dictionary<byte, int>();
-            AddTotalStatPoints(1, 0x2);
-            AddTotalStatPoints(2, 0x1);
-            AddTotalStatPoints(3, 0x3);
-            AddTotalStatPoints(4, 0x4);
-        }
-
-        public StatDistribution(Dictionary<byte, int> AllocatedStats)
-        {
-            this.AllocatedStats = AllocatedStats;
-            this.OtherStats = new Dictionary<byte, int>();
-        }
-
-        public StatDistribution(Dictionary<byte, int> AllocatedStats, Dictionary<byte, int> OtherStats)
-        {
-            this.AllocatedStats = AllocatedStats;
-            this.OtherStats = OtherStats;
+            this.AllocatedStats = AllocatedStats == null ? new Dictionary<byte, int>() : AllocatedStats;
+            this.OtherStats = OtherStats == null ? new Dictionary<OtherStatsIndex, int>() : OtherStats;
+            
+            AddTotalStatPoints(1, OtherStatsIndex.Quest);
+            AddTotalStatPoints(2, OtherStatsIndex.Trophy);
+            AddTotalStatPoints(3, OtherStatsIndex.Exploration);
+            AddTotalStatPoints(4, OtherStatsIndex.Prestige);
         }
 
         public void AddTotalStatPoints(int amount)
@@ -47,18 +37,17 @@ namespace MapleServer2.Types
         }
 
         // invoked whenever stat points are gained when not leveling up
-        public void AddTotalStatPoints(int amount, byte pointSrc)
+        public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc)
         {
             if (OtherStats.ContainsKey(pointSrc))
             {
                 OtherStats[pointSrc] += amount;
-                
             }
             else
             {
                 OtherStats[pointSrc] = amount;
             }
-            TotalStatPoints += amount;
+            this.TotalStatPoints += amount;
         }
 
         public void AddPoint(byte statType)

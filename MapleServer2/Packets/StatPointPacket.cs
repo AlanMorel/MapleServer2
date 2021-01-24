@@ -26,7 +26,7 @@ namespace MapleServer2.Packets
             // write the number of sources from which stat points have been received
             pWriter.WriteInt(character.StatPointDistribution.OtherStats.Count);
         
-            foreach (byte pointSrc in character.StatPointDistribution.OtherStats.Keys.ToList())
+            foreach (MapleServer2.Enums.OtherStatsIndex pointSrc in character.StatPointDistribution.OtherStats.Keys.ToList())
             {
                 pWriter.WriteInt((int)pointSrc);
                 pWriter.WriteInt(character.StatPointDistribution.OtherStats[pointSrc]);
