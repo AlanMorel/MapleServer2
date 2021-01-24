@@ -16,10 +16,10 @@ namespace MapleServer2.Types
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
 
-        public StatDistribution(Dictionary<byte, int> AllocatedStats = null, Dictionary<OtherStatsIndex, int> OtherStats = null)
+        public StatDistribution(int totalStats = 0, Dictionary<byte, int> AllocatedStats = null, Dictionary<OtherStatsIndex, int> OtherStats = null)
         {
             // hardcode the amount of stat points the character starts with temporarily
-            this.TotalStatPoints = 18;
+            this.TotalStatPoints = totalStats;
             this.AllocatedStats = AllocatedStats == null ? new Dictionary<byte, int>() : AllocatedStats;
             this.OtherStats = OtherStats == null ? new Dictionary<OtherStatsIndex, int>() : OtherStats;
             
