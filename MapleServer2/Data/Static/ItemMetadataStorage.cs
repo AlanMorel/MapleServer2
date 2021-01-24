@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -69,7 +70,9 @@ namespace MapleServer2.Data.Static
 
         public static List<Job> GetRecommendJobs(int itemId)
         {
-            return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(new System.Converter<int, Job>((integer) => (Job) integer));
+            Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
+
+            return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
         }
 
         public static List<ItemContent> GetContent(int itemId)
