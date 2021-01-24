@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
-using MapleServer2.Enums;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Constants.Skills
 {
@@ -86,7 +86,7 @@ namespace MapleServer2.Constants.Skills
             10900291,10900292,10900081,10900293,10900294,01000001,10900031,10900191,10900032,01000003,
             10900163,10900232,10900251,10900271,10900121,10900241,10900141,10900041
         };
-        private static readonly List<int> Striker =new List<int>
+        private static readonly List<int> Striker = new List<int>
         {
             11000312,11000101,11000313,11000261,11000262,11000051,11000316,11000211,11000053,11000265,
             11000212,11000001,11000266,11000213,11000214,11000161,11000055,11000321,11000271,11000272,
