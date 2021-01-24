@@ -57,9 +57,8 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteUnicodeString(item.Id.ToString());
             }
 
-
-            // Item Transfer Data 0x058AD00 item id:70200131
-            pWriter.WriteInt((int) item.TransferFlag); //
+            // Item Transfer Data 0x058AD00
+            pWriter.WriteInt((int) item.TransferFlag);
             pWriter.WriteByte();
             pWriter.WriteInt();
             pWriter.WriteInt();
