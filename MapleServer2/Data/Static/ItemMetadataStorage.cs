@@ -2,6 +2,7 @@
 using System.IO;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -66,9 +67,9 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).PlayCount;
         }
 
-        public static List<int> GetRecommendJobs(int itemId)
+        public static List<Job> GetRecommendJobs(int itemId)
         {
-            return map.GetValueOrDefault(itemId).RecommendJobs;
+            return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(new System.Converter<int, Job>((integer) => (Job) integer));
         }
 
         public static List<ItemContent> GetContent(int itemId)
