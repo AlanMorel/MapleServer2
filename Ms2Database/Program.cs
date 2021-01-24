@@ -1,6 +1,6 @@
 ﻿using System;
-using Ms2Database.DbClasses;
 using Ms2Database.Controllers;
+using Ms2Database.DbClasses;
 
 namespace Ms2Database
 {

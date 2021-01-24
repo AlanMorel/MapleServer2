@@ -17,7 +17,7 @@ namespace MapleServer2.Types
         public int SlotMax { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
-        public List<int> RecommendJobs { get; set; }
+        public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
 
         public readonly int Id;

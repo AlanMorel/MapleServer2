@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -42,8 +43,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 {
                     foreach (ItemContent item in content)
                     {
-                        List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
-                        if (recommendJobs.Contains(session.Player.JobGroupId) || recommendJobs.Contains(0)) // recommendJob 0 means the item don't have a recommended job
+                        List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
+                        if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(0)) // recommendJob 0 means the item don't have a recommended job
                         {
                             GiveItem(session, item);
                         }
@@ -55,17 +56,17 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     List<ItemContent> filteredList = new List<ItemContent>();
                     foreach (ItemContent item in content)
                     {
-                        List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
+                        List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
                         if (success)
                         {
-                            if (recommendJobs.Contains(session.Player.JobGroupId))
+                            if (recommendJobs.Contains(session.Player.Job))
                             {
                                 filteredList.Add(item);
                             }
                         }
                         else
                         {
-                            if (!recommendJobs.Contains(session.Player.JobGroupId))
+                            if (!recommendJobs.Contains(session.Player.Job))
                             {
                                 filteredList.Add(item);
                             }
@@ -80,8 +81,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             {
                 foreach (ItemContent item in content)
                 {
-                    List<int> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
-                    if (recommendJobs.Contains(session.Player.JobGroupId) || recommendJobs.Contains(0))
+                    List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
+                    if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(0))
                     {
                         GiveItem(session, item);
                     }
