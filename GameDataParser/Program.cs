@@ -37,6 +37,7 @@ namespace GameDataParser
             Thread insigniaThread = new Thread(() => InsigniaMetadataExport.Export(xmlFiles, xmlMemFile));
             Thread prestigeThread = new Thread(() => PrestigeMetadataExport.Export(xmlFiles, xmlMemFile));
             Thread expThread = new Thread(() => ExpMetadataExport.Export(xmlFiles, xmlMemFile));
+            Thread guildThread = new Thread(() => GuildMetadataExport.Export(xmlFiles, xmlMemFile));
 
             Spinner spinner = new Spinner();
             spinner.Start();
@@ -47,6 +48,7 @@ namespace GameDataParser
             insigniaThread.Start();
             prestigeThread.Start();
             expThread.Start();
+            guildThread.Start();
 
             itemThread.Join();
             mapEntityThread.Join();
@@ -54,6 +56,7 @@ namespace GameDataParser
             insigniaThread.Join();
             prestigeThread.Join();
             expThread.Join();
+            guildThread.Join();
 
             spinner.Stop();
         }

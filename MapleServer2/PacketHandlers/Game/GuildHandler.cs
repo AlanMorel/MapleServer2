@@ -9,6 +9,10 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using MapleServer2.Data;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -133,6 +137,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Guild newGuild = new(guildName, new List<Player> { session.Player });
             GameServer.GuildManager.AddGuild(newGuild);
+            session.Player.GuildId = newGuild.Id;
 
             session.Send(GuildPacket.UpdateGuild(session, newGuild));
             session.Send(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviter, response, rank));
@@ -150,6 +155,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.DisbandConfirm());
             guild.BroadcastPacketGuild(GuildPacket.MemberNotice(session.Player));
             GameServer.GuildManager.RemoveGuild(guild);
+            session.Player.GuildId = 0;
         }
 
         private void HandleInvite(GameSession session, PacketReader packet)
@@ -226,6 +232,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player, guildName));
             guild.AddMember(session.Player);
+            session.Player.GuildId = guild.Id;
             guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviterName, response, rank));
             guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player, guildName));
             session.Send(GuildPacket.UpdateGuild(session, guild));
@@ -300,14 +307,25 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleCheckIn(GameSession session, PacketReader packet)
         {
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null)
+            {
+                return;
+            }
+
+            GuildContribution contribution = GuildMetadataStorage.GetContribution("attend");
+
+            guild.Funds += 10000;
+            guild.Exp += 80;
+            session.Player.GuildContribution += contribution.Value;
             session.Send(GuildPacket.CheckInConfirm());
             // TODO: Send Guild Coins
             // TODO: Can only check in once a day
-            session.Send(GuildPacket.UpdateGuildFunds());
-            session.Send(GuildPacket.UpdateGuildExp());
-            session.Send(GuildPacket.UpdateGuildFunds2());
-            session.Send(GuildPacket.UpdatePlayerContribution(session.Player));
-            session.Send(GuildPacket.UpdatePlayerContribution(session.Player));
+            session.Send(GuildPacket.UpdateGuildFunds(guild.Funds));
+            session.Send(GuildPacket.UpdateGuildExp(guild.Exp));
+            session.Send(GuildPacket.UpdateGuildStatsNotice(80, 0));
+            session.Send(GuildPacket.UpdateGuildStatsNotice(0, 10000));
+            session.Send(GuildPacket.UpdatePlayerContribution(session.Player, 10));
         }
 
         private void HandleTransferLeader(GameSession session, PacketReader packet)
@@ -418,14 +436,36 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleUseBuff(GameSession session, PacketReader packet)
         {
-            int buffID = packet.ReadInt();
+            int buffId = packet.ReadInt();
 
-            if (!session.Player.Wallet.Meso.Modify(-100000))
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null)
             {
                 return;
             }
 
-            session.Send(GuildPacket.ActivateBuff(buffID));
+            GuildBuff buff = GuildMetadataStorage.GetBuff(buffId);
+
+            if (buff.Id > 1000)
+            {
+                if (!session.Player.Wallet.Meso.Modify(-buff.Cost))
+                {
+                    return;
+                };
+            }
+            else
+            {
+                if (buff.Cost > guild.Funds)
+                {
+                    return;
+                }
+                else
+                {
+                    guild.Funds -= buff.Cost;
+                }
+            }
+
+            session.Send(GuildPacket.ActivateBuff(buffId));
             // TODO: Send buff packet
         }
 
@@ -437,11 +477,29 @@ namespace MapleServer2.PacketHandlers.Game
         private void HandleGuildDonate(GameSession session, PacketReader packet)
         {
             int donateQuantity = packet.ReadInt();
+            int donationAmount = donateQuantity * 10000;
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null)
+            {
+                return;
+            }
 
-            session.Send(GuildPacket.UpdateGuildFunds());
-            session.Send(GuildPacket.UpdatePlayerDonation());
-            session.Send(GuildPacket.UpdateGuildFunds2());
-            session.Send(GuildPacket.UpdatePlayerContribution(session.Player));
+            if (!session.Player.Wallet.Meso.Modify(-donationAmount))
+            {
+                short NoticeCode = 5121;
+                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                return;
+            }
+            GuildContribution contribution = GuildMetadataStorage.GetContribution("donation");
+
+            session.Player.GuildContribution += contribution.Value * donateQuantity;
+            int guildFunds = guild.Funds + donateQuantity * 10000;
+            guild.Funds = guildFunds;
+
+            session.Send(GuildPacket.UpdateGuildFunds(guild.Funds));
+            session.Send(GuildPacket.UpdatePlayerDonation(donateQuantity));
+            session.Send(GuildPacket.UpdateGuildStatsNotice(0, donationAmount));
+            session.Send(GuildPacket.UpdatePlayerContribution(session.Player, donateQuantity));
         }
 
         private void HandleServices(GameSession session, PacketReader packet)
@@ -453,9 +511,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-
+            // TODO: Get Guild Service costs
             guild.BroadcastPacketGuild(GuildPacket.UpgradeService(session.Player, service));
-            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds());
+            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(0));
         }
     }
 }
