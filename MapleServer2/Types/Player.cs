@@ -106,7 +106,7 @@ namespace MapleServer2.Types
         {
             int job = 50; // Archer
             PlayerStats stats = PlayerStats.Default();
-            StatDistribution StatPointDistribution = new StatDistribution();
+            StatDistribution StatPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab((Job) (job))
