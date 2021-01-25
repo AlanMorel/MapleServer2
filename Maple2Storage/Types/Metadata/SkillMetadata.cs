@@ -18,6 +18,8 @@ namespace Maple2Storage.Types.Metadata
         public int Job;
         [XmlElement(Order = 5)]
         public byte Learned = 0;
+        [XmlElement(Order = 6)]
+        public string State;
 
         public SkillMetadata()
         {

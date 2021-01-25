@@ -39,6 +39,9 @@ namespace GameDataParser.Parsers
                         skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
                     }
                     metadata.SkillLevels = skillLevels;
+
+                    string state = string.IsNullOrEmpty(document.SelectSingleNode("/ms2/basic/kinds").Attributes["state"]?.Value) ? "" : document.SelectSingleNode("/ms2/basic/kinds").Attributes["state"]?.Value;
+                    metadata.State = state;
                     skillList.Add(metadata);
                 }
                 // Parsing SubSkills

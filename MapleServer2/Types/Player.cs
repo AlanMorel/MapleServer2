@@ -50,7 +50,9 @@ namespace MapleServer2.Types
         public List<short> Stickers = new List<short> { 0 };
 
         public CoordF Coord;
-        public CoordF Rotation; // Rotation?
+        public CoordF Rotation;
+        public CoordF SafeCoord;
+        public bool OnAirMount = false;
 
         // Appearance
         public SkinColor SkinColor;
