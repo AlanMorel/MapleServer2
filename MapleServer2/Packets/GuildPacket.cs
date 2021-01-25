@@ -574,7 +574,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteEnum(GuildPacketMode.DisplayGuildList);
-            pWriter.WriteInt(guilds.Count); // guild count to display
+            pWriter.WriteInt(guilds.Count);
 
             foreach (Guild guild in guilds)
             {

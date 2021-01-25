@@ -451,7 +451,7 @@ namespace MapleServer2.PacketHandlers.Game
                 if (!session.Player.Wallet.Meso.Modify(-buff.Cost))
                 {
                     return;
-                };
+                }
             }
             else
             {
@@ -478,6 +478,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int donateQuantity = packet.ReadInt();
             int donationAmount = donateQuantity * 10000;
+
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
             if (guild == null)
             {
@@ -493,7 +494,7 @@ namespace MapleServer2.PacketHandlers.Game
             GuildContribution contribution = GuildMetadataStorage.GetContribution("donation");
 
             session.Player.GuildContribution += contribution.Value * donateQuantity;
-            int guildFunds = guild.Funds + donateQuantity * 10000;
+            int guildFunds = guild.Funds + donationAmount;
             guild.Funds = guildFunds;
 
             session.Send(GuildPacket.UpdateGuildFunds(guild.Funds));
