@@ -20,8 +20,8 @@ namespace MapleServer2.Types
         {
             // hardcode the amount of stat points the character starts with temporarily
             this.TotalStatPoints = totalStats;
-            this.AllocatedStats = AllocatedStats == null ? new Dictionary<byte, int>() : AllocatedStats;
-            this.OtherStats = OtherStats == null ? new Dictionary<OtherStatsIndex, int>() : OtherStats;
+            this.AllocatedStats = AllocatedStats ?? new Dictionary<byte, int>();
+            this.OtherStats = OtherStats ?? new Dictionary<OtherStatsIndex, int>();
             
             AddTotalStatPoints(1, OtherStatsIndex.Quest);
             AddTotalStatPoints(2, OtherStatsIndex.Trophy);
