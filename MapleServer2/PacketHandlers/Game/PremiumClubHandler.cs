@@ -69,6 +69,7 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO grab data from \table\vipgoodstable.xml for pricing, buff duration, and bonus items
             long expiration = 2592847227; // temporarilyy plugging in expiration time
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, expiration));
+            session.Player.IsVIP = true;
         }
     }
 }
