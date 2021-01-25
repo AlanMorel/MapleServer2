@@ -10,6 +10,7 @@ namespace MapleServer2.Packets
     {
         private enum QuestType : byte
         {
+            AcceptQuest = 0x02,
             CompleteExplorationGoal = 0x03,
             CompleteQuest = 0x04,
             SendQuests = 0x16 // send the status of every quest
@@ -26,7 +27,7 @@ namespace MapleServer2.Packets
             foreach (QuestMetadata item in questList)
             {
                 pWriter.WriteInt(item.Basic.QuestID);
-                pWriter.WriteInt(1); // 1 and 0 to set to not started, use 2 and 1 to set to completed
+                pWriter.WriteInt(0); // 0 and 0 to set to not started, 1 and 0 to started not completed, use 2 and 1 to set to completed
                 pWriter.WriteInt(0);
                 pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // Timestamp of receiving the quest
                 pWriter.WriteLong(); // Timestamp of completion
@@ -43,22 +44,50 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet AcceptQuest(int questId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.AcceptQuest);
+            pWriter.WriteInt(questId);
+            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            pWriter.WriteByte(1);
+            pWriter.WriteInt(0);
+
+            return pWriter;
+        }
+
         public static Packet CompleteQuest(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.CompleteQuest);
-            pWriter.WriteInt (questId);
+            pWriter.WriteInt(questId);
             pWriter.WriteInt(1);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             return pWriter;
         }
 
+        public static Packet SendQuestDialog(int objectId, List<QuestMetadata> questList)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteByte(0x1);
+            pWriter.WriteInt(objectId);
+            pWriter.WriteInt(questList.Count);
+            foreach (var item in questList)
+            {
+                pWriter.WriteInt(item.Basic.QuestID);
+
+            }
+
+            return pWriter;
+
+        }
+
         public static Packet CompleteExplorationGoal(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
-            pWriter.WriteInt (questId);
+            pWriter.WriteInt(questId);
             pWriter.WriteInt(1);
             pWriter.WriteInt(1);
 

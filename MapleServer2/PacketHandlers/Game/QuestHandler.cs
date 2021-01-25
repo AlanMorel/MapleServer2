@@ -19,6 +19,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum QuestMode : byte
         {
+            AcceptQuest = 0x02,
+            CompleteQuest = 0x04,
             ExplorationGoals = 0x08,
             CompleteNavigator = 0x18,
         }
@@ -28,6 +30,23 @@ namespace MapleServer2.PacketHandlers.Game
             QuestMode mode = (QuestMode) packet.ReadByte();
             switch (mode)
             {
+                case QuestMode.AcceptQuest:
+                    {
+                        int questid = packet.ReadInt();
+                        int objectid = packet.ReadInt();
+                        session.Send(QuestPacket.AcceptQuest(questid));
+                        break;
+                    }
+                case QuestMode.CompleteQuest:
+                    {
+                        int questid = packet.ReadInt();
+                        int objectid = packet.ReadInt();
+                        session.Send(QuestPacket.CompleteQuest(questid));
+                        QuestReward quest = QuestMetadataStorage.GetMetadata(questid).Reward;
+                        session.Player.Levels.GainExp(quest.Exp);
+                        session.Player.Wallet.Meso.Modify(quest.Money);
+                        break;
+                    }
                 case QuestMode.ExplorationGoals:
                     List<QuestMetadata> list = new List<QuestMetadata>();
 
