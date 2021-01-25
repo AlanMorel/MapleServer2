@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types.Metadata
@@ -11,18 +12,33 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int Id;
         [XmlElement(Order = 3)]
-        public List<Select> Select = new List<Select>();
+        public Dictionary<int, Script> Scripts = new Dictionary<int, Script>();
         [XmlElement(Order = 4)]
-        public List<Script> Script = new List<Script>();
+        public Dictionary<int, Monologue> Monologues = new Dictionary<int, Monologue>();
         [XmlElement(Order = 5)]
-        public List<Monologue> Monologue = new List<Monologue>();
+        public Dictionary<int, Select> Selects = new Dictionary<int, Select>();
 
         public ScriptMetadata() { }
 
         public override string ToString()
         {
-            return $"IsQuestScript: {IsQuestScript}, Id: {Id},\r\n Select: ({string.Join(",", Select)}),\r\n Script: ({string.Join(",", Script)})," +
-            $"\r\n Monologue: ({string.Join(",", Monologue)})";
+            string text = "";
+            foreach (KeyValuePair<int, Script> kvp in Scripts)
+            {
+                text += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
+            }
+            string text2 = "";
+            foreach (KeyValuePair<int, Monologue> kvp in Monologues)
+            {
+                text2 += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
+            }
+            string text3 = "";
+            foreach (KeyValuePair<int, Select> kvp in Selects)
+            {
+                text3 += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
+            }
+
+            return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Scripts: ({text}), Monologues: ({text2}), Selects: ({text3})";
         }
     }
 

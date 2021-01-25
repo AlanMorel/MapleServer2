@@ -19,6 +19,7 @@ namespace GameDataParser.Files.Export
             // Parse script metadata
             List<ScriptMetadata> entities = ScriptParser.ParseNpc(memFile, files);
             entities.AddRange(ScriptParser.ParseQuest(memFile, files));
+            ScriptParser.Write(entities);
             Hash.WriteHash(VariableDefines.OUTPUT + "ms2-script-metadata");
         }
     }

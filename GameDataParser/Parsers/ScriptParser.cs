@@ -14,7 +14,7 @@ namespace GameDataParser.Parsers
     {
         public static List<ScriptMetadata> ParseNpc(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
-            List<ScriptMetadata> quests = new List<ScriptMetadata>();
+            List<ScriptMetadata> scripts = new List<ScriptMetadata>();
             foreach (PackFileEntry entry in entries)
             {
 
@@ -105,32 +105,32 @@ namespace GameDataParser.Parsers
                         contents.Add(new Content(contentScriptID, voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
                     }
 
+                    metadata.Id = int.Parse(npcID);
+                    metadata.IsQuestScript = false;
+
                     if (node.Name == "select")
                     {
-                        metadata.Select.Add(new Select(id, contents));
+                        metadata.Selects[id] = new Select(id, contents);
                     }
                     else if (node.Name == "script")
                     {
-                        metadata.Script.Add(new Script(id, feature, randomPick, gotoConditionTalkID, contents));
+                        metadata.Scripts[id] = new Script(id, feature, randomPick, gotoConditionTalkID, contents);
                     }
                     else if (node.Name == "monologue")
                     {
-                        metadata.Monologue.Add(new Monologue(id, popupState, popupProp, contents));
+                        metadata.Monologues[id] = new Monologue(id, popupState, popupProp, contents);
                     }
-
-                    metadata.Id = int.Parse(npcID);
-                    metadata.IsQuestScript = false;
                 }
 
-                quests.Add(metadata);
+                scripts.Add(metadata);
             }
 
-            return quests;
+            return scripts;
         }
 
         public static List<ScriptMetadata> ParseQuest(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
         {
-            List<ScriptMetadata> quests = new List<ScriptMetadata>();
+            List<ScriptMetadata> scripts = new List<ScriptMetadata>();
             foreach (PackFileEntry entry in entries)
             {
 
@@ -224,27 +224,27 @@ namespace GameDataParser.Parsers
                             contents.Add(new Content(contentScriptID, voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
                         }
 
+                        metadata.Id = questID;
+                        metadata.IsQuestScript = true;
+
                         if (node.Name == "select")
                         {
-                            metadata.Select.Add(new Select(id, contents));
+                            metadata.Selects[id] = new Select(id, contents);
                         }
                         else if (node.Name == "script")
                         {
-                            metadata.Script.Add(new Script(id, feature, randomPick, gotoConditionTalkID, contents));
+                            metadata.Scripts[id] = new Script(id, feature, randomPick, gotoConditionTalkID, contents);
                         }
-                        else
+                        else if (node.Name == "monologue")
                         {
-                            metadata.Monologue.Add(new Monologue(id, popupState, popupProp, contents));
+                            metadata.Monologues[id] = new Monologue(id, popupState, popupProp, contents);
                         }
 
-                        metadata.Id = questID;
-                        metadata.IsQuestScript = true;
-                        quests.Add(metadata);
+                        scripts.Add(metadata);
                     }
                 }
             }
-            Console.WriteLine(quests.Count);
-            return quests;
+            return scripts;
         }
 
         public static void Write(List<ScriptMetadata> entities)
