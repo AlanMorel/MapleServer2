@@ -459,10 +459,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     return;
                 }
-                else
-                {
-                    guild.Funds -= buff.Cost;
-                }
+                guild.Funds -= buff.Cost;
             }
 
             session.Send(GuildPacket.ActivateBuff(buffId));
