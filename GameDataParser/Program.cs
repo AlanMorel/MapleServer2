@@ -39,6 +39,7 @@ namespace GameDataParser
             Thread expThread = new Thread(() => ExpMetadataExport.Export(xmlFiles, xmlMemFile));
             Thread questThread = new Thread(() => QuestMetadataExport.Export(xmlFiles, xmlMemFile));
             Thread scriptThread = new Thread(() => ScriptMetadataExport.Export(xmlFiles, xmlMemFile));
+            Thread guildThread = new Thread(() => GuildMetadataExport.Export(xmlFiles, xmlMemFile));
 
             Spinner spinner = new Spinner();
             spinner.Start();
@@ -51,6 +52,7 @@ namespace GameDataParser
             expThread.Start();
             questThread.Start();
             scriptThread.Start();
+            guildThread.Start();
 
             itemThread.Join();
             mapEntityThread.Join();
@@ -60,6 +62,7 @@ namespace GameDataParser
             expThread.Join();
             questThread.Join();
             scriptThread.Join();
+            guildThread.Join();
 
             spinner.Stop();
         }
