@@ -224,7 +224,7 @@
         DICE_GAME = 0x00E7,
         BYPASS_KEY = 0x00E8,
         LOCAL_CAMERA = 0x00EB,
-        VIP_GOODS_SHOP = 0x00ED,
+        PREMIUM_CLUB = 0x00ED,
         STEAM_CASH_SHOP = 0x00EF,
         RESET_CAMERA = 0x00F1,
         ONE_TIME_EFFECT = 0x00F3,
@@ -239,10 +239,11 @@
         SURVIVAL_EVENT = 0x0118,
         LOGIN_REQUIRED = 0x011B,
         ITEM_LAPENSHARD = 0x011D,
-        ADVENTURE_LEVEL = 0x011E,
+        PRESTIGE = 0x011E,
         WORLD_CHAMPION = 0x0121,
         SYNC_VALUE = 0x0122,
         NO = 0x0123,
+        CHAT_STICKER = 0x0128,
         UNKNOWN_SYNC = 0x0132
     }
 }

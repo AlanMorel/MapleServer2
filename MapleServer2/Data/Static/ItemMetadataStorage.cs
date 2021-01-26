@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -36,9 +38,19 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Slot;
         }
 
+        public static GemSlot GetGem(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Gem;
+        }
+
         public static InventoryTab GetTab(int itemId)
         {
             return map.GetValueOrDefault(itemId).Tab;
+        }
+
+        public static int GetRarity(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Rarity;
         }
 
         public static int GetSlotMax(int itemId)
@@ -49,6 +61,23 @@ namespace MapleServer2.Data.Static
         public static bool GetIsTemplate(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTemplate;
+        }
+
+        public static int GetPlayCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).PlayCount;
+        }
+
+        public static List<Job> GetRecommendJobs(int itemId)
+        {
+            Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
+
+            return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
+        }
+
+        public static List<ItemContent> GetContent(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Content;
         }
     }
 }

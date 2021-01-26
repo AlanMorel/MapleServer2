@@ -38,20 +38,46 @@ public class InventoryController
                     return;
                 }
             }
+
+            session.Player.Inventory.Add(item); // Adds item into internal database
+            session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
+            if (isNew)
+            {
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+            }
         }
-        session.Player.Inventory.Add(item); // Adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
-        if (isNew)
+        else
         {
-            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+            for (int i = 0; i < item.Amount; i++)
+            {
+                Item newItem = new Item(item)
+                {
+                    Amount = 1,
+                    Slot = -1,
+                    Uid = GuidGenerator.Long()
+                };
+                session.Player.Inventory.Add(newItem);
+                session.Send(ItemInventoryPacket.Add(newItem));
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(newItem, newItem.Amount));
+                }
+            }
         }
     }
 
     // Removes Item from inventory by reference
-    public static void Remove(GameSession session, long uid, out Item item)
+    public static bool Remove(GameSession session, long uid, out Item item)
     {
-        session.Player.Inventory.Remove(uid, out item);
+        int amountRemoved = session.Player.Inventory.Remove(uid, out item);
+
+        if (amountRemoved == -1)
+        {
+            return false;
+        }
+
         session.Send(ItemInventoryPacket.Remove(uid));
+        return true;
     }
 
     // Picks up item

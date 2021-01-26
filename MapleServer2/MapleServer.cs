@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
@@ -17,6 +18,9 @@ namespace MapleServer2
         private static GameServer gameServer;
         public static void Main(string[] args)
         {
+            // Force Globalization to en-US because we use periods instead of commas for decimals
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
@@ -43,7 +47,7 @@ namespace MapleServer2
                         loginServer.Stop();
                         return;
                     case "send":
-                        string packet = input[1].Replace(" ", "");
+                        string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
                         logger.Info(pWriter);

@@ -1,8 +1,12 @@
 bin/
 obj/
-Properties/
 .vs/
 .vscode/
 *.cache
 GameDataParser/Resources
+GameDataParser/Properties
+MapleServer2/Properties
 Maple2Storage/Resources
+Ms2Database/Migrations
+workspace.code-workspace
+build.bat

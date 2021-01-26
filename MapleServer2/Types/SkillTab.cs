@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants.Skills;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
@@ -7,41 +11,40 @@ namespace MapleServer2.Types
     {
         public long Id { get; set; }
         public string Name { get; private set; }
-        public int[] Order { get; private set; }
-        public byte Split { get; private set; }
-        public Dictionary<int, Skill> Skills { get; private set; }
+        public List<int> Order { get; private set; }
+        public List<SkillMetadata> Skills { get; private set; }
+        public Dictionary<int, SkillMetadata> SkillJob { get; set; }
 
-        public SkillTab(string name, int[] order = null, byte split = 8, Dictionary<int, Skill> skills = null)
+        public SkillTab(Job job)
         {
             Id = 0x000032DF995949B9; // temporary hard coded id
-            Name = name;
-            Order = order;
-            Split = split;
-            Skills = (skills != null && skills.Any()) ? skills : new Dictionary<int, Skill>();
-
-            // Add default skills
-            AddOrUpdate(new Skill(20000001, 1, 1)); // Swift Swimming
-            AddOrUpdate(new Skill(20000011, 1, 1)); // Wall Climbing
+            Name = "Build";
+            Skills = SkillMetadataStorage.GetJobSkills(job);
+            Order = SkillTreeOrdered.GetListOrdered(job);
+            SkillJob = AddOnDictionary();
         }
 
-        public void AddOrUpdate(Skill skill)
+        public Dictionary<int, SkillMetadata> AddOnDictionary()
         {
-            // Add or update skill
-            if (Skills.ContainsKey(skill.Id))
-            {
-                Skills[skill.Id] = skill;
-            }
-            else
-            {
-                Skills.Add(skill.Id, skill);
-            }
+            Dictionary<int, SkillMetadata> skillJob = new Dictionary<int, SkillMetadata>();
 
-            // Recursive add or update for sub skills
-            if (skill.Sub != null)
+            foreach (SkillMetadata skill in Skills)
             {
-                foreach (int sub in skill.Sub)
+                skillJob[skill.SkillId] = skill;
+            }
+            return skillJob;
+        }
+
+        public void AddOrUpdate(int id, short level, byte learned)
+        {
+            SkillJob[id].Learned = learned;
+            SkillJob[id].SkillLevels.Find(x => x.Level != 0).Level = level;
+            if (SkillJob[id].SubSkills.Length != 0)
+            {
+                foreach (int sub in SkillJob[id].SubSkills.Select(x => x))
                 {
-                    AddOrUpdate(new Skill(sub, skill.Level, skill.Learned, skill.Feature));
+                    SkillJob[sub].Learned = learned;
+                    SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
                 }
             }
         }
@@ -51,21 +54,11 @@ namespace MapleServer2.Types
             this.Name = name;
         }
 
-        public List<Skill> GetJobFeatureSkills(string feature = "")
+        public List<SkillMetadata> GetJobFeatureSkills(Job job)
         {
-            List<Skill> jobFeatureSkills = new List<Skill>();
-
-            foreach (KeyValuePair<int, Skill> skill in Skills)
-            {
-                if (skill.Value.Feature.ToLower().Equals(feature.ToLower()) && (skill.Value.Id > 10000000 && skill.Value.Id < 20000000))
-                {
-                    jobFeatureSkills.Add(skill.Value);
-                }
-            }
-
-            return jobFeatureSkills;
+            return SkillMetadataStorage.GetJobSkills(job);
         }
 
-        public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", Skills)})";
+        public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", SkillJob)})";
     }
 }

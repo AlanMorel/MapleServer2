@@ -17,11 +17,44 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "setprestigelevel":
+                    session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setlevel":
+                    session.Player.Levels.SetLevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "gainprestigeexp":
+                    session.Player.Levels.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "gainexp":
+                    session.Player.Levels.GainExp(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setvalor":
+                    session.Player.Wallet.ValorToken.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "settreva":
+                    session.Player.Wallet.Treva.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setrue":
+                    session.Player.Wallet.Rue.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "sethavi":
+                    session.Player.Wallet.HaviFruit.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setmeso":
+                    session.Player.Wallet.Meso.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
+                case "setmeret":
+                    session.Player.Wallet.Meret.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "item":
                     ProcessItemCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "npc":
                     ProcessNpcCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
+                case "mob":
+                    ProcessMobCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "map":
                     ProcessMapCommand(session, args.Length > 1 ? args[1] : "");
@@ -29,7 +62,7 @@ namespace MapleServer2.Tools
                 case "coord":
                     session.SendNotice(session.FieldPlayer.Coord.ToString());
                     break;
-                case "battleof":
+                case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
                     break;
                 case "notice":
@@ -68,9 +101,15 @@ namespace MapleServer2.Tools
                 Uid = Environment.TickCount64,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                Stats = stats
+                Stats = stats,
+                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
             };
-            int.TryParse(config.GetValueOrDefault("rarity", "5"), out item.Rarity);
+            int rarity = 0;
+            int.TryParse(config.GetValueOrDefault("rarity", "5"), out rarity);
+            if (rarity > 0)
+            {
+                item.Rarity = rarity;
+            }
             int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
 
             // Simulate looting item
@@ -136,6 +175,27 @@ namespace MapleServer2.Tools
             session.FieldManager.AddNpc(fieldNpc);
         }
 
+        private static void ProcessMobCommand(GameSession session, string command)
+        {
+            Dictionary<string, string> config = command.ToMap();
+            int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId);
+            Mob mob = new Mob(mobId);
+            byte.TryParse(config.GetValueOrDefault("ani", "-1"), out mob.Animation);
+            short.TryParse(config.GetValueOrDefault("dir", "2700"), out mob.Rotation);
+
+            IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);
+            if (TryParseCoord(config.GetValueOrDefault("coord", ""), out CoordF coord))
+            {
+                fieldMob.Coord = coord;
+            }
+            else
+            {
+                fieldMob.Coord = session.FieldPlayer.Coord;
+            }
+
+            session.FieldManager.AddMob(fieldMob);
+        }
+
         private static Dictionary<string, string> ToMap(this string command)
         {
             string[] args = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -169,6 +229,72 @@ namespace MapleServer2.Tools
 
             result = default;
             return false;
+        }
+
+        private static long ParseLong(GameSession session, string s)
+        {
+            try
+            {
+                return long.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type long.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static int ParseInt(GameSession session, string s)
+        {
+            try
+            {
+                return int.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type int.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        private static short ParseShort(GameSession session, string s)
+        {
+            try
+            {
+                return short.Parse(s);
+            }
+            catch (FormatException)
+            {
+                session.SendNotice("The input is not type short.");
+                return -1;
+            }
+            catch (OverflowException)
+            {
+                session.SendNotice("You entered a number too big or too small.");
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
     }
 }

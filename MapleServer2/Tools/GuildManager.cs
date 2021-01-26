@@ -23,6 +23,11 @@ namespace MapleServer2.Tools
             guildList.Remove(guild.Id);
         }
 
+        public List<Guild> GetGuildList()
+        {
+            return guildList.Cast<Guild>().Where(guild => guild.Searchable = true).ToList();
+        }
+
         public Guild GetGuildById(long id)
         {
             return guildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;

@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Packets;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
@@ -13,9 +13,26 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestItemUseHandler(ILogger<RequestItemUseHandler> logger) : base(logger) { }
 
+        private enum BoxType : byte
+        {
+            OPEN = 0x00,
+            SELECT = 0x01
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             long boxUid = packet.ReadLong();
+            BoxType boxType = (BoxType) packet.ReadShort();
+
+            int index = 0;
+            if (boxType == BoxType.SELECT)
+            {
+                index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+                if (index < 0)
+                {
+                    return;
+                }
+            }
 
             if (!session.Player.Inventory.Items.ContainsKey(boxUid))
             {
@@ -26,7 +43,6 @@ namespace MapleServer2.PacketHandlers.Game
             Item box = session.Player.Inventory.Items[boxUid];
 
             // Remove box if amount is 1 or less
-            // TODO remove these inventory packets
             if (box.Amount <= 1)
             {
                 InventoryController.Remove(session, boxUid, out Item removed);
@@ -38,9 +54,17 @@ namespace MapleServer2.PacketHandlers.Game
                 InventoryController.Update(session, boxUid, box.Amount);
             }
 
-            // Normally would look up which item to create, instead always add poisonous mushroom
-            Item item = new Item(30001001);
-            InventoryController.Add(session, item, true);
+            // Handle selection box
+            if (boxType == BoxType.SELECT)
+            {
+                if (index < box.Content.Count)
+                {
+                    ItemUseHelper.GiveItem(session, box.Content[index]);
+                }
+                return;
+            }
+
+            ItemUseHelper.OpenBox(session, box.Content);
         }
     }
 }

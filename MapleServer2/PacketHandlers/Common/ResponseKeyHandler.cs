@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -65,13 +67,21 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
             session.Send(PacketWriter.Of(SendOp.SYNC_NUMBER).WriteByte());
-            // 0x112, AdventureLevel f(0x00, 0x07)
-            session.Send(AdventureLevelPacket.Prestige(session.Player));
+            // 0x112, Prestige f(0x00, 0x07)
+            session.Send(PrestigePacket.Prestige(session.Player));
 
             // Load inventory tabs
             foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
             {
                 InventoryController.LoadInventoryTab(session, tab);
+            }
+
+            List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
+            IEnumerable<List<QuestMetadata>> packetCount = SplitList(questList, 200); // Split the quest list in 200 quests per packet, same way kms do
+
+            foreach (List<QuestMetadata> item in packetCount)
+            {
+                session.Send(QuestPacket.SendQuests(item));
             }
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
             session.Send(MarketInventoryPacket.StartList());
@@ -79,10 +89,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(FurnishingInventoryPacket.StartList());
             session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
-
-            session.Send(UserEnvPacket.SetTitles(new List<int> {
-                10000565, 10000251, 10000291, 10000292
-            }));
+            session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());
             session.Send(UserEnvPacket.Send05());
             session.Send(UserEnvPacket.Send08());
@@ -152,6 +159,14 @@ namespace MapleServer2.PacketHandlers.Common
             }
 
             session.Send((byte) SendOp.MOVE_RESULT, 0x00, 0x00);
+        }
+
+        public static IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize = 30)
+        {
+            for (int i = 0; i < locations.Count; i += nSize)
+            {
+                yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i));
+            }
         }
     }
 }
