@@ -10,18 +10,26 @@ namespace MapleServer2.Packets
         public static Packet SetServers(string serverName, ImmutableList<IPEndPoint> serverIps)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
-            pWriter.Write(01, 01, 00, 00, 00);
+
+            pWriter.WriteByte(1); // If false packet isn't processed
+            pWriter.WriteInt(1); // Unk.
             pWriter.WriteUnicodeString(serverName);
-            pWriter.WriteByte(4); // IPv4?
+            pWriter.WriteByte(0); // Unk.
+
             pWriter.WriteUShort((ushort) serverIps.Count);
             foreach (IPEndPoint endpoint in serverIps)
             {
                 pWriter.WriteUnicodeString(endpoint.Address.ToString());
                 pWriter.WriteUShort((ushort) endpoint.Port);
             }
-            pWriter.WriteInt(100); // Const
-            // Looks like length 9, then 1-9 in scrambled order
-            pWriter.Write(09, 00, 01, 00, 04, 00, 07, 00, 02, 00, 05, 00, 08, 00, 03, 00, 06, 00, 09, 00);
+
+            pWriter.WriteInt(100); // Unk.
+
+            short nMultiServerChannel = 1; // Need at least 1
+            for (short i = 0; i < nMultiServerChannel; ++i)
+            {
+                pWriter.WriteShort(i);
+            }
 
             return pWriter;
         }
