@@ -11,8 +11,8 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
 
-            pWriter.WriteByte(1); // Required
-            pWriter.WriteInt(0); // Unk.
+            pWriter.WriteByte(1); // If false packet isn't processed
+            pWriter.WriteInt(1); // Unk.
             pWriter.WriteUnicodeString(serverName);
             pWriter.WriteByte(0); // Unk.
 
@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteUShort((ushort) endpoint.Port);
             }
 
-            pWriter.WriteInt(0); // 100 in sniff
+            pWriter.WriteInt(100); // Unk.
 
             short nMultiServerChannel = 1; // Need at least 1
             for (short i = 0; i < nMultiServerChannel; ++i)
