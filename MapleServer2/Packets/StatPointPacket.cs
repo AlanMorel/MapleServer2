@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
 using MapleServer2.Enums;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -26,10 +25,10 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
             // write the number of sources from which stat points have been received
             pWriter.WriteInt(character.StatPointDistribution.OtherStats.Count);
-        
+
             foreach (OtherStatsIndex pointSrc in character.StatPointDistribution.OtherStats.Keys)
             {
-                pWriter.WriteInt((int)pointSrc);
+                pWriter.WriteInt((int) pointSrc);
                 pWriter.WriteInt(character.StatPointDistribution.OtherStats[pointSrc]);
             }
 

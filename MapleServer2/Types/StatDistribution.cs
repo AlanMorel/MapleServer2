@@ -22,7 +22,7 @@ namespace MapleServer2.Types
             this.TotalStatPoints = totalStats;
             this.AllocatedStats = AllocatedStats ?? new Dictionary<byte, int>();
             this.OtherStats = OtherStats ?? new Dictionary<OtherStatsIndex, int>();
-            
+
             AddTotalStatPoints(1, OtherStatsIndex.Quest);
             AddTotalStatPoints(2, OtherStatsIndex.Trophy);
             AddTotalStatPoints(3, OtherStatsIndex.Exploration);

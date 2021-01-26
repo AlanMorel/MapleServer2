@@ -107,11 +107,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<SkillMetadata> skills)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-skill-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-skill-metadata"))
             {
                 Serializer.Serialize(writeStream, skills);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-skill-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-skill-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));

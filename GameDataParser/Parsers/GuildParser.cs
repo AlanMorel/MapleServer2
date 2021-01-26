@@ -68,11 +68,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(GuildMetadata guildMetadata)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-guild-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-guild-metadata"))
             {
                 Serializer.Serialize(writeStream, guildMetadata);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-guild-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-guild-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));

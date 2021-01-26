@@ -48,11 +48,11 @@ namespace GameDataParser.Parsers
         }
         public static void Write(List<InsigniaMetadata> entities)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-insignia-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-insignia-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-insignia-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-insignia-metadata"))
             {
             }
             Console.WriteLine("\rSuccessfully parsed insignia metadata!");

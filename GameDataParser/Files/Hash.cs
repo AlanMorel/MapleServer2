@@ -10,13 +10,11 @@ namespace GameDataParser.Files
         {
             try
             {
-                string hashPath = $"GameDataParser/Hash/{filename.Split("/")[^1]}-hash";
-
-                string currentHash = File.ReadAllText(hashPath);
+                string currentHash = File.ReadAllText($"{Paths.HASH}/{filename}-hash");
 
                 using (MD5 md5 = MD5.Create())
                 {
-                    using (FileStream stream = File.OpenRead(filename))
+                    using (FileStream stream = File.OpenRead($"{Paths.OUTPUT}/{filename}"))
                     {
                         byte[] hash = md5.ComputeHash(stream);
                         string newHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -40,16 +38,14 @@ namespace GameDataParser.Files
         {
             try
             {
-                string hashPath = $"GameDataParser/Hash/{filename.Split("/")[^1]}-hash";
-
                 using (MD5 md5 = MD5.Create())
                 {
-                    using (FileStream stream = File.OpenRead(filename))
+                    using (FileStream stream = File.OpenRead($"{Paths.OUTPUT}/{filename}"))
                     {
                         byte[] hash = md5.ComputeHash(stream);
                         string hashString = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-                        File.WriteAllText(hashPath, hashString);
+                        File.WriteAllText($"{Paths.HASH}/{filename}-hash", hashString);
                     }
                 }
             }
