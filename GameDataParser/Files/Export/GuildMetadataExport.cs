@@ -18,8 +18,8 @@ namespace GameDataParser.Files.Export
             }
 
             // Parse and save some item data from xml file
-            PrestigeMetadata GuildMetadata = PrestigeParser.Parse(memFile, files);
-            PrestigeParser.Write(GuildMetadata);
+            GuildMetadata GuildMetadata = GuildParser.Parse(memFile, files);
+            GuildParser.Write(GuildMetadata);
             Hash.WriteHash(VariableDefines.OUTPUT + "ms2-guild-metadata");
         }
     }
