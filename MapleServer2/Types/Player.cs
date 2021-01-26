@@ -72,6 +72,7 @@ namespace MapleServer2.Types
         public StatDistribution StatPointDistribution = new StatDistribution();
 
         public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
+        public Dictionary<ItemSlot, Item> Cosmetics = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
         public ItemSlot[] EquipSlots { get; }
         private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;

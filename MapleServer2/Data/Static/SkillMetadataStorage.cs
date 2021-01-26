@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Enums;
 using ProtoBuf;
 
@@ -12,7 +13,7 @@ namespace MapleServer2.Data.Static
 
         static SkillMetadataStorage()
         {
-            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-skill-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-skill-metadata");
             List<SkillMetadata> skillList = Serializer.Deserialize<List<SkillMetadata>>(stream);
             foreach (SkillMetadata skills in skillList)
             {

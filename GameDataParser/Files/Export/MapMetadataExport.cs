@@ -11,7 +11,7 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
+            if (Hash.CheckHash("ms2-map-entity-metadata"))
             {
                 Console.WriteLine("\rSkipping map metadata!");
                 return;
@@ -20,7 +20,7 @@ namespace GameDataParser.Files.Export
             // Parse and save some item data from xml file
             List<MapEntityMetadata> entities = MapEntityParser.Parse(memFile, files);
             MapEntityParser.Write(entities);
-            Hash.WriteHash(VariableDefines.OUTPUT + "ms2-map-entity-metadata");
+            Hash.WriteHash("ms2-map-entity-metadata");
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"GuildMetadata(Contribution:{string.Join(",", Contribution)},Buff{string.Join(",",Buff)}";
+            $"GuildMetadata(Contribution:{string.Join(",", Contribution)},Buff{string.Join(",", Buff)}";
 
         public override int GetHashCode()
         {

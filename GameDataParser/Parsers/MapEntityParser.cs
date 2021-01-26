@@ -225,11 +225,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<MapEntityMetadata> entities)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-map-entity-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-map-entity-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-map-entity-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(entities.SequenceEqual(Serializer.Deserialize<List<MapEntityMetadata>>(readStream)));

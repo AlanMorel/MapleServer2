@@ -1,12 +1,12 @@
-﻿using GameDataParser.Crypto.Common;
-using GameDataParser.Files;
-using Maple2Storage.Types.Metadata;
-using ProtoBuf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Xml;
+using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
+using Maple2Storage.Types.Metadata;
+using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
@@ -249,14 +249,14 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<ScriptMetadata> entities)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-script-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-script-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-script-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-script-metadata"))
             {
             }
-            Console.WriteLine("Successfully parsed script metadata!");
+            Console.WriteLine("\rSuccessfully parsed script metadata!");
         }
     }
 }
