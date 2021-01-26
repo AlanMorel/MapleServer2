@@ -61,6 +61,16 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"CoordF({X}, {Y}, {Z})";
+
+        public override bool Equals(object obj)
+        {
+            return Equals((CoordF) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 
     [XmlType]
@@ -124,6 +134,16 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";
+
+        public override bool Equals(object obj)
+        {
+            return Equals((CoordS) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 
     [XmlType]
@@ -193,5 +213,15 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"CoordB({X}, {Y}, {Z})";
+
+        public override bool Equals(object obj)
+        {
+            return Equals((CoordB) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 }
