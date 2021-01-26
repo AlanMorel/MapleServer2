@@ -11,7 +11,7 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash(VariableDefines.OUTPUT + "ms2-prestige-metadata"))
+            if (Hash.CheckHash("ms2-prestige-metadata"))
             {
                 Console.WriteLine("\rSkipping prestige metadata!");
                 return;
@@ -20,7 +20,7 @@ namespace GameDataParser.Files.Export
             // Parse and save some item data from xml file
             PrestigeMetadata PrestigeMetadata = PrestigeParser.Parse(memFile, files);
             PrestigeParser.Write(PrestigeMetadata);
-            Hash.WriteHash(VariableDefines.OUTPUT + "ms2-prestige-metadata");
+            Hash.WriteHash("ms2-prestige-metadata");
         }
     }
 }

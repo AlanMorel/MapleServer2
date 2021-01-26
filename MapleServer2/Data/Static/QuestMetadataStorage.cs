@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -12,7 +12,7 @@ namespace MapleServer2.Data.Static
 
         static QuestMetadataStorage()
         {
-            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-quest-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-quest-metadata");
             List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
             foreach (QuestMetadata item in items)
             {
@@ -36,7 +36,7 @@ namespace MapleServer2.Data.Static
             foreach (KeyValuePair<int, QuestMetadata> item in map)
             {
                 // Only getting navigator quests to not annoy everyone with quests popping up every restart
-                if (level >= item.Value.Require.Level && item.Value.Require.RequiredQuests.Count == 0 && item.Key > 70000000 && item.Key < 70100000) 
+                if (level >= item.Value.Require.Level && item.Value.Require.RequiredQuests.Count == 0 && item.Key > 70000000 && item.Key < 70100000)
                 {
                     list.Add(item.Value);
                 }

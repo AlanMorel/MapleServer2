@@ -229,14 +229,14 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<QuestMetadata> entities)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-quest-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-quest-metadata"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-quest-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-quest-metadata"))
             {
             }
-            Console.WriteLine("Successfully parsed quest metadata!");
+            Console.WriteLine("\rSuccessfully parsed quest metadata!");
         }
     }
 }

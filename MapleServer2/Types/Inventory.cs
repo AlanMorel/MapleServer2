@@ -92,7 +92,6 @@ namespace MapleServer2.Types
                     return -1;
                 }
 
-                removedItem.Slot = -1;
                 return 0;
             }
 
@@ -184,7 +183,7 @@ namespace MapleServer2.Types
             return RemoveInternal(uid, out item);
         }
 
-        private bool SlotTaken(Item item, short slot = -1)
+        public bool SlotTaken(Item item, short slot = -1)
         {
             Debug.WriteLine(item.InventoryTab);
             return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);

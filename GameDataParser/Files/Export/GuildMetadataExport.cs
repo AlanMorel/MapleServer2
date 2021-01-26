@@ -11,16 +11,16 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash(VariableDefines.OUTPUT + "ms2-guild-metadata"))
+            if (Hash.CheckHash("ms2-guild-metadata"))
             {
                 Console.WriteLine("\rSkipping guild metadata!");
                 return;
             }
 
             // Parse and save some item data from xml file
-            PrestigeMetadata GuildMetadata = PrestigeParser.Parse(memFile, files);
-            PrestigeParser.Write(GuildMetadata);
-            Hash.WriteHash(VariableDefines.OUTPUT + "ms2-guild-metadata");
+            GuildMetadata GuildMetadata = GuildParser.Parse(memFile, files);
+            GuildParser.Write(GuildMetadata);
+            Hash.WriteHash("ms2-guild-metadata");
         }
     }
 }

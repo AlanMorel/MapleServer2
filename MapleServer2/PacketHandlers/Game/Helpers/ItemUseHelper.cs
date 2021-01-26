@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     foreach (ItemContent item in content)
                     {
                         List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
-                        if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(0)) // recommendJob 0 means the item don't have a recommended job
+                        if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(Job.None))
                         {
                             GiveItem(session, item);
                         }
@@ -53,24 +53,31 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 else
                 {
                     bool success = rng.Next(0, 100) > smartDropRate;
+
                     List<ItemContent> filteredList = new List<ItemContent>();
                     foreach (ItemContent item in content)
                     {
                         List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(item.Id);
                         if (success)
                         {
-                            if (recommendJobs.Contains(session.Player.Job))
+                            if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(Job.None))
                             {
                                 filteredList.Add(item);
                             }
                         }
                         else
                         {
-                            if (!recommendJobs.Contains(session.Player.Job))
+                            if (!recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(Job.None))
                             {
                                 filteredList.Add(item);
                             }
                         }
+                    }
+
+                    // Skip item if filtered list is empty
+                    if (filteredList.Count <= 0)
+                    {
+                        return;
                     }
 
                     int rand = rng.Next(0, filteredList.Count);

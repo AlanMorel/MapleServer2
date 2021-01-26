@@ -11,15 +11,16 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash(VariableDefines.OUTPUT + "ms2-quest-metadata"))
+            if (Hash.CheckHash("ms2-quest-metadata"))
             {
                 Console.WriteLine("\rSkipping quest metadata!");
                 return;
             }
+
             // Parse quest metadata
             List<QuestMetadata> entities = QuestParser.Parse(memFile, files);
             QuestParser.Write(entities);
-            Hash.WriteHash(VariableDefines.OUTPUT + "ms2-quest-metadata");
+            Hash.WriteHash("ms2-quest-metadata");
         }
     }
 }
