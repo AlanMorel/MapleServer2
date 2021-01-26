@@ -3,33 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
     public class StatDistribution
     {
         public int TotalStatPoints { get; private set; }
-        // TODO: implement Dictionary to keep track of points earned from quest, trophy, exploration, prestige
-        // naming convention: PointsFromQuest, PointsFromTrophy, PointsFromExploration, PointsFromPrestige
+        public Dictionary<OtherStatsIndex, int> OtherStats { get; private set; }
 
         public Dictionary<byte, int> AllocatedStats { get; private set; }
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
 
-        public StatDistribution()
+        public StatDistribution(int totalStats = 0, Dictionary<byte, int> AllocatedStats = null, Dictionary<OtherStatsIndex, int> OtherStats = null)
         {
             // hardcode the amount of stat points the character starts with temporarily
-            this.TotalStatPoints = 18;
-            this.AllocatedStats = new Dictionary<byte, int>();
-        }
-
-        public StatDistribution(Dictionary<byte, int> AllocatedStats)
-        {
-            this.AllocatedStats = AllocatedStats;
+            this.TotalStatPoints = totalStats;
+            this.AllocatedStats = AllocatedStats ?? new Dictionary<byte, int>();
+            this.OtherStats = OtherStats ?? new Dictionary<OtherStatsIndex, int>();
+            
+            AddTotalStatPoints(1, OtherStatsIndex.Quest);
+            AddTotalStatPoints(2, OtherStatsIndex.Trophy);
+            AddTotalStatPoints(3, OtherStatsIndex.Exploration);
+            AddTotalStatPoints(4, OtherStatsIndex.Prestige);
         }
 
         public void AddTotalStatPoints(int amount)
         {
+            this.TotalStatPoints += amount;
+        }
+
+        public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc)
+        {
+            if (OtherStats.ContainsKey(pointSrc))
+            {
+                OtherStats[pointSrc] += amount;
+            }
+            else
+            {
+                OtherStats[pointSrc] = amount;
+            }
             this.TotalStatPoints += amount;
         }
 

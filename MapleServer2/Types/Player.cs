@@ -42,6 +42,7 @@ namespace MapleServer2.Types
         public byte Animation;
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
+        public bool IsVIP;
 
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3];
@@ -106,7 +107,7 @@ namespace MapleServer2.Types
         {
             int job = 50; // Archer
             PlayerStats stats = PlayerStats.Default();
-            StatDistribution StatPointDistribution = new StatDistribution();
+            StatDistribution StatPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab((Job) (job))
@@ -152,6 +153,7 @@ namespace MapleServer2.Types
                     10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
                     10000603, 10000638, 10000644
                 },
+                IsVIP = false,
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
@@ -196,7 +198,8 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
-                Mailbox = new Mailbox()
+                Mailbox = new Mailbox(),
+                IsVIP = false,
             };
         }
 
@@ -227,7 +230,8 @@ namespace MapleServer2.Types
                 Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
-                Mailbox = new Mailbox()
+                Mailbox = new Mailbox(),
+                IsVIP = false,
             };
         }
 

@@ -35,8 +35,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string type = InsigniaMetadataStorage.GetConditionType(insigniaId);
 
-            switch (type) // TODO: handling survivallevel and vip
+            switch (type) // TODO: handling survivallevel
             {
+                case "vip":
+                    return session.Player.IsVIP;
                 case "level":
                     return session.Player.Levels.Level >= 50;
                 case "enchant":
