@@ -7,20 +7,20 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Files.Export
 {
-    public static class ExpMetadataExport
+    public static class GuildMetadataExport
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash("ms2-exptable-metadata"))
+            if (Hash.CheckHash("ms2-guild-metadata"))
             {
-                Console.WriteLine("\rSkipping exp metadata!");
+                Console.WriteLine("\rSkipping guild metadata!");
                 return;
             }
 
-            // Parse and save exp table from xml file
-            List<ExpMetadata> entities = ExpParser.Parse(memFile, files);
-            ExpParser.Write(entities);
-            Hash.WriteHash("ms2-exptable-metadata");
+            // Parse and save some item data from xml file
+            GuildMetadata GuildMetadata = GuildParser.Parse(memFile, files);
+            GuildParser.Write(GuildMetadata);
+            Hash.WriteHash("ms2-guild-metadata");
         }
     }
 }

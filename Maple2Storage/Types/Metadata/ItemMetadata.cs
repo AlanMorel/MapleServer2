@@ -19,14 +19,16 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 5)]
         public int Rarity;
         [XmlElement(Order = 6)]
-        public int SlotMax;
+        public int StackLimit;
         [XmlElement(Order = 7)]
-        public bool IsTemplate;
+        public bool IsTwoHand;
         [XmlElement(Order = 8)]
-        public int PlayCount;
+        public bool IsTemplate;
         [XmlElement(Order = 9)]
-        public List<int> RecommendJobs = new List<int>();
+        public int PlayCount;
         [XmlElement(Order = 10)]
+        public List<int> RecommendJobs = new List<int>();
+        [XmlElement(Order = 11)]
         public List<ItemContent> Content;
 
         // Required for deserialization
@@ -36,13 +38,13 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},SlotMax:{SlotMax},IsTemplate:{IsTemplate},PlayCount:{PlayCount}," +
+            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},PlayCount:{PlayCount}," +
             $"RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)})";
 
         protected bool Equals(ItemMetadata other)
         {
             return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab && Rarity == other.Rarity &&
-            SlotMax == other.SlotMax && IsTemplate == other.IsTemplate && PlayCount == other.PlayCount && Content.SequenceEqual(other.Content);
+            StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate && PlayCount == other.PlayCount && Content.SequenceEqual(other.Content);
         }
 
         public override bool Equals(object obj)
@@ -58,7 +60,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Slot, Gem, Tab, Rarity, SlotMax);
+            return HashCode.Combine(Id, Slot, Gem, Tab, Rarity, StackLimit);
         }
 
         public static bool operator ==(ItemMetadata left, ItemMetadata right)

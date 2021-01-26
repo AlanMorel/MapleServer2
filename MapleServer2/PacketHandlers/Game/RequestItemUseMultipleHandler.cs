@@ -49,6 +49,12 @@ namespace MapleServer2.PacketHandlers.Game
                     continue;
                 }
 
+                // Do nothing if box has no data stored
+                if (item.Content.Count <= 0)
+                {
+                    break;
+                }
+
                 for (int i = opened; i < amount; i++)
                 {
                     bool breakOut = false; // Needed to remove box before adding item to prevent item duping

@@ -37,84 +37,68 @@ namespace GameDataParser.Parsers
                 metadata.Id = int.Parse(itemId);
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
-                using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
-                while (reader.Read())
+                // Parse XML
+                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlNode item = document.SelectSingleNode("ms2/environment");
+
+                // Gear/Cosmetic slot
+                XmlNode slots = item.SelectSingleNode("slots");
+                XmlNode slot = slots.FirstChild;
+                bool slotResult = Enum.TryParse<ItemSlot>(slot.Attributes["name"].Value, out metadata.Slot);
+                if (!slotResult && !string.IsNullOrEmpty(slot.Attributes["name"].Value))
                 {
-                    if (reader.NodeType != XmlNodeType.Element)
+                    Console.WriteLine($"Failed to parse item slot for {itemId}: {slot.Attributes["name"].Value}");
+                }
+                int totalSlots = slots.SelectNodes("slot").Count;
+                metadata.IsTwoHand = totalSlots > 1;
+
+                // Badge slot
+                XmlNode gem = item.SelectSingleNode("gem");
+                bool gemResult = Enum.TryParse<GemSlot>(gem.Attributes["system"].Value, out metadata.Gem);
+                if (!gemResult && !string.IsNullOrEmpty(gem.Attributes["system"].Value))
+                {
+                    Console.WriteLine($"Failed to parse badge slot for {itemId}: {gem.Attributes["system"].Value}");
+                }
+
+                // Inventory tab and max stack size
+                XmlNode property = item.SelectSingleNode("property");
+                try
+                {
+                    byte type = byte.Parse(property.Attributes["type"].Value);
+                    byte subType = byte.Parse(property.Attributes["subtype"].Value);
+                    bool skin = byte.Parse(property.Attributes["skin"].Value) != 0;
+                    metadata.Tab = GetTab(type, subType, skin);
+                    metadata.IsTemplate = byte.Parse(property.Attributes["skinType"]?.Value ?? "0") == 99;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Failed to parse tab slot for {itemId}: {e.Message}");
+                }
+                metadata.StackLimit = int.Parse(property.Attributes["slotMax"].Value);
+
+                // Rarity
+                XmlNode option = item.SelectSingleNode("option");
+                int rarity = 1;
+                if (option.Attributes["constant"].Value.Length == 1)
+                {
+                    rarity = int.Parse(option.Attributes["constant"].Value);
+                }
+                metadata.Rarity = rarity;
+
+                // Item boxes
+                XmlNode function = item.SelectSingleNode("function");
+                string contentType = function.Attributes["name"].Value;
+                if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
+                {
+                    // selection boxes are SelectItemBox and 1,boxid
+                    // normal boxes are OpenItemBox and 0,1,0,boxid
+                    // fragments are OpenItemBox and 0,1,0,boxid,required_amount
+                    List<string> parameters = new List<string>(function.Attributes["parameter"].Value.Split(","));
+                    // Remove empty params
+                    parameters.RemoveAll(param => param.Length == 0);
+
+                    if (parameters.Count >= 2)
                     {
-                        continue;
-                    }
-
-                    if (reader.Name == "slot")
-                    {
-                        bool result = Enum.TryParse<ItemSlot>(reader["name"], out metadata.Slot);
-                        if (!result && !string.IsNullOrEmpty(reader["name"]))
-                        {
-                            throw new ArgumentException("Failed to parse item slot:" + reader["name"]);
-                        }
-                    }
-
-                    else if (reader.Name == "gem")
-                    {
-                        bool result = Enum.TryParse<GemSlot>(reader["system"], out metadata.Gem);
-                        if (!result && !string.IsNullOrEmpty(reader["system"]))
-                        {
-                            throw new ArgumentException("Failed to parse item slot:" + reader["system"]);
-                        }
-                    }
-
-                    else if (reader.Name == "property")
-                    {
-                        try
-                        {
-                            byte type = byte.Parse(reader["type"]);
-                            byte subType = byte.Parse(reader["subtype"]);
-                            bool skin = byte.Parse(reader["skin"]) != 0;
-                            metadata.Tab = GetTab(type, subType, skin);
-                            metadata.IsTemplate = byte.Parse(reader["skinType"] ?? "0") == 99;
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine($"Failed {itemId}: {e.Message}");
-                        }
-
-                        metadata.SlotMax = int.Parse(reader["slotMax"]);
-                    }
-
-                    else if (reader.Name == "option")
-                    {
-                        int rarity = 1;
-
-                        if (reader["constant"].Length == 1)
-                        {
-                            rarity = int.Parse(reader["constant"]);
-                        }
-
-                        metadata.Rarity = rarity;
-                    }
-
-                    else if (reader.Name == "function")
-                    {
-                        string contentType = reader["name"];
-
-                        if (contentType != "OpenItemBox" && contentType != "SelectItemBox")
-                        {
-                            continue;
-                        }
-
-                        // selection boxes are SelectItemBox and 1,boxid
-                        // normal boxes are OpenItemBox and 0,1,0,boxid
-                        // fragments are OpenItemBox and 0,1,0,boxid,required_amount
-
-                        List<string> parameters = new List<string>(reader["parameter"].Split(","));
-                        // Remove empty params
-                        parameters.RemoveAll(param => param.Length == 0);
-
-                        if (parameters.Count < 2)
-                        {
-                            continue;
-                        }
-
                         string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
 
                         foreach (PackFileEntry innerEntry in entries)
@@ -130,8 +114,8 @@ namespace GameDataParser.Parsers
                             }
 
                             // Parse XML
-                            XmlDocument document = m2dFile.GetDocument(innerEntry.FileHeader);
-                            XmlNodeList individualBoxItems = document.SelectNodes($"/ms2/individualDropBox[@individualDropBoxID={boxId}]");
+                            XmlDocument innerDocument = m2dFile.GetDocument(innerEntry.FileHeader);
+                            XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox[@individualDropBoxID={boxId}]");
 
                             foreach (XmlNode individualBoxItem in individualBoxItems)
                             {
@@ -140,38 +124,44 @@ namespace GameDataParser.Parsers
                                 int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
                                 int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
                                 int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
-                                int rarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
+                                int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
                                 int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
                                 int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
 
-                                // Skip already existing item, this may need to check for locales but not certain
+                                // Skip already existing item
                                 if (metadata.Content.Exists(content => content.Id == id))
                                 {
                                     continue;
                                 }
 
-                                metadata.Content.Add(new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, rarity, enchant, id2));
+                                // Skip locales other than NA in table/na
+                                if (innerEntry.Name.StartsWith("table/na/individualitemdrop") && individualBoxItem.Attributes["locale"] != null)
+                                {
+                                    if (!individualBoxItem.Attributes["locale"].Value.Equals("NA"))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                metadata.Content.Add(new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2));
                             }
                         }
                     }
+                }
 
-                    else if (reader.Name == "MusicScore")
+                // Music score charges
+                XmlNode musicScore = item.SelectSingleNode("MusicScore");
+                int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
+                metadata.PlayCount = playCount;
+
+                // Recommended jobs
+                XmlNode limit = item.SelectSingleNode("limit");
+                if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
+                {
+                    List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));
+                    foreach (string recommendJob in recommendJobs)
                     {
-                        int playCount = int.Parse(reader["playCount"]);
-
-                        metadata.PlayCount = playCount;
-                    }
-
-                    else if (reader.Name == "limit")
-                    {
-                        if (!string.IsNullOrEmpty(reader["recommendJobs"]))
-                        {
-                            List<string> temp = new List<string>(reader["recommendJobs"].Split(","));
-                            foreach (string item in temp)
-                            {
-                                metadata.RecommendJobs.Add(int.Parse(item));
-                            }
-                        }
+                        metadata.RecommendJobs.Add(int.Parse(recommendJob));
                     }
                 }
 
@@ -183,11 +173,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(List<ItemMetadata> items)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-item-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-item-metadata"))
             {
                 Serializer.Serialize(writeStream, items);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-item-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-item-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(items.SequenceEqual(Serializer.Deserialize<List<ItemMetadata>>(readStream)));

@@ -21,6 +21,7 @@ namespace MapleServer2.Types
         public int Funds { get; set; }
         public int Exp { get; set; }
         public bool Searchable { get; set; }
+        public int HouseMapId { get; set; }
 
         public Guild(string name, List<Player> gPlayers)
         {
@@ -33,6 +34,7 @@ namespace MapleServer2.Types
             Exp = 0;
             Funds = 0;
             Searchable = true;
+            HouseMapId = 66100001;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
         }
 
@@ -45,6 +47,7 @@ namespace MapleServer2.Types
         {
             Members.Remove(player);
             player.GuildId = 0;
+            player.GuildContribution = 0;
         }
 
 

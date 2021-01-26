@@ -20,42 +20,70 @@ namespace GameDataParser
             // Force Globalization to en-US because we use periods instead of commas for decimals
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
+            // Create Resources folders if they don't exist
+            Directory.CreateDirectory(Paths.INPUT);
+            Directory.CreateDirectory(Paths.OUTPUT);
+
             // Resources
-            string xmlHeaderFile = VariableDefines.XML_PATH.Replace(".m2d", ".m2h");
-            string exportedHeaderFile = VariableDefines.EXPORTED_PATH.Replace(".m2d", ".m2h");
+            try
+            {
+                string xmlPath = $"{Paths.INPUT}/Xml.m2d";
+                string exportedPath = $"{Paths.INPUT}/Exported.m2d";
+                string xmlHeaderPath = xmlPath.Replace("m2d", "m2h");
+                string exportedHeaderPath = exportedPath.Replace("m2d", "m2h");
 
-            List<PackFileEntry> xmlFiles = FileList.ReadFile(File.OpenRead(xmlHeaderFile));
-            List<PackFileEntry> exportedFiles = FileList.ReadFile(File.OpenRead(exportedHeaderFile));
+                List<PackFileEntry> xmlFiles = FileList.ReadFile(File.OpenRead(xmlHeaderPath));
+                List<PackFileEntry> exportedFiles = FileList.ReadFile(File.OpenRead(exportedHeaderPath));
 
-            MemoryMappedFile xmlMemFile = MemoryMappedFile.CreateFromFile(VariableDefines.XML_PATH);
-            MemoryMappedFile exportedMemFile = MemoryMappedFile.CreateFromFile(VariableDefines.EXPORTED_PATH);
+                MemoryMappedFile xmlMemFile = MemoryMappedFile.CreateFromFile(xmlPath);
+                MemoryMappedFile exportedMemFile = MemoryMappedFile.CreateFromFile(exportedPath);
 
-            // Threads
-            Thread itemThread = new Thread(() => ItemMetadataExport.Export(xmlFiles, xmlMemFile));
-            Thread mapEntityThread = new Thread(() => MapMetadataExport.Export(exportedFiles, exportedMemFile));
-            Thread skillThread = new Thread(() => SkillMetadataExport.Export(xmlFiles, xmlMemFile));
-            Thread insigniaThread = new Thread(() => InsigniaMetadataExport.Export(xmlFiles, xmlMemFile));
-            Thread prestigeThread = new Thread(() => PrestigeMetadataExport.Export(xmlFiles, xmlMemFile));
-            Thread expThread = new Thread(() => ExpMetadataExport.Export(xmlFiles, xmlMemFile));
+                // Threads
+                Thread itemThread = new Thread(() => ItemMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread mapEntityThread = new Thread(() => MapMetadataExport.Export(exportedFiles, exportedMemFile));
+                Thread skillThread = new Thread(() => SkillMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread insigniaThread = new Thread(() => InsigniaMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread prestigeThread = new Thread(() => PrestigeMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread expThread = new Thread(() => ExpMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread questThread = new Thread(() => QuestMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread scriptThread = new Thread(() => ScriptMetadataExport.Export(xmlFiles, xmlMemFile));
+                Thread guildThread = new Thread(() => GuildMetadataExport.Export(xmlFiles, xmlMemFile));
 
-            Spinner spinner = new Spinner();
-            spinner.Start();
+                Spinner spinner = new Spinner();
+                spinner.Start();
 
-            itemThread.Start();
-            mapEntityThread.Start();
-            skillThread.Start();
-            insigniaThread.Start();
-            prestigeThread.Start();
-            expThread.Start();
+                itemThread.Start();
+                mapEntityThread.Start();
+                skillThread.Start();
+                insigniaThread.Start();
+                prestigeThread.Start();
+                expThread.Start();
+                questThread.Start();
+                scriptThread.Start();
+                guildThread.Start();
 
-            itemThread.Join();
-            mapEntityThread.Join();
-            skillThread.Join();
-            insigniaThread.Join();
-            prestigeThread.Join();
-            expThread.Join();
+                itemThread.Join();
+                mapEntityThread.Join();
+                skillThread.Join();
+                insigniaThread.Join();
+                prestigeThread.Join();
+                expThread.Join();
+                questThread.Join();
+                scriptThread.Join();
+                guildThread.Join();
 
-            spinner.Stop();
+                spinner.Stop();
+
+                Console.WriteLine("\r\nFinished parsing.");
+            }
+            catch (Exception ex)
+            {
+                if (ex.ToString().Contains("Xml.m2h") || ex.ToString().Contains("Xml.m2d") || ex.ToString().Contains("Exported.m2h") || ex.ToString().Contains("Exported.m2d"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Missing pack files.\nPlease copy all pack files (Xml.m2d, Xml.m2h, Exported.m2d, Exported.m2h) from game client into GameDataParser/Resources.");
+                }
+            }
         }
 
         public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)

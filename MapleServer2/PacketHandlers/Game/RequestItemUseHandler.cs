@@ -42,6 +42,12 @@ namespace MapleServer2.PacketHandlers.Game
             // Get the box item
             Item box = session.Player.Inventory.Items[boxUid];
 
+            // Do nothing if box has no data stored
+            if (box.Content.Count <= 0)
+            {
+                return;
+            }
+
             // Remove box if amount is 1 or less
             if (box.Amount <= 1)
             {

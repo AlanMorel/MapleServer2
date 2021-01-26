@@ -74,6 +74,7 @@ namespace MapleServer2.Types
         public StatDistribution StatPointDistribution = new StatDistribution();
 
         public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
+        public Dictionary<ItemSlot, Item> Cosmetics = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
         public ItemSlot[] EquipSlots { get; }
         private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;
@@ -96,6 +97,7 @@ namespace MapleServer2.Types
         // TODO make this as an array
 
         public long GuildId;
+        public int GuildContribution;
         public Wallet Wallet { get; private set; }
 
         public Player()
@@ -108,7 +110,7 @@ namespace MapleServer2.Types
         {
             int job = 50; // Archer
             PlayerStats stats = PlayerStats.Default();
-            StatDistribution StatPointDistribution = new StatDistribution();
+            StatDistribution StatPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab((Job) (job))

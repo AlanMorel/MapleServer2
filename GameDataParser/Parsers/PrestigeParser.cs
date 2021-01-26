@@ -45,11 +45,11 @@ namespace GameDataParser.Parsers
 
         public static void Write(PrestigeMetadata prestigeMetadata)
         {
-            using (FileStream writeStream = File.Create(VariableDefines.OUTPUT + "ms2-prestige-metadata"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-prestige-metadata"))
             {
                 Serializer.Serialize(writeStream, prestigeMetadata);
             }
-            using (FileStream readStream = File.OpenRead(VariableDefines.OUTPUT + "ms2-prestige-metadata"))
+            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-prestige-metadata"))
             {
                 // Ensure the file is read equivalent
                 // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));

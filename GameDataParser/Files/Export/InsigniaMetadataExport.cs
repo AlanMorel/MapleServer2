@@ -11,7 +11,7 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
-            if (Hash.CheckHash(VariableDefines.OUTPUT + "ms2-insignia-metadata"))
+            if (Hash.CheckHash("ms2-insignia-metadata"))
             {
                 Console.WriteLine("\rSkipping insignia metadata!");
                 return;
@@ -20,7 +20,7 @@ namespace GameDataParser.Files.Export
             // Parse and save some item data from xml file
             List<InsigniaMetadata> entities = InsigniaParser.Parse(memFile, files);
             InsigniaParser.Write(entities);
-            Hash.WriteHash(VariableDefines.OUTPUT + "ms2-insignia-metadata");
+            Hash.WriteHash("ms2-insignia-metadata");
         }
     }
 }

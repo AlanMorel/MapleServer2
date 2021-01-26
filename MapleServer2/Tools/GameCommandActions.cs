@@ -98,7 +98,6 @@ namespace MapleServer2.Tools
 
             Item item = new Item(itemId)
             {
-                Uid = Environment.TickCount64,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
                 Stats = stats,
