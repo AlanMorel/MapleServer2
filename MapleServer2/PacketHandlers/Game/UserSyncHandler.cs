@@ -50,8 +50,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
-
-            if ((session.Player.SafeCoord - syncStates[0].Coord.ToFloat()).Length() > 200 && session.FieldPlayer.Coord.Z == syncStates[0].Coord.ToFloat().Z && session.Player.SafeCoord != session.FieldPlayer.Coord.ClosestBlock() && !session.Player.OnAirMount) // Save last coord if player is not falling
+            bool is200UnitsAway = (session.Player.SafeCoord - syncStates[0].Coord.ToFloat()).Length() > 200;
+            if (is200UnitsAway && session.FieldPlayer.Coord.Z == syncStates[0].Coord.ToFloat().Z && !session.Player.OnAirMount) // Save last coord if player is not falling
             {
                 session.Player.SafeCoord = session.FieldPlayer.Coord.ClosestBlock();
             }
@@ -59,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldPlayer.Coord = syncStates[0].Coord.ToFloat();
 
 
-            if (IsCoordOutsideBoundingBox(session.FieldPlayer.Coord, BoundingBox))
+            if (IsOutOfBounds(session.FieldPlayer.Coord, BoundingBox))
             {
                 session.Send(UserMoveByPortalPacket.Move(session, session.Player.SafeCoord));
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
@@ -68,7 +68,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Animation = syncStates[0].Animation1;
         }
 
-        private static bool IsCoordOutsideBoundingBox(CoordF coord, CoordS[] boundingBox)
+        private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
         {
             CoordS higherBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[0] : boundingBox[1];
             CoordS lowerBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[1] : boundingBox[0];

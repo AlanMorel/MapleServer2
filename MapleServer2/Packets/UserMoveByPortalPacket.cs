@@ -7,7 +7,6 @@ namespace MapleServer2.Packets
 {
     public static class UserMoveByPortalPacket
     {
-
         public static Packet Move(GameSession session, CoordF lastCoord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_MOVE_BY_PORTAL);
