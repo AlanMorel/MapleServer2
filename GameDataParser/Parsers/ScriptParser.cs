@@ -1,9 +1,9 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
 
 namespace GameDataParser.Parsers
 {
@@ -51,7 +51,6 @@ namespace GameDataParser.Parsers
                     List<Content> contents = new List<Content>();
                     foreach (XmlNode content in node.ChildNodes)
                     {
-                        long contentScriptID = string.IsNullOrEmpty(content.Attributes["text"]?.Value) ? 0 : long.Parse(content.Attributes["text"].Value.Substring(8, 16));
                         string voiceID = string.IsNullOrEmpty(content.Attributes["voiceID"]?.Value) ? "" : content.Attributes["voiceID"].Value;
                         int otherNpcTalk = string.IsNullOrEmpty(content.Attributes["otherNpcTalk"]?.Value) ? 0 : int.Parse(content.Attributes["otherNpcTalk"].Value);
                         string leftIllust = string.IsNullOrEmpty(content.Attributes["leftIllust"]?.Value) ? "" : content.Attributes["leftIllust"].Value;
@@ -71,7 +70,6 @@ namespace GameDataParser.Parsers
                                 List<Content> contents2 = new List<Content>();
                                 foreach (XmlNode item in distractor.ChildNodes)
                                 {
-                                    long contentScriptID2 = long.Parse(item.Attributes["text"].Value.Substring(8, 16));
                                     string voiceID2 = string.IsNullOrEmpty(item.Attributes["voiceID"]?.Value) ? "" : item.Attributes["voiceID"].Value;
                                     int otherNpcTalk2 = string.IsNullOrEmpty(item.Attributes["otherNpcTalk"]?.Value) ? 0 : int.Parse(item.Attributes["otherNpcTalk"].Value);
                                     string leftIllust2 = string.IsNullOrEmpty(item.Attributes["leftIllust"]?.Value) ? "" : item.Attributes["leftIllust"].Value;
@@ -80,13 +78,12 @@ namespace GameDataParser.Parsers
                                     bool myTalk2 = !string.IsNullOrEmpty(item.Attributes["myTalk"]?.Value);
                                     byte functionID2 = string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value);
 
-                                    contents2.Add(new Content(contentScriptID2, voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
+                                    contents2.Add(new Content(voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
                                 }
                                 events.Add(new Event(eventid, contents2));
                             }
                             else
                             {
-                                long distractorScriptID = long.Parse(distractor.Attributes["text"].Value.Substring(8, 16));
                                 List<int> goTo = new List<int>();
                                 if (!string.IsNullOrEmpty(distractor.Attributes["goto"]?.Value))
                                 {
@@ -104,11 +101,11 @@ namespace GameDataParser.Parsers
                                     }
                                 }
 
-                                distractors.Add(new Distractor(distractorScriptID, goTo, goToFail));
+                                distractors.Add(new Distractor(goTo, goToFail));
                             }
                         }
 
-                        contents.Add(new Content(contentScriptID, voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
+                        contents.Add(new Content(voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
                     }
 
                     metadata.Id = int.Parse(npcID);
@@ -144,6 +141,11 @@ namespace GameDataParser.Parsers
                 {
                     continue;
                 }
+                string filename = Path.GetFileNameWithoutExtension(entry.Name);
+                if (filename.Contains("eventjp") || filename.Contains("eventkr") || filename.Contains("eventcn"))
+                {
+                    continue;
+                }
 
                 XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
@@ -170,7 +172,6 @@ namespace GameDataParser.Parsers
                         List<Content> contents = new List<Content>();
                         foreach (XmlNode content in node.ChildNodes)
                         {
-                            long contentScriptID = string.IsNullOrEmpty(content.Attributes["text"]?.Value) ? 0 : long.Parse(content.Attributes["text"].Value.Substring(8, 16));
                             string voiceID = string.IsNullOrEmpty(content.Attributes["voiceID"]?.Value) ? "" : content.Attributes["voiceID"].Value;
                             int otherNpcTalk = string.IsNullOrEmpty(content.Attributes["otherNpcTalk"]?.Value) ? 0 : int.Parse(content.Attributes["otherNpcTalk"].Value);
                             string leftIllust = string.IsNullOrEmpty(content.Attributes["leftIllust"]?.Value) ? "" : content.Attributes["leftIllust"].Value;
@@ -190,7 +191,6 @@ namespace GameDataParser.Parsers
                                     List<Content> contents2 = new List<Content>();
                                     foreach (XmlNode item in distractor.ChildNodes)
                                     {
-                                        long contentScriptID2 = long.Parse(item.Attributes["text"].Value.Substring(8, 16));
                                         string voiceID2 = string.IsNullOrEmpty(item.Attributes["voiceID"]?.Value) ? "" : item.Attributes["voiceID"].Value;
                                         int otherNpcTalk2 = string.IsNullOrEmpty(item.Attributes["otherNpcTalk"]?.Value) ? 0 : int.Parse(item.Attributes["otherNpcTalk"].Value);
                                         string leftIllust2 = string.IsNullOrEmpty(item.Attributes["leftIllust"]?.Value) ? "" : item.Attributes["leftIllust"].Value;
@@ -199,7 +199,7 @@ namespace GameDataParser.Parsers
                                         bool myTalk2 = !string.IsNullOrEmpty(item.Attributes["myTalk"]?.Value);
                                         byte functionID2 = string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value);
 
-                                        contents2.Add(new Content(contentScriptID2, voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
+                                        contents2.Add(new Content(voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
                                     }
                                     events.Add(new Event(eventid, contents2));
                                 }
@@ -223,11 +223,11 @@ namespace GameDataParser.Parsers
                                         }
                                     }
 
-                                    distractors.Add(new Distractor(distractorScriptID, goTo, goToFail));
+                                    distractors.Add(new Distractor(goTo, goToFail));
                                 }
                             }
 
-                            contents.Add(new Content(contentScriptID, voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
+                            contents.Add(new Content(voiceID, functionID, leftIllust, speakerIllust, otherNpcTalk, myTalk, illust, distractors));
                         }
 
                         metadata.Id = questID;
