@@ -19,10 +19,10 @@ namespace Maple2Storage.Types.Metadata
             this.Grades = new List<AchieveGradeMetadata>();
         }
 
-        public AchieveMetadata(int id, int account, int noticePercent, int locking, List<AchieveGradeMetadata> grades)
+        public AchieveMetadata(int id, List<AchieveGradeMetadata> grades)
         {
             this.Id = id;
-            this.Grades = grades ?? new List<AchieveGradeMetadata>();
+            this.Grades = grades;
         }
 
         public override string ToString() =>

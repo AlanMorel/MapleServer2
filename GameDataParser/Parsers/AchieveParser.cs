@@ -23,7 +23,7 @@ namespace GameDataParser.Parsers
                 XmlNode achieve = document.SelectSingleNode("/ms2/achieves");
 
                 AchieveMetadata newAchieve = new AchieveMetadata();
-                newAchieve.Id = int.Parse(achieve.Attributes["id"].Value);
+                int id = int.Parse(achieve.Attributes["id"].Value);
                 
                 XmlNodeList grades = achieve.SelectNodes("/grade");
 
