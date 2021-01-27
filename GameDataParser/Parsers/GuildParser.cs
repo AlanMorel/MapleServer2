@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    public static class GuildParser
+    public class GuildParser : Exporter<GuildMetadata>
     {
-        public static GuildMetadata Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        public GuildParser(MetadataResources resources) : base(resources, "guild") { }
+
+        protected override GuildMetadata parse()
         {
             GuildMetadata guildMetadata = new GuildMetadata();
 
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
                 if (!entry.Name.StartsWith("table/guildcontribution"))
                 {
@@ -25,7 +21,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList contributions = document.SelectNodes("/ms2/contribution");
 
                 foreach (XmlNode contribution in contributions)
@@ -37,7 +33,7 @@ namespace GameDataParser.Parsers
                 }
             }
 
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
                 if (!entry.Name.StartsWith("table/guildbuff"))
                 {
@@ -45,7 +41,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList buffs = document.SelectNodes("/ms2/guildBuff");
 
                 foreach (XmlNode buff in buffs)
@@ -64,20 +60,6 @@ namespace GameDataParser.Parsers
             }
 
             return guildMetadata;
-        }
-
-        public static void Write(GuildMetadata guildMetadata)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-guild-metadata"))
-            {
-                Serializer.Serialize(writeStream, guildMetadata);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-guild-metadata"))
-            {
-                // Ensure the file is read equivalent
-                // Debug.Assert(skills.SequenceEqual(Serializer.Deserialize<List<SkillMetadata>>(readStream)));
-            }
-            Console.WriteLine("\rSuccessfully parsed guild metadata!");
         }
     }
 }

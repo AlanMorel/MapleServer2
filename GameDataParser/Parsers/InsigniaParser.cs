@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    public static class InsigniaParser
+    public class InsigniaParser : Exporter<List<InsigniaMetadata>>
     {
-        public static List<InsigniaMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        public InsigniaParser(MetadataResources resources) : base(resources, "insignia") { }
+
+        protected override List<InsigniaMetadata> parse()
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             List<InsigniaMetadata> insignias = new List<InsigniaMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
 
                 if (!entry.Name.StartsWith("table/nametagsymbol"))
@@ -24,7 +22,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
+                XmlReader reader = resources.xmlMemFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
                     InsigniaMetadata metadata = new InsigniaMetadata();
@@ -45,17 +43,6 @@ namespace GameDataParser.Parsers
             }
 
             return insignias;
-        }
-        public static void Write(List<InsigniaMetadata> entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-insignia-metadata"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-insignia-metadata"))
-            {
-            }
-            Console.WriteLine("\rSuccessfully parsed insignia metadata!");
         }
     }
 }

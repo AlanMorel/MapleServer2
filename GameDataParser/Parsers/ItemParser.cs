@@ -2,23 +2,22 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    public static class ItemParser
+    public class ItemParser : Exporter<List<ItemMetadata>>
     {
+        public ItemParser(MetadataResources resources) : base(resources, "item") { }
 
-        public static List<ItemMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        protected override List<ItemMetadata> parse()
         {
             List<ItemMetadata> items = new List<ItemMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
                 if (!entry.Name.StartsWith("item/"))
                 {
@@ -38,7 +37,7 @@ namespace GameDataParser.Parsers
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 // Parse XML
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode item = document.SelectSingleNode("ms2/environment");
 
                 // Gear/Cosmetic slot
@@ -101,7 +100,7 @@ namespace GameDataParser.Parsers
                     {
                         string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
 
-                        foreach (PackFileEntry innerEntry in entries)
+                        foreach (PackFileEntry innerEntry in resources.xmlFiles)
                         {
                             if (!innerEntry.Name.StartsWith("table/individualitemdrop") && !innerEntry.Name.StartsWith("table/na/individualitemdrop"))
                             {
@@ -114,7 +113,7 @@ namespace GameDataParser.Parsers
                             }
 
                             // Parse XML
-                            XmlDocument innerDocument = m2dFile.GetDocument(innerEntry.FileHeader);
+                            XmlDocument innerDocument = resources.xmlMemFile.GetDocument(innerEntry.FileHeader);
                             XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox[@individualDropBoxID={boxId}]");
 
                             foreach (XmlNode individualBoxItem in individualBoxItems)
@@ -169,20 +168,6 @@ namespace GameDataParser.Parsers
             }
 
             return items;
-        }
-
-        public static void Write(List<ItemMetadata> items)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-item-metadata"))
-            {
-                Serializer.Serialize(writeStream, items);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-item-metadata"))
-            {
-                // Ensure the file is read equivalent
-                // Debug.Assert(items.SequenceEqual(Serializer.Deserialize<List<ItemMetadata>>(readStream)));
-            }
-            Console.WriteLine("\rSuccessfully parsed item metadata!");
         }
 
         // This is an approximation and may not be 100% correct
