@@ -90,8 +90,21 @@ namespace GameDataParser.Parsers
                 foreach (XmlNode node in mapEntities)
                 {
                     string modelName = node.Attributes["modelName"].Value.ToLower();
+                    if (node.Attributes["name"].Value.Contains("MS2Bounding0"))
+                    {
+                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
 
-                    if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
+                        metadata.BoundingBox0 = boundingBox;
+                    }
+                    else if (node.Attributes["name"].Value.Contains("MS2Bounding1"))
+                    {
+                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+
+                        metadata.BoundingBox1 = boundingBox;
+                    }
+                    else if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
                     {
                         XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode playerRotation = node.SelectSingleNode("property[@name='Rotation']");

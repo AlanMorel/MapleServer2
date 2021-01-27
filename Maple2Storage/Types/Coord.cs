@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types
@@ -6,9 +7,9 @@ namespace Maple2Storage.Types
     [StructLayout(LayoutKind.Sequential, Size = 12)]
     public struct CoordF
     {
-        public float X { get; private set; }
-        public float Y { get; private set; }
-        public float Z { get; private set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public static CoordF From(float x, float y, float z)
         {
@@ -25,11 +26,6 @@ namespace Maple2Storage.Types
             return CoordS.From((short) X, (short) Y, (short) Z);
         }
 
-        public readonly CoordF Add(CoordF other)
-        {
-            return From(X + other.X, Y + other.Y, Z + other.Z);
-        }
-
         public readonly CoordF ClosestBlock()
         {
             return From(
@@ -39,7 +35,51 @@ namespace Maple2Storage.Types
             );
         }
 
+        public static bool operator ==(CoordF left, CoordF right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(CoordF left, CoordF right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static CoordF operator +(CoordF left, CoordF right)
+        {
+            return From((float) (left.X + right.X), (float) (left.Y + right.Y), (float) (left.Z + right.Z));
+        }
+
+        public static CoordF operator -(CoordF left, CoordF right)
+        {
+            return From((float) (left.X - right.X), (float) (left.Y - right.Y), (float) (left.Z - right.Z));
+        }
+
+        public float Length()
+        {
+            return (float) Math.Sqrt((X * X + Y * Y + Z * Z));
+        }
+
         public override string ToString() => $"CoordF({X}, {Y}, {Z})";
+
+        public bool Equals(CoordF other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CoordF) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 
     [XmlType]
@@ -68,9 +108,29 @@ namespace Maple2Storage.Types
             return CoordF.From(X, Y, Z);
         }
 
-        public readonly CoordS Add(CoordS other)
+        public static bool operator ==(CoordS left, CoordS right)
         {
-            return From((short) (X + other.X), (short) (Y + other.Y), (short) (Z + other.Z));
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(CoordS left, CoordS right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static CoordS operator +(CoordS left, CoordS right)
+        {
+            return From((short) (left.X + right.X), (short) (left.Y + right.Y), (short) (left.Z + right.Z));
+        }
+
+        public static CoordS operator -(CoordS left, CoordS right)
+        {
+            return From((short) (left.X - right.X), (short) (left.Y - right.Y), (short) (left.Z - right.Z));
+        }
+
+        public short Length()
+        {
+            return (short) Math.Sqrt((X * X + Y * Y + Z * Z));
         }
 
         public readonly CoordS ClosestBlock()
@@ -83,6 +143,24 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";
+
+        public bool Equals(CoordS other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CoordS) obj);
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 
     [XmlType]
@@ -111,14 +189,29 @@ namespace Maple2Storage.Types
             return CoordF.From(X, Y, Z);
         }
 
-        public readonly CoordB Add(CoordB other)
+        public static bool operator ==(CoordB left, CoordB right)
         {
-            return From((sbyte) (X + other.X), (sbyte) (Y + other.Y), (sbyte) (Z + other.Z));
+            return Equals(left, right);
         }
 
-        public readonly bool Equals(sbyte x, sbyte y, sbyte z)
+        public static bool operator !=(CoordB left, CoordB right)
         {
-            return X == x && Y == y && Z == z;
+            return !Equals(left, right);
+        }
+
+        public static CoordB operator +(CoordB left, CoordB right)
+        {
+            return From((sbyte) (left.X + right.X), (sbyte) (left.Y + right.Y), (sbyte) (left.Z + right.Z));
+        }
+
+        public static CoordB operator -(CoordB left, CoordB right)
+        {
+            return From((sbyte) (left.X - right.X), (sbyte) (left.Y - right.Y), (sbyte) (left.Z - right.Z));
+        }
+
+        public sbyte Length()
+        {
+            return (sbyte) Math.Sqrt((X * X + Y * Y + Z * Z));
         }
 
         public static CoordB Parse(string value, string separator)
@@ -132,5 +225,23 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"CoordB({X}, {Y}, {Z})";
+
+        public bool Equals(CoordB other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CoordB) obj);
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y, Z);
+        }
     }
 }

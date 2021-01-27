@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
@@ -26,6 +27,11 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Player.Animation = (byte) packet.ReadInt(); // Animation
                 int clientTick = packet.ReadInt();
                 packet.ReadLong(); // 0
+
+                if (SkillMetadataStorage.GetSkill(skillId).State == "gosGlide")
+                {
+                    session.Player.OnAirMount = true;
+                }
 
                 // TODO: Broadcast this to all field players
             }

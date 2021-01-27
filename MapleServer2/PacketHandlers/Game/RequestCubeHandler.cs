@@ -48,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Find matching mapObject
             foreach (MapObject mapObject in MapEntityStorage.GetObjects(session.Player.MapId))
             {
-                if (mapObject.Coord.Equals(sCoords[0], sCoords[1], sCoords[2]))
+                if (mapObject.Coord.Equals(sCoords))
                 {
                     weaponId = mapObject.WeaponId;
                     break;
