@@ -62,8 +62,17 @@ namespace Maple2Storage.Types
 
         public override string ToString() => $"CoordF({X}, {Y}, {Z})";
 
+        public bool Equals(CoordF other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
+        }
+
         public override bool Equals(object obj)
         {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
             return Equals((CoordF) obj);
         }
 
@@ -135,11 +144,19 @@ namespace Maple2Storage.Types
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";
 
-        public override bool Equals(object obj)
+        public bool Equals(CoordS other)
         {
-            return Equals((CoordS) obj);
+            return X == other.X && Y == other.Y && Z == other.Z;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CoordS) obj);
+        }
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Z);
@@ -197,11 +214,6 @@ namespace Maple2Storage.Types
             return (sbyte) Math.Sqrt((X * X + Y * Y + Z * Z));
         }
 
-        public readonly bool Equals(CoordB other)
-        {
-            return Equals(this, other);
-        }
-
         public static CoordB Parse(string value, string separator)
         {
             string[] coord = value.Split(separator);
@@ -214,11 +226,19 @@ namespace Maple2Storage.Types
 
         public override string ToString() => $"CoordB({X}, {Y}, {Z})";
 
-        public override bool Equals(object obj)
+        public bool Equals(CoordB other)
         {
-            return Equals((CoordB) obj);
+            return X == other.X && Y == other.Y && Z == other.Z;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (obj.GetType() != this.GetType())
+                return false;
+            return Equals((CoordB) obj);
+        }
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Z);
