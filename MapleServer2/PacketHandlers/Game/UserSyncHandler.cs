@@ -70,9 +70,9 @@ namespace MapleServer2.PacketHandlers.Game
             return false;
         }
 
-        private static bool IsNewSafeCoordNeeded(GameSession session, CoordF lastestCoord)
+        private static bool IsCoordSafe(GameSession session, CoordF coord)
         {
-            return (session.Player.SafeCoord - lastestCoord).Length() > 200 && session.FieldPlayer.Coord.Z == lastestCoord.Z && !session.Player.OnAirMount; // Save last coord if player is not falling and not in a air mount
+            return (session.Player.SafeCoord - coord).Length() > 200 && session.FieldPlayer.Coord.Z == coord.Z && !session.Player.OnAirMount; // Save last coord if player is not falling and not in a air mount
         }
     }
 }
