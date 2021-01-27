@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -21,207 +22,205 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                QuestMetadata metadata = new QuestMetadata();
-
-                using XmlReader reader = resources.xmlMemFile.GetReader(entry.FileHeader);
-                while (reader.Read())
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                foreach (XmlNode envi in document.DocumentElement.ChildNodes)
                 {
-                    if (reader.NodeType != XmlNodeType.Element)
+                    if (envi.Name == "environment")
                     {
-                        continue;
-                    }
-
-                    if (reader.Name == "environment" && (reader["locale"] != "NA" && reader["locale"] != "")) // only reading quests for NA or all environments
-                    {
-                        reader.Skip();
-                    }
-                    else if (reader.Name == "environment")
-                    {
-                        metadata.Feature = reader["feature"];
-                        metadata.Locale = reader["locale"];
-                    }
-                    else if (reader.Name == "basic")
-                    {
-                        metadata.Basic.ChapterID = string.IsNullOrEmpty(reader["chapterID"]) ? 0 : int.Parse(reader["chapterID"]);
-                        metadata.Basic.QuestID = string.IsNullOrEmpty(reader["questID"]) ? 0 : int.Parse(reader["questID"]);
-                        metadata.Basic.QuestType = string.IsNullOrEmpty(reader["questType"]) ? 0 : byte.Parse(reader["questType"]);
-                        metadata.Basic.Account = string.IsNullOrEmpty(reader["account"]) ? 0 : byte.Parse(reader["account"]);
-                        metadata.Basic.StandardLevel = string.IsNullOrEmpty(reader["standardLevel"]) ? 0 : int.Parse(reader["standardLevel"]);
-                        metadata.Basic.AutoStart = string.IsNullOrEmpty(reader["autoStart"]) ? 0 : byte.Parse(reader["autoStart"]);
-                        metadata.Basic.DisableGiveup = string.IsNullOrEmpty(reader["disableGiveup"]) ? 0 : byte.Parse(reader["disableGiveup"]);
-                        metadata.Basic.ExceptChapterClear = string.IsNullOrEmpty(reader["exceptChapterClear"]) ? 0 : int.Parse(reader["exceptChapterClear"]);
-                        metadata.Basic.Repeatable = string.IsNullOrEmpty(reader["repeatable"]) ? 0 : byte.Parse(reader["repeatable"]);
-                        metadata.Basic.UsePeriod = reader["usePeriod"];
-                        metadata.Basic.EventTag = reader["eventTag"];
-                        metadata.Basic.Locking = string.IsNullOrEmpty(reader["locking"]) ? 0 : byte.Parse(reader["locking"]);
-                        metadata.Basic.TabIndex = string.IsNullOrEmpty(reader["tabIndex"]) ? 0 : int.Parse(reader["tabIndex"]);
-                        metadata.Basic.ForceRegistGuide = string.IsNullOrEmpty(reader["forceRegistGuide"]) ? 0 : byte.Parse(reader["forceRegistGuide"]);
-                        metadata.Basic.UseNavigation = reader["useNavi"] == "FALSE" ? false : true;
-                    }
-                    else if (reader.Name == "notify")
-                    {
-                        metadata.Notify.CompleteUiEffect = reader["completeUiEffect"];
-                        metadata.Notify.AcceptSoundKey = reader["acceptSoundKey"];
-                        metadata.Notify.CompleteSoundKey = reader["completeSoundKey"];
-                    }
-                    else if (reader.Name == "require")
-                    {
-                        metadata.Require.Level = string.IsNullOrEmpty(reader["level"]) ? 0 : short.Parse(reader["level"]);
-                        metadata.Require.MaxLevel = string.IsNullOrEmpty(reader["maxLevel"]) ? 0 : short.Parse(reader["maxLevel"]);
-
-                        if (!string.IsNullOrEmpty(reader["job"]))
+                        string locale = string.IsNullOrEmpty(envi.Attributes["locale"]?.Value) ? null : envi.Attributes["locale"].Value;
+                        if (locale != "NA" && locale != null)
                         {
-                            List<string> temp = new List<string>(reader["job"].Split(","));
-                            foreach (string item in temp)
+                            continue;
+                        }
+                    }
+
+                    QuestMetadata metadata = new QuestMetadata();
+                    XmlNodeList quest = envi.ChildNodes[0].ChildNodes;
+                    foreach (XmlNode node in quest)
+                    {
+                        if (node.Name == "basic")
+                        {
+                            metadata.Basic.ChapterID = string.IsNullOrEmpty(node.Attributes["chapterID"]?.Value) ? 0 : int.Parse(node.Attributes["chapterID"].Value);
+                            metadata.Basic.QuestID = string.IsNullOrEmpty(node.Attributes["questID"]?.Value) ? 0 : int.Parse(node.Attributes["questID"].Value);
+                            metadata.Basic.QuestType = string.IsNullOrEmpty(node.Attributes["questType"]?.Value) ? 0 : byte.Parse(node.Attributes["questType"].Value);
+                            metadata.Basic.Account = string.IsNullOrEmpty(node.Attributes["account"]?.Value) ? 0 : byte.Parse(node.Attributes["account"].Value);
+                            metadata.Basic.StandardLevel = string.IsNullOrEmpty(node.Attributes["standardLevel"]?.Value) ? 0 : int.Parse(node.Attributes["standardLevel"].Value);
+                            metadata.Basic.AutoStart = string.IsNullOrEmpty(node.Attributes["autoStart"]?.Value) ? 0 : byte.Parse(node.Attributes["autoStart"].Value);
+                            metadata.Basic.DisableGiveup = string.IsNullOrEmpty(node.Attributes["disableGiveup"]?.Value) ? 0 : byte.Parse(node.Attributes["disableGiveup"].Value);
+                            metadata.Basic.ExceptChapterClear = string.IsNullOrEmpty(node.Attributes["exceptChapterClear"]?.Value) ? 0 : int.Parse(node.Attributes["exceptChapterClear"].Value);
+                            metadata.Basic.Repeatable = string.IsNullOrEmpty(node.Attributes["repeatable"]?.Value) ? 0 : byte.Parse(node.Attributes["repeatable"].Value);
+                            metadata.Basic.UsePeriod = node.Attributes["usePeriod"].Value;
+                            metadata.Basic.EventTag = node.Attributes["eventTag"].Value;
+                            metadata.Basic.Locking = string.IsNullOrEmpty(node.Attributes["locking"]?.Value) ? 0 : byte.Parse(node.Attributes["locking"].Value);
+                            metadata.Basic.TabIndex = string.IsNullOrEmpty(node.Attributes["tabIndex"]?.Value) ? 0 : int.Parse(node.Attributes["tabIndex"].Value);
+                            metadata.Basic.ForceRegistGuide = string.IsNullOrEmpty(node.Attributes["forceRegistGuide"]?.Value) ? 0 : byte.Parse(node.Attributes["forceRegistGuide"].Value);
+                            metadata.Basic.UseNavigation = node.Attributes["useNavi"].Value == "FALSE" ? false : true;
+                        }
+                        else if (node.Name == "notify")
+                        {
+                            metadata.Notify.CompleteUiEffect = node.Attributes["completeUiEffect"].Value;
+                            metadata.Notify.AcceptSoundKey = node.Attributes["acceptSoundKey"].Value;
+                            metadata.Notify.CompleteSoundKey = node.Attributes["completeSoundKey"].Value;
+                        }
+                        else if (node.Name == "require")
+                        {
+                            metadata.Require.Level = string.IsNullOrEmpty(node.Attributes["level"]?.Value) ? 0 : short.Parse(node.Attributes["level"].Value);
+                            metadata.Require.MaxLevel = string.IsNullOrEmpty(node.Attributes["maxLevel"]?.Value) ? 0 : short.Parse(node.Attributes["maxLevel"].Value);
+
+                            if (!string.IsNullOrEmpty(node.Attributes["job"]?.Value))
                             {
-                                metadata.Require.Job.Add(short.Parse(item));
+                                List<string> temp = new List<string>(node.Attributes["job"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.Require.Job.Add(short.Parse(item));
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(node.Attributes["quest"]?.Value))
+                            {
+                                List<string> temp = new List<string>(node.Attributes["quest"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.Require.RequiredQuests.Add(int.Parse(item));
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(node.Attributes["selectableQuest"]?.Value))
+                            {
+                                List<string> temp = new List<string>(node.Attributes["selectableQuest"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.Require.SelectableQuest.Add(int.Parse(item));
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(node.Attributes["unrequire"]?.Value))
+                            {
+                                List<string> temp = new List<string>(node.Attributes["unrequire"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.Require.Unrequire.Add(int.Parse(item));
+                                }
+                            }
+
+                            metadata.Require.Field = string.IsNullOrEmpty(node.Attributes["field"]?.Value) ? 0 : int.Parse(node.Attributes["field"].Value);
+                            metadata.Require.Achievement = string.IsNullOrEmpty(node.Attributes["achievement"]?.Value) ? 0 : int.Parse(node.Attributes["achievement"].Value);
+
+                            if (!string.IsNullOrEmpty(node.Attributes["unreqAchievement"]?.Value))
+                            {
+                                List<string> temp = new List<string>(node.Attributes["unreqAchievement"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.Require.UnreqAchievement.Add(int.Parse(item));
+                                }
+                            }
+
+                            metadata.Require.GroupID = string.IsNullOrEmpty(node.Attributes["groupID"]?.Value) ? 0 : int.Parse(node.Attributes["groupID"].Value);
+                            metadata.Require.DayOfWeek = node.Attributes["dayOfWeek"].Value;
+                            metadata.Require.GearScore = string.IsNullOrEmpty(node.Attributes["gearScore"]?.Value) ? 0 : int.Parse(node.Attributes["gearScore"].Value);
+                        }
+                        else if (node.Name == "start")
+                        {
+                            metadata.StartNpc = int.Parse(node.Attributes["npc"].Value);
+                        }
+                        else if (node.Name == "complete")
+                        {
+                            metadata.CompleteNpc = int.Parse(node.Attributes["npc"].Value);
+                        }
+                        else if (node.Name == "completeReward")
+                        {
+                            metadata.Reward.Exp = string.IsNullOrEmpty(node.Attributes["exp"]?.Value) ? 0 : int.Parse(node.Attributes["exp"].Value);
+                            metadata.Reward.RelativeExp = node.Attributes["relativeExp"]?.Value;
+                            metadata.Reward.Money = string.IsNullOrEmpty(node.Attributes["money"]?.Value) ? 0 : int.Parse(node.Attributes["money"].Value);
+                            metadata.Reward.Karma = string.IsNullOrEmpty(node.Attributes["karma"]?.Value) ? 0 : int.Parse(node.Attributes["karma"].Value);
+                            metadata.Reward.Lu = string.IsNullOrEmpty(node.Attributes["lu"]?.Value) ? 0 : int.Parse(node.Attributes["lu"].Value);
+
+                            foreach (XmlNode reward in node.ChildNodes)
+                            {
+                                int itemid = string.IsNullOrEmpty(reward.Attributes["code"]?.Value) ? 0 : int.Parse(reward.Attributes["code"].Value);
+                                byte rank = string.IsNullOrEmpty(reward.Attributes["rank"]?.Value) ? 0 : byte.Parse(reward.Attributes["rank"].Value);
+                                int count = string.IsNullOrEmpty(reward.Attributes["count"]?.Value) ? 0 : int.Parse(reward.Attributes["count"].Value);
+                                QuestRewardItem item = new QuestRewardItem(itemid, rank, count);
+                                metadata.RewardItem.Add(item);
                             }
                         }
-
-                        if (!string.IsNullOrEmpty(reader["quest"]))
+                        else if (node.Name == "progressMap")
                         {
-                            List<string> temp = new List<string>(reader["quest"].Split(","));
-                            foreach (string item in temp)
+                            if (!string.IsNullOrEmpty(node.Attributes["progressMap"]?.Value))
                             {
-                                metadata.Require.RequiredQuests.Add(int.Parse(item));
+                                List<string> temp = new List<string>(node.Attributes["progressMap"].Value.Split(","));
+                                foreach (string item in temp)
+                                {
+                                    metadata.ProgressMap.Add(int.Parse(item));
+                                }
                             }
                         }
-
-                        if (!string.IsNullOrEmpty(reader["selectableQuest"]))
+                        else if (node.Name == "guide")
                         {
-                            List<string> temp = new List<string>(reader["selectableQuest"].Split(","));
-                            foreach (string item in temp)
+                            metadata.Guide.Type = node.Attributes["guideType"].Value;
+                            metadata.Guide.Icon = node.Attributes["guideIcon"].Value;
+                            metadata.Guide.MinLevel = string.IsNullOrEmpty(node.Attributes["guideMinLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMinLevel"].Value);
+                            metadata.Guide.MaxLevel = string.IsNullOrEmpty(node.Attributes["guideMaxLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMaxLevel"].Value);
+                            metadata.Guide.Group = node.Attributes["guideGroup"]?.Value;
+                        }
+                        else if (node.Name == "gotoNpc")
+                        {
+                            metadata.Npc.Enable = string.IsNullOrEmpty(node.Attributes["enable"]?.Value) ? 0 : byte.Parse(node.Attributes["enable"].Value);
+                            metadata.Npc.GoToField = string.IsNullOrEmpty(node.Attributes["gotoField"]?.Value) ? 0 : int.Parse(node.Attributes["gotoField"].Value);
+                            metadata.Npc.GoToPortal = string.IsNullOrEmpty(node.Attributes["gotoPortal"]?.Value) ? 0 : int.Parse(node.Attributes["gotoPortal"].Value);
+                        }
+                        else if (node.Name == "gotoDungeon")
+                        {
+                            metadata.Dungeon.State = string.IsNullOrEmpty(node.Attributes["state"]?.Value) ? 0 : byte.Parse(node.Attributes["state"].Value);
+                            metadata.Dungeon.GoToDungeon = string.IsNullOrEmpty(node.Attributes["gotoDungeon"]?.Value) ? 0 : int.Parse(node.Attributes["gotoDungeon"].Value);
+                            metadata.Dungeon.GoToInstanceID = string.IsNullOrEmpty(node.Attributes["gotoInstanceID"]?.Value) ? 0 : int.Parse(node.Attributes["gotoInstanceID"].Value);
+                        }
+                        else if (node.Name == "remoteAccept")
+                        {
+                            metadata.RemoteAccept.UseRemote = node.Attributes["useRemote"].Value;
+                            metadata.RemoteAccept.RequireField = string.IsNullOrEmpty(node.Attributes["requireField"]?.Value) ? 0 : int.Parse(node.Attributes["requireField"].Value);
+                        }
+                        else if (node.Name == "remoteComplete")
+                        {
+                            metadata.RemoteComplete.UseRemote = node.Attributes["useRemote"].Value;
+                            metadata.RemoteComplete.RequireField = string.IsNullOrEmpty(node.Attributes["requireField"]?.Value) ? 0 : int.Parse(node.Attributes["requireField"].Value);
+                            metadata.RemoteComplete.RequireDungeonClear = string.IsNullOrEmpty(node.Attributes["requireDungeonClear"]?.Value) ? 0 : int.Parse(node.Attributes["requireDungeonClear"].Value);
+                        }
+                        else if (node.Name == "summonPortal")
+                        {
+                            metadata.SummonPortal.FieldID = string.IsNullOrEmpty(node.Attributes["fieldID"]?.Value) ? 0 : int.Parse(node.Attributes["fieldID"].Value);
+                            metadata.SummonPortal.PortalID = string.IsNullOrEmpty(node.Attributes["portalID"]?.Value) ? 0 : int.Parse(node.Attributes["portalID"].Value);
+                        }
+                        else if (node.Name == "eventMission")
+                        {
+                            metadata.Event = node.Attributes["event"].Value;
+                        }
+                        else if (node.Name == "condition")
+                        {
+                            string Type = node.Attributes["type"].Value;
+                            string Code = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? "" : node.Attributes["code"].Value;
+                            int Value = string.IsNullOrEmpty(node.Attributes["value"]?.Value) ? 0 : int.Parse(node.Attributes["value"].Value);
+                            List<string> temp = null;
+                            if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
                             {
-                                metadata.Require.SelectableQuest.Add(int.Parse(item));
+                                temp = new List<string>(node.Attributes["target"].Value.Split(","));
+
                             }
+                            metadata.Condition.Add(new QuestCondition(Type, Code, Value, temp));
                         }
-
-                        if (!string.IsNullOrEmpty(reader["unrequire"]))
+                        else if (node.Name == "navi")
                         {
-                            List<string> temp = new List<string>(reader["unrequire"].Split(","));
-                            foreach (string item in temp)
-                            {
-                                metadata.Require.Unrequire.Add(int.Parse(item));
-                            }
-                        }
+                            string NaviType = node.Attributes["type"].Value;
+                            string NaviCode = node.Attributes["code"].Value;
+                            int NaviMap = string.IsNullOrEmpty(node.Attributes["map"]?.Value) ? 0 : int.Parse(node.Attributes["map"].Value);
 
-                        metadata.Require.Field = string.IsNullOrEmpty(reader["field"]) ? 0 : int.Parse(reader["field"]);
-                        metadata.Require.Achievement = string.IsNullOrEmpty(reader["achievement"]) ? 0 : int.Parse(reader["achievement"]);
-
-                        if (!string.IsNullOrEmpty(reader["unreqAchievement"]))
-                        {
-                            List<string> temp = new List<string>(reader["unreqAchievement"].Split(","));
-                            foreach (string item in temp)
-                            {
-                                metadata.Require.UnreqAchievement.Add(int.Parse(item));
-                            }
-                        }
-
-                        metadata.Require.GroupID = string.IsNullOrEmpty(reader["groupID"]) ? 0 : int.Parse(reader["groupID"]);
-                        metadata.Require.DayOfWeek = reader["dayOfWeek"];
-                        metadata.Require.GearScore = string.IsNullOrEmpty(reader["gearScore"]) ? 0 : int.Parse(reader["gearScore"]);
-                    }
-                    else if (reader.Name == "start")
-                    {
-                        metadata.StartNpc = int.Parse(reader["npc"]);
-                    }
-                    else if (reader.Name == "complete")
-                    {
-                        metadata.CompleteNpc = int.Parse(reader["npc"]);
-                    }
-                    else if (reader.Name == "completeReward")
-                    {
-                        metadata.Reward.Exp = string.IsNullOrEmpty(reader["exp"]) ? 0 : int.Parse(reader["exp"]);
-                        metadata.Reward.RelativeExp = reader["relativeExp"];
-                        metadata.Reward.Money = string.IsNullOrEmpty(reader["money"]) ? 0 : int.Parse(reader["money"]);
-                        metadata.Reward.Karma = string.IsNullOrEmpty(reader["karma"]) ? 0 : int.Parse(reader["karma"]);
-                        metadata.Reward.Lu = string.IsNullOrEmpty(reader["lu"]) ? 0 : int.Parse(reader["lu"]);
-                    }
-                    else if (reader.Name == "essentialJobItem" || reader.Name == "globalEssentialItem" || reader.Name == "globalEssentialJobItem")
-                    {
-                        int itemid = string.IsNullOrEmpty(reader["code"]) ? 0 : int.Parse(reader["code"]);
-                        byte rank = string.IsNullOrEmpty(reader["rank"]) ? 0 : byte.Parse(reader["rank"]);
-                        int count = string.IsNullOrEmpty(reader["count"]) ? 0 : int.Parse(reader["count"]);
-                        QuestRewardItem item = new QuestRewardItem(itemid, rank, count);
-                        metadata.RewardItem.Add(item);
-                    }
-                    else if (reader.Name == "progressMap")
-                    {
-                        if (!string.IsNullOrEmpty(reader["progressMap"]))
-                        {
-                            List<string> temp = new List<string>(reader["progressMap"].Split(","));
-                            foreach (string item in temp)
-                            {
-                                metadata.ProgressMap.Add(int.Parse(item));
-                            }
+                            metadata.Navigation.Add(new QuestNavigation(NaviType, NaviCode, NaviMap));
                         }
                     }
-                    else if (reader.Name == "guide")
-                    {
-                        metadata.Guide.Type = reader["guideType"];
-                        metadata.Guide.Icon = reader["guideIcon"];
-                        metadata.Guide.MinLevel = string.IsNullOrEmpty(reader["guideMinLevel"]) ? 0 : byte.Parse(reader["guideMinLevel"]);
-                        metadata.Guide.MaxLevel = string.IsNullOrEmpty(reader["guideMaxLevel"]) ? 0 : byte.Parse(reader["guideMaxLevel"]);
-                        metadata.Guide.Group = reader["guideGroup"];
-                    }
-                    else if (reader.Name == "gotoNpc")
-                    {
-                        metadata.Npc.Enable = string.IsNullOrEmpty(reader["enable"]) ? 0 : byte.Parse(reader["enable"]);
-                        metadata.Npc.GoToField = string.IsNullOrEmpty(reader["gotoField"]) ? 0 : int.Parse(reader["gotoField"]);
-                        metadata.Npc.GoToPortal = string.IsNullOrEmpty(reader["gotoPortal"]) ? 0 : int.Parse(reader["gotoPortal"]);
-                    }
-                    else if (reader.Name == "gotoDungeon")
-                    {
-                        metadata.Dungeon.State = string.IsNullOrEmpty(reader["state"]) ? 0 : byte.Parse(reader["state"]);
-                        metadata.Dungeon.GoToDungeon = string.IsNullOrEmpty(reader["gotoDungeon"]) ? 0 : int.Parse(reader["gotoDungeon"]);
-                        metadata.Dungeon.GoToInstanceID = string.IsNullOrEmpty(reader["gotoInstanceID"]) ? 0 : int.Parse(reader["gotoInstanceID"]);
-                    }
-                    else if (reader.Name == "remoteAccept")
-                    {
-                        metadata.RemoteAccept.UseRemote = reader["useRemote"];
-                        metadata.RemoteAccept.RequireField = string.IsNullOrEmpty(reader["requireField"]) ? 0 : int.Parse(reader["requireField"]);
-                    }
-                    else if (reader.Name == "remoteComplete")
-                    {
-                        metadata.RemoteComplete.UseRemote = reader["useRemote"];
-                        metadata.RemoteComplete.RequireField = string.IsNullOrEmpty(reader["requireField"]) ? 0 : int.Parse(reader["requireField"]);
-                        metadata.RemoteComplete.RequireDungeonClear = string.IsNullOrEmpty(reader["requireDungeonClear"]) ? 0 : int.Parse(reader["requireDungeonClear"]);
-                    }
-                    else if (reader.Name == "summonPortal")
-                    {
-                        metadata.SummonPortal.FieldID = string.IsNullOrEmpty(reader["fieldID"]) ? 0 : int.Parse(reader["fieldID"]);
-                        metadata.SummonPortal.PortalID = string.IsNullOrEmpty(reader["portalID"]) ? 0 : int.Parse(reader["portalID"]);
-                    }
-                    else if (reader.Name == "eventMission")
-                    {
-                        metadata.Event = reader["event"];
-                    }
-                    else if (reader.Name == "condition")
-                    {
-                        string Type = reader["type"];
-                        string Code = reader["code"];
-                        int Value = string.IsNullOrEmpty(reader["value"]) ? 0 : int.Parse(reader["value"]);
-                        List<string> temp = null;
-                        if (!string.IsNullOrEmpty(reader["target"]))
-                        {
-                            temp = new List<string>(reader["target"].Split(","));
 
-                        }
-                        metadata.Condition.Add(new QuestCondition(Type, Code, Value, temp));
-                    }
-                    else if (reader.Name == "navi")
-                    {
-                        string NaviType = reader["type"];
-                        string NaviCode = reader["code"];
-                        int NaviMap = string.IsNullOrEmpty(reader["map"]) ? 0 : int.Parse(reader["map"]);
-
-                        metadata.Navigation.Add(new QuestNavigation(NaviType, NaviCode, NaviMap));
-                    }
+                    quests.Add(metadata);
                 }
-
-                quests.Add(metadata);
             }
-
             return quests;
         }
     }

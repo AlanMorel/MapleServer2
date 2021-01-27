@@ -34,7 +34,7 @@ namespace GameDataParser
                 new MapEntityParser(resources),
                 new SkillParser(resources),
                 new InsigniaParser(resources),
-                new ExpTableParser(resources),
+                new ExpParser(resources),
                 new QuestParser(resources),
                 new ScriptParser(resources),
                 new GuildParser(resources),
