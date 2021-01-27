@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Enums;
+using MapleServer2.Constants;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -12,7 +12,7 @@ namespace MapleServer2.Data.Static
 
         static AchieveMetadataStorage()
         {
-            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-achieve-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-achieve-metadata");
             List<AchieveMetadata> achieveList = Serializer.Deserialize<List<AchieveMetadata>>(stream);
             foreach (AchieveMetadata achieve in achieveList)
             {

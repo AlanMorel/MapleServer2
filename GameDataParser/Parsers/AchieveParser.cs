@@ -9,6 +9,7 @@ namespace GameDataParser.Parsers
     class AchieveParser : Exporter<List<AchieveMetadata>>
     {
         public AchieveParser(MetadataResources resources) : base(resources, "achieve") { }
+        
         protected override List<AchieveMetadata> Parse()
         {
             List<AchieveMetadata> achieveList = new List<AchieveMetadata>();
