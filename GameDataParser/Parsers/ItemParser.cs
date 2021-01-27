@@ -38,13 +38,13 @@ namespace GameDataParser.Parsers
                         }
                     }
 
-                    long box = long.Parse(individualBoxItem.Attributes["individualDropBoxID"].Value);
-                    int id = int.Parse(individualBoxItem.Attributes["item"].Value);
-
                     if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
                     {
                         continue;
                     }
+
+                    long box = long.Parse(individualBoxItem.Attributes["individualDropBoxID"].Value);
+                    int id = int.Parse(individualBoxItem.Attributes["item"].Value);
                     int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
                     int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
                     int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
@@ -53,13 +53,14 @@ namespace GameDataParser.Parsers
                     int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
                     int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
 
+                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2);
                     if (itemDrops.ContainsKey(box))
                     {
-                        itemDrops[box].Add(new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2));
+                        itemDrops[box].Add(content);
                     }
                     else
                     {
-                        itemDrops[box] = new List<ItemContent>() { new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2) };
+                        itemDrops[box] = new List<ItemContent>() { content };
                     }
                 }
             }
