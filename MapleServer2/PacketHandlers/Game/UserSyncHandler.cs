@@ -42,16 +42,24 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
-            if (IsNewSafeCoordNeeded(session, syncStates[0].Coord.ToFloat()))
+            if (IsCoordSafe(session, syncStates[0].Coord.ToFloat()))
             {
                 session.Player.SafeCoord = session.FieldPlayer.Coord.ClosestBlock();
             }
 
             session.FieldPlayer.Coord = syncStates[0].Coord.ToFloat();
-
-
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
+                session.Player.SafeCoord.Z += 10; // Without this player will spawn inside the block
+                // for some reason if coord is negative player is teleported one block over, which can result player being stuck inside a block
+                if (session.FieldPlayer.Coord.Y < 0)
+                {
+                    session.Player.SafeCoord.Y -= 150;
+                }
+                if (session.FieldPlayer.Coord.X < 0)
+                {
+                    session.Player.SafeCoord.X -= 150;
+                }
                 session.Send(UserMoveByPortalPacket.Move(session, session.Player.SafeCoord));
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
             }
