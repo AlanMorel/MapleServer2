@@ -10,21 +10,21 @@ namespace GameDataParser.Files
 
         public MetadataExporter(string slug)
         {
-            this.filename = "ms2-" + slug + "-metadata";
+            this.filename = $"ms2-{slug}-metadata";
         }
 
         public void Export()
         {
             if (this.CheckHash())
             {
-                Console.WriteLine("\rSkipping " + this.filename);
+                Console.WriteLine($"\rSkipping {this.filename}");
                 return;
             }
 
             this.Serialize();
             this.WriteHash();
 
-            Console.WriteLine("\rSuccessfully exported " + this.filename);
+            Console.WriteLine($"\rSuccessfully exported {this.filename}");
         }
 
         private bool CheckHash()

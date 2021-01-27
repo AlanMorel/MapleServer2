@@ -35,7 +35,7 @@ namespace GameDataParser.Files
             Draw(" ");
         }
 
-        public TimeSpan getRuntime()
+        public TimeSpan GetRuntime()
         {
             return this.stopWatch.Elapsed;
         }

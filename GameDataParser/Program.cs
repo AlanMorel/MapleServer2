@@ -17,6 +17,8 @@ namespace GameDataParser
     {
         static async Task Main()
         {
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
             // Create Resources folders if they don't exist
             Directory.CreateDirectory(Paths.INPUT);
             Directory.CreateDirectory(Paths.OUTPUT);
@@ -24,7 +26,6 @@ namespace GameDataParser
             Spinner spinner = new Spinner();
             spinner.Start();
 
-            CultureInfo.CurrentCulture = new CultureInfo("en-US");
             MetadataResources resources = new MetadataResources();
 
             IEnumerable<MetadataExporter> exporters = new List<MetadataExporter>()
@@ -45,9 +46,9 @@ namespace GameDataParser
             await Task.WhenAll(tasks);
 
             spinner.Stop();
-            TimeSpan runtime = spinner.getRuntime();
+            TimeSpan runtime = spinner.GetRuntime();
 
-            Console.WriteLine("\rExporting finished in " + runtime.Minutes + " minutes and " + runtime.Seconds + " seconds");
+            Console.WriteLine($"\rExporting finished in {runtime.Minutes} minutes and {runtime.Seconds} seconds");
         }
 
         public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)
