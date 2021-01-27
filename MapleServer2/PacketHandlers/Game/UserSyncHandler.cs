@@ -17,17 +17,9 @@ namespace MapleServer2.PacketHandlers.Game
         public override RecvOp OpCode => RecvOp.USER_SYNC;
 
         public UserSyncHandler(ILogger<UserSyncHandler> logger) : base(logger) { }
-        private int LastMapId = 0;
-        private CoordS[] BoundingBox;
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            if (LastMapId != session.Player.MapId)
-            {
-                LastMapId = session.Player.MapId;
-                session.Player.SafeCoord = session.FieldPlayer.Coord.ClosestBlock();
-                BoundingBox = MapEntityStorage.GetBoundingBox(session.Player.MapId);
-            }
 
             byte function = packet.ReadByte(); // Unknown what this is for
             session.ClientTick = packet.ReadInt(); //ClientTicks
@@ -50,8 +42,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
-            bool is200UnitsAway = (session.Player.SafeCoord - syncStates[0].Coord.ToFloat()).Length() > 200;
-            if (is200UnitsAway && session.FieldPlayer.Coord.Z == syncStates[0].Coord.ToFloat().Z && !session.Player.OnAirMount) // Save last coord if player is not falling
+            if (IsNewSafeCoordNeeded(session, syncStates[0].Coord.ToFloat()))
             {
                 session.Player.SafeCoord = session.FieldPlayer.Coord.ClosestBlock();
             }
@@ -59,7 +50,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldPlayer.Coord = syncStates[0].Coord.ToFloat();
 
 
-            if (IsOutOfBounds(session.FieldPlayer.Coord, BoundingBox))
+            if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
                 session.Send(UserMoveByPortalPacket.Move(session, session.Player.SafeCoord));
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
@@ -77,6 +68,11 @@ namespace MapleServer2.PacketHandlers.Game
                 return true;
             }
             return false;
+        }
+
+        private static bool IsNewSafeCoordNeeded(GameSession session, CoordF lastestCoord)
+        {
+            return (session.Player.SafeCoord - lastestCoord).Length() > 200 && session.FieldPlayer.Coord.Z == lastestCoord.Z && !session.Player.OnAirMount; // Save last coord if player is not falling and not in a air mount
         }
     }
 }

@@ -51,7 +51,7 @@ namespace MapleServer2.Types
 
         public CoordF Coord;
         public CoordF Rotation;
-        public CoordF SafeCoord;
+        public CoordF SafeCoord = CoordF.From(0, 0, 0);
         public bool OnAirMount = false;
 
         // Appearance

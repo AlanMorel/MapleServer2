@@ -21,13 +21,14 @@ namespace MapleServer2.Servers.Game
         private int counter = 10000000;
 
         public readonly int MapId;
+        public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> sessions = new HashSet<GameSession>();
 
         public FieldManager(int mapId)
         {
             this.MapId = mapId;
-
+            this.BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
             // Load default npcs for map from config
             foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
             {
