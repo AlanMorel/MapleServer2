@@ -10,7 +10,7 @@ namespace GameDataParser.Parsers
     {
         public InsigniaParser(MetadataResources resources) : base(resources, "insignia") { }
 
-        protected override List<InsigniaMetadata> parse()
+        protected override List<InsigniaMetadata> Parse()
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             List<InsigniaMetadata> insignias = new List<InsigniaMetadata>();

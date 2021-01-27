@@ -9,7 +9,7 @@ namespace GameDataParser.Parsers
     {
         public PrestigeParser(MetadataResources resources) : base(resources, "prestige") { }
 
-        protected override PrestigeMetadata parse()
+        protected override PrestigeMetadata Parse()
         {
             PrestigeMetadata prestigeMetadata = new PrestigeMetadata();
 

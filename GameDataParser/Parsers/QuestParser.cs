@@ -10,7 +10,7 @@ namespace GameDataParser.Parsers
     {
         public QuestParser(MetadataResources resources) : base(resources, "quest") { }
 
-        protected override List<QuestMetadata> parse()
+        protected override List<QuestMetadata> Parse()
         {
             List<QuestMetadata> quests = new List<QuestMetadata>();
             foreach (PackFileEntry entry in resources.xmlFiles)

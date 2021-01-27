@@ -14,7 +14,7 @@ namespace GameDataParser.Parsers
     {
         public ItemParser(MetadataResources resources) : base(resources, "item") { }
 
-        protected override List<ItemMetadata> parse()
+        protected override List<ItemMetadata> Parse()
         {
             List<ItemMetadata> items = new List<ItemMetadata>();
             foreach (PackFileEntry entry in resources.xmlFiles)

@@ -9,7 +9,7 @@ namespace GameDataParser.Parsers
     {
         public GuildParser(MetadataResources resources) : base(resources, "guild") { }
 
-        protected override GuildMetadata parse()
+        protected override GuildMetadata Parse()
         {
             GuildMetadata guildMetadata = new GuildMetadata();
 

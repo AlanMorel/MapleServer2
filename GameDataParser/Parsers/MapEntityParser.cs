@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
     {
         public MapEntityParser(MetadataResources resources) : base(resources, "map-entity") { }
 
-        protected override List<MapEntityMetadata> parse()
+        protected override List<MapEntityMetadata> Parse()
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             Dictionary<string, string> mapObjects = new Dictionary<string, string>();

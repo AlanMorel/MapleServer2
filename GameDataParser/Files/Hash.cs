@@ -34,7 +34,7 @@ namespace GameDataParser.Files
         {
             using (MD5 md5 = MD5.Create())
             {
-                using (FileStream stream = File.OpenRead(Paths.OUTPUT + "/" + filename))
+                using (FileStream stream = File.OpenRead($"{Paths.OUTPUT}/{filename}"))
                 {
                     byte[] hash = md5.ComputeHash(stream);
                     return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();

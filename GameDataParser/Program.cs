@@ -27,7 +27,7 @@ namespace GameDataParser
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
             MetadataResources resources = new MetadataResources();
 
-            IEnumerable<MetadataExporter> exports = new List<MetadataExporter>()
+            IEnumerable<MetadataExporter> exporters = new List<MetadataExporter>()
             {
                 new ItemParser(resources),
                 new MapEntityParser(resources),
@@ -40,7 +40,7 @@ namespace GameDataParser
                 new PrestigeParser(resources)
             };
 
-            IEnumerable<Task> tasks = exports.Select(exporter => Task.Run(() => exporter.export()));
+            IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));
 
             await Task.WhenAll(tasks);
 

@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
     {
         public SkillParser(MetadataResources resources) : base(resources, "skill") { }
 
-        protected override List<SkillMetadata> parse()
+        protected override List<SkillMetadata> Parse()
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
             foreach (PackFileEntry entry in resources.xmlFiles)

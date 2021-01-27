@@ -13,38 +13,38 @@ namespace GameDataParser.Files
             this.filename = "ms2-" + slug + "-metadata";
         }
 
-        public void export()
+        public void Export()
         {
-            if (this.checkHash())
+            if (this.CheckHash())
             {
                 Console.WriteLine("\rSkipping " + this.filename);
                 return;
             }
 
-            this.serialize();
-            this.writeHash();
+            this.Serialize();
+            this.WriteHash();
 
             Console.WriteLine("\rSuccessfully exported " + this.filename);
         }
 
-        private bool checkHash()
+        private bool CheckHash()
         {
             return Hash.HasValidHash(this.filename);
         }
 
-        private void writeHash()
+        private void WriteHash()
         {
             Hash.WriteHash(this.filename);
         }
 
-        public void write<Entities>(Entities entities)
+        public void Write<Entities>(Entities entities)
         {
-            using (FileStream writeStream = File.Create(Paths.OUTPUT + "/" + this.filename))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/{this.filename}"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
         }
 
-        protected abstract void serialize();
+        protected abstract void Serialize();
     }
 }

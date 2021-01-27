@@ -11,7 +11,7 @@ namespace GameDataParser.Parsers
     {
         public ScriptParser(MetadataResources resources) : base(resources, "script") { }
 
-        protected override List<ScriptMetadata> parse()
+        protected override List<ScriptMetadata> Parse()
         {
             List<ScriptMetadata> entities = this.parseNpc(resources);
             entities.AddRange(this.parseQuest(resources));

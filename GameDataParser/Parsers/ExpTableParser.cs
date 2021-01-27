@@ -10,7 +10,7 @@ namespace GameDataParser.Parsers
     {
         public ExpTableParser(MetadataResources resources) : base(resources, "exptable") { }
 
-        protected override List<ExpMetadata> parse()
+        protected override List<ExpMetadata> Parse()
         {
             List<ExpMetadata> expList = new List<ExpMetadata>();
             foreach (PackFileEntry entry in resources.xmlFiles)

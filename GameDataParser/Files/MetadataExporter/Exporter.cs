@@ -9,12 +9,12 @@ namespace GameDataParser.Files
             this.resources = resources;
         }
 
-        protected override void serialize()
+        protected override void Serialize()
         {
-            Metadata entities = this.parse();
-            this.write<Metadata>(entities);
+            Metadata entities = this.Parse();
+            this.Write<Metadata>(entities);
         }
 
-        protected abstract Metadata parse();
+        protected abstract Metadata Parse();
     }
 }
