@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    public static class QuestParser
+    public class QuestParser : Exporter<List<QuestMetadata>>
     {
-        public static List<QuestMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        public QuestParser(MetadataResources resources) : base(resources, "quest") { }
+
+        protected override List<QuestMetadata> Parse()
         {
             List<QuestMetadata> quests = new List<QuestMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
 
                 if (!entry.Name.StartsWith("quest/"))
@@ -25,7 +23,7 @@ namespace GameDataParser.Parsers
 
                 QuestMetadata metadata = new QuestMetadata();
 
-                using XmlReader reader = m2dFile.GetReader(entry.FileHeader);
+                using XmlReader reader = resources.xmlMemFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
                     if (reader.NodeType != XmlNodeType.Element)
@@ -225,18 +223,6 @@ namespace GameDataParser.Parsers
             }
 
             return quests;
-        }
-
-        public static void Write(List<QuestMetadata> entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-quest-metadata"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-quest-metadata"))
-            {
-            }
-            Console.WriteLine("\rSuccessfully parsed quest metadata!");
         }
     }
 }

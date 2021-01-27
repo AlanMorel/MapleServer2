@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    public static class MapEntityParser
+    public class MapEntityParser : Exporter<List<MapEntityMetadata>>
     {
+        public MapEntityParser(MetadataResources resources) : base(resources, "map-entity") { }
 
-        public static List<MapEntityMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        protected override List<MapEntityMetadata> Parse()
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             Dictionary<string, string> mapObjects = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.exportedFiles)
             {
                 if (!entry.Name.StartsWith("flat/presets/presets object/"))
                 {
@@ -39,7 +37,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.exportedMemFile.GetDocument(entry.FileHeader);
                 XmlElement root = document.DocumentElement;
                 XmlNodeList objProperties = document.SelectNodes("/model/property");
 
@@ -63,7 +61,7 @@ namespace GameDataParser.Parsers
             // Iterate over map xblocks
             List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
             Dictionary<string, string> maps = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.exportedFiles)
             {
                 if (!entry.Name.StartsWith("xblock/"))
                 {
@@ -84,7 +82,7 @@ namespace GameDataParser.Parsers
                 maps.Add(mapIdStr, entry.Name);
 
                 MapEntityMetadata metadata = new MapEntityMetadata(mapId);
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.exportedMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
                 foreach (XmlNode node in mapEntities)
@@ -234,20 +232,6 @@ namespace GameDataParser.Parsers
                 (short) float.Parse(coord[1]),
                 (short) float.Parse(coord[2])
             );
-        }
-
-        public static void Write(List<MapEntityMetadata> entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-map-entity-metadata"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-map-entity-metadata"))
-            {
-                // Ensure the file is read equivalent
-                // Debug.Assert(entities.SequenceEqual(Serializer.Deserialize<List<MapEntityMetadata>>(readStream)));
-            }
-            Console.WriteLine("\rSuccessfully parsed map entity metadata!");
         }
     }
 }

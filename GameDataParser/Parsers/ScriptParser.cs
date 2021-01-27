@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
-using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 
 namespace GameDataParser.Parsers
 {
-    public static class ScriptParser
+    public class ScriptParser : Exporter<List<ScriptMetadata>>
     {
-        public static List<ScriptMetadata> ParseNpc(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        public ScriptParser(MetadataResources resources) : base(resources, "script") { }
+
+        protected override List<ScriptMetadata> Parse()
+        {
+            List<ScriptMetadata> entities = this.parseNpc(resources);
+            entities.AddRange(this.parseQuest(resources));
+            return entities;
+        }
+
+        private List<ScriptMetadata> parseNpc(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
 
                 if (!entry.Name.StartsWith("script/npc"))
@@ -25,7 +31,7 @@ namespace GameDataParser.Parsers
 
                 ScriptMetadata metadata = new ScriptMetadata();
                 string npcID = Path.GetFileNameWithoutExtension(entry.Name);
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     int id = int.Parse(node.Attributes["id"].Value);
@@ -128,10 +134,10 @@ namespace GameDataParser.Parsers
             return scripts;
         }
 
-        public static List<ScriptMetadata> ParseQuest(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        private List<ScriptMetadata> parseQuest(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
 
                 if (!entry.Name.StartsWith("script/quest"))
@@ -139,7 +145,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = m2dFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
                 {
                     ScriptMetadata metadata = new ScriptMetadata();
@@ -245,18 +251,6 @@ namespace GameDataParser.Parsers
                 }
             }
             return scripts;
-        }
-
-        public static void Write(List<ScriptMetadata> entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-script-metadata"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-script-metadata"))
-            {
-            }
-            Console.WriteLine("\rSuccessfully parsed script metadata!");
         }
     }
 }

@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
-using ProtoBuf;
 
 namespace GameDataParser.Parsers
 {
-    class ExpParser
+    class ExpTableParser : Exporter<List<ExpMetadata>>
     {
-        public static List<ExpMetadata> Parse(MemoryMappedFile m2dFile, IEnumerable<PackFileEntry> entries)
+        public ExpTableParser(MetadataResources resources) : base(resources, "exptable") { }
+
+        protected override List<ExpMetadata> Parse()
         {
             List<ExpMetadata> expList = new List<ExpMetadata>();
-            foreach (PackFileEntry entry in entries)
+            foreach (PackFileEntry entry in resources.xmlFiles)
             {
 
                 if (!entry.Name.StartsWith("table/nextexp"))
@@ -23,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlReader reader = m2dFile.GetReader(entry.FileHeader);
+                XmlReader reader = resources.xmlMemFile.GetReader(entry.FileHeader);
                 while (reader.Read())
                 {
                     ExpMetadata expTable = new ExpMetadata();
@@ -43,18 +41,6 @@ namespace GameDataParser.Parsers
             }
 
             return expList;
-        }
-
-        public static void Write(List<ExpMetadata> entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/ms2-exptable-metadata"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
-            using (FileStream readStream = File.OpenRead($"{Paths.OUTPUT}/ms2-exptable-metadata"))
-            {
-            }
-            Console.WriteLine("\rSuccessfully parsed exp table metadata!");
         }
     }
 }
