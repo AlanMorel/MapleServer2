@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -13,6 +14,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
         private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
+        private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
 
         static MapEntityStorage()
         {
@@ -24,6 +26,7 @@ namespace MapleServer2.Data.Static
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
                 objects.Add(entity.MapId, entity.Objects);
+                boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
             }
         }
 
@@ -63,6 +66,11 @@ namespace MapleServer2.Data.Static
         {
             List<MapPortal> items = portals.GetValueOrDefault(mapId);
             return items?.Count > 0 ? items[0] : null;
+        }
+
+        public static CoordS[] GetBoundingBox(int mapId)
+        {
+            return boundingBox.GetValueOrDefault(mapId);
         }
     }
 }
