@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -72,6 +74,14 @@ namespace MapleServer2.PacketHandlers.Common
             foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
             {
                 InventoryController.LoadInventoryTab(session, tab);
+            }
+
+            List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
+            IEnumerable<List<QuestMetadata>> packetCount = SplitList(questList, 200); // Split the quest list in 200 quests per packet, same way kms do
+
+            foreach (List<QuestMetadata> item in packetCount)
+            {
+                session.Send(QuestPacket.SendQuests(item));
             }
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
             session.Send(MarketInventoryPacket.StartList());
@@ -149,6 +159,14 @@ namespace MapleServer2.PacketHandlers.Common
             }
 
             session.Send((byte) SendOp.MOVE_RESULT, 0x00, 0x00);
+        }
+
+        public static IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize = 30)
+        {
+            for (int i = 0; i < locations.Count; i += nSize)
+            {
+                yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i));
+            }
         }
     }
 }

@@ -11,21 +11,21 @@ public class InventoryController
     public static void Add(GameSession session, Item item, bool isNew)
     {
         // Checks if item is stackable or not
-        if (item.SlotMax > 1)
+        if (item.StackLimit > 1)
         {
             foreach (Item i in session.Player.Inventory.Items.Values)
             {
                 // Checks to see if item exists in database (dictionary)
-                if (i.Id != item.Id || i.Amount >= i.SlotMax)
+                if (i.Id != item.Id || i.Amount >= i.StackLimit)
                 {
                     continue;
                 }
                 // Updates inventory for item amount overflow
-                if ((i.Amount + item.Amount) > i.SlotMax)
+                if ((i.Amount + item.Amount) > i.StackLimit)
                 {
-                    int added = i.SlotMax - i.Amount;
+                    int added = i.StackLimit - i.Amount;
                     item.Amount -= added;
-                    i.Amount = i.SlotMax;
+                    i.Amount = i.StackLimit;
                     session.Send(ItemInventoryPacket.Update(i.Uid, i.Amount));
                     session.Send(ItemInventoryPacket.MarkItemNew(i, added));
                 }
@@ -38,12 +38,32 @@ public class InventoryController
                     return;
                 }
             }
+
+            session.Player.Inventory.Add(item); // Adds item into internal database
+            session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
+            if (isNew)
+            {
+                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+            }
         }
-        session.Player.Inventory.Add(item); // Adds item into internal database
-        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
-        if (isNew)
+        else
         {
-            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+            for (int i = 0; i < item.Amount; i++)
+            {
+                Item newItem = new Item(item)
+                {
+                    Amount = 1,
+                    Slot = session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot,
+                    Uid = GuidGenerator.Long()
+                };
+
+                session.Player.Inventory.Add(newItem);
+                session.Send(ItemInventoryPacket.Add(newItem));
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(newItem, newItem.Amount));
+                }
+            }
         }
     }
 
@@ -129,7 +149,7 @@ public class InventoryController
     }
 
     // Todo: implement when storage and trade is implemented
-    public static void split(GameSession session, Item item)
+    public static void Split(GameSession session, Item item)
     {
 
     }
@@ -137,22 +157,15 @@ public class InventoryController
     // Updates item information
     public static void Update(GameSession session, long uid, int amount)
     {
-        if ((GetItemAmount(session, uid) + amount) >= GetItemMax(session, uid))
+        Item item = session.Player.Inventory.Items[uid];
+        if ((item.Amount + amount) >= item.StackLimit)
         {
-            session.Player.Inventory.Items[uid].Amount = session.Player.Inventory.Items[uid].SlotMax;
-            session.Send(ItemInventoryPacket.Update(uid, session.Player.Inventory.Items[uid].SlotMax));
+            item.Amount = item.StackLimit;
         }
-        session.Player.Inventory.Items[uid].Amount = amount;
+        else
+        {
+            item.Amount = amount;
+        }
         session.Send(ItemInventoryPacket.Update(uid, amount));
-    }
-
-    private static int GetItemAmount(GameSession session, long uid)
-    {
-        return session.Player.Inventory.Items[uid].Amount;
-    }
-
-    private static int GetItemMax(GameSession session, long uid)
-    {
-        return session.Player.Inventory.Items[uid].SlotMax;
     }
 }

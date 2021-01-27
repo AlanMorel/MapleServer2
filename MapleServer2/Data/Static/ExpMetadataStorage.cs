@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -11,7 +12,7 @@ namespace MapleServer2.Data.Static
 
         static ExpMetadataStorage()
         {
-            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-exptable-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-exptable-metadata");
             List<ExpMetadata> items = Serializer.Deserialize<List<ExpMetadata>>(stream);
             foreach (ExpMetadata item in items)
             {

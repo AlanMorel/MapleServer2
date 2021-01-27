@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
+using MapleServer2.Enums;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -13,7 +16,7 @@ namespace MapleServer2.Data.Static
 
         static ItemMetadataStorage()
         {
-            using FileStream stream = File.OpenRead("Maple2Storage/Resources/ms2-item-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-metadata");
             List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
             foreach (ItemMetadata item in items)
             {
@@ -51,9 +54,14 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Rarity;
         }
 
-        public static int GetSlotMax(int itemId)
+        public static int GetStackLimit(int itemId)
         {
-            return map.GetValueOrDefault(itemId).SlotMax;
+            return map.GetValueOrDefault(itemId).StackLimit;
+        }
+
+        public static bool GetIsTwoHand(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsTwoHand;
         }
 
         public static bool GetIsTemplate(int itemId)
@@ -64,6 +72,13 @@ namespace MapleServer2.Data.Static
         public static int GetPlayCount(int itemId)
         {
             return map.GetValueOrDefault(itemId).PlayCount;
+        }
+
+        public static List<Job> GetRecommendJobs(int itemId)
+        {
+            Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
+
+            return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
         }
 
         public static List<ItemContent> GetContent(int itemId)

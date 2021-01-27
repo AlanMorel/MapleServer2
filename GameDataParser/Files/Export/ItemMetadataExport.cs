@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Parsers;
@@ -11,9 +11,16 @@ namespace GameDataParser.Files.Export
     {
         public static void Export(List<PackFileEntry> files, MemoryMappedFile memFile)
         {
+            if (Hash.CheckHash("ms2-item-metadata"))
+            {
+                Console.WriteLine("\rSkipping item metadata!");
+                return;
+            }
+
             // Parse and save some item data from xml file
             List<ItemMetadata> items = ItemParser.Parse(memFile, files);
             ItemParser.Write(items);
+            Hash.WriteHash("ms2-item-metadata");
         }
     }
 }

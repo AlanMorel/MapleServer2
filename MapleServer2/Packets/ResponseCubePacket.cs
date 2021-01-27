@@ -1,8 +1,8 @@
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
-using MapleServer2.Tools;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -18,7 +18,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteMode(ResponseCubePacketMode.Pickup);
+            pWriter.WriteEnum(ResponseCubePacketMode.Pickup);
             pWriter.WriteZero(1);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(coords);
@@ -33,7 +33,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
 
-            pWriter.WriteMode(ResponseCubePacketMode.Drop);
+            pWriter.WriteEnum(ResponseCubePacketMode.Drop);
             pWriter.WriteZero(1);
             pWriter.WriteInt(player.ObjectId);
 

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
@@ -47,7 +47,7 @@ namespace MapleServer2
                         loginServer.Stop();
                         return;
                     case "send":
-                        string packet = input[1].Replace(" ", "");
+                        string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
                         logger.Info(pWriter);

@@ -14,9 +14,11 @@ namespace MapleServer2.Types
         public ItemSlot ItemSlot { get; private set; }
         public GemSlot GemSlot { get; private set; }
         public int Rarity { get; set; }
-        public int SlotMax { get; private set; }
+        public int StackLimit { get; private set; }
+        public bool IsTwoHand { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
+        public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
 
         public readonly int Id;
@@ -62,9 +64,11 @@ namespace MapleServer2.Types
             this.ItemSlot = ItemMetadataStorage.GetSlot(id);
             this.GemSlot = ItemMetadataStorage.GetGem(id);
             this.Rarity = ItemMetadataStorage.GetRarity(id);
-            this.SlotMax = ItemMetadataStorage.GetSlotMax(id);
+            this.StackLimit = ItemMetadataStorage.GetStackLimit(id);
+            this.IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             this.PlayCount = ItemMetadataStorage.GetPlayCount(id);
+            this.RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             this.Content = ItemMetadataStorage.GetContent(id);
             this.Slot = -1;
             this.Amount = 1;
@@ -80,7 +84,9 @@ namespace MapleServer2.Types
             ItemSlot = other.ItemSlot;
             GemSlot = other.GemSlot;
             Rarity = other.Rarity;
-            SlotMax = other.SlotMax;
+            StackLimit = other.StackLimit;
+            IsTwoHand = other.IsTwoHand;
+            IsTemplate = other.IsTemplate;
             PlayCount = other.PlayCount;
             Content = other.Content;
             Uid = other.Uid;

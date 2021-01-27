@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -27,7 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
                         return; // Invalid NPC
                     }
                     // Stellar Chest: 11004215
-                    session.Send(NpcTalkPacket.Respond(npc, 0));
+                    session.Send(NpcTalkPacket.Respond(npc, NpcType.Unk2, DialogType.TalkOption, 0));
                     break;
                 case 2: // Continue chat?
                     int index = packet.ReadInt(); // selection index

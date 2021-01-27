@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Servers.Game;
 using MapleServer2.Packets;
-using System;
+using MapleServer2.Servers.Game;
+using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
