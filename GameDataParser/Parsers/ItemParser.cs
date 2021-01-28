@@ -17,7 +17,7 @@ namespace GameDataParser.Parsers
         protected override List<ItemMetadata> Parse()
         {
 
-            Dictionary<long, List<ItemContent>> itemDrops = new Dictionary<long, List<ItemContent>>();
+            Dictionary<string, List<ItemContent>> itemDrops = new Dictionary<string, List<ItemContent>>();
             foreach (PackFileEntry entry in resources.xmlFiles) // First,parse all boxes rewards
             {
                 if (!entry.Name.StartsWith("table/individualitemdrop") && !entry.Name.StartsWith("table/na/individualitemdrop"))
@@ -43,7 +43,7 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    long box = long.Parse(individualBoxItem.Attributes["individualDropBoxID"].Value);
+                    string box = individualBoxItem.Attributes["individualDropBoxID"].Value;
                     int id = int.Parse(individualBoxItem.Attributes["item"].Value);
                     int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
                     int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
@@ -147,9 +147,9 @@ namespace GameDataParser.Parsers
 
                     if (parameters.Count >= 2)
                     {
-                        long boxId = contentType == "OpenItemBox" ? long.Parse(parameters[3]) : long.Parse(parameters[1]);
+                        string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
 
-                        foreach (KeyValuePair<long, List<ItemContent>> box in itemDrops) // Search for box id and set the rewards previously parsed
+                        foreach (KeyValuePair<string, List<ItemContent>> box in itemDrops) // Search for box id and set the rewards previously parsed
                         {
                             if (box.Key == boxId)
                             {
