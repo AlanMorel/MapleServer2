@@ -91,15 +91,20 @@ namespace GameDataParser.Parsers
                     if (node.Attributes["name"].Value.Contains("MS2Bounding0"))
                     {
                         XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                        string blockValue = blockCoord?.FirstChild.Attributes["value"].Value;
 
+                        CoordS boundingBox = ParseCoord(blockValue ?? "0, 0, 0");
                         metadata.BoundingBox0 = boundingBox;
                     }
                     else if (node.Attributes["name"].Value.Contains("MS2Bounding1"))
                     {
                         XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-
+                        string blockValue = blockCoord?.FirstChild.Attributes["value"].Value;
+                        if (blockValue.Contains(".") && mapId == 02000118)
+                        {
+                            continue;
+                        }
+                        CoordS boundingBox = ParseCoord(blockValue ?? "0, 0, 0");
                         metadata.BoundingBox1 = boundingBox;
                     }
                     else if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
