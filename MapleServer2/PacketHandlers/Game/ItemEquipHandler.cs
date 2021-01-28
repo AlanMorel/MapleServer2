@@ -57,8 +57,8 @@ namespace MapleServer2.PacketHandlers.Game
             if (equippedInventory.Remove(equipSlot, out Item prevItem))
             {
                 prevItem.Slot = item.Slot;
-                InventoryAdd(session, prevItem, false);
-                UnequipPacket(session, prevItem);
+                InventoryController.Add(session, prevItem, false);
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
             }
 
             // Handle unequipping pants when equipping dresses
@@ -72,30 +72,27 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         prevItem2.Slot = item.Slot;
                     }
-                    InventoryAdd(session, prevItem2, false);
-                    UnequipPacket(session, prevItem2);
+                    InventoryController.Add(session, prevItem2, false);
+                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                 }
             }
 
             // Handle unequipping dresses when equipping pants
-            if (item.ItemSlot == ItemSlot.PA && equippedInventory[ItemSlot.CL] != null && equippedInventory[ItemSlot.CL].IsDress)
-            {
-                if (equippedInventory.Remove(ItemSlot.CL, out Item prevItem2))
-                {
-                    prevItem2.Slot = item.Slot;
-                    InventoryAdd(session, prevItem2, false);
-                    UnequipPacket(session, prevItem2);
-                }
-            }
-
             // Handle unequipping two-handed main-hands when equipping off-hand weapons
-            if (item.ItemSlot == ItemSlot.LH && equippedInventory[ItemSlot.RH] != null && equippedInventory[ItemSlot.RH].IsTwoHand)
+            if (item.ItemSlot == ItemSlot.PA || item.ItemSlot == ItemSlot.LH)
             {
-                if (equippedInventory.Remove(ItemSlot.RH, out Item prevItem2))
+                ItemSlot prevItemSlot = item.ItemSlot == ItemSlot.PA ? ItemSlot.CL : ItemSlot.RH;
+                if (equippedInventory.ContainsKey(prevItemSlot))
                 {
-                    prevItem2.Slot = item.Slot;
-                    InventoryAdd(session, prevItem2, false);
-                    UnequipPacket(session, prevItem2);
+                    if (equippedInventory[prevItemSlot] != null && equippedInventory[prevItemSlot].IsDress)
+                    {
+                        if (equippedInventory.Remove(prevItemSlot, out Item prevItem2))
+                        {
+                            prevItem2.Slot = item.Slot;
+                            InventoryController.Add(session, prevItem2, false);
+                            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
+                        }
+                    }
                 }
             }
 
@@ -138,8 +135,8 @@ namespace MapleServer2.PacketHandlers.Game
                     unequipped = true;
 
                     unequipItem.Slot = -1;
-                    InventoryAdd(session, unequipItem, false);
-                    UnequipPacket(session, unequipItem);
+                    InventoryController.Add(session, unequipItem, false);
+                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                     break;
                 }
             }
@@ -157,21 +154,11 @@ namespace MapleServer2.PacketHandlers.Game
                 if (session.Player.Cosmetics.Remove(slot, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
-                    InventoryAdd(session, unequipItem, false);
-                    UnequipPacket(session, unequipItem);
+                    InventoryController.Add(session, unequipItem, false);
+                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                     break;
                 }
             }
-        }
-
-        private void InventoryAdd(GameSession session, Item item, bool isNew)
-        {
-            InventoryController.Add(session, item, isNew);
-        }
-
-        private void UnequipPacket(GameSession session, Item item)
-        {
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, item));
         }
     }
 }

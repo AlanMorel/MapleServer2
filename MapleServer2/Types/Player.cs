@@ -255,7 +255,6 @@ namespace MapleServer2.Types
                 case InventoryTab.Outfit:
                     return Cosmetics;
                 case InventoryTab.Badge:
-                    return Badges
                 case InventoryTab.Mount:
                 case InventoryTab.Catalyst:
                 case InventoryTab.FishingMusic:
