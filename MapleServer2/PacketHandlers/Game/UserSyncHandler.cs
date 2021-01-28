@@ -1,7 +1,6 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Servers.Game;
@@ -71,7 +70,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             CoordS higherBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[0] : boundingBox[1];
             CoordS lowerBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[1] : boundingBox[0];
-            if (coord.X > higherBoundingBox.X || coord.Y < higherBoundingBox.Y || coord.Z > higherBoundingBox.Z || (coord.X < lowerBoundingBox.X || coord.Y > lowerBoundingBox.Y || coord.Z < lowerBoundingBox.Z))
+            if (coord.Z > higherBoundingBox.Z || coord.Z < lowerBoundingBox.Z)
             {
                 return true;
             }
