@@ -254,19 +254,7 @@ namespace MapleServer2.Types
                     return Equips;
                 case InventoryTab.Outfit:
                     return Cosmetics;
-                case InventoryTab.Badge:
-                case InventoryTab.Mount:
-                case InventoryTab.Catalyst:
-                case InventoryTab.FishingMusic:
-                case InventoryTab.Quest:
-                case InventoryTab.Gemstone:
-                case InventoryTab.Misc:
-                case InventoryTab.LifeSkill:
-                case InventoryTab.Pets:
-                case InventoryTab.Consumable:
-                case InventoryTab.Currency:
-                case InventoryTab.Lapenshard:
-                case InventoryTab.Fragment:
+                default:
                     break;
             }
             return null;
