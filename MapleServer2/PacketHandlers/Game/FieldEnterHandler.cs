@@ -27,6 +27,12 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
             session.Send(EmotePacket.LoadEmotes());
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
+            session.Send(AchievePacket.WriteTableStart());
+            List<Packet> achievePackets = AchievePacket.WriteTableContent(new List<Achieve>(session.Player.Achieves.Values));
+            foreach (Packet achievePacket in achievePackets)
+            {
+                session.Send(achievePacket);
+            }
 
             // Normally skill layout would be loaded from a database
             QuickSlot arrowStream = QuickSlot.From(10500001);

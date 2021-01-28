@@ -24,21 +24,26 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        // call this function 4 times in succession with index from 0 to 3
-        public static Packet WriteTableContent(List<Achieve> achieves, int index)
+        // packet from WriteTableStart() must be sent immediately before sending these packets
+        public static List<Packet> WriteTableContent(List<Achieve> achieves)
         {
             int achieveCount = achieves.Count();
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-            pWriter.WriteByte((byte) AchievePacketMode.TableContent);
-            pWriter.WriteInt(60);
-
-            foreach (Achieve achieve in achieves.GetRange(index*(achieveCount/4), (index+1)*(achieveCount/4)))
+            int sliceCount = achieveCount / 4 + 1;
+            List<Packet> pWriters = new List<Packet>();
+            // split achievement table into 4 packets
+            for (int p = 0; p < achieveCount; p += sliceCount)
             {
-                Packet newPacket = WriteUpdate(achieve);
-                pWriter.Write(newPacket.Buffer);
+                PacketWriter newWriter = PacketWriter.Of(SendOp.ACHIEVE);
+                newWriter.WriteByte((byte) AchievePacketMode.TableContent);
+                newWriter.WriteInt(60);
+                foreach (Achieve achieve in achieves.GetRange(p, p + sliceCount))
+                {
+                    newWriter.Write(WriteUpdate(achieve).Buffer);
+                }
+                pWriters.Add(newWriter);
             }
 
-            return pWriter;
+            return pWriters;
         }
 
         public static Packet WriteUpdate(Achieve achieve)

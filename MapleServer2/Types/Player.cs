@@ -46,6 +46,7 @@ namespace MapleServer2.Types
 
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3];
+        public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
         public List<short> Stickers = new List<short> { 0 };
 
@@ -215,6 +216,15 @@ namespace MapleServer2.Types
                 new SkillTab((Job) (job))
             };
 
+            // testing code
+            Dictionary<int, Achieve> newAchieveDict = new Dictionary<int, Achieve>();
+            List<long> timestamp = new List<long>();
+            timestamp.Add((long)0x390D145D);
+            foreach (int id in AchieveMetadataStorage.GetAchieveIds())
+            {
+                newAchieveDict[id] = new Achieve(id, 1, 10, timestamp);
+            }
+
             return new Player
             {
                 SkillTabs = skillTabs,
@@ -235,6 +245,7 @@ namespace MapleServer2.Types
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
                 IsVIP = false,
+                Achieves = newAchieveDict
             };
         }
 

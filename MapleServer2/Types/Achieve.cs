@@ -14,7 +14,7 @@ namespace MapleServer2.Types
         public long Max { get; private set; }    // counter value needed to reach next grade (-1 if grade is max)
         public List<long> Timestamps { get; private set; }  // stored in order of grades as seconds since epoch time
         
-        public Achieve(int achieveId = 0, int grade = 0, int counter = 0, List<long> timestamps = null)
+        public Achieve(int achieveId, int grade = 0, int counter = 0, List<long> timestamps = null)
         {
             this.Id = achieveId;
             this.Grade = grade;
