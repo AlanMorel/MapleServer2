@@ -28,20 +28,27 @@ namespace MapleServer2.Packets
         public static List<Packet> WriteTableContent(List<Achieve> achieves)
         {
             int achieveCount = achieves.Count();
-            int sliceCount = achieveCount / 4 + 1;
+            int sliceSize = achieveCount / 4 + 1;
             List<Packet> pWriters = new List<Packet>();
             // split achievement table into 4 packets
-            for (int p = 0; p < achieveCount; p += sliceCount)
-            {
+            // for (int p = 0; p < achieveCount; p += sliceSize)
+            // {
                 PacketWriter newWriter = PacketWriter.Of(SendOp.ACHIEVE);
                 newWriter.WriteByte((byte) AchievePacketMode.TableContent);
                 newWriter.WriteInt(60);
-                foreach (Achieve achieve in achieves.GetRange(p, p + sliceCount))
-                {
-                    newWriter.Write(WriteUpdate(achieve).Buffer);
-                }
+                newWriter.WriteInt(0x055ed126);
+                newWriter.WriteInt(1); // unknown
+                newWriter.WriteByte(3); // unknown
+                newWriter.WriteInt(1);
+                newWriter.WriteInt(1); // unknown
+                newWriter.WriteByte(2); // unknown
+                newWriter.WriteInt(0); // unknown this is for 0x1 mode
+                newWriter.WriteLong(1);
+                newWriter.WriteInt(1);
+                newWriter.WriteInt(1);
+                newWriter.WriteLong(0x5D140D39);
                 pWriters.Add(newWriter);
-            }
+            // }
 
             return pWriters;
         }
@@ -50,19 +57,18 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
             pWriter.WriteByte((byte) AchievePacketMode.Update);
-            pWriter.WriteInt(achieve.Id);
-            pWriter.WriteInt(); // unknown
-            pWriter.WriteByte(); // unknown
-            pWriter.WriteInt(achieve.Grade);
-            pWriter.WriteInt(); // unknown
-            pWriter.WriteByte(); // unknown
-            pWriter.WriteLong(achieve.Counter);
-            pWriter.WriteInt(achieve.Timestamps.Count);
-            for (int index = 0; index < achieve.Timestamps.Count; index++)
-            {
-                pWriter.WriteInt(index + 1);
-                pWriter.WriteLong(achieve.Timestamps[index]);
-            }
+            pWriter.WriteByte((byte) AchievePacketMode.TableContent);
+            pWriter.WriteInt(60);
+            pWriter.WriteInt(0x055ed126);
+            pWriter.WriteInt(1); // unknown
+            pWriter.WriteByte(3); // unknown
+            pWriter.WriteInt(1);
+            pWriter.WriteInt(1); // unknown
+            pWriter.WriteByte(2); // unknown
+            pWriter.WriteLong(1);
+            pWriter.WriteInt(1);
+            pWriter.WriteInt(1);
+            pWriter.WriteLong(0x5D140D39);
 
             return pWriter;
         }

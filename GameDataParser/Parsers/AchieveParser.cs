@@ -23,20 +23,21 @@ namespace GameDataParser.Parsers
                 XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode achieve = document.SelectSingleNode("/ms2/achieves");
 
-                AchieveMetadata newAchieve = new AchieveMetadata();
                 int id = int.Parse(achieve.Attributes["id"].Value);
+                AchieveMetadata newAchieve = new AchieveMetadata();
+                newAchieve.Id = id;
                 
-                XmlNodeList grades = achieve.SelectNodes("/grade");
+                XmlNodeList grades = achieve.SelectNodes("grade");
 
                 foreach (XmlNode grade in grades)
                 {
                     AchieveGradeMetadata newGrade = new AchieveGradeMetadata();
                     newGrade.Grade = int.Parse(grade.Attributes["value"].Value);
 
-                    XmlNode condition = grade.SelectSingleNode("/condition");
-                    newGrade.Condition = int.Parse(condition.Attributes["value"].Value);
+                    XmlNode condition = grade.SelectSingleNode("condition");
+                    newGrade.Condition = long.Parse(condition.Attributes["value"].Value);
 
-                    XmlNode reward = grade.SelectSingleNode("/reward");
+                    XmlNode reward = grade.SelectSingleNode("reward");
                     newGrade.Reward = int.Parse(reward.Attributes["value"].Value);
 
                     newAchieve.Grades.Add(newGrade);

@@ -117,6 +117,17 @@ namespace MapleServer2.Types
                 new SkillTab((Job) (job))
             };
 
+            // testing code
+            Dictionary<int, Achieve> newAchieveDict = new Dictionary<int, Achieve>();
+            List<long> timestamp = new List<long>();
+            timestamp.Add((long)0x5D140D39);
+            List<int> ids = AchieveMetadataStorage.GetAchieveIds();
+            foreach (int id in ids)
+            {
+                newAchieveDict[id] = new Achieve(id, 1, 1, timestamp);
+            }
+            // end of testing code
+
             Player player = new Player
             {
                 SkillTabs = skillTabs,
@@ -158,7 +169,11 @@ namespace MapleServer2.Types
                     10000603, 10000638, 10000644
                 },
                 IsVIP = false,
+                Achieves = newAchieveDict
             };
+            player.Trophy[0] = 1;
+            player.Trophy[1] = 2;
+            player.Trophy[2] = 3;
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
         }
@@ -216,15 +231,6 @@ namespace MapleServer2.Types
                 new SkillTab((Job) (job))
             };
 
-            // testing code
-            Dictionary<int, Achieve> newAchieveDict = new Dictionary<int, Achieve>();
-            List<long> timestamp = new List<long>();
-            timestamp.Add((long)0x390D145D);
-            foreach (int id in AchieveMetadataStorage.GetAchieveIds())
-            {
-                newAchieveDict[id] = new Achieve(id, 1, 10, timestamp);
-            }
-
             return new Player
             {
                 SkillTabs = skillTabs,
@@ -244,8 +250,7 @@ namespace MapleServer2.Types
                 GameOptions = new GameOptions(),
                 Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
-                IsVIP = false,
-                Achieves = newAchieveDict
+                IsVIP = false
             };
         }
 
