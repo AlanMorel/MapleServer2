@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -44,89 +45,66 @@ namespace MapleServer2.PacketHandlers.Game
             // Remove the item from the users inventory
             InventoryController.Remove(session, itemUid, out Item item);
 
-            // Equip cosmetic
-            if (item.InventoryTab == InventoryTab.Outfit)
+            // Get correct equipped inventory
+            Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
+            if (equippedInventory == null)
             {
-                // Move previously equipped item back to inventory
-                if (session.Player.Cosmetics.Remove(equipSlot, out Item prevItem))
-                {
-                    prevItem.Slot = item.Slot;
-                    InventoryController.Add(session, prevItem, false);
-                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
-                }
-
-                // Handle unequipping off-hand when equipping two-handed weapons
-                if (item.IsTwoHand)
-                {
-                    if (session.Player.Cosmetics.Remove(ItemSlot.LH, out Item prevItem2))
-                    {
-                        prevItem2.Slot = -1;
-                        if (prevItem == null)
-                        {
-                            prevItem2.Slot = item.Slot;
-                        }
-                        InventoryController.Add(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
-                    }
-                }
-
-                // Handle unequipping two-handed main-hands when equipping off-hand weapons
-                if (item.ItemSlot == ItemSlot.LH && session.Player.Cosmetics[ItemSlot.RH] != null && session.Player.Cosmetics[ItemSlot.RH].IsTwoHand)
-                {
-                    if (session.Player.Cosmetics.Remove(ItemSlot.RH, out Item prevItem2))
-                    {
-                        prevItem2.Slot = item.Slot;
-                        InventoryController.Add(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
-                    }
-                }
-
-                // Equip new item
-                session.Player.Cosmetics[equipSlot] = item;
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
+                logger.Warning("equippedInventory was null: " + item.InventoryTab);
+                return;
             }
 
-            // Equip gear
-            else
+            // Move previously equipped item back to inventory
+            if (equippedInventory.Remove(equipSlot, out Item prevItem))
             {
-                // Move previously equipped item back to inventory
-                if (session.Player.Equips.Remove(equipSlot, out Item prevItem))
-                {
-                    prevItem.Slot = item.Slot;
-                    InventoryController.Add(session, prevItem, false);
-                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
-                }
+                prevItem.Slot = item.Slot;
+                InventoryAdd(session, prevItem, false);
+                UnequipPacket(session, prevItem);
+            }
 
-                // Handle unequipping off-hand when equipping two-handed weapons
-                if (item.IsTwoHand)
+            // Handle unequipping pants when equipping dresses
+            // Handle unequipping off-hand when equipping two-handed weapons
+            if (item.IsDress || item.IsTwoHand)
+            {
+                if (equippedInventory.Remove(item.IsDress ? ItemSlot.PA : ItemSlot.LH, out Item prevItem2))
                 {
-                    if (session.Player.Equips.Remove(ItemSlot.LH, out Item prevItem2))
-                    {
-                        prevItem2.Slot = -1;
-                        if (prevItem == null)
-                        {
-                            prevItem2.Slot = item.Slot;
-                        }
-                        InventoryController.Add(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
-                    }
-                }
-
-                // Handle unequipping two-handed main-hands when equipping off-hand weapons
-                if (item.ItemSlot == ItemSlot.LH && session.Player.Equips[ItemSlot.RH] != null && session.Player.Equips[ItemSlot.RH].IsTwoHand)
-                {
-                    if (session.Player.Equips.Remove(ItemSlot.RH, out Item prevItem2))
+                    prevItem2.Slot = -1;
+                    if (prevItem == null)
                     {
                         prevItem2.Slot = item.Slot;
-                        InventoryController.Add(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                     }
+                    InventoryAdd(session, prevItem2, false);
+                    UnequipPacket(session, prevItem2);
                 }
+            }
 
-                // Equip new item
-                session.Player.Equips[equipSlot] = item;
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
+            // Handle unequipping dresses when equipping pants
+            if (item.ItemSlot == ItemSlot.PA && equippedInventory[ItemSlot.CL] != null && equippedInventory[ItemSlot.CL].IsDress)
+            {
+                if (equippedInventory.Remove(ItemSlot.CL, out Item prevItem2))
+                {
+                    prevItem2.Slot = item.Slot;
+                    InventoryAdd(session, prevItem2, false);
+                    UnequipPacket(session, prevItem2);
+                }
+            }
 
+            // Handle unequipping two-handed main-hands when equipping off-hand weapons
+            if (item.ItemSlot == ItemSlot.LH && equippedInventory[ItemSlot.RH] != null && equippedInventory[ItemSlot.RH].IsTwoHand)
+            {
+                if (equippedInventory.Remove(ItemSlot.RH, out Item prevItem2))
+                {
+                    prevItem2.Slot = item.Slot;
+                    InventoryAdd(session, prevItem2, false);
+                    UnequipPacket(session, prevItem2);
+                }
+            }
+
+            // Equip new item
+            equippedInventory[equipSlot] = item;
+            session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
+
+            if (item.InventoryTab == InventoryTab.Gear)
+            {
                 // TODO - Increase stats based on the item stats itself
                 session.Player.Stats.CritRate.Max += 12;
                 session.Player.Stats.CritRate.Total += 12;
@@ -160,8 +138,8 @@ namespace MapleServer2.PacketHandlers.Game
                     unequipped = true;
 
                     unequipItem.Slot = -1;
-                    InventoryController.Add(session, unequipItem, false);
-                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
+                    InventoryAdd(session, unequipItem, false);
+                    UnequipPacket(session, unequipItem);
                     break;
                 }
             }
@@ -179,11 +157,21 @@ namespace MapleServer2.PacketHandlers.Game
                 if (session.Player.Cosmetics.Remove(slot, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
-                    InventoryController.Add(session, unequipItem, false);
-                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
+                    InventoryAdd(session, unequipItem, false);
+                    UnequipPacket(session, unequipItem);
                     break;
                 }
             }
+        }
+
+        private void InventoryAdd(GameSession session, Item item, bool isNew)
+        {
+            InventoryController.Add(session, item, isNew);
+        }
+
+        private void UnequipPacket(GameSession session, Item item)
+        {
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, item));
         }
     }
 }
