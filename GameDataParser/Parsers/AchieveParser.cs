@@ -1,0 +1,50 @@
+using System.Collections.Generic;
+using System.Xml;
+using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
+using Maple2Storage.Types.Metadata;
+
+namespace GameDataParser.Parsers
+{
+    class AchieveParser : Exporter<List<AchieveMetadata>>
+    {
+        public AchieveParser(MetadataResources resources) : base(resources, "achieve") { }
+        
+        protected override List<AchieveMetadata> Parse()
+        {
+            List<AchieveMetadata> achieveList = new List<AchieveMetadata>();
+            foreach (PackFileEntry entry in resources.xmlFiles)
+            {
+                if (!entry.Name.StartsWith("achieve/"))
+                {
+                    continue;
+                }
+
+                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlNode achieve = document.SelectSingleNode("/ms2/achieves");
+
+                AchieveMetadata newAchieve = new AchieveMetadata();
+                int id = int.Parse(achieve.Attributes["id"].Value);
+                
+                XmlNodeList grades = achieve.SelectNodes("/grade");
+
+                foreach (XmlNode grade in grades)
+                {
+                    AchieveGradeMetadata newGrade = new AchieveGradeMetadata();
+                    newGrade.Grade = int.Parse(grade.Attributes["value"].Value);
+
+                    XmlNode condition = grade.SelectSingleNode("/condition");
+                    newGrade.Condition = int.Parse(condition.Attributes["value"].Value);
+
+                    XmlNode reward = grade.SelectSingleNode("/reward");
+                    newGrade.Reward = int.Parse(reward.Attributes["value"].Value);
+
+                    newAchieve.Grades.Add(newGrade);
+                }
+                achieveList.Add(newAchieve);
+                
+            }
+            return achieveList;
+        }
+    }
+}
