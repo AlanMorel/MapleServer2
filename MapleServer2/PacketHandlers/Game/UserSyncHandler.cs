@@ -68,22 +68,22 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
         {
-            short HigherBoundZ = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[0].Z : boundingBox[1].Z;
-            short LowerBoundZ = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[1].Z : boundingBox[0].Z;
-            short HigherBoundY = boundingBox[0].Y > boundingBox[1].Y ? boundingBox[0].Y : boundingBox[1].Y;
-            short LowerBoundY = boundingBox[0].Y > boundingBox[1].Y ? boundingBox[1].Y : boundingBox[0].Y;
-            short HigherBoundX = boundingBox[0].X > boundingBox[1].X ? boundingBox[0].X : boundingBox[1].X;
-            short LowerBoundX = boundingBox[0].X > boundingBox[1].X ? boundingBox[1].X : boundingBox[0].X;
+            short higherBoundZ = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[0].Z : boundingBox[1].Z;
+            short lowerBoundZ = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[1].Z : boundingBox[0].Z;
+            short higherBoundY = boundingBox[0].Y > boundingBox[1].Y ? boundingBox[0].Y : boundingBox[1].Y;
+            short lowerBoundY = boundingBox[0].Y > boundingBox[1].Y ? boundingBox[1].Y : boundingBox[0].Y;
+            short higherBoundX = boundingBox[0].X > boundingBox[1].X ? boundingBox[0].X : boundingBox[1].X;
+            short lowerBoundX = boundingBox[0].X > boundingBox[1].X ? boundingBox[1].X : boundingBox[0].X;
 
-            if (coord.Z > HigherBoundZ || coord.Z < LowerBoundZ)
+            if (coord.Z > higherBoundZ || coord.Z < lowerBoundZ)
             {
                 return true;
             }
-            else if (coord.Y > HigherBoundY || coord.Y < LowerBoundY)
+            else if (coord.Y > higherBoundY || coord.Y < lowerBoundY)
             {
                 return true;
             }
-            else if (coord.X > HigherBoundX || coord.X < LowerBoundX)
+            else if (coord.X > higherBoundX || coord.X < lowerBoundX)
             {
                 return true;
             }
