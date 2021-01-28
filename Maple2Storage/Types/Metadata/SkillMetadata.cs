@@ -20,6 +20,8 @@ namespace Maple2Storage.Types.Metadata
         public byte Learned = 0;
         [XmlElement(Order = 6)]
         public string State;
+        [XmlElement(Order = 7)]
+        public byte Type;
 
         public SkillMetadata()
         {
@@ -46,6 +48,8 @@ namespace Maple2Storage.Types.Metadata
         public float DamageRate;
         [XmlElement(Order = 4)]
         public string Feature = "";
+        [XmlElement(Order = 5)]
+        public SkillMotion SkillMotions;
 
         // Required for deserialization
         public SkillLevel()
@@ -53,12 +57,13 @@ namespace Maple2Storage.Types.Metadata
 
         }
 
-        public SkillLevel(int level, int spirit, float damageRate, string feature)
+        public SkillLevel(int level, int spirit, float damageRate, string feature, SkillMotion skillMotions)
         {
             Level = level;
             Spirit = spirit;
             DamageRate = damageRate;
             Feature = feature;
+            SkillMotions = skillMotions;
         }
 
         public override int GetHashCode()
@@ -67,6 +72,34 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature},SkillMotion:{SkillMotions})";
+    }
+
+    [XmlType]
+    public class SkillMotion
+    {
+        [XmlElement(Order = 1)]
+        public string SequenceName = "";
+        [XmlElement(Order = 2)]
+        public string MotionEffect = "";
+
+        public SkillMotion()
+        {
+
+        }
+
+        public SkillMotion(string sequenceName, string motionEffect)
+        {
+            SequenceName = sequenceName;
+            MotionEffect = motionEffect;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(SequenceName, MotionEffect);
+        }
+
+        public override string ToString() => $"SequenceName:{SequenceName},MotionEffect:{MotionEffect}";
+
     }
 }

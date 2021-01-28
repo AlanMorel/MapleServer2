@@ -24,9 +24,12 @@ namespace GameDataParser.Parsers
                     string skillId = Path.GetFileNameWithoutExtension(entry.Name);
                     SkillMetadata metadata = new SkillMetadata();
                     List<SkillLevel> skillLevels = new List<SkillLevel>();
-
+                    List<SkillMotion> skillMotions = new List<SkillMotion>();
                     metadata.SkillId = int.Parse(skillId);
                     XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+
+                    metadata.Type = byte.Parse(document.SelectSingleNode("/ms2/basic/kinds").Attributes["type"].Value);
+
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode level in levels)
                     {
@@ -35,7 +38,10 @@ namespace GameDataParser.Parsers
                         int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
                         int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                         float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
-                        skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
+                        string sequenceName = level.SelectSingleNode("motion/motionProperty") != null ? level.SelectSingleNode("motion/motionProperty").Attributes["sequenceName"].Value : "";
+                        string motionEffect = level.SelectSingleNode("motion/motionProperty") != null ? level.SelectSingleNode("motion/motionProperty").Attributes["motionEffect"].Value : "";
+                        SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
+                        skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature, skillMotion));
                     }
                     metadata.SkillLevels = skillLevels;
                     string state = document.SelectSingleNode("/ms2/basic/kinds").Attributes["state"]?.Value;
