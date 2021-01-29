@@ -125,7 +125,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 {
                     Amount = rng.Next(content.MinAmount, content.MaxAmount),
                     Rarity = content.Rarity,
-                    Enchants = content.EnchantLevel,
+                    Enchants = content.EnchantLevel
                 };
                 InventoryController.Add(session, item, true);
 

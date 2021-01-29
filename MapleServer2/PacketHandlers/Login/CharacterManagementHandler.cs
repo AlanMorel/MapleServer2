@@ -102,7 +102,6 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = 1565575851,
                             Color = equipColor,
                             HairD = new HairData(backLength, frontLength, backPositionArray, frontPositionArray),
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -111,7 +110,6 @@ namespace MapleServer2.PacketHandlers.Login
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -122,7 +120,6 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = 1565575851,
                             Color = equipColor,
                             FaceDecorationD = faceDecoration,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -131,7 +128,6 @@ namespace MapleServer2.PacketHandlers.Login
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -140,7 +136,6 @@ namespace MapleServer2.PacketHandlers.Login
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -149,7 +144,6 @@ namespace MapleServer2.PacketHandlers.Login
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;
@@ -159,7 +153,6 @@ namespace MapleServer2.PacketHandlers.Login
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            Stats = new ItemStats(),
                             IsTemplate = false,
                         });
                         break;

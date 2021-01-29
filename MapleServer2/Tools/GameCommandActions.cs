@@ -89,27 +89,14 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            // Add some bonus attributes to equips and pets
-            ItemStats stats = new ItemStats();
-            if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
-                    || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
-            {
-                Random rng = new Random();
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-            }
-
-            Item item = new Item(itemId)
+            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
+            { }
+            Item item = new Item(itemId, rarity)
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                Stats = stats,
-                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
+                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
             };
-            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
-            {
-                item.Rarity = rarity;
-            }
             if (int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount))
             {
                 item.Amount = amount;
@@ -117,11 +104,6 @@ namespace MapleServer2.Tools
 
             // Simulate looting item
             InventoryController.Add(session, item, true);
-            /*if (session.Player.Inventory.Add(item))
-            {
-                session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-            }*/
         }
 
         // Example: "map -> return current map id"
