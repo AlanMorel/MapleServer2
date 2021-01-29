@@ -18,6 +18,10 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapPlayerSpawn> PlayerSpawns;
         [XmlElement(Order = 5)]
         public readonly List<MapObject> Objects;
+        [XmlElement(Order = 6)]
+        public CoordS BoundingBox0;
+        [XmlElement(Order = 7)]
+        public CoordS BoundingBox1;
 
         // Required for deserialization
         public MapEntityMetadata()

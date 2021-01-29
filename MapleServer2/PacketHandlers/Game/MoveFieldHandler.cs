@@ -47,6 +47,7 @@ namespace MapleServer2.PacketHandlers.Game
                 // TODO: There needs to be a more centralized way to set coordinates...
                 session.Player.MapId = srcPortal.Target;
                 session.Player.Coord = dstPortal.Coord.ToFloat();
+                session.Player.SafeCoord = dstPortal.Coord.ToFloat();
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
