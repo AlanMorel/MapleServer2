@@ -16,6 +16,7 @@ namespace MapleServer2.Types
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
         public bool IsTwoHand { get; private set; }
+        public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
         public List<Job> RecommendJobs { get; set; }
@@ -66,6 +67,7 @@ namespace MapleServer2.Types
             this.Rarity = ItemMetadataStorage.GetRarity(id);
             this.StackLimit = ItemMetadataStorage.GetStackLimit(id);
             this.IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
+            this.IsDress = ItemMetadataStorage.GetIsDress(id);
             this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             this.PlayCount = ItemMetadataStorage.GetPlayCount(id);
             this.RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
@@ -86,6 +88,7 @@ namespace MapleServer2.Types
             Rarity = other.Rarity;
             StackLimit = other.StackLimit;
             IsTwoHand = other.IsTwoHand;
+            IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
             PlayCount = other.PlayCount;
             Content = other.Content;

@@ -64,6 +64,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).IsTwoHand;
         }
 
+        public static bool GetIsDress(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsDress;
+        }
+
         public static bool GetIsTemplate(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTemplate;
