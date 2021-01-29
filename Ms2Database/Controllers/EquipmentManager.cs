@@ -25,13 +25,9 @@ namespace Ms2Database.Controllers
 
                 if (equippedItem == null || equippedItem.CosmeticSlot == "")
                 {
-                    item.CosmeticSlot = slot.ToUpper(); // Sets the item slot location
+                    UnequipItem(equippedItem.UniqueId, true); // Unequips item occupying slot
                 }
-                else // Unequips item occupying slot and sets incoming item slot location
-                {
-                    UnequipItem(equippedItem.UniqueId, true);
-                    item.CosmeticSlot = slot.ToUpper();
-                }
+                item.CosmeticSlot = slot.ToUpper(); // Sets the item slot location
             }
             else // Handles regular equipment
             {
@@ -39,15 +35,11 @@ namespace Ms2Database.Controllers
                                              .Where(column => column.Inventory.CharacterId == characterId)
                                              .FirstOrDefault(column => column.EquipmentSlot == slot.ToUpper());
 
-                if (equippedItem == null || equippedItem.EquipmentSlot == "")
-                {
-                    item.EquipmentSlot = slot.ToUpper();
-                }
-                else
+                if (equippedItem != null)
                 {
                     UnequipItem(equippedItem.UniqueId, true);
-                    item.EquipmentSlot = slot.ToUpper();
                 }
+                item.EquipmentSlot = slot.ToUpper();
             }
             _context.SaveChanges();
         }
