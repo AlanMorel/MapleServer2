@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -35,7 +35,7 @@ namespace MapleServer2.Data.Static
         {
             if (grade > GetNumGrades(id))
                 return -1;
-            return achieves.GetValueOrDefault(id).Grades[grade-1].Condition;
+            return achieves.GetValueOrDefault(id).Grades[grade - 1].Condition;
         }
 
         public static int GetNumGrades(int id)

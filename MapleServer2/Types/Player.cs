@@ -4,7 +4,6 @@ using System.Numerics;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data;
-using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -36,46 +35,47 @@ namespace MapleServer2.Types
         public Levels Levels { get; private set; }
         public int MapId;
         public int TitleId;
-        public List<int> Titles = new List<int> { 0 };
-        public List<short> Insignias = new List<short> { 0 };
+        public List<int> Titles;
+        public List<short> Insignias;
         public short InsigniaId;
         public byte Animation;
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
+        public IFieldObject<Pet> Pet;
         public bool IsVIP;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy = new int[3];
+        public int[] Trophy;
 
-        public List<short> Stickers = new List<short> { 0 };
+        public List<short> Stickers;
 
         public CoordF Coord;
         public CoordF Rotation;
-        public CoordF SafeCoord = CoordF.From(0, 0, 0);
-        public bool OnAirMount = false;
+        public CoordF SafeCoord;
+        public bool OnAirMount;
 
         // Appearance
         public SkinColor SkinColor;
 
-        public string GuildName = "";
-        public string ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
-        public string Motto = "";
-        public string HomeName = "";
+        public string GuildName;
+        public string ProfileUrl;
+        public string Motto;
+        public string HomeName;
 
         public Vector3 ReturnPosition;
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
 
-        public int ActiveSkillId = 1;
-        public short ActiveSkillLevel = 1;
+        public int ActiveSkillId;
+        public short ActiveSkillLevel;
 
-        public List<SkillTab> SkillTabs = new List<SkillTab>();
-        public StatDistribution StatPointDistribution = new StatDistribution();
+        public List<SkillTab> SkillTabs;
+        public StatDistribution StatPointDistribution;
 
-        public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
-        public Dictionary<ItemSlot, Item> Cosmetics = new Dictionary<ItemSlot, Item>();
-        public List<Item> Badges = new List<Item>();
+        public Dictionary<ItemSlot, Item> Equips;
+        public Dictionary<ItemSlot, Item> Cosmetics;
+        public List<Item> Badges;
         public ItemSlot[] EquipSlots { get; }
         private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;
         public bool IsBeauty => DefaultEquipSlot == ItemSlot.HR
@@ -102,24 +102,43 @@ namespace MapleServer2.Types
 
         public Player()
         {
+            GameOptions = new GameOptions();
+            Titles = new List<int> { 0 };
+            Insignias = new List<short> { 0 };
+            IsVIP = false;
+            Trophy = new int[3];
+            Stickers = new List<short> { 0 };
+            SafeCoord = CoordF.From(0, 0, 0);
+            OnAirMount = false;
+            SkillTabs = new List<SkillTab>();
+            StatPointDistribution = new StatDistribution();
+            Equips = new Dictionary<ItemSlot, Item>();
+            Cosmetics = new Dictionary<ItemSlot, Item>();
+            Badges = new List<Item>();
             Wallet = new Wallet(this);
             Levels = new Levels(this, 70, 0, 0, 100, 0);
+            Mailbox = new Mailbox();
+            Inventory = new Inventory(48);
+            GuildName = "";
+            ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
+            Motto = "";
+            HomeName = "";
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
-            int job = 50; // Archer
+            Job job = Job.Archer;
             PlayerStats stats = PlayerStats.Default();
-            StatDistribution StatPointDistribution = new StatDistribution(totalStats: 18);
+            StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job))
+                new SkillTab(job)
             };
 
             Player player = new Player
             {
                 SkillTabs = skillTabs,
-                StatPointDistribution = StatPointDistribution,
+                StatPointDistribution = statPointDistribution,
                 MapId = 2000062,
                 AccountId = accountId,
                 CharacterId = characterId,
@@ -129,7 +148,7 @@ namespace MapleServer2.Types
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
                 // Coord = CoordF.From(500, 500, 15000), // Tria
-                Job = (Job) job,
+                Job = job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -142,9 +161,6 @@ namespace MapleServer2.Types
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
-                GameOptions = new GameOptions(),
-                Inventory = new Inventory(48),
-                Mailbox = new Mailbox(),
                 Stickers = new List<short>
                 {
                     1, 2, 3, 4, 5, 6, 7
@@ -155,8 +171,7 @@ namespace MapleServer2.Types
                     10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
                     10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
                     10000603, 10000638, 10000644
-                },
-                IsVIP = false,
+                }
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
@@ -164,12 +179,12 @@ namespace MapleServer2.Types
 
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
-            int job = 50; // Archer
+            Job job = Job.Archer;
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job))
+                new SkillTab(job)
             };
 
             return new Player
@@ -183,7 +198,7 @@ namespace MapleServer2.Types
                 Motto = "Motto",
                 HomeName = "HomeName",
                 Coord = CoordF.From(2850, 2550, 1800),
-                Job = (Job) job,
+                Job = job,
                 SkinColor = new SkinColor()
                 {
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
@@ -198,21 +213,17 @@ namespace MapleServer2.Types
                     { ItemSlot.SH, Item.ShoesMale() },
 
                 },
-                Stats = stats,
-                GameOptions = new GameOptions(),
-                Inventory = new Inventory(48),
-                Mailbox = new Mailbox(),
-                IsVIP = false,
+                Stats = stats
             };
         }
 
-        public static Player NewCharacter(byte gender, int job, string name, SkinColor skinColor, object equips)
+        public static Player NewCharacter(byte gender, Job job, string name, SkinColor skinColor, object equips)
         {
             PlayerStats stats = PlayerStats.Default();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
-                new SkillTab((Job) (job))
+                new SkillTab(job)
             };
 
             return new Player
@@ -223,18 +234,14 @@ namespace MapleServer2.Types
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
                 Name = name,
                 Gender = gender,
-                Job = (Job) job,
+                Job = job,
                 MapId = 52000065,
                 Stats = stats,
                 SkinColor = skinColor,
                 Equips = (Dictionary<ItemSlot, Item>) equips,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(-675, 525, 600), // Intro map (52000065)
-                GameOptions = new GameOptions(),
-                Inventory = new Inventory(48),
-                Mailbox = new Mailbox(),
-                IsVIP = false,
+                Coord = CoordF.From(-675, 525, 600) // Intro map (52000065)
             };
         }
 

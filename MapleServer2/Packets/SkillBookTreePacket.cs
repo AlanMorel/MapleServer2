@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
 
             // Get feature skills, for now just rank 1 skills, not sure how to tell which tab is opened
             // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
-            List<SkillMetadata> skills = character.SkillTabs[0].GetJobFeatureSkills(character.Job);
+            List<SkillMetadata> skills = SkillTab.GetJobFeatureSkills(character.Job);
             skills.RemoveAll(x => x.Learned < 1); // Remove all unlearned skills
             pWriter.WriteInt(skills.Count); // Skill count
 

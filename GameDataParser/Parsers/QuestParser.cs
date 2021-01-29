@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -14,7 +13,7 @@ namespace GameDataParser.Parsers
         protected override List<QuestMetadata> Parse()
         {
             List<QuestMetadata> quests = new List<QuestMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("quest/"))
@@ -22,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode envi in document.DocumentElement.ChildNodes)
                 {
                     if (envi.Name == "environment")
@@ -54,7 +53,7 @@ namespace GameDataParser.Parsers
                             metadata.Basic.Locking = string.IsNullOrEmpty(node.Attributes["locking"]?.Value) ? 0 : byte.Parse(node.Attributes["locking"].Value);
                             metadata.Basic.TabIndex = string.IsNullOrEmpty(node.Attributes["tabIndex"]?.Value) ? 0 : int.Parse(node.Attributes["tabIndex"].Value);
                             metadata.Basic.ForceRegistGuide = string.IsNullOrEmpty(node.Attributes["forceRegistGuide"]?.Value) ? 0 : byte.Parse(node.Attributes["forceRegistGuide"].Value);
-                            metadata.Basic.UseNavigation = node.Attributes["useNavi"].Value == "FALSE" ? false : true;
+                            metadata.Basic.UseNavigation = !(node.Attributes["useNavi"].Value == "FALSE");
                         }
                         else if (node.Name == "notify")
                         {
@@ -197,24 +196,24 @@ namespace GameDataParser.Parsers
                         }
                         else if (node.Name == "condition")
                         {
-                            string Type = node.Attributes["type"].Value;
-                            string Code = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? "" : node.Attributes["code"].Value;
-                            int Value = string.IsNullOrEmpty(node.Attributes["value"]?.Value) ? 0 : int.Parse(node.Attributes["value"].Value);
+                            string type = node.Attributes["type"].Value;
+                            string code = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? "" : node.Attributes["code"].Value;
+                            int value = string.IsNullOrEmpty(node.Attributes["value"]?.Value) ? 0 : int.Parse(node.Attributes["value"].Value);
                             List<string> temp = null;
                             if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
                             {
                                 temp = new List<string>(node.Attributes["target"].Value.Split(","));
 
                             }
-                            metadata.Condition.Add(new QuestCondition(Type, Code, Value, temp));
+                            metadata.Condition.Add(new QuestCondition(type, code, value, temp));
                         }
                         else if (node.Name == "navi")
                         {
-                            string NaviType = node.Attributes["type"].Value;
-                            string NaviCode = node.Attributes["code"].Value;
-                            int NaviMap = string.IsNullOrEmpty(node.Attributes["map"]?.Value) ? 0 : int.Parse(node.Attributes["map"].Value);
+                            string naviType = node.Attributes["type"].Value;
+                            string naviCode = node.Attributes["code"].Value;
+                            int naviMap = string.IsNullOrEmpty(node.Attributes["map"]?.Value) ? 0 : int.Parse(node.Attributes["map"].Value);
 
-                            metadata.Navigation.Add(new QuestNavigation(NaviType, NaviCode, NaviMap));
+                            metadata.Navigation.Add(new QuestNavigation(naviType, naviCode, naviMap));
                         }
                     }
 

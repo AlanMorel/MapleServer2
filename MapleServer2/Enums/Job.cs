@@ -43,12 +43,12 @@
         Priest = 10,
         Archer = 14,
         HeavyGunner = 13,
-        Thief = 13,
+        Thief = HeavyGunner,
         Assassin = 8,
-        Runeblade = 8,
+        Runeblade = Assassin,
         Striker = 12,
         SoulBinder = 16,
-        GameMaster = 0
+        GameMaster = None
     }
 }
 

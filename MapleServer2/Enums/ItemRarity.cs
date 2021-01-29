@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MapleServer2.Enums
+﻿namespace MapleServer2.Enums
 {
     public enum RarityType
     {

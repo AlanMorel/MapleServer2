@@ -13,7 +13,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public List<SkillLevel> SkillLevels;
         [XmlElement(Order = 3)]
-        public int[] SubSkills = new int[0];
+        public int[] SubSkills = Array.Empty<int>();
         [XmlElement(Order = 4)]
         public int Job;
         [XmlElement(Order = 5)]

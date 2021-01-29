@@ -67,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleInvite(GameSession session, PacketReader packet)
+        private static void HandleInvite(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
 
@@ -98,15 +98,15 @@ namespace MapleServer2.PacketHandlers.Game
             other.Session.Send(PartyPacket.SendInvite(session.Player));
         }
 
-        private void HandleJoin(GameSession session, PacketReader packet)
+        private static void HandleJoin(GameSession session, PacketReader packet)
         {
-            string target = packet.ReadUnicodeString(); //Who invited the player
-            bool accept = packet.ReadBool(); //If the player accepted
-            int unknown = packet.ReadInt(); //Something something I think it's dungeon not sure
-            JoinParty(session, target, accept, unknown);
+            string target = packet.ReadUnicodeString(); // Who invited the player
+            bool accept = packet.ReadBool(); // If the player accepted
+            packet.ReadInt(); // Something something I think it's dungeon not sure
+            JoinParty(session, target, accept);
         }
 
-        private void JoinParty(GameSession session, string leaderName, bool accept, int unknown)
+        private static void JoinParty(GameSession session, string leaderName, bool accept/*, int unknown*/)
         {
             Player partyLeader = GameServer.Storage.GetPlayerByName(leaderName);
             if (partyLeader == null)
@@ -184,14 +184,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleLeave(GameSession session)
+        private static void HandleLeave(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
             party?.RemoveMember(session.Player);
         }
 
-        private void HandleSetLeader(GameSession session, PacketReader packet)
+        private static void HandleSetLeader(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
 
@@ -213,7 +213,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.Members.Insert(0, newLeader);
         }
 
-        private void HandleFinderJoin(GameSession session, PacketReader packet)
+        private static void HandleFinderJoin(GameSession session, PacketReader packet)
         {
             int partyId = packet.ReadInt();
             string leaderName = packet.ReadUnicodeString();
@@ -233,10 +233,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             //Join party
-            JoinParty(session, leaderName, true, 0);
+            JoinParty(session, leaderName, true);
         }
 
-        private void HandleKick(GameSession session, PacketReader packet)
+        private static void HandleKick(GameSession session, PacketReader packet)
         {
             long charId = packet.ReadLong();
 
@@ -256,7 +256,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.RemoveMember(kickedPlayer);
         }
 
-        private void HandleVoteKick(GameSession session, PacketReader packet)
+        private static void HandleVoteKick(GameSession session, PacketReader packet)
         {
             long charId = packet.ReadLong();
 
@@ -277,7 +277,7 @@ namespace MapleServer2.PacketHandlers.Game
             //TODO: Keep a counter of vote kicks for a player?
         }
 
-        private void HandleStartReadyCheck(GameSession session)
+        private static void HandleStartReadyCheck(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
             if (party == null)
@@ -289,7 +289,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.RemainingMembers = party.Members.Count - 1;
         }
 
-        private void HandleReadyCheckUpdate(GameSession session, PacketReader packet)
+        private static void HandleReadyCheckUpdate(GameSession session, PacketReader packet)
         {
             int checkNum = packet.ReadInt() + 1; //+ 1 is because the ReadyChecks variable is always 1 ahead
             byte accept = packet.ReadByte();

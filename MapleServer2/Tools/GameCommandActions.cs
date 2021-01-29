@@ -79,7 +79,10 @@ namespace MapleServer2.Tools
         private static void ProcessItemCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            int.TryParse(config.GetValueOrDefault("id", "20000027"), out int itemId);
+            if (!int.TryParse(config.GetValueOrDefault("id", "20000027"), out int itemId))
+            {
+                return;
+            }
             if (!ItemMetadataStorage.IsValid(itemId))
             {
                 session.SendNotice("Invalid item: " + itemId);
@@ -103,13 +106,14 @@ namespace MapleServer2.Tools
                 Stats = stats,
                 PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
             };
-            int rarity = 0;
-            int.TryParse(config.GetValueOrDefault("rarity", "5"), out rarity);
-            if (rarity > 0)
+            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
             {
                 item.Rarity = rarity;
             }
-            int.TryParse(config.GetValueOrDefault("amount", "1"), out item.Amount);
+            if (int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount))
+            {
+                item.Amount = amount;
+            }
 
             // Simulate looting item
             InventoryController.Add(session, item, true);
@@ -125,7 +129,10 @@ namespace MapleServer2.Tools
         private static void ProcessMapCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            int.TryParse(config.GetValueOrDefault("id", "0"), out int mapId);
+            if (!int.TryParse(config.GetValueOrDefault("id", "0"), out int mapId))
+            {
+                return;
+            }
             if (mapId == 0)
             {
                 session.SendNotice($"Current map id:{session.Player.MapId}");
@@ -156,10 +163,19 @@ namespace MapleServer2.Tools
         private static void ProcessNpcCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            int.TryParse(config.GetValueOrDefault("id", "11003146"), out int npcId);
+            if (!int.TryParse(config.GetValueOrDefault("id", "11003146"), out int npcId))
+            {
+                return;
+            }
             Npc npc = new Npc(npcId);
-            byte.TryParse(config.GetValueOrDefault("ani", "-1"), out npc.Animation);
-            short.TryParse(config.GetValueOrDefault("dir", "2700"), out npc.Rotation);
+            if (byte.TryParse(config.GetValueOrDefault("ani", "-1"), out byte animation))
+            {
+                npc.Animation = animation;
+            }
+            if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
+            {
+                npc.Rotation = rotation;
+            }
 
             IFieldObject<Npc> fieldNpc = session.FieldManager.RequestFieldObject(npc);
             if (TryParseCoord(config.GetValueOrDefault("coord", ""), out CoordF coord))
@@ -177,10 +193,19 @@ namespace MapleServer2.Tools
         private static void ProcessMobCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId);
+            if (!int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId))
+            {
+                return;
+            }
             Mob mob = new Mob(mobId);
-            byte.TryParse(config.GetValueOrDefault("ani", "-1"), out mob.Animation);
-            short.TryParse(config.GetValueOrDefault("dir", "2700"), out mob.Rotation);
+            if (byte.TryParse(config.GetValueOrDefault("ani", "-1"), out byte animation))
+            {
+                mob.Animation = animation;
+            }
+            if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
+            {
+                mob.Rotation = rotation;
+            }
 
             IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);
             if (TryParseCoord(config.GetValueOrDefault("coord", ""), out CoordF coord))

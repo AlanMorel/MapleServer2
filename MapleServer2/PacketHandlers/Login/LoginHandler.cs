@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
@@ -19,16 +18,16 @@ namespace MapleServer2.PacketHandlers.Login
         public override RecvOp OpCode => RecvOp.RESPONSE_LOGIN;
 
         // TODO: This data needs to be dynamic
-        private readonly ImmutableList<IPEndPoint> serverIps;
-        private readonly string serverName;
+        private readonly ImmutableList<IPEndPoint> ServerIPs;
+        private readonly string ServerName;
 
         public LoginHandler(ILogger<LoginHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
 
-            serverIps = builder.ToImmutable();
-            serverName = "Paperwood";
+            ServerIPs = builder.ToImmutable();
+            ServerName = "Paperwood";
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
@@ -37,7 +36,7 @@ namespace MapleServer2.PacketHandlers.Login
             string username = packet.ReadUnicodeString();
             string pass = packet.ReadUnicodeString();
 
-            logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
+            Logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
 
             // TODO: From this user/pass lookup we should be able to find the accountId
             if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass))
@@ -52,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Login
                 case 1:
                     session.Send(PacketWriter.Of(SendOp.NPS_INFO).WriteLong().WriteUnicodeString(""));
                     session.Send(BannerListPacket.SetBanner());
-                    session.Send(ServerListPacket.SetServers(serverName, serverIps));
+                    session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;
                 case 2:
                     List<Player> characters = new List<Player>();
@@ -61,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Login
                         characters.Add(AccountStorage.GetCharacter(characterId));
                     }
 
-                    logger.Debug($"Initializing login with account id: {session.AccountId}");
+                    Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));
                     session.Send(UgcPacket.SetEndpoint("http://127.0.0.1/ws.asmx?wsdl", "http://127.0.0.1"));
                     session.Send(CharacterListPacket.SetMax(4, 6));

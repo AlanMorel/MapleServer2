@@ -36,7 +36,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandlePickup(GameSession session, PacketReader packet)
+        private static void HandlePickup(GameSession session, PacketReader packet)
         {
             byte[] coords = packet.Read(3);
 
@@ -60,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
 
-        private void HandleDrop(GameSession session)
+        private static void HandleDrop(GameSession session)
         {
             // Drop item then set battle state to false
             session.Send(ResponseCubePacket.Drop(session.FieldPlayer));

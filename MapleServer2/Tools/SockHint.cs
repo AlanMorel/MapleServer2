@@ -29,11 +29,39 @@ namespace MapleServer2.Tools
 
         public SockHintInfo(SockHint hint, string value, string name = "Unknown")
         {
-            this.Hint = hint;
-            byte.TryParse(value, out ByteValue);
-            short.TryParse(value, out ShortValue);
-            int.TryParse(value, out IntValue);
-            long.TryParse(value, out LongValue);
+            Hint = hint;
+            if (byte.TryParse(value, out byte byteValue))
+            {
+                ByteValue = byteValue;
+            }
+            else
+            {
+                ByteValue = 0;
+            }
+            if (short.TryParse(value, out short shortValue))
+            {
+                ShortValue = shortValue;
+            }
+            else
+            {
+                ShortValue = 0;
+            }
+            if (int.TryParse(value, out int intValue))
+            {
+                IntValue = intValue;
+            }
+            else
+            {
+                IntValue = 0;
+            }
+            if (long.TryParse(value, out long longValue))
+            {
+                LongValue = longValue;
+            }
+            else
+            {
+                LongValue = 0;
+            }
             StringValue = value == "0" ? "" : value;
             Name = name;
         }

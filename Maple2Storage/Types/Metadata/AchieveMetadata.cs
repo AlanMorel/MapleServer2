@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -16,13 +16,13 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public AchieveMetadata()
         {
-            this.Grades = new List<AchieveGradeMetadata>();
+            Grades = new List<AchieveGradeMetadata>();
         }
 
         public AchieveMetadata(int id, List<AchieveGradeMetadata> grades)
         {
-            this.Id = id;
-            this.Grades = grades;
+            Id = id;
+            Grades = grades;
         }
 
         public override string ToString() =>
@@ -36,11 +36,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((AchieveMetadata) obj);
         }
@@ -86,11 +86,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((AchieveGradeMetadata) obj);
         }

@@ -4,11 +4,11 @@ namespace GameDataParser.Crypto
 {
     public class AESCipher
     {
-        private readonly byte[] iv;
-        private readonly SymmetricAlgorithm algorithm;
-        private readonly ICryptoTransform encryptor;
+        private readonly byte[] Iv;
+        private readonly SymmetricAlgorithm Algorithm;
+        private readonly ICryptoTransform Encryptor;
 
-        public int BlockSize => algorithm.BlockSize / 8;
+        public int BlockSize => Algorithm.BlockSize / 8;
 
         /*
          * Constructs a new AES-CTR cipher.
@@ -19,13 +19,13 @@ namespace GameDataParser.Crypto
         */
         public AESCipher(byte[] userKey, byte[] iv)
         {
-            this.iv = iv;
-            this.algorithm = new AesManaged
+            Iv = iv;
+            Algorithm = new AesManaged
             {
                 Mode = CipherMode.ECB,
                 Padding = PaddingMode.None
             };
-            this.encryptor = algorithm.CreateEncryptor(userKey, new byte[BlockSize]);
+            Encryptor = Algorithm.CreateEncryptor(userKey, new byte[BlockSize]);
         }
 
         /*
@@ -45,7 +45,7 @@ namespace GameDataParser.Crypto
             for (int i = 0; i < size; i += BlockSize)
             {
                 byte[] xorBlock = new byte[BlockSize];
-                encryptor.TransformBlock(iv, 0, iv.Length, xorBlock, 0);
+                Encryptor.TransformBlock(Iv, 0, Iv.Length, xorBlock, 0);
                 IncrementCounter();
 
                 for (int j = 0; j < xorBlock.Length; j++)
@@ -65,9 +65,9 @@ namespace GameDataParser.Crypto
         // Increments the XOR block counter.
         private void IncrementCounter()
         {
-            for (int i = iv.Length - 1; i >= 0; i--)
+            for (int i = Iv.Length - 1; i >= 0; i--)
             {
-                if (++iv[i] != 0)
+                if (++Iv[i] != 0)
                     break;
             }
         }

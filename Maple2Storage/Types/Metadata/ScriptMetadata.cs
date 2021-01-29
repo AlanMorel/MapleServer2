@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types.Metadata
@@ -60,11 +59,11 @@ namespace Maple2Storage.Types.Metadata
 
         public Script(int id, string feature, int randomPick, List<int> goToConditionTalkID, List<Content> content)
         {
-            this.Id = id;
-            this.Feature = feature;
-            this.RandomPick = randomPick;
-            this.GoToConditionTalkID = goToConditionTalkID;
-            this.Content = content;
+            Id = id;
+            Feature = feature;
+            RandomPick = randomPick;
+            GoToConditionTalkID = goToConditionTalkID;
+            Content = content;
         }
 
         public override string ToString()
@@ -85,8 +84,8 @@ namespace Maple2Storage.Types.Metadata
 
         public Select(int id, List<Content> content)
         {
-            this.Id = id;
-            this.Content = content;
+            Id = id;
+            Content = content;
         }
 
         public override string ToString()
@@ -111,10 +110,10 @@ namespace Maple2Storage.Types.Metadata
 
         public Monologue(int id, int popupState, int popupProp, List<Content> content)
         {
-            this.Id = id;
-            this.PopupState = popupState;
-            this.PopupProp = popupProp;
-            this.Content = content;
+            Id = id;
+            PopupState = popupState;
+            PopupProp = popupProp;
+            Content = content;
         }
 
         public override string ToString()
@@ -147,14 +146,14 @@ namespace Maple2Storage.Types.Metadata
 
         public Content(string voiceId, byte functionId, string leftIllust, string speakerIllust, int otherNpcTalk, bool myTalk, string illust, List<Distractor> distractor)
         {
-            this.VoiceId = voiceId;
-            this.FunctionId = functionId;
-            this.LeftIllust = leftIllust;
-            this.SpeakerIllust = speakerIllust;
-            this.OtherNpcTalk = otherNpcTalk;
-            this.MyTalk = myTalk;
-            this.Illust = illust;
-            this.Distractor = distractor;
+            VoiceId = voiceId;
+            FunctionId = functionId;
+            LeftIllust = leftIllust;
+            SpeakerIllust = speakerIllust;
+            OtherNpcTalk = otherNpcTalk;
+            MyTalk = myTalk;
+            Illust = illust;
+            Distractor = distractor;
         }
 
         public override string ToString()
@@ -176,8 +175,8 @@ namespace Maple2Storage.Types.Metadata
 
         public Distractor(List<int> goTo, List<int> goToFail)
         {
-            this.GoTo = goTo;
-            this.GoToFail = goToFail;
+            GoTo = goTo;
+            GoToFail = goToFail;
         }
 
         public override string ToString()
@@ -198,8 +197,8 @@ namespace Maple2Storage.Types.Metadata
 
         public Event(int id, List<Content> content)
         {
-            this.ID = id;
-            this.Content = content;
+            ID = id;
+            Content = content;
         }
 
         public override string ToString()

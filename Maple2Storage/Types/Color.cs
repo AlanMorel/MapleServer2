@@ -27,7 +27,7 @@ namespace Maple2Storage.Types
     [StructLayout(LayoutKind.Sequential, Size = 8)]
     public struct SkinColor
     {
-        public Color Primary;
+        public Color Primary { get; set; }
         public Color Secondary { get; private set; }
 
         public static SkinColor Argb(Color color)
@@ -50,14 +50,14 @@ namespace Maple2Storage.Types
         public Color Tertiary { get; private set; }
         public int Index { get; private set; }
 
-        public static EquipColor Argb(Color color, int index)
+        public static EquipColor Argb(Color color, int index = -1)
         {
             return new EquipColor
             {
                 Primary = color,
                 Secondary = color,
                 Tertiary = color,
-                Index = -1
+                Index = index
             };
         }
 
@@ -68,7 +68,7 @@ namespace Maple2Storage.Types
                 Primary = primary,
                 Secondary = secondary,
                 Tertiary = tertiary,
-                Index = -1
+                Index = index
             };
         }
 

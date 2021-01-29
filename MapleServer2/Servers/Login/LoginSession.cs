@@ -10,16 +10,16 @@ namespace MapleServer2.Servers.Login
         protected override SessionType Type => SessionType.Login;
 
         public long AccountId;
-        private readonly Random rng;
+        private readonly Random Rng;
 
         public LoginSession(ILogger<LoginSession> logger) : base(logger)
         {
-            rng = new Random();
+            Rng = new Random();
         }
 
         public int GetToken()
         {
-            return rng.Next();
+            return Rng.Next();
         }
 
         public override void EndSession()

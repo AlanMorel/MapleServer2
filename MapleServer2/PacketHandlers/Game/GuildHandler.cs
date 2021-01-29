@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleCreate(session, packet);
                     break;
                 case GuildMode.Disband:
-                    HandleDisband(session, packet);
+                    HandleDisband(session);
                     break;
                 case GuildMode.Invite:
                     HandleInvite(session, packet);
@@ -60,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleInviteResponse(session, packet);
                     break;
                 case GuildMode.Leave:
-                    HandleLeave(session, packet);
+                    HandleLeave(session);
                     break;
                 case GuildMode.Kick:
                     HandleKick(session, packet);
@@ -72,7 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandlePlayerMessage(session, packet);
                     break;
                 case GuildMode.CheckIn:
-                    HandleCheckIn(session, packet);
+                    HandleCheckIn(session);
                     break;
                 case GuildMode.TransferLeader:
                     HandleTransferLeader(session, packet);
@@ -90,16 +90,16 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleApplicationResponse(session, packet);
                     break;
                 case GuildMode.GuildWindowRequest:
-                    HandleGuildWindowRequest(session, packet);
+                    HandleGuildWindowRequest(session);
                     break;
                 case GuildMode.GuildListRequest:
-                    HandleGuildListRequest(session, packet);
+                    HandleGuildListRequest(session);
                     break;
                 case GuildMode.UseBuff:
                     HandleUseBuff(session, packet);
                     break;
                 case GuildMode.EnterHouse:
-                    HandleEnterHouse(session, packet);
+                    HandleEnterHouse(/*session, packet*/);
                     break;
                 case GuildMode.GuildDonate:
                     HandleGuildDonate(session, packet);
@@ -113,14 +113,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleCreate(GameSession session, PacketReader packet)
+        private static void HandleCreate(GameSession session, PacketReader packet)
         {
             string guildName = packet.ReadUnicodeString();
 
             if (!session.Player.Wallet.Meso.Modify(-2000))
             {
-                short NoticeCode = 5121;
-                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                short noticeCode = 5121;
+                session.Send(GuildPacket.ErrorNotice(noticeCode));
                 return;
             }
 
@@ -135,12 +135,12 @@ namespace MapleServer2.PacketHandlers.Game
             GameServer.GuildManager.AddGuild(newGuild);
             session.Player.GuildId = newGuild.Id;
 
-            session.Send(GuildPacket.UpdateGuild(session, newGuild));
+            session.Send(GuildPacket.UpdateGuild(newGuild));
             session.Send(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviter, response, rank));
-            session.Send(GuildPacket.MemberJoin(session.Player, guildName));
+            session.Send(GuildPacket.MemberJoin(session.Player));
         }
 
-        private void HandleDisband(GameSession session, PacketReader packet)
+        private static void HandleDisband(GameSession session)
         {
             Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
             if (guild == null)
@@ -154,7 +154,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.GuildId = 0;
         }
 
-        private void HandleInvite(GameSession session, PacketReader packet)
+        private static void HandleInvite(GameSession session, PacketReader packet)
         {
             string targetPlayer = packet.ReadUnicodeString();
 
@@ -167,14 +167,14 @@ namespace MapleServer2.PacketHandlers.Game
             Player playerInvited = GameServer.Storage.GetPlayerByName(targetPlayer);
             if (playerInvited == null)
             {
-                short NoticeCode = 2563;
-                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                short noticeCode = 2563;
+                session.Send(GuildPacket.ErrorNotice(noticeCode));
             }
 
             if (playerInvited.GuildId != 0)
             {
-                short NoticeCode = 1027;
-                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                short noticeCode = 1027;
+                session.Send(GuildPacket.ErrorNotice(noticeCode));
                 return;
             }
 
@@ -190,7 +190,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleInviteResponse(GameSession session, PacketReader packet)
+        private static void HandleInviteResponse(GameSession session, PacketReader packet)
         {
             long guildId = packet.ReadLong();
             string guildName = packet.ReadUnicodeString();
@@ -230,11 +230,11 @@ namespace MapleServer2.PacketHandlers.Game
             guild.AddMember(session.Player);
             session.Player.GuildId = guild.Id;
             guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(session.Player, inviterName, response, rank));
-            guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player, guildName));
-            session.Send(GuildPacket.UpdateGuild(session, guild));
+            guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player));
+            session.Send(GuildPacket.UpdateGuild(guild));
         }
 
-        private void HandleLeave(GameSession session, PacketReader packet)
+        private static void HandleLeave(GameSession session)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
             if (guild == null)
@@ -248,7 +248,7 @@ namespace MapleServer2.PacketHandlers.Game
             guild.RemoveMember(session.Player);
         }
 
-        private void HandleKick(GameSession session, PacketReader packet)
+        private static void HandleKick(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
 
@@ -278,7 +278,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         }
 
-        private void HandleRankChange(GameSession session, PacketReader packet)
+        private static void HandleRankChange(GameSession session, PacketReader packet)
         {
             string memberName = packet.ReadUnicodeString();
             byte rank = packet.ReadByte();
@@ -294,14 +294,14 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO Change guildmember ranks
         }
 
-        private void HandlePlayerMessage(GameSession session, PacketReader packet)
+        private static void HandlePlayerMessage(GameSession session, PacketReader packet)
         {
             string message = packet.ReadUnicodeString();
 
             session.Send(GuildPacket.UpdatePlayerMessage(session.Player, message));
         }
 
-        private void HandleCheckIn(GameSession session, PacketReader packet)
+        private static void HandleCheckIn(GameSession session)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
             if (guild == null)
@@ -324,7 +324,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.UpdatePlayerContribution(session.Player, 10));
         }
 
-        private void HandleTransferLeader(GameSession session, PacketReader packet)
+        private static void HandleTransferLeader(GameSession session, PacketReader packet)
         {
             string target = packet.ReadUnicodeString();
 
@@ -349,7 +349,7 @@ namespace MapleServer2.PacketHandlers.Game
             guild.Members.Add(oldLeader);
         }
 
-        private void HandleGuildNotice(GameSession session, PacketReader packet)
+        private static void HandleGuildNotice(GameSession session, PacketReader packet)
         {
             packet.ReadByte();
             string notice = packet.ReadUnicodeString();
@@ -364,7 +364,7 @@ namespace MapleServer2.PacketHandlers.Game
             guild.BroadcastPacketGuild(GuildPacket.GuildNoticeChange(session.Player, notice));
         }
 
-        private void HandleListGuild(GameSession session, PacketReader packet)
+        private static void HandleListGuild(GameSession session, PacketReader packet)
         {
             byte toggle = packet.ReadByte(); // 00 = unlist, 01 = list
 
@@ -375,11 +375,11 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(GuildPacket.ListGuildConfirm(toggle));
-            session.Send(GuildPacket.ListGuildUpdate(session.Player, toggle));
+            session.Send(GuildPacket.ListGuildUpdate(session.Player));
             // TODO: update guild listing
         }
 
-        private void HandleSubmitApplication(GameSession session, PacketReader packet)
+        private static void HandleSubmitApplication(GameSession session, PacketReader packet)
         {
             long guildId = packet.ReadLong();
 
@@ -396,7 +396,7 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO: Create a way to store their applicationId with their player information
         }
 
-        private void HandleApplicationResponse(GameSession session, PacketReader packet)
+        private static void HandleApplicationResponse(GameSession session, PacketReader packet)
         {
             long guildApplicationId = packet.ReadLong();
             byte response = packet.ReadByte();
@@ -418,19 +418,19 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO: Send 0x30, 0x5, 0x4B, 0x0, 0x20 to new member
         }
 
-        private void HandleGuildWindowRequest(GameSession session, PacketReader packet)
+        private static void HandleGuildWindowRequest(GameSession session)
         {
             session.Send(GuildPacket.GuildWindowConfirm());
         }
 
-        private void HandleGuildListRequest(GameSession session, PacketReader packet)
+        private static void HandleGuildListRequest(GameSession session)
         {
             List<Guild> guildList = GameServer.GuildManager.GetGuildList();
             guildList = guildList.OrderBy(g => g.Members.Count).ToList();
             session.Send(GuildPacket.DisplayGuildList(guildList));
         }
 
-        private void HandleUseBuff(GameSession session, PacketReader packet)
+        private static void HandleUseBuff(GameSession session, PacketReader packet)
         {
             int buffId = packet.ReadInt();
 
@@ -462,12 +462,12 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO: Send buff packet
         }
 
-        private void HandleEnterHouse(GameSession session, PacketReader packet)
+        private static void HandleEnterHouse(/*GameSession session, PacketReader packet*/)
         {
             // TODO
         }
 
-        private void HandleGuildDonate(GameSession session, PacketReader packet)
+        private static void HandleGuildDonate(GameSession session, PacketReader packet)
         {
             int donateQuantity = packet.ReadInt();
             int donationAmount = donateQuantity * 10000;
@@ -480,8 +480,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (!session.Player.Wallet.Meso.Modify(-donationAmount))
             {
-                short NoticeCode = 5121;
-                session.Send(GuildPacket.ErrorNotice(NoticeCode));
+                short noticeCode = 5121;
+                session.Send(GuildPacket.ErrorNotice(noticeCode));
                 return;
             }
             GuildContribution contribution = GuildMetadataStorage.GetContribution("donation");
@@ -491,12 +491,12 @@ namespace MapleServer2.PacketHandlers.Game
             guild.Funds = guildFunds;
 
             session.Send(GuildPacket.UpdateGuildFunds(guild.Funds));
-            session.Send(GuildPacket.UpdatePlayerDonation(donateQuantity));
+            session.Send(GuildPacket.UpdatePlayerDonation());
             session.Send(GuildPacket.UpdateGuildStatsNotice(0, donationAmount));
             session.Send(GuildPacket.UpdatePlayerContribution(session.Player, donateQuantity));
         }
 
-        private void HandleServices(GameSession session, PacketReader packet)
+        private static void HandleServices(GameSession session, PacketReader packet)
         {
             int service = packet.ReadInt();
 

@@ -62,7 +62,7 @@ namespace MapleServer2.Types
 
         public Gemstone(int id)
         {
-            this.Id = id;
+            Id = id;
         }
     }
 
@@ -76,9 +76,9 @@ namespace MapleServer2.Types
 
         public ItemStats()
         {
-            this.BasicAttributes = new List<ItemStat>();
-            this.BonusAttributes = new List<ItemStat>();
-            this.Gemstones = new List<Gemstone>();
+            BasicAttributes = new List<ItemStat>();
+            BonusAttributes = new List<ItemStat>();
+            Gemstones = new List<Gemstone>();
         }
 
         public ItemStats(ItemStats other)

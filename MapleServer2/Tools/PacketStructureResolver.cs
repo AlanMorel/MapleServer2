@@ -11,20 +11,20 @@ namespace MapleServer2.Tools
     {
         private const int HEADER_LENGTH = 6;
 
-        private string defaultValue;
+        private string DefaultValue;
 
-        private readonly ushort opCode;
-        private readonly PacketWriter packet;
-        private readonly Dictionary<uint, SockHintInfo> overrides;
+        private readonly ushort OpCode;
+        private readonly PacketWriter Packet;
+        private readonly Dictionary<uint, SockHintInfo> Overrides;
 
         private static readonly Regex infoRegex = new Regex(@"\[type=(\d+)\]\[offset=(\d+)\]\[hint=(\w+)\]");
 
         private PacketStructureResolver(ushort opCode)
         {
-            this.defaultValue = "0";
-            this.opCode = opCode;
-            this.packet = PacketWriter.Of(opCode);
-            this.overrides = new Dictionary<uint, SockHintInfo>();
+            DefaultValue = "0";
+            OpCode = opCode;
+            Packet = PacketWriter.Of(opCode);
+            Overrides = new Dictionary<uint, SockHintInfo>();
         }
 
         // resolve opcode (offset,type,value) (offset2,type2,value2) ...
@@ -35,7 +35,7 @@ namespace MapleServer2.Tools
             string[] args = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
             // Parse opCode: 81 0081 0x81 0x0081
-            ushort opCode = 0;
+            ushort opCode;
             if (args[0].ToLower().StartsWith("0x"))
             {
                 opCode = Convert.ToUInt16(args[0], 16);
@@ -79,7 +79,7 @@ namespace MapleServer2.Tools
                     {
                         name = match.Groups[4].Value;
                     }
-                    resolver.overrides.Add(offset, new SockHintInfo(type, value, name));
+                    resolver.Overrides.Add(offset, new SockHintInfo(type, value, name));
                 }
             }
 
@@ -88,7 +88,7 @@ namespace MapleServer2.Tools
 
         public void SetDefault(string value)
         {
-            this.defaultValue = value;
+            DefaultValue = value;
         }
 
         public void Start(Session session)
@@ -96,31 +96,31 @@ namespace MapleServer2.Tools
             session.OnError = AppendAndRetry;
 
             // Start off the feedback loop
-            session.Send(packet);
+            session.Send(Packet);
         }
 
         private void AppendAndRetry(object session, string err)
         {
             SockExceptionInfo info = ParseError(err);
-            Debug.Assert(opCode == info.Type, $"Error for unexpected op code:{info.Type:X4}");
-            Debug.Assert(packet.Length + HEADER_LENGTH == info.Offset,
-                $"Offset:{info.Offset} does not match packet length:{packet.Length + HEADER_LENGTH}");
+            Debug.Assert(OpCode == info.Type, $"Error for unexpected op code:{info.Type:X4}");
+            Debug.Assert(Packet.Length + HEADER_LENGTH == info.Offset,
+                $"Offset:{info.Offset} does not match Packet length:{Packet.Length + HEADER_LENGTH}");
 
-            if (overrides.ContainsKey(info.Offset))
+            if (Overrides.ContainsKey(info.Offset))
             {
-                SockHintInfo @override = overrides[info.Offset];
+                SockHintInfo @override = Overrides[info.Offset];
                 Debug.Assert(@override.Hint == info.Hint, $"Override does not match expected hint:{info.Hint}");
-                @override.Update(packet);
+                @override.Update(Packet);
                 Console.WriteLine(info.Hint.GetScript($"{@override.Name}+{info.Offset}"));
             }
             else
             {
-                new SockHintInfo(info.Hint, defaultValue).Update(packet);
+                new SockHintInfo(info.Hint, DefaultValue).Update(Packet);
                 Console.WriteLine(info.Hint.GetScript($"Unknown+{info.Offset}"));
             }
 
             //Console.WriteLine($"Updated with hint:{info.Hint}, offset:{info.Offset}");
-            (session as Session)?.Send(packet);
+            (session as Session)?.Send(Packet);
         }
 
         private static SockExceptionInfo ParseError(string error)

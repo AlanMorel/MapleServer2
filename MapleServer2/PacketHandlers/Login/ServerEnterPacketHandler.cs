@@ -16,22 +16,22 @@ namespace MapleServer2.PacketHandlers.Login
         public override RecvOp OpCode => RecvOp.RESPONSE_SERVER_ENTER;
 
         // TODO: This data needs to be dynamic
-        private readonly ImmutableList<IPEndPoint> serverIps;
-        private readonly string serverName;
+        private readonly ImmutableList<IPEndPoint> ServerIPs;
+        private readonly string ServerName;
 
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
 
-            this.serverIps = builder.ToImmutable();
-            this.serverName = "Paperwood";
+            ServerIPs = builder.ToImmutable();
+            ServerName = "Paperwood";
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
             session.Send(BannerListPacket.SetBanner());
-            session.Send(ServerListPacket.SetServers(serverName, serverIps));
+            session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
             List<Player> characters = new List<Player>();
             foreach (long characterId in AccountStorage.ListCharacters(session.AccountId))

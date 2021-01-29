@@ -32,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleChangeAttributes(GameSession session, PacketReader packet)
+        private static void HandleChangeAttributes(GameSession session, PacketReader packet)
         {
             short lockIndex = -1;
             long itemUid = packet.ReadLong();
@@ -63,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleSelectNewAttributes(GameSession session, PacketReader packet)
+        private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 

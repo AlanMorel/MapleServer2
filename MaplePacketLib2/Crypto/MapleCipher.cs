@@ -8,24 +8,24 @@ namespace MaplePacketLib2.Crypto
     {
         private const int HEADER_SIZE = 6;
 
-        private readonly uint version;
-        private readonly ICrypter[] encryptSeq;
-        private readonly ICrypter[] decryptSeq;
+        private readonly uint Version;
+        private readonly ICrypter[] EncryptSeq;
+        private readonly ICrypter[] DecryptSeq;
 
-        private uint iv;
+        private uint Iv;
 
         public Func<byte[], Packet> Transform { get; private set; }
 
         private MapleCipher(uint version, uint iv, uint blockIV)
         {
-            this.version = version;
-            this.iv = iv;
+            Version = version;
+            Iv = iv;
 
             // Initialize Crypter Sequence
             List<ICrypter> cryptSeq = InitCryptSeq(version, blockIV);
-            encryptSeq = cryptSeq.ToArray();
+            EncryptSeq = cryptSeq.ToArray();
             cryptSeq.Reverse();
-            decryptSeq = cryptSeq.ToArray();
+            DecryptSeq = cryptSeq.ToArray();
         }
 
         public static MapleCipher Encryptor(uint version, uint iv, uint blockIV)
@@ -44,7 +44,7 @@ namespace MaplePacketLib2.Crypto
 
         public void AdvanceIV()
         {
-            iv = Rand32.CrtRand(iv);
+            Iv = Rand32.CrtRand(Iv);
         }
 
         public Packet WriteHeader(byte[] packet)
@@ -63,7 +63,7 @@ namespace MaplePacketLib2.Crypto
         {
             ushort encSeq = packet.Read<ushort>();
             ushort decSeq = DecodeSeqBase(encSeq);
-            if (decSeq != version)
+            if (decSeq != Version)
             {
                 throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
             }
@@ -99,7 +99,7 @@ namespace MaplePacketLib2.Crypto
 
         private Packet Encrypt(byte[] packet)
         {
-            foreach (ICrypter crypter in encryptSeq)
+            foreach (ICrypter crypter in EncryptSeq)
             {
                 crypter.Encrypt(packet);
             }
@@ -113,7 +113,7 @@ namespace MaplePacketLib2.Crypto
             int packetSize = ReadHeader(reader);
 
             packet = reader.Read(packetSize);
-            foreach (ICrypter crypter in decryptSeq)
+            foreach (ICrypter crypter in DecryptSeq)
             {
                 crypter.Decrypt(packet);
             }
@@ -123,14 +123,14 @@ namespace MaplePacketLib2.Crypto
 
         private ushort EncodeSeqBase()
         {
-            ushort encSeq = (ushort) (version ^ (iv >> 16));
+            ushort encSeq = (ushort) (Version ^ (Iv >> 16));
             AdvanceIV();
             return encSeq;
         }
 
         private ushort DecodeSeqBase(ushort encSeq)
         {
-            ushort decSeq = (ushort) ((iv >> 16) ^ encSeq);
+            ushort decSeq = (ushort) ((Iv >> 16) ^ encSeq);
             AdvanceIV();
             return decSeq;
         }

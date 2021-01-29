@@ -13,85 +13,85 @@ namespace MapleServer2.Network
 {
     public abstract class Server<T> where T : Session
     {
-        private TcpListener listener;
-        private Thread serverThread;
+        private TcpListener Listener;
+        private Thread ServerThread;
 
-        private readonly CancellationTokenSource source;
-        private readonly ManualResetEvent clientConnected;
-        private readonly PacketRouter<T> router;
-        private readonly List<T> sessions;
-        private readonly ILogger logger;
-        private readonly IComponentContext context;
+        private readonly CancellationTokenSource Source;
+        private readonly ManualResetEvent ClientConnected;
+        private readonly PacketRouter<T> Router;
+        private readonly List<T> Sessions;
+        private readonly ILogger Logger;
+        private readonly IComponentContext Context;
 
         public Server(PacketRouter<T> router, ILogger<Server<T>> logger, IComponentContext context)
         {
             Trace.Assert(context != null);
 
-            this.router = router;
-            this.logger = logger;
-            this.context = context;
+            Router = router;
+            Logger = logger;
+            Context = context;
 
-            source = new CancellationTokenSource();
-            clientConnected = new ManualResetEvent(false);
-            sessions = new List<T>();
+            Source = new CancellationTokenSource();
+            ClientConnected = new ManualResetEvent(false);
+            Sessions = new List<T>();
         }
 
         public void Start(ushort port)
         {
-            listener = new TcpListener(IPAddress.Any, port);
-            listener.Start();
+            Listener = new TcpListener(IPAddress.Any, port);
+            Listener.Start();
 
-            serverThread = new Thread(() =>
+            ServerThread = new Thread(() =>
             {
-                while (!source.IsCancellationRequested)
+                while (!Source.IsCancellationRequested)
                 {
-                    clientConnected.Reset();
-                    logger.Info($"{GetType().Name} started on Port:{port}");
-                    listener.BeginAcceptTcpClient(AcceptTcpClient, null);
-                    clientConnected.WaitOne();
+                    ClientConnected.Reset();
+                    Logger.Info($"{GetType().Name} started on Port:{port}");
+                    Listener.BeginAcceptTcpClient(AcceptTcpClient, null);
+                    ClientConnected.WaitOne();
                 }
             })
             { Name = $"{GetType().Name}Thread" };
-            serverThread.Start();
+            ServerThread.Start();
         }
 
         public void Stop()
         {
-            switch (serverThread.ThreadState)
+            switch (ServerThread.ThreadState)
             {
                 case ThreadState.Unstarted:
-                    logger.Info($"{GetType().Name} has not been started.");
+                    Logger.Info($"{GetType().Name} has not been started.");
                     break;
                 case ThreadState.Stopped:
-                    logger.Info($"{GetType().Name} has already been stopped.");
+                    Logger.Info($"{GetType().Name} has already been stopped.");
                     break;
                 default:
-                    source.Cancel();
-                    clientConnected.Set();
-                    serverThread.Join();
-                    logger.Info($"{GetType().Name} was stopped.");
+                    Source.Cancel();
+                    ClientConnected.Set();
+                    ServerThread.Join();
+                    Logger.Info($"{GetType().Name} was stopped.");
                     break;
             }
         }
 
         public IEnumerable<T> GetSessions()
         {
-            sessions.RemoveAll(session => !session.Connected());
-            return sessions;
+            Sessions.RemoveAll(session => !session.Connected());
+            return Sessions;
         }
 
         private void AcceptTcpClient(IAsyncResult result)
         {
-            T session = context.Resolve<T>();
-            TcpClient client = listener.EndAcceptTcpClient(result);
+            T session = Context.Resolve<T>();
+            TcpClient client = Listener.EndAcceptTcpClient(result);
             session.Init(client);
-            session.OnPacket += router.OnPacket;
+            session.OnPacket += Router.OnPacket;
 
-            sessions.Add(session);
-            logger.Info($"Client connected: {session}");
+            Sessions.Add(session);
+            Logger.Info($"Client connected: {session}");
             session.Start();
 
-            clientConnected.Set();
+            ClientConnected.Set();
         }
     }
 }

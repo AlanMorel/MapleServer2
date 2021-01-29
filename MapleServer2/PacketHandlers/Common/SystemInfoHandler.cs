@@ -15,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Common
         protected override void HandleCommon(Session session, PacketReader packet)
         {
             string info = packet.ReadUnicodeString();
-            logger.Debug($"System Info: {info}");
+            Logger.Debug($"System Info: {info}");
         }
     }
 }

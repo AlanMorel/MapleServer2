@@ -3,6 +3,7 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -37,7 +38,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleEquipItem(GameSession session, PacketReader packet)
+        private static void HandleEquipItem(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 
@@ -66,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item));
         }
 
-        private void HandleUnequipItem(GameSession session, PacketReader packet)
+        private static void HandleUnequipItem(GameSession session, PacketReader packet)
         {
             byte index = packet.ReadByte();
 
