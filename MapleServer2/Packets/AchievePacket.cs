@@ -35,18 +35,18 @@ namespace MapleServer2.Packets
             foreach (Achieve achieve in achieves)
             {
                 pWriter.WriteInt(achieve.Id);
-                pWriter.WriteInt(2); // unknown
-                pWriter.WriteByte(0); // unknown
+                pWriter.WriteInt(1); // unknown 
+                pWriter.WriteByte(2); // unknown: 0x0,0x1,0x2-eligible, 0x3-ineligible
+                pWriter.WriteInt(0); // unknown
                 pWriter.WriteInt(achieve.Grade);
                 pWriter.WriteInt(2); // unknown
                 pWriter.WriteByte(0); // unknown
-                pWriter.WriteInt(0); // unknown
                 pWriter.WriteLong(achieve.Counter);
                 int tCount = achieve.Timestamps.Count;
                 pWriter.WriteInt(tCount);
                 for (int t = 0; t < tCount; t++)
                 {
-                    pWriter.WriteInt(t);
+                    pWriter.WriteInt(t+1);
                     pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
                 }
             }
@@ -59,7 +59,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
             pWriter.WriteEnum(AchievePacketMode.Update);
             pWriter.WriteInt(achieve.Id);
-            pWriter.WriteByte(3); // unknown
+            pWriter.WriteByte(3); // unknown: 3 - finished final tier, else - earned a trophy
             pWriter.WriteInt(1); // unknown
             pWriter.WriteInt(achieve.Grade);
             pWriter.WriteInt(2); // unknown
