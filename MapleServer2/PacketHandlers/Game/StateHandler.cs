@@ -24,6 +24,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case StateHandlerMode.Jump:
+                    session.Send(MapleServer2.Packets.AchievePacket.WriteUpdate(session.Player.Achieves[23100001]));
                     break;
                 case StateHandlerMode.Land:
                     break;
