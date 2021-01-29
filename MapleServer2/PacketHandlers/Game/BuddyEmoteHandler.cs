@@ -26,7 +26,6 @@ namespace MapleServer2.PacketHandlers.Game
             AcceptEmote = 0x3,
             DeclineEmote = 0x4,
             StopEmote = 0x6,
-
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -101,7 +100,6 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF selfCoords = packet.Read<CoordF>();
             int rotation = packet.ReadInt();
 
-
             Player buddy = GameServer.Storage.GetPlayerById(senderCharacterId);
             if (buddy == null)
             {
@@ -111,7 +109,6 @@ namespace MapleServer2.PacketHandlers.Game
             buddy.Session.Send(BuddyEmotePacket.SendAccept(buddyEmoteId, session.Player));
             session.Send(BuddyEmotePacket.StartEmote(buddyEmoteId, buddy.Session.Player, session.Player, selfCoords, rotation));
             buddy.Session.Send(BuddyEmotePacket.StartEmote(buddyEmoteId, buddy.Session.Player, session.Player, selfCoords, rotation));
-
         }
 
         private void HandleDeclineEmote(GameSession session, PacketReader packet)
