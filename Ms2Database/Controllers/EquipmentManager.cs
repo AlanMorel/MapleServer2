@@ -10,17 +10,18 @@ namespace Ms2Database.Controllers
 {
     public class EquipmentManager
     {
-        private readonly Ms2DbContext context = new Ms2DbContext(); //Opens connection to database
+        private readonly Ms2DbContext _context = new Ms2DbContext(); //Opens connection to database
+
         public void EquipItem(long characterId, long uid, string slot, bool isCosmetic = true)
         {
-            Item item = context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
+            Item item = _context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
             Item equippedItem;
 
             if (isCosmetic) // Handles cosmetic
             {
-                equippedItem = context.Items.Include(table => table.Inventory)
-                                            .Where(column => column.Inventory.CharacterId == characterId)
-                                            .FirstOrDefault(column => column.CosmeticSlot == slot.ToUpper());
+                equippedItem = _context.Items.Include(table => table.Inventory)
+                                             .Where(column => column.Inventory.CharacterId == characterId)
+                                             .FirstOrDefault(column => column.CosmeticSlot == slot.ToUpper());
 
                 if (equippedItem == null || equippedItem.CosmeticSlot == "")
                 {
@@ -34,9 +35,9 @@ namespace Ms2Database.Controllers
             }
             else // Handles regular equipment
             {
-                equippedItem = context.Items.Include(table => table.Inventory)
-                                            .Where(column => column.Inventory.CharacterId == characterId)
-                                            .FirstOrDefault(column => column.EquipmentSlot == slot.ToUpper());
+                equippedItem = _context.Items.Include(table => table.Inventory)
+                                             .Where(column => column.Inventory.CharacterId == characterId)
+                                             .FirstOrDefault(column => column.EquipmentSlot == slot.ToUpper());
 
                 if (equippedItem == null || equippedItem.EquipmentSlot == "")
                 {
@@ -48,12 +49,12 @@ namespace Ms2Database.Controllers
                     item.EquipmentSlot = slot.ToUpper();
                 }
             }
-            context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public void UnequipItem(long uid, bool isCosmetic = true)
         {
-            Item item = context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
+            Item item = _context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
 
             if (isCosmetic == true)
             {
@@ -63,7 +64,7 @@ namespace Ms2Database.Controllers
             {
                 item.EquipmentSlot = null;
             }
-            context.SaveChanges();
+            _context.SaveChanges();
         }
     }
 }
