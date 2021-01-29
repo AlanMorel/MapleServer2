@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.EnterField(session.Player.MapId);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-            session.Send(EmotePacket.LoadEmotes());
+            session.Send(EmotePacket.LoadEmotes(session.Player));
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
 
             // Normally skill layout would be loaded from a database
