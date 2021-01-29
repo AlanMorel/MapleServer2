@@ -11,66 +11,66 @@ namespace Ms2Database.Controllers
     {
         public void CreateAccount(string username, string password)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account Account = new Account()
+                Account account = new Account()
                 {
                     Username = username,
                     Password = password
                 };
 
-                Context.Accounts.Add(Account);
-                Context.SaveChanges();
+                context.Accounts.Add(account);
+                context.SaveChanges();
             }
         }
 
         public void DeleteAccount(long id)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account Account = Context.Accounts.Find(id);
-                Context.Remove(Account);
-                Context.SaveChanges();
+                Account account = context.Accounts.Find(id);
+                context.Remove(account);
+                context.SaveChanges();
             }
         }
 
-        public Account GetAccInfoById(long id) // Queries db and retrieves account entry by Id
+        public Account GetAccountById(long id) // Queries db and retrieves account entry by Id
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account Account = Context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
-                return Account;
+                Account account = context.Accounts.FirstOrDefault(column => column.AccountId == id); // Retrieve entry by Id
+                return account;
             }
         }
 
-        public Account GetAccInfoByUser(string username)
+        public Account GetAccountByName(string username)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account Account = Context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by username
-                return Account;
+                Account account = context.Accounts.FirstOrDefault(column => column.Username.ToLower() == username.ToLower()); // Retrieve entry by username
+                return account;
             }
         }
 
-        public void EditAccInfo(long id, string username = "", string password = "") // Allows account entry changes
+        public void UpdateAccountInfo(long id, string username = "", string password = "") // Allows account entry changes
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account Account = Context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
-                if (Account == null) // Checks to see if account Id exists
+                Account account = context.Accounts.FirstOrDefault(column => column.AccountId == id); // Retrieve entry by Id
+                if (account == null) // Checks to see if account Id exists
                 {
-                    Debug.Assert(Account != null, "No entry starting with account ID: " + id);
+                    Debug.Assert(account != null, "No entry starting with account ID: " + id);
                     return;
                 }
                 if (!string.IsNullOrEmpty(username)) // Prevents empty entries
                 {
-                    Account.Username = username;
+                    account.Username = username;
                 }
                 if (!string.IsNullOrEmpty(password))
                 {
-                    Account.Password = password;
+                    account.Password = password;
                 }
-                Context.SaveChanges(); // Updates database with changes.
+                context.SaveChanges(); // Updates database with changes.
             }
         }
     }
