@@ -98,7 +98,17 @@ namespace GameDataParser.Parsers
                     Console.WriteLine($"Failed to parse item slot for {itemId}: {slot.Attributes["name"].Value}");
                 }
                 int totalSlots = slots.SelectNodes("slot").Count;
-                metadata.IsTwoHand = totalSlots > 1;
+                if (totalSlots > 1)
+                {
+                    if (metadata.Slot == ItemSlot.CL || metadata.Slot == ItemSlot.PA)
+                    {
+                        metadata.IsDress = true;
+                    }
+                    else if (metadata.Slot == ItemSlot.RH || metadata.Slot == ItemSlot.LH)
+                    {
+                        metadata.IsTwoHand = true;
+                    }
+                }
 
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");

@@ -10,7 +10,6 @@ namespace MapleServer2.Packets
     {
         private enum AchievePacketMode : byte
         {
-            // figure out what these are
             TableStart = 0x0,
             TableContent = 0x1,
             Update = 0x2
@@ -36,9 +35,9 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(achieve.Id);
                 pWriter.WriteInt(1); // unknown 
-                pWriter.WriteByte(2); // unknown: 0x0,0x1,0x2-eligible, 0x3-ineligible
-                pWriter.WriteInt(0); // unknown
-                pWriter.WriteInt(achieve.Grade);
+                pWriter.WriteByte(3); // unknown: 0x3 - check if grade completed
+                pWriter.WriteInt(1); // unknown
+                pWriter.WriteInt(1/*achieve.Grade*/);
                 pWriter.WriteInt(2); // unknown
                 pWriter.WriteByte(0); // unknown
                 pWriter.WriteLong(achieve.Counter);

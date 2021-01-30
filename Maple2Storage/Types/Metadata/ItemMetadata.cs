@@ -23,12 +23,14 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 7)]
         public bool IsTwoHand;
         [XmlElement(Order = 8)]
-        public bool IsTemplate;
+        public bool IsDress;
         [XmlElement(Order = 9)]
-        public int PlayCount;
+        public bool IsTemplate;
         [XmlElement(Order = 10)]
-        public List<int> RecommendJobs = new List<int>();
+        public int PlayCount;
         [XmlElement(Order = 11)]
+        public List<int> RecommendJobs = new List<int>();
+        [XmlElement(Order = 12)]
         public List<ItemContent> Content;
 
         // Required for deserialization

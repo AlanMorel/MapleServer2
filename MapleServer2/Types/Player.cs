@@ -257,5 +257,19 @@ namespace MapleServer2.Types
             Rotation = spawn.Rotation.ToFloat();
             Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
         }
+
+        public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
+        {
+            switch (tab)
+            {
+                case InventoryTab.Gear:
+                    return Equips;
+                case InventoryTab.Outfit:
+                    return Cosmetics;
+                default:
+                    break;
+            }
+            return null;
+        }
     }
 }
