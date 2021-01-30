@@ -27,13 +27,13 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case PremiumClubMode.Open:
-                    HandleOpen(session, packet);
+                    HandleOpen(session);
                     break;
                 case PremiumClubMode.ClaimItems:
                     HandleClaimItems(session, packet);
                     break;
                 case PremiumClubMode.OpenPurchaseWindow:
-                    HandleOpenPurchaseWindow(session, packet);
+                    HandleOpenPurchaseWindow(session);
                     break;
                 case PremiumClubMode.PurchaseMembership:
                     HandlePurchaseMembership(session, packet);
@@ -44,12 +44,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpen(GameSession session, PacketReader packet)
+        private static void HandleOpen(GameSession session)
         {
             session.Send(PremiumClubPacket.Open());
         }
 
-        private void HandleClaimItems(GameSession session, PacketReader packet)
+        private static void HandleClaimItems(GameSession session, PacketReader packet)
         {
             int benefitId = packet.ReadInt();
             session.Send(PremiumClubPacket.ClaimItem(benefitId));
@@ -57,12 +57,12 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO only claim once a day
         }
 
-        private void HandleOpenPurchaseWindow(GameSession session, PacketReader packet)
+        private static void HandleOpenPurchaseWindow(GameSession session)
         {
             session.Send(PremiumClubPacket.OpenPurchaseWindow());
         }
 
-        private void HandlePurchaseMembership(GameSession session, PacketReader packet)
+        private static void HandlePurchaseMembership(GameSession session, PacketReader packet)
         {
             int packageId = packet.ReadInt();
             session.Send(PremiumClubPacket.PurchaseMembership(packageId));

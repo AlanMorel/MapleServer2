@@ -35,7 +35,7 @@ namespace MapleServer2.PacketHandlers.Common
                     {
                         // Read remaining string
                         string debug = packet.ReadUnicodeString(packet.Available / 2);
-                        logger.Error($"[{message}] {debug}");
+                        Logger.Error($"[{message}] {debug}");
 
                         session.OnError?.Invoke(session, debug);
                         return;
@@ -43,11 +43,11 @@ namespace MapleServer2.PacketHandlers.Common
 
                     builder.Append(message);
                 }
-                logger.Warning($"Client Log: {builder}");
+                Logger.Warning($"Client Log: {builder}");
             }
             catch (Exception ex)
             {
-                logger.Error($"Error parsing DEBUG_MSG packet:{packet} f({function})", ex);
+                Logger.Error($"Error parsing DEBUG_MSG packet:{packet} f({function})", ex);
             }
         }
     }

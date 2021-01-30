@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace Ms2Database.Controllers
 {
     public class CharacterManager
     {
-        public void CreateCharacter(long accountId, string characterName, int jobId) // Creates Character and Inventory
+        public static void CreateCharacter(long accountId, string characterName, int jobId) // Creates Character and Inventory
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

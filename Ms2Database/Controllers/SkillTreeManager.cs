@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +10,7 @@ namespace Ms2Database.Controllers
 {
     public class SkillTreeManager
     {
-        public void AddSkill(long characterId, long skillId, string skillName = "", int level = 0, bool learned = false)
+        public static void AddSkill(long characterId, long skillId, string skillName = "", int level = 0, bool learned = false)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -27,13 +27,12 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteSkill(long characterId, long skillId)
+        public static void DeleteSkill(long characterId, long skillId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
                 SkillTree skill = context.SkillTrees.Where(column => column.CharacterId == characterId)
                                                     .FirstOrDefault(column => column.SkillId == skillId);
-
                 context.Remove(skill);
                 context.SaveChanges();
             }

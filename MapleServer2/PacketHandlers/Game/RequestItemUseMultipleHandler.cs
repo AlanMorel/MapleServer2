@@ -5,6 +5,7 @@ using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game

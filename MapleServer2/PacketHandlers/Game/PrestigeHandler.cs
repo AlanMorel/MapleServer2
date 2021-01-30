@@ -6,6 +6,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -32,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleReward(GameSession session, PacketReader packet)
+        private static void HandleReward(GameSession session, PacketReader packet)
         {
             int rank = packet.ReadInt();
 

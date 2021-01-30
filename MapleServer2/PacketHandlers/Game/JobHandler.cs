@@ -27,12 +27,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleCloseSkillTree(GameSession session)
+        private static void HandleCloseSkillTree(GameSession session)
         {
             session.Send(JobPacket.Close());
         }
 
-        private void HandleSaveSkillTree(GameSession session, PacketReader packet)
+        private static void HandleSaveSkillTree(GameSession session, PacketReader packet)
         {
             // Get skill tab to update
             SkillTab skillTab = session.Player.SkillTabs[0]; // Get first skill tab only for now, uncertain of how to have multiple skill tabs

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
 {
     public class AccountManager
     {
-        public void CreateAccount(string username, string password)
+        public static void CreateAccount(string username, string password)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -24,7 +21,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteAccount(long id)
+        public static void DeleteAccount(long id)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -42,7 +39,7 @@ namespace Ms2Database.Controllers
                 return account;
             }
         }
-
+      
         public Account GetAccountByName(string username)
         {
             using (Ms2DbContext context = new Ms2DbContext())
@@ -57,6 +54,7 @@ namespace Ms2Database.Controllers
             using (Ms2DbContext context = new Ms2DbContext())
             {
                 Account account = context.Accounts.FirstOrDefault(column => column.AccountId == id); // Retrieve entry by Id
+
                 if (account == null) // Checks to see if account Id exists
                 {
                     Debug.Assert(account != null, "No entry starting with account ID: " + id);

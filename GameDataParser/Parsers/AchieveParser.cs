@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -9,23 +9,23 @@ namespace GameDataParser.Parsers
     class AchieveParser : Exporter<List<AchieveMetadata>>
     {
         public AchieveParser(MetadataResources resources) : base(resources, "achieve") { }
-        
+
         protected override List<AchieveMetadata> Parse()
         {
             List<AchieveMetadata> achieveList = new List<AchieveMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("achieve/"))
                 {
                     continue;
                 }
 
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode achieve = document.SelectSingleNode("/ms2/achieves");
 
                 AchieveMetadata newAchieve = new AchieveMetadata();
                 int id = int.Parse(achieve.Attributes["id"].Value);
-                
+
                 XmlNodeList grades = achieve.SelectNodes("/grade");
 
                 foreach (XmlNode grade in grades)
@@ -42,8 +42,8 @@ namespace GameDataParser.Parsers
                     newAchieve.Grades.Add(newGrade);
                 }
                 achieveList.Add(newAchieve);
-                
             }
+
             return achieveList;
         }
     }

@@ -15,8 +15,8 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public GuildMetadata()
         {
-            this.Contribution = new List<GuildContribution>();
-            this.Buff = new List<GuildBuff>();
+            Contribution = new List<GuildContribution>();
+            Buff = new List<GuildBuff>();
         }
 
         public override string ToString() =>
@@ -41,8 +41,8 @@ namespace Maple2Storage.Types.Metadata
 
         public GuildContribution(string type, int value)
         {
-            this.Type = type;
-            this.Value = value;
+            Type = type;
+            Value = value;
         }
 
         public override string ToString() =>
@@ -78,14 +78,14 @@ namespace Maple2Storage.Types.Metadata
 
         public GuildBuff(int id, byte level, int effectId, byte effectLevel, byte levelRequirement, int upgradeCost, int cost, short duration)
         {
-            this.Id = id;
-            this.Level = level;
-            this.EffectId = effectId;
-            this.EffectLevel = effectLevel;
-            this.LevelRequirement = levelRequirement;
-            this.UpgradeCost = upgradeCost;
-            this.Cost = cost;
-            this.Duration = duration;
+            Id = id;
+            Level = level;
+            EffectId = effectId;
+            EffectLevel = effectLevel;
+            LevelRequirement = levelRequirement;
+            UpgradeCost = upgradeCost;
+            Cost = cost;
+            Duration = duration;
         }
 
         public override string ToString() =>

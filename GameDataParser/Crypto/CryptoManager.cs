@@ -80,7 +80,7 @@ namespace GameDataParser.Crypto
             else if (flag.HasFlag(Encryption.Xor))
             {
                 // Decrypt the XOR encrypted block
-                src = EncryptXor(version, src, size, sizeCompressed);
+                src = EncryptXor(version, src, size/*, sizeCompressed*/);
             }
 
             return flag.HasFlag(Encryption.Zlib) ? ZlibStream.UncompressBuffer(src) : src;
@@ -118,7 +118,7 @@ namespace GameDataParser.Crypto
             else if (flag.HasFlag(Encryption.Xor))
             {
                 // Perform XOR block encryption
-                pEncrypted = EncryptXor(version, pEncrypted, size, sizeCompressed);
+                pEncrypted = EncryptXor(version, pEncrypted, size/*, sizeCompressed*/);
             }
 
             sizeEncoded = (uint) pEncrypted.Length;
@@ -126,7 +126,7 @@ namespace GameDataParser.Crypto
             return pEncrypted;
         }
 
-        private static byte[] EncryptXor(PackVersion version, byte[] src, uint size, uint sizeCompressed)
+        private static byte[] EncryptXor(PackVersion version, byte[] src, uint size/*, uint sizeCompressed*/)
         {
             CipherKeys.GetXorKey(version, out byte[] key);
 

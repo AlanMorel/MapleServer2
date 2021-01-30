@@ -9,7 +9,6 @@ namespace MapleServer2.Packets
 {
     public static class CharacterListPacket
     {
-
         // TODO: Load real data
         public static Packet AddEntries(List<Player> players)
         {

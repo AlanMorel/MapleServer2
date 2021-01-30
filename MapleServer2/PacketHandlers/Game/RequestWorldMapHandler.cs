@@ -18,16 +18,16 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case 0: // open
-                    HandleOpen(session, packet);
+                    HandleOpen(session);
                     break;
             }
             packet.ReadByte(); // always 0?
             int tab = packet.ReadInt();
         }
 
-        private void HandleOpen(GameSession session, PacketReader packet)
+        private static void HandleOpen(GameSession session)
         {
-            session.Send(WorldMapPacket.Open(session.Player));
+            session.Send(WorldMapPacket.Open());
         }
     }
 }

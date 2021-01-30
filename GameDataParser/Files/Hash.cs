@@ -30,11 +30,18 @@ namespace GameDataParser.Files
             File.WriteAllText(hashPath, newHash);
         }
 
-        public static String GetHash(string filename)
+        public static string GetHash(string filename)
         {
+            string filepath = $"{Paths.OUTPUT}/{filename}";
+
+            if (!File.Exists(filepath))
+            {
+                return "";
+            }
+
             using (MD5 md5 = MD5.Create())
             {
-                using (FileStream stream = File.OpenRead($"{Paths.OUTPUT}/{filename}"))
+                using (FileStream stream = File.OpenRead(filepath))
                 {
                     byte[] hash = md5.ComputeHash(stream);
                     return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();

@@ -20,20 +20,20 @@ namespace GameDataParser.Crypto.Common
             return new PackFileEntry
             {
                 Index = int.MaxValue,
-                Hash = this.Hash,
-                Name = this.Name,
-                TreeName = this.TreeName,
-                //FileHeader = this.FileHeader,
-                Data = data ?? this.Data,
+                Hash = Hash,
+                Name = Name,
+                TreeName = TreeName,
+                //FileHeader = FileHeader,
+                Data = data ?? Data,
                 Changed = true
             };
         }
 
         public int CompareTo(PackFileEntry entry)
         {
-            if (this.Index == entry.Index)
+            if (Index == entry.Index)
                 return 0;
-            if (this.Index > entry.Index)
+            if (Index > entry.Index)
                 return 1;
             return -1;
         }

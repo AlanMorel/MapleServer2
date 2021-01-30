@@ -13,11 +13,11 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
 
-        private readonly IPEndPoint loginEndpoint;
+        private readonly IPEndPoint LoginEndpoint;
 
         public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
         {
-            loginEndpoint = new IPEndPoint(IPAddress.Loopback, LoginServer.PORT);
+            LoginEndpoint = new IPEndPoint(IPAddress.Loopback, LoginServer.PORT);
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.FieldManager.RemovePlayer(session, session.FieldPlayer);
                 AuthData authData = AuthStorage.GetData(session.Player.AccountId);
 
-                session.SendFinal(MigrationPacket.GameToLogin(loginEndpoint, authData));
+                session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, authData));
             }
         }
     }

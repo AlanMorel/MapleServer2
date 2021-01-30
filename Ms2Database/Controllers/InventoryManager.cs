@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ms2Database.DbClasses;
+﻿using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
 {
     public class InventoryManager
     {
-        public void CreateInventory(long characterId)
+        public static void CreateInventory(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -22,11 +17,12 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void AddItem(long characterId, long itemId, long amount, int tab, int slot, int rarity)
+        public static void AddItem(long characterId, long itemId, long amount, int tab, int slot, int rarity)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
                 Inventory inventory = context.Inventories.FirstOrDefault(column => column.CharacterId == characterId);
+
                 Item item = new Item()
                 {
                     InventoryId = inventory.InventoryId,
@@ -41,7 +37,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteItem(long uid)
+        public static void DeleteItem(long uid)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -51,7 +47,7 @@ namespace Ms2Database.Controllers
                 context.SaveChanges();
             }
         }
-
+      
         public Item FindItem(long uid)
         {
             using (Ms2DbContext context = new Ms2DbContext())

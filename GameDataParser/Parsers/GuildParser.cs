@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         {
             GuildMetadata guildMetadata = new GuildMetadata();
 
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("table/guildcontribution"))
                 {
@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList contributions = document.SelectNodes("/ms2/contribution");
 
                 foreach (XmlNode contribution in contributions)
@@ -33,7 +33,7 @@ namespace GameDataParser.Parsers
                 }
             }
 
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("table/guildbuff"))
                 {
@@ -41,7 +41,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList buffs = document.SelectNodes("/ms2/guildBuff");
 
                 foreach (XmlNode buff in buffs)

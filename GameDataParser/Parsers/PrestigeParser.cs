@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         {
             PrestigeMetadata prestigeMetadata = new PrestigeMetadata();
 
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 // Only check for reward for now, abilities will need to be added later
                 if (!entry.Name.StartsWith("table/adventurelevelreward"))
@@ -22,7 +22,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList rewards = document.SelectNodes("/ms2/reward");
 
                 foreach (XmlNode reward in rewards)

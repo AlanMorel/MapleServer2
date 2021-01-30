@@ -73,9 +73,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(0x1);
             pWriter.WriteInt(objectId);
             pWriter.WriteInt(questList.Count);
-            foreach (var item in questList)
+            foreach (QuestMetadata quest in questList)
             {
-                pWriter.WriteInt(item.Basic.QuestID);
+                pWriter.WriteInt(quest.Basic.QuestID);
 
             }
 

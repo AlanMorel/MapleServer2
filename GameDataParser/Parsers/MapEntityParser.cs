@@ -17,7 +17,7 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             Dictionary<string, string> mapObjects = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in resources.exportedFiles)
+            foreach (PackFileEntry entry in Resources.ExportedFiles)
             {
                 if (!entry.Name.StartsWith("flat/presets/presets object/"))
                 {
@@ -37,7 +37,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = resources.exportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlElement root = document.DocumentElement;
                 XmlNodeList objProperties = document.SelectNodes("/model/property");
 
@@ -61,7 +61,7 @@ namespace GameDataParser.Parsers
             // Iterate over map xblocks
             List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
             Dictionary<string, string> maps = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in resources.exportedFiles)
+            foreach (PackFileEntry entry in Resources.ExportedFiles)
             {
                 if (!entry.Name.StartsWith("xblock/"))
                 {
@@ -82,25 +82,28 @@ namespace GameDataParser.Parsers
                 maps.Add(mapIdStr, entry.Name);
 
                 MapEntityMetadata metadata = new MapEntityMetadata(mapId);
-                XmlDocument document = resources.exportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
                 foreach (XmlNode node in mapEntities)
                 {
                     string modelName = node.Attributes["modelName"].Value.ToLower();
+
+                    XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                    CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                     if (node.Attributes["name"].Value.Contains("MS2Bounding0"))
                     {
-                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-
-                        metadata.BoundingBox0 = boundingBox;
+                        if (metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
+                        {
+                            metadata.BoundingBox0 = boundingBox;
+                        }
                     }
                     else if (node.Attributes["name"].Value.Contains("MS2Bounding1"))
                     {
-                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-
-                        metadata.BoundingBox1 = boundingBox;
+                        if (metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0)))
+                        {
+                            metadata.BoundingBox1 = boundingBox;
+                        }
                     }
                     else if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
                     {

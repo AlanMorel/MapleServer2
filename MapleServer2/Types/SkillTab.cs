@@ -51,10 +51,10 @@ namespace MapleServer2.Types
 
         public void Rename(string name)
         {
-            this.Name = name;
+            Name = name;
         }
 
-        public List<SkillMetadata> GetJobFeatureSkills(Job job)
+        public static List<SkillMetadata> GetJobFeatureSkills(Job job)
         {
             return SkillMetadataStorage.GetJobSkills(job);
         }

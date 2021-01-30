@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types
@@ -16,12 +13,12 @@ namespace MapleServer2.Types
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
 
-        public StatDistribution(int totalStats = 0, Dictionary<byte, int> AllocatedStats = null, Dictionary<OtherStatsIndex, int> OtherStats = null)
+        public StatDistribution(int totalStats = 0, Dictionary<byte, int> allocatedStats = null, Dictionary<OtherStatsIndex, int> otherStats = null)
         {
             // hardcode the amount of stat points the character starts with temporarily
-            this.TotalStatPoints = totalStats;
-            this.AllocatedStats = AllocatedStats ?? new Dictionary<byte, int>();
-            this.OtherStats = OtherStats ?? new Dictionary<OtherStatsIndex, int>();
+            TotalStatPoints = totalStats;
+            AllocatedStats = allocatedStats ?? new Dictionary<byte, int>();
+            OtherStats = otherStats ?? new Dictionary<OtherStatsIndex, int>();
 
             AddTotalStatPoints(1, OtherStatsIndex.Quest);
             AddTotalStatPoints(2, OtherStatsIndex.Trophy);
@@ -31,7 +28,7 @@ namespace MapleServer2.Types
 
         public void AddTotalStatPoints(int amount)
         {
-            this.TotalStatPoints += amount;
+            TotalStatPoints += amount;
         }
 
         public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc)
@@ -44,7 +41,7 @@ namespace MapleServer2.Types
             {
                 OtherStats[pointSrc] = amount;
             }
-            this.TotalStatPoints += amount;
+            TotalStatPoints += amount;
         }
 
         public void AddPoint(byte statType)

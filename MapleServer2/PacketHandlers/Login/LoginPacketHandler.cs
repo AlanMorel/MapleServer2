@@ -9,11 +9,11 @@ namespace MapleServer2.PacketHandlers.Login
     {
         public abstract RecvOp OpCode { get; }
 
-        protected readonly ILogger logger;
+        protected readonly ILogger Logger;
 
         protected LoginPacketHandler(ILogger<LoginPacketHandler> logger)
         {
-            this.logger = logger;
+            Logger = logger;
         }
 
         public abstract void Handle(LoginSession session, PacketReader packet);

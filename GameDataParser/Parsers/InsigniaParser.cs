@@ -14,7 +14,7 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             List<InsigniaMetadata> insignias = new List<InsigniaMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("table/nametagsymbol"))
@@ -22,7 +22,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     InsigniaMetadata metadata = new InsigniaMetadata();
