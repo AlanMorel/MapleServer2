@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(1); // unknown 
                 pWriter.WriteByte(3); // unknown: 0x3 - check if grade completed
                 pWriter.WriteInt(1); // unknown
-                pWriter.WriteInt(1/*achieve.Grade*/);
+                pWriter.WriteInt(achieve.Grade);
                 pWriter.WriteInt(2); // unknown
                 pWriter.WriteByte(0); // unknown
                 pWriter.WriteLong(achieve.Counter);

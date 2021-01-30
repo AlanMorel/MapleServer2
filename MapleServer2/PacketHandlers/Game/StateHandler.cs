@@ -24,6 +24,8 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case StateHandlerMode.Jump:
+                    // TODO: added to demonstrate trophy notification and caching, remove later
+                    session.Player.Achieves[23100001].AddCounter(60);
                     session.Send(MapleServer2.Packets.AchievePacket.WriteUpdate(session.Player.Achieves[23100001]));
                     break;
                 case StateHandlerMode.Land:

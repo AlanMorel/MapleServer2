@@ -120,8 +120,7 @@ namespace MapleServer2.Types
             // testing code
             Dictionary<int, Achieve> newAchieveDict = new Dictionary<int, Achieve>();
             List<long> timestamp = new List<long>();
-            timestamp.Add((long)0x5E9D1BEF);
-            newAchieveDict[23100001] = new Achieve(23100001, 2, 270, timestamp);
+            newAchieveDict[23100001] = new Achieve(23100001, 1, 0, timestamp);
             // end of testing code
 
             Player player = new Player
