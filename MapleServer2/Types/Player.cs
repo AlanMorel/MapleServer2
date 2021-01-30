@@ -103,7 +103,6 @@ namespace MapleServer2.Types
         public Player()
         {
             GameOptions = new GameOptions();
-            Badges = new List<Item>();
             Wallet = new Wallet(this);
             Levels = new Levels(this, 70, 0, 0, 100, 0);
         }
