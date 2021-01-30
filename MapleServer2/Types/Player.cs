@@ -48,6 +48,7 @@ namespace MapleServer2.Types
         public int[] Trophy = new int[3];
 
         public List<short> Stickers = new List<short> { 0 };
+        public List<int> Emotes = new List<int> { 0 };
 
         public CoordF Coord;
         public CoordF Rotation;
@@ -146,6 +147,16 @@ namespace MapleServer2.Types
                 Stickers = new List<short>
                 {
                     1, 2, 3, 4, 5, 6, 7
+                },
+                Emotes = new List<int>
+                {
+                    90200011, 90200004, 90200024, 90200041, 90200042,
+                90200057, 90200043, 90200022, 90200031, 90200005,
+                90200006, 90200003, 90200092, 90200077, 90200073,
+                90200023, 90200001, 90200019, 90200020, 90200021,
+                90200009, 90200027, 90200010, 90200028, 90200051,
+                90200015, 90200016, 90200055, 90200060, 90200017,
+                90200018, 90200093, 90220033, 90220012, 90220001, 90220033
                 },
                 TitleId = 10000503,
                 InsigniaId = 33,
