@@ -7,11 +7,11 @@ namespace GameDataParser.Files
 {
     public class MetadataResources
     {
-        public List<PackFileEntry> xmlFiles;
-        public List<PackFileEntry> exportedFiles;
+        public List<PackFileEntry> XmlFiles;
+        public List<PackFileEntry> ExportedFiles;
 
-        public MemoryMappedFile xmlMemFile;
-        public MemoryMappedFile exportedMemFile;
+        public MemoryMappedFile XmlMemFile;
+        public MemoryMappedFile ExportedMemFile;
 
         public MetadataResources()
         {
@@ -21,11 +21,11 @@ namespace GameDataParser.Files
             string xmlHeaderPath = $"{Paths.INPUT}/Xml.m2h";
             string exportedHeaderPath = $"{Paths.INPUT}/Exported.m2h";
 
-            this.xmlMemFile = MemoryMappedFile.CreateFromFile(xmlPath);
-            this.exportedMemFile = MemoryMappedFile.CreateFromFile(exportedPath);
+            XmlMemFile = MemoryMappedFile.CreateFromFile(xmlPath);
+            ExportedMemFile = MemoryMappedFile.CreateFromFile(exportedPath);
 
-            this.xmlFiles = FileList.ReadFile(File.OpenRead(xmlHeaderPath));
-            this.exportedFiles = FileList.ReadFile(File.OpenRead(exportedHeaderPath));
+            XmlFiles = FileList.ReadFile(File.OpenRead(xmlHeaderPath));
+            ExportedFiles = FileList.ReadFile(File.OpenRead(exportedHeaderPath));
         }
     }
 }

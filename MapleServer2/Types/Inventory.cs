@@ -11,22 +11,21 @@ namespace MapleServer2.Types
     public class Inventory
     {
         public short Size { get; }
-        public IReadOnlyDictionary<long, Item> Items => items;
-        // This contains ALL inventory items regardless of tab
-        private readonly Dictionary<long, Item> items;
+        // This contains ALL inventory Items regardless of tab
+        public readonly Dictionary<long, Item> Items;
 
         // Map of Slot to Uid for each inventory
-        private readonly Dictionary<short, long>[] slotMaps;
+        private readonly Dictionary<short, long>[] SlotMaps;
 
         public Inventory(short size)
         {
-            this.Size = size;
-            this.items = new Dictionary<long, Item>();
+            Size = size;
+            Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
-            this.slotMaps = new Dictionary<short, long>[maxTabs + 1];
+            SlotMaps = new Dictionary<short, long>[maxTabs + 1];
             for (byte i = 0; i <= maxTabs; i++)
             {
-                this.slotMaps[i] = new Dictionary<short, long>();
+                SlotMaps[i] = new Dictionary<short, long>();
             }
         }
 
@@ -40,7 +39,7 @@ namespace MapleServer2.Types
 
         public ICollection<Item> GetItems(InventoryTab tab)
         {
-            return GetSlots(tab).Select(kvp => items[kvp.Value])
+            return GetSlots(tab).Select(kvp => Items[kvp.Value])
                 .ToImmutableList();
         }
 
@@ -79,7 +78,7 @@ namespace MapleServer2.Types
         public int Remove(long uid, out Item removedItem, int amount = -1)
         {
             // Removing more than available
-            if (!items.TryGetValue(uid, out Item item) || item.Amount < amount)
+            if (!Items.TryGetValue(uid, out Item item) || item.Amount < amount)
             {
                 removedItem = null;
                 return -1;
@@ -101,7 +100,7 @@ namespace MapleServer2.Types
         // Replaces an existing item with an updated copy of itself
         public bool Replace(Item item)
         {
-            if (!items.ContainsKey(item.Uid))
+            if (!Items.ContainsKey(item.Uid))
             {
                 return false;
             }
@@ -157,9 +156,9 @@ namespace MapleServer2.Types
         // This REQUIRES item.Slot to be set appropriately
         private void AddInternal(Item item)
         {
-            Debug.Assert(!items.ContainsKey(item.Uid),
+            Debug.Assert(!Items.ContainsKey(item.Uid),
                 "Error adding an item that already exists");
-            items[item.Uid] = item;
+            Items[item.Uid] = item;
 
             Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot),
                 "Error adding item to slot that is already taken.");
@@ -168,7 +167,7 @@ namespace MapleServer2.Types
 
         private bool RemoveInternal(long uid, out Item item)
         {
-            return items.Remove(uid, out item)
+            return Items.Remove(uid, out item)
                    && GetSlots(item.InventoryTab).Remove(item.Slot);
         }
 
@@ -191,7 +190,7 @@ namespace MapleServer2.Types
 
         private Dictionary<short, long> GetSlots(InventoryTab tab)
         {
-            return slotMaps[(int) tab];
+            return SlotMaps[(int) tab];
         }
     }
 }

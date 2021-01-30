@@ -6,31 +6,31 @@ namespace MapleServer2.Tools
 {
     public class ClubManager
     {
-        private readonly Dictionary<long, Club> clubList;
+        private readonly Dictionary<long, Club> ClubList;
 
         public ClubManager()
         {
-            clubList = new Dictionary<long, Club>();
+            ClubList = new Dictionary<long, Club>();
         }
 
         public void AddClub(Club club)
         {
-            clubList.Add(club.Id, club);
+            ClubList.Add(club.Id, club);
         }
 
         public void RemoveClub(Club club)
         {
-            clubList.Remove(club.Id);
+            ClubList.Remove(club.Id);
         }
 
         public Club GetClubById(long id)
         {
-            return clubList.TryGetValue(id, out Club foundClub) ? foundClub : null;
+            return ClubList.TryGetValue(id, out Club foundClub) ? foundClub : null;
         }
 
         public Club GetClubByLeader(Player leader)
         {
-            return (from entry in clubList
+            return (from entry in ClubList
                     where entry.Value.Leader.CharacterId == leader.CharacterId
                     select entry.Value).FirstOrDefault();
         }

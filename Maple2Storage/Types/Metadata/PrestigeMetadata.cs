@@ -13,7 +13,7 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public PrestigeMetadata()
         {
-            this.Rewards = new List<PrestigeReward>();
+            Rewards = new List<PrestigeReward>();
         }
 
         public override string ToString() =>
@@ -42,10 +42,10 @@ namespace Maple2Storage.Types.Metadata
 
         public PrestigeReward(int level, string type, int id, int value)
         {
-            this.Level = level;
-            this.Type = type;
-            this.Id = id;
-            this.Value = value;
+            Level = level;
+            Type = type;
+            Id = id;
+            Value = value;
         }
 
         public override string ToString() =>

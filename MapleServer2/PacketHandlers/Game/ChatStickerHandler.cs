@@ -1,9 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -29,7 +27,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case ChatStickerMode.OpenWindow:
-                    HandleOpenWindow(session, packet);
+                    HandleOpenWindow(/*session, packet*/);
                     break;
                 case ChatStickerMode.UseSticker:
                     HandleUseSticker(session, packet);
@@ -46,13 +44,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpenWindow(GameSession session, PacketReader packet)
+        private static void HandleOpenWindow(/*GameSession session, PacketReader packet*/)
         {
             // TODO: if user has any expired stickers, use the packet below
             //session.Send(ChatStickerPacket.ExpiredStickerNotification());
         }
 
-        private void HandleUseSticker(GameSession session, PacketReader packet)
+        private static void HandleUseSticker(GameSession session, PacketReader packet)
         {
             int stickerId = packet.ReadInt();
             string script = packet.ReadUnicodeString();
@@ -60,14 +58,14 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ChatStickerPacket.UseSticker(stickerId, script));
         }
 
-        private void HandleFavorite(GameSession session, PacketReader packet)
+        private static void HandleFavorite(GameSession session, PacketReader packet)
         {
             int stickerId = packet.ReadInt();
 
             session.Send(ChatStickerPacket.Favorite(stickerId));
         }
 
-        private void HandleUnfavorite(GameSession session, PacketReader packet)
+        private static void HandleUnfavorite(GameSession session, PacketReader packet)
         {
             int stickerId = packet.ReadInt();
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 
@@ -54,7 +53,7 @@ namespace MapleServer2.Packets
             UpdatePlayerDonation = 0x6E,
         }
 
-        public static Packet UpdateGuild(GameSession session, Guild guild)
+        public static Packet UpdateGuild(Guild guild)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteEnum(GuildPacketMode.UpdateGuild);
@@ -393,7 +392,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ListGuildUpdate(Player player, byte toggle)
+        public static Packet ListGuildUpdate(Player player/*, byte toggle*/)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteEnum(GuildPacketMode.ListGuildUpdate);
@@ -403,7 +402,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet MemberJoin(Player player, string guildName)
+        public static Packet MemberJoin(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteEnum(GuildPacketMode.MemberJoin);
@@ -629,7 +628,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdatePlayerDonation(int totalDonationAmount)
+        public static Packet UpdatePlayerDonation(/*int totalDonationAmount*/)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
             pWriter.WriteEnum(GuildPacketMode.UpdatePlayerDonation);

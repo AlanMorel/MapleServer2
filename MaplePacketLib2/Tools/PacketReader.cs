@@ -12,7 +12,7 @@ namespace MaplePacketLib2.Tools
 
         public PacketReader(byte[] packet, int skip = 0) : base(packet)
         {
-            this.Position = skip;
+            Position = skip;
         }
 
         private void CheckLength(int length)

@@ -36,7 +36,7 @@ namespace MapleServer2.Packets.Helpers
                 .WriteInt()
                 .WriteBool(item.CanRepackage)
                 .WriteInt(item.Charges)
-                .WriteStatDiff(item.Stats, item.Stats);
+                .WriteStatDiff(/*item.Stats, item.Stats*/);
 
             if (item.IsTemplate)
             {
@@ -153,7 +153,7 @@ namespace MapleServer2.Packets.Helpers
             return pWriter;
         }
 
-        private static PacketWriter WriteStatDiff(this PacketWriter pWriter, ItemStats old, ItemStats @new)
+        private static PacketWriter WriteStatDiff(this PacketWriter pWriter/*, ItemStats old, ItemStats new*/)
         {
             // TODO: Find stat diffs (low priority)
             List<ItemStat> generalStatDiff = new List<ItemStat>();

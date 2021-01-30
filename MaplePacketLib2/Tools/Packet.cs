@@ -8,8 +8,8 @@
 
         public Packet(byte[] buffer)
         {
-            this.Buffer = buffer;
-            this.Length = buffer.Length;
+            Buffer = buffer;
+            Length = buffer.Length;
         }
 
         public PacketReader Reader()

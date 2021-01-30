@@ -13,15 +13,15 @@ namespace GameDataParser.Parsers
 
         protected override List<ScriptMetadata> Parse()
         {
-            List<ScriptMetadata> entities = this.parseNpc(resources);
-            entities.AddRange(this.parseQuest(resources));
+            List<ScriptMetadata> entities = ParseNpc(Resources);
+            entities.AddRange(ParseQuest(Resources));
             return entities;
         }
 
-        private List<ScriptMetadata> parseNpc(MetadataResources resources)
+        private static List<ScriptMetadata> ParseNpc(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("script/npc"))
@@ -31,7 +31,7 @@ namespace GameDataParser.Parsers
 
                 ScriptMetadata metadata = new ScriptMetadata();
                 string npcID = Path.GetFileNameWithoutExtension(entry.Name);
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     int id = int.Parse(node.Attributes["id"].Value);
@@ -131,10 +131,10 @@ namespace GameDataParser.Parsers
             return scripts;
         }
 
-        private List<ScriptMetadata> parseQuest(MetadataResources resources)
+        private static List<ScriptMetadata> ParseQuest(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("script/quest"))
@@ -147,7 +147,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
                 {
                     ScriptMetadata metadata = new ScriptMetadata();

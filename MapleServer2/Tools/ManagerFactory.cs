@@ -6,21 +6,21 @@ namespace MapleServer2.Tools
 {
     public class ManagerFactory<T> where T : class
     {
-        private readonly Dictionary<int, CacheItem> managers;
+        private readonly Dictionary<int, CacheItem> Managers;
 
         public ManagerFactory()
         {
-            managers = new Dictionary<int, CacheItem>();
+            Managers = new Dictionary<int, CacheItem>();
         }
 
         public T GetManager(int key)
         {
-            lock (managers)
+            lock (Managers)
             {
-                if (!managers.TryGetValue(key, out CacheItem item))
+                if (!Managers.TryGetValue(key, out CacheItem item))
                 {
                     item = new CacheItem(CreateInstance(key));
-                    managers[key] = item;
+                    Managers[key] = item;
                 }
 
                 item.Pin();
@@ -30,14 +30,14 @@ namespace MapleServer2.Tools
 
         public bool Release(int key)
         {
-            lock (managers)
+            lock (Managers)
             {
-                if (!managers.TryGetValue(key, out CacheItem manager) || manager.Release() > 0)
+                if (!Managers.TryGetValue(key, out CacheItem manager) || manager.Release() > 0)
                 {
                     return false;
                 }
 
-                return managers.Remove(key);
+                return Managers.Remove(key);
             }
         }
 
@@ -57,22 +57,22 @@ namespace MapleServer2.Tools
         private class CacheItem
         {
             public readonly T Value;
-            private int count;
+            private int Count;
 
             public CacheItem(T value)
             {
                 Value = value;
-                count = 0;
+                Count = 0;
             }
 
             public int Pin()
             {
-                return ++count;
+                return ++Count;
             }
 
             public int Release()
             {
-                return --count;
+                return --Count;
             }
         }
     }

@@ -36,7 +36,7 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public ItemMetadata()
         {
-            this.Content = new List<ItemContent>();
+            Content = new List<ItemContent>();
         }
 
         public override string ToString() =>
@@ -51,11 +51,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((ItemMetadata) obj);
         }
@@ -101,14 +101,14 @@ namespace Maple2Storage.Types.Metadata
 
         public ItemContent(int id, int minAmount, int maxAmount, int dropGroup, int smartDropRate, int rarity, int enchant, int id2 = 0)
         {
-            this.Id = id;
-            this.Id2 = id2;
-            this.MinAmount = minAmount;
-            this.MaxAmount = maxAmount;
-            this.DropGroup = dropGroup;
-            this.SmartDropRate = smartDropRate;
-            this.Rarity = rarity;
-            this.EnchantLevel = enchant;
+            Id = id;
+            Id2 = id2;
+            MinAmount = minAmount;
+            MaxAmount = maxAmount;
+            DropGroup = dropGroup;
+            SmartDropRate = smartDropRate;
+            Rarity = rarity;
+            EnchantLevel = enchant;
         }
 
         public override string ToString() =>
@@ -122,11 +122,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((ItemContent) obj);
         }

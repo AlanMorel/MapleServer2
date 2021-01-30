@@ -61,7 +61,7 @@ namespace MapleServer2.Packets
                 .WriteByte()
                 .WriteInt()
                 .WriteLong(player.CharacterId)
-                .WriteShort(1); //# of Party member. but it's scuffed atm
+                .WriteShort(members); //# of Party member. but it's scuffed atm
         }
 
         public static Packet Create(Player leader)

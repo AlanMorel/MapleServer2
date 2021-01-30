@@ -6,57 +6,57 @@ namespace GameDataParser.Files
 {
     public class Spinner
     {
-        private readonly string[] sequence = new string[] { "/", "-", "\\", "|" };
-        private int counter = 0;
-        private readonly int delay;
-        private bool active;
-        private readonly Thread thread;
-        private readonly Stopwatch stopWatch = new Stopwatch();
+        private readonly string[] Sequence = new string[] { "/", "-", "\\", "|" };
+        private int Counter = 0;
+        private readonly int Delay;
+        private bool Active;
+        private readonly Thread Thread;
+        private readonly Stopwatch Stopwatch = new Stopwatch();
 
         public Spinner(int delay = 500)
         {
-            this.delay = delay;
-            this.thread = new Thread(Spin);
-            this.stopWatch.Start();
+            Delay = delay;
+            Thread = new Thread(Spin);
+            Stopwatch.Start();
         }
 
         public void Start()
         {
-            active = true;
-            if (!thread.IsAlive)
+            Active = true;
+            if (!Thread.IsAlive)
             {
-                thread.Start();
+                Thread.Start();
             }
         }
 
         public void Stop()
         {
-            active = false;
+            Active = false;
             Draw(" ");
         }
 
         public TimeSpan GetRuntime()
         {
-            return this.stopWatch.Elapsed;
+            return Stopwatch.Elapsed;
         }
 
         private void Spin()
         {
-            while (active)
+            while (Active)
             {
                 Turn();
-                Thread.Sleep(delay);
+                Thread.Sleep(Delay);
             }
         }
 
-        private void Draw(string c)
+        private static void Draw(string c)
         {
             Console.Write($"\r{c}");
         }
 
         private void Turn()
         {
-            Draw(sequence[++counter % sequence.Length]);
+            Draw(Sequence[++Counter % Sequence.Length]);
         }
     }
 }

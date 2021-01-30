@@ -4,18 +4,18 @@
     {
         private const int INDEX = 2;
 
-        private readonly byte[] table;
+        private readonly byte[] Table;
 
         public XORCrypter(uint version)
         {
-            this.table = new byte[2];
+            Table = new byte[2];
 
             // Init
             Rand32 rand1 = new Rand32(version);
             Rand32 rand2 = new Rand32(2 * version);
 
-            table[0] = (byte) (rand1.RandomFloat() * 255.0f);
-            table[1] = (byte) (rand2.RandomFloat() * 255.0f);
+            Table[0] = (byte) (rand1.RandomFloat() * 255.0f);
+            Table[1] = (byte) (rand2.RandomFloat() * 255.0f);
         }
 
         public static uint GetIndex(uint version)
@@ -27,7 +27,7 @@
         {
             for (int i = 0; i < src.Length; i++)
             {
-                src[i] ^= table[i & 1];
+                src[i] ^= Table[i & 1];
             }
         }
 
@@ -35,7 +35,7 @@
         {
             for (int i = 0; i < src.Length; i++)
             {
-                src[i] ^= table[i & 1];
+                src[i] ^= Table[i & 1];
             }
         }
     }

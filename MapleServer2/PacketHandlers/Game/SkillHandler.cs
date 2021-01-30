@@ -42,10 +42,10 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleDamage(session, packet);
                     break;
                 case SkillHandlerMode.Mode3:
-                    HandleMode3(session, packet);
+                    HandleMode3(packet);
                     break;
                 case SkillHandlerMode.Mode4:
-                    HandleMode4(session, packet);
+                    HandleMode4(packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -53,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleFirstSent(GameSession session, PacketReader packet)
+        private static void HandleFirstSent(GameSession session, PacketReader packet)
         {
             long skillUid = packet.ReadLong();
             int value = packet.ReadInt();
@@ -65,19 +65,19 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(SkillUsePacket.SkillUse(session.FieldPlayer, value, skillUid, coords));
         }
 
-        private void HandleDamage(GameSession session, PacketReader packet)
+        private static void HandleDamage(GameSession session, PacketReader packet)
         {
             DamagingMode mode = (DamagingMode) packet.ReadByte();
             switch (mode)
             {
                 case DamagingMode.TypeOfDamage:
-                    HandleTypeOfDamage(session, packet);
+                    HandleTypeOfDamage(packet);
                     break;
                 case DamagingMode.AoeDamage:
                     HandleAoeDamage(session, packet);
                     break;
                 case DamagingMode.TypeOfDamage2:
-                    HandleTypeOfDamage2(session, packet);
+                    HandleTypeOfDamage2(packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -85,18 +85,18 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleMode3(GameSession session, PacketReader packet)
+        private static void HandleMode3(PacketReader packet)
         {
             packet.ReadLong();
             packet.ReadInt();
         }
 
-        private void HandleMode4(GameSession session, PacketReader packet)
+        private static void HandleMode4(PacketReader packet)
         {
             packet.ReadLong();
         }
 
-        private void HandleTypeOfDamage(GameSession session, PacketReader packet)
+        private static void HandleTypeOfDamage(PacketReader packet)
         {
             long skillUid = packet.ReadLong();
             packet.ReadByte();
@@ -116,7 +116,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleAoeDamage(GameSession session, PacketReader packet)
+        private static void HandleAoeDamage(GameSession session, PacketReader packet)
         {
             List<IFieldObject<Mob>> mobs = new List<IFieldObject<Mob>>();
             long skillUid = packet.ReadLong();
@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(SkillDamagePacket.ApplyDamage(session.FieldPlayer, skillUid, someValue, coords, mobs));
         }
 
-        private void HandleTypeOfDamage2(GameSession session, PacketReader packet)
+        private static void HandleTypeOfDamage2(PacketReader packet)
         {
             long skillUid = packet.ReadLong();
             packet.ReadByte();

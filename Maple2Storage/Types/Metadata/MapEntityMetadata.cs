@@ -26,19 +26,19 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public MapEntityMetadata()
         {
-            this.PlayerSpawns = new List<MapPlayerSpawn>();
-            this.Npcs = new List<MapNpc>();
-            this.Portals = new List<MapPortal>();
-            this.Objects = new List<MapObject>();
+            PlayerSpawns = new List<MapPlayerSpawn>();
+            Npcs = new List<MapNpc>();
+            Portals = new List<MapPortal>();
+            Objects = new List<MapObject>();
         }
 
         public MapEntityMetadata(int mapId)
         {
-            this.MapId = mapId;
-            this.PlayerSpawns = new List<MapPlayerSpawn>();
-            this.Npcs = new List<MapNpc>();
-            this.Portals = new List<MapPortal>();
-            this.Objects = new List<MapObject>();
+            MapId = mapId;
+            PlayerSpawns = new List<MapPlayerSpawn>();
+            Npcs = new List<MapNpc>();
+            Portals = new List<MapPortal>();
+            Objects = new List<MapObject>();
         }
 
         public override string ToString() =>
@@ -51,11 +51,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((MapEntityMetadata) obj);
         }
@@ -89,8 +89,8 @@ namespace Maple2Storage.Types.Metadata
 
         public MapObject(CoordB coord, int weaponId)
         {
-            this.Coord = coord;
-            this.WeaponId = weaponId;
+            Coord = coord;
+            WeaponId = weaponId;
         }
 
         public override string ToString() =>
@@ -103,11 +103,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((MapObject) obj);
         }
@@ -143,9 +143,9 @@ namespace Maple2Storage.Types.Metadata
 
         public MapNpc(int id, CoordS coord, CoordS rotation)
         {
-            this.Id = id;
-            this.Coord = coord;
-            this.Rotation = rotation;
+            Id = id;
+            Coord = coord;
+            Rotation = rotation;
         }
 
         public override string ToString() =>
@@ -158,11 +158,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((MapNpc) obj);
         }
@@ -202,11 +202,11 @@ namespace Maple2Storage.Types.Metadata
 
         public MapPortal(int id, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
         {
-            this.Id = id;
-            this.Flags = flags;
-            this.Target = target;
-            this.Coord = coord;
-            this.Rotation = rotation;
+            Id = id;
+            Flags = flags;
+            Target = target;
+            Coord = coord;
+            Rotation = rotation;
         }
 
         public override string ToString() =>
@@ -223,11 +223,11 @@ namespace Maple2Storage.Types.Metadata
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
                 return false;
             return Equals((MapPortal) obj);
         }
@@ -261,8 +261,8 @@ namespace Maple2Storage.Types.Metadata
 
         public MapPlayerSpawn(CoordS coord, CoordS rotation)
         {
-            this.Coord = coord;
-            this.Rotation = rotation;
+            Coord = coord;
+            Rotation = rotation;
         }
 
         public override string ToString() =>

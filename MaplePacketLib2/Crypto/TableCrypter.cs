@@ -8,23 +8,23 @@ namespace MaplePacketLib2.Crypto
 
         private const int TABLE_SIZE = 256;
 
-        private readonly byte[] decrypted;
-        private readonly byte[] encrypted;
+        private readonly byte[] Decrypted;
+        private readonly byte[] Encrypted;
 
         public TableCrypter(uint version)
         {
-            this.decrypted = new byte[TABLE_SIZE];
-            this.encrypted = new byte[TABLE_SIZE];
+            Decrypted = new byte[TABLE_SIZE];
+            Encrypted = new byte[TABLE_SIZE];
 
             // Init
             for (int i = 0; i < TABLE_SIZE; i++)
             {
-                encrypted[i] = (byte) i;
+                Encrypted[i] = (byte) i;
             }
-            Shuffle(encrypted, version);
+            Shuffle(Encrypted, version);
             for (int i = 0; i < TABLE_SIZE; i++)
             {
-                decrypted[encrypted[i]] = (byte) i;
+                Decrypted[Encrypted[i]] = (byte) i;
             }
         }
 
@@ -37,7 +37,7 @@ namespace MaplePacketLib2.Crypto
         {
             for (int i = 0; i < src.Length; i++)
             {
-                src[i] = encrypted[src[i]];
+                src[i] = Encrypted[src[i]];
             }
         }
 
@@ -45,7 +45,7 @@ namespace MaplePacketLib2.Crypto
         {
             for (int i = 0; i < src.Length; i++)
             {
-                src[i] = decrypted[src[i]];
+                src[i] = Decrypted[src[i]];
             }
         }
 

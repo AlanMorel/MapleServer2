@@ -30,56 +30,58 @@ namespace MapleServer2.Network
         public EventHandler<string> OnError;
         public EventHandler<Packet> OnPacket;
 
-        private uint siv;
-        private uint riv;
+        private uint Siv;
+        private uint Riv;
 
-        private Task sendThread;
-        private Task recvThread;
-        private TcpClient client;
-        private NetworkStream networkStream;
-        private MapleStream mapleStream;
-        private MapleCipher sendCipher;
-        private MapleCipher recvCipher;
+        private Task SendThread;
+        private Task RecvThread;
+        private TcpClient Client;
+        private NetworkStream NetworkStream;
+        private MapleStream MapleStream;
+        private MapleCipher SendCipher;
+        private MapleCipher RecvCipher;
 
         // These are unencrypted packets, scheduled to be sent on a single thread.
-        private readonly Queue<byte[]> sendQueue;
-        private readonly byte[] recvBuffer;
-        private readonly CancellationTokenSource source;
+        private readonly Queue<byte[]> SendQueue;
+        private readonly byte[] RecvBuffer;
+        private readonly CancellationTokenSource Source;
 
-        protected readonly ILogger logger;
+        protected readonly ILogger Logger;
 
-        private static readonly RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+        private static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
+
         protected Session(ILogger<Session> logger)
         {
-            this.logger = logger;
-            this.sendQueue = new Queue<byte[]>();
-            this.recvBuffer = new byte[BUFFER_SIZE];
-            this.source = new CancellationTokenSource();
+            Logger = logger;
+            SendQueue = new Queue<byte[]>();
+            RecvBuffer = new byte[BUFFER_SIZE];
+            Source = new CancellationTokenSource();
         }
 
         public void Init([NotNull] TcpClient client)
         {
-            // Allow client to close immediately
+            // Allow Client to close immediately
             client.LingerState = new LingerOption(true, 0);
 
             byte[] sivBytes = new byte[4];
             byte[] rivBytes = new byte[4];
-            rng.GetBytes(sivBytes);
-            rng.GetBytes(rivBytes);
-            this.siv = BitConverter.ToUInt32(sivBytes);
-            this.riv = BitConverter.ToUInt32(rivBytes);
+            Rng.GetBytes(sivBytes);
+            Rng.GetBytes(rivBytes);
+            Siv = BitConverter.ToUInt32(sivBytes);
+            Riv = BitConverter.ToUInt32(rivBytes);
 
-            this.client = client;
-            this.networkStream = client.GetStream();
-            this.mapleStream = new MapleStream();
-            this.sendCipher = MapleCipher.Encryptor(VERSION, siv, BLOCK_IV);
-            this.recvCipher = MapleCipher.Decryptor(VERSION, riv, BLOCK_IV);
+            Client = client;
+            NetworkStream = client.GetStream();
+            MapleStream = new MapleStream();
+            SendCipher = MapleCipher.Encryptor(VERSION, Siv, BLOCK_IV);
+            RecvCipher = MapleCipher.Decryptor(VERSION, Riv, BLOCK_IV);
         }
 
         public void Dispose()
         {
             Disconnect();
-            client?.Dispose();
+            Client?.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public void Disconnect()
@@ -88,39 +90,39 @@ namespace MapleServer2.Network
             if (Connected())
             {
                 // Must close socket before network stream to prevent lingering
-                client.Client.Close();
-                client.Close();
-                logger.Debug($"Disconnected client.");
+                Client.Client.Close();
+                Client.Close();
+                Logger.Debug($"Disconnected Client.");
             }
         }
 
         private void StopThreads()
         {
-            source.Cancel();
-            sendThread.Wait(STOP_TIMEOUT);
-            recvThread.Wait(STOP_TIMEOUT);
+            Source.Cancel();
+            SendThread.Wait(STOP_TIMEOUT);
+            RecvThread.Wait(STOP_TIMEOUT);
             EndSession();
         }
 
         public bool Connected()
         {
-            if (client?.Client == null)
+            if (Client?.Client == null)
             {
                 return false;
             }
 
-            Socket socket = client.Client;
+            Socket socket = Client.Client;
             return !((socket.Poll(1000, SelectMode.SelectRead) && (socket.Available == 0)) || !socket.Connected);
         }
 
         public void Start()
         {
-            if (sendThread != null || recvThread != null)
+            if (SendThread != null || RecvThread != null)
             {
                 throw new ArgumentException("Session has already been started.");
             }
 
-            recvThread = new Task(() =>
+            RecvThread = new Task(() =>
             {
                 try
                 {
@@ -129,11 +131,11 @@ namespace MapleServer2.Network
                 }
                 catch (SystemException ex)
                 {
-                    logger.Trace($"Fatal error for session:{this}", ex);
+                    Logger.Trace($"Fatal error for session:{this}", ex);
                     Disconnect();
                 }
             });
-            sendThread = new Task(() =>
+            SendThread = new Task(() =>
             {
                 try
                 {
@@ -141,47 +143,47 @@ namespace MapleServer2.Network
                 }
                 catch (SystemException ex)
                 {
-                    logger.Trace($"Fatal error for session:{this}", ex);
+                    Logger.Trace($"Fatal error for session:{this}", ex);
                     Disconnect();
                 }
             });
-            sendThread.Start();
-            recvThread.Start();
+            SendThread.Start();
+            RecvThread.Start();
         }
 
         private void PerformHandshake()
         {
-            if (client == null)
+            if (Client == null)
             {
-                throw new InvalidOperationException("Cannot start a session without a client.");
+                throw new InvalidOperationException("Cannot start a session without a Client.");
             }
 
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_VERSION);
             pWriter.WriteUInt(VERSION);
-            pWriter.WriteUInt(riv);
-            pWriter.WriteUInt(siv);
+            pWriter.WriteUInt(Riv);
+            pWriter.WriteUInt(Siv);
             pWriter.WriteUInt(BLOCK_IV);
             pWriter.WriteByte((byte) Type);
 
             // No encryption for handshake
-            Packet packet = sendCipher.WriteHeader(pWriter.ToArray());
-            logger.Debug($"Handshake: {packet}");
+            Packet packet = SendCipher.WriteHeader(pWriter.ToArray());
+            Logger.Debug($"Handshake: {packet}");
             SendRaw(packet);
         }
 
         public void Send(params byte[] packet)
         {
-            lock (sendQueue)
+            lock (SendQueue)
             {
-                sendQueue.Enqueue(packet);
+                SendQueue.Enqueue(packet);
             }
         }
 
         public void Send(Packet packet)
         {
-            lock (sendQueue)
+            lock (SendQueue)
             {
-                sendQueue.Enqueue(packet.ToArray());
+                SendQueue.Enqueue(packet.ToArray());
             }
         }
 
@@ -194,12 +196,12 @@ namespace MapleServer2.Network
 
         private async void StartRead()
         {
-            CancellationToken readToken = source.Token;
+            CancellationToken readToken = Source.Token;
             while (!readToken.IsCancellationRequested)
             {
                 try
                 {
-                    int length = await networkStream.ReadAsync(recvBuffer, 0, recvBuffer.Length, readToken);
+                    int length = await NetworkStream.ReadAsync(RecvBuffer.AsMemory(0, RecvBuffer.Length), readToken);
                     if (length <= 0)
                     {
                         if (!Connected())
@@ -207,17 +209,17 @@ namespace MapleServer2.Network
                         continue;
                     }
 
-                    mapleStream.Write(recvBuffer, 0, length);
+                    MapleStream.Write(RecvBuffer, 0, length);
                 }
                 catch (IOException ex)
                 {
-                    logger.Error("Exception reading from socket: ", ex);
+                    Logger.Error("Exception reading from socket: ", ex);
                     return;
                 }
 
-                while (mapleStream.TryRead(out byte[] packetBuffer))
+                while (MapleStream.TryRead(out byte[] packetBuffer))
                 {
-                    Packet packet = recvCipher.Transform(packetBuffer);
+                    Packet packet = RecvCipher.Transform(packetBuffer);
                     short opcode = packet.Reader().ReadShort();
 
                     RecvOp recvOp = (RecvOp) opcode;
@@ -229,7 +231,7 @@ namespace MapleServer2.Network
                             break;
                         default:
                             string packetString = packet.ToString();
-                            logger.Debug($"RECV ({recvOp.ToString()}): {packetString.Substring(Math.Min(packetString.Length, 6))}".Pastel("#8CC265"));
+                            Logger.Debug($"RECV ({recvOp}): {packetString[Math.Min(packetString.Length, 6)..]}".Pastel("#8CC265"));
                             break;
                     }
                     OnPacket?.Invoke(this, packet); // handle packet
@@ -239,12 +241,12 @@ namespace MapleServer2.Network
 
         private void StartWrite()
         {
-            CancellationToken writeToken = source.Token;
+            CancellationToken writeToken = Source.Token;
             while (!writeToken.IsCancellationRequested)
             {
-                lock (sendQueue)
+                lock (SendQueue)
                 {
-                    while (sendQueue.TryDequeue(out byte[] packet))
+                    while (SendQueue.TryDequeue(out byte[] packet))
                     {
                         SendInternal(packet);
                     }
@@ -276,10 +278,10 @@ namespace MapleServer2.Network
                     break;
                 default:
                     string packetString = packet.ToHexString(' ');
-                    logger.Debug($"SEND ({sendOp.ToString()}): {packetString.Substring(Math.Min(packetString.Length, 6))}".Pastel("#E05561"));
+                    Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".Pastel("#E05561"));
                     break;
             }
-            Packet encryptedPacket = sendCipher.Transform(packet);
+            Packet encryptedPacket = SendCipher.Transform(packet);
             SendRaw(encryptedPacket);
         }
 
@@ -287,18 +289,18 @@ namespace MapleServer2.Network
         {
             try
             {
-                networkStream.Write(packet.Buffer, 0, packet.Length);
+                NetworkStream.Write(packet.Buffer, 0, packet.Length);
             }
             catch (IOException ex)
             {
-                logger.Error("Exception writing to socket: ", ex);
+                Logger.Error("Exception writing to socket: ", ex);
                 Disconnect();
             }
         }
 
         public override string ToString()
         {
-            return $"{GetType().Name} from {client?.Client.RemoteEndPoint}";
+            return $"{GetType().Name} from {Client?.Client.RemoteEndPoint}";
         }
 
         public abstract void EndSession();

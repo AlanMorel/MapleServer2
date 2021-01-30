@@ -30,7 +30,7 @@ namespace MapleServer2.Packets
             Join = 0x1E,
         }
 
-        public static Packet UpdateClub(Club club, string clubName)
+        public static Packet UpdateClub(Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
             pWriter.WriteEnum(ClubPacketMode.UpdateClub);
@@ -150,7 +150,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet InviteResponse(Club club, Player player, byte response)
+        public static Packet InviteResponse(Club club, Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
             pWriter.WriteEnum(ClubPacketMode.InviteResponse);
@@ -210,7 +210,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ConfirmInvite(Club club, Player other, byte response)
+        public static Packet ConfirmInvite(Club club, Player other/*, byte response*/)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
             pWriter.WriteEnum(ClubPacketMode.ConfirmInvite);
