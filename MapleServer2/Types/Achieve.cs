@@ -8,7 +8,7 @@ namespace MapleServer2.Types
     {
         public Player Owner { get; private set; }
         public int Id { get; private set; }
-        public int Grade {get; private set; }   // currently achieved grade (0 means not completed at all)
+        public int Grade {get; private set; }   // grade trying to achieve
         public int NumGrades {get; private set; }
         public long Counter { get; private set; }    // counter to reach next grade
         public long Max { get; private set; }    // counter value needed to reach next grade (-1 if grade is max)
