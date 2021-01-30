@@ -35,47 +35,47 @@ namespace MapleServer2.Types
         public Levels Levels { get; private set; }
         public int MapId;
         public int TitleId;
-        public List<int> Titles;
-        public List<short> Insignias;
+        public List<int> Titles = new List<int> { 0 };
+        public List<short> Insignias = new List<short> { 0 };
         public short InsigniaId;
         public byte Animation;
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
         public IFieldObject<Pet> Pet;
-        public bool IsVIP;
+        public bool IsVIP = false;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy;
+        public int[] Trophy = new int[3];
 
-        public List<short> Stickers;
+        public List<short> Stickers = new List<short> { 0 };
 
         public CoordF Coord;
         public CoordF Rotation;
-        public CoordF SafeCoord;
-        public bool OnAirMount;
+        public CoordF SafeCoord = CoordF.From(0, 0, 0);
+        public bool OnAirMount = false;
 
         // Appearance
         public SkinColor SkinColor;
 
-        public string GuildName;
-        public string ProfileUrl;
-        public string Motto;
-        public string HomeName;
+        public string GuildName = "";
+        public string ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
+        public string Motto = "";
+        public string HomeName = "";
 
         public Vector3 ReturnPosition;
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
 
-        public int ActiveSkillId;
-        public short ActiveSkillLevel;
+        public int ActiveSkillId = 1;
+        public short ActiveSkillLevel = 1;
 
-        public List<SkillTab> SkillTabs;
-        public StatDistribution StatPointDistribution;
+        public List<SkillTab> SkillTabs = new List<SkillTab>();
+        public StatDistribution StatPointDistribution = new StatDistribution();
 
-        public Dictionary<ItemSlot, Item> Equips;
-        public Dictionary<ItemSlot, Item> Cosmetics;
-        public List<Item> Badges;
+        public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
+        public Dictionary<ItemSlot, Item> Cosmetics = new Dictionary<ItemSlot, Item>();
+        public List<Item> Badges = new List<Item>();
         public ItemSlot[] EquipSlots { get; }
         private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;
         public bool IsBeauty => DefaultEquipSlot == ItemSlot.HR
@@ -88,8 +88,8 @@ namespace MapleServer2.Types
 
         public GameOptions GameOptions { get; private set; }
 
-        public Inventory Inventory;
-        public Mailbox Mailbox;
+        public Inventory Inventory = new Inventory(48);
+        public Mailbox Mailbox = new Mailbox();
 
         public long PartyId;
 
@@ -103,26 +103,9 @@ namespace MapleServer2.Types
         public Player()
         {
             GameOptions = new GameOptions();
-            Titles = new List<int> { 0 };
-            Insignias = new List<short> { 0 };
-            IsVIP = false;
-            Trophy = new int[3];
-            Stickers = new List<short> { 0 };
-            SafeCoord = CoordF.From(0, 0, 0);
-            OnAirMount = false;
-            SkillTabs = new List<SkillTab>();
-            StatPointDistribution = new StatDistribution();
-            Equips = new Dictionary<ItemSlot, Item>();
-            Cosmetics = new Dictionary<ItemSlot, Item>();
             Badges = new List<Item>();
             Wallet = new Wallet(this);
             Levels = new Levels(this, 70, 0, 0, 100, 0);
-            Mailbox = new Mailbox();
-            Inventory = new Inventory(48);
-            GuildName = "";
-            ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
-            Motto = "";
-            HomeName = "";
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
