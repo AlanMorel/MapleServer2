@@ -28,7 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleLearnEmote(session, packet);
                     break;
                 case EmoteMode.UseEmote:
-                    HandleUseEmote(session, packet);
+                    HandleUseEmote(packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -36,14 +36,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleLearnEmote(GameSession session, PacketReader packet)
+        private static void HandleLearnEmote(GameSession session, PacketReader packet)
         {
             long emoteItemUid = packet.ReadLong();
             // TODO grab emoteId from emoteItemUid
             session.Send(EmotePacket.LearnEmote());
         }
 
-        private void HandleUseEmote(GameSession session, PacketReader packet)
+        private static void HandleUseEmote(PacketReader packet)
         {
             int emoteId = packet.ReadInt();
             string animationName = packet.ReadUnicodeString();
