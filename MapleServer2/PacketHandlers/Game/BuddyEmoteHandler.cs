@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -58,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleInviteBuddyEmote(GameSession session, PacketReader packet)
+        private static void HandleInviteBuddyEmote(GameSession session, PacketReader packet)
         {
             int buddyEmoteId = packet.ReadInt();
             long characterId = packet.ReadLong();
@@ -72,7 +68,7 @@ namespace MapleServer2.PacketHandlers.Game
             buddy.Session.Send(BuddyEmotePacket.SendRequest(buddyEmoteId, session.Player));
         }
 
-        private void HandleInviteBuddyEmoteConfirm(GameSession session, PacketReader packet)
+        private static void HandleInviteBuddyEmoteConfirm(GameSession session, PacketReader packet)
         {
             long senderCharacterId = packet.ReadLong();
 
@@ -85,14 +81,14 @@ namespace MapleServer2.PacketHandlers.Game
             buddy.Session.Send(BuddyEmotePacket.ConfirmSendRequest(session.Player));
         }
 
-        private void HandleLearnEmote(GameSession session, PacketReader packet)
+        private static void HandleLearnEmote(GameSession session, PacketReader packet)
         {
             long emoteItemUid = packet.ReadLong();
             // TODO grab emoteId from emoteItemUid
             session.Send(BuddyEmotePacket.LearnEmote());
         }
 
-        private void HandleAcceptEmote(GameSession session, PacketReader packet)
+        private static void HandleAcceptEmote(GameSession session, PacketReader packet)
         {
             int buddyEmoteId = packet.ReadInt();
             long senderCharacterId = packet.ReadLong();
@@ -111,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
             buddy.Session.Send(BuddyEmotePacket.StartEmote(buddyEmoteId, buddy.Session.Player, session.Player, selfCoords, rotation));
         }
 
-        private void HandleDeclineEmote(GameSession session, PacketReader packet)
+        private static void HandleDeclineEmote(GameSession session, PacketReader packet)
         {
             int buddyEmoteId = packet.ReadInt();
             long senderCharacterId = packet.ReadLong();
@@ -125,7 +121,7 @@ namespace MapleServer2.PacketHandlers.Game
             other.Session.Send(BuddyEmotePacket.DeclineEmote(buddyEmoteId, session.Player));
         }
 
-        private void HandleStopEmote(GameSession session, PacketReader packet)
+        private static void HandleStopEmote(GameSession session, PacketReader packet)
         {
             int buddyEmoteId = packet.ReadInt();
             long target = packet.ReadLong();
