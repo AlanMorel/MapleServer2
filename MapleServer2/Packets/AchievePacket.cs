@@ -24,7 +24,7 @@ namespace MapleServer2.Packets
         public static Packet WriteTableStart()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-            pWriter.WriteByte((byte) AchievePacketMode.TableStart);
+            pWriter.WriteEnum(AchievePacketMode.TableStart);
 
             return pWriter;
         }
@@ -32,15 +32,13 @@ namespace MapleServer2.Packets
         // packet from WriteTableStart() must be sent immediately before sending these packets
         public static Packet WriteTableContent(List<Achieve> achieves)
         {
-            int achieveCount = achieves.Count;
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
             pWriter.WriteEnum(AchievePacketMode.TableContent);
-            pWriter.WriteInt(achieveCount);
+            pWriter.WriteInt(achieves.Count);
 
             foreach (Achieve achieve in achieves)
             {
                 int tCount = achieve.Timestamps.Count;
-                // packet format for 0x1 mode
                 pWriter.WriteInt(achieve.Id);
                 pWriter.WriteInt(1);            // unknown 'SS' ?
                 pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
@@ -52,8 +50,6 @@ namespace MapleServer2.Packets
         public static Packet WriteUpdate(Achieve achieve)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-
-            // packet format for 0x2 mode
             pWriter.WriteEnum(AchievePacketMode.Update);
             pWriter.WriteInt(achieve.Id);
             pWriter.Write(WriteIndividualAchieve(achieve).Buffer);

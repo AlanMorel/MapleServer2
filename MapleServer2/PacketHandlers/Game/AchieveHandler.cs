@@ -8,6 +8,7 @@ namespace MapleServer2.PacketHandlers.Game
     public class AchieveHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.ACHIEVE;
+
         private enum AchieveHandlerMode : byte
         {
 

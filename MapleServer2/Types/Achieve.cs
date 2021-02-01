@@ -21,7 +21,7 @@ namespace MapleServer2.Types
             Counter = counter;
             Timestamps = timestamps ?? new List<long>();
             MaxGrade = AchieveMetadataStorage.GetNumGrades(Id);
-            Condition =  AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
+            Condition = AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
         }
 
         public void AddCounter(int amount)
@@ -38,7 +38,9 @@ namespace MapleServer2.Types
                 }
                 // level up and fully completed
                 else
+                {
                     Condition = 0;
+                }
 
                 Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             }
