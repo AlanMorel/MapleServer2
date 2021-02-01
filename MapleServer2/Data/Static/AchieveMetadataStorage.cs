@@ -34,7 +34,9 @@ namespace MapleServer2.Data.Static
         public static long GetCondition(int id, int grade)
         {
             if ((grade < 1) || (grade > GetNumGrades(id)))
+            {
                 return -1;
+            }
             return map.GetValueOrDefault(id).Grades[grade - 1].Condition;
         }
 
