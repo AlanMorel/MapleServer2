@@ -15,6 +15,12 @@ namespace MapleServer2.Packets
             Update = 0x2
         }
 
+        private enum GradeStatus : byte
+        {
+            NotFinalGrade = 0x0,
+            FinalGrade = 0x3
+        }
+
         public static Packet WriteTableStart()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
@@ -33,21 +39,11 @@ namespace MapleServer2.Packets
 
             foreach (Achieve achieve in achieves)
             {
-                pWriter.WriteInt(achieve.Id);
-                pWriter.WriteInt(1); // unknown 
-                pWriter.WriteByte(3); // unknown: 0x3 - check if grade completed
-                pWriter.WriteInt(1); // unknown
-                pWriter.WriteInt(achieve.Grade);
-                pWriter.WriteInt(2); // unknown
-                pWriter.WriteByte(0); // unknown
-                pWriter.WriteLong(achieve.Counter);
                 int tCount = achieve.Timestamps.Count;
-                pWriter.WriteInt(tCount);
-                for (int t = 0; t < tCount; t++)
-                {
-                    pWriter.WriteInt(t+1);
-                    pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
-                }
+                // packet format for 0x1 mode
+                pWriter.WriteInt(achieve.Id);
+                pWriter.WriteInt(1);            // unknown 'SS' ?
+                pWriter.Write(_WriteIndividualAchieve(achieve).Buffer);
             }
 
             return pWriter;
@@ -56,20 +52,32 @@ namespace MapleServer2.Packets
         public static Packet WriteUpdate(Achieve achieve)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
+    
+            // packet format for 0x2 mode
             pWriter.WriteEnum(AchievePacketMode.Update);
             pWriter.WriteInt(achieve.Id);
-            pWriter.WriteByte(3); // unknown: 3 - finished final tier, else - earned a trophy
-            pWriter.WriteInt(1); // unknown
-            pWriter.WriteInt(achieve.Grade);
-            pWriter.WriteInt(2); // unknown
-            pWriter.WriteByte(0); // unknown
-            pWriter.WriteLong(achieve.Counter);
+            pWriter.Write(_WriteIndividualAchieve(achieve).Buffer);
+
+            return pWriter;
+        }
+
+        private static Packet _WriteIndividualAchieve(Achieve achieve)
+        {
+            GradeStatus mode = achieve.Condition == 0 ? GradeStatus.FinalGrade : GradeStatus.NotFinalGrade;
             int tCount = achieve.Timestamps.Count;
-            pWriter.WriteInt(tCount);
+            PacketWriter pWriter = new PacketWriter();
+
+            pWriter.WriteEnum(mode);                                // grade status (refer to GradeStatus enum)
+            pWriter.WriteInt(1);                                    // starting grade
+            pWriter.WriteInt(achieve.CurrentGrade);                 // current grade to achieve
+            pWriter.WriteInt(achieve.MaxGrade);                     // maximum grade
+            pWriter.WriteByte(0);                                   // unknown
+            pWriter.WriteLong(achieve.Counter);                     // progress counter
+            pWriter.WriteInt(tCount);                               // number of timestamps
             for (int t = 0; t < tCount; t++)
             {
-                pWriter.WriteInt(t+1);
-                pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
+                pWriter.WriteInt(t+1);                              // grade corresponding to timestamp
+                pWriter.WriteLong(achieve.Timestamps.ElementAt(t)); // timestamp in unix time (seconds)
             }
 
             return pWriter;

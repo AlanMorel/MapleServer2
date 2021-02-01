@@ -33,7 +33,7 @@ namespace MapleServer2.Data.Static
         // return condition needed to reach that grade, -1 if grade invalid
         public static long GetCondition(int id, int grade)
         {
-            if (grade > GetNumGrades(id))
+            if ((grade < 1) || (grade > GetNumGrades(id)))
                 return -1;
             return map.GetValueOrDefault(id).Grades[grade-1].Condition;
         }
