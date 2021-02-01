@@ -1,5 +1,4 @@
-﻿using System;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -37,14 +36,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleStatIncrement(GameSession session, PacketReader packet)
+        private static void HandleStatIncrement(GameSession session, PacketReader packet)
         {
             byte statTypeIndex = packet.ReadByte();
             session.Player.StatPointDistribution.AddPoint(statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         }
 
-        private void HandleResetStatDistribution(GameSession session)
+        private static void HandleResetStatDistribution(GameSession session)
         {
             session.Player.StatPointDistribution.ResetPoints();
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));

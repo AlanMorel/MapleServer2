@@ -33,12 +33,12 @@ namespace MapleServer2.PacketHandlers.Game
                     SetActiveHotbar(session, packet);
                     break;
                 default:
-                    logger.Warning($"Unknown request type {requestType}");
+                    Logger.Warning($"Unknown request type {requestType}");
                     break;
             }
         }
 
-        private void SetKeyBinds(GameSession session, PacketReader packet)
+        private static void SetKeyBinds(GameSession session, PacketReader packet)
         {
             int numBindings = packet.ReadInt();
 
@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
             short hotbarId = packet.ReadShort();
             if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
             {
-                logger.Warning($"Invalid hotbar id {hotbarId}");
+                Logger.Warning($"Invalid hotbar id {hotbarId}");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
             short hotbarId = packet.ReadShort();
             if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
             {
-                logger.Warning($"Invalid hotbar id {hotbarId}");
+                Logger.Warning($"Invalid hotbar id {hotbarId}");
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void SetActiveHotbar(GameSession session, PacketReader packet)
+        private static void SetActiveHotbar(GameSession session, PacketReader packet)
         {
             short hotbarId = packet.ReadShort();
 

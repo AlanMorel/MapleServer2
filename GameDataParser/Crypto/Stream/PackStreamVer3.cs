@@ -20,12 +20,12 @@ namespace GameDataParser.Crypto.Stream
         public ulong FileListCount { get; set; }
         public List<PackFileEntry> FileList { get; }
 
-        private uint reserved;
+        private uint Reserved;
 
         private PackStreamVer3(PackVersion version)
         {
-            this.Version = version;
-            this.FileList = new List<PackFileEntry>();
+            Version = version;
+            FileList = new List<PackFileEntry>();
         }
 
         public static PackStreamVer3 ParseHeader(BinaryReader reader, PackVersion version)
@@ -33,7 +33,7 @@ namespace GameDataParser.Crypto.Stream
             return new PackStreamVer3(version)
             {
                 FileListCount = reader.ReadUInt32(),
-                reserved = reader.ReadUInt32(),
+                Reserved = reader.ReadUInt32(),
                 CompressedDataSize = reader.ReadUInt64(),
                 EncodedDataSize = reader.ReadUInt64(),
                 CompressedHeaderSize = reader.ReadUInt64(),
@@ -45,14 +45,14 @@ namespace GameDataParser.Crypto.Stream
 
         public void Encode(BinaryWriter pWriter)
         {
-            pWriter.Write(this.FileListCount);
-            pWriter.Write(this.reserved);
-            pWriter.Write(this.CompressedDataSize);
-            pWriter.Write(this.EncodedDataSize);
-            pWriter.Write(this.CompressedHeaderSize);
-            pWriter.Write(this.EncodedHeaderSize);
-            pWriter.Write(this.DataSize);
-            pWriter.Write(this.HeaderSize);
+            pWriter.Write(FileListCount);
+            pWriter.Write(Reserved);
+            pWriter.Write(CompressedDataSize);
+            pWriter.Write(EncodedDataSize);
+            pWriter.Write(CompressedHeaderSize);
+            pWriter.Write(EncodedHeaderSize);
+            pWriter.Write(DataSize);
+            pWriter.Write(HeaderSize);
         }
 
         public void InitFileList(BinaryReader reader)

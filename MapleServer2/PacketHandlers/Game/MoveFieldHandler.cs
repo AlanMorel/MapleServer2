@@ -32,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
                     .FirstOrDefault(portal => portal.Id == portalId);
                 if (srcPortal == default)
                 {
-                    logger.Warning($"Unable to find portal:{portalId} in map:{srcMapId}");
+                    Logger.Warning($"Unable to find portal:{portalId} in map:{srcMapId}");
                     return;
                 }
 
@@ -40,7 +40,7 @@ namespace MapleServer2.PacketHandlers.Game
                     .FirstOrDefault(portal => portal.Target == srcMapId);
                 if (dstPortal == default)
                 {
-                    logger.Warning($"Unable to find return portal to map:{srcMapId} in map:{srcPortal.Target}");
+                    Logger.Warning($"Unable to find return portal to map:{srcMapId} in map:{srcPortal.Target}");
                     return;
                 }
 

@@ -1,12 +1,11 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
     class WorldMapPacket
     {
-        public static Packet Open(Player player)
+        public static Packet Open()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
 

@@ -9,7 +9,7 @@ namespace MapleServer2.Data
         // Temp account and character ids
         public const long DEFAULT_ACCOUNT_ID = 1;
 
-        public static int TickCount = 0;
+        public static int TickCount { get; set; }
 
         public static readonly Dictionary<long, List<long>> AccountCharacters = new();
         public static readonly Dictionary<long, Player> Characters = new();

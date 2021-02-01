@@ -11,11 +11,11 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public abstract RecvOp OpCode { get; }
 
-        protected readonly ILogger logger;
+        protected readonly ILogger Logger;
 
         protected CommonPacketHandler(ILogger<CommonPacketHandler> logger)
         {
-            this.logger = logger;
+            Logger = logger;
         }
 
         public virtual void Handle(GameSession session, PacketReader packet)

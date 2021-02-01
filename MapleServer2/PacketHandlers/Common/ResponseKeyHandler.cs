@@ -12,6 +12,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
@@ -158,7 +159,7 @@ namespace MapleServer2.PacketHandlers.Common
             int tokenA = packet.ReadInt();
             int tokenB = packet.ReadInt();
 
-            logger.Info($"LOGIN USER: {accountId}");
+            Logger.Info($"LOGIN USER: {accountId}");
             AuthData authData = AuthStorage.GetData(accountId);
             if (authData == null)
             {

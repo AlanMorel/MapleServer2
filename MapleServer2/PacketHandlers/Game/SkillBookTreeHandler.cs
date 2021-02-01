@@ -26,12 +26,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpen(GameSession session)
+        private static void HandleOpen(GameSession session)
         {
             session.Send(SkillBookTreePacket.Open(session.Player));
         }
 
-        private void HandleSave(GameSession session)
+        private static void HandleSave(GameSession session)
         {
             session.Send(SkillBookTreePacket.Save(session.Player));
         }

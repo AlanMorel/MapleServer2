@@ -31,7 +31,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(InsigniaPacket.UpdateInsignia(session, insigniaId, CanEquipInsignia(session, insigniaId)));
         }
 
-        private bool CanEquipInsignia(GameSession session, short insigniaId)
+        private static bool CanEquipInsignia(GameSession session, short insigniaId)
         {
             string type = InsigniaMetadataStorage.GetConditionType(insigniaId);
 

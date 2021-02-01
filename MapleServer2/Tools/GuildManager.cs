@@ -6,43 +6,43 @@ namespace MapleServer2.Tools
 {
     public class GuildManager
     {
-        private readonly Dictionary<long, Guild> guildList;
+        private readonly Dictionary<long, Guild> GuildList;
 
         public GuildManager()
         {
-            guildList = new Dictionary<long, Guild>();
+            GuildList = new Dictionary<long, Guild>();
         }
 
         public void AddGuild(Guild guild)
         {
-            guildList.Add(guild.Id, guild);
+            GuildList.Add(guild.Id, guild);
         }
 
         public void RemoveGuild(Guild guild)
         {
-            guildList.Remove(guild.Id);
+            GuildList.Remove(guild.Id);
         }
 
         public List<Guild> GetGuildList()
         {
-            return guildList.Cast<Guild>().Where(guild => guild.Searchable = true).ToList();
+            return GuildList.Cast<Guild>().Where(guild => guild.Searchable = true).ToList();
         }
 
         public Guild GetGuildById(long id)
         {
-            return guildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;
+            return GuildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;
         }
 
         public Guild GetGuildByName(string name)
         {
-            return (from entry in guildList
+            return (from entry in GuildList
                     where entry.Value.Name == name
                     select entry.Value).FirstOrDefault();
         }
 
         public Guild GetGuildByLeader(Player leader)
         {
-            return (from entry in guildList
+            return (from entry in GuildList
                     where entry.Value.Leader.CharacterId == leader.CharacterId
                     select entry.Value).FirstOrDefault();
         }

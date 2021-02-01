@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.Levels.PrestigeExp); // Same Prestige Exp??
 
             // Ranks: 2, 4, 6, 8, 10, 12, 20, 30, 40, 50, 60, 70, 80, 90
-            int[] rankRewardsClaimed = { };
+            int[] rankRewardsClaimed = System.Array.Empty<int>();
             pWriter.WriteInt(rankRewardsClaimed.Length);
             foreach (int rank in rankRewardsClaimed)
             {

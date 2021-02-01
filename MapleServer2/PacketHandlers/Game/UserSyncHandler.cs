@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using System;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
@@ -68,12 +69,26 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
         {
-            CoordS higherBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[0] : boundingBox[1];
-            CoordS lowerBoundingBox = boundingBox[0].Z > boundingBox[1].Z ? boundingBox[1] : boundingBox[0];
-            if (coord.Z > higherBoundingBox.Z || coord.Z < lowerBoundingBox.Z)
+            short higherBoundZ = Math.Max(boundingBox[0].Z, boundingBox[1].Z);
+            short lowerBoundZ = Math.Min(boundingBox[1].Z, boundingBox[0].Z);
+            short higherBoundY = Math.Max(boundingBox[0].Y, boundingBox[1].Y);
+            short lowerBoundY = Math.Min(boundingBox[1].Y, boundingBox[0].Y);
+            short higherBoundX = Math.Max(boundingBox[0].X, boundingBox[1].X);
+            short lowerBoundX = Math.Min(boundingBox[1].X, boundingBox[0].X);
+
+            if (coord.Z > higherBoundZ || coord.Z < lowerBoundZ)
             {
                 return true;
             }
+            else if (coord.Y > higherBoundY || coord.Y < lowerBoundY)
+            {
+                return true;
+            }
+            else if (coord.X > higherBoundX || coord.X < lowerBoundX)
+            {
+                return true;
+            }
+
             return false;
         }
 

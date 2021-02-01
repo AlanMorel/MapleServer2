@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Constants.Skills

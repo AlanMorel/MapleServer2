@@ -47,10 +47,10 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleLeave(session, packet);
                     break;
                 case ClubMode.Buff:
-                    HandleBuff(session, packet);
+                    HandleBuff(packet);
                     break;
                 case ClubMode.Rename:
-                    HandleRename(session, packet);
+                    HandleRename(packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -58,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleCreate(GameSession session, PacketReader packet)
+        private static void HandleCreate(GameSession session, PacketReader packet)
         {
             // TODO fix creating for a party of more than 2. Currently if a member does not respond, despite atleast one other member accepting, it does not get created.
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
@@ -75,7 +75,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.BroadcastPacketParty(ClubPacket.Create(party, club));
         }
 
-        private void HandleJoin(GameSession session, PacketReader packet)
+        private static void HandleJoin(GameSession session, PacketReader packet)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             if (party == null)
@@ -114,7 +114,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleSendInvite(GameSession session, PacketReader packet)
+        private static void HandleSendInvite(GameSession session, PacketReader packet)
         {
             long clubId = packet.ReadLong();
             string invitee = packet.ReadUnicodeString();
@@ -137,7 +137,7 @@ namespace MapleServer2.PacketHandlers.Game
             other.Session.Send(ClubPacket.Invite(club, other));
         }
 
-        private void HandleInviteResponse(GameSession session, PacketReader packet)
+        private static void HandleInviteResponse(GameSession session, PacketReader packet)
         {
             long clubId = packet.ReadLong();
             string clubName = packet.ReadUnicodeString();
@@ -160,21 +160,21 @@ namespace MapleServer2.PacketHandlers.Game
             if (response == 1)
             {
                 club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(club, invitee, response));
-                club.BroadcastPacketClub(ClubPacket.ConfirmInvite(club, other.Session.Player, response));
-                other.Session.Send(ClubPacket.InviteResponse(club, session.Player, response));
+                club.BroadcastPacketClub(ClubPacket.ConfirmInvite(club, other.Session.Player));
+                other.Session.Send(ClubPacket.InviteResponse(club, session.Player));
                 other.Session.Send(ClubPacket.Join(session.Player, club));
-                other.Session.Send(ClubPacket.UpdateClub(club, invitee));
+                other.Session.Send(ClubPacket.UpdateClub(club));
                 club.BroadcastPacketClub(ClubPacket.UpdatePlayerClubList(session.Player, club));
                 // TODO add member to club (club.AddMember(other);)
             }
             else
             {
                 club.Leader.Session.Send(ClubPacket.LeaderInviteResponse(club, invitee, response));
-                other.Session.Send(ClubPacket.InviteResponse(club, session.Player, response));
+                other.Session.Send(ClubPacket.InviteResponse(club, session.Player));
             }
         }
 
-        private void HandleLeave(GameSession session, PacketReader packet)
+        private static void HandleLeave(GameSession session, PacketReader packet)
         {
             long clubId = packet.ReadLong();
 
@@ -208,7 +208,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleBuff(GameSession session, PacketReader packet)
+        private static void HandleBuff(PacketReader packet)
         {
             long clubId = packet.ReadLong();
             int buffId = packet.ReadInt();
@@ -224,7 +224,7 @@ namespace MapleServer2.PacketHandlers.Game
             club.BroadcastPacketClub(ClubPacket.ChangeBuff(club, buffId));
         }
 
-        private void HandleRename(GameSession session, PacketReader packet)
+        private static void HandleRename(PacketReader packet)
         {
             long clubId = packet.ReadLong();
             string clubNewName = packet.ReadUnicodeString();

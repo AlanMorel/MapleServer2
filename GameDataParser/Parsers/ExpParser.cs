@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         protected override List<ExpMetadata> Parse()
         {
             List<ExpMetadata> expList = new List<ExpMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("table/nextexp"))
@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     ExpMetadata expTable = new ExpMetadata();

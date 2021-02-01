@@ -12,10 +12,10 @@ namespace MaplePacketLib2.Tools
 
         public PacketWriter(int size = DEFAULT_SIZE) : base(new byte[size])
         {
-            this.Length = 0;
+            Length = 0;
         }
 
-        public static PacketWriter Of(Object opcode, int size = DEFAULT_SIZE)
+        public static PacketWriter Of(object opcode, int size = DEFAULT_SIZE)
         {
             PacketWriter packet = new PacketWriter(size);
             packet.WriteUShort(Convert.ToUInt16(opcode));

@@ -209,9 +209,9 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestRewardItem(int pItemId, byte pRank, int pCount)
         {
-            this.Code = pItemId;
-            this.Rank = pRank;
-            this.Count = pCount;
+            Code = pItemId;
+            Rank = pRank;
+            Count = pCount;
         }
 
         public override string ToString()

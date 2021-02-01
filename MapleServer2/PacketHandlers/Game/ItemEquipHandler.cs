@@ -7,6 +7,7 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -38,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game
             string equipSlotStr = packet.ReadUnicodeString();
             if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
             {
-                logger.Warning("Unknown equip slot: " + equipSlotStr);
+                Logger.Warning("Unknown equip slot: " + equipSlotStr);
                 return;
             }
 
@@ -49,7 +50,7 @@ namespace MapleServer2.PacketHandlers.Game
             Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
             if (equippedInventory == null)
             {
-                logger.Warning("equippedInventory was null: " + item.InventoryTab);
+                Logger.Warning("equippedInventory was null: " + item.InventoryTab);
                 return;
             }
 
@@ -119,7 +120,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleUnequipItem(GameSession session, PacketReader packet)
+        private static void HandleUnequipItem(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 

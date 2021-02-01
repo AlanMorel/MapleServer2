@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
             // Damage should be update through this packet
             for (int i = 0; i < 3; i++)
             {
-                pWriter.WriteLong(mob.Value.stats.Hp[i]);
+                pWriter.WriteLong(mob.Value.Stats.Hp[i]);
             }
             return pWriter;
         }
@@ -38,7 +38,7 @@ namespace MapleServer2.Packets
             // Flag dependent
             for (int i = 0; i < 3; i++)
             {
-                pWriter.WriteLong(mob.Value.stats.Hp[i])
+                pWriter.WriteLong(mob.Value.Stats.Hp[i])
                     .WriteInt();
             }
         }

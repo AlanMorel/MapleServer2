@@ -16,16 +16,16 @@ namespace GameDataParser.Parsers
 
         protected override List<ItemMetadata> Parse()
         {
-
+            // Item boxes
             Dictionary<string, List<ItemContent>> itemDrops = new Dictionary<string, List<ItemContent>>();
-            foreach (PackFileEntry entry in resources.xmlFiles) // First,parse all boxes rewards
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("table/individualitemdrop") && !entry.Name.StartsWith("table/na/individualitemdrop"))
                 {
                     continue;
                 }
 
-                XmlDocument innerDocument = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
                 foreach (XmlNode individualBoxItem in individualBoxItems)
                 {
@@ -65,8 +65,9 @@ namespace GameDataParser.Parsers
                 }
             }
 
+            // Items
             List<ItemMetadata> items = new List<ItemMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles) // Second, parse all items
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("item/"))
                 {
@@ -86,7 +87,7 @@ namespace GameDataParser.Parsers
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 // Parse XML
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode item = document.SelectSingleNode("ms2/environment");
 
                 // Gear/Cosmetic slot

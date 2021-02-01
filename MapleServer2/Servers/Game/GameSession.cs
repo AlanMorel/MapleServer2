@@ -28,27 +28,27 @@ namespace MapleServer2.Servers.Game
 
         public FieldManager FieldManager { get; private set; }
 
-        private readonly ManagerFactory<FieldManager> fieldManagerFactory;
+        private readonly ManagerFactory<FieldManager> FieldManagerFactory;
 
         // TODO: Replace this with a scheduler.
-        private readonly CancellationTokenSource cancellationToken;
+        private readonly CancellationTokenSource CancellationToken;
 
         public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
-            this.fieldManagerFactory = fieldManagerFactory;
-            this.cancellationToken = new CancellationTokenSource();
-            this.StateStorage = new Dictionary<string, object>();
+            FieldManagerFactory = fieldManagerFactory;
+            CancellationToken = new CancellationTokenSource();
+            StateStorage = new Dictionary<string, object>();
 
             // Continuously sends field updates to client
             new Thread(() =>
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!CancellationToken.IsCancellationRequested)
                 {
                     if (FieldManager != null)
                     {
                         foreach (Packet update in FieldManager.GetUpdates())
                         {
-                            this.Send(update);
+                            Send(update);
                         }
                     }
                     Thread.Sleep(1000);
@@ -65,7 +65,7 @@ namespace MapleServer2.Servers.Game
         public void InitPlayer(Player player)
         {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
-            FieldManager = fieldManagerFactory.GetManager(player.MapId);
+            FieldManager = FieldManagerFactory.GetManager(player.MapId);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
         }
@@ -76,10 +76,10 @@ namespace MapleServer2.Servers.Game
             if (newMapId != FieldManager.MapId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                fieldManagerFactory.Release(FieldManager.MapId);
+                FieldManagerFactory.Release(FieldManager.MapId);
 
                 // Initialize for new Map
-                FieldManager = fieldManagerFactory.GetManager(newMapId);
+                FieldManager = FieldManagerFactory.GetManager(newMapId);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);
             }
 
@@ -96,7 +96,7 @@ namespace MapleServer2.Servers.Game
         {
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-            cancellationToken.Cancel();
+            CancellationToken.Cancel();
             // Should we Join the thread to wait for it to complete?
         }
     }
