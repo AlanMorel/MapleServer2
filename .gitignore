@@ -2,6 +2,7 @@ bin/
 obj/
 .vs/
 .vscode/
+.omnisharp/
 *.cache
 GameDataParser/Resources
 GameDataParser/Properties

@@ -26,7 +26,7 @@ namespace GameDataParser.Parsers
                 int id = int.Parse(achieve.Attributes["id"].Value);
                 AchieveMetadata newAchieve = new AchieveMetadata();
                 newAchieve.Id = id;
-                
+
                 XmlNodeList grades = achieve.SelectNodes("grade");
 
                 foreach (XmlNode grade in grades)

@@ -35,7 +35,7 @@ namespace MapleServer2.Data.Static
         {
             if ((grade < 1) || (grade > GetNumGrades(id)))
                 return -1;
-            return map.GetValueOrDefault(id).Grades[grade-1].Condition;
+            return map.GetValueOrDefault(id).Grades[grade - 1].Condition;
         }
 
         public static int GetNumGrades(int id)

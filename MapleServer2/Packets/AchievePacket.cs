@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
         // packet from WriteTableStart() must be sent immediately before sending these packets
         public static Packet WriteTableContent(List<Achieve> achieves)
         {
-            int achieveCount = achieves.Count();
+            int achieveCount = achieves.Count;
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
             pWriter.WriteEnum(AchievePacketMode.TableContent);
             pWriter.WriteInt(achieveCount);
@@ -43,7 +43,7 @@ namespace MapleServer2.Packets
                 // packet format for 0x1 mode
                 pWriter.WriteInt(achieve.Id);
                 pWriter.WriteInt(1);            // unknown 'SS' ?
-                pWriter.Write(_WriteIndividualAchieve(achieve).Buffer);
+                pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
             }
 
             return pWriter;
@@ -52,16 +52,16 @@ namespace MapleServer2.Packets
         public static Packet WriteUpdate(Achieve achieve)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-    
+
             // packet format for 0x2 mode
             pWriter.WriteEnum(AchievePacketMode.Update);
             pWriter.WriteInt(achieve.Id);
-            pWriter.Write(_WriteIndividualAchieve(achieve).Buffer);
+            pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
 
             return pWriter;
         }
 
-        private static Packet _WriteIndividualAchieve(Achieve achieve)
+        private static Packet WriteIndividualAchieve(Achieve achieve)
         {
             GradeStatus mode = achieve.Condition == 0 ? GradeStatus.FinalGrade : GradeStatus.NotFinalGrade;
             int tCount = achieve.Timestamps.Count;
@@ -76,7 +76,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(tCount);                               // number of timestamps
             for (int t = 0; t < tCount; t++)
             {
-                pWriter.WriteInt(t+1);                              // grade corresponding to timestamp
+                pWriter.WriteInt(t + 1);                              // grade corresponding to timestamp
                 pWriter.WriteLong(achieve.Timestamps.ElementAt(t)); // timestamp in unix time (seconds)
             }
 
