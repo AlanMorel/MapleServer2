@@ -5,11 +5,7 @@ namespace MapleServer2.Types
 {
     public class Mob : NpcMetadata
     {
-        //public readonly int Id;
         public short ZRotation; // In degrees * 10
-        //public CoordS Speed;
-        //public byte Animation;
-        //public PlayerStats Stats;
 
         public Mob(int id)
         {
