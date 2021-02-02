@@ -23,7 +23,7 @@ namespace MapleServer2.Data.Static
             foreach (MapEntityMetadata entity in entities)
             {
                 List<NpcMetadata> npcList = new List<NpcMetadata>();
-                foreach (NpcMetadata npc in entity.Npcs)
+                foreach (MapNpc npc in entity.Npcs)
                 {
                     NpcMetadata newNpc = NpcMetadataStorage.GetNpc(npc.Id);
                     newNpc.Rotation = npc.Rotation;
