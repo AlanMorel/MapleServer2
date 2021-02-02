@@ -226,22 +226,26 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddMob(IFieldObject<Mob> mob)
+        public static Packet AddBoss(IFieldObject<Mob> mob)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
-                .WriteInt(mob.ObjectId)
-                .WriteInt(mob.Value.Id)
-                .Write(mob.Coord)
-                .Write(CoordF.From(0, 0, 0)); // Unknown
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
+
+            pWriter.WriteInt(mob.ObjectId);
+            pWriter.WriteInt(mob.Value.Id);
+            pWriter.Write(mob.Coord);
+            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
+            pWriter.WriteMapleString(mob.Value.Model); // StrA - kfm model string
             // If NPC is not valid, the packet seems to stop here
 
             // NPC Stat
             StatPacket.DefaultStatsMob(pWriter, mob);
             // NPC Stat
-
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteInt();
             pWriter.WriteByte();
-            short count = 0;
-            pWriter.WriteShort(count); // branch
+            int count = 0;
+            pWriter.WriteInt(count); // branch
             for (int i = 0; i < count; i++)
             {
                 pWriter.WriteInt()
@@ -255,11 +259,52 @@ namespace MapleServer2.Packets
                     .WriteByte()
                     .WriteLong();
             }
-            pWriter.WriteLong() // uid
-                .WriteByte()
-                .WriteInt(1)
-                .WriteInt()
-                .WriteByte();
+            // Unknown
+            pWriter.WriteLong();
+            pWriter.WriteByte();
+            pWriter.WriteInt(1);
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+
+            return pWriter;
+        }
+
+        public static Packet AddMob(IFieldObject<Mob> mob)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
+
+            pWriter.WriteInt(mob.ObjectId);
+            pWriter.WriteInt(mob.Value.Id);
+            pWriter.Write(mob.Coord);
+            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
+            // If NPC is not valid, the packet seems to stop here
+
+            // NPC Stat
+            StatPacket.DefaultStatsMob(pWriter, mob);
+            // NPC Stat
+
+            pWriter.WriteByte();
+            int count = 0;
+            pWriter.WriteInt(count); // branch
+            for (int i = 0; i < count; i++)
+            {
+                pWriter.WriteInt()
+                    .WriteInt()
+                    .WriteInt()
+                    .WriteInt()
+                    .WriteInt()
+                    .WriteInt()
+                    .WriteShort()
+                    .WriteInt()
+                    .WriteByte()
+                    .WriteLong();
+            }
+            // Unknown
+            pWriter.WriteLong();
+            pWriter.WriteByte();
+            pWriter.WriteInt(1);
+            pWriter.WriteInt();
+            pWriter.WriteByte();
 
             return pWriter;
         }

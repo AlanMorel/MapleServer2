@@ -151,7 +151,7 @@ namespace GameDataParser.Parsers
 
                                 CoordS position = ParseCoord(positionValue);
                                 CoordS rotation = ParseCoord(rotationValue);
-                                metadata.Npcs.Add(new MapNpc(npcId, position, rotation));
+                                metadata.Npcs.Add(new NpcMetadata(npcId, position, rotation));
                             }
                             catch (Exception ex)
                             {

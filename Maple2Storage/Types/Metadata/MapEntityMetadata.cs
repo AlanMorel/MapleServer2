@@ -11,7 +11,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public readonly int MapId;
         [XmlElement(Order = 2)]
-        public readonly List<MapNpc> Npcs;
+        public readonly List<NpcMetadata> Npcs;
         [XmlElement(Order = 3)]
         public readonly List<MapPortal> Portals;
         [XmlElement(Order = 4)]
@@ -27,7 +27,7 @@ namespace Maple2Storage.Types.Metadata
         public MapEntityMetadata()
         {
             PlayerSpawns = new List<MapPlayerSpawn>();
-            Npcs = new List<MapNpc>();
+            Npcs = new List<NpcMetadata>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
         }
@@ -36,7 +36,7 @@ namespace Maple2Storage.Types.Metadata
         {
             MapId = mapId;
             PlayerSpawns = new List<MapPlayerSpawn>();
-            Npcs = new List<MapNpc>();
+            Npcs = new List<NpcMetadata>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
         }
@@ -123,61 +123,6 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public static bool operator !=(MapObject left, MapObject right)
-        {
-            return !Equals(left, right);
-        }
-    }
-
-    [XmlType]
-    public class MapNpc
-    {
-        [XmlElement(Order = 1)]
-        public readonly int Id;
-        [XmlElement(Order = 2)]
-        public readonly CoordS Coord;
-        [XmlElement(Order = 3)]
-        public readonly CoordS Rotation;
-
-        // Required for deserialization
-        public MapNpc() { }
-
-        public MapNpc(int id, CoordS coord, CoordS rotation)
-        {
-            Id = id;
-            Coord = coord;
-            Rotation = rotation;
-        }
-
-        public override string ToString() =>
-            $"MapNpc(Id:{Id},Rotation:{Rotation},Coord:{Coord})";
-
-        protected bool Equals(MapNpc other)
-        {
-            return Id == other.Id && Coord.Equals(other.Coord) && Rotation.Equals(other.Rotation);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            if (obj.GetType() != GetType())
-                return false;
-            return Equals((MapNpc) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Coord, Rotation);
-        }
-
-        public static bool operator ==(MapNpc left, MapNpc right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MapNpc left, MapNpc right)
         {
             return !Equals(left, right);
         }
