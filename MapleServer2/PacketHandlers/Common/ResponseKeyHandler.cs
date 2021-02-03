@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Common
             {
                 session.Send(QuestPacket.SendQuests(item));
             }
-            
+
             // send achievement table
             session.Send(AchievePacket.WriteTableStart());
             List<Achieve> achieveList = new List<Achieve>(session.Player.Achieves.Values);
