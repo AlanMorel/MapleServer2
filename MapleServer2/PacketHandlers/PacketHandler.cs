@@ -17,5 +17,10 @@ namespace MapleServer2.PacketHandlers
         {
             Console.WriteLine("New Unknown " + mode.GetType().Name + ": 0x" + mode.ToString("X"));
         }
+        
+        public static void LogPacket(PacketReader packet)
+        {
+            Console.WriteLine("Unknown packet: " + packet.ToString());
+        }
     }
 }

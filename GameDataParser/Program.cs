@@ -39,7 +39,9 @@ namespace GameDataParser
                 new ScriptParser(resources),
                 new GuildParser(resources),
                 new PrestigeParser(resources),
-                new AchieveParser(resources)
+                new AchieveParser(resources),
+                new RecipeParser(resources),
+                new MasteryParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));
