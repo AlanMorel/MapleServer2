@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleAchieve(GameSession session)
         {
-            session.Send(UserEnvPacket.UpdateAchieve(session));
+            session.Send(UserEnvPacket.UpdateAchieve());
         }
     }
 }
