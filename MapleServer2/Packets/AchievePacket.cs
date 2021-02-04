@@ -38,7 +38,6 @@ namespace MapleServer2.Packets
 
             foreach (Achieve achieve in achieves)
             {
-                int tCount = achieve.Timestamps.Count;
                 pWriter.WriteInt(achieve.Id);
                 pWriter.WriteInt(1);            // unknown 'SS' ?
                 pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
