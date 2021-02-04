@@ -45,7 +45,8 @@ namespace MapleServer2.Types
         public bool IsVIP = false;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy = new int[3];
+        public int[] Trophy = new int[3] { 0, 1, 2 };
+        public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
         public List<short> Stickers = new List<short> { 0 };
         public List<int> Emotes = new List<int> { 0 };

@@ -84,6 +84,17 @@ namespace MapleServer2.PacketHandlers.Common
             {
                 session.Send(QuestPacket.SendQuests(item));
             }
+
+            // send achievement table
+            session.Send(AchievePacket.WriteTableStart());
+            List<Achieve> achieveList = new List<Achieve>(session.Player.Achieves.Values);
+            IEnumerable<List<Achieve>> achievePackets = SplitList(achieveList, 60); // Split the achieve list to 60 achieves per packet
+
+            foreach (List<Achieve> achieve in achievePackets)
+            {
+                session.Send(AchievePacket.WriteTableContent(achieve));
+            }
+
             session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
             session.Send(MarketInventoryPacket.StartList());
             session.Send(MarketInventoryPacket.EndList());
