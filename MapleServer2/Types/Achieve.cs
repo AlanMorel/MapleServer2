@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MapleServer2.Data.Static;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types
 {
@@ -11,7 +12,7 @@ namespace MapleServer2.Types
         public int CurrentGrade { get; private set; }   // grade trying to achieve (value from 1 to MaxGrade)
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }    // counter to reach next grade
-        public long Condition { get; private set; }    // counter value needed to reach next grade (-1 if fully completed)
+        public long Condition { get; private set; }    // counter value needed to reach next grade (0 if fully completed)
         public List<long> Timestamps { get; private set; }  // stored in ascending order of grades as seconds since epoch time
 
         public Achieve(int achieveId, int grade = 0, int counter = 0, List<long> timestamps = null)
@@ -22,6 +23,11 @@ namespace MapleServer2.Types
             Timestamps = timestamps ?? new List<long>();
             MaxGrade = AchieveMetadataStorage.GetNumGrades(Id);
             Condition = AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
+        }
+
+        public AchievePacket.GradeStatus GetGradeStatus()
+        {
+            return Condition == 0 ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
         }
 
         public void AddCounter(int amount)

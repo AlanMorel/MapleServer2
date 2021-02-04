@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
             Update = 0x2
         }
 
-        private enum GradeStatus : byte
+        public enum GradeStatus : byte
         {
             NotFinalGrade = 0x0,
             FinalGrade = 0x3
@@ -58,11 +58,10 @@ namespace MapleServer2.Packets
 
         private static Packet WriteIndividualAchieve(Achieve achieve)
         {
-            GradeStatus mode = achieve.Condition == 0 ? GradeStatus.FinalGrade : GradeStatus.NotFinalGrade;
             int tCount = achieve.Timestamps.Count;
             PacketWriter pWriter = new PacketWriter();
 
-            pWriter.WriteEnum(mode);                                // grade status (refer to GradeStatus enum)
+            pWriter.WriteEnum(achieve.GetGradeStatus());            // grade status (refer to GradeStatus enum)
             pWriter.WriteInt(1);                                    // starting grade
             pWriter.WriteInt(achieve.CurrentGrade);                 // current grade to achieve
             pWriter.WriteInt(achieve.MaxGrade);                     // maximum grade
