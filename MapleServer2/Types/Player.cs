@@ -119,13 +119,6 @@ namespace MapleServer2.Types
                 new SkillTab(job)
             };
 
-            // testing code
-            Dictionary<int, Achieve> newAchieveDict = new Dictionary<int, Achieve>();
-            List<long> timestamp = new List<long>();
-            timestamp.Add(12840571);
-            newAchieveDict[21100051] = new Achieve(21100051, 2, 10, timestamp);
-            // end of testing code
-
             Player player = new Player
             {
                 SkillTabs = skillTabs,
@@ -172,8 +165,7 @@ namespace MapleServer2.Types
                     10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
                     10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
                     10000603, 10000638, 10000644
-                },
-                Achieves = newAchieveDict,
+                }
             };
             player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
