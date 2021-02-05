@@ -8,7 +8,7 @@ namespace GameDataParser.Parsers
 {
     class RecipeParser : Exporter<List<RecipeMetadata>>
     {
-        public RecipeParser(MetadataResources resources) : base(resources, "receipe") { }
+        public RecipeParser(MetadataResources resources) : base(resources, "recipe") { }
 
         protected override List<RecipeMetadata> Parse()
         {
@@ -27,7 +27,7 @@ namespace GameDataParser.Parsers
                 {
                     RecipeMetadata newRecipe = new RecipeMetadata();
                     newRecipe.Id = string.IsNullOrEmpty(recipe.Attributes["id"]?.Value) ? 0 : int.Parse(recipe.Attributes["id"].Value);
-                    newRecipe.MasteryType = string.IsNullOrEmpty(recipe.Attributes["masteryType"]?.Value) ? 0x00 : byte.Parse(recipe.Attributes["masteryType"].Value);
+                    newRecipe.MasteryType = recipe.Attributes["masteryType"].Value;
                     newRecipe.ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1;
                     newRecipe.RequireMastery = recipe.Attributes["requireMastery"].Value;
                     newRecipe.RequireMeso = recipe.Attributes["requireMeso"].Value;

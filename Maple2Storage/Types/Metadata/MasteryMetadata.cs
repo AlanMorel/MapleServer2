@@ -8,8 +8,10 @@ namespace Maple2Storage.Types.Metadata
     [XmlType]
     public class MasteryMetadata
     {
-        [XmlElement(Order = 1)] public int Type;
-        [XmlElement(Order = 2)] public List<MasteryGradeMetadata> Grades;
+        [XmlElement(Order = 1)]
+        public int Type;
+        [XmlElement(Order = 2)]
+        public List<MasteryGradeMetadata> Grades;
 
         // Required for deserialization
         public MasteryMetadata()
@@ -62,12 +64,18 @@ namespace Maple2Storage.Types.Metadata
     [XmlType]
     public class MasteryGradeMetadata
     {
-        [XmlElement(Order = 1)] public int Grade;
-        [XmlElement(Order = 2)] public long Value;
-        [XmlElement(Order = 3)] public int RewardJobItemID;
-        [XmlElement(Order = 4)] public int RewardJobItemRank;
-        [XmlElement(Order = 5)] public int RewardJobItemCount;
-        [XmlElement(Order = 6)] public string Feature;
+        [XmlElement(Order = 1)]
+        public int Grade;
+        [XmlElement(Order = 2)]
+        public long Value;
+        [XmlElement(Order = 3)]
+        public int RewardJobItemID;
+        [XmlElement(Order = 4)]
+        public int RewardJobItemRank;
+        [XmlElement(Order = 5)]
+        public int RewardJobItemCount;
+        [XmlElement(Order = 6)]
+        public string Feature;
 
         // Required for deserialization
         public MasteryGradeMetadata() { }

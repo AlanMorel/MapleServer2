@@ -5,6 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -28,65 +29,68 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             MasteryMode mode = (MasteryMode) packet.ReadByte();
-
             switch (mode)
             {
                 case MasteryMode.RewardBox:
-                {
-                    int rewardBoxDetails = packet.ReadInt();
-                    int type = rewardBoxDetails / 1000;
-                    int grade = rewardBoxDetails % 100;
-
-                    int? rewardBoxItemId = MasteryMetadataStorage.GetMasteryTierRewardItemId(type, grade);
-                    if (rewardBoxItemId == null)
-                    {
-                        Logger.LogError($"Unknown reward box item ID of mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
-                        return;
-                    }
-                    
-                    Logger.LogError($"reward box item ID: {rewardBoxItemId}, mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
-
-                    Item rewardBox = new Item((int) rewardBoxItemId)
-                    {
-                        Amount = 1
-                    };
-                    
-                    // give player the reward box item
-                    InventoryController.Add(session, rewardBox, true);
-                    
-                    // mark reward box as claimed
-                    session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, 1, (int) rewardBoxItemId));
-                    
+                    HandleRewardBox(session, packet);
                     break;
-                }
                 case MasteryMode.CraftItem:
-                {
-                    int recipeId = packet.ReadInt();
-
-                    // attempt to oad the recipe metadata
-                    RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
-                    if (recipe == null)
-                    {
-                        Logger.LogError($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
-                        return;
-                    }
-
-                    // does the player have all the required ingredients for this recipe?
-                    if (PlayerHasAllIngredients(session, recipe))
-                    {
-                        RemoveRequiredItemsFromInventory(session, recipe);
-                        AddRewardItemsToInventory(session, recipe);
-                    }
-                    else
-                    {
-                        // send notice to player saying they haven't got enough materials
-                        session.SendNotice("You've run out of materials.");
-                    }
-
+                    HandleCraftItem(session, packet);
                     break;
-                }
                 default:
-                    return;
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
+                    break;
+            }
+        }
+
+        public void HandleRewardBox(GameSession session, PacketReader packet)
+        {
+            int rewardBoxDetails = packet.ReadInt();
+            int type = rewardBoxDetails / 1000;
+            int grade = rewardBoxDetails % 100;
+
+            int? rewardBoxItemId = MasteryMetadataStorage.GetMasteryTierRewardItemId(type, grade);
+            if (rewardBoxItemId == null)
+            {
+                Logger.LogError(
+                    $"Unknown reward box item ID of mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
+                return;
+            }
+
+            Logger.LogError(
+                $"reward box item ID: {rewardBoxItemId}, mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
+
+            Item rewardBox = new Item((int) rewardBoxItemId) {Amount = 1};
+
+            // give player the reward box item
+            InventoryController.Add(session, rewardBox, true);
+
+            // mark reward box as claimed
+            session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, 1, (int) rewardBoxItemId));
+        }
+
+        public void HandleCraftItem(GameSession session, PacketReader packet)
+        {
+            int recipeId = packet.ReadInt();
+
+            // attempt to oad the recipe metadata
+            RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
+            if (recipe == null)
+            {
+                Logger.LogError($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
+                return;
+            }
+
+            // does the player have all the required ingredients for this recipe?
+            if (PlayerHasAllIngredients(session, recipe))
+            {
+                RemoveRequiredItemsFromInventory(session, recipe);
+                AddRewardItemsToInventory(session, recipe);
+            }
+            else
+            {
+                // send notice to player saying they haven't got enough materials
+                session.SendNotice("You've run out of materials.");
             }
         }
 
@@ -131,7 +135,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // add mastery exp
-            session.Player.Levels.GainMasteryExp(recipe.MasteryType, recipe.RewardMastery);
+            session.Player.Levels.GainMasteryExp(Enum.Parse<MasteryType>(recipe.MasteryType, true), recipe.RewardMastery);
         }
 
         private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)
@@ -150,19 +154,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             return false;
-        }
-
-        private static int[] GetDigits(int source)
-        {
-            Stack<int> digits = new();
-            while (source > 0)
-            {
-                int digit = source % 10;
-                source /= 10;
-                digits.Push(digit);
-            }
-
-            return digits.ToArray();
         }
     }
 }

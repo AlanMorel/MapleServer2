@@ -6,26 +6,32 @@ namespace MapleServer2.Packets
 {
     public static class MasteryPacket
     {
-        public static Packet SetMasteryExp(byte masteryType, long totalMasteryExp)
+        private enum MasteryMode : byte
+        {
+            SetMasteryExp = 0x00,
+            ClaimRewardBox = 0x01
+        }
+
+        public static Packet SetExp(MasteryType type, long totalExp)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteByte();
-            pWriter.WriteEnum((MasteryType) masteryType);
-            pWriter.WriteLong(totalMasteryExp);
+            pWriter.WriteEnum(MasteryMode.SetMasteryExp);
+            pWriter.WriteEnum(type);
+            pWriter.WriteLong(totalExp);
 
             return pWriter;
         }
-        
+
         public static Packet ClaimReward(int rewardBoxDetails, int quantity, int itemId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteByte(0x01);
+            pWriter.WriteEnum(MasteryMode.ClaimRewardBox);
             pWriter.WriteInt(rewardBoxDetails);
             pWriter.WriteInt(quantity);
             pWriter.WriteInt(itemId);
-            pWriter.WriteShort(0x01);
+            pWriter.WriteShort(1);
 
             return pWriter;
         }

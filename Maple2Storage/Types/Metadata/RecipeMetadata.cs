@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Xml.Serialization;
+
 namespace Maple2Storage.Types.Metadata
 {
     [XmlType]
@@ -9,7 +9,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
-        public byte MasteryType;
+        public string MasteryType;
         [XmlElement(Order = 3)]
         public bool ExceptRewardExp;
         [XmlElement(Order = 4)]
@@ -56,7 +56,6 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public RecipeMetadata()
         {
-
         }
 
         public override string ToString() =>
@@ -83,63 +82,6 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Id, MasteryType, RequireItem1, RewardItem1);
         }
 
-        public List<RecipeItem> GetIngredients()
-        {
-            List<RecipeItem> result = new List<RecipeItem>();
-            List<string> requiredItems = new List<string>
-            {
-                RequireItem1,
-                RequireItem2,
-                RequireItem3,
-                RequireItem4,
-                RequireItem5
-            };
-
-            foreach (string requiredItem in requiredItems)
-            {
-                if (!string.IsNullOrEmpty(requiredItem))
-                {
-                    int[] split = SplitStringIntoInts(requiredItem);
-                    result.Add(new RecipeItem
-                    {
-                        Id = split[0],
-                        Amount = split[2]
-                    });
-                }
-            }
-
-            return result;
-        }
-
-        public List<RecipeItem> GetResult()
-        {
-            List<RecipeItem> result = new List<RecipeItem>();
-            List<string> rewardItems = new List<string>
-            {
-                RewardItem1,
-                RewardItem2,
-                RewardItem3,
-                RewardItem4,
-                RewardItem5
-            };
-
-            foreach (string rewardItem in rewardItems)
-            {
-                if (!string.IsNullOrEmpty(rewardItem))
-                {
-                    int[] split = SplitStringIntoInts(rewardItem);
-                    result.Add(new RecipeItem
-                    {
-                        Id = split[0],
-                        Rarity = split[1],
-                        Amount = split[2]
-                    });
-                }
-            }
-
-            return result;
-        }
-
         public static bool operator ==(RecipeMetadata left, RecipeMetadata right)
         {
             return Equals(left, right);
@@ -148,33 +90,6 @@ namespace Maple2Storage.Types.Metadata
         public static bool operator !=(RecipeMetadata left, RecipeMetadata right)
         {
             return !Equals(left, right);
-        }
-
-        static int[] SplitStringIntoInts(string list)
-        {
-            string[] split = list.Split(new char[1] { ',' });
-            List<int> numbers = new List<int>();
-
-            foreach (string n in split)
-            {
-                if (int.TryParse(n, out int parsed))
-                    numbers.Add(parsed);
-            }
-
-            return numbers.ToArray();
-        }
-    }
-
-    public class RecipeItem
-    {
-        public long Uid;
-        public int Id;
-        public int Rarity;
-        public int Amount;
-
-        public RecipeItem()
-        {
-
         }
     }
 }

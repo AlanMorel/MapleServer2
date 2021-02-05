@@ -32,30 +32,32 @@ namespace GameDataParser.Parsers
 
                     foreach (XmlNode grade in grades)
                     {
-                        if (grade != null)
+                        if (grade == null)
                         {
-                            MasteryGradeMetadata newGrade = new MasteryGradeMetadata()
-                            {
-                                Grade = string.IsNullOrEmpty(grade.Attributes["grade"]?.Value)
-                                    ? 0
-                                    : int.Parse(grade.Attributes["grade"].Value),
-                                Value = string.IsNullOrEmpty(grade.Attributes["value"]?.Value)
-                                    ? 0
-                                    : long.Parse(grade.Attributes["value"].Value),
-                                RewardJobItemID = string.IsNullOrEmpty(grade.Attributes["rewardJobItemID"]?.Value)
-                                    ? 0
-                                    : int.Parse(grade.Attributes["rewardJobItemID"].Value),
-                                RewardJobItemRank = string.IsNullOrEmpty(grade.Attributes["rewardJobItemRank"]?.Value)
-                                    ? 0
-                                    : int.Parse(grade.Attributes["rewardJobItemRank"].Value),
-                                RewardJobItemCount = string.IsNullOrEmpty(grade.Attributes["rewardJobItemCount"]?.Value)
-                                    ? 0
-                                    : int.Parse(grade.Attributes["rewardJobItemCount"].Value),
-                                Feature = grade.Attributes["feature"]?.Value
-                            };
-
-                            newMastery.Grades.Add(newGrade);
+                            continue;
                         }
+
+                        MasteryGradeMetadata newGrade = new MasteryGradeMetadata()
+                        {
+                            Grade = string.IsNullOrEmpty(grade.Attributes["grade"]?.Value)
+                                ? 0
+                                : int.Parse(grade.Attributes["grade"].Value),
+                            Value = string.IsNullOrEmpty(grade.Attributes["value"]?.Value)
+                                ? 0
+                                : long.Parse(grade.Attributes["value"].Value),
+                            RewardJobItemID = string.IsNullOrEmpty(grade.Attributes["rewardJobItemID"]?.Value)
+                                ? 0
+                                : int.Parse(grade.Attributes["rewardJobItemID"].Value),
+                            RewardJobItemRank = string.IsNullOrEmpty(grade.Attributes["rewardJobItemRank"]?.Value)
+                                ? 0
+                                : int.Parse(grade.Attributes["rewardJobItemRank"].Value),
+                            RewardJobItemCount = string.IsNullOrEmpty(grade.Attributes["rewardJobItemCount"]?.Value)
+                                ? 0
+                                : int.Parse(grade.Attributes["rewardJobItemCount"].Value),
+                            Feature = grade.Attributes["feature"]?.Value
+                        };
+
+                        newMastery.Grades.Add(newGrade);
                     }
 
                     masteryList.Add(newMastery);

@@ -17,6 +17,9 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "sethandicraft":
+                    session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "setprestigelevel":
                     session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;

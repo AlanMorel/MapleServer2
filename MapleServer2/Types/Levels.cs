@@ -14,10 +14,10 @@ namespace MapleServer2.Types
         public long RestExp { get; private set; }
         public int PrestigeLevel { get; private set; }
         public long PrestigeExp { get; private set; }
-        
         public List<Mastery> Masteries { get; private set; }
 
-        public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp, List<Mastery> masteries)
+        public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
+            List<Mastery> masteries)
         {
             Player = player;
             Level = playerLevel;
@@ -27,7 +27,6 @@ namespace MapleServer2.Types
             PrestigeExp = prestigeExp;
             Masteries = masteries;
         }
-
 
         public void SetLevel(short level)
         {
@@ -78,7 +77,6 @@ namespace MapleServer2.Types
             if (RestExp > 0)
             {
                 RestExp -= amount;
-
             }
             else
             {
@@ -119,20 +117,20 @@ namespace MapleServer2.Types
             PrestigeExp = newPrestigeExp;
             Player.Session.Send(PrestigePacket.ExpUp(Player, amount));
         }
-        
-        public void GainMasteryExp(byte type, long amount)
-        {
-            Mastery mastery = Masteries.FirstOrDefault(x => x.Type == type);
 
-            if(mastery == null) // add mastery to list
+        public void GainMasteryExp(MasteryType type, long amount)
+        {
+            Mastery mastery = Masteries.FirstOrDefault(x => x.Type == (byte) type);
+
+            if (mastery == null) // add mastery to list
             {
-                Masteries.Add(new Mastery((MasteryType) type, amount));
-                Player.Session.Send(MasteryPacket.SetMasteryExp(type, amount));
+                Masteries.Add(new Mastery(type, amount));
+                Player.Session.Send(MasteryPacket.SetExp(type, amount));
             }
             else
             {
                 // user already has some exp in mastery, so simply update it
-                Player.Session.Send(MasteryPacket.SetMasteryExp(mastery.Type, mastery.CurrentExp += amount));
+                Player.Session.Send(MasteryPacket.SetExp(type, mastery.CurrentExp += amount));
             }
         }
     }
