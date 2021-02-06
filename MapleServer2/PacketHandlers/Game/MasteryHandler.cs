@@ -43,7 +43,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        public void HandleRewardBox(GameSession session, PacketReader packet)
+        private void HandleRewardBox(GameSession session, PacketReader packet)
         {
             int rewardBoxDetails = packet.ReadInt();
             int type = rewardBoxDetails / 1000;
@@ -69,7 +69,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, 1, (int) rewardBoxItemId));
         }
 
-        public void HandleCraftItem(GameSession session, PacketReader packet)
+        private void HandleCraftItem(GameSession session, PacketReader packet)
         {
             int recipeId = packet.ReadInt();
 
@@ -81,8 +81,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            // does the player have all the required ingredients for this recipe?
-            if (PlayerHasAllIngredients(session, recipe))
+            // does the player have all the required ingredients (and number of mesos) for this recipe?
+            if (PlayerHasAllIngredients(session, recipe)
+                && session.Player.Wallet.Meso.Amount >= recipe.GetMesosRequired())
             {
                 RemoveRequiredItemsFromInventory(session, recipe);
                 AddRewardItemsToInventory(session, recipe);
@@ -119,6 +120,9 @@ namespace MapleServer2.PacketHandlers.Game
                     InventoryController.Update(session, item.Uid, item.Amount - 1);
                 }
             }
+            
+            // remove required mesos
+            session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired());
         }
 
         private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
@@ -136,6 +140,12 @@ namespace MapleServer2.PacketHandlers.Game
 
             // add mastery exp
             session.Player.Levels.GainMasteryExp(Enum.Parse<MasteryType>(recipe.MasteryType, true), recipe.RewardMastery);
+
+            // add player exp
+            if (recipe.HasExpReward())
+            {
+                // TODO: add metadata for common exp tables to be able to look up exp amount for masteries etc.
+            }
         }
 
         private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)

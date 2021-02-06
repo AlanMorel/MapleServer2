@@ -4,6 +4,7 @@ using Maple2Storage.Helpers;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
+using Renci.SshNet;
 
 namespace MapleServer2.Data.Static
 {
@@ -91,8 +92,22 @@ namespace MapleServer2.Data.Static
 
             return result;
         }
+        
+        public static long GetMesosRequired(this RecipeMetadata recipe)
+        {
+            if (string.IsNullOrEmpty(recipe.RequireMeso))
+            {
+                return 0;
+            }
+
+            return long.Parse(recipe.RequireMeso);
+        }
+        
+        public static bool HasExpReward(this RecipeMetadata recipe)
+        {
+            return !recipe.ExceptRewardExp;
+        }
     }
-    
     public class RecipeItem
     {
         public int Id;
