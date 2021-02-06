@@ -30,14 +30,14 @@ namespace MapleServer2.Servers.Game
             MapId = mapId;
             BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
             // Load default npcs for map from config
-            foreach (NpcMetadata npc in MapEntityStorage.GetNpcs(mapId))
+            foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
             {
-                if (npc.Friendly == 2)
+                IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
                 {
-                    IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
-                    {
-                        ZRotation = (short) (npc.Rotation.Z * 10)
-                    });
+                    ZRotation = (short) (npc.Rotation.Z * 10)
+                });
+                if (fieldNpc.Value.Friendly == 0)
+                {
                     fieldNpc.Coord = npc.Coord.ToFloat();
                     AddNpc(fieldNpc);
                 }

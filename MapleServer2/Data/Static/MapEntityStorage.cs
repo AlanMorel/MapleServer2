@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 {
     public static class MapEntityStorage
     {
-        private static readonly Dictionary<int, List<NpcMetadata>> npcs = new Dictionary<int, List<NpcMetadata>>();
+        private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
         private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
@@ -22,15 +22,7 @@ namespace MapleServer2.Data.Static
             List<MapEntityMetadata> entities = Serializer.Deserialize<List<MapEntityMetadata>>(stream);
             foreach (MapEntityMetadata entity in entities)
             {
-                List<NpcMetadata> npcList = new List<NpcMetadata>();
-                foreach (MapNpc npc in entity.Npcs)
-                {
-                    NpcMetadata newNpc = NpcMetadataStorage.GetNpc(npc.Id);
-                    newNpc.Rotation = npc.Rotation;
-                    newNpc.Coord = npc.Coord;
-                    npcList.Add(newNpc);
-                }
-                npcs.Add(entity.MapId, npcList);
+                npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
                 objects.Add(entity.MapId, entity.Objects);
@@ -38,7 +30,7 @@ namespace MapleServer2.Data.Static
             }
         }
 
-        public static IEnumerable<NpcMetadata> GetNpcs(int mapId)
+        public static IEnumerable<MapNpc> GetNpcs(int mapId)
         {
             return npcs.GetValueOrDefault(mapId);
         }
