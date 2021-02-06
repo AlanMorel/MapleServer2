@@ -4,7 +4,6 @@ using Maple2Storage.Helpers;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
-using Renci.SshNet;
 
 namespace MapleServer2.Data.Static
 {

@@ -80,25 +80,40 @@ namespace MapleServer2.PacketHandlers.Game
                 Logger.LogError($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
                 return;
             }
-
-            // does the player have all the required ingredients (and number of mesos) for this recipe?
-            if (PlayerHasAllIngredients(session, recipe)
-                && session.Player.Wallet.Meso.Amount >= recipe.GetMesosRequired())
+            
+            // does the play have enough mesos for this recipe?
+            if (!PlayerHasEnoughMesos(session, recipe))
             {
-                RemoveRequiredItemsFromInventory(session, recipe);
-                AddRewardItemsToInventory(session, recipe);
+                // send notice to player saying they haven't got enough mesos
+                session.SendNotice("You don't have enough mesos.");
             }
-            else
+
+            // does the player have all the required ingredients for this recipe?
+            if (!PlayerHasAllIngredients(session, recipe))
             {
                 // send notice to player saying they haven't got enough materials
                 session.SendNotice("You've run out of materials.");
             }
+            
+            // only add reward items once all required items & mesos have been removed from player
+            if (RemoveRequiredItemsFromInventory(session, recipe))
+            {
+                AddRewardItemsToInventory(session, recipe);
+            }
         }
 
-        private static void RemoveRequiredItemsFromInventory(GameSession session, RecipeMetadata recipe)
+        private static bool RemoveRequiredItemsFromInventory(GameSession session, RecipeMetadata recipe)
         {
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
             List<RecipeItem> ingredients = recipe.GetIngredients();
+            
+            // remove required mesos
+            if (!session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired()))
+            {
+                // send notice to player saying they haven't got enough mesos
+                session.SendNotice("You don't have enough mesos.");
+                return false;
+            }
 
             for (int i = 0; i < ingredients.Count; i++)
             {
@@ -120,9 +135,8 @@ namespace MapleServer2.PacketHandlers.Game
                     InventoryController.Update(session, item.Uid, item.Amount - 1);
                 }
             }
-            
-            // remove required mesos
-            session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired());
+
+            return true;
         }
 
         private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
@@ -146,6 +160,17 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 // TODO: add metadata for common exp tables to be able to look up exp amount for masteries etc.
             }
+        }
+        
+        private static bool PlayerHasEnoughMesos(GameSession session, RecipeMetadata recipe)
+        {
+            long mesoBalance = session.Player.Wallet.Meso.Amount;
+            if (mesoBalance == 0)
+            {
+                return false;
+            }
+
+            return mesoBalance >= recipe.GetMesosRequired();
         }
 
         private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)
