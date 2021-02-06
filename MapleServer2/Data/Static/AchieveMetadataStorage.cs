@@ -8,39 +8,41 @@ namespace MapleServer2.Data.Static
 {
     public static class AchieveMetadataStorage
     {
-        private static readonly Dictionary<int, AchieveMetadata> achieves = new Dictionary<int, AchieveMetadata>();
+        private static readonly Dictionary<int, AchieveMetadata> map = new Dictionary<int, AchieveMetadata>();
 
         static AchieveMetadataStorage()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-achieve-metadata");
-            List<AchieveMetadata> achieveList = Serializer.Deserialize<List<AchieveMetadata>>(stream);
-            foreach (AchieveMetadata achieve in achieveList)
+            List<AchieveMetadata> achieves = Serializer.Deserialize<List<AchieveMetadata>>(stream);
+            foreach (AchieveMetadata achieve in achieves)
             {
-                achieves[achieve.Id] = achieve;
+                map[achieve.Id] = achieve;
             }
         }
 
         public static List<int> GetAchieveIds()
         {
-            return new List<int>(achieves.Keys);
+            return new List<int>(map.Keys);
         }
 
-        public static AchieveMetadata GetAchieve(int id)
+        public static AchieveMetadata GetMetadata(int id)
         {
-            return achieves.GetValueOrDefault(id);
+            return map.GetValueOrDefault(id);
         }
 
         // return condition needed to reach that grade, -1 if grade invalid
         public static long GetCondition(int id, int grade)
         {
-            if (grade > GetNumGrades(id))
+            if ((grade < 1) || (grade > GetNumGrades(id)))
+            {
                 return -1;
-            return achieves.GetValueOrDefault(id).Grades[grade - 1].Condition;
+            }
+            return map.GetValueOrDefault(id).Grades[grade - 1].Condition;
         }
 
         public static int GetNumGrades(int id)
         {
-            return achieves.GetValueOrDefault(id).Grades.Count;
+            return map.GetValueOrDefault(id).Grades.Count;
         }
     }
 }

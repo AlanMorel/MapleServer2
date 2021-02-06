@@ -33,6 +33,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet UpdateAchieve()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
+            // seems unchanged before and after gaining trophy
+            // TODO: figure out what the bytes mean
+            byte[] toSend = {   0x03, 0x03, 0x00, 0x00, 0x00,
+                                0x17, 0xC9, 0xC9, 0x01, 0x01,
+                                0x19, 0xC9, 0xC9, 0x01, 0x01,
+                                0xDA, 0xC9, 0xA2, 0x03, 0x01 };
+            pWriter.Write(toSend);
+            return pWriter;
+        }
+
         public static Packet Send03()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);

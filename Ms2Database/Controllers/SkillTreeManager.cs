@@ -1,4 +1,9 @@
-﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
@@ -26,28 +31,40 @@ namespace Ms2Database.Controllers
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                SkillTree skill = context.SkillTrees.Where(c => c.CharacterId == characterId).FirstOrDefault(s => s.SkillId == skillId);
-
+                SkillTree skill = context.SkillTrees.Where(column => column.CharacterId == characterId)
+                                                    .FirstOrDefault(column => column.SkillId == skillId);
                 context.Remove(skill);
                 context.SaveChanges();
             }
         }
 
-        public static void EditSkill(/*SkillTree skill*/)
+        public void UpdateSkill(SkillTree skillObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
+                SkillTree skill = skillObject;
                 context.SaveChanges();
             }
         }
 
-        public static SkillTree FindSkill(long characterId, long skillId)
+        public SkillTree GetSkill(long characterId, long skillId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                SkillTree skill = context.SkillTrees.Where(c => c.CharacterId == characterId).FirstOrDefault(s => s.SkillId == skillId);
+                SkillTree skill = context.SkillTrees.Where(column => column.CharacterId == characterId)
+                                                    .FirstOrDefault(column => column.SkillId == skillId);
 
                 return skill;
+            }
+        }
+
+        public List<SkillTree> GetSkillTree(long characterId)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                List<SkillTree> skillTree = context.SkillTrees.Where(column => column.CharacterId == characterId)
+                                                              .ToList();
+                return skillTree;
             }
         }
     }

@@ -3,6 +3,7 @@ obj/
 .vs/
 .vscode/
 .idea/
+.omnisharp/
 *.cache
 GameDataParser/Resources
 GameDataParser/Properties
@@ -11,3 +12,4 @@ Maple2Storage/Resources
 Ms2Database/Migrations
 workspace.code-workspace
 build.bat
+Ms2Database/Migrations

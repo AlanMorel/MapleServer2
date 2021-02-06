@@ -21,14 +21,15 @@ namespace Ms2Database.Controllers
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Inventory inventory = context.Inventories.Find(characterId);
+                Inventory inventory = context.Inventories.FirstOrDefault(column => column.CharacterId == characterId);
+
                 Item item = new Item()
                 {
                     InventoryId = inventory.InventoryId,
                     Id = itemId,
                     Amount = amount,
                     Tab = tab,
-                    Slot = slot,
+                    InventorySlot = slot,
                     Rarity = rarity
                 };
                 context.Add(item);
@@ -46,8 +47,8 @@ namespace Ms2Database.Controllers
                 context.SaveChanges();
             }
         }
-
-        public static Item FindItem(long uid)
+      
+        public Item FindItem(long uid)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -57,10 +58,11 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public static void EditItem(/*Item item*/)
+        public void UpdateItem(Item itemObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
+                Item item = itemObject;
                 context.SaveChanges();
             }
         }
