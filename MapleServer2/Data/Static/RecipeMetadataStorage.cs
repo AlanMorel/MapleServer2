@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Maple2Storage.Helpers;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -30,7 +30,7 @@ namespace MapleServer2.Data.Static
         {
             return recipes.GetValueOrDefault(id);
         }
-        
+
         public static List<RecipeItem> GetIngredients(this RecipeMetadata recipe)
         {
             List<RecipeItem> result = new List<RecipeItem>();
@@ -50,12 +50,8 @@ namespace MapleServer2.Data.Static
                     continue;
                 }
 
-                int[] split = StringUtils.SplitStringIntoInts(requiredItem);
-                result.Add(new RecipeItem
-                {
-                    Id = split[0],
-                    Amount = split[2]
-                });
+                List<int> split = new List<int>(Array.ConvertAll(requiredItem.Split(','), int.Parse));
+                result.Add(new RecipeItem {Id = split[0], Amount = split[2]});
             }
 
             return result;
@@ -80,18 +76,13 @@ namespace MapleServer2.Data.Static
                     continue;
                 }
 
-                int[] split = StringUtils.SplitStringIntoInts(rewardItem);
-                result.Add(new RecipeItem
-                {
-                    Id = split[0],
-                    Rarity = split[1],
-                    Amount = split[2]
-                });
+                List<int> split = new List<int>(Array.ConvertAll(rewardItem.Split(','), int.Parse));
+                result.Add(new RecipeItem {Id = split[0], Rarity = split[1], Amount = split[2]});
             }
 
             return result;
         }
-        
+
         public static long GetMesosRequired(this RecipeMetadata recipe)
         {
             if (string.IsNullOrEmpty(recipe.RequireMeso))
@@ -101,12 +92,13 @@ namespace MapleServer2.Data.Static
 
             return long.Parse(recipe.RequireMeso);
         }
-        
+
         public static bool HasExpReward(this RecipeMetadata recipe)
         {
             return !recipe.ExceptRewardExp;
         }
     }
+
     public class RecipeItem
     {
         public int Id;

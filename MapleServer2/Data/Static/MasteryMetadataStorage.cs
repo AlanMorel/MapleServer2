@@ -30,16 +30,5 @@ namespace MapleServer2.Data.Static
         {
             return masteries.GetValueOrDefault(type);
         }
-        
-        public static int? GetMasteryTierRewardItemId(int type, int grade)
-        {
-            MasteryMetadata mastery = GetMastery(type);
-            if (mastery != null)
-            {
-                return mastery.Grades[grade - 1].RewardJobItemID;
-            }
-
-            return null;
-        }
     }
 }

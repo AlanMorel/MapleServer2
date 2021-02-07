@@ -11,15 +11,15 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Type;
         [XmlElement(Order = 2)]
-        public List<MasteryGradeMetadata> Grades;
+        public List<MasteryGrade> Grades;
 
         // Required for deserialization
         public MasteryMetadata()
         {
-            Grades = new List<MasteryGradeMetadata>();
+            Grades = new List<MasteryGrade>();
         }
 
-        public MasteryMetadata(int type, List<MasteryGradeMetadata> grades)
+        public MasteryMetadata(int type, List<MasteryGrade> grades)
         {
             Type = type;
             Grades = grades;
@@ -62,7 +62,7 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class MasteryGradeMetadata
+    public class MasteryGrade
     {
         [XmlElement(Order = 1)]
         public int Grade;
@@ -78,12 +78,12 @@ namespace Maple2Storage.Types.Metadata
         public string Feature;
 
         // Required for deserialization
-        public MasteryGradeMetadata() { }
+        public MasteryGrade() { }
 
         public override string ToString() =>
             $"MasteryGradeMetadata(Grade:{Grade},Value:{Value},RewardJobItemID:{RewardJobItemID},RewardJobItemRank:{RewardJobItemRank},RewardJobItemCount:{RewardJobItemCount},Feature:{Feature})";
 
-        protected bool Equals(MasteryGradeMetadata other)
+        protected bool Equals(MasteryGrade other)
         {
             return Grade == other.Grade
                    && Value == other.Value
@@ -101,7 +101,7 @@ namespace Maple2Storage.Types.Metadata
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-            return Equals((MasteryGradeMetadata) obj);
+            return Equals((MasteryGrade) obj);
         }
 
         public override int GetHashCode()
@@ -109,12 +109,12 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Grade, Value, RewardJobItemID, RewardJobItemRank, RewardJobItemCount, Feature);
         }
 
-        public static bool operator ==(MasteryGradeMetadata left, MasteryGradeMetadata right)
+        public static bool operator ==(MasteryGrade left, MasteryGrade right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(MasteryGradeMetadata left, MasteryGradeMetadata right)
+        public static bool operator !=(MasteryGrade left, MasteryGrade right)
         {
             return !Equals(left, right);
         }

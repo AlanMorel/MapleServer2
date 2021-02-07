@@ -35,7 +35,7 @@ namespace Ms2Database.Controllers
                 InventoryManager inventory = new InventoryManager();
 
                 character = context.Characters.First(column => column.Name.ToLower() == characterName.ToLower());
-                inventory.CreateInventory(character.CharacterId);
+                InventoryManager.CreateInventory(character.CharacterId);
             }
         }
 

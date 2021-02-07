@@ -37,7 +37,7 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
-                        MasteryGradeMetadata newGrade = new MasteryGradeMetadata()
+                        MasteryGrade newGrade = new MasteryGrade()
                         {
                             Grade = string.IsNullOrEmpty(grade.Attributes["grade"]?.Value)
                                 ? 0

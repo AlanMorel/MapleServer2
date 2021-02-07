@@ -49,18 +49,16 @@ namespace MapleServer2.PacketHandlers.Game
             int type = rewardBoxDetails / 1000;
             int grade = rewardBoxDetails % 100;
 
-            int? rewardBoxItemId = MasteryMetadataStorage.GetMasteryTierRewardItemId(type, grade);
-            if (rewardBoxItemId == null)
+            // get the reward box item ID
+            MasteryMetadata mastery = MasteryMetadataStorage.GetMastery(type);
+            if (mastery == null)
             {
-                Logger.LogError(
-                    $"Unknown reward box item ID of mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
+                Logger.LogError($"Unknown mastery type {type} from user: {session.Player.Name}");
                 return;
             }
 
-            Logger.LogError(
-                $"reward box item ID: {rewardBoxItemId}, mastery type: {type}, tier: {grade} from user: {session.Player.Name}");
-
-            Item rewardBox = new Item((int) rewardBoxItemId) {Amount = 1};
+            int rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemID;
+            Item rewardBox = new Item(rewardBoxItemId) {Amount = 1};
 
             // give player the reward box item
             InventoryController.Add(session, rewardBox, true);
@@ -80,12 +78,13 @@ namespace MapleServer2.PacketHandlers.Game
                 Logger.LogError($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
                 return;
             }
-            
+
             // does the play have enough mesos for this recipe?
-            if (!PlayerHasEnoughMesos(session, recipe))
+            if (!session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired()))
             {
                 // send notice to player saying they haven't got enough mesos
                 session.SendNotice("You don't have enough mesos.");
+                return;
             }
 
             // does the player have all the required ingredients for this recipe?
@@ -93,8 +92,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 // send notice to player saying they haven't got enough materials
                 session.SendNotice("You've run out of materials.");
+                return;
             }
-            
+
             // only add reward items once all required items & mesos have been removed from player
             if (RemoveRequiredItemsFromInventory(session, recipe))
             {
@@ -106,14 +106,6 @@ namespace MapleServer2.PacketHandlers.Game
         {
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
             List<RecipeItem> ingredients = recipe.GetIngredients();
-            
-            // remove required mesos
-            if (!session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired()))
-            {
-                // send notice to player saying they haven't got enough mesos
-                session.SendNotice("You don't have enough mesos.");
-                return false;
-            }
 
             for (int i = 0; i < ingredients.Count; i++)
             {
@@ -153,7 +145,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // add mastery exp
-            session.Player.Levels.GainMasteryExp(Enum.Parse<MasteryType>(recipe.MasteryType, true), recipe.RewardMastery);
+            session.Player.Levels.GainMasteryExp(Enum.Parse<MasteryType>(recipe.MasteryType, true),
+                recipe.RewardMastery);
 
             // add player exp
             if (recipe.HasExpReward())
@@ -161,7 +154,7 @@ namespace MapleServer2.PacketHandlers.Game
                 // TODO: add metadata for common exp tables to be able to look up exp amount for masteries etc.
             }
         }
-        
+
         private static bool PlayerHasEnoughMesos(GameSession session, RecipeMetadata recipe)
         {
             long mesoBalance = session.Player.Wallet.Meso.Amount;
