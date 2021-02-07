@@ -14,10 +14,10 @@ namespace MapleServer2.Types
         public long RestExp { get; private set; }
         public int PrestigeLevel { get; private set; }
         public long PrestigeExp { get; private set; }
-        public List<Mastery> Masteries { get; private set; }
+        public List<MasteryExp> MasteryExp { get; private set; }
 
         public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
-            List<Mastery> masteries)
+            List<MasteryExp> masteryExp)
         {
             Player = player;
             Level = playerLevel;
@@ -25,7 +25,7 @@ namespace MapleServer2.Types
             RestExp = restExp;
             PrestigeLevel = prestigeLevel;
             PrestigeExp = prestigeExp;
-            Masteries = masteries;
+            MasteryExp = masteryExp;
         }
 
         public void SetLevel(short level)
@@ -120,17 +120,17 @@ namespace MapleServer2.Types
 
         public void GainMasteryExp(MasteryType type, long amount)
         {
-            Mastery mastery = Masteries.FirstOrDefault(x => x.Type == (byte) type);
+            MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == (byte) type);
 
-            if (mastery == null) // add mastery to list
+            if (masteryExp == null) // add mastery to list
             {
-                Masteries.Add(new Mastery(type, amount));
+                MasteryExp.Add(new MasteryExp(type, amount));
                 Player.Session.Send(MasteryPacket.SetExp(type, amount));
             }
             else
             {
                 // user already has some exp in mastery, so simply update it
-                Player.Session.Send(MasteryPacket.SetExp(type, mastery.CurrentExp += amount));
+                Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
             }
         }
     }

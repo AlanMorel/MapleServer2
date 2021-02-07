@@ -106,7 +106,7 @@ namespace MapleServer2.Types
         {
             GameOptions = new GameOptions();
             Wallet = new Wallet(this);
-            Levels = new Levels(this, 70, 0, 0, 100, 0, new List<Mastery>());
+            Levels = new Levels(this, 70, 0, 0, 100, 0, new List<MasteryExp>());
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
