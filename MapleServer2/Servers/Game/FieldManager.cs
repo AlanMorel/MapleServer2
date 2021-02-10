@@ -34,10 +34,13 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
                 {
-                    Rotation = (short) (npc.Rotation.Z * 10)
+                    ZRotation = (short) (npc.Rotation.Z * 10)
                 });
-                fieldNpc.Coord = npc.Coord.ToFloat();
-                AddNpc(fieldNpc);
+                if (fieldNpc.Value.Friendly == 0)
+                {
+                    fieldNpc.Coord = npc.Coord.ToFloat();
+                    AddNpc(fieldNpc);
+                }
             }
 
             // Load default portals for map from config

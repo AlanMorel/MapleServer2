@@ -177,7 +177,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                npc.Rotation = rotation;
+                npc.ZRotation = rotation;
             }
 
             IFieldObject<Npc> fieldNpc = session.FieldManager.RequestFieldObject(npc);
@@ -196,7 +196,7 @@ namespace MapleServer2.Tools
         private static void ProcessMobCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            if (!int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId))
+            if (!int.TryParse(config.GetValueOrDefault("id", "21000001"), out int mobId))
             {
                 return;
             }
@@ -207,7 +207,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                mob.Rotation = rotation;
+                mob.ZRotation = rotation;
             }
 
             IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);
