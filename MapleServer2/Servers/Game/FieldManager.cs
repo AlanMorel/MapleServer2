@@ -18,17 +18,17 @@ namespace MapleServer2.Servers.Game
     // This seems to be done every ~2s rather than on every update.
     public class FieldManager
     {
-        private int counter = 10000000;
+        private int Counter = 10000000;
 
         public readonly int MapId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
-        private readonly HashSet<GameSession> sessions = new HashSet<GameSession>();
+        private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
 
         public FieldManager(int mapId)
         {
-            this.MapId = mapId;
-            this.BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
+            MapId = mapId;
+            BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
             // Load default npcs for map from config
             foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
             {
@@ -88,9 +88,9 @@ namespace MapleServer2.Servers.Game
             player.Coord = player.Value.Coord;
             player.Value.MapId = MapId;
             // TODO: Determine new coordinates for player as well
-            lock (sessions)
+            lock (Sessions)
             {
-                sessions.Add(sender);
+                Sessions.Add(sender);
             }
 
             // TODO: Send the initialization state of the field
@@ -129,9 +129,9 @@ namespace MapleServer2.Servers.Game
 
         public void RemovePlayer(GameSession sender, IFieldObject<Player> player)
         {
-            lock (sessions)
+            lock (Sessions)
             {
-                sessions.Remove(sender);
+                Sessions.Remove(sender);
             }
             State.RemovePlayer(player.ObjectId);
 
@@ -236,9 +236,9 @@ namespace MapleServer2.Servers.Game
         // TODO: This should be optimized to avoid regenerating packets for each session.
         private void Broadcast(Action<GameSession> action)
         {
-            lock (sessions)
+            lock (Sessions)
             {
-                foreach (GameSession session in sessions)
+                foreach (GameSession session in Sessions)
                 {
                     action?.Invoke(session);
                 }
@@ -248,7 +248,7 @@ namespace MapleServer2.Servers.Game
         // Initializes a FieldObject with an objectId for this field.
         private FieldObject<T> WrapObject<T>(T fieldObject)
         {
-            int objectId = Interlocked.Increment(ref counter);
+            int objectId = Interlocked.Increment(ref Counter);
             return new FieldObject<T>(objectId, fieldObject);
         }
 

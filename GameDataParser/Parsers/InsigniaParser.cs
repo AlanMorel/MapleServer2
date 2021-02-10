@@ -14,7 +14,7 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             List<InsigniaMetadata> insignias = new List<InsigniaMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
 
                 if (!entry.Name.StartsWith("table/nametagsymbol"))
@@ -22,20 +22,16 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlReader reader = resources.xmlMemFile.GetReader(entry.FileHeader);
-                while (reader.Read())
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     InsigniaMetadata metadata = new InsigniaMetadata();
-                    if (reader.NodeType != XmlNodeType.Element)
-                    {
-                        continue;
-                    }
 
-                    if (reader.Name == "symbol")
+                    if (node.Name == "symbol")
                     {
-                        metadata.InsigniaId = short.Parse(reader["id"]);
-                        metadata.ConditionType = reader["conditionType"];
-                        metadata.TitleId = reader["code"] == "" ? 0 : int.Parse(reader["code"]);
+                        metadata.InsigniaId = short.Parse(node.Attributes["id"].Value);
+                        metadata.ConditionType = node.Attributes["conditionType"].Value;
+                        metadata.TitleId = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? 0 : int.Parse(node.Attributes["code"].Value);
                     }
 
                     insignias.Add(metadata);

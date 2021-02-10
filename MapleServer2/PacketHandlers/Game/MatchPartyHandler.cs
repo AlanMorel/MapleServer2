@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        public void HandleCreateListing(GameSession session, PacketReader packet)
+        public static void HandleCreateListing(GameSession session, PacketReader packet)
         {
             string partyName = packet.ReadUnicodeString();
             bool approval = packet.ReadBool();
@@ -90,7 +90,7 @@ namespace MapleServer2.PacketHandlers.Game
             HandleRemoveListing(session);
         }
 
-        public void HandleRemoveListing(GameSession session)
+        public static void HandleRemoveListing(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
             if (party == null)
@@ -105,7 +105,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.CheckDisband();
         }
 
-        public void HandleRefresh(GameSession session, PacketReader packet)
+        public static void HandleRefresh(GameSession session, PacketReader packet)
         {
             //Get search terms:
             long unk = packet.ReadLong();

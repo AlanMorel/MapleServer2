@@ -12,7 +12,7 @@ namespace MapleServer2.Data.Static
 
         static ExpMetadataStorage()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-exptable-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-exp-metadata");
             List<ExpMetadata> items = Serializer.Deserialize<List<ExpMetadata>>(stream);
             foreach (ExpMetadata item in items)
             {

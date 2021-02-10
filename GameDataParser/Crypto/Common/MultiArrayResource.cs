@@ -6,37 +6,37 @@ namespace GameDataParser.Crypto.Common
 {
     public class MultiArrayResource : IMultiArray
     {
-        private readonly ResourceManager resourceManager;
-        private readonly string resourceName;
-        private readonly Lazy<byte[][]> lazyResource; // TODO: maybe array of lazy (Lazy<byte[]>[])
+        private readonly ResourceManager ResourceManager;
+        private readonly string ResourceName;
+        private readonly Lazy<byte[][]> LazyResource; // TODO: maybe array of lazy (Lazy<byte[]>[])
 
-        string IMultiArray.Name => this.resourceName;
+        string IMultiArray.Name => ResourceName;
         public int ArraySize { get; }
         public int Count { get; }
 
-        public byte[] this[uint index] => this.lazyResource.Value[index % this.Count];
+        public byte[] this[uint index] => LazyResource.Value[index % Count];
 
         public MultiArrayResource(ResourceManager resourceManager, string resourceName, int count, int arraySize)
         {
-            this.resourceManager = resourceManager;
-            this.resourceName = resourceName;
-            this.Count = count;
-            this.ArraySize = arraySize;
+            ResourceManager = resourceManager;
+            ResourceName = resourceName;
+            Count = count;
+            ArraySize = arraySize;
 
-            this.lazyResource = new Lazy<byte[][]>(this.CreateLazyImplementation);
+            LazyResource = new Lazy<byte[][]>(CreateLazyImplementation);
         }
 
         private byte[][] CreateLazyImplementation()
         {
-            byte[][] result = new byte[this.Count][];
+            byte[][] result = new byte[Count][];
 
-            byte[] data = (byte[]) this.resourceManager.GetObject(this.resourceName);
+            byte[] data = (byte[]) ResourceManager.GetObject(ResourceName);
             using (BinaryReader reader = new BinaryReader(new MemoryStream(data)))
             {
-                for (int i = 0; i < this.Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
-                    byte[] bytes = reader.ReadBytes(this.ArraySize);
-                    if (bytes.Length == this.ArraySize)
+                    byte[] bytes = reader.ReadBytes(ArraySize);
+                    if (bytes.Length == ArraySize)
                     {
                         result[i] = bytes;
                     }

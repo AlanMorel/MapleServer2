@@ -1,18 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
 {
     public class CharacterManager
     {
-        public void CreateCharacter(long accountId, string characterName, int jobId) // Creates Character and Inventory
+        public static void CreateCharacter(long accountId, string characterName, int jobId) // Creates Character and Inventory
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character Character = new Character() // Set default values here (Refer to character.cs for column names)
+                Character character = new Character() // Set default values here (Refer to character.cs for column names)
                 {
                     AccountId = accountId,
                     Name = characterName,
@@ -28,41 +29,52 @@ namespace Ms2Database.Controllers
                     InsigniaId = 29,
                     TitleId = 10000292
                 };
-                Context.Characters.Add(Character);
-                Context.SaveChanges();
+                context.Characters.Add(character);
+                context.SaveChanges();
 
-                InventoryManager Inventory = new InventoryManager();
+                InventoryManager inventory = new InventoryManager();
 
-                Character = Context.Characters.First(c => c.Name.ToLower() == characterName.ToLower());
-                Inventory.CreateInventory(Character.CharacterId);
+                character = context.Characters.First(column => column.Name.ToLower() == characterName.ToLower());
+                inventory.CreateInventory(character.CharacterId);
             }
         }
 
-        public void DeleteCharacter(long characterId, string characterName = "")
+        public void DeleteCharacter(long characterId)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character Character = Context.Characters.FirstOrDefault(a => (a.CharacterId == characterId) || (a.Name.ToLower() == characterName.ToLower()));
-                Context.Remove(Character);
-                Context.SaveChanges();
+                Character character = context.Characters.FirstOrDefault(column => column.CharacterId == characterId);
+                context.Remove(character);
+                context.SaveChanges();
             }
         }
 
-        public Character GetCharInfo(long characterId)
+        public Character GetCharacterInfo(long characterId)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character Character = Context.Characters.FirstOrDefault(a => a.CharacterId == characterId);
-                return Character;
+                Character character = context.Characters.FirstOrDefault(column => column.CharacterId == characterId);
+                return character;
             }
         }
 
-        public void EditCharInfo(Character character)
+        public void UpdateCharInfo(Character characterObject)
         {
-            using (Ms2DbContext Context = new Ms2DbContext())
+            using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character Character = character;
-                Context.SaveChanges();
+                Character character = characterObject;
+                context.SaveChanges();
+            }
+        }
+
+        public List<Character> GetCharacterList(long accountId)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                List<Character> characters = context.Characters.Include(table => table.Account)
+                                                               .Where(column => column.Account.AccountId == accountId)
+                                                               .ToList();
+                return characters;
             }
         }
     }

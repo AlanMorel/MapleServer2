@@ -5,6 +5,7 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -42,7 +43,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpen(GameSession session)
+        private static void HandleOpen(GameSession session)
         {
             session.Player.Mailbox.ClearExpired();
 
@@ -51,7 +52,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MailPacket.EndOpen());
         }
 
-        private void HandleSend(GameSession session, PacketReader packet)
+        private static void HandleSend(GameSession session, PacketReader packet)
         {
             string recipient = packet.ReadUnicodeString();
             string title = packet.ReadUnicodeString();
@@ -74,7 +75,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MailPacket.Send(mail));
         }
 
-        private void HandleRead(GameSession session, PacketReader packet)
+        private static void HandleRead(GameSession session, PacketReader packet)
         {
             int id = packet.ReadInt();
             packet.ReadInt();
@@ -84,7 +85,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MailPacket.Read(id, timestamp));
         }
 
-        private void HandleCollect(GameSession session, PacketReader packet)
+        private static void HandleCollect(GameSession session, PacketReader packet)
         {
             int id = packet.ReadInt();
             packet.ReadInt();
@@ -110,7 +111,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MailPacket.CollectResponse(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
 
-        private void HandleReadBatch(GameSession session, PacketReader packet)
+        private static void HandleReadBatch(GameSession session, PacketReader packet)
         {
             int count = packet.ReadInt();
 
@@ -120,7 +121,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleCollectBatch(GameSession session, PacketReader packet)
+        private static void HandleCollectBatch(GameSession session, PacketReader packet)
         {
             int count = packet.ReadInt();
 

@@ -9,12 +9,12 @@ namespace MapleServer2.Network
 {
     public class PacketRouter<T> where T : Session
     {
-        private readonly ImmutableDictionary<RecvOp, IPacketHandler<T>> handlers;
-        private readonly ILogger logger;
+        private readonly ImmutableDictionary<RecvOp, IPacketHandler<T>> Handlers;
+        private readonly ILogger Logger;
 
         public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers, ILogger<PacketRouter<T>> logger)
         {
-            this.logger = logger;
+            Logger = logger;
 
             ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder = ImmutableDictionary.CreateBuilder<RecvOp, IPacketHandler<T>>();
             foreach (IPacketHandler<T> packetHandler in packetHandlers)
@@ -22,19 +22,18 @@ namespace MapleServer2.Network
                 Register(builder, packetHandler);
             }
 
-            handlers = builder.ToImmutable();
+            Handlers = builder.ToImmutable();
         }
 
         public void OnPacket(object sender, Packet packet)
         {
             PacketReader reader = packet.Reader();
             ushort op = reader.ReadUShort();
-            IPacketHandler<T> handler = handlers.GetValueOrDefault((RecvOp) op);
+            IPacketHandler<T> handler = Handlers.GetValueOrDefault((RecvOp) op);
             handler?.Handle(sender as T, reader);
         }
 
-        private void Register(ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder,
-                IPacketHandler<T> packetHandler)
+        private static void Register(ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder, IPacketHandler<T> packetHandler)
         {
             builder.Add(packetHandler.OpCode, packetHandler);
         }

@@ -16,6 +16,7 @@ namespace MapleServer2.Types
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
         public bool IsTwoHand { get; private set; }
+        public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
         public List<Job> RecommendJobs { get; set; }
@@ -58,22 +59,23 @@ namespace MapleServer2.Types
 
         public Item(int id)
         {
-            this.Id = id;
-            this.Uid = GuidGenerator.Long();
-            this.InventoryTab = ItemMetadataStorage.GetTab(id);
-            this.ItemSlot = ItemMetadataStorage.GetSlot(id);
-            this.GemSlot = ItemMetadataStorage.GetGem(id);
-            this.Rarity = ItemMetadataStorage.GetRarity(id);
-            this.StackLimit = ItemMetadataStorage.GetStackLimit(id);
-            this.IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
-            this.IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
-            this.PlayCount = ItemMetadataStorage.GetPlayCount(id);
-            this.RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
-            this.Content = ItemMetadataStorage.GetContent(id);
-            this.Slot = -1;
-            this.Amount = 1;
-            this.Stats = new ItemStats();
-            this.CanRepackage = true; // If false, item becomes untradable
+            Id = id;
+            Uid = GuidGenerator.Long();
+            InventoryTab = ItemMetadataStorage.GetTab(id);
+            ItemSlot = ItemMetadataStorage.GetSlot(id);
+            GemSlot = ItemMetadataStorage.GetGem(id);
+            Rarity = ItemMetadataStorage.GetRarity(id);
+            StackLimit = ItemMetadataStorage.GetStackLimit(id);
+            IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
+            IsDress = ItemMetadataStorage.GetIsDress(id);
+            IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
+            PlayCount = ItemMetadataStorage.GetPlayCount(id);
+            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+            Content = ItemMetadataStorage.GetContent(id);
+            Slot = -1;
+            Amount = 1;
+            Stats = new ItemStats();
+            CanRepackage = true; // If false, item becomes untradable
         }
 
         // Make a copy of item
@@ -86,6 +88,7 @@ namespace MapleServer2.Types
             Rarity = other.Rarity;
             StackLimit = other.StackLimit;
             IsTwoHand = other.IsTwoHand;
+            IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
             PlayCount = other.PlayCount;
             Content = other.Content;
@@ -136,7 +139,7 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     15
                 ),
-                HairD = HairData.hairData(0.3f, 0.3f, new byte[24], new byte[24]),
+                HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
                 Stats = new ItemStats(),
             };
@@ -214,14 +217,14 @@ namespace MapleServer2.Types
 
         public bool TrySplit(int amount, out Item splitItem)
         {
-            if (this.Amount <= amount)
+            if (Amount <= amount)
             {
                 splitItem = null;
                 return false;
             }
 
             splitItem = new Item(this);
-            this.Amount -= amount;
+            Amount -= amount;
             splitItem.Amount = amount;
             splitItem.Slot = -1;
             splitItem.Uid = Environment.TickCount64;
@@ -242,7 +245,7 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                HairD = HairData.hairData(0.3f, 0.3f, new byte[24], new byte[24]),
+                HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
                 Stats = new ItemStats(),
             };

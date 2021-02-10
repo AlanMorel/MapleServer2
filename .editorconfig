@@ -38,12 +38,28 @@ indent_size = 2
 # Dotnet code style settings:
 [*.{cs,vb}]
 
+# IDE0005: Remove unnecessary import
+dotnet_diagnostic.IDE0005.severity = warning
+
+# IDE0017: Simplify object initialization
+dotnet_diagnostic.IDE0017.severity = none
+
+# IDE0051: Remove unused private member
+dotnet_diagnostic.IDE0051.severity = none
+
+# IDE0052: Remove unread private member
+dotnet_diagnostic.IDE0052.severity = none
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = warning
+
+# IDE0090: Simplify new expression
+dotnet_diagnostic.IDE0090.severity = warning
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
+
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:refactoring
 dotnet_style_qualification_for_property = false:refactoring
@@ -94,7 +110,7 @@ dotnet_naming_symbols.constants.required_modifiers = const
 dotnet_naming_style.constant_style.capitalization = pascal_case
 
 # Static fields are camelCase and start with s_
-dotnet_naming_rule.static_fields_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.static_fields_should_be_camel_case.severity = none
 dotnet_naming_rule.static_fields_should_be_camel_case.symbols = static_fields
 dotnet_naming_rule.static_fields_should_be_camel_case.style = static_field_style
 
@@ -103,14 +119,14 @@ dotnet_naming_symbols.static_fields.required_modifiers = static
 
 dotnet_naming_style.static_field_style.capitalization = camel_case
 
-# Instance fields are camelCase and start with _
+# Instance fields are PascalCase
 dotnet_naming_rule.instance_fields_should_be_camel_case.severity = suggestion
 dotnet_naming_rule.instance_fields_should_be_camel_case.symbols = instance_fields
 dotnet_naming_rule.instance_fields_should_be_camel_case.style = instance_field_style
 
 dotnet_naming_symbols.instance_fields.applicable_kinds = field
 
-dotnet_naming_style.instance_field_style.capitalization = camel_case
+dotnet_naming_style.instance_field_style.capitalization = pascal_case
 
 # Locals and parameters are camelCase
 dotnet_naming_rule.locals_should_be_camel_case.severity = suggestion
@@ -156,6 +172,10 @@ dotnet_diagnostic.IDE0044.severity = warning
 
 # RS0016: Only enable if API files are present
 dotnet_public_api_analyzer.require_api_files = true
+
+# IDE0003: Prefer fields to be prefaced with "this"
+dotnet_diagnostic.IDE0003.severity = warning
+dotnet_style_qualification_for_field = false
 
 # CSharp code style settings:
 [*.cs]
@@ -227,6 +247,18 @@ csharp_prefer_braces = true:silent
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = false
 
+# Prefer implicit object creation syntax
+csharp_style_implicit_object_creation_when_type_is_apparent = false
+
+# Prefer index operator
+csharp_style_prefer_index_operator = false
+
+# Prefer simple using statement
+csharp_prefer_simple_using_statement = false
+
+# Remove unused variable assignment
+csharp_style_unused_value_assignment_preference = unused_local_variable
+
 [src/CodeStyle/**.{cs,vb}]
 # warning RS0005: Do not use generic CodeAction.Create to create CodeAction
 dotnet_diagnostic.RS0005.severity = none
@@ -238,18 +270,21 @@ csharp_prefer_braces = when_multiline:warning
 # NOTE: We need the below severity entry for Add Braces due to https://github.com/dotnet/roslyn/issues/44201
 dotnet_diagnostic.IDE0011.severity = warning
 
+# IDE0017: Simplify object initialization
+dotnet_diagnostic.IDE0017.severity = none
+
 # IDE0040: Add accessibility modifiers
 dotnet_diagnostic.IDE0040.severity = warning
 
 # CONSIDER: Are IDE0051 and IDE0052 too noisy to be warnings for IDE editing scenarios? Should they be made build-only warnings?
 # IDE0051: Remove unused private member
-dotnet_diagnostic.IDE0051.severity = warning
+dotnet_diagnostic.IDE0051.severity = none
 
 # IDE0052: Remove unread private member
-dotnet_diagnostic.IDE0052.severity = warning
+dotnet_diagnostic.IDE0052.severity = none
 
 # IDE0059: Unnecessary assignment to a value
-dotnet_diagnostic.IDE0059.severity = warning
+dotnet_diagnostic.IDE0059.severity = none
 
 # IDE0060: Remove unused parameter
 dotnet_diagnostic.IDE0060.severity = warning

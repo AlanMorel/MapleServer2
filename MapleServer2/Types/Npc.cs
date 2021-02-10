@@ -8,7 +8,7 @@ namespace MapleServer2.Types
         public short Rotation; // In degrees * 10
         public CoordS Speed;
         public byte Animation;
-        public PlayerStats stats;
+        public PlayerStats Stats;
 
         public Npc(int id)
         {

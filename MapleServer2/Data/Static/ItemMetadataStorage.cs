@@ -64,6 +64,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).IsTwoHand;
         }
 
+        public static bool GetIsDress(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsDress;
+        }
+
         public static bool GetIsTemplate(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTemplate;
@@ -72,6 +77,11 @@ namespace MapleServer2.Data.Static
         public static int GetPlayCount(int itemId)
         {
             return map.GetValueOrDefault(itemId).PlayCount;
+        }
+
+        public static int GetSkillID(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).SkillID;
         }
 
         public static List<Job> GetRecommendJobs(int itemId)

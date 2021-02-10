@@ -69,5 +69,28 @@ namespace MapleServer2.Packets
 
             return pWriter;
         }
+
+        public static Packet WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
+        {
+            // The x.Value.Learned == 1 is to filter for now, the skills by level 1 until player can be save on db.
+            List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type == 1 && x.Value.Learned == 1).Select(x => x.Value).ToList();
+
+            pWriter.WriteShort((short) passiveSkillList.Count); // Passive skills learned count, has to be retrieve from player db.
+            // foreach passive skill learned, add it to the player
+            for (int i = 0; i < passiveSkillList.Count; i++)
+            {
+                pWriter.WriteInt(character.ObjectId);
+                pWriter.WriteInt(); // unk int
+                pWriter.WriteInt(character.ObjectId);
+                pWriter.WriteInt(); // unk int 2
+                pWriter.WriteInt(); // same as the unk int 2
+                pWriter.WriteInt(passiveSkillList[i].SkillId); // Passive skill id
+                pWriter.WriteShort((short) passiveSkillList[i].SkillLevels.Select(x => x.Level).FirstOrDefault()); // skill level
+                pWriter.WriteInt(1); // unk int = 1
+                pWriter.WriteByte(1); // unk byte = 1
+                pWriter.WriteLong();
+            }
+            return pWriter;
+        }
     }
 }

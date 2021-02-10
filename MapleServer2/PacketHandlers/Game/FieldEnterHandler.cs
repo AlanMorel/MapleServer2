@@ -5,6 +5,7 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -25,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.EnterField(session.Player.MapId);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-            session.Send(EmotePacket.LoadEmotes());
+            session.Send(EmotePacket.LoadEmotes(session.Player));
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
 
             // Normally skill layout would be loaded from a database

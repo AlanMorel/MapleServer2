@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ms2Database.DbClasses
 {
@@ -13,7 +9,7 @@ namespace Ms2Database.DbClasses
         public Item() // Autofills these attributes currently when items are added, edit InventoryManager.cs if you need more attributes set manually
         {
             Tab = 0;
-            Slot = 0;
+            InventorySlot = 0;
             Rarity = 1;
             Amount = 1;
             MaxAmount = 1;
@@ -26,7 +22,6 @@ namespace Ms2Database.DbClasses
             UnlockTime = DateTime.Now;
             GlamorForges = 0;
             Repackage = false;
-            TradeLimit = 1;
             CreationTime = DateTime.Now;
             ExpirationTime = DateTime.Now.AddDays(1);
         }
@@ -48,7 +43,11 @@ namespace Ms2Database.DbClasses
         public int Tab { get; set; }
 
         [Required]
-        public int Slot { get; set; }
+        public int InventorySlot { get; set; }
+
+        public string EquipmentSlot { get; set; }
+
+        public string CosmeticSlot { get; set; }
 
         [Required]
         public int Rarity { get; set; }
@@ -70,13 +69,13 @@ namespace Ms2Database.DbClasses
 
         public bool IsLocked { get; set; }
 
-        public DateTime UnlockTime { get; set; }
+        public DateTime? UnlockTime { get; set; }
 
         public short GlamorForges { get; set; }
 
         public bool Repackage { get; set; }
 
-        public int TradeLimit { get; set; }
+        public int? TradeLimit { get; set; }
 
         public int? TransferFlag { get; set; }
 

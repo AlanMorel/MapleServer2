@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types.Metadata
@@ -60,11 +59,11 @@ namespace Maple2Storage.Types.Metadata
 
         public Script(int id, string feature, int randomPick, List<int> goToConditionTalkID, List<Content> content)
         {
-            this.Id = id;
-            this.Feature = feature;
-            this.RandomPick = randomPick;
-            this.GoToConditionTalkID = goToConditionTalkID;
-            this.Content = content;
+            Id = id;
+            Feature = feature;
+            RandomPick = randomPick;
+            GoToConditionTalkID = goToConditionTalkID;
+            Content = content;
         }
 
         public override string ToString()
@@ -85,8 +84,8 @@ namespace Maple2Storage.Types.Metadata
 
         public Select(int id, List<Content> content)
         {
-            this.Id = id;
-            this.Content = content;
+            Id = id;
+            Content = content;
         }
 
         public override string ToString()
@@ -111,10 +110,10 @@ namespace Maple2Storage.Types.Metadata
 
         public Monologue(int id, int popupState, int popupProp, List<Content> content)
         {
-            this.Id = id;
-            this.PopupState = popupState;
-            this.PopupProp = popupProp;
-            this.Content = content;
+            Id = id;
+            PopupState = popupState;
+            PopupProp = popupProp;
+            Content = content;
         }
 
         public override string ToString()
@@ -127,42 +126,39 @@ namespace Maple2Storage.Types.Metadata
     public class Content
     {
         [XmlElement(Order = 1)]
-        public long Script;
-        [XmlElement(Order = 2)]
         public string VoiceId;
-        [XmlElement(Order = 3)]
+        [XmlElement(Order = 2)]
         public byte FunctionId;
-        [XmlElement(Order = 4)]
+        [XmlElement(Order = 3)]
         public string LeftIllust;
-        [XmlElement(Order = 5)]
+        [XmlElement(Order = 4)]
         public string SpeakerIllust;
-        [XmlElement(Order = 6)]
+        [XmlElement(Order = 5)]
         public int OtherNpcTalk;
-        [XmlElement(Order = 7)]
+        [XmlElement(Order = 6)]
         public bool MyTalk;
-        [XmlElement(Order = 8)]
+        [XmlElement(Order = 7)]
         public string Illust;
-        [XmlElement(Order = 9)]
+        [XmlElement(Order = 8)]
         public List<Distractor> Distractor = new List<Distractor>();
 
         public Content() { }
 
-        public Content(long script, string voiceId, byte functionId, string leftIllust, string speakerIllust, int otherNpcTalk, bool myTalk, string illust, List<Distractor> distractor)
+        public Content(string voiceId, byte functionId, string leftIllust, string speakerIllust, int otherNpcTalk, bool myTalk, string illust, List<Distractor> distractor)
         {
-            this.Script = script;
-            this.VoiceId = voiceId;
-            this.FunctionId = functionId;
-            this.LeftIllust = leftIllust;
-            this.SpeakerIllust = speakerIllust;
-            this.OtherNpcTalk = otherNpcTalk;
-            this.MyTalk = myTalk;
-            this.Illust = illust;
-            this.Distractor = distractor;
+            VoiceId = voiceId;
+            FunctionId = functionId;
+            LeftIllust = leftIllust;
+            SpeakerIllust = speakerIllust;
+            OtherNpcTalk = otherNpcTalk;
+            MyTalk = myTalk;
+            Illust = illust;
+            Distractor = distractor;
         }
 
         public override string ToString()
         {
-            return $"Script: {Script}, VoiceId: {VoiceId}, FunctionId: {FunctionId}, LeftIllust: {LeftIllust}, SpeakerIllust: {SpeakerIllust}, " +
+            return $"VoiceId: {VoiceId}, FunctionId: {FunctionId}, LeftIllust: {LeftIllust}, SpeakerIllust: {SpeakerIllust}, " +
             $"OtherNpcTalk: {OtherNpcTalk}, MyTalk: {MyTalk}, Illust: {Illust}, Distractor: ({string.Join(",", Distractor)})\r\n";
         }
     }
@@ -171,24 +167,21 @@ namespace Maple2Storage.Types.Metadata
     public class Distractor
     {
         [XmlElement(Order = 1)]
-        public long Script;
-        [XmlElement(Order = 2)]
         public List<int> GoTo = new List<int>();
-        [XmlElement(Order = 3)]
+        [XmlElement(Order = 2)]
         public List<int> GoToFail = new List<int>();
 
         public Distractor() { }
 
-        public Distractor(long script, List<int> goTo, List<int> goToFail)
+        public Distractor(List<int> goTo, List<int> goToFail)
         {
-            this.Script = script;
-            this.GoTo = goTo;
-            this.GoToFail = goToFail;
+            GoTo = goTo;
+            GoToFail = goToFail;
         }
 
         public override string ToString()
         {
-            return $"Script: {Script}, GoTo: ({string.Join(",", GoTo)}), GoToFail: ({string.Join(",", GoToFail)})\r\n";
+            return $"GoTo: ({string.Join(",", GoTo)}), GoToFail: ({string.Join(",", GoToFail)})\r\n";
         }
     }
 
@@ -204,8 +197,8 @@ namespace Maple2Storage.Types.Metadata
 
         public Event(int id, List<Content> content)
         {
-            this.ID = id;
-            this.Content = content;
+            ID = id;
+            Content = content;
         }
 
         public override string ToString()

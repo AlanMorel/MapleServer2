@@ -33,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleBeginEnchant(GameSession session, PacketReader packet)
+        private static void HandleBeginEnchant(GameSession session, PacketReader packet)
         {
             byte type = packet.ReadByte();
             long itemUid = packet.ReadLong();
@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleOpheliaEnchant(GameSession session, PacketReader packet)
+        private static void HandleOpheliaEnchant(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 
@@ -56,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandlePeachyEnchant(GameSession session, PacketReader packet)
+        private static void HandlePeachyEnchant(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 

@@ -16,8 +16,58 @@ namespace GameDataParser.Parsers
 
         protected override List<ItemMetadata> Parse()
         {
+            // Item boxes
+            Dictionary<string, List<ItemContent>> itemDrops = new Dictionary<string, List<ItemContent>>();
+            foreach (PackFileEntry entry in Resources.XmlFiles)
+            {
+                if (!entry.Name.StartsWith("table/individualitemdrop") && !entry.Name.StartsWith("table/na/individualitemdrop"))
+                {
+                    continue;
+                }
+
+                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
+                foreach (XmlNode individualBoxItem in individualBoxItems)
+                {
+                    // Skip locales other than NA in table/na
+                    if (entry.Name.StartsWith("table/na/individualitemdrop") && individualBoxItem.Attributes["locale"] != null)
+                    {
+                        if (!individualBoxItem.Attributes["locale"].Value.Equals("NA"))
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
+                    {
+                        continue;
+                    }
+
+                    string box = individualBoxItem.Attributes["individualDropBoxID"].Value;
+                    int id = int.Parse(individualBoxItem.Attributes["item"].Value);
+                    int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
+                    int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
+                    int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
+                    int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
+                    int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
+                    int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
+                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
+
+                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2);
+                    if (itemDrops.ContainsKey(box))
+                    {
+                        itemDrops[box].Add(content);
+                    }
+                    else
+                    {
+                        itemDrops[box] = new List<ItemContent>() { content };
+                    }
+                }
+            }
+
+            // Items
             List<ItemMetadata> items = new List<ItemMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("item/"))
                 {
@@ -37,7 +87,7 @@ namespace GameDataParser.Parsers
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 // Parse XML
-                XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode item = document.SelectSingleNode("ms2/environment");
 
                 // Gear/Cosmetic slot
@@ -49,7 +99,17 @@ namespace GameDataParser.Parsers
                     Console.WriteLine($"Failed to parse item slot for {itemId}: {slot.Attributes["name"].Value}");
                 }
                 int totalSlots = slots.SelectNodes("slot").Count;
-                metadata.IsTwoHand = totalSlots > 1;
+                if (totalSlots > 1)
+                {
+                    if (metadata.Slot == ItemSlot.CL || metadata.Slot == ItemSlot.PA)
+                    {
+                        metadata.IsDress = true;
+                    }
+                    else if (metadata.Slot == ItemSlot.RH || metadata.Slot == ItemSlot.LH)
+                    {
+                        metadata.IsTwoHand = true;
+                    }
+                }
 
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");
@@ -100,49 +160,12 @@ namespace GameDataParser.Parsers
                     {
                         string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
 
-                        foreach (PackFileEntry innerEntry in resources.xmlFiles)
+                        foreach (KeyValuePair<string, List<ItemContent>> box in itemDrops) // Search for box id and set the rewards previously parsed
                         {
-                            if (!innerEntry.Name.StartsWith("table/individualitemdrop") && !innerEntry.Name.StartsWith("table/na/individualitemdrop"))
+                            if (box.Key == boxId)
                             {
-                                continue;
-                            }
-
-                            if (metadata.Content.Count > 0)
-                            {
-                                continue;
-                            }
-
-                            // Parse XML
-                            XmlDocument innerDocument = resources.xmlMemFile.GetDocument(innerEntry.FileHeader);
-                            XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox[@individualDropBoxID={boxId}]");
-
-                            foreach (XmlNode individualBoxItem in individualBoxItems)
-                            {
-                                int id = int.Parse(individualBoxItem.Attributes["item"].Value);
-                                int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
-                                int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
-                                int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
-                                int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
-                                int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
-                                int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
-                                int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
-
-                                // Skip already existing item
-                                if (metadata.Content.Exists(content => content.Id == id))
-                                {
-                                    continue;
-                                }
-
-                                // Skip locales other than NA in table/na
-                                if (innerEntry.Name.StartsWith("table/na/individualitemdrop") && individualBoxItem.Attributes["locale"] != null)
-                                {
-                                    if (!individualBoxItem.Attributes["locale"].Value.Equals("NA"))
-                                    {
-                                        continue;
-                                    }
-                                }
-
-                                metadata.Content.Add(new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2));
+                                metadata.Content = box.Value;
+                                break;
                             }
                         }
                     }
@@ -152,6 +175,10 @@ namespace GameDataParser.Parsers
                 XmlNode musicScore = item.SelectSingleNode("MusicScore");
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
+
+                XmlNode skill = item.SelectSingleNode("skill");
+                int skillID = int.Parse(skill.Attributes["skillID"].Value);
+                metadata.SkillID = skillID;
 
                 // Recommended jobs
                 XmlNode limit = item.SelectSingleNode("limit");
@@ -166,7 +193,6 @@ namespace GameDataParser.Parsers
 
                 items.Add(metadata);
             }
-
             return items;
         }
 

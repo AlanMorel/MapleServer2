@@ -6,40 +6,40 @@ namespace GameDataParser.Files
 {
     public abstract class MetadataExporter
     {
-        protected string filename;
+        protected string Filename;
 
         public MetadataExporter(string slug)
         {
-            this.filename = $"ms2-{slug}-metadata";
+            Filename = $"ms2-{slug}-metadata";
         }
 
         public void Export()
         {
-            if (this.CheckHash())
+            if (CheckHash())
             {
-                Console.WriteLine($"\rSkipping {this.filename}");
+                Console.WriteLine($"\rSkipping {Filename}");
                 return;
             }
 
-            this.Serialize();
-            this.WriteHash();
+            Serialize();
+            WriteHash();
 
-            Console.WriteLine($"\rSuccessfully exported {this.filename}");
+            Console.WriteLine($"\rSuccessfully exported {Filename}");
         }
 
         private bool CheckHash()
         {
-            return Hash.HasValidHash(this.filename);
+            return Hash.HasValidHash(Filename);
         }
 
         private void WriteHash()
         {
-            Hash.WriteHash(this.filename);
+            Hash.WriteHash(Filename);
         }
 
         public void Write<Entities>(Entities entities)
         {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/{this.filename}"))
+            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/{Filename}"))
             {
                 Serializer.Serialize(writeStream, entities);
             }

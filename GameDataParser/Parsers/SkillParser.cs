@@ -16,7 +16,7 @@ namespace GameDataParser.Parsers
         protected override List<SkillMetadata> Parse()
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
-            foreach (PackFileEntry entry in resources.xmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 // Parsing Skills
                 if (entry.Name.StartsWith("skill"))
@@ -24,18 +24,25 @@ namespace GameDataParser.Parsers
                     string skillId = Path.GetFileNameWithoutExtension(entry.Name);
                     SkillMetadata metadata = new SkillMetadata();
                     List<SkillLevel> skillLevels = new List<SkillLevel>();
-
                     metadata.SkillId = int.Parse(skillId);
-                    XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                    XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+
+                    metadata.Type = byte.Parse(document.SelectSingleNode("/ms2/basic/kinds").Attributes["type"].Value);
+
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
                     foreach (XmlNode level in levels)
                     {
                         // Getting all skills level
+                        XmlNode motionProperty = level.SelectSingleNode("motion/motionProperty");
                         string feature = level.Attributes["feature"] != null ? level.Attributes["feature"].Value : "";
                         int levelValue = level.Attributes["value"].Value != null ? int.Parse(level.Attributes["value"].Value) : 0;
                         int spirit = level.SelectSingleNode("consume/stat").Attributes["sp"] != null ? int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"].Value) : 0;
                         float damageRate = level.SelectSingleNode("motion/attack/damageProperty") != null ? float.Parse(level.SelectSingleNode("motion/attack/damageProperty").Attributes["rate"].Value) : 0;
-                        skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature));
+                        string sequenceName = motionProperty != null ? motionProperty.Attributes["sequenceName"].Value : "";
+                        string motionEffect = motionProperty != null ? motionProperty.Attributes["motionEffect"].Value : "";
+
+                        SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
+                        skillLevels.Add(new SkillLevel(levelValue, spirit, damageRate, feature, skillMotion));
                     }
                     metadata.SkillLevels = skillLevels;
                     string state = document.SelectSingleNode("/ms2/basic/kinds").Attributes["state"]?.Value;
@@ -46,7 +53,7 @@ namespace GameDataParser.Parsers
                 // Parsing SubSkills
                 else if (entry.Name.StartsWith("table/job"))
                 {
-                    XmlDocument document = resources.xmlMemFile.GetDocument(entry.FileHeader);
+                    XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                     XmlNodeList jobs = document.SelectNodes("/ms2/job");
                     foreach (XmlNode job in jobs)
                     {
@@ -60,14 +67,13 @@ namespace GameDataParser.Parsers
                                 for (int i = 0; i < skills.ChildNodes.Count; i++)
                                 {
                                     int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
-                                    int[] sub = new int[0];
                                     SkillMetadata skill = skillList.Find(x => x.SkillId == id); // This find the skill in the SkillList
                                     skill.Job = jobCode;
                                     if (skills.ChildNodes[i].Attributes["sub"] != null)
                                     {
                                         if (skillList.Select(x => x.SkillId).Contains(id))
                                         {
-                                            sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
+                                            int[] sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
                                             skill.SubSkills = sub;
                                             for (int n = 0; n < sub.Length; n++)
                                             {
@@ -94,10 +100,9 @@ namespace GameDataParser.Parsers
                             for (int i = 0; i < skills.ChildNodes.Count; i++)
                             {
                                 int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
-                                int[] sub = new int[0];
                                 if (skills.ChildNodes[i].Attributes["sub"] != null)
                                 {
-                                    sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
+                                    int[] sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
                                 }
                             }
                         }
