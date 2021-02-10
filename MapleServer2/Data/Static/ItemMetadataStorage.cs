@@ -79,6 +79,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).PlayCount;
         }
 
+        public static int GetSkillID(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).SkillID;
+        }
+
         public static List<Job> GetRecommendJobs(int itemId)
         {
             Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);

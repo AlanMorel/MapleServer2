@@ -8,20 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="Resources\ms2-item-metadata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\ms2-map-entity-metadata">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="protobuf-net" Version="3.0.73" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Properties\" />
+      <Folder Include="Resources" />
     </ItemGroup>
 
 </Project>

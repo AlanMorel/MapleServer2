@@ -40,6 +40,8 @@ namespace GameDataParser
                 new GuildParser(resources),
                 new PrestigeParser(resources),
                 new AchieveParser(resources),
+                new RecipeParser(resources),
+                new MasteryParser(resources),
                 new NpcParser(resources)
             };
 

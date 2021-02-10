@@ -1,4 +1,8 @@
-﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
@@ -30,35 +34,47 @@ namespace Ms2Database.Controllers
 
                 InventoryManager inventory = new InventoryManager();
 
-                character = context.Characters.First(c => c.Name.ToLower() == characterName.ToLower());
+                character = context.Characters.First(column => column.Name.ToLower() == characterName.ToLower());
                 InventoryManager.CreateInventory(character.CharacterId);
             }
         }
 
-        public static void DeleteCharacter(long characterId, string characterName = "")
+        public void DeleteCharacter(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character character = context.Characters.FirstOrDefault(a => (a.CharacterId == characterId) || (a.Name.ToLower() == characterName.ToLower()));
+                Character character = context.Characters.FirstOrDefault(column => column.CharacterId == characterId);
                 context.Remove(character);
                 context.SaveChanges();
             }
         }
 
-        public static Character GetCharInfo(long characterId)
+        public Character GetCharacterInfo(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Character character = context.Characters.FirstOrDefault(a => a.CharacterId == characterId);
+                Character character = context.Characters.FirstOrDefault(column => column.CharacterId == characterId);
                 return character;
             }
         }
 
-        public static void EditCharInfo(/*Character character*/)
+        public void UpdateCharInfo(Character characterObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
+                Character character = characterObject;
                 context.SaveChanges();
+            }
+        }
+
+        public List<Character> GetCharacterList(long accountId)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                List<Character> characters = context.Characters.Include(table => table.Account)
+                                                               .Where(column => column.Account.AccountId == accountId)
+                                                               .ToList();
+                return characters;
             }
         }
     }

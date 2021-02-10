@@ -31,29 +31,30 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public static Account GetAccInfoById(long id) // Queries db and retrieves account entry by Id
+        public Account GetAccountById(long id) // Queries db and retrieves account entry by Id
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
+                Account account = context.Accounts.FirstOrDefault(column => column.AccountId == id); // Retrieve entry by Id
+                return account;
+            }
+        }
+      
+        public Account GetAccountByName(string username)
+        {
+            using (Ms2DbContext context = new Ms2DbContext())
+            {
+                Account account = context.Accounts.FirstOrDefault(column => column.Username.ToLower() == username.ToLower()); // Retrieve entry by username
                 return account;
             }
         }
 
-        public static Account GetAccInfoByUser(string username)
+        public void UpdateAccountInfo(long id, string username = "", string password = "") // Allows account entry changes
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
-                Account account = context.Accounts.FirstOrDefault(a => a.Username.ToLower() == username.ToLower()); // Retrieve entry by username
-                return account;
-            }
-        }
+                Account account = context.Accounts.FirstOrDefault(column => column.AccountId == id); // Retrieve entry by Id
 
-        public static void EditAccInfo(long id, string username = "", string password = "") // Allows account entry changes
-        {
-            using (Ms2DbContext context = new Ms2DbContext())
-            {
-                Account account = context.Accounts.FirstOrDefault(a => a.AccountId == id); // Retrieve entry by Id
                 if (account == null) // Checks to see if account Id exists
                 {
                     Debug.Assert(account != null, "No entry starting with account ID: " + id);
