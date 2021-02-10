@@ -1,4 +1,7 @@
-﻿using MapleServer2.Data.Static;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 
 namespace MapleServer2.Types
@@ -11,8 +14,10 @@ namespace MapleServer2.Types
         public long RestExp { get; private set; }
         public int PrestigeLevel { get; private set; }
         public long PrestigeExp { get; private set; }
+        public List<MasteryExp> MasteryExp { get; private set; }
 
-        public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp)
+        public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
+            List<MasteryExp> masteryExp)
         {
             Player = player;
             Level = playerLevel;
@@ -20,8 +25,8 @@ namespace MapleServer2.Types
             RestExp = restExp;
             PrestigeLevel = prestigeLevel;
             PrestigeExp = prestigeExp;
+            MasteryExp = masteryExp;
         }
-
 
         public void SetLevel(short level)
         {
@@ -72,7 +77,6 @@ namespace MapleServer2.Types
             if (RestExp > 0)
             {
                 RestExp -= amount;
-
             }
             else
             {
@@ -114,5 +118,20 @@ namespace MapleServer2.Types
             Player.Session.Send(PrestigePacket.ExpUp(Player, amount));
         }
 
+        public void GainMasteryExp(MasteryType type, long amount)
+        {
+            MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == (byte) type);
+
+            if (masteryExp == null) // add mastery to list
+            {
+                MasteryExp.Add(new MasteryExp(type, amount));
+                Player.Session.Send(MasteryPacket.SetExp(type, amount));
+            }
+            else
+            {
+                // user already has some exp in mastery, so simply update it
+                Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
+            }
+        }
     }
 }

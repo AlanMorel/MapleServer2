@@ -138,6 +138,7 @@
         TUTORIAL = 0x008B,
         ITEM_SOCKET_SCROLL = 0x008C,
         PREMIUM_CLUB = 0x008F,
+        CONSTRUCT_RECIPE = 0x0093,
         CONSTRUCT_SHOP = 0x0094,
         CLUB = 0x0096,
         STAT_POINT = 0x009A,
