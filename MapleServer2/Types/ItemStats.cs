@@ -83,50 +83,54 @@ namespace MapleServer2.Types
             BasicAttributes = new List<ItemStat>();
             BonusAttributes = new List<ItemStat>();
             Gemstones = new List<Gemstone>();
-            if (grade != 0)
+            if (grade == 0)
             {
-                if (ItemStatsMetadataStorage.GetConstantStat(itemId, out List<ItemOptions> constantList))
+                return;
+            }
+            if (ItemStatsMetadataStorage.GetConstantStat(itemId, out List<ItemOptions> constantList))
+            {
+                foreach (ItemOptions item in constantList)
                 {
-                    foreach (ItemOptions item in constantList)
+                    if (item.Grade != grade)
                     {
-                        if (item.Grade == grade)
+                        continue;
+                    }
+                    foreach (Stat i in item.Stats)
+                    {
+                        if (i.Value != 0)
                         {
-                            foreach (Stat i in item.Stats)
-                            {
-                                if (i.Value != 0)
-                                {
-                                    BasicAttributes.Add(ItemStat.Of(i.Type, i.Value)); // TODO: add randomness to value
-                                }
-                                else
-                                {
-                                    BasicAttributes.Add(ItemStat.Of(i.Type, i.Percentage)); // TODO: add randomness to value
-                                }
-                            }
+                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Value)); // TODO: add randomness to value
+                        }
+                        else
+                        {
+                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Percentage)); // TODO: add randomness to value
                         }
                     }
                 }
+            }
 
-                if (ItemStatsMetadataStorage.GetRandomStat(itemId, out List<ItemOptions> randomList))
+            if (ItemStatsMetadataStorage.GetRandomStat(itemId, out List<ItemOptions> randomList))
+            {
+                foreach (ItemOptions item in randomList)
                 {
-                    foreach (ItemOptions item in randomList)
+                    if (item.Grade != grade)
                     {
-                        if (item.Grade == grade)
+                        continue;
+                    }
+                    if (item.OptionNumPick == 0)
+                    {
+                        continue;
+                    }
+                    List<int> indexes = GetRandomOptions(item.OptionNumPick, item.Stats.Count);
+                    foreach (int i in indexes)
+                    {
+                        if (item.Stats[i].Value != 0)
                         {
-                            if (item.OptionNumPick != 0)
-                            {
-                                List<int> indexes = GetRandomOptions(item.OptionNumPick, item.Stats.Count);
-                                foreach (int i in indexes)
-                                {
-                                    if (item.Stats[i].Value != 0)
-                                    {
-                                        BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Value)); // TODO: add randomness to value
-                                    }
-                                    else
-                                    {
-                                        BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Percentage)); // TODO: add randomness to value
-                                    }
-                                }
-                            }
+                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Value)); // TODO: add randomness to value
+                        }
+                        else
+                        {
+                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Percentage)); // TODO: add randomness to value
                         }
                     }
                 }
