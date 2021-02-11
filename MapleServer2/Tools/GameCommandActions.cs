@@ -89,8 +89,8 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
-            { }
+            _ = int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity);
+
             Item item = new Item(itemId, rarity)
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
