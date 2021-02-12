@@ -8,11 +8,12 @@ namespace MapleServer2.Packets
     {
         public static Packet SetMotto(IFieldObject<Player> pObject, string motto)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MY_INFO)
-                .WriteInt(pObject.ObjectId)
-                .WriteUnicodeString(motto)
-                .WriteInt() //Unk
-                .WriteShort(); //Unk
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MY_INFO);
+            pWriter.WriteInt(pObject.ObjectId);
+            pWriter.WriteUnicodeString(motto);
+            pWriter.WriteInt(); //Unk
+            pWriter.WriteShort(); //Unk
+
             return pWriter;
         }
     }

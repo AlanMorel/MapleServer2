@@ -37,7 +37,10 @@ namespace MapleServer2.Packets
 
         public static Packet Close()
         {
-            return PacketWriter.Of(SendOp.NPC_TALK).WriteByte(0x00);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+            pWriter.WriteByte(0x00);
+
+            return pWriter;
         }
     }
 }

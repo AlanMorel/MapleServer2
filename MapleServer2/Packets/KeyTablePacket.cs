@@ -8,23 +8,27 @@ namespace MapleServer2.Packets
     {
         public static Packet AskKeyboardOrMouse()
         {
-            return PacketWriter.Of(SendOp.KEY_TABLE)
-                .WriteByte(0x09);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+            pWriter.WriteByte(0x09);
+
+            return pWriter;
         }
 
         // Tells client to load DefaultKey.xml
         public static Packet RequestDefault()
         {
-            return PacketWriter.Of(SendOp.KEY_TABLE)
-                .WriteByte(0x00)
-                .WriteBool(true);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteBool(true);
+
+            return pWriter;
         }
 
         public static Packet SendFullOptions(GameOptions options)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE)
-                .WriteByte(0x00)
-                .WriteBool(false);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteBool(false);
 
             // Key bindings
             pWriter.WriteInt(options.KeyBinds.Count);
@@ -41,15 +45,17 @@ namespace MapleServer2.Packets
 
         public static Packet SendHotbars(GameOptions options)
         {
-            return PacketWriter.Of(SendOp.KEY_TABLE)
-                .WriteByte(0x7) // Type
-                .WriteHotbars(options);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
+            pWriter.WriteByte(0x7); // Type
+            pWriter.WriteHotbars(options);
+
+            return pWriter;
         }
 
         private static PacketWriter WriteHotbars(this PacketWriter pWriter, GameOptions options)
         {
-            pWriter.WriteShort(options.ActiveHotbarId)
-                .WriteShort((short) options.Hotbars.Count);
+            pWriter.WriteShort(options.ActiveHotbarId);
+            pWriter.WriteShort((short) options.Hotbars.Count);
 
             foreach (Hotbar hotbar in options.Hotbars)
             {

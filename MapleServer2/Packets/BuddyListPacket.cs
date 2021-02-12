@@ -18,15 +18,19 @@ namespace MapleServer2.Packets
 
         public static Packet StartList()
         {
-            return PacketWriter.Of(SendOp.BUDDY)
-                .WriteByte(0x0F);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+            pWriter.WriteByte(0x0F);
+
+            return pWriter;
         }
 
         public static Packet EndList(int count = 0)
         {
-            return PacketWriter.Of(SendOp.BUDDY)
-                .WriteByte(0x13)
-                .WriteInt(count);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
+            pWriter.WriteByte(0x13);
+            pWriter.WriteInt(count);
+
+            return pWriter;
         }
     }
 }

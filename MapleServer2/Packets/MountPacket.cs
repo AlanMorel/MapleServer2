@@ -9,28 +9,34 @@ namespace MapleServer2.Packets
     {
         public static Packet StartRide(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.RESPONSE_RIDE)
-                .WriteByte(0x00)
-                .WriteInt(player.ObjectId)
-                .WriteMount(player.Value.Mount);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteMount(player.Value.Mount);
+
+            return pWriter;
         }
 
         public static Packet StopRide(IFieldObject<Player> player, bool forced = false)
         {
-            return PacketWriter.Of(SendOp.RESPONSE_RIDE)
-                .WriteByte(0x01)
-                .WriteInt(player.ObjectId)
-                .WriteByte()
-                .WriteBool(forced);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+            pWriter.WriteByte(0x01);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteByte();
+            pWriter.WriteBool(forced);
+
+            return pWriter;
         }
 
         public static Packet ChangeRide(int playerObjectId, int mountId, long mountUid)
         {
-            return PacketWriter.Of(SendOp.RESPONSE_RIDE)
-                .WriteByte(0x02)
-                .WriteInt(playerObjectId)
-                .WriteInt(mountId)
-                .WriteLong(mountUid);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
+            pWriter.WriteByte(0x02);
+            pWriter.WriteInt(playerObjectId);
+            pWriter.WriteInt(mountId);
+            pWriter.WriteLong(mountUid);
+
+            return pWriter;
         }
     }
 }

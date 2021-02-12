@@ -13,7 +13,10 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            session.Send(PacketWriter.Of(SendOp.LOAD_UGC_MAP).WriteZero(9));
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
+            pWriter.WriteZero(9);
+
+            session.Send(pWriter);
             // SendCubes...?
         }
     }

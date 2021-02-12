@@ -16,21 +16,27 @@ namespace MapleServer2.Packets
 
         public static Packet Count(int count)
         {
-            return PacketWriter.Of(SendOp.MARKET_INVENTORY)
-                .WriteByte(0x02)
-                .WriteInt(count);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
+            pWriter.WriteByte(0x02);
+            pWriter.WriteInt(count);
+
+            return pWriter;
         }
 
         public static Packet StartList()
         {
-            return PacketWriter.Of(SendOp.MARKET_INVENTORY)
-                .WriteByte(0x01);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
+            pWriter.WriteByte(0x01);
+
+            return pWriter;
         }
 
         public static Packet EndList()
         {
-            return PacketWriter.Of(SendOp.MARKET_INVENTORY)
-                .WriteByte(0x08);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
+            pWriter.WriteByte(0x08);
+
+            return pWriter;
         }
     }
 }

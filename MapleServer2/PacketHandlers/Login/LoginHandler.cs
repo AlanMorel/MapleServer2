@@ -49,7 +49,11 @@ namespace MapleServer2.PacketHandlers.Login
             switch (mode)
             {
                 case 1:
-                    session.Send(PacketWriter.Of(SendOp.NPS_INFO).WriteLong().WriteUnicodeString(""));
+                    PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
+                    pWriter.WriteLong();
+                    pWriter.WriteUnicodeString("");
+
+                    session.Send(pWriter);
                     session.Send(BannerListPacket.SetBanner());
                     session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;

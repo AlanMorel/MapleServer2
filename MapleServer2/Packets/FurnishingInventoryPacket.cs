@@ -7,21 +7,27 @@ namespace MapleServer2.Packets
     {
         public static Packet AddEntry()
         {
-            return PacketWriter.Of(SendOp.FURNISHING_INVENTORY)
-                .WriteByte(0x01);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+            pWriter.WriteByte(0x01);
             // ...
+
+            return pWriter;
         }
 
         public static Packet StartList()
         {
-            return PacketWriter.Of(SendOp.FURNISHING_INVENTORY)
-                .WriteByte(0x00);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+            pWriter.WriteByte(0x00);
+
+            return pWriter;
         }
 
         public static Packet EndList()
         {
-            return PacketWriter.Of(SendOp.FURNISHING_INVENTORY)
-                .WriteByte(0x04);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
+            pWriter.WriteByte(0x04);
+
+            return pWriter;
         }
     }
 }

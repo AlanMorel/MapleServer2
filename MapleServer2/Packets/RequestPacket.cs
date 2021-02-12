@@ -17,14 +17,18 @@ namespace MapleServer2.Packets
 
         public static Packet Heartbeat(int key)
         {
-            return PacketWriter.Of(SendOp.REQUEST_HEARTBEAT)
-                .WriteInt(key);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
+            pWriter.WriteInt(key);
+
+            return pWriter;
         }
 
         public static Packet TickSync(int serverTick)
         {
-            return PacketWriter.Of(SendOp.REQUEST_CLIENTTICK_SYNC)
-                .WriteInt(serverTick);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_CLIENTTICK_SYNC);
+            pWriter.WriteInt(serverTick);
+
+            return pWriter;
         }
     }
 }

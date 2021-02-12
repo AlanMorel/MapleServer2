@@ -31,9 +31,11 @@ namespace MapleServer2.PacketHandlers.Common
             HandleCommon(session, packet);
 
             // No idea what this is, but server sends it when logging into game server
-            session.Send(PacketWriter.Of(SendOp.UNKNOWN_SYNC)
-                .WriteByte()
-                .WriteInt(Environment.TickCount));
+            PacketWriter pWriter = PacketWriter.Of(SendOp.UNKNOWN_SYNC);
+            pWriter.WriteByte();
+            pWriter.WriteInt(Environment.TickCount);
+
+            session.Send(pWriter);
             session.Send(RequestPacket.Key());
         }
 
