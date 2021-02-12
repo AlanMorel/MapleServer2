@@ -6,17 +6,19 @@ namespace MapleServer2.Packets.Helpers
     {
         public static PacketWriter WriteUgc(this PacketWriter pWriter)
         {
-            return pWriter.WriteLong()
-                .WriteUnicodeString("") // UUID (filename)
-                .WriteUnicodeString("") // Name (itemname)
-                .WriteByte()
-                .WriteInt()
-                .WriteLong() // AccountId
-                .WriteLong() // CharacterId
-                .WriteUnicodeString("") // CharacterName
-                .WriteLong() // CreationTime
-                .WriteUnicodeString("") // URL (no domain)
-                .WriteByte();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString(""); // UUID (filename)
+            pWriter.WriteUnicodeString(""); // Name (itemname)
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteLong(); // AccountId
+            pWriter.WriteLong(); // CharacterId
+            pWriter.WriteUnicodeString(""); // CharacterName
+            pWriter.WriteLong(); // CreationTime
+            pWriter.WriteUnicodeString(""); // URL (no domain)
+            pWriter.WriteByte();
+
+            return pWriter;
         }
     }
 }

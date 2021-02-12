@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
         // Sent when putting item into enchant window
         public static Packet BeginEnchant(byte type, Item item)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
-                .WriteByte(0x05)
-                .WriteShort(type)
-                .WriteLong(item.Uid);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+            pWriter.WriteByte(0x05);
+            pWriter.WriteShort(type);
+            pWriter.WriteLong(item.Uid);
 
             // TODO: Make this dynamic
             Tuple<int, int>[] requiredItems = {
@@ -25,9 +25,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte) requiredItems.Length);
             foreach (Tuple<int, int> requiredItem in requiredItems)
             {
-                pWriter.WriteInt()
-                    .WriteInt(requiredItem.Item1)
-                    .WriteInt(requiredItem.Item2);
+                pWriter.WriteInt();
+                pWriter.WriteInt(requiredItem.Item1);
+                pWriter.WriteInt(requiredItem.Item2);
             }
 
             pWriter.WriteShort();
@@ -37,29 +37,29 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(count);
             for (int i = 0; i < count; i++)
             {
-                pWriter.WriteShort()
-                    .WriteInt()
-                    .Write(0f);
+                pWriter.WriteShort();
+                pWriter.WriteInt();
+                pWriter.Write(0f);
             }
 
             if (type == 1)
             {
-                pWriter.Write(90f) // SuccessRate
-                    .Write(0f)
-                    .Write(0f)
-                    .Write(0f)
-                    .Write(0f)
-                    .WriteLong()
-                    .WriteLong()
-                    .WriteByte(1);
+                pWriter.Write(90f); // SuccessRate
+                pWriter.Write(0f);
+                pWriter.Write(0f);
+                pWriter.Write(0f);
+                pWriter.Write(0f);
+                pWriter.WriteLong();
+                pWriter.WriteLong();
+                pWriter.WriteByte(1);
             }
 
             // Item copies required
             if (type == 1 || type == 2)
             {
-                pWriter.WriteInt() // ItemId
-                    .WriteShort() // Rarity
-                    .WriteInt(); // Amount
+                pWriter.WriteInt(); // ItemId
+                pWriter.WriteShort(); // Rarity
+                pWriter.WriteInt(); // Amount
             }
 
             return pWriter;
@@ -67,27 +67,29 @@ namespace MapleServer2.Packets
 
         public static Packet UpdateCharges(Item item)
         {
-            return PacketWriter.Of(SendOp.ITEM_ENCHANT)
-                .WriteByte(0x06)
-                .WriteLong(item.Uid)
-                .WriteInt(item.EnchantExp);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+            pWriter.WriteByte(0x06);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteInt(item.EnchantExp);
+
+            return pWriter;
         }
 
         public static Packet EnchantResult(Item item)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT)
-                .WriteByte(0x0A)
-                .WriteLong(item.Uid)
-                .WriteItem(item);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
+            pWriter.WriteByte(0x0A);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteItem(item);
 
             // These are the stat bonus from enchanting
             int count = 0;
             pWriter.WriteInt(count);
             for (int i = 0; i < count; i++)
             {
-                pWriter.WriteShort()
-                    .WriteInt()
-                    .Write(0f);
+                pWriter.WriteShort();
+                pWriter.WriteInt();
+                pWriter.Write(0f);
             }
 
             return pWriter;

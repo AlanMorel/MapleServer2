@@ -9,54 +9,66 @@ namespace MapleServer2.Packets
     {
         public static Packet LoginToGame(IPEndPoint endpoint, AuthData authTokens)
         {
-            return PacketWriter.Of(SendOp.LOGIN_TO_GAME)
-                .WriteByte() // 0 = Success
-                .Write(endpoint.Address.GetAddressBytes()) // ip
-                .WriteUShort((ushort) endpoint.Port) // port
-                .WriteInt(authTokens.TokenA)
-                .WriteInt(authTokens.TokenB) // Some key
-                .WriteInt(62000000); // Map
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_TO_GAME);
+            pWriter.WriteByte(); // 0 = Success
+            pWriter.Write(endpoint.Address.GetAddressBytes()); // ip
+            pWriter.WriteUShort((ushort) endpoint.Port); // port
+            pWriter.WriteInt(authTokens.TokenA);
+            pWriter.WriteInt(authTokens.TokenB); // Some key
+            pWriter.WriteInt(62000000); // Map
+
+            return pWriter;
         }
 
         public static Packet LoginToGameError(string message)
         {
-            return PacketWriter.Of(SendOp.LOGIN_TO_GAME)
-                .WriteByte(1) // !0 = Error
-                .WriteUnicodeString(message);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_TO_GAME);
+            pWriter.WriteByte(1); // !0 = Error
+            pWriter.WriteUnicodeString(message);
+
+            return pWriter;
         }
 
         public static Packet GameToLogin(IPEndPoint endpoint, AuthData authTokens)
         {
-            return PacketWriter.Of(SendOp.GAME_TO_LOGIN)
-                .WriteByte() // 0 = Success
-                .Write(endpoint.Address.GetAddressBytes()) // ip
-                .WriteUShort((ushort) endpoint.Port) // port
-                .WriteInt(authTokens.TokenA)
-                .WriteInt(authTokens.TokenB);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_LOGIN);
+            pWriter.WriteByte(); // 0 = Success
+            pWriter.Write(endpoint.Address.GetAddressBytes()); // ip
+            pWriter.WriteUShort((ushort) endpoint.Port); // port
+            pWriter.WriteInt(authTokens.TokenA);
+            pWriter.WriteInt(authTokens.TokenB);
+
+            return pWriter;
         }
 
         public static Packet GameToLoginError()
         {
-            return PacketWriter.Of(SendOp.GAME_TO_LOGIN)
-                .WriteByte(1); // !0 = Error
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_LOGIN);
+            pWriter.WriteByte(1); // !0 = Error
+
+            return pWriter;
         }
 
         public static Packet GameToGame(IPEndPoint endpoint, AuthData authTokens)
         {
-            return PacketWriter.Of(SendOp.GAME_TO_GAME)
-                .WriteByte() // 0 = Success
-                .WriteInt(authTokens.TokenA)
-                .WriteInt(authTokens.TokenB)
-                .Write(endpoint.Address.GetAddressBytes())
-                .WriteUShort((ushort) endpoint.Port)
-                .WriteInt() // Map
-                .WriteByte();
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_GAME);
+            pWriter.WriteByte(); // 0 = Success
+            pWriter.WriteInt(authTokens.TokenA);
+            pWriter.WriteInt(authTokens.TokenB);
+            pWriter.Write(endpoint.Address.GetAddressBytes());
+            pWriter.WriteUShort((ushort) endpoint.Port);
+            pWriter.WriteInt(); // Map
+            pWriter.WriteByte();
+
+            return pWriter;
         }
 
         public static Packet GameToGameError()
         {
-            return PacketWriter.Of(SendOp.GAME_TO_GAME)
-                .WriteByte(1); // !0 = Error
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_GAME);
+            pWriter.WriteByte(1); // !0 = Error
+
+            return pWriter;
         }
     }
 }

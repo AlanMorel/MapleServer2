@@ -8,16 +8,17 @@ namespace MapleServer2.Packets
     {
         public static Packet Vibrate(string objectHash, long someId, int objectId, int flag, Player player, int clientTicks)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE)
-                .WriteByte(1)
-                .WriteMapleString(objectHash)
-                .WriteLong(someId)
-                .WriteInt(objectId)
-                .WriteInt(flag)
-                .Write(player.Coord.ToShort())
-                .WriteInt(clientTicks)
-                .WriteMapleString("")
-                .WriteByte();
+            PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
+            pWriter.WriteByte(1);
+            pWriter.WriteMapleString(objectHash);
+            pWriter.WriteLong(someId);
+            pWriter.WriteInt(objectId);
+            pWriter.WriteInt(flag);
+            pWriter.Write(player.Coord.ToShort());
+            pWriter.WriteInt(clientTicks);
+            pWriter.WriteMapleString("");
+            pWriter.WriteByte();
+
             return pWriter;
         }
     }

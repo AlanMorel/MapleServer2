@@ -8,35 +8,39 @@ namespace MapleServer2.Packets
     {
         public static Packet InitLogin(long accountId)
         {
-            return PacketWriter.Of(SendOp.LOGIN_RESULT)
-                .WriteByte() // Login State
-                .WriteInt() // Const
-                .WriteUnicodeString("") // Ban reason
-                .WriteLong(accountId)
-                .WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()) // SyncTime
-                .WriteInt(Environment.TickCount) // SyncTicks
-                .WriteByte() // TimeZone
-                .WriteByte() // BlockType
-                .WriteInt() // Const
-                .WriteLong() // Const
-                .WriteInt(2); // Const
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+            pWriter.WriteByte(); // Login State
+            pWriter.WriteInt(); // Const
+            pWriter.WriteUnicodeString(""); // Ban reason
+            pWriter.WriteLong(accountId);
+            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // SyncTime
+            pWriter.WriteInt(Environment.TickCount); // SyncTicks
+            pWriter.WriteByte(); // TimeZone
+            pWriter.WriteByte(); // BlockType
+            pWriter.WriteInt(); // Const
+            pWriter.WriteLong(); // Const
+            pWriter.WriteInt(2); // Const
+
+            return pWriter;
         }
 
         // Set 0 for all values in login packet
         public static Packet Timeout(long accountId)
         {
-            return PacketWriter.Of(SendOp.LOGIN_RESULT)
-                .WriteByte(0x19) // Login State
-                .WriteInt() // Const
-                .WriteUnicodeString("") // Ban reason
-                .WriteLong(accountId)
-                .WriteLong() // SyncTime
-                .WriteInt() // SyncTicks
-                .WriteByte() // TimeZone
-                .WriteByte() // BlockType
-                .WriteInt() // Const
-                .WriteLong() // Const
-                .WriteInt(); // Const
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+            pWriter.WriteByte(0x19); // Login State
+            pWriter.WriteInt(); // Const
+            pWriter.WriteUnicodeString(""); // Ban reason
+            pWriter.WriteLong(accountId);
+            pWriter.WriteLong(); // SyncTime
+            pWriter.WriteInt(); // SyncTicks
+            pWriter.WriteByte(); // TimeZone
+            pWriter.WriteByte(); // BlockType
+            pWriter.WriteInt(); // Const
+            pWriter.WriteLong(); // Const
+            pWriter.WriteInt(); // Const]
+
+            return pWriter;
         }
     }
 }

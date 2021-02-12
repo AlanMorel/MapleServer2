@@ -9,21 +9,26 @@ namespace MapleServer2.Packets
     {
         public static Packet Bracket(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.GUIDE_OBJECT)
-                .WriteByte(0x00)
-                .WriteShort(1) // Type?
-                .WriteInt(player.ObjectId)
-                .WriteLong(player.Value.CharacterId)
-                .Write(player.Coord.ClosestBlock())
-                .Write<CoordF>(default); // Unknown
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteShort(1); // Type?
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteLong(player.Value.CharacterId);
+            pWriter.Write(player.Coord.ClosestBlock());
+            pWriter.Write<CoordF>(default); // Unknown
+
+            return pWriter;
         }
 
         public static Packet Remove(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.GUIDE_OBJECT)
-                .WriteByte(0x01)
-                .WriteInt(player.ObjectId)
-                .WriteLong(player.Value.CharacterId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
+            pWriter.WriteByte(0x01);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteLong(player.Value.CharacterId);
+
+
+            return pWriter;
         }
     }
 }

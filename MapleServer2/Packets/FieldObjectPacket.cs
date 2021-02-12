@@ -67,8 +67,8 @@ namespace MapleServer2.Packets
             }
             if (flag.HasFlag(FieldObjectUpdate.Type4))
             {
-                pWriter.WriteShort()
-                    .WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
             }
             if (flag.HasFlag(FieldObjectUpdate.Type5))
             {

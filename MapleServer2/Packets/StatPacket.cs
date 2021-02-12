@@ -13,6 +13,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteByte(0x23);
             pWriter.Write(player.Value.Stats);
+
             return pWriter;
         }
 
@@ -29,6 +30,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteLong(mob.Value.Stats.Hp[i]);
             }
+
             return pWriter;
         }
 
@@ -38,8 +40,8 @@ namespace MapleServer2.Packets
             // Flag dependent
             for (int i = 0; i < 3; i++)
             {
-                pWriter.WriteLong(mob.Value.Stats.Hp[i])
-                    .WriteInt();
+                pWriter.WriteLong(mob.Value.Stats.Hp[i]);
+                pWriter.WriteInt();
             }
         }
 
@@ -53,25 +55,25 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(value); // value
                 if (value == 4)
                 {
-                    pWriter.WriteLong()
-                        .WriteLong()
-                        .WriteLong();
+                    pWriter.WriteLong();
+                    pWriter.WriteLong();
+                    pWriter.WriteLong();
                 }
                 else
                 {
-                    pWriter.WriteInt()
-                        .WriteInt()
-                        .WriteInt();
+                    pWriter.WriteInt();
+                    pWriter.WriteInt();
+                    pWriter.WriteInt();
                 }
             }
             else
             {
-                pWriter.WriteLong(5)
-                    .WriteInt()
-                    .WriteLong(5)
-                    .WriteInt()
-                    .WriteLong(5)
-                    .WriteInt();
+                pWriter.WriteLong(5);
+                pWriter.WriteInt();
+                pWriter.WriteLong(5);
+                pWriter.WriteInt();
+                pWriter.WriteLong(5);
+                pWriter.WriteInt();
             }
         }
 
@@ -80,11 +82,11 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(0x23);
             for (int i = 0; i < 3; i++)
             {
-                pWriter.WriteLong(stats.Hp[i])
-                    .WriteInt(stats.AtkSpd[i])
-                    .WriteInt(stats.MoveSpd[i])
-                    .WriteInt(stats.MountSpeed[i])
-                    .WriteInt(stats.JumpHeight[i]);
+                pWriter.WriteLong(stats.Hp[i]);
+                pWriter.WriteInt(stats.AtkSpd[i]);
+                pWriter.WriteInt(stats.MoveSpd[i]);
+                pWriter.WriteInt(stats.MountSpeed[i]);
+                pWriter.WriteInt(stats.JumpHeight[i]);
             }
 
             /* Alternative Stat Struct
@@ -96,7 +98,5 @@ namespace MapleServer2.Packets
             }
             */
         }
-
-
     }
 }

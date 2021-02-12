@@ -20,7 +20,10 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 case 0:
                     long rodItemUid = packet.ReadLong(); // Testing RodItemId: 32000055
-                    session.Send(PacketWriter.Of(SendOp.FISHING).WriteHexString("04 00 08 00 00 00 0C F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0B F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0E F6 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0D F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0C F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0F F6 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0E F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0D F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00"));
+                    PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
+                    pWriter.WriteHexString("04 00 08 00 00 00 0C F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0B F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0E F6 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0D F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0C F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0F F6 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0E F7 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00 0D F8 10 00 81 96 98 00 19 00 00 00 98 3A 00 00 01 00");
+
+                    session.Send(pWriter);
                     //session.Send(GuideObjectPacket.Bracket(session.FieldPlayer));
                     session.Send(FishingPacket.Start(rodItemUid));
                     break;

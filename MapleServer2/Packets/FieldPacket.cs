@@ -12,16 +12,18 @@ namespace MapleServer2.Packets
     {
         public static Packet RequestEnter(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER)
-                .WriteByte(0x00)
-                .WriteInt(player.Value.MapId)
-                .WriteByte()
-                .WriteByte()
-                .WriteInt()
-                .WriteInt()
-                .Write(player.Coord)
-                .Write(player.Value.Rotation)
-                .WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
+            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteInt(player.Value.MapId);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.Write(player.Coord);
+            pWriter.Write(player.Value.Rotation);
+            pWriter.WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
+
+            return pWriter;
         }
 
         public static Packet AddPlayer(IFieldObject<Player> fieldPlayer)
@@ -83,8 +85,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(countA);
                 for (int i = 0; i < countA; i++)
                 {
-                    pWriter.WriteInt()
-                        .WriteByte();
+                    pWriter.WriteInt();
+                    pWriter.WriteByte();
                 }
             }
             pWriter.WriteInt();
@@ -103,10 +105,10 @@ namespace MapleServer2.Packets
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
 
-                appearanceBuffer.WriteByte(1)
-                    .WriteLong()
-                    .WriteLong()
-                    .WriteByte();
+                appearanceBuffer.WriteByte(1);
+                appearanceBuffer.WriteLong();
+                appearanceBuffer.WriteLong();
+                appearanceBuffer.WriteByte();
 
                 pWriter.WriteDeflated(appearanceBuffer.Buffer, 0, appearanceBuffer.Length);
                 pWriter.WriteByte(); // Separator?
@@ -144,16 +146,18 @@ namespace MapleServer2.Packets
 
         public static Packet RemovePlayer(IFieldObject<Player> player)
         {
-            return PacketWriter.Of(SendOp.FIELD_REMOVE_USER)
-                .WriteInt(player.ObjectId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_USER);
+            pWriter.WriteInt(player.ObjectId);
+
+            return pWriter;
         }
 
         public static Packet AddItem(IFieldObject<Item> item, int userObjectId)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM)
-                .Write(item.ObjectId) // object id
-                .Write(item.Value.Id)
-                .Write(item.Value.Amount);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM);
+            pWriter.Write(item.ObjectId); // object id
+            pWriter.Write(item.Value.Id);
+            pWriter.Write(item.Value.Amount);
 
             bool flag = true;
             pWriter.WriteBool(flag);
@@ -162,38 +166,44 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong();
             }
 
-            return pWriter.Write(item.Coord) // drop location
-                .WriteInt(userObjectId)
-                .WriteInt()
-                .WriteByte(2)
-                .WriteInt(item.Value.Rarity)
-                .WriteShort(1005)
-                .WriteByte()
-                .WriteByte()
-                .WriteItem(item.Value);
+            pWriter.Write(item.Coord); // drop location
+            pWriter.WriteInt(userObjectId);
+            pWriter.WriteInt();
+            pWriter.WriteByte(2);
+            pWriter.WriteInt(item.Value.Rarity);
+            pWriter.WriteShort(1005);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteItem(item.Value);
+
+            return pWriter;
         }
 
         public static Packet PickupItem(int objectId, int userObjectId)
         {
-            return PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM)
-                .WriteByte(0x01)
-                .WriteInt(objectId)
-                .WriteInt(userObjectId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM);
+            pWriter.WriteByte(0x01);
+            pWriter.WriteInt(objectId);
+            pWriter.WriteInt(userObjectId);
+
+            return pWriter;
         }
 
         public static Packet RemoveItem(int objectId)
         {
-            return PacketWriter.Of(SendOp.FIELD_REMOVE_ITEM)
-                .WriteInt(objectId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_ITEM);
+            pWriter.WriteInt(objectId);
+
+            return pWriter;
         }
 
         public static Packet AddNpc(IFieldObject<Npc> npc)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC)
-                .WriteInt(npc.ObjectId)
-                .WriteInt(npc.Value.Id)
-                .Write(npc.Coord)
-                .Write(CoordF.From(0, 0, 0)); // Unknown
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
+            pWriter.WriteInt(npc.ObjectId);
+            pWriter.WriteInt(npc.Value.Id);
+            pWriter.Write(npc.Coord);
+            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
             // If NPC is not valid, the packet seems to stop here
 
             // NPC Stat
@@ -205,23 +215,23 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(count); // branch
             for (int i = 0; i < count; i++)
             {
-                pWriter.WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteShort()
-                    .WriteInt()
-                    .WriteByte()
-                    .WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
             }
 
-            pWriter.WriteLong() // uid
-                .WriteByte()
-                .WriteInt(1)
-                .WriteInt()
-                .WriteByte();
+            pWriter.WriteLong(); // uid
+            pWriter.WriteByte();
+            pWriter.WriteInt(1);
+            pWriter.WriteInt();
+            pWriter.WriteByte();
 
             return pWriter;
         }
@@ -248,16 +258,16 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(count); // branch
             for (int i = 0; i < count; i++)
             {
-                pWriter.WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteShort()
-                    .WriteInt()
-                    .WriteByte()
-                    .WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
             }
             // Unknown
             pWriter.WriteLong();
@@ -288,16 +298,16 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(count); // branch
             for (int i = 0; i < count; i++)
             {
-                pWriter.WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteInt()
-                    .WriteShort()
-                    .WriteInt()
-                    .WriteByte()
-                    .WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
             }
             // Unknown
             pWriter.WriteLong();
@@ -311,28 +321,30 @@ namespace MapleServer2.Packets
 
         public static Packet AddPortal(IFieldObject<Portal> portal)
         {
-            return PacketWriter.Of(SendOp.FIELD_PORTAL)
-                .WriteByte(0x00)
-                .WriteInt(portal.Value.Id)
-                .WriteBool(portal.Value.IsVisible)
-                .WriteBool(portal.Value.IsEnabled)
-                .Write(portal.Coord)
-                .Write(portal.Value.Rotation)
-                .Write<CoordF>(default) // not sure (200,200,250) was used a lot
-                .WriteUnicodeString("")
-                .WriteInt(portal.Value.TargetMapId)
-                .WriteInt(portal.ObjectId)
-                .WriteInt()
-                .WriteBool(portal.Value.IsMinimapVisible)
-                .WriteLong()
-                .WriteByte()
-                .WriteInt()
-                .WriteShort()
-                .WriteInt()
-                .WriteBool(false)
-                .WriteUnicodeString("")
-                .WriteUnicodeString("")
-                .WriteUnicodeString("");
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteInt(portal.Value.Id);
+            pWriter.WriteBool(portal.Value.IsVisible);
+            pWriter.WriteBool(portal.Value.IsEnabled);
+            pWriter.Write(portal.Coord);
+            pWriter.Write(portal.Value.Rotation);
+            pWriter.Write<CoordF>(default); // not sure (200,200,250) was used a lot
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteInt(portal.Value.TargetMapId);
+            pWriter.WriteInt(portal.ObjectId);
+            pWriter.WriteInt();
+            pWriter.WriteBool(portal.Value.IsMinimapVisible);
+            pWriter.WriteLong();
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteBool(false);
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString("");
+
+            return pWriter;
         }
     }
 }
