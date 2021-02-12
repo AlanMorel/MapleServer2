@@ -57,14 +57,14 @@ namespace MapleServer2.Types
 
         public ItemStats Stats;
 
-        public Item(int id)
+        public Item(int id, int rarity = 0)
         {
             Id = id;
             Uid = GuidGenerator.Long();
             InventoryTab = ItemMetadataStorage.GetTab(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
             GemSlot = ItemMetadataStorage.GetGem(id);
-            Rarity = ItemMetadataStorage.GetRarity(id);
+            Rarity = rarity == 0 ? ItemMetadataStorage.GetRarity(id) : rarity;
             StackLimit = ItemMetadataStorage.GetStackLimit(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
@@ -74,7 +74,7 @@ namespace MapleServer2.Types
             Content = ItemMetadataStorage.GetContent(id);
             Slot = -1;
             Amount = 1;
-            Stats = new ItemStats();
+            Stats = new ItemStats(id, Rarity);
             CanRepackage = true; // If false, item becomes untradable
         }
 
@@ -123,7 +123,6 @@ namespace MapleServer2.Types
                 Uid = 2754959794416496488,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                Stats = new ItemStats(),
             };
         }
 
@@ -141,7 +140,6 @@ namespace MapleServer2.Types
                 ),
                 HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
-                Stats = new ItemStats(),
             };
         }
 
@@ -158,7 +156,6 @@ namespace MapleServer2.Types
                     0
                 ),
                 AppearanceFlag = 3,
-                Stats = new ItemStats(),
             };
         }
 
@@ -170,7 +167,6 @@ namespace MapleServer2.Types
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
                 FaceDecorationD = new byte[16],
-                Stats = new ItemStats(),
             };
         }
 
@@ -203,14 +199,6 @@ namespace MapleServer2.Types
                     0x13
                 ),
                 AppearanceFlag = 0x5,
-                Stats = new ItemStats
-                {
-                    BasicAttributes = {
-                        ItemStat.Of(Enums.ItemAttribute.CriticalRate, 12),
-                        ItemStat.Of(Enums.ItemAttribute.MinWeaponAtk, 15),
-                        ItemStat.Of(Enums.ItemAttribute.MaxWeaponAtk, 17)
-                    }
-                },
                 TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
             };
         }
@@ -247,7 +235,6 @@ namespace MapleServer2.Types
                 ),
                 HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
-                Stats = new ItemStats(),
             };
         }
         public static Item EarMale()
@@ -257,7 +244,6 @@ namespace MapleServer2.Types
                 Uid = 2754959794416496488,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                Stats = new ItemStats(),
             };
         }
         public static Item FaceMale()
@@ -273,7 +259,6 @@ namespace MapleServer2.Types
                     0
                 ),
                 AppearanceFlag = 3,
-                Stats = new ItemStats(),
             };
         }
         public static Item FaceDecorationMale()
@@ -284,7 +269,6 @@ namespace MapleServer2.Types
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
                 FaceDecorationD = new byte[16],
-                Stats = new ItemStats(),
             };
         }
         public static Item CloathMale()
@@ -299,7 +283,6 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                Stats = new ItemStats(),
             };
         }
         public static Item ShoesMale()
@@ -314,7 +297,6 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                Stats = new ItemStats(),
             };
         }
     }
