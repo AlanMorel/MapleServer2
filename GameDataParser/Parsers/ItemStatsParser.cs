@@ -47,14 +47,14 @@ namespace GameDataParser.Parsers
                         optionsMetadata.OptionNumPick = byte.Parse(list[0]);
                     }
 
-                    // float abp = string.IsNullOrEmpty(node.Attributes["abp_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["abp_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    float abp = string.IsNullOrEmpty(node.Attributes["abp_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["abp_rate_base"].Value);
+                    statMetadata.Add(new Stat(ItemAttribute.PerfectGuard, abp));
 
-                    // int asp = string.IsNullOrEmpty(node.Attributes["asp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["asp_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    int asp = string.IsNullOrEmpty(node.Attributes["asp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["asp_value_base"].Value);
+                    statMetadata.Add(new Stat(ItemAttribute.AttackSpeed, asp));
 
-                    // int atp = string.IsNullOrEmpty(node.Attributes["atp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["atp_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    int atp = string.IsNullOrEmpty(node.Attributes["atp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["atp_value_base"].Value);
+                    statMetadata.Add(new Stat(ItemAttribute.Accuracy, atp));
 
                     int bappet = string.IsNullOrEmpty(node.Attributes["bap_pet_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["bap_pet_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.PetBonusAtk, bappet));
@@ -72,13 +72,13 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.CriticalEvasion, car));
 
                     // float conditionreduce = string.IsNullOrEmpty(node.Attributes["conditionreduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["conditionreduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float darkdamage = string.IsNullOrEmpty(node.Attributes["darkdamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["darkdamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float darkdamagereduce = string.IsNullOrEmpty(node.Attributes["darkdamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["darkdamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int dex = string.IsNullOrEmpty(node.Attributes["dex_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["dex_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.Dexterity, dex));
@@ -87,22 +87,22 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.Evasion, evp));
 
                     // float finaladditionaldamage = string.IsNullOrEmpty(node.Attributes["finaladditionaldamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["finaladditionaldamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float firedamage = string.IsNullOrEmpty(node.Attributes["firedamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["firedamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float firedamagereduce = string.IsNullOrEmpty(node.Attributes["firedamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["firedamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float heal = string.IsNullOrEmpty(node.Attributes["heal_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["heal_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // int hiddennddadd = string.IsNullOrEmpty(node.Attributes["hiddennddadd_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["hiddennddadd_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // int hiddenwapadd = string.IsNullOrEmpty(node.Attributes["hiddenwapadd_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["hiddenwapadd_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int hprgp = string.IsNullOrEmpty(node.Attributes["hp_rgp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["hp_rgp_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.HpRegen, hprgp));
@@ -111,10 +111,10 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.Health, hp));
 
                     // float icedamage = string.IsNullOrEmpty(node.Attributes["icedamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["icedamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float icedamagereduce = string.IsNullOrEmpty(node.Attributes["icedamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["icedamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int int_ = string.IsNullOrEmpty(node.Attributes["int_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["int_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.Intelligence, int_));
@@ -123,19 +123,19 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.HpRegen, killhprestore));
 
                     // int knockbackreduce = string.IsNullOrEmpty(node.Attributes["knockbackreduce_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["knockbackreduce_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float lddincrease = string.IsNullOrEmpty(node.Attributes["lddincrease_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["lddincrease_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float longdistancedamagereduce = string.IsNullOrEmpty(node.Attributes["longdistancedamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["longdistancedamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float lightdamage = string.IsNullOrEmpty(node.Attributes["lightdamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["lightdamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float lightdamagereduce = string.IsNullOrEmpty(node.Attributes["lightdamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["lightdamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int luk = string.IsNullOrEmpty(node.Attributes["luk_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["luk_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.Luck, luk));
@@ -147,25 +147,25 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.MagicalRes, mar));
 
                     // float marpen = string.IsNullOrEmpty(node.Attributes["marpen_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["marpen_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int msp = string.IsNullOrEmpty(node.Attributes["msp_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["msp_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.MovementSpeed, msp));
 
                     float multiplyfactor = string.IsNullOrEmpty(node.Attributes["multiply_factor"]?.Value) ? 0 : float.Parse(node.Attributes["multiply_factor"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    optionsMetadata.MultiplyFactor = multiplyfactor;
 
-                    // int ndd = string.IsNullOrEmpty(node.Attributes["ndd_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["ndd_value_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    int ndd = string.IsNullOrEmpty(node.Attributes["ndd_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["ndd_value_base"].Value);
+                    statMetadata.Add(new Stat(ItemAttribute.Defense, ndd));
 
                     // float nddcalibrationfactor = string.IsNullOrEmpty(node.Attributes["nddcalibrationfactor_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["nddcalibrationfactor_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float nddincrease = string.IsNullOrEmpty(node.Attributes["nddincrease_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["nddincrease_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float neardistancedamagereduce = string.IsNullOrEmpty(node.Attributes["neardistancedamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["neardistancedamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int pap = string.IsNullOrEmpty(node.Attributes["pap_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["pap_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.PhysicalAtk, pap));
@@ -174,52 +174,52 @@ namespace GameDataParser.Parsers
                     statMetadata.Add(new Stat(ItemAttribute.PhysicalRes, par));
 
                     // float parpen = string.IsNullOrEmpty(node.Attributes["parpen_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["parpen_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     float pen = string.IsNullOrEmpty(node.Attributes["pen_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["pen_rate_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.Piercing, pen));
 
                     // float poisondamage = string.IsNullOrEmpty(node.Attributes["poisondamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["poisondamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float poisondamagereduce = string.IsNullOrEmpty(node.Attributes["poisondamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["poisondamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float receivedhealincrease = string.IsNullOrEmpty(node.Attributes["receivedhealincrease_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["receivedhealincrease_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // int reducedarkstreamrecivedamage = string.IsNullOrEmpty(node.Attributes["reduce_darkstream_recive_damage_rate_base"]?.Value) ? 0 : int.Parse(node.Attributes["reduce_darkstream_recive_damage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float sgi = string.IsNullOrEmpty(node.Attributes["sgi_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["sgi_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // int sgitarget = string.IsNullOrEmpty(node.Attributes["sgi_target"]?.Value) ? 0 : int.Parse(node.Attributes["sgi_target"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float skillcooldown = string.IsNullOrEmpty(node.Attributes["skillcooldown_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["skillcooldown_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float smd = string.IsNullOrEmpty(node.Attributes["smd_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["smd_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float sss = string.IsNullOrEmpty(node.Attributes["sss_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["sss_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int str = string.IsNullOrEmpty(node.Attributes["str_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["str_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.Strength, str));
 
                     // float stunreduce = string.IsNullOrEmpty(node.Attributes["stunreduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["stunreduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float thunderdamage = string.IsNullOrEmpty(node.Attributes["thunderdamage_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["thunderdamage_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float thunderdamagereduce = string.IsNullOrEmpty(node.Attributes["thunderdamagereduce_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["thunderdamagereduce_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     // float wapcalibrationfactor = string.IsNullOrEmpty(node.Attributes["wapcalibrationfactor_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["wapcalibrationfactor_rate_base"].Value);
-                    // statMetadata.Add(new StatMetadata(ItemAttribute.?, ?));
+                    // statMetadata.Add(new Stat(ItemAttribute.?, ?));
 
                     int wapmax = string.IsNullOrEmpty(node.Attributes["wapmax_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["wapmax_value_base"].Value);
                     statMetadata.Add(new Stat(ItemAttribute.MaxWeaponAtk, wapmax));
