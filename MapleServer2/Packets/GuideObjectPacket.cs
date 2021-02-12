@@ -27,7 +27,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(player.Value.CharacterId);
 
-
             return pWriter;
         }
     }
