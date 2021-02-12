@@ -57,14 +57,14 @@ namespace MapleServer2.Types
 
         public ItemStats Stats;
 
-        public Item(int id, int rarity = 0)
+        public Item(int id)
         {
             Id = id;
             Uid = GuidGenerator.Long();
             InventoryTab = ItemMetadataStorage.GetTab(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
             GemSlot = ItemMetadataStorage.GetGem(id);
-            Rarity = rarity == 0 ? ItemMetadataStorage.GetRarity(id) : rarity;
+            Rarity = ItemMetadataStorage.GetRarity(id);
             StackLimit = ItemMetadataStorage.GetStackLimit(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
