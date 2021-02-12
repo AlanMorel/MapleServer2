@@ -40,7 +40,10 @@ namespace MapleServer2.Tools
                     }
                 }
 
-                session.Player.Inventory.Add(item); // Adds item into internal database
+                if (!session.Player.Inventory.Add(item)) // Adds item into internal database
+                {
+                    return;
+                }
                 session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
                 if (isNew)
                 {
@@ -57,8 +60,10 @@ namespace MapleServer2.Tools
                         Slot = session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot,
                         Uid = GuidGenerator.Long()
                     };
-
-                    session.Player.Inventory.Add(newItem);
+                    if (!session.Player.Inventory.Add(newItem))
+                    {
+                        continue;
+                    }
                     session.Send(ItemInventoryPacket.Add(newItem));
                     if (isNew)
                     {
@@ -85,7 +90,10 @@ namespace MapleServer2.Tools
         // Picks up item
         public static void PickUp(GameSession session, Item item)
         {
-            session.Player.Inventory.Add(item); // Adds item into internal database
+            if (!session.Player.Inventory.Add(item)) // Adds item into internal database
+            {
+                return;
+            }
             session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
         }
 
@@ -134,7 +142,7 @@ namespace MapleServer2.Tools
         public static void LoadInventoryTab(GameSession session, InventoryTab tab)
         {
             session.Send(ItemInventoryPacket.ResetTab(tab));
-            session.Send(ItemInventoryPacket.LoadTab(tab));
+            session.Send(ItemInventoryPacket.LoadTab(tab, session.Player.Inventory.ExtraSize[tab]));
         }
 
         // Moves Item to destination slot
@@ -168,6 +176,33 @@ namespace MapleServer2.Tools
                 item.Amount = amount;
             }
             session.Send(ItemInventoryPacket.Update(uid, amount));
+        }
+
+        public static void ExpandInventory(GameSession session, InventoryTab tab)
+        {
+            Inventory inventory = session.Player.Inventory;
+            Wallet wallet = session.Player.Wallet;
+
+            if (!wallet.Meret.Modify(-390))
+            {
+                if (!wallet.GameMeret.Modify(-390))
+                {
+                    if (!wallet.EventMeret.Modify(-390))
+                    {
+                        if (wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount >= 390)
+                        {
+                            long rest = wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount - 390;
+                            wallet.Meret.SetAmount(rest);
+                            wallet.GameMeret.SetAmount(0);
+                            wallet.EventMeret.SetAmount(0);
+                        }
+                    }
+                }
+            }
+
+            inventory.ExtraSize[tab] += 6;
+            session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));
+            session.Send(ItemInventoryPacket.Expand());
         }
     }
 }

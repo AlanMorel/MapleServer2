@@ -90,7 +90,7 @@ namespace MapleServer2.Types
 
         public GameOptions GameOptions { get; private set; }
 
-        public Inventory Inventory = new Inventory(48);
+        public Inventory Inventory = new Inventory();
         public Mailbox Mailbox = new Mailbox();
 
         public long PartyId;
