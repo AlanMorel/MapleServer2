@@ -51,7 +51,7 @@ namespace MapleServer2.Data.Static
                 }
 
                 List<int> split = new List<int>(Array.ConvertAll(requiredItem.Split(','), int.Parse));
-                result.Add(new RecipeItem {Id = split[0], Amount = split[2]});
+                result.Add(new RecipeItem { Id = split[0], Amount = split[2] });
             }
 
             return result;
@@ -77,7 +77,7 @@ namespace MapleServer2.Data.Static
                 }
 
                 List<int> split = new List<int>(Array.ConvertAll(rewardItem.Split(','), int.Parse));
-                result.Add(new RecipeItem {Id = split[0], Rarity = split[1], Amount = split[2]});
+                result.Add(new RecipeItem { Id = split[0], Rarity = split[1], Amount = split[2] });
             }
 
             return result;

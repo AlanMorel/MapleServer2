@@ -58,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemID;
-            Item rewardBox = new Item(rewardBoxItemId) {Amount = 1};
+            Item rewardBox = new Item(rewardBoxItemId) { Amount = 1 };
 
             // give player the reward box item
             InventoryController.Add(session, rewardBox, true);
@@ -139,7 +139,8 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Item rewardItem = new(result.ElementAt(i).Id)
                 {
-                    Rarity = result.ElementAt(i).Rarity, Amount = result.ElementAt(i).Amount
+                    Rarity = result.ElementAt(i).Rarity,
+                    Amount = result.ElementAt(i).Amount
                 };
                 InventoryController.Add(session, rewardItem, true);
             }
