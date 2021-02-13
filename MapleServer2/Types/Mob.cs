@@ -13,6 +13,7 @@ namespace MapleServer2.Types
             Id = mob.Id;
             Animation = 255;
             Stats = mob.Stats;
+            Friendly = mob.Friendly;
         }
     }
 }
