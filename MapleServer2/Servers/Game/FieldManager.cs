@@ -36,10 +36,20 @@ namespace MapleServer2.Servers.Game
                 {
                     ZRotation = (short) (npc.Rotation.Z * 10)
                 });
-                if (fieldNpc.Value.Friendly == 0)
+                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
+                {
+                    ZRotation = (short) (npc.Rotation.Z * 10)
+                });
+
+                if (fieldNpc.Value.Friendly == 2)
                 {
                     fieldNpc.Coord = npc.Coord.ToFloat();
                     AddNpc(fieldNpc);
+                }
+                if (fieldMob.Value.Friendly != 2)
+                {
+                    fieldMob.Coord = npc.Coord.ToFloat();
+                    AddMob(fieldMob);
                 }
             }
 
