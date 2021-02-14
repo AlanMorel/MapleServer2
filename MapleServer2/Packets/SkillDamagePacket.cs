@@ -8,28 +8,35 @@ namespace MapleServer2.Packets
 {
     public static class SkillDamagePacket
     {
-        public static Packet ApplyDamage(IFieldObject<Player> player, long skillUid, int someValue, CoordF coords, List<IFieldObject<Mob>> mobs)
+        public static Packet ApplyDamage(IFieldObject<Player> player, long skillSN, int someValue, CoordF coords, List<IFieldObject<Mob>> mobs)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
+            SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
+            DamageHandler damage = DamageHandler.CalculateSkillDamage(skillCast);
+
             pWriter.WriteByte(1);
-            pWriter.WriteLong(skillUid);
+            pWriter.WriteLong(skillSN);
             pWriter.WriteInt(someValue);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.Value.ActiveSkillId);
-            pWriter.WriteInt(player.Value.ActiveSkillLevel);
+            pWriter.WriteInt(skillCast.GetSkillId());
+            pWriter.WriteShort(skillCast.GetSkillLevel());
+            // This values appears on some SkillsId, and others like BossSkill, sometimes is 0
+            pWriter.WriteByte(); // Unknown value
+            pWriter.WriteByte(); // Unknown value, also seems to crash if its not a correct value
             pWriter.Write(coords.ToShort());
-            pWriter.Write(CoordS.From(0, 0, 0));
-            /*pWriter.WriteInt(0); // Set as Int because 2 bytes after will set something.
-            pWriter.WriteByte(0); // Define is (59 heal) or (9 damage). Not always the case
-            pWriter.WriteByte(0); // Unknown - count?*/
+            pWriter.Write(CoordS.From(0, 0, 0)); // Position of the image effect of the skillUse, seems to be rotation (0, 0, rotation).
+            // TODO: Check if is a player or mob
             pWriter.WriteByte((byte) mobs.Count); // Mob count
             for (int i = 0; i < mobs.Count; i++)
             {
                 pWriter.WriteInt(mobs[i].ObjectId);
-                pWriter.WriteByte(1); // Unknown
-                pWriter.WriteBool(false); // Crit flag 
-                pWriter.WriteLong(-1 * 1); // TODO: Calculate damage
+                pWriter.WriteByte((byte) damage.GetDamage() > 0 ? 1 : 0); // Unknown
+                pWriter.WriteBool(damage.IsCritical()); // Crit flag 
+                if (damage.GetDamage() != 0)
+                {
+                    pWriter.WriteLong(-1 * (long) damage.GetDamage()); // TODO: Calculate damage
+                }
             }
             return pWriter;
         }
@@ -46,5 +53,6 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             return pWriter;
         }
+
     }
 }

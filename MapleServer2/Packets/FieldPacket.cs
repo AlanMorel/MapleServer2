@@ -319,6 +319,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet RemoveMob(IFieldObject<Mob> mob)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
+            pWriter.WriteInt(mob.ObjectId);
+            return pWriter;
+        }
+
         public static Packet AddPortal(IFieldObject<Portal> portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);

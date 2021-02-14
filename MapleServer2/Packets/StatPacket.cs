@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateMobStats(IFieldObject<Mob> mob)
+        public static Packet UpdateMobStats(IFieldObject<Mob> mob, SkillCast skillCast)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(mob.ObjectId);
@@ -26,9 +26,12 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(4); // value
             // Stats 
             // Damage should be update through this packet
-            for (int i = 0; i < 3; i++)
+            pWriter.WriteLong(mob.Value.Stats.Hp.Total);
+            pWriter.WriteLong(mob.Value.Stats.Hp.Min);
+            pWriter.WriteLong(mob.Value.Stats.Hp.Max -= (long) skillCast.GetDamage());
+            if (mob.Value.Stats.Hp.Max <= 0)
             {
-                pWriter.WriteLong(mob.Value.Stats.Hp[i]);
+                mob.Value.SetIsDead(true);
             }
 
             return pWriter;
@@ -37,7 +40,6 @@ namespace MapleServer2.Packets
         public static void DefaultStatsMob(this PacketWriter pWriter, IFieldObject<Mob> mob)
         {
             pWriter.WriteByte(0x23);
-            // Flag dependent
             for (int i = 0; i < 3; i++)
             {
                 pWriter.WriteLong(mob.Value.Stats.Hp[i]);

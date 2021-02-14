@@ -219,7 +219,43 @@ namespace MapleServer2.Types
             return true;
         }
 
+        public static Item DefaultScepter(Player owner)
+        {
+            return new Item(13300308)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
 
+        public static Item DefaultCodex(Player owner)
+        {
+            return new Item(14000270)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
         // MALE ITEMS
         public static Item HairMale()
         {

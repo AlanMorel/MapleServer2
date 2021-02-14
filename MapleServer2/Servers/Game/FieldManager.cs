@@ -86,6 +86,10 @@ namespace MapleServer2.Servers.Game
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
                 updates.Add(FieldObjectPacket.ControlMob(mob));
+                if (mob.Value.GetIsDead())
+                {
+                    RemoveMob(mob);
+                }
             }
             return updates;
         }
@@ -218,6 +222,20 @@ namespace MapleServer2.Servers.Game
             {
                 session.Send(FieldPacket.PickupItem(objectId, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
+            });
+            return true;
+        }
+
+        public bool RemoveMob(IFieldObject<Mob> mob)
+        {
+            if (!State.RemoveMob(mob.ObjectId))
+            {
+                return false;
+            }
+
+            Broadcast(session =>
+            {
+                session.Send(FieldPacket.RemoveMob(mob));
             });
             return true;
         }

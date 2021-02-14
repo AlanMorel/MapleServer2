@@ -43,8 +43,11 @@ namespace MapleServer2.Types
             {
                 foreach (int sub in SkillJob[id].SubSkills.Select(x => x))
                 {
-                    SkillJob[sub].Learned = learned;
-                    SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
+                    if (SkillJob.ContainsKey(sub))
+                    {
+                        SkillJob[sub].Learned = learned;
+                        SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
+                    }
                 }
             }
         }
