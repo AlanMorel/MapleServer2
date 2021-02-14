@@ -19,7 +19,8 @@ namespace MapleServer2.PacketHandlers.Game
             Move = 0x3,
             Drop = 0x4,
             DropBound = 0x5,
-            Sort = 0xA
+            Sort = 0xA,
+            Expand = 0xB
         };
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -40,6 +41,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestItemInventoryMode.Sort:
                     HandleSort(session, packet, inventory);
+                    break;
+                case RequestItemInventoryMode.Expand:
+                    HandleExpand(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -72,6 +76,12 @@ namespace MapleServer2.PacketHandlers.Game
         {
             InventoryTab tab = (InventoryTab) packet.ReadShort();
             InventoryController.SortInventory(session, inventory, tab);
+        }
+
+        private static void HandleExpand(GameSession session, PacketReader packet)
+        {
+            InventoryTab tab = (InventoryTab) packet.ReadByte();
+            InventoryController.ExpandInventory(session, tab);
         }
     }
 }

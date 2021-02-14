@@ -9,29 +9,24 @@ namespace MapleServer2.Packets
 {
     public static class ItemInventoryPacket
     {
-        public static Packet ResetTab(InventoryTab tab)
+        private enum InventoryMode : byte
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x0D);
-            pWriter.WriteInt((int) tab); // index
-
-            return pWriter;
-        }
-
-        public static Packet LoadTab(InventoryTab tab)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x0E);
-            pWriter.WriteByte((byte) tab);
-            pWriter.WriteInt();
-
-            return pWriter;
+            Add = 0x00,
+            Remove = 0x01,
+            Update = 0x02,
+            Move = 0x03,
+            LoadItem = 0x07,
+            MarkItemNew = 0x08,
+            LoadItemsToTab = 0x0A,
+            Expand = 0x0C,
+            ResetTab = 0x0D,
+            LoadTab = 0x0E
         }
 
         public static Packet Add(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x00);
+            pWriter.WriteEnum(InventoryMode.Add);
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteShort(item.Slot);
@@ -46,7 +41,7 @@ namespace MapleServer2.Packets
         public static Packet Remove(long uid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x01);
+            pWriter.WriteEnum(InventoryMode.Remove);
             pWriter.WriteLong(uid);
 
             return pWriter;
@@ -55,7 +50,7 @@ namespace MapleServer2.Packets
         public static Packet Update(long uid, int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x02);
+            pWriter.WriteEnum(InventoryMode.Update);
             pWriter.WriteLong(uid);
             pWriter.WriteInt(amount);
 
@@ -65,7 +60,7 @@ namespace MapleServer2.Packets
         public static Packet Move(long dstUid, short srcSlot, long srcUid, short dstSlot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x03);
+            pWriter.WriteEnum(InventoryMode.Move);
             pWriter.WriteLong(dstUid);
             pWriter.WriteShort(srcSlot);
             pWriter.WriteLong(srcUid);
@@ -77,7 +72,7 @@ namespace MapleServer2.Packets
         public static Packet LoadItem(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x07);
+            pWriter.WriteEnum(InventoryMode.LoadItem);
 
             pWriter.WriteShort((short) items.Count);
             foreach (Item item in items)
@@ -92,7 +87,7 @@ namespace MapleServer2.Packets
         public static Packet MarkItemNew(Item item, int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x08);
+            pWriter.WriteEnum(InventoryMode.MarkItemNew);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(amount);
             pWriter.WriteUnicodeString("");
@@ -103,7 +98,7 @@ namespace MapleServer2.Packets
         public static Packet LoadItemsToTab(InventoryTab tab, ICollection<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
-            pWriter.WriteByte(0x0A);
+            pWriter.WriteEnum(InventoryMode.LoadItemsToTab);
             pWriter.WriteInt((int) tab);
             pWriter.WriteShort((short) items.Count);
             foreach (Item item in items)
@@ -114,6 +109,33 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(item.Rarity);
                 pWriter.WriteItem(item);
             }
+
+            return pWriter;
+        }
+
+        public static Packet Expand()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+            pWriter.WriteEnum(InventoryMode.Expand);
+
+            return pWriter;
+        }
+
+        public static Packet ResetTab(InventoryTab tab)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+            pWriter.WriteEnum(InventoryMode.ResetTab);
+            pWriter.WriteInt((int) tab); // index
+
+            return pWriter;
+        }
+
+        public static Packet LoadTab(InventoryTab tab, short extraSlots)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
+            pWriter.WriteEnum(InventoryMode.LoadTab);
+            pWriter.WriteByte((byte) tab);
+            pWriter.WriteInt(extraSlots);
 
             return pWriter;
         }

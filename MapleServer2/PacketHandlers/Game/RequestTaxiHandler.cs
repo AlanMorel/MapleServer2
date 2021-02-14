@@ -28,6 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             int mapId = 0;
             long mesoPrice = 60000;
+            long meretPrice = 15;
 
             if (mode != RequestTaxiMode.DiscoverTaxi)
             {
@@ -50,13 +51,9 @@ namespace MapleServer2.PacketHandlers.Game
                     }
                     break;
                 case RequestTaxiMode.RotorsMeret:
-                    if (session.Player.Wallet.Meret.Modify(-15))
+                    if (session.Player.Wallet.RemoveMerets(meretPrice))
                     {
                         HandleTeleport(session, mapId);
-                    }
-                    else
-                    {
-                        // TODO: Reject packets
                     }
                     break;
                 case RequestTaxiMode.DiscoverTaxi:

@@ -10,16 +10,28 @@ namespace MapleServer2.Types
 {
     public class Inventory
     {
-        public short Size { get; }
         // This contains ALL inventory Items regardless of tab
         public readonly Dictionary<long, Item> Items;
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] SlotMaps;
 
-        public Inventory(short size)
+        public readonly Dictionary<InventoryTab, short> DefaultSize = new Dictionary<InventoryTab, short> {
+            { InventoryTab.Gear, 48}, { InventoryTab.Outfit, 150}, { InventoryTab.Mount, 48}, { InventoryTab.Catalyst, 48},
+            { InventoryTab.FishingMusic, 48}, { InventoryTab.Quest, 48}, { InventoryTab.Gemstone, 48}, { InventoryTab.Misc, 48},
+            { InventoryTab.LifeSkill, 126}, { InventoryTab.Pets, 60}, { InventoryTab.Consumable, 84}, { InventoryTab.Currency, 48},
+            { InventoryTab.Badge, 60}, { InventoryTab.Lapenshard, 48}, { InventoryTab.Fragment, 48}
+        };
+
+        public Dictionary<InventoryTab, short> ExtraSize = new Dictionary<InventoryTab, short> {
+            { InventoryTab.Gear, 0}, { InventoryTab.Outfit, 0}, { InventoryTab.Mount, 0}, { InventoryTab.Catalyst, 0},
+            { InventoryTab.FishingMusic, 0}, { InventoryTab.Quest, 0}, { InventoryTab.Gemstone, 0}, { InventoryTab.Misc, 0},
+            { InventoryTab.LifeSkill, 0}, { InventoryTab.Pets, 0}, { InventoryTab.Consumable, 0}, { InventoryTab.Currency, 0},
+            { InventoryTab.Badge, 0}, { InventoryTab.Lapenshard, 0}, { InventoryTab.Fragment, 0}
+        };
+
+        public Inventory()
         {
-            Size = size;
             Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
             SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -29,7 +41,7 @@ namespace MapleServer2.Types
             }
         }
 
-        public Inventory(short size, IEnumerable<Item> loadItems) : this(size)
+        public Inventory(IEnumerable<Item> loadItems) : this()
         {
             foreach (Item item in loadItems)
             {
@@ -60,7 +72,8 @@ namespace MapleServer2.Types
                 item.Slot = -1; // Reset slot
             }
 
-            for (short i = 0; i < Size; i++)
+            short tabSize = (short) (DefaultSize[item.InventoryTab] + ExtraSize[item.InventoryTab]);
+            for (short i = 0; i < tabSize; i++)
             {
                 if (SlotTaken(item, i))
                 {
@@ -184,7 +197,6 @@ namespace MapleServer2.Types
 
         public bool SlotTaken(Item item, short slot = -1)
         {
-            Debug.WriteLine(item.InventoryTab);
             return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
         }
 
