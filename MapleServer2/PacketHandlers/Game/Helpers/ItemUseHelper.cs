@@ -125,7 +125,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 {
                     Amount = rng.Next(content.MinAmount, content.MaxAmount),
                     Rarity = content.Rarity,
-                    Enchants = content.EnchantLevel
+                    Enchants = content.EnchantLevel,
+                    Stats = new ItemStats(content.Id, content.Rarity),
                 };
                 InventoryController.Add(session, item, true);
 
@@ -134,7 +135,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     item = new Item(content.Id2)
                     {
                         Amount = rng.Next(content.MinAmount, content.MaxAmount),
-                        Rarity = content.Rarity
+                        Rarity = content.Rarity,
+                        Stats = new ItemStats(content.Id, content.Rarity),
                     };
                     InventoryController.Add(session, item, true);
                 }

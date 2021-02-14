@@ -93,17 +93,17 @@ namespace MapleServer2.Tools
             }
 
             _ = int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity);
+            _ = int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount);
 
-            Item item = new Item(itemId, rarity)
+            Item item = new Item(itemId)
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
                 PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
+                Rarity = rarity,
+                Amount = amount,
+                Stats = new ItemStats(itemId, rarity)
             };
-            if (int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount))
-            {
-                item.Amount = amount;
-            }
 
             // Simulate looting item
             InventoryController.Add(session, item, true);
