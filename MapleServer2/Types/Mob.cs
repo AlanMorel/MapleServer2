@@ -20,9 +20,8 @@ namespace MapleServer2.Types
 
         public void UpdateStats(double damage)
         {
-            Mob mob = this;
-            mob.Stats.Hp.Max -= (long) damage;
-            mob.IsDead = mob.Stats.Hp.Max <= 0;
+            Stats.Hp.Max -= (long) damage;
+            IsDead = Stats.Hp.Max <= 0;
         }
     }
 }
