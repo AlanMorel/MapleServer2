@@ -30,7 +30,7 @@ namespace MapleServer2.Types
             // TODO: Critic base on Stats
             Random rnd = new Random();
             double roll = rnd.NextDouble();
-            return roll > 0.5 ? true : false;
+            return roll > 0.5;
         }
 
         public double GetCriticalDamage()

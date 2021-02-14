@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateMobStats(IFieldObject<Mob> mob, SkillCast skillCast)
+        public static Packet UpdateMobStats(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(mob.ObjectId);
@@ -26,8 +26,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(4); // value
             pWriter.WriteLong(mob.Value.Stats.Hp.Total);
             pWriter.WriteLong(mob.Value.Stats.Hp.Min);
-            pWriter.WriteLong(mob.Value.UpdateStats(mob.Value, skillCast.GetDamage()));
-
+            pWriter.WriteLong(mob.Value.Stats.Hp.Max);
             return pWriter;
         }
 

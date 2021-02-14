@@ -41,7 +41,5 @@
             DamageHandler toReturn = HandleCrit(skillCast, damage);
             return toReturn;
         }
-
-
     }
 }

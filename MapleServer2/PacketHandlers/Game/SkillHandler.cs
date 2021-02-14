@@ -137,7 +137,8 @@ namespace MapleServer2.PacketHandlers.Game
                 packet.ReadByte();
                 if (mobs[i] != null)
                 {
-                    session.Send(StatPacket.UpdateMobStats(mobs[i], session.FieldPlayer.Value.SkillCast));
+                    mobs[i].Value.UpdateStats(session.FieldPlayer.Value.SkillCast.GetDamage());
+                    session.Send(StatPacket.UpdateMobStats(mobs[i]));
                 }
             }
             session.Send(SkillDamagePacket.ApplyDamage(session.FieldPlayer, skillUid, someValue, coords, mobs));
