@@ -10,10 +10,13 @@ namespace MapleServer2.Types
         public Mob(int id)
         {
             NpcMetadata mob = NpcMetadataStorage.GetNpcMetadata(id);
-            Id = mob.Id;
-            Animation = 255;
-            Stats = mob.Stats;
-            Friendly = mob.Friendly;
+            if (mob != null)  // Temporary, while I figure out how to seperate Interactable Models from real NPCs.
+            {
+                Id = mob.Id;
+                Animation = 255;
+                Stats = mob.Stats;
+                Friendly = mob.Friendly;
+            }
         }
     }
 }

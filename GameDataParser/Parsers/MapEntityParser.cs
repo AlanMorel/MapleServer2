@@ -88,6 +88,8 @@ namespace GameDataParser.Parsers
                 foreach (XmlNode node in mapEntities)
                 {
                     string modelName = node.Attributes["modelName"].Value.ToLower();
+                    // IM_ Prefixed items are Interactable Models defined/linked in "xml/table/interactobject.xml"
+                    Match NpcEntityMatch = Regex.Match(node.Attributes["modelName"].Value, @"([1-4]\d{7})_(.*)?");
 
                     XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
                     CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
@@ -128,6 +130,30 @@ namespace GameDataParser.Parsers
 
                         CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
                         metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName])));
+                    }
+                    else if (NpcEntityMatch.Success)
+                    {
+                        // Skip some items we don't handle yet
+                        if (NpcEntityMatch.Groups[0].Value.Contains("WayPoint"))
+                        {
+                            continue;
+                        }
+                        else if (NpcEntityMatch.Groups[0].Value.Contains("PatrolData"))
+                        {
+                            continue;
+                        }
+
+                        int npcId = int.Parse(NpcEntityMatch.Groups[1].Value.Split("_")[0]);
+                        XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
+                        XmlNode playerRotation = node.SelectSingleNode("property[@name='Rotation']");
+                        if (playerCoord == null) //  Some entities don't have a playerRotation. Just means 0,0,0.
+                        {
+                            continue;
+                        }
+
+                        string npcPositionValue = playerCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        metadata.Npcs.Add(new MapNpc(npcId, ParseCoord(npcPositionValue), ParseCoord(npcRotationValue)));
                     }
                 }
 

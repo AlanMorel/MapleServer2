@@ -46,7 +46,7 @@ namespace MapleServer2.Servers.Game
                     fieldNpc.Coord = npc.Coord.ToFloat();
                     AddNpc(fieldNpc);
                 }
-                if (fieldMob.Value.Friendly != 2)
+                else
                 {
                     fieldMob.Coord = npc.Coord.ToFloat();
                     AddMob(fieldMob);

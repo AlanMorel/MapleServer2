@@ -38,6 +38,7 @@ namespace GameDataParser.Parsers
                 NpcMetadata metadata = new NpcMetadata();
                 metadata.Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
                 metadata.Model = npcModelNode.Attributes["kfm"].Value;
+                metadata.Level = short.Parse(npcBasicNode.Attributes["level"].Value);
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
                 metadata.Stats = GetNpcStats(statsCollection);
                 metadata.SkillIds = string.IsNullOrEmpty(npcSkillIdsNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillIdsNode.Attributes["ids"].Value.Split(","), int.Parse);
