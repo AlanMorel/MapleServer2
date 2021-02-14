@@ -182,16 +182,18 @@ namespace MapleServer2.Tools
         {
             Inventory inventory = session.Player.Inventory;
             Wallet wallet = session.Player.Wallet;
+            long meretCost = 390;
+            short expansionAmount = 6;
 
-            if (!wallet.Meret.Modify(-390))
+            if (!wallet.Meret.Modify(-meretCost))
             {
-                if (!wallet.GameMeret.Modify(-390))
+                if (!wallet.GameMeret.Modify(-meretCost))
                 {
-                    if (!wallet.EventMeret.Modify(-390))
+                    if (!wallet.EventMeret.Modify(-meretCost))
                     {
-                        if (wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount >= 390)
+                        if (wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount >= meretCost)
                         {
-                            long rest = wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount - 390;
+                            long rest = wallet.Meret.Amount + wallet.GameMeret.Amount + wallet.EventMeret.Amount - meretCost;
                             wallet.Meret.SetAmount(rest);
                             wallet.GameMeret.SetAmount(0);
                             wallet.EventMeret.SetAmount(0);
@@ -200,7 +202,7 @@ namespace MapleServer2.Tools
                 }
             }
 
-            inventory.ExtraSize[tab] += 6;
+            inventory.ExtraSize[tab] += expansionAmount;
             session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));
             session.Send(ItemInventoryPacket.Expand());
         }
