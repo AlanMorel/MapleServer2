@@ -86,7 +86,7 @@ namespace MapleServer2.Servers.Game
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
                 updates.Add(FieldObjectPacket.ControlMob(mob));
-                if (mob.Value.GetIsDead())
+                if (mob.Value.IsDead)
                 {
                     RemoveMob(mob);
                 }

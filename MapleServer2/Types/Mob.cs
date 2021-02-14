@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
@@ -6,16 +7,13 @@ namespace MapleServer2.Types
     public class Mob : NpcMetadata
     {
         public short ZRotation; // In degrees * 10
-        private bool IsDead;
+        public bool IsDead { get; private set; }
 
-        public bool GetIsDead()
+        public long UpdateStats(Mob mob, double damage)
         {
-            return IsDead;
-        }
-
-        public bool SetIsDead(bool state)
-        {
-            return IsDead = state;
+            mob.Stats.Hp.Max -= (long) damage;
+            IsDead = mob.Stats.Hp.Max <= 0;
+            return mob.Stats.Hp.Max;
         }
 
         public Mob(int id)

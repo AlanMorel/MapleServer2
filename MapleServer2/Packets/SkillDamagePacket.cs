@@ -19,8 +19,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(someValue);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(skillCast.GetSkillId());
-            pWriter.WriteShort(skillCast.GetSkillLevel());
+            pWriter.WriteInt(skillCast.SkillId);
+            pWriter.WriteShort(skillCast.SkillLevel);
             // This values appears on some SkillsId, and others like BossSkill, sometimes is 0
             pWriter.WriteByte(); // Unknown value
             pWriter.WriteByte(); // Unknown value, also seems to crash if its not a correct value
@@ -53,6 +53,5 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             return pWriter;
         }
-
     }
 }

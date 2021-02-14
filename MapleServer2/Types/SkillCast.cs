@@ -5,37 +5,17 @@ namespace MapleServer2.Types
 {
     public class SkillCast
     {
-        #region Declaration
-        private long SkillSN;
-        private int EntityId;
-        private int SkillId;
-        private short SkillLevel;
-        private int UnkValue; // unknown value
+        public long SkillSN { get; private set; }
+        public int EntityId { get; private set; }
+        public int SkillId { get; private set; }
+        public short SkillLevel { get; private set; }
+        public int UnkValue { get; private set; }
+
         private double SkillDamage = 0;
-
-        public long GetSkillSN()
-        {
-            return SkillSN;
-        }
-
-        public int GetSkillId()
-        {
-            return SkillId;
-        }
-
-        public short GetSkillLevel()
-        {
-            return SkillLevel;
-        }
-
-        public int GetUnkValue()
-        {
-            return UnkValue;
-        }
 
         public double GetDamageRate()
         {
-            return SkillMetadataStorage.GetSkill(GetSkillId()).SkillLevels.Find(x => x.Level == GetSkillLevel()).DamageRate;
+            return SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(x => x.Level == SkillLevel).DamageRate;
         }
 
         public double GetDamage()
@@ -50,34 +30,14 @@ namespace MapleServer2.Types
             // TODO: Critic base on Stats
             Random rnd = new Random();
             double roll = rnd.NextDouble();
-            if (roll > 0.5)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return roll > 0.5 ? true : false;
         }
 
         public double GetCriticalDamage()
         {
             // TODO: Critic Damage calculation
-            if (RollCrit() == true)
-            {
-                return GetDamageRate() + GetDamageRate();
-            }
-            else
-            {
-                return GetDamageRate();
-            }
+            return RollCrit() ? GetDamageRate() * 2 : GetDamageRate();
         }
-
-        public int GetEntityId()
-        {
-            return EntityId;
-        }
-        #endregion
 
         public SkillCast(int id, short level, long skillSN, int value)
         {

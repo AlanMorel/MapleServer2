@@ -24,15 +24,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteByte(1);
             pWriter.WriteByte(4); // value
-            // Stats 
-            // Damage should be update through this packet
             pWriter.WriteLong(mob.Value.Stats.Hp.Total);
             pWriter.WriteLong(mob.Value.Stats.Hp.Min);
-            pWriter.WriteLong(mob.Value.Stats.Hp.Max -= (long) skillCast.GetDamage());
-            if (mob.Value.Stats.Hp.Max <= 0)
-            {
-                mob.Value.SetIsDead(true);
-            }
+            pWriter.WriteLong(mob.Value.UpdateStats(mob.Value, skillCast.GetDamage()));
 
             return pWriter;
         }

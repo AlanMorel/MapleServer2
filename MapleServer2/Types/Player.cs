@@ -239,7 +239,7 @@ namespace MapleServer2.Types
 
         public static Player Priest(long accountId, long characterId, string name = "Priest")
         {
-            Job job = Job.Priest; // Priest
+            Job job = Job.Priest;
             PlayerStats stats = PlayerStats.Default();
             StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
@@ -295,7 +295,6 @@ namespace MapleServer2.Types
         }
 
         public void Warp(MapPlayerSpawn spawn, int mapId)
-
         {
             MapId = mapId;
             Coord = spawn.Coord.ToFloat();

@@ -13,12 +13,12 @@ namespace MapleServer2.Packets
 
         public static Packet SkillUse(SkillCast skillCast, CoordF coords)
         {
-            SkillCastMap[skillCast.GetSkillSN()] = skillCast;
+            SkillCastMap[skillCast.SkillSN] = skillCast;
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
-            pWriter.WriteLong(skillCast.GetSkillSN());
-            pWriter.WriteInt(skillCast.GetUnkValue());    // Unknown
-            pWriter.WriteInt(skillCast.GetSkillId());
-            pWriter.WriteShort(skillCast.GetSkillLevel());
+            pWriter.WriteLong(skillCast.SkillSN);
+            pWriter.WriteInt(skillCast.UnkValue);
+            pWriter.WriteInt(skillCast.SkillId);
+            pWriter.WriteShort(skillCast.SkillLevel);
             pWriter.WriteByte();
             pWriter.Write(coords);
             pWriter.WriteLong();
