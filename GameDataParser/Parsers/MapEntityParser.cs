@@ -134,25 +134,21 @@ namespace GameDataParser.Parsers
                     else if (NpcEntityMatch.Success)
                     {
                         // Skip some items we don't handle yet
-                        if (NpcEntityMatch.Groups[0].Value.Contains("WayPoint"))
+                        if (NpcEntityMatch.Groups[0].Value.Contains("WayPoint") || NpcEntityMatch.Groups[0].Value.Contains("PatrolData"))
                         {
                             continue;
                         }
-                        else if (NpcEntityMatch.Groups[0].Value.Contains("PatrolData"))
+
+                        XmlNode npcCoord = node.SelectSingleNode("property[@name='Position']");
+                        XmlNode npcRotation = node.SelectSingleNode("property[@name='Rotation']");
+                        if (npcCoord == null) //  Some entities don't have a playerRotation. Just means 0,0,0.
                         {
                             continue;
                         }
 
                         int npcId = int.Parse(NpcEntityMatch.Groups[1].Value.Split("_")[0]);
-                        XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
-                        XmlNode playerRotation = node.SelectSingleNode("property[@name='Rotation']");
-                        if (playerCoord == null) //  Some entities don't have a playerRotation. Just means 0,0,0.
-                        {
-                            continue;
-                        }
-
-                        string npcPositionValue = playerCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
-                        string npcRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcPositionValue = npcCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcRotationValue = npcRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         metadata.Npcs.Add(new MapNpc(npcId, ParseCoord(npcPositionValue), ParseCoord(npcRotationValue)));
                     }
                 }
