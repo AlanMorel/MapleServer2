@@ -19,9 +19,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestItemBreakHandler(ILogger<RequestItemBreakHandler> logger) : base(logger) { }
 
-        private Dictionary<short, long> DismantleSlots;
-        private Dictionary<int, int> Rewards;
-
         private enum ItemBreakMode : byte
         {
             Open = 0x00,
@@ -37,8 +34,8 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case ItemBreakMode.Open:
-                    DismantleSlots = new Dictionary<short, long>(100);
-                    Rewards = new Dictionary<int, int>();
+                    session.Player.DismantleSlots = new Dictionary<short, long>(100);
+                    session.Player.Rewards = new Dictionary<int, int>();
                     break;
                 case ItemBreakMode.Add:
                     HandleAdd(session, packet);
@@ -58,45 +55,53 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleAdd(GameSession session, PacketReader packet)
+        private static void HandleAdd(GameSession session, PacketReader packet)
         {
             short slot = (short) packet.ReadInt();
             long uid = packet.ReadLong();
             int amount = packet.ReadInt();
 
-            Add(session, slot, uid, amount);
+            DismantleAdd(session, slot, uid, amount);
         }
 
-        private void HandleRemove(GameSession session, PacketReader packet)
+        private static void HandleRemove(GameSession session, PacketReader packet)
         {
             long uid = packet.ReadLong();
-            short key = DismantleSlots.FirstOrDefault(x => x.Value == uid).Key;
+            short key = session.Player.DismantleSlots.FirstOrDefault(x => x.Value == uid).Key;
 
-            DismantleSlots.Remove(key);
+            session.Player.DismantleSlots.Remove(key);
             session.Send(ItemBreakPacket.Remove(uid));
             UpdateRewards(session);
         }
 
-        private void HandleDismantle(GameSession session)
+        private static void HandleDismantle(GameSession session)
         {
-            foreach (KeyValuePair<short, long> item in DismantleSlots)
+            Player player = session.Player;
+
+            foreach (KeyValuePair<short, long> slot in player.DismantleSlots)
             {
-                InventoryController.Remove(session, item.Value, out Item _);
+                InventoryController.Remove(session, slot.Value, out Item _);
             }
-            foreach (KeyValuePair<int, int> item in Rewards)
+            foreach (KeyValuePair<int, int> reward in player.Rewards)
             {
-                InventoryController.Add(session, new Item(item.Key) { Amount = item.Value }, true);
+                Item item = new Item(reward.Key)
+                {
+                    Amount = reward.Value
+                };
+
+                InventoryController.Add(session, item, true);
             }
-            DismantleSlots = new Dictionary<short, long>(100);
-            session.Send(ItemBreakPacket.ShowRewards(Rewards));
+            player.DismantleSlots = new Dictionary<short, long>(100);
+            session.Send(ItemBreakPacket.ShowRewards(player.Rewards));
         }
 
-        private void UpdateRewards(GameSession session)
+        private static void UpdateRewards(GameSession session)
         {
-            Rewards = new Dictionary<int, int>();
-            foreach (KeyValuePair<short, long> slot in DismantleSlots)
+            Player player = session.Player;
+            player.Rewards = new Dictionary<int, int>();
+            foreach (KeyValuePair<short, long> slot in player.DismantleSlots)
             {
-                Item item = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Value).Value;
+                Item item = player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Value).Value;
                 if (!ItemMetadataStorage.IsValid(item.Id))
                 {
                     continue;
@@ -112,44 +117,47 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     if (ingredient.Id != 0)
                     {
-                        if (Rewards.ContainsKey(ingredient.Id))
+                        if (player.Rewards.ContainsKey(ingredient.Id))
                         {
-                            Rewards[ingredient.Id] += ingredient.Count;
+                            player.Rewards[ingredient.Id] += ingredient.Count;
                         }
                         else
                         {
-                            Rewards[ingredient.Id] = ingredient.Count;
+                            player.Rewards[ingredient.Id] = ingredient.Count;
                         }
                     }
                 }
                 // TODO: Add Onyx Crystal (40100023) and Chaos Onyx Crystal (40100024) to rewards if InventoryTab = Gear, based on level and rarity
                 // TODO: Add rewards for outfits
             }
-            session.Send(ItemBreakPacket.Results(Rewards));
+            session.Send(ItemBreakPacket.Results(player.Rewards));
         }
 
-        private void HandleAutoAdd(GameSession session, PacketReader packet)
+        private static void HandleAutoAdd(GameSession session, PacketReader packet)
         {
             InventoryTab inventoryTab = (InventoryTab) packet.ReadByte();
             byte rarityType = packet.ReadByte();
-            Dictionary<long, Item> items = session.Player.Inventory.Items;
+            Player player = session.Player;
+            Dictionary<long, Item> items = player.Inventory.Items;
+
             foreach (KeyValuePair<long, Item> item in items)
             {
                 if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType)
                 {
                     continue;
                 }
-                Add(session, -1, item.Value.Uid, item.Value.Amount);
+                DismantleAdd(session, -1, item.Value.Uid, item.Value.Amount);
             }
         }
 
-        private void Add(GameSession session, short slot, long uid, int amount)
+        private static void DismantleAdd(GameSession session, short slot, long uid, int amount)
         {
+            Player player = session.Player;
             if (slot >= 0)
             {
-                if (!DismantleSlots.ContainsKey(slot))
+                if (!player.DismantleSlots.ContainsKey(slot))
                 {
-                    DismantleSlots[slot] = uid;
+                    player.DismantleSlots[slot] = uid;
                 }
                 else
                 {
@@ -161,11 +169,11 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 for (slot = 0; slot < 100; slot++)
                 {
-                    if (DismantleSlots.ContainsKey(slot))
+                    if (player.DismantleSlots.ContainsKey(slot))
                     {
                         continue;
                     }
-                    DismantleSlots[slot] = uid;
+                    player.DismantleSlots[slot] = uid;
                     break;
                 }
             }

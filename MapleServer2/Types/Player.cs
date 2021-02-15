@@ -93,6 +93,10 @@ namespace MapleServer2.Types
         public Inventory Inventory = new Inventory();
         public Mailbox Mailbox = new Mailbox();
 
+        // Dismantle Inventory
+        public Dictionary<short, long> DismantleSlots;
+        public Dictionary<int, int> Rewards;
+
         public long PartyId;
 
         public long ClubId;
