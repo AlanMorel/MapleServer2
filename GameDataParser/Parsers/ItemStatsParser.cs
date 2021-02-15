@@ -39,7 +39,7 @@ namespace GameDataParser.Parsers
                     metadata.ItemId = itemId;
 
                     byte grade = string.IsNullOrEmpty(node.Attributes["grade"]?.Value) ? 0 : byte.Parse(node.Attributes["grade"].Value);
-                    optionsMetadata.Grade = grade;
+                    optionsMetadata.Rarity = grade;
 
                     if (!string.IsNullOrEmpty(node.Attributes["optionNumPick"]?.Value))
                     {

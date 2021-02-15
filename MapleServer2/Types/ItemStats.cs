@@ -78,12 +78,12 @@ namespace MapleServer2.Types
         public byte TotalSockets;
         public readonly List<Gemstone> Gemstones;
 
-        public ItemStats(int itemId, int grade)
+        public ItemStats(int itemId, int rarity)
         {
             BasicAttributes = new List<ItemStat>();
             BonusAttributes = new List<ItemStat>();
             Gemstones = new List<Gemstone>();
-            if (grade == 0)
+            if (rarity == 0)
             {
                 return;
             }
@@ -91,7 +91,7 @@ namespace MapleServer2.Types
             {
                 foreach (ItemOptions options in basicList)
                 {
-                    if (options.Grade != grade)
+                    if (options.Rarity != rarity)
                     {
                         continue;
                     }
@@ -113,7 +113,7 @@ namespace MapleServer2.Types
             {
                 foreach (ItemOptions options in randomBonusList)
                 {
-                    if (options.Grade != grade)
+                    if (options.Rarity != rarity)
                     {
                         continue;
                     }

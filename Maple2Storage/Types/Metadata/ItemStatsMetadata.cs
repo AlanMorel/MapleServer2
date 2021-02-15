@@ -23,7 +23,7 @@ namespace Maple2Storage.Types.Metadata
     public class ItemOptions
     {
         [XmlElement(Order = 1)]
-        public byte Grade;
+        public byte Rarity;
         [XmlElement(Order = 2)]
         public byte Slots;
         [XmlElement(Order = 3)]
