@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     {
         private enum InstrumentPacketMode : byte
         {
-            StartImprovise = 0x0, //improvise only?
+            StartImprovise = 0x0,
             PlayNote = 0x1,
             StopImprovise = 0x2,
             PlayScore = 0x3,

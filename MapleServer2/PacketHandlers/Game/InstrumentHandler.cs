@@ -93,6 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+
             score.PlayCount -= 1;
 
             session.Send(InstrumentPacket.PlayScore(session.Player, score.FileName));
@@ -115,7 +116,5 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int skillId = packet.ReadInt();
         }
-
-
     }
 }
