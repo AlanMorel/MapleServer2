@@ -34,11 +34,14 @@ namespace Maple2Storage.Types.Metadata
         public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 13)]
         public List<ItemContent> Content;
+        [XmlElement(Order = 14)]
+        public List<ItemBreakReward> BreakRewards;
 
         // Required for deserialization
         public ItemMetadata()
         {
             Content = new List<ItemContent>();
+            BreakRewards = new List<ItemBreakReward>();
         }
 
         public override string ToString() =>
@@ -148,5 +151,24 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class ItemBreakReward
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public int Count;
+
+        public ItemBreakReward() { }
+
+        public ItemBreakReward(int id, int count)
+        {
+            Id = id;
+            Count = count;
+        }
+
+        public override string ToString() => $"Id: {Id}, Amount: {Count}";
     }
 }
