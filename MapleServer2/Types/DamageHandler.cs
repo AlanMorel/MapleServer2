@@ -6,17 +6,6 @@
         private double Damage { get; set; }
         private bool IsCrit { get; set; }
 
-        public double GetDamage()
-        {
-            // TODO: Calculate Damage properly 
-            return Damage * 100;
-        }
-
-        public bool IsCritical()
-        {
-            return IsCrit;
-        }
-
         private DamageHandler(double damage, bool isCrit)
         {
             Damage = damage;
@@ -40,6 +29,17 @@
             damage = skillCast.GetDamageRate();
             DamageHandler toReturn = HandleCrit(skillCast, damage);
             return toReturn;
+        }
+
+        public double GetDamage()
+        {
+            // TODO: Calculate Damage properly 
+            return Damage * 100;
+        }
+
+        public bool IsCritical()
+        {
+            return IsCrit;
         }
     }
 }

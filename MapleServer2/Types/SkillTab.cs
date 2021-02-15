@@ -57,10 +57,7 @@ namespace MapleServer2.Types
             Name = name;
         }
 
-        public static List<SkillMetadata> GetJobFeatureSkills(Job job)
-        {
-            return SkillMetadataStorage.GetJobSkills(job);
-        }
+        public static List<SkillMetadata> GetJobFeatureSkills(Job job) => SkillMetadataStorage.GetJobSkills(job);
 
         public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", SkillJob)})";
     }

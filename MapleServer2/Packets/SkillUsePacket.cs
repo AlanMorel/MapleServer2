@@ -28,6 +28,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteByte();
             pWriter.WriteByte();
+
             return pWriter;
         }
 
@@ -48,6 +49,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort();
             pWriter.Write(mob.Coord.X);
             pWriter.WriteInt();
+
             return pWriter;
         }
     }

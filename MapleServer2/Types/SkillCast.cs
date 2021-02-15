@@ -13,9 +13,18 @@ namespace MapleServer2.Types
 
         private double SkillDamage = 0;
 
-        public double GetDamageRate()
+        public SkillCast(int id, short level, long skillSN, int value)
         {
-            return SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(x => x.Level == SkillLevel).DamageRate;
+            SkillSN = skillSN;
+            SkillId = id;
+            SkillLevel = level;
+            UnkValue = value;
+        }
+
+        public SkillCast()
+        {
+            SkillId = 1;
+            SkillLevel = 1;
         }
 
         public double GetDamage()
@@ -25,33 +34,16 @@ namespace MapleServer2.Types
             return SkillDamage;
         }
 
+        public double GetDamageRate() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(x => x.Level == SkillLevel).DamageRate;
+
+        public double GetCriticalDamage() => RollCrit() ? GetDamageRate() * 2 : GetDamageRate();
+
         public bool RollCrit()
         {
             // TODO: Critic base on Stats
             Random rnd = new Random();
             double roll = rnd.NextDouble();
             return roll > 0.5;
-        }
-
-        public double GetCriticalDamage()
-        {
-            // TODO: Critic Damage calculation
-            return RollCrit() ? GetDamageRate() * 2 : GetDamageRate();
-        }
-
-        public SkillCast(int id, short level, long skillSN, int value)
-        {
-            SkillSN = skillSN;
-            SkillId = id;
-            SkillLevel = level;
-            UnkValue = value;
-        }
-
-        // Required for first time enter the game
-        public SkillCast()
-        {
-            SkillId = 1;
-            SkillLevel = 1;
         }
     }
 }
