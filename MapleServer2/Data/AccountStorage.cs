@@ -19,11 +19,13 @@ namespace MapleServer2.Data
             // Add temp characters
             long defaultCharId1 = 1;
             long defaultCharId2 = 2;
+            long defaultCharId3 = 3;
 
-            AccountCharacters.Add(DEFAULT_ACCOUNT_ID, new List<long> { defaultCharId1, defaultCharId2 });
+            AccountCharacters.Add(DEFAULT_ACCOUNT_ID, new List<long> { defaultCharId1, defaultCharId2, defaultCharId3 });
 
             Characters.Add(defaultCharId1, Player.Char1(DEFAULT_ACCOUNT_ID, defaultCharId1));
             Characters.Add(defaultCharId2, Player.Char2(DEFAULT_ACCOUNT_ID, defaultCharId2));
+            Characters.Add(defaultCharId3, Player.Priest(DEFAULT_ACCOUNT_ID, defaultCharId3));
         }
 
         // Retrieves a list of character ids for an account

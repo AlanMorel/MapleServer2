@@ -68,9 +68,7 @@ namespace MapleServer2.Types
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;
-
-        public int ActiveSkillId = 1;
-        public short ActiveSkillLevel = 1;
+        public SkillCast SkillCast = new SkillCast();
 
         public List<SkillTab> SkillTabs = new List<SkillTab>();
         public StatDistribution StatPointDistribution = new StatDistribution();
@@ -237,6 +235,63 @@ namespace MapleServer2.Types
                 HomeName = "HomeName",
                 Coord = CoordF.From(-675, 525, 600) // Intro map (52000065)
             };
+        }
+
+        public static Player Priest(long accountId, long characterId, string name = "Priest")
+        {
+            Job job = Job.Priest;
+            PlayerStats stats = PlayerStats.Default();
+            StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
+            List<SkillTab> skillTabs = new List<SkillTab>
+            {
+                new SkillTab(job)
+            };
+
+            Player player = new Player
+            {
+                SkillTabs = skillTabs,
+                StatPointDistribution = statPointDistribution,
+                MapId = 2000062,
+                AccountId = accountId,
+                CharacterId = characterId,
+                Name = name,
+                Gender = 1,
+                Motto = "Motto",
+                HomeName = "HomeName",
+                Coord = CoordF.From(2850, 2550, 1800), // Lith Harbor (2000062)
+                // Coord = CoordF.From(500, 500, 15000), // Tria
+                Job = job,
+                SkinColor = new SkinColor()
+                {
+                    Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
+                },
+                CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
+                Equips = new Dictionary<ItemSlot, Item> {
+                    { ItemSlot.ER, Item.Ear() },
+                    { ItemSlot.HR, Item.Hair() },
+                    { ItemSlot.FA, Item.Face() },
+                    { ItemSlot.FD, Item.FaceDecoration() }
+                },
+                Stats = stats,
+                GameOptions = new GameOptions(),
+                Inventory = new Inventory(48),
+                Mailbox = new Mailbox(),
+                Stickers = new List<short>
+                {
+                    1, 2, 3, 4, 5, 6, 7
+                },
+                TitleId = 10000503,
+                InsigniaId = 33,
+                Titles = new List<int> {
+                    10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
+                    10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
+                    10000603, 10000638, 10000644
+                },
+                IsVIP = false,
+            };
+            player.Equips.Add(ItemSlot.RH, Item.DefaultScepter(player));
+            player.Equips.Add(ItemSlot.LH, Item.DefaultCodex(player));
+            return player;
         }
 
         public void Warp(MapPlayerSpawn spawn, int mapId)
