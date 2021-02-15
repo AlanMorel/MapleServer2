@@ -12,8 +12,9 @@
             IsCrit = isCrit;
         }
 
-        private static DamageHandler HandleCrit(SkillCast skillCast, double damage)
+        private static DamageHandler HandleCrit(SkillCast skillCast)
         {
+            double damage = skillCast.GetDamageRate();
             bool crit = skillCast.RollCrit();
             if (crit)
             {
@@ -23,13 +24,7 @@
             return toReturn;
         }
 
-        public static DamageHandler CalculateSkillDamage(SkillCast skillCast)
-        {
-            double damage;
-            damage = skillCast.GetDamageRate();
-            DamageHandler toReturn = HandleCrit(skillCast, damage);
-            return toReturn;
-        }
+        public static DamageHandler CalculateSkillDamage(SkillCast skillCast) => HandleCrit(skillCast);
 
         public double GetDamage()
         {
