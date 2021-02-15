@@ -26,11 +26,8 @@
 
         public static DamageHandler CalculateSkillDamage(SkillCast skillCast) => HandleCrit(skillCast);
 
-        public double GetDamage()
-        {
-            // TODO: Calculate Damage properly 
-            return Damage * 100;
-        }
+        // TODO: Calculate Damage properly 
+        public double GetDamage() => Damage * 100;
 
         public bool IsCritical()
         {
