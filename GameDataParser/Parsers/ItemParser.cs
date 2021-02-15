@@ -216,8 +216,10 @@ namespace GameDataParser.Parsers
                 int skillID = int.Parse(skill.Attributes["skillID"].Value);
                 metadata.SkillID = skillID;
 
-                // Recommended jobs
                 XmlNode limit = item.SelectSingleNode("limit");
+                bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
+                metadata.EnableBreak = enableBreak;
+
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
                 {
                     List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));

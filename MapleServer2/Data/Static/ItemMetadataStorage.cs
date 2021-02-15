@@ -59,6 +59,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).StackLimit;
         }
 
+        public static bool GetEnableBreak(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).EnableBreak;
+        }
+
         public static bool GetIsTwoHand(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTwoHand;

@@ -142,7 +142,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             foreach (KeyValuePair<long, Item> item in items)
             {
-                if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType)
+                if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType || !item.Value.EnableBreak)
                 {
                     continue;
                 }
