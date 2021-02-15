@@ -274,7 +274,6 @@ namespace MapleServer2.Types
                 },
                 Stats = stats,
                 GameOptions = new GameOptions(),
-                Inventory = new Inventory(48),
                 Mailbox = new Mailbox(),
                 Stickers = new List<short>
                 {
