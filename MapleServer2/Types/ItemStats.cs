@@ -87,15 +87,15 @@ namespace MapleServer2.Types
             {
                 return;
             }
-            if (ItemStatsMetadataStorage.GetConstantStat(itemId, out List<ItemOptions> constantList))
+            if (ItemStatsMetadataStorage.GetBasic(itemId, out List<ItemOptions> basicList))
             {
-                foreach (ItemOptions item in constantList)
+                foreach (ItemOptions options in basicList)
                 {
-                    if (item.Grade != grade)
+                    if (options.Grade != grade)
                     {
                         continue;
                     }
-                    foreach (Stat i in item.Stats)
+                    foreach (Stat i in options.Stats)
                     {
                         if (i.Value != 0)
                         {
@@ -109,28 +109,28 @@ namespace MapleServer2.Types
                 }
             }
 
-            if (ItemStatsMetadataStorage.GetRandomStat(itemId, out List<ItemOptions> randomList))
+            if (ItemStatsMetadataStorage.GetRandomBonus(itemId, out List<ItemOptions> randomBonusList))
             {
-                foreach (ItemOptions item in randomList)
+                foreach (ItemOptions options in randomBonusList)
                 {
-                    if (item.Grade != grade)
+                    if (options.Grade != grade)
                     {
                         continue;
                     }
-                    if (item.OptionNumPick == 0)
+                    if (options.Slots == 0)
                     {
                         continue;
                     }
-                    List<int> indexes = GetRandomOptions(item.OptionNumPick, item.Stats.Count);
+                    List<int> indexes = GetRandomOptions(options.Slots, options.Stats.Count);
                     foreach (int i in indexes)
                     {
-                        if (item.Stats[i].Value != 0)
+                        if (options.Stats[i].Value != 0)
                         {
-                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Value)); // TODO: add randomness to value
+                            BonusAttributes.Add(ItemStat.Of(options.Stats[i].Type, options.Stats[i].Value)); // TODO: add randomness to value
                         }
                         else
                         {
-                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Percentage)); // TODO: add randomness to value
+                            BonusAttributes.Add(ItemStat.Of(options.Stats[i].Type, options.Stats[i].Percentage)); // TODO: add randomness to value
                         }
                     }
                 }

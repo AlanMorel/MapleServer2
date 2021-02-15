@@ -8,9 +8,9 @@ namespace MapleServer2.Data.Static
 {
     public static class ItemStatsMetadataStorage
     {
-        private static readonly Dictionary<int, List<ItemOptions>> Constant = new Dictionary<int, List<ItemOptions>>();
-        private static readonly Dictionary<int, List<ItemOptions>> Random = new Dictionary<int, List<ItemOptions>>();
-        private static readonly Dictionary<int, List<ItemOptions>> Static = new Dictionary<int, List<ItemOptions>>();
+        private static readonly Dictionary<int, List<ItemOptions>> Basic = new Dictionary<int, List<ItemOptions>>();
+        private static readonly Dictionary<int, List<ItemOptions>> RandomBonus = new Dictionary<int, List<ItemOptions>>();
+        private static readonly Dictionary<int, List<ItemOptions>> StaticBonus = new Dictionary<int, List<ItemOptions>>();
 
         static ItemStatsMetadataStorage()
         {
@@ -18,67 +18,67 @@ namespace MapleServer2.Data.Static
             List<ItemStatsMetadata> items = Serializer.Deserialize<List<ItemStatsMetadata>>(stream);
             foreach (ItemStatsMetadata item in items)
             {
-                if (!Constant.ContainsKey(item.ItemId))
+                if (!Basic.ContainsKey(item.ItemId))
                 {
-                    Constant[item.ItemId] = item.Constant;
+                    Basic[item.ItemId] = item.Basic;
                 }
                 else
                 {
-                    Constant[item.ItemId].AddRange(item.Constant);
+                    Basic[item.ItemId].AddRange(item.Basic);
                 }
-                if (!Random.ContainsKey(item.ItemId))
+                if (!RandomBonus.ContainsKey(item.ItemId))
                 {
-                    Random[item.ItemId] = item.Random;
-                }
-                else
-                {
-                    Random[item.ItemId].AddRange(item.Random);
-                }
-                if (!Static.ContainsKey(item.ItemId))
-                {
-                    Static[item.ItemId] = item.Static;
+                    RandomBonus[item.ItemId] = item.RandomBonus;
                 }
                 else
                 {
-                    Static[item.ItemId].AddRange(item.Static);
+                    RandomBonus[item.ItemId].AddRange(item.RandomBonus);
+                }
+                if (!StaticBonus.ContainsKey(item.ItemId))
+                {
+                    StaticBonus[item.ItemId] = item.StaticBonus;
+                }
+                else
+                {
+                    StaticBonus[item.ItemId].AddRange(item.StaticBonus);
                 }
             }
 
         }
 
-        public static bool HasConstantStats(int itemId) => Constant.ContainsKey(itemId);
+        public static bool HasBasic(int itemId) => Basic.ContainsKey(itemId);
 
-        public static bool HasRandomStats(int itemId) => Random.ContainsKey(itemId);
+        public static bool HasRandomBonus(int itemId) => RandomBonus.ContainsKey(itemId);
 
-        public static bool HasStaticStats(int itemId) => Static.ContainsKey(itemId);
+        public static bool HasStaticBonus(int itemId) => StaticBonus.ContainsKey(itemId);
 
-        public static bool GetConstantStat(int itemId, out List<ItemOptions> list)
+        public static bool GetBasic(int itemId, out List<ItemOptions> list)
         {
             list = null;
-            if (HasConstantStats(itemId))
+            if (HasBasic(itemId))
             {
-                list = Constant[itemId];
+                list = Basic[itemId];
                 return true;
             }
             return false;
         }
 
-        public static bool GetStaticStat(int itemId, out List<ItemOptions> list)
+        public static bool GetStaticBonus(int itemId, out List<ItemOptions> list)
         {
             list = null;
-            if (HasStaticStats(itemId))
+            if (HasStaticBonus(itemId))
             {
-                list = Static[itemId];
+                list = StaticBonus[itemId];
                 return true;
             }
             return false;
         }
-        public static bool GetRandomStat(int itemId, out List<ItemOptions> list)
+        public static bool GetRandomBonus(int itemId, out List<ItemOptions> list)
         {
             list = null;
-            if (HasRandomStats(itemId))
+            if (HasRandomBonus(itemId))
             {
-                list = Random[itemId];
+                list = RandomBonus[itemId];
                 return true;
             }
             return false;
