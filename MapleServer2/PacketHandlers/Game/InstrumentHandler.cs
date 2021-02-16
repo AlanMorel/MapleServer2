@@ -62,19 +62,19 @@ namespace MapleServer2.PacketHandlers.Game
             long itemUid = packet.ReadLong();
             // TODO: Verify if item is an (playable) instrument
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.Player));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer));
         }
 
         private static void HandlePlayNote(GameSession session, PacketReader packet)
         {
             int note = packet.ReadInt();
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.Player));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.FieldPlayer));
         }
 
         private static void HandleStopImprovise(GameSession session)
         {
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.Player));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.FieldPlayer));
         }
 
         private static void HandlePlayScore(GameSession session, PacketReader packet)
@@ -96,15 +96,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             score.PlayCount -= 1;
 
-            session.Send(InstrumentPacket.PlayScore(session.Player, score.FileName));
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player, score.FileName));
+            session.Send(InstrumentPacket.PlayScore(session.FieldPlayer, score.FileName));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.FieldPlayer, score.FileName));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
         private static void HandleStopScore(GameSession session, PacketReader packet)
         {
-            session.Send(InstrumentPacket.StopScore(session.Player));
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player));
+            session.Send(InstrumentPacket.StopScore(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.FieldPlayer));
         }
 
         private static void HandleFireworks(GameSession session)
