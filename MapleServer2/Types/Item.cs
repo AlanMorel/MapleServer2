@@ -15,6 +15,7 @@ namespace MapleServer2.Types
         public GemSlot GemSlot { get; private set; }
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
+        public bool EnableBreak { get; private set; }
         public bool IsTwoHand { get; private set; }
         public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
@@ -67,6 +68,7 @@ namespace MapleServer2.Types
             GemSlot = ItemMetadataStorage.GetGem(id);
             Rarity = ItemMetadataStorage.GetRarity(id);
             StackLimit = ItemMetadataStorage.GetStackLimit(id);
+            EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
@@ -89,6 +91,7 @@ namespace MapleServer2.Types
             GemSlot = other.GemSlot;
             Rarity = other.Rarity;
             StackLimit = other.StackLimit;
+            EnableBreak = other.EnableBreak;
             IsTwoHand = other.IsTwoHand;
             IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;

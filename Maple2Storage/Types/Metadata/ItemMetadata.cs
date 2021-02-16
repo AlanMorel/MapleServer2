@@ -21,13 +21,13 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 6)]
         public int StackLimit;
         [XmlElement(Order = 7)]
-        public bool IsTwoHand;
+        public bool EnableBreak;
         [XmlElement(Order = 8)]
-        public bool IsDress;
+        public bool IsTwoHand;
         [XmlElement(Order = 9)]
-        public bool IsTemplate;
+        public bool IsDress;
         [XmlElement(Order = 10)]
-        public int PlayCount;
+        public bool IsTemplate;
         [XmlElement(Order = 11)]
         public string FileName;
         [XmlElement(Order = 12)]
@@ -36,11 +36,14 @@ namespace Maple2Storage.Types.Metadata
         public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 14)]
         public List<ItemContent> Content;
+        [XmlElement(Order = 15)]
+        public List<ItemBreakReward> BreakRewards;
 
         // Required for deserialization
         public ItemMetadata()
         {
             Content = new List<ItemContent>();
+            BreakRewards = new List<ItemBreakReward>();
         }
 
         public override string ToString() =>
@@ -150,5 +153,24 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class ItemBreakReward
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public int Count;
+
+        public ItemBreakReward() { }
+
+        public ItemBreakReward(int id, int count)
+        {
+            Id = id;
+            Count = count;
+        }
+
+        public override string ToString() => $"Id: {Id}, Amount: {Count}";
     }
 }

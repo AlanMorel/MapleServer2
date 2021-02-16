@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
@@ -78,61 +79,32 @@ namespace MapleServer2.Types
         public byte TotalSockets;
         public readonly List<Gemstone> Gemstones;
 
-        public ItemStats(int itemId, int grade)
+        public ItemStats(int itemId, int rarity)
         {
             BasicAttributes = new List<ItemStat>();
             BonusAttributes = new List<ItemStat>();
             Gemstones = new List<Gemstone>();
-            if (grade == 0)
+            if (rarity == 0)
             {
                 return;
             }
-            if (ItemStatsMetadataStorage.GetConstantStat(itemId, out List<ItemOptions> constantList))
+
+            if (ItemStatsMetadataStorage.GetBasic(itemId, out List<ItemOptions> basicList))
             {
-                foreach (ItemOptions item in constantList)
+                ItemOptions itemoption = basicList.Find(options => options.Rarity == rarity);
+                if (itemoption != null)
                 {
-                    if (item.Grade != grade)
-                    {
-                        continue;
-                    }
-                    foreach (Stat i in item.Stats)
-                    {
-                        if (i.Value != 0)
-                        {
-                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Value)); // TODO: add randomness to value
-                        }
-                        else
-                        {
-                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Percentage)); // TODO: add randomness to value
-                        }
-                    }
+                    AddStat(BasicAttributes, itemoption.Stats);
                 }
             }
 
-            if (ItemStatsMetadataStorage.GetRandomStat(itemId, out List<ItemOptions> randomList))
+            if (ItemStatsMetadataStorage.GetRandomBonus(itemId, out List<ItemOptions> randomBonusList))
             {
-                foreach (ItemOptions item in randomList)
+                ItemOptions itemoption = randomBonusList.Find(options => options.Rarity == rarity && options.Slots > 0);
+                if (itemoption != null)
                 {
-                    if (item.Grade != grade)
-                    {
-                        continue;
-                    }
-                    if (item.OptionNumPick == 0)
-                    {
-                        continue;
-                    }
-                    List<int> indexes = GetRandomOptions(item.OptionNumPick, item.Stats.Count);
-                    foreach (int i in indexes)
-                    {
-                        if (item.Stats[i].Value != 0)
-                        {
-                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Value)); // TODO: add randomness to value
-                        }
-                        else
-                        {
-                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Percentage)); // TODO: add randomness to value
-                        }
-                    }
+                    List<Stat> indexes = GetRandomOptions(itemoption, itemoption.Slots);
+                    AddStat(BonusAttributes, indexes);
                 }
             }
         }
@@ -145,30 +117,25 @@ namespace MapleServer2.Types
             Gemstones = new List<Gemstone>(other.Gemstones);
         }
 
-        private static List<int> GetRandomOptions(int rolls, int optionsSize)
+        private static List<Stat> GetRandomOptions(ItemOptions list, int rolls)
         {
-            List<int> list = new List<int>();
             Random random = new Random();
+            return list.Stats.OrderBy(x => random.Next()).Take(rolls).ToList();
+        }
 
-            if (rolls > optionsSize)
+        private static void AddStat(List<ItemStat> listAttributes, List<Stat> listStats)
+        {
+            foreach (Stat stat in listStats)
             {
-                for (int i = 0; i < optionsSize; i++)
+                if (stat.Value != 0)
                 {
-                    list.Add(i);
+                    listAttributes.Add(ItemStat.Of(stat.Type, stat.Value)); // TODO: add randomness to value
                 }
-                return list;
+                else
+                {
+                    listAttributes.Add(ItemStat.Of(stat.Type, stat.Percentage)); // TODO: add randomness to value
+                }
             }
-
-            do
-            {
-                int rng = random.Next(0, optionsSize);
-                if (!list.Contains(rng))
-                {
-                    list.Add(rng);
-                }
-            } while (list.Count < rolls);
-
-            return list;
         }
     }
 }
