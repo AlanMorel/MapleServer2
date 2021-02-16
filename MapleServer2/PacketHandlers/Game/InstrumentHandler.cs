@@ -98,7 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(InstrumentPacket.PlayScore(session.Player, score.FileName));
             session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player, score.FileName));
-            session.Send(InstrumentPacket.ScoreUses(scoreItemUid, score.PlayCount));
+            session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
         private static void HandleStopScore(GameSession session, PacketReader packet)

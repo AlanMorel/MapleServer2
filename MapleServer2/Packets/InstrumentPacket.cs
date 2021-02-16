@@ -14,7 +14,7 @@ namespace MapleServer2.Packets
             StopImprovise = 0x2,
             PlayScore = 0x3,
             StopScore = 0x4,
-            ScoreUses = 0x9,
+            UpdateScoreUses = 0x9,
             Fireworks = 0xE,
         }
 
@@ -74,10 +74,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ScoreUses(long scoreItemUid, int usesRemaining)
+        public static Packet UpdateScoreUses(long scoreItemUid, int usesRemaining)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.ScoreUses);
+            pWriter.WriteEnum(InstrumentPacketMode.UpdateScoreUses);
             pWriter.WriteLong(scoreItemUid);
             pWriter.WriteInt(usesRemaining);
             return pWriter;
