@@ -39,12 +39,16 @@ namespace GameDataParser.Parsers
                     metadata.ItemId = itemId;
 
                     byte grade = string.IsNullOrEmpty(node.Attributes["grade"]?.Value) ? 0 : byte.Parse(node.Attributes["grade"].Value);
-                    optionsMetadata.Grade = grade;
+                    optionsMetadata.Rarity = grade;
 
                     if (!string.IsNullOrEmpty(node.Attributes["optionNumPick"]?.Value))
                     {
                         List<string> list = new List<string>(node.Attributes["optionNumPick"].Value.Split(","));
-                        optionsMetadata.OptionNumPick = byte.Parse(list[0]);
+                        optionsMetadata.Slots = byte.Parse(list[0]);
+                    }
+                    if ((entry.Name.Contains("random") || entry.Name.Contains("static")) && optionsMetadata.Slots == 0)
+                    {
+                        continue;
                     }
 
                     float abp = string.IsNullOrEmpty(node.Attributes["abp_rate_base"]?.Value) ? 0 : float.Parse(node.Attributes["abp_rate_base"].Value);
@@ -248,15 +252,15 @@ namespace GameDataParser.Parsers
 
                     if (filename.Contains("constant"))
                     {
-                        items[index].Constant.Add(optionsMetadata);
+                        items[index].Basic.Add(optionsMetadata);
                     }
                     else if (filename.Contains("static"))
                     {
-                        items[index].Static.Add(optionsMetadata);
+                        items[index].StaticBonus.Add(optionsMetadata);
                     }
                     else if (filename.Contains("random"))
                     {
-                        items[index].Random.Add(optionsMetadata);
+                        items[index].RandomBonus.Add(optionsMetadata);
                     }
                 }
             }
