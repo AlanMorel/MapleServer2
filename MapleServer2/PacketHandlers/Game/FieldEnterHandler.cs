@@ -56,14 +56,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Amount = 90000
             };
-            Item item3 = new Item(20302228)
-            {
-                Amount = 1
-            };
 
             InventoryController.Add(session, item, true);
             InventoryController.Add(session, item2, true);
-            InventoryController.Add(session, item3, true);
 
             //Add mail for testing
             //System mail without any item
