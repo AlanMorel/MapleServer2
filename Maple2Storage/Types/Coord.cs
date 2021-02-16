@@ -70,9 +70,15 @@ namespace Maple2Storage.Types
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((CoordF) obj);
         }
 
@@ -152,9 +158,15 @@ namespace Maple2Storage.Types
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((CoordS) obj);
         }
         public override int GetHashCode()
@@ -234,9 +246,15 @@ namespace Maple2Storage.Types
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((CoordB) obj);
         }
         public override int GetHashCode()

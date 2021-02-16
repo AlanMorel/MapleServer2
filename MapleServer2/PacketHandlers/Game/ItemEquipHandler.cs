@@ -130,7 +130,10 @@ namespace MapleServer2.PacketHandlers.Game
             foreach ((ItemSlot slot, Item item) in session.Player.Equips)
             {
                 if (itemUid != item.Uid)
+                {
                     continue;
+                }
+
                 if (session.Player.Equips.Remove(slot, out Item unequipItem))
                 {
                     unequipped = true;
@@ -151,7 +154,10 @@ namespace MapleServer2.PacketHandlers.Game
             foreach ((ItemSlot slot, Item item) in session.Player.Cosmetics)
             {
                 if (itemUid != item.Uid)
+                {
                     continue;
+                }
+
                 if (session.Player.Cosmetics.Remove(slot, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;

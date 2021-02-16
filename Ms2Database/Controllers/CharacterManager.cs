@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Ms2Database.DbClasses;
 
@@ -39,7 +37,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void DeleteCharacter(long characterId)
+        public static void DeleteCharacter(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -49,7 +47,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public Character GetCharacterInfo(long characterId)
+        public static Character GetCharacterInfo(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -58,7 +56,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void UpdateCharInfo(Character characterObject)
+        public static void UpdateCharInfo(Character characterObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -67,7 +65,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public List<Character> GetCharacterList(long accountId)
+        public static List<Character> GetCharacterList(long accountId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

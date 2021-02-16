@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
 {
     public static class SkillUsePacket
     {
-        public static Dictionary<long, SkillCast> SkillCastMap = new Dictionary<long, SkillCast>() { };
+        public static readonly Dictionary<long, SkillCast> SkillCastMap = new Dictionary<long, SkillCast>();
 
         public static Packet SkillUse(SkillCast skillCast, CoordF coords)
         {
