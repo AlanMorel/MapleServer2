@@ -32,6 +32,8 @@ namespace Maple2Storage.Types.Metadata
         public List<Stat> Stats = new List<Stat>();
 
         public ItemOptions() { }
+
+        public override string ToString() => $"Rarity {Rarity}, Slots {Slots}, MultiplyFactor {MultiplyFactor}, Stats: ({string.Join(",", Stats)})";
     }
 
     [XmlType]
@@ -58,5 +60,7 @@ namespace Maple2Storage.Types.Metadata
             Value = 0;
             Percentage = percent;
         }
+
+        public override string ToString() => $"Type: {Type}, Value: {Value}, Percentage: {Percentage}";
     }
 }
