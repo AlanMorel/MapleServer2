@@ -68,38 +68,38 @@ namespace MapleServer2.Packets.Helpers
 
         public static PacketWriter WriteSyncState(this PacketWriter pWriter, SyncState entry)
         {
-            pWriter.WriteByte(entry.Animation1)
-                .WriteByte(entry.Animation2)
-                .WriteByte((byte) entry.Flag);
+            pWriter.WriteByte(entry.Animation1);
+            pWriter.WriteByte(entry.Animation2);
+            pWriter.WriteByte((byte) entry.Flag);
             if (entry.Flag.HasFlag(SyncStateFlag.Flag1))
             {
-                pWriter.WriteInt(entry.Flag1Unknown1)
-                    .WriteShort(entry.Flag1Unknown2);
+                pWriter.WriteInt(entry.Flag1Unknown1);
+                pWriter.WriteShort(entry.Flag1Unknown2);
             }
 
-            pWriter.Write(entry.Coord)
-                .WriteShort(entry.Rotation)
-                .WriteByte(entry.Animation3);
+            pWriter.Write(entry.Coord);
+            pWriter.WriteShort(entry.Rotation);
+            pWriter.WriteByte(entry.Animation3);
 
             if (entry.Animation3 > 127)
             {
-                pWriter.Write(entry.UnknownFloat1)
-                    .Write(entry.UnknownFloat2);
+                pWriter.Write(entry.UnknownFloat1);
+                pWriter.Write(entry.UnknownFloat2);
             }
 
-            pWriter.Write(entry.Speed)
-                .WriteByte(entry.Unknown1)
-                .WriteShort(entry.Unknown2)
-                .WriteShort(entry.Unknown3);
+            pWriter.Write(entry.Speed);
+            pWriter.WriteByte(entry.Unknown1);
+            pWriter.WriteShort(entry.Unknown2);
+            pWriter.WriteShort(entry.Unknown3);
             if (entry.Flag.HasFlag(SyncStateFlag.Flag2))
             {
-                pWriter.Write(entry.Flag2Unknown1)
-                    .WriteUnicodeString(entry.Flag2Unknown2 ?? "");
+                pWriter.Write(entry.Flag2Unknown1);
+                pWriter.WriteUnicodeString(entry.Flag2Unknown2 ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag3))
             {
-                pWriter.WriteInt(entry.Flag3Unknown1)
-                    .WriteUnicodeString(entry.Flag3Unknown2 ?? "");
+                pWriter.WriteInt(entry.Flag3Unknown1);
+                pWriter.WriteUnicodeString(entry.Flag3Unknown2 ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag4))
             {
@@ -107,19 +107,19 @@ namespace MapleServer2.Packets.Helpers
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag5))
             {
-                pWriter.WriteInt(entry.Flag5Unknown1)
-                    .WriteUnicodeString(entry.Flag5Unknown2 ?? "");
+                pWriter.WriteInt(entry.Flag5Unknown1);
+                pWriter.WriteUnicodeString(entry.Flag5Unknown2 ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag6))
             {
-                pWriter.WriteInt(entry.Flag6Unknown1)
-                    .WriteInt(entry.Flag6Unknown2)
-                    .WriteByte(entry.Flag6Unknown3)
-                    .Write(entry.Flag6Unknown4)
-                    .Write(entry.Flag6Unknown5);
+                pWriter.WriteInt(entry.Flag6Unknown1);
+                pWriter.WriteInt(entry.Flag6Unknown2);
+                pWriter.WriteByte(entry.Flag6Unknown3);
+                pWriter.Write(entry.Flag6Unknown4);
+                pWriter.Write(entry.Flag6Unknown5);
             }
-
-            return pWriter.WriteInt(entry.Unknown4);
+            pWriter.WriteInt(entry.Unknown4);
+            return pWriter;
         }
 
         public static Packet WriteSyncStates(this PacketWriter pWriter, params SyncState[] syncStates)

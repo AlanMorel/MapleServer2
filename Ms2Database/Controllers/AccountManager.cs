@@ -39,7 +39,7 @@ namespace Ms2Database.Controllers
                 return account;
             }
         }
-      
+
         public Account GetAccountByName(string username)
         {
             using (Ms2DbContext context = new Ms2DbContext())

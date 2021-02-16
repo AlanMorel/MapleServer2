@@ -11,8 +11,8 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using MapleServer2.Types;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
@@ -39,12 +39,7 @@ namespace MapleServer2.PacketHandlers.Common
 
             //session.Send(0x27, 0x01); // Meret market related...?
 
-            session.Send(PacketWriter.Of(SendOp.LOGIN_REQUIRED)
-                .WriteByte(0x17)
-                .Write(accountId)
-                .WriteInt().WriteByte().WriteLong()
-                .WriteInt(1).WriteInt().WriteInt().WriteLong()
-            );
+            session.Send(LoginPacket.LoginRequired(accountId));
 
             session.Send(BuddyListPacket.StartList());
             session.Send(BuddyListPacket.EndList());
@@ -62,12 +57,12 @@ namespace MapleServer2.PacketHandlers.Common
             // SendStat 0x2F (How to send here without ObjectId?, Seems fine to send after entering field)
 
             session.SyncTicks();
-            session.Send(PacketWriter.Of(SendOp.DYNAMIC_CHANNEL).WriteByte(0x00)
-                .WriteShort(10).WriteShort(9).WriteShort(9).WriteShort(9)
-                .WriteShort(9).WriteShort(10).WriteShort(10).WriteShort(10));
+            session.Send(DynamicChannelPacket.DynamicChannel());
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
-            session.Send(PacketWriter.Of(SendOp.SYNC_NUMBER).WriteByte());
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_NUMBER);
+            pWriter.WriteByte();
+            session.Send(pWriter);
             // 0x112, Prestige f(0x00, 0x07)
             session.Send(PrestigePacket.Prestige(session.Player));
 

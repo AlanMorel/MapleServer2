@@ -176,6 +176,10 @@ namespace GameDataParser.Parsers
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
 
+                XmlNode skill = item.SelectSingleNode("skill");
+                int skillID = int.Parse(skill.Attributes["skillID"].Value);
+                metadata.SkillID = skillID;
+
                 // Recommended jobs
                 XmlNode limit = item.SelectSingleNode("limit");
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))

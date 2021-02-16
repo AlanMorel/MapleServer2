@@ -26,5 +26,31 @@ namespace MapleServer2.Types
             HaviFruit = new Currency(player, CurrencyType.HaviFruit, 2000);
             MesoToken = new Currency(player, CurrencyType.MesoToken, 2000);
         }
+
+        public bool RemoveMerets(long amount)
+        {
+            if (Meret.Modify(-amount))
+            {
+                return true;
+            }
+            if (GameMeret.Modify(-amount))
+            {
+                return true;
+            }
+            if (EventMeret.Modify(-amount))
+            {
+                return true;
+            }
+            if (Meret.Amount + GameMeret.Amount + EventMeret.Amount >= amount)
+            {
+                long rest = Meret.Amount + GameMeret.Amount + EventMeret.Amount - amount;
+                Meret.SetAmount(rest);
+                GameMeret.SetAmount(0);
+                EventMeret.SetAmount(0);
+                return true;
+            }
+
+            return false;
+        }
     }
 }

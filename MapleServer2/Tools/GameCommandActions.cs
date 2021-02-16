@@ -92,39 +92,21 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            // Add some bonus attributes to equips and pets
-            ItemStats stats = new ItemStats();
-            if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
-                    || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
-            {
-                Random rng = new Random();
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-            }
+            _ = int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity);
+            _ = int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount);
 
             Item item = new Item(itemId)
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                Stats = stats,
-                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
+                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
+                Rarity = rarity,
+                Amount = amount,
+                Stats = new ItemStats(itemId, rarity)
             };
-            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
-            {
-                item.Rarity = rarity;
-            }
-            if (int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount))
-            {
-                item.Amount = amount;
-            }
 
             // Simulate looting item
             InventoryController.Add(session, item, true);
-            /*if (session.Player.Inventory.Add(item))
-            {
-                session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-            }*/
         }
 
         // Example: "map -> return current map id"
@@ -177,7 +159,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                npc.Rotation = rotation;
+                npc.ZRotation = rotation;
             }
 
             IFieldObject<Npc> fieldNpc = session.FieldManager.RequestFieldObject(npc);
@@ -196,7 +178,7 @@ namespace MapleServer2.Tools
         private static void ProcessMobCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            if (!int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId))
+            if (!int.TryParse(config.GetValueOrDefault("id", "21000001"), out int mobId))
             {
                 return;
             }
@@ -207,7 +189,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                mob.Rotation = rotation;
+                mob.ZRotation = rotation;
             }
 
             IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);

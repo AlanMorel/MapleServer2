@@ -43,8 +43,11 @@ namespace MapleServer2.Types
             {
                 foreach (int sub in SkillJob[id].SubSkills.Select(x => x))
                 {
-                    SkillJob[sub].Learned = learned;
-                    SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
+                    if (SkillJob.ContainsKey(sub))
+                    {
+                        SkillJob[sub].Learned = learned;
+                        SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
+                    }
                 }
             }
         }
@@ -54,10 +57,7 @@ namespace MapleServer2.Types
             Name = name;
         }
 
-        public static List<SkillMetadata> GetJobFeatureSkills(Job job)
-        {
-            return SkillMetadataStorage.GetJobSkills(job);
-        }
+        public static List<SkillMetadata> GetJobFeatureSkills(Job job) => SkillMetadataStorage.GetJobSkills(job);
 
         public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", SkillJob)})";
     }

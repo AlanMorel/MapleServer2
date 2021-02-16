@@ -53,7 +53,7 @@ namespace MaplePacketLib2.Tools
             Length = position;
         }
 
-        public unsafe PacketWriter Write<T>(T value) where T : struct
+        public unsafe void Write<T>(T value) where T : struct
         {
             int size = Marshal.SizeOf(typeof(T));
             EnsureCapacity(size);
@@ -62,33 +62,29 @@ namespace MaplePacketLib2.Tools
                 Marshal.StructureToPtr(value, (IntPtr) ptr, false);
                 Length += size;
             }
-
-            return this;
         }
 
-        public PacketWriter Write(params byte[] value)
+        public void Write(params byte[] value)
         {
             EnsureCapacity(value.Length);
             System.Buffer.BlockCopy(value, 0, Buffer, Length, value.Length);
             Length += value.Length;
-
-            return this;
         }
 
-        public PacketWriter WriteEnum(Enum value)
+        public void WriteEnum(Enum value)
         {
             Type type = Enum.GetUnderlyingType(value.GetType());
             dynamic converted = Convert.ChangeType(value, type);
 
-            return Write(converted);
+            Write(converted);
         }
 
-        public PacketWriter WriteBool(bool value)
+        public void WriteBool(bool value)
         {
-            return WriteByte(value ? (byte) 1 : (byte) 0);
+            WriteByte(value ? (byte) 1 : (byte) 0);
         }
 
-        public unsafe PacketWriter WriteByte(byte value = 0)
+        public unsafe void WriteByte(byte value = 0)
         {
             EnsureCapacity(1);
             fixed (byte* ptr = Buffer)
@@ -96,11 +92,9 @@ namespace MaplePacketLib2.Tools
                 *(ptr + Length) = value;
                 ++Length;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteShort(short value = 0)
+        public unsafe void WriteShort(short value = 0)
         {
             EnsureCapacity(2);
             fixed (byte* ptr = Buffer)
@@ -108,11 +102,9 @@ namespace MaplePacketLib2.Tools
                 *(short*) (ptr + Length) = value;
                 Length += 2;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteUShort(ushort value = 0)
+        public unsafe void WriteUShort(ushort value = 0)
         {
             EnsureCapacity(2);
             fixed (byte* ptr = Buffer)
@@ -120,11 +112,9 @@ namespace MaplePacketLib2.Tools
                 *(ushort*) (ptr + Length) = value;
                 Length += 2;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteInt(int value = 0)
+        public unsafe void WriteInt(int value = 0)
         {
             EnsureCapacity(4);
             fixed (byte* ptr = Buffer)
@@ -132,11 +122,9 @@ namespace MaplePacketLib2.Tools
                 *(int*) (ptr + Length) = value;
                 Length += 4;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteUInt(uint value = 0)
+        public unsafe void WriteUInt(uint value = 0)
         {
             EnsureCapacity(4);
             fixed (byte* ptr = Buffer)
@@ -144,11 +132,9 @@ namespace MaplePacketLib2.Tools
                 *(uint*) (ptr + Length) = value;
                 Length += 4;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteFloat(float value = 0.0f)
+        public unsafe void WriteFloat(float value = 0.0f)
         {
             EnsureCapacity(4);
             fixed (byte* ptr = Buffer)
@@ -156,12 +142,10 @@ namespace MaplePacketLib2.Tools
                 *(float*) (ptr + Length) = value;
                 Length += 4;
             }
-
-            return this;
         }
 
 
-        public unsafe PacketWriter WriteLong(long value = 0)
+        public unsafe void WriteLong(long value = 0)
         {
             EnsureCapacity(8);
             fixed (byte* ptr = Buffer)
@@ -169,11 +153,9 @@ namespace MaplePacketLib2.Tools
                 *(long*) (ptr + Length) = value;
                 Length += 8;
             }
-
-            return this;
         }
 
-        public unsafe PacketWriter WriteULong(ulong value = 0)
+        public unsafe void WriteULong(ulong value = 0)
         {
             EnsureCapacity(8);
             fixed (byte* ptr = Buffer)
@@ -181,49 +163,45 @@ namespace MaplePacketLib2.Tools
                 *(ulong*) (ptr + Length) = value;
                 Length += 8;
             }
-
-            return this;
         }
 
-        public PacketWriter WriteString(string value)
+        public void WriteString(string value)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(value);
-            return Write(bytes);
+            Write(bytes);
         }
 
-        public PacketWriter WritePaddedString(string value, int length, char pad = '\0')
+        public void WritePaddedString(string value, int length, char pad = '\0')
         {
             WriteString(value);
             for (int i = value.Length; i < length; i++)
             {
                 WriteByte((byte) pad);
             }
-
-            return this;
         }
 
-        public PacketWriter WriteUnicodeString(string value)
+        public void WriteUnicodeString(string value)
         {
             Write((ushort) value.Length);
             byte[] bytes = Encoding.Unicode.GetBytes(value);
-            return Write(bytes);
+            Write(bytes);
         }
 
-        public PacketWriter WriteMapleString(string value)
+        public void WriteMapleString(string value)
         {
             Write((ushort) value.Length);
-            return WriteString(value);
+            WriteString(value);
         }
 
-        public PacketWriter WriteHexString(string value)
+        public void WriteHexString(string value)
         {
             byte[] bytes = value.ToByteArray();
-            return Write(bytes);
+            Write(bytes);
         }
 
-        public PacketWriter WriteZero(int count)
+        public void WriteZero(int count)
         {
-            return Write(new byte[count]);
+            Write(new byte[count]);
         }
     }
 }

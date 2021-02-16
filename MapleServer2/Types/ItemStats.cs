@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types
@@ -74,11 +78,63 @@ namespace MapleServer2.Types
         public byte TotalSockets;
         public readonly List<Gemstone> Gemstones;
 
-        public ItemStats()
+        public ItemStats(int itemId, int grade)
         {
             BasicAttributes = new List<ItemStat>();
             BonusAttributes = new List<ItemStat>();
             Gemstones = new List<Gemstone>();
+            if (grade == 0)
+            {
+                return;
+            }
+            if (ItemStatsMetadataStorage.GetConstantStat(itemId, out List<ItemOptions> constantList))
+            {
+                foreach (ItemOptions item in constantList)
+                {
+                    if (item.Grade != grade)
+                    {
+                        continue;
+                    }
+                    foreach (Stat i in item.Stats)
+                    {
+                        if (i.Value != 0)
+                        {
+                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Value)); // TODO: add randomness to value
+                        }
+                        else
+                        {
+                            BasicAttributes.Add(ItemStat.Of(i.Type, i.Percentage)); // TODO: add randomness to value
+                        }
+                    }
+                }
+            }
+
+            if (ItemStatsMetadataStorage.GetRandomStat(itemId, out List<ItemOptions> randomList))
+            {
+                foreach (ItemOptions item in randomList)
+                {
+                    if (item.Grade != grade)
+                    {
+                        continue;
+                    }
+                    if (item.OptionNumPick == 0)
+                    {
+                        continue;
+                    }
+                    List<int> indexes = GetRandomOptions(item.OptionNumPick, item.Stats.Count);
+                    foreach (int i in indexes)
+                    {
+                        if (item.Stats[i].Value != 0)
+                        {
+                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Value)); // TODO: add randomness to value
+                        }
+                        else
+                        {
+                            BonusAttributes.Add(ItemStat.Of(item.Stats[i].Type, item.Stats[i].Percentage)); // TODO: add randomness to value
+                        }
+                    }
+                }
+            }
         }
 
         public ItemStats(ItemStats other)
@@ -87,6 +143,32 @@ namespace MapleServer2.Types
             BonusAttributes = new List<ItemStat>(other.BonusAttributes);
             TotalSockets = other.TotalSockets;
             Gemstones = new List<Gemstone>(other.Gemstones);
+        }
+
+        private static List<int> GetRandomOptions(int rolls, int optionsSize)
+        {
+            List<int> list = new List<int>();
+            Random random = new Random();
+
+            if (rolls > optionsSize)
+            {
+                for (int i = 0; i < optionsSize; i++)
+                {
+                    list.Add(i);
+                }
+                return list;
+            }
+
+            do
+            {
+                int rng = random.Next(0, optionsSize);
+                if (!list.Contains(rng))
+                {
+                    list.Add(rng);
+                }
+            } while (list.Count < rolls);
+
+            return list;
         }
     }
 }

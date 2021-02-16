@@ -74,7 +74,7 @@ namespace MapleServer2.Types
             Content = ItemMetadataStorage.GetContent(id);
             Slot = -1;
             Amount = 1;
-            Stats = new ItemStats();
+            Stats = new ItemStats(id, Rarity);
             CanRepackage = true; // If false, item becomes untradable
         }
 
@@ -123,7 +123,6 @@ namespace MapleServer2.Types
                 Uid = 2754959794416496488,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                Stats = new ItemStats(),
             };
         }
 
@@ -141,7 +140,6 @@ namespace MapleServer2.Types
                 ),
                 HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
-                Stats = new ItemStats(),
             };
         }
 
@@ -158,7 +156,6 @@ namespace MapleServer2.Types
                     0
                 ),
                 AppearanceFlag = 3,
-                Stats = new ItemStats(),
             };
         }
 
@@ -170,7 +167,6 @@ namespace MapleServer2.Types
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
                 FaceDecorationD = new byte[16],
-                Stats = new ItemStats(),
             };
         }
 
@@ -203,14 +199,6 @@ namespace MapleServer2.Types
                     0x13
                 ),
                 AppearanceFlag = 0x5,
-                Stats = new ItemStats
-                {
-                    BasicAttributes = {
-                        ItemStat.Of(Enums.ItemAttribute.CriticalRate, 12),
-                        ItemStat.Of(Enums.ItemAttribute.MinWeaponAtk, 15),
-                        ItemStat.Of(Enums.ItemAttribute.MaxWeaponAtk, 17)
-                    }
-                },
                 TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
             };
         }
@@ -231,7 +219,43 @@ namespace MapleServer2.Types
             return true;
         }
 
+        public static Item DefaultScepter(Player owner)
+        {
+            return new Item(13300308)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
 
+        public static Item DefaultCodex(Player owner)
+        {
+            return new Item(14000270)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
         // MALE ITEMS
         public static Item HairMale()
         {
@@ -247,7 +271,6 @@ namespace MapleServer2.Types
                 ),
                 HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
                 AppearanceFlag = 2,
-                Stats = new ItemStats(),
             };
         }
         public static Item EarMale()
@@ -257,7 +280,6 @@ namespace MapleServer2.Types
                 Uid = 2754959794416496488,
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                Stats = new ItemStats(),
             };
         }
         public static Item FaceMale()
@@ -273,7 +295,6 @@ namespace MapleServer2.Types
                     0
                 ),
                 AppearanceFlag = 3,
-                Stats = new ItemStats(),
             };
         }
         public static Item FaceDecorationMale()
@@ -284,7 +305,6 @@ namespace MapleServer2.Types
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
                 FaceDecorationD = new byte[16],
-                Stats = new ItemStats(),
             };
         }
         public static Item CloathMale()
@@ -299,7 +319,6 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                Stats = new ItemStats(),
             };
         }
         public static Item ShoesMale()
@@ -314,7 +333,6 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                Stats = new ItemStats(),
             };
         }
     }

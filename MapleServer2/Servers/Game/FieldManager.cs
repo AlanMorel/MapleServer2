@@ -34,10 +34,23 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
                 {
-                    Rotation = (short) (npc.Rotation.Z * 10)
+                    ZRotation = (short) (npc.Rotation.Z * 10)
                 });
-                fieldNpc.Coord = npc.Coord.ToFloat();
-                AddNpc(fieldNpc);
+                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
+                {
+                    ZRotation = (short) (npc.Rotation.Z * 10)
+                });
+
+                if (fieldNpc.Value.Friendly == 2)
+                {
+                    fieldNpc.Coord = npc.Coord.ToFloat();
+                    AddNpc(fieldNpc);
+                }
+                if (fieldMob.Value.Friendly != 2)
+                {
+                    fieldMob.Coord = npc.Coord.ToFloat();
+                    AddMob(fieldMob);
+                }
             }
 
             // Load default portals for map from config
@@ -73,6 +86,10 @@ namespace MapleServer2.Servers.Game
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
                 updates.Add(FieldObjectPacket.ControlMob(mob));
+                if (mob.Value.IsDead)
+                {
+                    RemoveMob(mob);
+                }
             }
             return updates;
         }
@@ -205,6 +222,20 @@ namespace MapleServer2.Servers.Game
             {
                 session.Send(FieldPacket.PickupItem(objectId, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
+            });
+            return true;
+        }
+
+        public bool RemoveMob(IFieldObject<Mob> mob)
+        {
+            if (!State.RemoveMob(mob.ObjectId))
+            {
+                return false;
+            }
+
+            Broadcast(session =>
+            {
+                session.Send(FieldPacket.RemoveMob(mob));
             });
             return true;
         }

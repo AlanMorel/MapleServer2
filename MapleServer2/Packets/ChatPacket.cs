@@ -9,15 +9,15 @@ namespace MapleServer2.Packets
     {
         public static Packet Send(Player player, string message, ChatType type)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT)
-                .WriteLong(player.AccountId)
-                .WriteLong(player.CharacterId)
-                .WriteUnicodeString(player.Name)
-                .WriteByte()
-                .WriteUnicodeString(message)
-                .WriteInt((int) type)
-                .WriteByte()
-                .WriteInt(); // Channel
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
+            pWriter.WriteLong(player.AccountId);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte();
+            pWriter.WriteUnicodeString(message);
+            pWriter.WriteInt((int) type);
+            pWriter.WriteByte();
+            pWriter.WriteInt(); // Channel
 
             switch (type)
             {
@@ -31,8 +31,9 @@ namespace MapleServer2.Packets
                     pWriter.WriteLong(); // char id?
                     break;
             }
+            pWriter.WriteByte();
 
-            return pWriter.WriteByte();
+            return pWriter;
         }
     }
 }

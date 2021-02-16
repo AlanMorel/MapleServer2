@@ -67,8 +67,8 @@ namespace MapleServer2.Packets
             }
             if (flag.HasFlag(FieldObjectUpdate.Type4))
             {
-                pWriter.WriteShort()
-                    .WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
             }
             if (flag.HasFlag(FieldObjectUpdate.Type5))
             {
@@ -105,7 +105,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.WriteByte();
-            pWriter.WriteInt(200);
+            pWriter.WriteInt(200); // also 99 for boss
             pWriter.Write(mob.Coord);
             return pWriter;
         }
@@ -116,7 +116,7 @@ namespace MapleServer2.Packets
             npcBuffer.WriteInt(npc.ObjectId);
             npcBuffer.WriteByte();
             npcBuffer.Write(npc.Coord.ToShort());
-            npcBuffer.WriteShort(npc.Value.Rotation);
+            npcBuffer.WriteShort(npc.Value.ZRotation);
             npcBuffer.Write(npc.Value.Speed); // XYZ Speed
             npcBuffer.WriteShort(100); // Unknown
             npcBuffer.WriteByte(1); // Flag ?
@@ -137,9 +137,10 @@ namespace MapleServer2.Packets
             npcBuffer.WriteInt(mob.ObjectId);
             npcBuffer.WriteByte();
             npcBuffer.Write(mob.Coord.ToShort());
-            npcBuffer.WriteShort(mob.Value.Rotation);
+            npcBuffer.WriteShort(mob.Value.ZRotation);
             npcBuffer.Write(mob.Value.Speed); // XYZ Speed
             npcBuffer.WriteShort(100); // Unknown
+            //npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
             npcBuffer.WriteByte(1); // Flag ?
             npcBuffer.WriteShort(mob.Value.Animation);
             npcBuffer.WriteShort(1); // counter (increments every packet)

@@ -9,34 +9,34 @@ namespace MapleServer2.Packets.Helpers
     {
         public static PacketWriter WriteItem(this PacketWriter pWriter, Item item)
         {
-            pWriter.WriteInt(item.Amount)
-                .WriteInt()
-                .WriteInt(-1)
-                .WriteLong(item.CreationTime)
-                .WriteLong(item.ExpiryTime)
-                .WriteLong()
-                .WriteInt(item.TimesAttributesChanged)
-                .WriteInt(item.PlayCount)
-                .WriteBool(item.IsLocked)
-                .WriteLong(item.UnlockTime)
-                .WriteShort(item.RemainingGlamorForges)
-                .WriteByte()
-                .WriteInt();
+            pWriter.WriteInt(item.Amount);
+            pWriter.WriteInt();
+            pWriter.WriteInt(-1);
+            pWriter.WriteLong(item.CreationTime);
+            pWriter.WriteLong(item.ExpiryTime);
+            pWriter.WriteLong();
+            pWriter.WriteInt(item.TimesAttributesChanged);
+            pWriter.WriteInt(item.PlayCount);
+            pWriter.WriteBool(item.IsLocked);
+            pWriter.WriteLong(item.UnlockTime);
+            pWriter.WriteShort(item.RemainingGlamorForges);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
 
             // Write Appearance 
             pWriter.WriteAppearance(item);
 
             // Write Stats 0x0582B10
-            pWriter.WriteStats(item.Stats)
-                .WriteInt(item.Enchants)
-                .WriteInt(item.EnchantExp)
-                .WriteBool(true) // Enchant based peachy charges, otherwise always require 10 charges
-                .WriteLong()
-                .WriteInt()
-                .WriteInt()
-                .WriteBool(item.CanRepackage)
-                .WriteInt(item.Charges)
-                .WriteStatDiff(/*item.Stats, item.Stats*/);
+            pWriter.WriteStats(item.Stats);
+            pWriter.WriteInt(item.Enchants);
+            pWriter.WriteInt(item.EnchantExp);
+            pWriter.WriteBool(true); // Enchant based peachy charges, otherwise always require 10 charges
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteBool(item.CanRepackage);
+            pWriter.WriteInt(item.Charges);
+            pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
             if (item.IsTemplate)
             {
@@ -128,10 +128,13 @@ namespace MapleServer2.Packets.Helpers
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort().WriteInt(); // SpecialAttributes
+            pWriter.WriteShort(); // SpecialAttributes
+            pWriter.WriteInt();
 
             // Another basic attributes block
-            pWriter.WriteShort().WriteShort().WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
 
             List<ItemStat> bonusAttributes = stats.BonusAttributes;
             pWriter.WriteShort((short) bonusAttributes.Count);
@@ -139,16 +142,29 @@ namespace MapleServer2.Packets.Helpers
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort().WriteInt(); // SpecialAttributes
+            pWriter.WriteShort();
+            pWriter.WriteInt(); // SpecialAttributes
 
 
             // Ignore other attributes
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
 
             return pWriter;
         }
@@ -185,25 +201,29 @@ namespace MapleServer2.Packets.Helpers
         // Writes UGC template data
         private static PacketWriter WriteTemplate(this PacketWriter pWriter)
         {
-            return pWriter.WriteUgc()
-                .WriteLong()
-                .WriteInt()
-                .WriteInt()
-                .WriteInt()
-                .WriteLong()
-                .WriteInt()
-                .WriteLong()
-                .WriteLong()
-                .WriteUnicodeString("");
+            pWriter.WriteUgc();
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString("");
+
+            return pWriter;
         }
 
         private static PacketWriter WritePet(this PacketWriter pWriter)
         {
-            return pWriter.WriteUnicodeString("") // Name
-                .WriteLong() // Exp
-                .WriteInt()
-                .WriteInt(1) // Level
-                .WriteByte();
+            pWriter.WriteUnicodeString(""); // Name
+            pWriter.WriteLong(); // Exp
+            pWriter.WriteInt();
+            pWriter.WriteInt(1);// Level
+            pWriter.WriteByte();
+
+            return pWriter;
         }
 
         private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
@@ -224,15 +244,15 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteBool(gem.OwnerId != 0);
                 if (gem.OwnerId != 0)
                 {
-                    pWriter.WriteLong(gem.OwnerId)
-                        .WriteUnicodeString(gem.OwnerName);
+                    pWriter.WriteLong(gem.OwnerId);
+                    pWriter.WriteUnicodeString(gem.OwnerName);
                 }
 
                 pWriter.WriteBool(gem.Unknown != 0);
                 if (gem.Unknown != 0)
                 {
-                    pWriter.WriteByte()
-                        .WriteLong(gem.Unknown);
+                    pWriter.WriteByte();
+                    pWriter.WriteLong(gem.Unknown);
                 }
             }
 

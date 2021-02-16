@@ -9,18 +9,22 @@ namespace MapleServer2.Packets
     {
         public static Packet PreviewNewItem(Item item)
         {
-            return PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES)
-                .WriteByte(0x01)
-                .WriteLong(item.Uid)
-                .WriteItem(item);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
+            pWriter.WriteByte(0x01);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteItem(item);
+
+            return pWriter;
         }
 
         public static Packet SelectNewItem(Item item)
         {
-            return PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES)
-                .WriteByte(0x02)
-                .WriteLong(item.Uid)
-                .WriteItem(item);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
+            pWriter.WriteByte(0x02);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteItem(item);
+
+            return pWriter;
         }
     }
 }
