@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Linq;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
@@ -15,22 +17,19 @@ namespace GameDataParser.Parsers
 
         protected override List<MapEntityMetadata> Parse()
         {
-            // Iterate over preset objects to later reference while iterating over exported maps
-            Dictionary<string, string> mapObjects = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in Resources.ExportedFiles)
-            {
-                if (!entry.Name.StartsWith("flat/presets/presets object/"))
-                {
-                    continue;
-                }
+            List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
 
+            // Iterate over preset objects to later reference while iterating over exported maps
+            Dictionary<string, Dictionary<string, string>> mapObjects = new Dictionary<string, Dictionary<string, string>>();
+            foreach (PackFileEntry entry in Resources.ExportedFiles.Where(entry => entry.Name.StartsWith("flat/presets/presets object/")))
+            {
                 // Check if file is valid
                 string objStr = entry.Name.ToLower();
                 if (string.IsNullOrEmpty(objStr))
                 {
                     continue;
                 }
-                if (mapObjects.ContainsKey(objStr))
+                if (mapObjects.ContainsKey(objStr))  // TODO: handle the regional files as well as the base files (by selecting a specific region)
                 {
                     //Console.WriteLine($"Duplicate {entry.Name} was already added as {mapObjects[objStr]}");
                     continue;
@@ -39,35 +38,49 @@ namespace GameDataParser.Parsers
                 // Parse XML
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlElement root = document.DocumentElement;
-                XmlNodeList objProperties = document.SelectNodes("/model/property");
+                string modelName = root.Attributes["name"].Value;
 
-                string objectName = root.Attributes["name"].Value.ToLower();
+                string fileName = Path.GetFileNameWithoutExtension(entry.Name);
 
-                foreach (XmlNode node in objProperties)
+                // Insert an empty dictionary into the mapObjects dictionary to hold keys we care about.
+                mapObjects.Add(modelName, new Dictionary<string, string> { });
+
+                // Parse InteractMesh nodes. These are doors, etc. Filename is im_
+                // Parse InteractActor nodes. These are portals and things the toon can interact with normally.
+                if (Regex.Match(fileName, @"^i(m|a)_\d{8}_").Success)
                 {
-                    // Storing only weapon item code for now, but there are other uses
-                    if (node.Attributes["name"].Value.Contains("ObjectWeaponItemCode"))
+                    // Look for IsVisible, add it if found.
+                    XmlNode isVisibleNode = document.SelectSingleNode("/model/property[@name='IsVisible']");
+                    if (isVisibleNode != null)
+                        if (isVisibleNode.FirstChild.Attributes["value"].Value.Equals("True"))
+                            mapObjects[modelName]["IsVisible"] = "True";
+                }
+                else
+                {
+                    XmlNode objectWeaponItemCodeNode = document.SelectSingleNode("/model/property[@name='ObjectWeaponItemCode']");
+                    if (objectWeaponItemCodeNode != null)
                     {
-                        string weaponId = node?.FirstChild.Attributes["value"].Value ?? "0";
-
+                        string weaponId = objectWeaponItemCodeNode.FirstChild.Attributes["value"].Value ?? "0";
                         if (!weaponId.Equals("0"))
                         {
-                            mapObjects.Add(objectName, weaponId);
+                            mapObjects[modelName]["ObjectWeaponItemCode"] = weaponId;
                         }
                     }
                 }
             }
 
-            // Iterate over map xblocks
-            List<MapEntityMetadata> entities = new List<MapEntityMetadata>();
-            Dictionary<string, string> maps = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in Resources.ExportedFiles)
+            // TODO: Iterate over "presets npc" objects to supplement the initial state of an npc. Especially useful for patroldata, etc.
+            /*
+            foreach (PackFileEntry entry in Resources.ExportedFiles.Where(entry => entry.Name.StartsWith("flat/presets/presets npc/")))
             {
-                if (!entry.Name.StartsWith("xblock/"))
-                {
-                    continue;
-                }
+                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
+            }
+            */
 
+            // Iterate over map xblocks
+            Dictionary<string, string> maps = new Dictionary<string, string>();
+            foreach (PackFileEntry entry in Resources.ExportedFiles.Where(entry => entry.Name.StartsWith("xblock/")))
+            {
                 string mapIdStr = Regex.Match(entry.Name, @"\d{8}").Value;
                 if (string.IsNullOrEmpty(mapIdStr))
                 {
@@ -83,31 +96,53 @@ namespace GameDataParser.Parsers
 
                 MapEntityMetadata metadata = new MapEntityMetadata(mapId);
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
-                XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
-                foreach (XmlNode node in mapEntities)
+                foreach (XmlNode node in document.SelectNodes("/game/entitySet/entity"))
                 {
-                    string modelName = node.Attributes["modelName"].Value.ToLower();
-                    // IM_ Prefixed items are Interactable Models defined/linked in "xml/table/interactobject.xml"
-                    Match NpcEntityMatch = Regex.Match(node.Attributes["modelName"].Value, @"([1-4]\d{7})_(.*)?");
+                    string modelName = node.Attributes["modelName"].Value;
+                    string name = node.Attributes["name"].Value;
 
-                    XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                    CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-                    if (node.Attributes["name"].Value.Contains("MS2Bounding0"))
+                    /* NPC Objects have a modelName of 8 digits followed by an underscore and a name that's the same thing,
+                     *  but with a number (for each instance on that map) after it
+                     */
+                    // IM_ Prefixed items are Interactable Meshes supplemented by data in "xml/table/interactobject.xml"
+                    // IA_ prefixed items are Interactable Actors (Doors, etc). Have an interactID, which is an event on interact.
+                    // SpawnPointNPC is where event baddies spawn. It gets a "SpawnPointID" (e.g. 998)
+                    Match npcEntityMatch = Regex.Match(modelName, @"^(\d{8})_$");
+                    // Parse NPCs whose modelName matches the name field, but with an underscore on modelname.
+                    if (npcEntityMatch.Success)
                     {
+                        int npcId = int.Parse(npcEntityMatch.Groups[1].Value);
+                        if (Regex.Match(name, @$"^{modelName}\d+$").Success)  // The name is the same as the modelName, but with an underscore in modelName
+                        {
+                            XmlNode npcCoord = node.SelectSingleNode("property[@name='Position']");
+                            XmlNode npcRotation = node.SelectSingleNode("property[@name='Rotation']");
+                            string npcPositionValue = npcCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                            string npcRotationValue = npcRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                            metadata.Npcs.Add(new MapNpc(npcId, ParseCoord(npcPositionValue), ParseCoord(npcRotationValue)));
+                        }
+                        // TODO: an else. There's a lot of other cases to choose an NPC. Most *other* npcs are event/quest driven.
+                    }
+
+                    if (name.Contains("MS2Bounding0"))
+                    {
+                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                         if (metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
                         {
                             metadata.BoundingBox0 = boundingBox;
                         }
                     }
-                    else if (node.Attributes["name"].Value.Contains("MS2Bounding1"))
+                    else if (name.Contains("MS2Bounding1"))
                     {
+                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                         if (metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0)))
                         {
                             metadata.BoundingBox1 = boundingBox;
                         }
                     }
-                    else if (node.Attributes["name"].Value.Contains("SpawnPointPC"))
+                    else if (name.Contains("SpawnPointPC"))
                     {
                         XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode playerRotation = node.SelectSingleNode("property[@name='Rotation']");
@@ -117,39 +152,30 @@ namespace GameDataParser.Parsers
 
                         metadata.PlayerSpawns.Add(new MapPlayerSpawn(ParseCoord(playerPositionValue), ParseCoord(playerRotationValue)));
                     }
+                    else if (modelName.StartsWith("IA_"))  // InteractActor
+                    {
+                        string uuid = node.Attributes["id"].Value.ToLower();
+                        metadata.InteractActors.Add(new MapInteractActor(uuid, name));
+                    }
                     else if (mapObjects.ContainsKey(modelName))
                     {
-                        string nameCoord = node.Attributes["name"].Value.ToLower();
-
-                        Match coordMatch = Regex.Match(nameCoord, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+");
-
-                        if (!coordMatch.Success)
-                        {
-                            continue;
-                        }
-
-                        CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
-                        metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName])));
-                    }
-                    else if (NpcEntityMatch.Success)
-                    {
-                        // Skip some items we don't handle yet
-                        if (NpcEntityMatch.Groups[0].Value.Contains("WayPoint") || NpcEntityMatch.Groups[0].Value.Contains("PatrolData"))
-                        {
-                            continue;
-                        }
-
+                        XmlNode npcId = node.SelectSingleNode("property[@name='Name']");
                         XmlNode npcCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode npcRotation = node.SelectSingleNode("property[@name='Rotation']");
-                        if (npcCoord == null) //  Some entities don't have a playerRotation. Just means 0,0,0.
-                        {
-                            continue;
-                        }
 
-                        int npcId = int.Parse(NpcEntityMatch.Groups[1].Value.Split("_")[0]);
-                        string npcPositionValue = npcCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
-                        string npcRotationValue = npcRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
-                        metadata.Npcs.Add(new MapNpc(npcId, ParseCoord(npcPositionValue), ParseCoord(npcRotationValue)));
+                        if (mapObjects[modelName].ContainsKey("ObjectWeaponItemCode"))
+                        {
+                            string nameCoord = node.Attributes["name"].Value.ToLower();
+                            Match coordMatch = Regex.Match(nameCoord, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+");
+
+                            if (!coordMatch.Success)
+                            {
+                                continue;
+                            }
+
+                            CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
+                            metadata.Objects.Add(new MapObject(coord, int.Parse(mapObjects[modelName]["ObjectWeaponItemCode"])));
+                        }
                     }
                 }
 

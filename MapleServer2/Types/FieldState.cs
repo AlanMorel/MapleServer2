@@ -11,6 +11,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Npc>> Npcs;
         public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
+        public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
 
         public FieldState()
         {
@@ -19,7 +20,7 @@ namespace MapleServer2.Types
             Npcs = new ConcurrentDictionary<int, IFieldObject<Npc>>();
             Portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
-
+            InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -68,6 +69,11 @@ namespace MapleServer2.Types
         public bool RemovePortal(int objectId)
         {
             return Portals.Remove(objectId, out _);
+        }
+
+        public void AddInteractActor(IFieldObject<InteractActor> actor)
+        {
+            InteractActors[actor.Value.Uuid] = actor;
         }
 
         public void AddMob(IFieldObject<Mob> mob)

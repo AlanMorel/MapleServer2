@@ -87,11 +87,11 @@ namespace Maple2Storage.Types
     public struct CoordS
     {
         [XmlElement(Order = 1)]
-        public short X { get; private set; }
+        public short X { get; set; }
         [XmlElement(Order = 2)]
-        public short Y { get; private set; }
+        public short Y { get; set; }
         [XmlElement(Order = 3)]
-        public short Z { get; private set; }
+        public short Z { get; set; }
 
         public static CoordS From(short x, short y, short z)
         {

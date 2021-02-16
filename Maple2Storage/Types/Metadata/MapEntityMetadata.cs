@@ -22,6 +22,10 @@ namespace Maple2Storage.Types.Metadata
         public CoordS BoundingBox0;
         [XmlElement(Order = 7)]
         public CoordS BoundingBox1;
+        [XmlElement(Order = 8)]
+        public readonly List<MapInteractActor> InteractActors;
+        [XmlElement(Order = 9)]
+        public readonly List<MapInteractMesh> InteractMeshes;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -30,6 +34,8 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
+            InteractActors = new List<MapInteractActor>();
+            InteractMeshes = new List<MapInteractMesh>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -39,6 +45,8 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
+            InteractActors = new List<MapInteractActor>();
+            InteractMeshes = new List<MapInteractMesh>();
         }
 
         public override string ToString() =>
@@ -267,6 +275,42 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
+    }
+
+    [XmlType]
+    public class MapInteractActor
+    {
+        [XmlElement(Order = 1)]
+        public readonly string Uuid;
+        [XmlElement(Order = 2)]
+        public readonly string Name;
+
+        public MapInteractActor() { }
+        public MapInteractActor(string uuid, string name)
+        {
+            Uuid = uuid;
+            Name = name;
+        }
+        public override string ToString() =>
+            $"MapInteractActor(UUID:{Uuid},Name:{Name})";
+    }
+
+    [XmlType]
+    public class MapInteractMesh
+    {
+        [XmlElement(Order = 1)]
+        public readonly string Uuid;
+        [XmlElement(Order = 2)]
+        public readonly string Name;
+
+        public MapInteractMesh() { }
+        public MapInteractMesh(string uuid, string name)
+        {
+            Uuid = uuid;
+            Name = name;
+        }
+        public override string ToString() =>
+            $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
     }
 
     [Flags]

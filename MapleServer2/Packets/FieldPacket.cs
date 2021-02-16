@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -232,6 +233,23 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(1);
             pWriter.WriteInt();
             pWriter.WriteByte();
+
+            return pWriter;
+        }
+
+        internal static Packet AddInteractActors(ICollection<IFieldObject<InteractActor>> actors)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+
+            pWriter.WriteByte(0x08);  // There are different types here.
+            pWriter.WriteInt(actors.Count);
+            foreach (IFieldObject<InteractActor> actor in actors)
+            {
+                pWriter.WriteShort((short) actor.Value.Uuid.Length);
+                pWriter.WriteString(actor.Value.Uuid);
+                pWriter.WriteByte(1);
+                pWriter.WriteByte(1);
+            }
 
             return pWriter;
         }

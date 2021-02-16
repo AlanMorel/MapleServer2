@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml.Serialization;
 using ProtoBuf;
 
 namespace GameDataParser.Files
@@ -43,8 +44,22 @@ namespace GameDataParser.Files
             {
                 Serializer.Serialize(writeStream, entities);
             }
-        }
 
+#if DEBUG
+            using (FileStream debugWriteStream = File.Create($"{Paths.OUTPUT}/{Filename}.xml"))
+            {
+                try
+                {
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Entities));
+                    xmlSerializer.Serialize(debugWriteStream, entities);
+                }
+                catch
+                {
+                    Console.WriteLine($"Unable to serialize {debugWriteStream.Name}");
+                }
+            }
+        }
+#endif
         protected abstract void Serialize();
     }
 }
