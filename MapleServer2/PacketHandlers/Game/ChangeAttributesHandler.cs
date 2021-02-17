@@ -53,7 +53,9 @@ namespace MapleServer2.PacketHandlers.Game
                 for (int i = 0; i < attributeCount; i++)
                 {
                     if (i == lockIndex)
+                    {
                         continue;
+                    }
                     // TODO: Don't RNG the same attribute twice
                     newItem.Stats.BonusAttributes[i] = ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f);
                 }

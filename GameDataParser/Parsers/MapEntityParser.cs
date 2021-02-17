@@ -174,7 +174,9 @@ namespace GameDataParser.Parsers
                             XmlNode coordNode = parent.SelectSingleNode("property[@name='Position']");
                             XmlNode rotationNode = parent.SelectSingleNode("property[@name='Rotation']");
                             if (targetNode == null)
+                            {
                                 continue;
+                            }
 
                             if (!bool.TryParse(visibleNode?.FirstChild.Attributes["value"].Value,
                                     out bool visibleValue))

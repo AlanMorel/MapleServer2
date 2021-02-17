@@ -68,7 +68,9 @@ namespace GameDataParser.Crypto
             for (int i = Iv.Length - 1; i >= 0; i--)
             {
                 if (++Iv[i] != 0)
+                {
                     break;
+                }
             }
         }
     }
