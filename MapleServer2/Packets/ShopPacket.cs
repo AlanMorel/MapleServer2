@@ -53,15 +53,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadProducts(List<NpcShopProduct> products)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteByte(products.size());
-            foreach (NpcShopProduct product in products)
-            {
-                pWriter.Write(product);
-            }
-        }
+        // public static Packet LoadProducts(List<NpcShopProduct> products)
+        // {
+        //     PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+        //     pWriter.WriteByte(products.size());
+        //     foreach (NpcShopProduct product in products)
+        //     {
+        //         pWriter.Write(product);
+        //     }
+        // }
 
         public static Packet Close()
         {

@@ -75,6 +75,9 @@ namespace MapleServer2.Tools
                     }
                     MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
                     break;
+                case "test":
+                    session.Send(ShopPacket.Open(11003463, 168, "guildtokenetc"));
+                    break;
             }
         }
 
