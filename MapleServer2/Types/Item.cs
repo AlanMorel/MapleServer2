@@ -20,6 +20,7 @@ namespace MapleServer2.Types
         public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
+        public string FileName { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
 
@@ -72,6 +73,7 @@ namespace MapleServer2.Types
             IsDress = ItemMetadataStorage.GetIsDress(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
+            FileName = ItemMetadataStorage.GetFileName(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
             Slot = -1;
@@ -94,6 +96,7 @@ namespace MapleServer2.Types
             IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
             PlayCount = other.PlayCount;
+            FileName = other.FileName;
             Content = other.Content;
             Uid = other.Uid;
             Slot = other.Slot;

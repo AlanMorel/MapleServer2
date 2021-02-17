@@ -84,6 +84,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).PlayCount;
         }
 
+        public static string GetFileName(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FileName;
+        }
+
         public static int GetSkillID(int itemId)
         {
             return map.GetValueOrDefault(itemId).SkillID;

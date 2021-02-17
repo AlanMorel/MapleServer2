@@ -211,6 +211,8 @@ namespace GameDataParser.Parsers
                 XmlNode musicScore = item.SelectSingleNode("MusicScore");
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
+                string fileName = musicScore.Attributes["fileName"].Value;
+                metadata.FileName = fileName;
 
                 XmlNode skill = item.SelectSingleNode("skill");
                 int skillID = int.Parse(skill.Attributes["skillID"].Value);
