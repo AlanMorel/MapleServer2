@@ -11,6 +11,8 @@ namespace MapleServer2.Packets
         {
             Open = 0x0,
             GetProducts = 0x1,
+            Buy = 0x4,
+            Sell = 0x5,
             Close = 0x6
         }
         
@@ -60,6 +62,20 @@ namespace MapleServer2.Packets
         //     foreach (NpcShopProduct product in products)
         //     {
         //         pWriter.Write(product);
+        //     }
+        // }
+        
+        // private void onSendShop(InPacket packet) {
+        //     //[SendShop] 28 00 04 24 2D 31 01 05 00 00 00 - 5 is    qty
+        //     int mode = packet.decodeByte();
+        //     if (mode == 4) { //buy from shop
+        //         int id = packet.decodeInt();
+        //         int quantity = packet.decodeInt();
+        //         ShopHandler.handleBuy(this, id, quantity);
+        //     } else if (mode == 5) { //sell to shop
+        //         long itemSN = packet.decodeLong();
+        //         int quantity = packet.decodeInt();
+        //         ShopHandler.handleSell(this, itemSN, quantity);
         //     }
         // }
 

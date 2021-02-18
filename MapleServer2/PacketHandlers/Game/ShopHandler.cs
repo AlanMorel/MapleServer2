@@ -18,6 +18,8 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Open = 0x0,
             GetProducts = 0x1,
+            Buy = 0x4,
+            Sell = 0x5,
             Close = 0x6
         }
 
