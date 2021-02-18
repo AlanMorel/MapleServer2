@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -34,7 +35,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case ItemBreakMode.Open:
-                    session.Player.DismantleSlots = new Dictionary<short, long>(100);
+                    session.Player.DismantleSlots = new Tuple<long, int>[100];
                     session.Player.Rewards = new Dictionary<int, int>();
                     break;
                 case ItemBreakMode.Add:
@@ -67,9 +68,10 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleRemove(GameSession session, PacketReader packet)
         {
             long uid = packet.ReadLong();
-            short key = session.Player.DismantleSlots.FirstOrDefault(x => x.Value == uid).Key;
+            Tuple<long, int>[] dismantleSlots = session.Player.DismantleSlots;
+            int index = Array.FindIndex(dismantleSlots, 0, dismantleSlots.Length, x => x != null && x.Item1 == uid);
 
-            session.Player.DismantleSlots.Remove(key);
+            session.Player.DismantleSlots[index] = null;
             session.Send(ItemBreakPacket.Remove(uid));
             UpdateRewards(session);
         }
@@ -78,9 +80,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Player player = session.Player;
 
-            foreach (KeyValuePair<short, long> slot in player.DismantleSlots)
+            foreach (Tuple<long, int> slot in player.DismantleSlots.Where(i => i != null))
             {
-                InventoryController.Remove(session, slot.Value, out Item _);
+                InventoryController.Consume(session, slot.Item1, slot.Item2);
             }
             foreach (KeyValuePair<int, int> reward in player.Rewards)
             {
@@ -91,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 InventoryController.Add(session, item, true);
             }
-            player.DismantleSlots = new Dictionary<short, long>(100);
+            player.DismantleSlots = new Tuple<long, int>[100];
             session.Send(ItemBreakPacket.ShowRewards(player.Rewards));
         }
 
@@ -99,9 +101,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Player player = session.Player;
             player.Rewards = new Dictionary<int, int>();
-            foreach (KeyValuePair<short, long> slot in player.DismantleSlots)
+            foreach (Tuple<long, int> slot in player.DismantleSlots.Where(x => x != null))
             {
-                Item item = player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Value).Value;
+                Item item = player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Item1).Value;
                 if (!ItemMetadataStorage.IsValid(item.Id))
                 {
                     continue;
@@ -125,6 +127,7 @@ namespace MapleServer2.PacketHandlers.Game
                         {
                             player.Rewards[ingredient.Id] = ingredient.Count;
                         }
+                        player.Rewards[ingredient.Id] *= slot.Item2;
                     }
                 }
                 // TODO: Add Onyx Crystal (40100023) and Chaos Onyx Crystal (40100024) to rewards if InventoryTab = Gear, based on level and rarity
@@ -155,9 +158,12 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
             if (slot >= 0)
             {
-                if (!player.DismantleSlots.ContainsKey(slot))
+                if (player.DismantleSlots[slot] == null)
                 {
-                    player.DismantleSlots[slot] = uid;
+                    player.DismantleSlots[slot] = new Tuple<long, int>(uid, amount);
+                    session.Send(ItemBreakPacket.Add(uid, slot, amount));
+                    UpdateRewards(session);
+                    return;
                 }
                 else
                 {
@@ -167,19 +173,18 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (slot == -1)
             {
-                for (slot = 0; slot < 100; slot++)
+                for (slot = 0; slot < player.DismantleSlots.Length; slot++)
                 {
-                    if (player.DismantleSlots.ContainsKey(slot))
+                    if (player.DismantleSlots[slot] != null)
                     {
                         continue;
                     }
-                    player.DismantleSlots[slot] = uid;
-                    break;
+                    player.DismantleSlots[slot] = new Tuple<long, int>(uid, amount);
+                    session.Send(ItemBreakPacket.Add(uid, slot, amount));
+                    UpdateRewards(session);
+                    return;
                 }
             }
-
-            session.Send(ItemBreakPacket.Add(uid, slot, amount));
-            UpdateRewards(session);
         }
     }
 }
