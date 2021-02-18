@@ -69,19 +69,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long uid = packet.ReadLong();
             Tuple<long, int>[] dismantleSlots = session.Player.DismantleSlots;
-            for (int i = 0; i < dismantleSlots.Length; i++)
-            {
-                if (dismantleSlots[i] == null)
-                {
-                    continue;
-                }
-                if (dismantleSlots[i].Item1 == uid)
-                {
-                    session.Player.DismantleSlots[i] = null;
-                    break;
-                }
-            }
+            int index = Array.FindIndex(dismantleSlots, 0, dismantleSlots.Length, x => x != null && x.Item1 == uid);
 
+            session.Player.DismantleSlots[index] = null;
             session.Send(ItemBreakPacket.Remove(uid));
             UpdateRewards(session);
         }
