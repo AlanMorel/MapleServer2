@@ -92,7 +92,7 @@ namespace MapleServer2.Types
         public Mailbox Mailbox = new Mailbox();
 
         // Dismantle Inventory
-        public Dictionary<short, long> DismantleSlots;
+        public Tuple<long, int>[] DismantleSlots;
         public Dictionary<int, int> Rewards;
 
         public long PartyId;
