@@ -302,9 +302,8 @@ namespace GameDataParser.Parsers
                 case 12: // Music Score
                     return InventoryTab.FishingMusic;
                 case 13:
-                    return InventoryTab.Gemstone;
                 case 14: // Gem dust
-                    return InventoryTab.Catalyst;
+                    return InventoryTab.Gemstone;
                 case 15:
                     return InventoryTab.Catalyst;
                 case 16:
