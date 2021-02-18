@@ -26,15 +26,6 @@ namespace Maple2Storage.Types
             return CoordS.From((short) X, (short) Y, (short) Z);
         }
 
-        public readonly CoordF ClosestBlock()
-        {
-            return From(
-                ((int) X + 75) / 150 * 150,
-                ((int) Y + 75) / 150 * 150,
-                ((int) Z + 75) / 150 * 150
-            );
-        }
-
         public static bool operator ==(CoordF left, CoordF right)
         {
             return Equals(left, right);
@@ -137,15 +128,6 @@ namespace Maple2Storage.Types
         public short Length()
         {
             return (short) Math.Sqrt((X * X + Y * Y + Z * Z));
-        }
-
-        public readonly CoordS ClosestBlock()
-        {
-            return From(
-                (short) ((X + 75) / 150 * 150),
-                (short) ((Y + 75) / 150 * 150),
-                (short) ((Z + 75) / 150 * 150)
-            );
         }
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";

@@ -15,8 +15,6 @@ namespace MapleServer2.PacketHandlers.Game
     // Currently I am just updating animation instantly.
     public class UserSyncHandler : GamePacketHandler
     {
-        private const int BLOCK_SIZE = 150;
-
         public override RecvOp OpCode => RecvOp.USER_SYNC;
 
         public UserSyncHandler(ILogger<UserSyncHandler> logger) : base(logger) { }
@@ -45,8 +43,9 @@ namespace MapleServer2.PacketHandlers.Game
             Packet syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
 
-            CoordF closestBlock = syncStates[0].Coord.ToFloat().ClosestBlock();
-            closestBlock.Z -= BLOCK_SIZE; // Get block under player
+            CoordF coord = syncStates[0].Coord.ToFloat();
+            CoordF closestBlock = Block.ClosestBlock(coord);
+            closestBlock.Z -= Block.BLOCK_SIZE; // Get block under player
 
             if (IsCoordSafe(session, syncStates[0].Coord, closestBlock))
             {
@@ -58,15 +57,15 @@ namespace MapleServer2.PacketHandlers.Game
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
                 CoordF safeBlock = session.Player.SafeBlock;
-                safeBlock.Z += BLOCK_SIZE + 1; // Without this player will spawn inside the block
+                safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
                 // for some reason if coord is negative player is teleported one block over, which can result player being stuck inside a block
                 if (session.FieldPlayer.Coord.X < 0)
                 {
-                    safeBlock.X -= BLOCK_SIZE;
+                    safeBlock.X -= Block.BLOCK_SIZE;
                 }
                 if (session.FieldPlayer.Coord.Y < 0)
                 {
-                    safeBlock.Y -= BLOCK_SIZE;
+                    safeBlock.Y -= Block.BLOCK_SIZE;
                 }
                 session.Send(UserMoveByPortalPacket.Move(session, safeBlock));
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
