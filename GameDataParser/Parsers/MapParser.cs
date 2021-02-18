@@ -68,19 +68,20 @@ namespace GameDataParser.Parsers
                 foreach (XmlNode node in mapEntities)
                 {
                     string modelName = node.Attributes["modelName"].Value.ToLower();
-                    if (mapCubes.Contains(modelName))
+                    if (!mapCubes.Contains(modelName))
                     {
-                        XmlNode fallReturn = node.SelectSingleNode("property[@name='IsFallReturn']");
-                        bool isFallReturn = (fallReturn?.FirstChild.Attributes["value"].Value) != "False";
-                        if (!isFallReturn)
-                        {
-                            continue;
-                        }
-                        string id = node.Attributes["id"].Value.ToLower();
-                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS coordS = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-                        blockList.Add(coordS);
+                        continue;
                     }
+                    XmlNode fallReturn = node.SelectSingleNode("property[@name='IsFallReturn']");
+                    bool isFallReturn = (fallReturn?.FirstChild.Attributes["value"].Value) != "False";
+                    if (!isFallReturn)
+                    {
+                        continue;
+                    }
+                    string id = node.Attributes["id"].Value.ToLower();
+                    XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                    CoordS coordS = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                    blockList.Add(coordS);
                 }
 
                 if (blockList.Count == 0)

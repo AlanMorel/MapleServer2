@@ -15,13 +15,14 @@ namespace MapleServer2.PacketHandlers.Game
     // Currently I am just updating animation instantly.
     public class UserSyncHandler : GamePacketHandler
     {
+        private const int BLOCK_SIZE = 150;
+
         public override RecvOp OpCode => RecvOp.USER_SYNC;
 
         public UserSyncHandler(ILogger<UserSyncHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-
             byte function = packet.ReadByte(); // Unknown what this is for
             session.ClientTick = packet.ReadInt(); //ClientTicks
             packet.ReadInt(); // ServerTicks
@@ -45,7 +46,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(syncPacket, session);
 
             CoordF closestBlock = syncStates[0].Coord.ToFloat().ClosestBlock();
-            closestBlock.Z -= 150; // Get block under player
+            closestBlock.Z -= BLOCK_SIZE; // Get block under player
 
             if (IsCoordSafe(session, syncStates[0].Coord, closestBlock))
             {
@@ -57,15 +58,15 @@ namespace MapleServer2.PacketHandlers.Game
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
                 CoordF safeBlock = session.Player.SafeBlock;
-                safeBlock.Z += 151; // Without this player will spawn inside the block
+                safeBlock.Z += BLOCK_SIZE + 1; // Without this player will spawn inside the block
                 // for some reason if coord is negative player is teleported one block over, which can result player being stuck inside a block
                 if (session.FieldPlayer.Coord.X < 0)
                 {
-                    safeBlock.X -= 150;
+                    safeBlock.X -= BLOCK_SIZE;
                 }
                 if (session.FieldPlayer.Coord.Y < 0)
                 {
-                    safeBlock.Y -= 150;
+                    safeBlock.Y -= BLOCK_SIZE;
                 }
                 session.Send(UserMoveByPortalPacket.Move(session, safeBlock));
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
@@ -101,7 +102,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool IsCoordSafe(GameSession session, CoordS currentCoord, CoordF closestCoord)
         {
-            return (session.Player.SafeBlock - closestCoord).Length() > 350 && session.FieldPlayer.Coord.Z == currentCoord.Z && !session.Player.OnAirMount && MapMetadataStorage.BlockExists(session.Player.MapId, closestCoord.ToShort()); // Save last coord if player is not falling and not in a air mount
+            // Save last coord if player is not falling and not in a air mount
+            return MapMetadataStorage.BlockExists(session.Player.MapId, closestCoord.ToShort()) &&
+                !session.Player.OnAirMount &&
+                (session.Player.SafeBlock - closestCoord).Length() > 350 &&
+                session.FieldPlayer.Coord.Z == currentCoord.Z;
         }
     }
 }
