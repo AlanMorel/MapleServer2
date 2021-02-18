@@ -1,11 +1,11 @@
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
-using GameDataParser.Crypto.Common;
-using GameDataParser.Files;
-using Maple2Storage.Types.Metadata;
 using System.Text.RegularExpressions;
 using System.Xml;
+using GameDataParser.Crypto.Common;
+using GameDataParser.Files;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {

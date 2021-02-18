@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
