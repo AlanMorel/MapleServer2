@@ -3,7 +3,6 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
-
 namespace MapleServer2.PacketHandlers.Game
 {
     class InteractObjectHandler : GamePacketHandler
@@ -27,6 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
         }
+
         private static void HandleInteractStarted(GameSession session, PacketReader packet)
         {
 

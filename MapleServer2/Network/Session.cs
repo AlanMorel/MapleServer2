@@ -278,9 +278,6 @@ namespace MapleServer2.Network
                 case SendOp.SERVER_ENTER:
                 case SendOp.QUEST:
                     break;
-                case SendOp.INTERACT_OBJECT:
-                    Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".Pastel("#4150B9"));
-                    break;
                 default:
                     Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".Pastel("#E05561"));
                     break;
