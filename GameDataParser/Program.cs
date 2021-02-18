@@ -33,6 +33,7 @@ namespace GameDataParser
                 new ItemParser(resources),
                 new ItemStatsParser(resources),
                 new MapEntityParser(resources),
+                new MapParser(resources),
                 new SkillParser(resources),
                 new InsigniaParser(resources),
                 new ExpParser(resources),
