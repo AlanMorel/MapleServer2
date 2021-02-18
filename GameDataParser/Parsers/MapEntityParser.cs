@@ -166,8 +166,7 @@ namespace GameDataParser.Parsers
                          */
                         Dictionary<string, string> modelData = mapObjects[modelName];
 
-                        if (modelData.ContainsKey("mixinMS2PhysXProp") ||
-                            modelData.ContainsKey("mixinMS2TimeShowSetting") ||
+                        if (modelData.ContainsKey("mixinMS2TimeShowSetting") ||
                             modelData.ContainsKey("mixinMS2Sound") ||
                             modelData.ContainsKey("mixinMS2SalePost") ||
                             modelData.ContainsKey("mixinMS2Actor") ||  // "fa_fi_funct_irondoor_A01_"
@@ -270,20 +269,7 @@ namespace GameDataParser.Parsers
                         // MS2RegionSkill as in "SkillObj_co_Crepper_C03_" (Only on 8xxxx and 9xxxxx maps)
                         // "mixinMS2FunctionCubeKFM" as in "ry_functobj_lamp_B01_", "ke_functobj_bath_B01_"
                         // "mixinMS2FunctionCubeNIF"
-                        else
-                        {
-                            // Just assume it's a basic mapObject. Parse the values 
-                            Match coordMatch = Regex.Match(name, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+");
-
-                            if (!coordMatch.Success)
-                            {
-                                continue;
-                            }
-
-                            CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
-                            metadata.Objects.Add(new MapObject(coord, int.Parse("1")));
-
-                        }
+                        // "MS2MapProperties"->"MS2PhysXProp" that's not a weapon. Standard 
                     }
                     /*
                      * if (Regex.Match(modelName, @"^\d{8}_").Success && Regex.Match(name, @"\d{1,3}").Success)
