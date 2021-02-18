@@ -171,6 +171,9 @@ namespace MapleServer2.PacketHandlers.Game
                 if (player.DismantleSlots[slot] == null)
                 {
                     player.DismantleSlots[slot] = new Tuple<long, int>(uid, amount);
+                    session.Send(ItemBreakPacket.Add(uid, slot, amount));
+                    UpdateRewards(session);
+                    return;
                 }
                 else
                 {
@@ -187,12 +190,11 @@ namespace MapleServer2.PacketHandlers.Game
                         continue;
                     }
                     player.DismantleSlots[slot] = new Tuple<long, int>(uid, amount);
-                    break;
+                    session.Send(ItemBreakPacket.Add(uid, slot, amount));
+                    UpdateRewards(session);
+                    return;
                 }
             }
-
-            session.Send(ItemBreakPacket.Add(uid, slot, amount));
-            UpdateRewards(session);
         }
     }
 }
