@@ -142,25 +142,41 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly CoordS Coord;
+        public string ModelName;
         [XmlElement(Order = 3)]
+        public string InstanceName;
+        [XmlElement(Order = 4)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 5)]
         public readonly CoordS Rotation;
+        [XmlElement(Order = 6)]
+        public string PatrolDataUuid = "00000000-0000-0000-0000-000000000000";
+        [XmlElement(Order = 7)]
+        public bool IsSpawnOnFieldCreate = false;
+        [XmlElement(Order = 8)]
+        public bool IsDayDie = false;
+        [XmlElement(Order = 9)]
+        public bool IsNightDie = false;
+
 
         // Required for deserialization
         public MapNpc() { }
 
-        public MapNpc(int id, CoordS coord, CoordS rotation)
+        public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation)
         {
             Id = id;
+            ModelName = modelName;
+            InstanceName = instanceName;
             Coord = coord;
             Rotation = rotation;
         }
 
         public override string ToString() =>
-            $"MapNpc(Id:{Id},Rotation:{Rotation},Coord:{Coord})";
+            $"MapNpc(Id:{Id},ModelName:{ModelName},Rotation:{Rotation},Coord:{Coord})";
 
         protected bool Equals(MapNpc other)
         {
+            // TODO: Check instance name instead.
             return Id == other.Id && Coord.Equals(other.Coord) && Rotation.Equals(other.Rotation);
         }
 
@@ -189,6 +205,7 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+        // TODO: Add other methods which idenntify the Type of NPC (always, event, etc)
     }
 
     [XmlType]
