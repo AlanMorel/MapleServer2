@@ -53,19 +53,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Buy(long itemUid, int quantity)
+        public static Packet Buy(int itemId, int quantity)
         {
             // TODO: Implement buying item from shop
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteShort(0);
+            Console.WriteLine($"Buying {quantity}x {itemId}");
             return pWriter;
         }
 
-        public static Packet Sell(long itemId, int quantity)
+        public static Packet Sell(long itemUid, int quantity, int price)
         {
             // TODO: Implement selling item to shop
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteShort(0);
+            Console.WriteLine($"Selling {quantity}x {itemUid} for {price} mesos");
             return pWriter;
         }
     }

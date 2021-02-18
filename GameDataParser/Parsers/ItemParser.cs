@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -134,6 +135,10 @@ namespace GameDataParser.Parsers
                     Console.WriteLine($"Failed to parse tab slot for {itemId}: {e.Message}");
                 }
                 metadata.StackLimit = int.Parse(property.Attributes["slotMax"].Value);
+                
+                // Price
+                List<int> price = string.IsNullOrEmpty(property.Attributes["price"]?.Value) ? null : property.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();
+                metadata.Price = price;
 
                 // Rarity
                 XmlNode option = item.SelectSingleNode("option");

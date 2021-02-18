@@ -95,5 +95,10 @@ namespace MapleServer2.Data.Static
         {
             return map.GetValueOrDefault(itemId).Content;
         }
+        
+        public static List<int> GetPricePoints(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Price;
+        }
     }
 }

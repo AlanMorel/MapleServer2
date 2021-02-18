@@ -33,6 +33,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 12)]
         public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 13)]
+        public List<int> Price = new List<int>();
+        [XmlElement(Order = 14)]
         public List<ItemContent> Content;
 
         // Required for deserialization
@@ -47,9 +49,11 @@ namespace Maple2Storage.Types.Metadata
 
         protected bool Equals(ItemMetadata other)
         {
-            return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab && Rarity == other.Rarity &&
-            StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate && PlayCount ==
-            other.PlayCount && SkillID == other.SkillID && Content.SequenceEqual(other.Content);
+            return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab &&
+                   Rarity == other.Rarity &&
+                   StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate &&
+                   PlayCount ==
+                   other.PlayCount && SkillID == other.SkillID && Content.SequenceEqual(other.Content);
         }
 
         public override bool Equals(object obj)
@@ -98,11 +102,14 @@ namespace Maple2Storage.Types.Metadata
         public readonly int Rarity;
         [XmlElement(Order = 8)]
         public readonly int EnchantLevel;
+        [XmlElement(Order = 9)]
+        public readonly int[] Price;
 
         // Required for deserialization
         public ItemContent() { }
 
-        public ItemContent(int id, int minAmount, int maxAmount, int dropGroup, int smartDropRate, int rarity, int enchant, int id2 = 0)
+        public ItemContent(int id, int minAmount, int maxAmount, int dropGroup, int smartDropRate, int rarity,
+            int enchant, int id2 = 0, int[] price = null)
         {
             Id = id;
             Id2 = id2;
@@ -112,15 +119,18 @@ namespace Maple2Storage.Types.Metadata
             SmartDropRate = smartDropRate;
             Rarity = rarity;
             EnchantLevel = enchant;
+            Price = price;
         }
 
         public override string ToString() =>
-            $"ItemContent(Id:{Id},Id2:{Id2},MinAmount:{MinAmount},MaxAmount:{MaxAmount},DropGroup:{DropGroup},SmartDropRate:{SmartDropRate},Rarity:{Rarity},EnchantLevel:{EnchantLevel})";
+            $"ItemContent(Id:{Id},Id2:{Id2},MinAmount:{MinAmount},MaxAmount:{MaxAmount},DropGroup:{DropGroup},SmartDropRate:{SmartDropRate},Rarity:{Rarity},EnchantLevel:{EnchantLevel},Price:{Price})";
 
-        protected bool Equals(ItemContent other)
+        private bool Equals(ItemContent other)
         {
-            return Id == other.Id && Id2 == other.Id2 && MinAmount == other.MinAmount && MaxAmount == other.MaxAmount && DropGroup == other.DropGroup &&
-                    SmartDropRate == other.SmartDropRate && Rarity == other.Rarity && EnchantLevel == other.EnchantLevel;
+            return Id == other.Id && Id2 == other.Id2 && MinAmount == other.MinAmount && MaxAmount == other.MaxAmount &&
+                   DropGroup == other.DropGroup &&
+                   SmartDropRate == other.SmartDropRate && Rarity == other.Rarity &&
+                   EnchantLevel == other.EnchantLevel && Price == other.Price;
         }
 
         public override bool Equals(object obj)
@@ -136,7 +146,15 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Id2, MinAmount, MaxAmount, DropGroup, SmartDropRate, Rarity, EnchantLevel);
+            return HashCode.Combine(
+                Id,
+                Id2,
+                MinAmount,
+                MaxAmount,
+                DropGroup,
+                SmartDropRate,
+                Rarity,
+                EnchantLevel);
         }
 
         public static bool operator ==(ItemContent left, ItemContent right)

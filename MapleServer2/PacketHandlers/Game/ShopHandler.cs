@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -83,8 +86,17 @@ namespace MapleServer2.PacketHandlers.Game
             // sell to shop
             long itemUid = packet.ReadLong();
             int quantity = packet.ReadInt();
-
-            session.Send(ShopPacket.Sell(itemUid, quantity));
+            
+            // get item
+            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            {
+                // get random selling price from price points
+                Random rng = new Random();
+                List<int> pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
+                int rand = rng.Next(0, pricePoints.Count);
+                int price = pricePoints[rand];
+                session.Send(ShopPacket.Sell(itemUid, quantity, price));
+            }
         }
 
         private static void HandleBuy(GameSession session, PacketReader packet)
@@ -92,7 +104,6 @@ namespace MapleServer2.PacketHandlers.Game
             // buy from shop
             int itemId = packet.ReadInt();
             int quantity = packet.ReadInt();
-
             session.Send(ShopPacket.Buy(itemId, quantity));
         }
     }
