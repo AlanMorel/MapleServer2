@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -49,7 +50,7 @@ namespace MapleServer2.Packets
         public static Packet Close()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteShort(0);
+            pWriter.WriteShort();
             return pWriter;
         }
 
@@ -64,8 +65,20 @@ namespace MapleServer2.Packets
         public static Packet Sell(long itemUid, int quantity, int price)
         {
             // TODO: Implement selling item to shop
+            // PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+            Console.WriteLine($"Selling {quantity}x {itemUid} for {price * quantity} mesos");
+            // return pWriter;
+            return null;
+        }
+
+        public static Packet LoadProducts(List<NpcShopProduct> products)
+        {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            Console.WriteLine($"Selling {quantity}x {itemUid} for {price} mesos");
+            pWriter.WriteByte((byte) products.Count);
+            foreach (NpcShopProduct product in products)
+            {
+                product.Encode(pWriter);
+            }
             return pWriter;
         }
     }

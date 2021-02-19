@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -33,6 +35,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 case ShopMode.Open:
                     HandleOpen(session, packet);
+                    break;
+                case ShopMode.LoadProducts:
+                    HandleLoadProducts(session);
                     break;
                 case ShopMode.Close:
                     HandleClose(session);
@@ -68,17 +73,26 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ShopPacket.Close());
         }
 
-        private static void HandleLoadProducts(GameSession session, PacketReader packet)
+        private static void HandleLoadProducts(GameSession session)
         {
-            // public static Packet LoadProducts(List<NpcShopProduct> products)
-            // {
-            //     PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            //     pWriter.WriteByte(products.size());
-            //     foreach (NpcShopProduct product in products)
-            //     {
-            //         pWriter.Write(product);
-            //     }
-            // }
+            List<NpcShopProduct> products = new()
+            {
+                new NpcShopProduct
+                {
+                    UniqueId = GuidGenerator.Int(),
+                    ItemId = 20000110,
+                    TokenType = 0,
+                    Price = 20,
+                    SalePrice = 30,
+                    StockCount = 9999,
+                    StockPurchased = 0,
+                    Category = "PS",
+                    Quantity = 1,
+                    Flag = 0x1
+                }
+            };
+
+            session.Send(ShopPacket.LoadProducts(products));
         }
 
         private static void HandleSell(GameSession session, PacketReader packet)
@@ -86,16 +100,19 @@ namespace MapleServer2.PacketHandlers.Game
             // sell to shop
             long itemUid = packet.ReadLong();
             int quantity = packet.ReadInt();
-            
+
             // get item
             if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
             {
                 // get random selling price from price points
-                Random rng = new Random();
+                Random rng = new();
                 List<int> pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
-                int rand = rng.Next(0, pricePoints.Count);
-                int price = pricePoints[rand];
-                session.Send(ShopPacket.Sell(itemUid, quantity, price));
+                if (pricePoints.Any())
+                {
+                    int rand = rng.Next(0, pricePoints.Count);
+                    int price = pricePoints[rand];
+                    session.Send(ShopPacket.Sell(itemUid, quantity, price));
+                }
             }
         }
 
