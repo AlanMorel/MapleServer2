@@ -130,7 +130,5 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(other);
             return pWriter;
         }
-
-
     }
 }

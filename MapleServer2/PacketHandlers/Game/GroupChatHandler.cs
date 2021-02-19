@@ -47,6 +47,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
+        private enum GroupChatError : int
+        {
+            OfflinePlayer = 0x3,
+            MaxGroups = 0xA,
+        }
+
         private static void HandleCreate(GameSession session, PacketReader packet)
         {
             GroupChat groupChat = new(session.Player);
@@ -70,7 +76,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player other = GameServer.Storage.GetPlayerByName(targetPlayer);
             if (other == null)
             {
-                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, 0x03));
+                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int)GroupChatError.OfflinePlayer));
                 return;
             }
 
@@ -79,9 +85,9 @@ namespace MapleServer2.PacketHandlers.Game
             
             if (count == 3)
 
-            if (groupChatCheck == 3)
+            if (groupChatCheck >= 3) // 3 is the max group chats a user can be at
             {
-                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, 0x0A));
+                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int)GroupChatError.MaxGroups));
                 return;
             }
 
@@ -118,11 +124,6 @@ namespace MapleServer2.PacketHandlers.Game
             if (groupChat == null)
             {
                 return;
-            }
-
-            foreach (Player member in groupChat.Members)
-            {
-                System.Console.WriteLine(member.Name);
             }
 
             groupChat.BroadcastPacketGroupChat(GroupChatPacket.Chat(groupChat, session.Player, message));
