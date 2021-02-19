@@ -58,8 +58,7 @@ namespace GameDataParser.Parsers
                 }
 
                 MapMetadata metadata = new MapMetadata();
-                int mapId = int.Parse(mapIdStr);
-                metadata.Id = mapId;
+                metadata.Id = int.Parse(mapIdStr);
 
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
@@ -80,7 +79,7 @@ namespace GameDataParser.Parsers
                     }
                     string id = node.Attributes["id"].Value.ToLower();
                     XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                    CoordS coordS = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                    CoordS coordS = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                     blockList.Add(coordS);
                 }
 
@@ -93,16 +92,6 @@ namespace GameDataParser.Parsers
                 mapsList.Add(metadata);
             }
             return mapsList;
-        }
-
-        private static CoordS ParseCoord(string value)
-        {
-            string[] coord = value.Split(", ");
-            return CoordS.From(
-                (short) float.Parse(coord[0]),
-                (short) float.Parse(coord[1]),
-                (short) float.Parse(coord[2])
-            );
         }
     }
 }

@@ -77,6 +77,16 @@ namespace Maple2Storage.Types
         {
             return HashCode.Combine(X, Y, Z);
         }
+
+        public static CoordF Parse(string value)
+        {
+            string[] coord = value.Split(", ");
+            return From(
+                float.Parse(coord[0]),
+                float.Parse(coord[1]),
+                float.Parse(coord[2])
+            );
+        }
     }
 
     [XmlType]
@@ -151,9 +161,20 @@ namespace Maple2Storage.Types
 
             return Equals((CoordS) obj);
         }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Y, Z);
+        }
+
+        public static CoordS Parse(string value)
+        {
+            string[] coord = value.Split(", ");
+            return From(
+                (short) float.Parse(coord[0]),
+                (short) float.Parse(coord[1]),
+                (short) float.Parse(coord[2])
+            );
         }
     }
 
