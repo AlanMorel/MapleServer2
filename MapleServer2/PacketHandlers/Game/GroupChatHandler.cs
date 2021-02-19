@@ -75,13 +75,9 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int groupChatCheck = 0;
-            for (int i = 0; i < 3; i++)
-            {
-                if (other.GroupChatId[i] != 0)
-                {
-                    groupChatCheck++;
-                }
-            }
+            int count = other.GroupChatId.Count(x => x != 0);
+            
+            if (count == 3)
 
             if (groupChatCheck == 3)
             {
