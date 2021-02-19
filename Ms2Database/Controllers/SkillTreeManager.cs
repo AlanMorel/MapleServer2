@@ -34,7 +34,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void UpdateSkill(SkillTree skillObject)
+        public static void UpdateSkill(SkillTree skillObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -43,7 +43,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public SkillTree GetSkill(long characterId, long skillId)
+        public static SkillTree GetSkill(long characterId, long skillId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -54,7 +54,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public List<SkillTree> GetSkillTree(long characterId)
+        public static List<SkillTree> GetSkillTree(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

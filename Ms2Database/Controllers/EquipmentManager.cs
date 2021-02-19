@@ -6,16 +6,16 @@ namespace Ms2Database.Controllers
 {
     public class EquipmentManager
     {
-        private readonly Ms2DbContext _context = new Ms2DbContext(); //Opens connection to database
+        private readonly Ms2DbContext Context = new Ms2DbContext(); //Opens connection to database
 
         public void EquipItem(long characterId, long uid, string slot, bool isCosmetic = true)
         {
-            Item item = _context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
+            Item item = Context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
             Item equippedItem;
 
             if (isCosmetic) // Handles cosmetic
             {
-                equippedItem = _context.Items.Include(table => table.Inventory)
+                equippedItem = Context.Items.Include(table => table.Inventory)
                                              .Where(column => column.Inventory.CharacterId == characterId)
                                              .FirstOrDefault(column => column.CosmeticSlot == slot.ToUpper());
 
@@ -27,7 +27,7 @@ namespace Ms2Database.Controllers
             }
             else // Handles regular equipment
             {
-                equippedItem = _context.Items.Include(table => table.Inventory)
+                equippedItem = Context.Items.Include(table => table.Inventory)
                                              .Where(column => column.Inventory.CharacterId == characterId)
                                              .FirstOrDefault(column => column.EquipmentSlot == slot.ToUpper());
 
@@ -37,12 +37,12 @@ namespace Ms2Database.Controllers
                 }
                 item.EquipmentSlot = slot.ToUpper();
             }
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
 
         public void UnequipItem(long uid, bool isCosmetic = true)
         {
-            Item item = _context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
+            Item item = Context.Items.FirstOrDefault(column => column.UniqueId == uid); // Query for item
 
             if (isCosmetic == true)
             {
@@ -52,7 +52,7 @@ namespace Ms2Database.Controllers
             {
                 item.EquipmentSlot = null;
             }
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
     }
 }

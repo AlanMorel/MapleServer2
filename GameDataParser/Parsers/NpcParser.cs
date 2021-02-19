@@ -77,7 +77,7 @@ namespace GameDataParser.Parsers
             return npcs;
         }
 
-        private NpcStats GetNpcStats(XmlAttributeCollection collection)
+        private static NpcStats GetNpcStats(XmlAttributeCollection collection)
         {
             // MUST be in ORDER
             NpcStats npcStats = new NpcStats();

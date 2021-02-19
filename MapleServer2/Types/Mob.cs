@@ -5,6 +5,7 @@ namespace MapleServer2.Types
 {
     public class Mob : NpcMetadata
     {
+        public bool IsDead { get; set; }
         public short ZRotation; // In degrees * 10
 
         public Mob(int id)
@@ -17,6 +18,12 @@ namespace MapleServer2.Types
                 Stats = mob.Stats;
                 Friendly = mob.Friendly;
             }
+        }
+
+        public void UpdateStats(double damage)
+        {
+            Stats.Hp.Max -= (long) damage;
+            IsDead = Stats.Hp.Max <= 0;
         }
     }
 }

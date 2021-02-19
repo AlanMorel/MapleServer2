@@ -61,19 +61,23 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"RecipeMetadata(Id:{Id}, MasteryType:{MasteryType}, RequireItem1: {RequireItem1}, RewardItem1: {RewardItem1}";
 
-        protected bool Equals(RecipeMetadata other)
-        {
-            return false;
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((RecipeMetadata) obj);
         }
 

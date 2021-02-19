@@ -207,9 +207,7 @@ namespace MapleServer2.Packets
             pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
             // If NPC is not valid, the packet seems to stop here
 
-            // NPC Stat
             StatPacket.DefaultStatsNpc(pWriter);
-            // NPC Stat
 
             pWriter.WriteByte();
             short count = 0;
@@ -265,9 +263,8 @@ namespace MapleServer2.Packets
             pWriter.WriteMapleString(mob.Value.Model); // StrA - kfm model string
             // If NPC is not valid, the packet seems to stop here
 
-            // NPC Stat
             StatPacket.DefaultStatsMob(pWriter, mob);
-            // NPC Stat
+
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteInt();
@@ -287,7 +284,6 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteLong();
             }
-            // Unknown
             pWriter.WriteLong();
             pWriter.WriteByte();
             pWriter.WriteInt(1);
@@ -307,9 +303,7 @@ namespace MapleServer2.Packets
             pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
             // If NPC is not valid, the packet seems to stop here
 
-            // NPC Stat
             StatPacket.DefaultStatsMob(pWriter, mob);
-            // NPC Stat
 
             pWriter.WriteByte();
             int count = 0;
@@ -327,13 +321,19 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteLong();
             }
-            // Unknown
             pWriter.WriteLong();
             pWriter.WriteByte();
             pWriter.WriteInt(1);
             pWriter.WriteInt();
             pWriter.WriteByte();
 
+            return pWriter;
+        }
+
+        public static Packet RemoveMob(IFieldObject<Mob> mob)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
+            pWriter.WriteInt(mob.ObjectId);
             return pWriter;
         }
 

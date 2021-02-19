@@ -80,5 +80,10 @@ namespace MapleServer2.Types
         {
             Mobs[mob.ObjectId] = mob;
         }
+
+        public bool RemoveMob(int objectId)
+        {
+            return Mobs.Remove(objectId, out _);
+        }
     }
 }

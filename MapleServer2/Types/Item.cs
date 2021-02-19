@@ -15,10 +15,12 @@ namespace MapleServer2.Types
         public GemSlot GemSlot { get; private set; }
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
+        public bool EnableBreak { get; private set; }
         public bool IsTwoHand { get; private set; }
         public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
+        public string FileName { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
 
@@ -66,10 +68,12 @@ namespace MapleServer2.Types
             GemSlot = ItemMetadataStorage.GetGem(id);
             Rarity = ItemMetadataStorage.GetRarity(id);
             StackLimit = ItemMetadataStorage.GetStackLimit(id);
+            EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
+            FileName = ItemMetadataStorage.GetFileName(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
             Slot = -1;
@@ -87,10 +91,12 @@ namespace MapleServer2.Types
             GemSlot = other.GemSlot;
             Rarity = other.Rarity;
             StackLimit = other.StackLimit;
+            EnableBreak = other.EnableBreak;
             IsTwoHand = other.IsTwoHand;
             IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
             PlayCount = other.PlayCount;
+            FileName = other.FileName;
             Content = other.Content;
             Uid = other.Uid;
             Slot = other.Slot;
@@ -219,7 +225,43 @@ namespace MapleServer2.Types
             return true;
         }
 
+        public static Item DefaultScepter(Player owner)
+        {
+            return new Item(13300308)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
 
+        public static Item DefaultCodex(Player owner)
+        {
+            return new Item(14000270)
+            {
+                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Rarity = 1,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = owner,
+                Color = EquipColor.Custom(
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
+                    0x13
+                ),
+                AppearanceFlag = 0x5,
+                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
+            };
+        }
         // MALE ITEMS
         public static Item HairMale()
         {

@@ -59,6 +59,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).StackLimit;
         }
 
+        public static bool GetEnableBreak(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).EnableBreak;
+        }
+
         public static bool GetIsTwoHand(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsTwoHand;
@@ -79,6 +84,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).PlayCount;
         }
 
+        public static string GetFileName(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FileName;
+        }
+
         public static int GetSkillID(int itemId)
         {
             return map.GetValueOrDefault(itemId).SkillID;
@@ -94,6 +104,11 @@ namespace MapleServer2.Data.Static
         public static List<ItemContent> GetContent(int itemId)
         {
             return map.GetValueOrDefault(itemId).Content;
+        }
+
+        public static List<ItemBreakReward> GetBreakRewards(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).BreakRewards;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public Account GetAccountById(long id) // Queries db and retrieves account entry by Id
+        public static Account GetAccountById(long id) // Queries db and retrieves account entry by Id
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -40,7 +40,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public Account GetAccountByName(string username)
+        public static Account GetAccountByName(string username)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -49,7 +49,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void UpdateAccountInfo(long id, string username = "", string password = "") // Allows account entry changes
+        public static void UpdateAccountInfo(long id, string username = "", string password = "") // Allows account entry changes
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

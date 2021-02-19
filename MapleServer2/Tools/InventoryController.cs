@@ -73,6 +73,18 @@ namespace MapleServer2.Tools
             }
         }
 
+        // Removes item based on quantity
+        public static void Consume(GameSession session, long uid, int amount)
+        {
+            int amountOwned = session.Player.Inventory.Items[uid].Amount;
+            if (amount >= amountOwned)
+            {
+                Remove(session, uid, out Item item);
+                return;
+            }
+            Update(session, uid, amountOwned - amount);
+        }
+
         // Removes Item from inventory by reference
         public static bool Remove(GameSession session, long uid, out Item item)
         {

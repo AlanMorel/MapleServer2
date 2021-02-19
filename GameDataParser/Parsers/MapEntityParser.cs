@@ -227,6 +227,7 @@ namespace GameDataParser.Parsers
                         {
                             // These are objects which you can place in the world
                             string nameCoord = node.Attributes["name"].Value.ToLower();
+                            }
 
                             Match coordMatch = Regex.Match(nameCoord, @"[\-]?\d+[,]\s[\-]?\d+[,]\s[\-]?\d+");
 

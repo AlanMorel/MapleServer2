@@ -65,6 +65,41 @@ namespace GameDataParser.Parsers
                 }
             }
 
+            // Item breaking ingredients
+            Dictionary<int, List<ItemBreakReward>> rewards = new Dictionary<int, List<ItemBreakReward>>();
+            foreach (PackFileEntry entry in Resources.XmlFiles)
+            {
+                if (!entry.Name.StartsWith("table/itembreakingredient"))
+                {
+                    continue;
+                }
+
+                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
+                foreach (XmlNode nodes in individualItems)
+                {
+                    string locale = string.IsNullOrEmpty(nodes.Attributes["locale"]?.Value) ? "" : nodes.Attributes["locale"].Value;
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+                    int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
+                    rewards[itemID] = new List<ItemBreakReward>();
+
+                    int ingredientItemID1 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID1"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID1"].Value);
+                    int ingredientCount1 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount1"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount1"].Value);
+                    rewards[itemID].Add(new ItemBreakReward(ingredientItemID1, ingredientCount1));
+
+                    int ingredientItemID2 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID2"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID2"].Value);
+                    int ingredientCount2 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount2"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount2"].Value);
+                    rewards[itemID].Add(new ItemBreakReward(ingredientItemID2, ingredientCount2));
+
+                    int ingredientItemID3 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID3"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID3"].Value);
+                    int ingredientCount3 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount3"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount3"].Value);
+                    rewards[itemID].Add(new ItemBreakReward(ingredientItemID3, ingredientCount3));
+                }
+            }
+
             // Items
             List<ItemMetadata> items = new List<ItemMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
@@ -75,15 +110,16 @@ namespace GameDataParser.Parsers
                 }
 
                 ItemMetadata metadata = new ItemMetadata();
-                string itemId = Path.GetFileNameWithoutExtension(entry.Name);
+                string filename = Path.GetFileNameWithoutExtension(entry.Name);
+                int itemId = int.Parse(filename);
 
-                if (items.Exists(item => item.Id.ToString() == itemId))
+                if (items.Exists(item => item.Id == itemId))
                 {
                     //Console.WriteLine($"Duplicate {entry.Name} was already added.");
                     continue;
                 }
 
-                metadata.Id = int.Parse(itemId);
+                metadata.Id = itemId;
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 // Parse XML
@@ -175,13 +211,17 @@ namespace GameDataParser.Parsers
                 XmlNode musicScore = item.SelectSingleNode("MusicScore");
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
+                string fileName = musicScore.Attributes["fileName"].Value;
+                metadata.FileName = fileName;
 
                 XmlNode skill = item.SelectSingleNode("skill");
                 int skillID = int.Parse(skill.Attributes["skillID"].Value);
                 metadata.SkillID = skillID;
 
-                // Recommended jobs
                 XmlNode limit = item.SelectSingleNode("limit");
+                bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
+                metadata.EnableBreak = enableBreak;
+
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
                 {
                     List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));
@@ -189,6 +229,12 @@ namespace GameDataParser.Parsers
                     {
                         metadata.RecommendJobs.Add(int.Parse(recommendJob));
                     }
+                }
+
+                // Item breaking ingredients
+                if (rewards.ContainsKey(itemId))
+                {
+                    metadata.BreakRewards = rewards[itemId];
                 }
 
                 items.Add(metadata);
@@ -256,9 +302,8 @@ namespace GameDataParser.Parsers
                 case 12: // Music Score
                     return InventoryTab.FishingMusic;
                 case 13:
-                    return InventoryTab.Gemstone;
                 case 14: // Gem dust
-                    return InventoryTab.Catalyst;
+                    return InventoryTab.Gemstone;
                 case 15:
                     return InventoryTab.Catalyst;
                 case 16:

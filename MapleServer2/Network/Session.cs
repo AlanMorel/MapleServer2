@@ -205,7 +205,10 @@ namespace MapleServer2.Network
                     if (length <= 0)
                     {
                         if (!Connected())
+                        {
                             return;
+                        }
+
                         continue;
                     }
 
