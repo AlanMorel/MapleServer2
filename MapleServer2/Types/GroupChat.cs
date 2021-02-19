@@ -17,7 +17,9 @@ namespace MapleServer2.Types
         {
             Id = GuidGenerator.Int();
             MaxMembers = 20;
-            Members = new List<Player> { player };
+            Members = new List<Player> {};
+
+            AddMember(player);
         }
 
         public void AddMember(Player player)

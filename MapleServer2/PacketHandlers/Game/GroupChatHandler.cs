@@ -6,6 +6,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -76,18 +77,16 @@ namespace MapleServer2.PacketHandlers.Game
             Player other = GameServer.Storage.GetPlayerByName(targetPlayer);
             if (other == null)
             {
-                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int)GroupChatError.OfflinePlayer));
+                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.OfflinePlayer));
                 return;
             }
 
-            int groupChatCheck = 0;
             int count = other.GroupChatId.Count(x => x != 0);
-            
-            if (count == 3)
 
-            if (groupChatCheck >= 3) // 3 is the max group chats a user can be at
+            if (count >= 3) // 3 is the max group chats a user can be at
             {
-                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int)GroupChatError.MaxGroups));
+                session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.MaxGroups));
+
                 return;
             }
 

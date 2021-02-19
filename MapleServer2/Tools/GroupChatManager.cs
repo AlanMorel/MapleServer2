@@ -27,6 +27,5 @@ namespace MapleServer2.Tools
         {
             return GroupChatList.TryGetValue(id, out GroupChat foundGroupChat) ? foundGroupChat : null;
         }
-
     }
 }
