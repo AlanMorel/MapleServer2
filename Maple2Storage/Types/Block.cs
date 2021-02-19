@@ -7,18 +7,18 @@ namespace Maple2Storage.Types
         public static CoordF ClosestBlock(CoordF coord)
         {
             return CoordF.From(
-                ((int) coord.X + 75) / 150 * 150,
-                ((int) coord.Y + 75) / 150 * 150,
-                ((int) coord.Z + 75) / 150 * 150
+                ((int) coord.X + 75) / BLOCK_SIZE * BLOCK_SIZE,
+                ((int) coord.Y + 75) / BLOCK_SIZE * BLOCK_SIZE,
+                ((int) coord.Z + 75) / BLOCK_SIZE * BLOCK_SIZE
             );
         }
 
         public static CoordS ClosestBlock(CoordS coord)
         {
             return CoordS.From(
-                (short) ((coord.X + 75) / 150 * 150),
-                (short) ((coord.Y + 75) / 150 * 150),
-                (short) ((coord.Z + 75) / 150 * 150)
+                (short) ((coord.X + 75) / BLOCK_SIZE * BLOCK_SIZE),
+                (short) ((coord.Y + 75) / BLOCK_SIZE * BLOCK_SIZE),
+                (short) ((coord.Z + 75) / BLOCK_SIZE * BLOCK_SIZE)
             );
         }
     }
