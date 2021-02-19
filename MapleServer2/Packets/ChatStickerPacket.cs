@@ -14,6 +14,7 @@ namespace MapleServer2.Packets
             ExpiredStickerNotification = 0x1,
             AddSticker = 0x2,
             UseSticker = 0x3,
+            GroupChatSticker = 0x4,
             Favorite = 0x5,
             Unfavorite = 0x6,
         }
@@ -61,6 +62,15 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(stickerId);
             pWriter.WriteUnicodeString(script);
             pWriter.WriteByte();
+            return pWriter;
+        }
+
+        public static Packet GroupChatSticker(int stickerId, string groupChatName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
+            pWriter.WriteEnum(ChatStickerMode.GroupChatSticker);
+            pWriter.WriteInt(stickerId);
+            pWriter.WriteUnicodeString(groupChatName);
             return pWriter;
         }
 

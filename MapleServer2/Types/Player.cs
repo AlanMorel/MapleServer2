@@ -100,6 +100,8 @@ namespace MapleServer2.Types
         public long ClubId;
         // TODO make this as an array
 
+        public int[] GroupChatId = new int[3];
+
         public long GuildId;
         public int GuildContribution;
         public Wallet Wallet { get; private set; }
