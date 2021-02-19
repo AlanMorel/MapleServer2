@@ -24,14 +24,8 @@ namespace MapleServer2.Types
         {
             Members.Add(player);
 
-            for (int i = 0; i < 3; i++)
-            {
-                if (player.GroupChatId[i] == 0)
-                {
-                    player.GroupChatId[i] = Id;
-                    break;
-                }
-            }
+            int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == 0);
+            player.GroupChatId[index] = Id;
         }
 
         public void RemoveMember(Player player)
