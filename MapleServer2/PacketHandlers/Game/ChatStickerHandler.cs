@@ -16,6 +16,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             OpenWindow = 0x1,
             UseSticker = 0x3,
+            GroupChatSticker = 0x4,
             Favorite = 0x5,
             Unfavorite = 0x6,
         }
@@ -31,6 +32,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case ChatStickerMode.UseSticker:
                     HandleUseSticker(session, packet);
+                    break;
+                case ChatStickerMode.GroupChatSticker:
+                    HandleGroupChatSticker(session, packet);
                     break;
                 case ChatStickerMode.Favorite:
                     HandleFavorite(session, packet);
@@ -56,6 +60,16 @@ namespace MapleServer2.PacketHandlers.Game
             string script = packet.ReadUnicodeString();
 
             session.Send(ChatStickerPacket.UseSticker(stickerId, script));
+        }
+
+        private static void HandleGroupChatSticker(GameSession session, PacketReader packet)
+        {
+            int stickerId = packet.ReadInt();
+            string groupChatName = packet.ReadUnicodeString();
+
+            // TODO: Check if user has sticker
+
+            session.Send(ChatStickerPacket.GroupChatSticker(stickerId, groupChatName));
         }
 
         private static void HandleFavorite(GameSession session, PacketReader packet)
