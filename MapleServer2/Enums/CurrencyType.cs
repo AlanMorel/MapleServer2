@@ -11,5 +11,6 @@
         GameMeret,
         EventMeret,
         MesoToken,
+        Bank
     }
 }
