@@ -88,11 +88,17 @@ namespace MapleServer2.Tools
             {
                 string[] coords = command.Replace(" ", "").Split(",");
                 if (!float.TryParse(coords[0], out float x))
+                {
                     return;
+                }
                 if (!float.TryParse(coords[1], out float y))
+                {
                     return;
+                }
                 if (!float.TryParse(coords[2], out float z))
+                {
                     return;
+                }
 
                 session.Player.Coord = CoordF.From(x, y, z);
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));

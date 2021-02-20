@@ -58,9 +58,13 @@ namespace GameDataParser.Parsers
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
                 metadata.Level = byte.Parse(npcBasicNode.Attributes["level"].Value);
                 if (npcBasicNode.Attributes["npcAttackGroup"] != null)
+                {
                     metadata.NpcMetadataBasic.NpcAttackGroup = sbyte.Parse(npcBasicNode.Attributes["npcAttackGroup"].Value);
+                }
                 if (npcBasicNode.Attributes["npcDefenseGroup"] != null)
+                {
                     metadata.NpcMetadataBasic.NpcDefenseGroup = sbyte.Parse(npcBasicNode.Attributes["npcDefenseGroup"].Value);
+                }
                 metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
                 metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
                 metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);

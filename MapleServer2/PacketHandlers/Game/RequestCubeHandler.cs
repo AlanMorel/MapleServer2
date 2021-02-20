@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;

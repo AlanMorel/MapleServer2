@@ -263,7 +263,6 @@ namespace MapleServer2.Network
             short opcode = BitConverter.ToInt16(packet, 0);
             SendOp sendOp = (SendOp) opcode;
 
-            string packetString = packet.ToHexString(' ');
             switch (sendOp)
             {
                 case SendOp.USER_SYNC:
@@ -282,6 +281,7 @@ namespace MapleServer2.Network
                 case SendOp.QUEST:
                     break;
                 default:
+                    string packetString = packet.ToHexString(' ');
                     Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".Pastel("#E05561"));
                     break;
             }

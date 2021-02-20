@@ -144,7 +144,9 @@ namespace MapleServer2.Servers.Game
                 sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
             if (State.InteractActors.Values.Count > 0)
-                sender.Send(FieldPacket.AddInteractActors(State.InteractActors.Values));
+            {
+                sender.Send(InteractActorPacket.AddInteractActors(State.InteractActors.Values));
+            }
             State.AddPlayer(player);
 
             // Broadcast new player to all players in map
@@ -201,16 +203,20 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-        public void AddInteractActor(ICollection<IFieldObject<InteractActor>> actors)
+        public void AddInteractActor(ICollection<IFieldObject<Types.InteractActor>> actors)
         {
             foreach (IFieldObject<InteractActor> actor in actors)
+            {
                 State.AddInteractActor(actor);
+            }
 
             if (actors.Count > 0)
+            {
                 Broadcast(session =>
                 {
-                    session.Send(FieldPacket.AddInteractActors(actors));
+                    session.Send(InteractActorPacket.AddInteractActors(actors));
                 });
+            }
         }
         public void SendChat(Player player, string message, ChatType type)
         {
