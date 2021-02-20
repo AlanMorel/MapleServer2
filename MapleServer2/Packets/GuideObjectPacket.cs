@@ -14,7 +14,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(1); // Type?
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(player.Value.CharacterId);
-            pWriter.Write(player.Coord.ClosestBlock());
+            pWriter.Write(Block.ClosestBlock(player.Coord));
             pWriter.Write<CoordF>(default); // Unknown
 
             return pWriter;

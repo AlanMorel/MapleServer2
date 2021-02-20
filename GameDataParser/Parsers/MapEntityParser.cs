@@ -90,7 +90,7 @@ namespace GameDataParser.Parsers
                     string modelName = node.Attributes["modelName"].Value.ToLower();
 
                     XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                    CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                    CoordS boundingBox = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                     if (node.Attributes["name"].Value.Contains("MS2Bounding0"))
                     {
                         if (metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
@@ -113,7 +113,7 @@ namespace GameDataParser.Parsers
                         string playerPositionValue = playerCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string playerRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
-                        metadata.PlayerSpawns.Add(new MapPlayerSpawn(ParseCoord(playerPositionValue), ParseCoord(playerRotationValue)));
+                        metadata.PlayerSpawns.Add(new MapPlayerSpawn(CoordS.Parse(playerPositionValue), CoordS.Parse(playerRotationValue)));
                     }
                     else if (mapObjects.ContainsKey(modelName))
                     {
@@ -149,8 +149,8 @@ namespace GameDataParser.Parsers
                                 string positionValue = coordNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                                 string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
-                                CoordS position = ParseCoord(positionValue);
-                                CoordS rotation = ParseCoord(rotationValue);
+                                CoordS position = CoordS.Parse(positionValue);
+                                CoordS rotation = CoordS.Parse(rotationValue);
                                 metadata.Npcs.Add(new MapNpc(npcId, position, rotation));
                             }
                             catch (Exception ex)
@@ -204,8 +204,8 @@ namespace GameDataParser.Parsers
                             flags |= enabledValue ? MapPortalFlag.Enabled : MapPortalFlag.None;
                             flags |= minimapVisibleValue ? MapPortalFlag.MinimapVisible : MapPortalFlag.None;
 
-                            CoordS position = ParseCoord(positionValue);
-                            CoordS rotation = ParseCoord(rotationValue);
+                            CoordS position = CoordS.Parse(positionValue);
+                            CoordS rotation = CoordS.Parse(rotationValue);
                             metadata.Portals.Add(new MapPortal(portalId, flags, target, position, rotation));
                         }
                         catch (Exception ex)
@@ -227,16 +227,6 @@ namespace GameDataParser.Parsers
             }
 
             return entities;
-        }
-
-        private static CoordS ParseCoord(string value)
-        {
-            string[] coord = value.Split(", ");
-            return CoordS.From(
-                (short) float.Parse(coord[0]),
-                (short) float.Parse(coord[1]),
-                (short) float.Parse(coord[2])
-            );
         }
     }
 }
