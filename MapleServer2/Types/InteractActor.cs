@@ -1,5 +1,4 @@
-﻿
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class InteractActor
     {
