@@ -23,6 +23,5 @@ namespace MapleServer2.Packets
 
             return pWriter;
         }
-
     }
 }
