@@ -30,6 +30,12 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte) mobs.Count);
             for (int i = 0; i < mobs.Count; i++)
             {
+                IFieldObject<Mob> mob = mobs[i];
+                if (mob == null)
+                {
+                    // Invalid mob? Investigate.
+                    continue;
+                }
                 pWriter.WriteInt(mobs[i].ObjectId);
                 pWriter.WriteByte((byte) damage.GetDamage() > 0 ? 1 : 0);
                 pWriter.WriteBool(damage.IsCritical());
