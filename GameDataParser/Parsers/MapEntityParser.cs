@@ -110,7 +110,7 @@ namespace GameDataParser.Parsers
                         string playerPositionValue = playerCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string playerRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
-                        metadata.PlayerSpawns.Add(new MapPlayerSpawn(ParseCoord(playerPositionValue), ParseCoord(playerRotationValue)));
+                        metadata.PlayerSpawns.Add(new MapPlayerSpawn(CoordS.Parse(playerPositionValue), CoordS.Parse(playerRotationValue)));
                     }
                     else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
                     {
@@ -298,16 +298,6 @@ namespace GameDataParser.Parsers
             }
             Console.Out.WriteLine($"Parsed {entities.Count} entities");
             return entities;
-        }
-
-        private static CoordS ParseCoord(string value)
-        {
-            string[] coord = value.Split(", ");
-            return CoordS.From(
-                (short) float.Parse(coord[0]),
-                (short) float.Parse(coord[1]),
-                (short) float.Parse(coord[2])
-            );
         }
     }
 }

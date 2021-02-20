@@ -53,7 +53,7 @@ namespace MapleServer2.Types
 
         public CoordF Coord;
         public CoordF Rotation;
-        public CoordF SafeCoord = CoordF.From(0, 0, 0);
+        public CoordF SafeBlock = CoordF.From(0, 0, 0);
         public bool OnAirMount = false;
 
         // Appearance
@@ -99,6 +99,8 @@ namespace MapleServer2.Types
 
         public long ClubId;
         // TODO make this as an array
+
+        public int[] GroupChatId = new int[3];
 
         public long GuildId;
         public int GuildContribution;
