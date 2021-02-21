@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
         private enum StatsMode : byte
         {
             SendStats = 0x23,
-            UpdateStats = 0x4
+            UpdateMobStats = 0x4
         }
 
         public static Packet SetStats(IFieldObject<Player> player)
@@ -24,13 +24,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet UpdateStats(IFieldObject<Player> player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+            pWriter.WriteInt(player.ObjectId);  // ObjectId (?)
+            pWriter.WriteByte();                // Unknown (0x00/0x01)
+            pWriter.WriteByte(0x23);            // Unknown
+            WriteStats(ref pWriter, player.Value.Stats);
+
+            return pWriter;
+        }
+
         public static Packet UpdateMobStats(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteByte();
             pWriter.WriteByte(1);
-            pWriter.WriteEnum(StatsMode.UpdateStats);
+            pWriter.WriteEnum(StatsMode.UpdateMobStats);
             pWriter.WriteLong(mob.Value.Stats.Hp.Total);
             pWriter.WriteLong(mob.Value.Stats.Hp.Min);
             pWriter.WriteLong(mob.Value.Stats.Hp.Max);
