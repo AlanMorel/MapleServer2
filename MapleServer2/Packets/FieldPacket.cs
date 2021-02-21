@@ -45,7 +45,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
 
             // Stats
-            StatPacket.WriteTotalStats(pWriter, ref player.Stats);
+            StatPacket.WriteFieldStats(pWriter, player.Stats);
 
             pWriter.WriteByte();
             pWriter.WriteByte();

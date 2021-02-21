@@ -104,17 +104,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (item.InventoryTab == InventoryTab.Gear)
             {
                 // TODO - Increase stats based on the item stats itself
-                session.Player.Stats.CritRate.Max += 12;
-                session.Player.Stats.CritRate.Total += 12;
-
-                session.Player.Stats.MinAtk.Max += 15;
-                session.Player.Stats.MinAtk.Total += 15;
-
-                session.Player.Stats.MaxAtk.Max += 17;
-                session.Player.Stats.MaxAtk.Total += 17;
-
-                session.Player.Stats.MagAtk.Max += 15;
-                session.Player.Stats.MagAtk.Total += 15;
+                session.Player.Stats.Increase(PlayerStatId.CritRate, 12);
+                session.Player.Stats.Increase(PlayerStatId.MinAtk, 15);
+                session.Player.Stats.Increase(PlayerStatId.MaxAtk, 17);
+                session.Player.Stats.Increase(PlayerStatId.MagAtk, 15);
 
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
