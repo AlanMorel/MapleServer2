@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
         public static Packet UpdateStats(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
-            pWriter.WriteInt(player.ObjectId);  // ObjectId (?)
+            pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte();                // Unknown (0x00/0x01)
             pWriter.WriteByte(0x23);            // Unknown
             WriteStats(ref pWriter, player.Value.Stats);
@@ -102,11 +102,9 @@ namespace MapleServer2.Packets
                     {
                         pWriter.WriteLong(((PlayerStat) entry.Value)[i]);
                     }
+                    continue;
                 }
-                else
-                {
-                    pWriter.Write((PlayerStat) entry.Value);
-                }
+                pWriter.Write((PlayerStat) entry.Value);
             }
         }
 

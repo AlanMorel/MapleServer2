@@ -89,7 +89,6 @@ namespace MapleServer2.Types
     {
         // TOOD: Handle stat allocation in here?
         public readonly OrderedDictionary Data;
-        private readonly int[] Allocations;
 
         public PlayerStats()
         {
