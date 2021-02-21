@@ -49,6 +49,7 @@ namespace MapleServer2.Types
         public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
         public List<short> Stickers = new List<short> { 0 };
+        public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
 
         public CoordF Coord;

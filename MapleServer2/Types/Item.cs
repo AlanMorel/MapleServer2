@@ -23,6 +23,8 @@ namespace MapleServer2.Types
         public string FileName { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
+        public string FunctionName { get; set; }
+        public int FunctionParameter { get; set; }
 
         public readonly int Id;
         public long Uid;
@@ -76,6 +78,8 @@ namespace MapleServer2.Types
             FileName = ItemMetadataStorage.GetFileName(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
+            FunctionName = ItemMetadataStorage.GetFunctionName(id);
+            FunctionParameter = ItemMetadataStorage.GetFunctionParameter(id);
             Slot = -1;
             Amount = 1;
             Stats = new ItemStats(id, Rarity);
@@ -98,6 +102,8 @@ namespace MapleServer2.Types
             PlayCount = other.PlayCount;
             FileName = other.FileName;
             Content = other.Content;
+            FunctionName = other.FunctionName;
+            FunctionParameter = other.FunctionParameter;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;

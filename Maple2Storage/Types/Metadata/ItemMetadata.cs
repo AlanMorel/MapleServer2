@@ -40,6 +40,10 @@ namespace Maple2Storage.Types.Metadata
         public List<ItemContent> Content;
         [XmlElement(Order = 16)]
         public List<ItemBreakReward> BreakRewards;
+        [XmlElement(Order = 17)]
+        public string FunctionName;
+        [XmlElement(Order = 18)]
+        public int FunctionParameter;
 
         // Required for deserialization
         public ItemMetadata()
@@ -50,7 +54,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},PlayCount:{PlayCount},FileName:{FileName}," +
-            $"SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)})";
+            $"SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},FunctionName:{FunctionName},FunctionParameter:{FunctionParameter})";
 
         protected bool Equals(ItemMetadata other)
         {
