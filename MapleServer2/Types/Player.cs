@@ -92,6 +92,7 @@ namespace MapleServer2.Types
         public Inventory Inventory = new Inventory();
         public BankInventory BankInventory = new BankInventory();
         public DismantleInventory DismantleInventory = new DismantleInventory();
+        public LockInventory LockInventory = new LockInventory();
 
         public Mailbox Mailbox = new Mailbox();
 
