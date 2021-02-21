@@ -92,7 +92,7 @@ namespace GameDataParser.Parsers
                     if (modelName == "MS2Bounding")
                     {
                         XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
-                        CoordS boundingBox = ParseCoord(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                        CoordS boundingBox = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
                         if (name.EndsWith("0"))
                         {
                             metadata.BoundingBox0 = boundingBox;
@@ -149,8 +149,8 @@ namespace GameDataParser.Parsers
                         flags |= enabledValue ? MapPortalFlag.Enabled : MapPortalFlag.None;
                         flags |= minimapVisibleValue ? MapPortalFlag.MinimapVisible : MapPortalFlag.None;
 
-                        CoordS position = ParseCoord(positionValue);
-                        CoordS rotation = ParseCoord(rotationValue);
+                        CoordS position = CoordS.Parse(positionValue);
+                        CoordS rotation = CoordS.Parse(rotationValue);
                         metadata.Portals.Add(new MapPortal(portalId, flags, target, position, rotation));
                     }
                     // Parse the rest of the objects in the xblock if they have a flat component.
@@ -206,7 +206,7 @@ namespace GameDataParser.Parsers
                             string npcId = Regex.Match(modelName, @"^(\d{8})_").Groups[1].Value;
                             string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                             string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
-                            MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, ParseCoord(npcPositionValue), ParseCoord(npcRotationValue));
+                            MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
                             // Parse some additional flat supplemented data about this NPC.
                             if (mapObjects.ContainsKey(modelName))
                             {
