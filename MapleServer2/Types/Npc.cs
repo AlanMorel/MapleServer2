@@ -10,9 +10,12 @@ namespace MapleServer2.Types
         public Npc(int id)
         {
             NpcMetadata npc = NpcMetadataStorage.GetNpcMetadata(id);
-            Id = npc.Id;
-            Animation = 255;
-            Friendly = npc.Friendly;
+            if (npc != null)
+            {
+                Id = npc.Id;
+                Animation = 255;
+                Friendly = npc.Friendly;
+            }
         }
     }
 }

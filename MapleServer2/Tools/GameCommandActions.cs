@@ -63,7 +63,7 @@ namespace MapleServer2.Tools
                     ProcessMapCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "coord":
-                    session.SendNotice(session.FieldPlayer.Coord.ToString());
+                    ProcessCoordCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
@@ -75,6 +75,33 @@ namespace MapleServer2.Tools
                     }
                     MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
                     break;
+            }
+        }
+
+        private static void ProcessCoordCommand(GameSession session, string command)
+        {
+            if (command == "")
+            {
+                session.SendNotice(session.FieldPlayer.Coord.ToString());
+            }
+            else
+            {
+                string[] coords = command.Replace(" ", "").Split(",");
+                if (!float.TryParse(coords[0], out float x))
+                {
+                    return;
+                }
+                if (!float.TryParse(coords[1], out float y))
+                {
+                    return;
+                }
+                if (!float.TryParse(coords[2], out float z))
+                {
+                    return;
+                }
+
+                session.Player.Coord = CoordF.From(x, y, z);
+                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
 

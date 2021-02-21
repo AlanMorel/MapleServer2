@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Linq;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
@@ -15,16 +16,29 @@ namespace GameDataParser.Parsers
 
         protected override List<NpcMetadata> Parse()
         {
+            Dictionary<int, string> npcIdToName = new Dictionary<int, string> { };
             List<NpcMetadata> npcs = new List<NpcMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
-            {
-                if (!entry.Name.StartsWith("npc/"))
-                {
-                    continue;
-                }
 
-                // Variable
+            // Parse the NpcId -> Names first.
+            foreach (PackFileEntry entry in Resources.XmlFiles.Where(entry => entry.Name.Equals("string/en/npcname.xml")))
+            {
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+
+                foreach (XmlNode node in document.SelectNodes("ms2/key"))
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    if (!npcIdToName.ContainsKey(id))
+                    {
+                        npcIdToName.Add(id, node.Attributes["name"].Value);
+                    }
+                }
+            }
+
+            // Handle /npc files second, to setup the NpcMetadata
+            foreach (PackFileEntry entry in Resources.XmlFiles.Where(entry => entry.Name.StartsWith("npc/")))
+            {
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+
                 XmlNode npcModelNode = document.SelectSingleNode("ms2/environment/model") ?? document.SelectSingleNode("ms2/model");
                 XmlNode npcBasicNode = document.SelectSingleNode("ms2/environment/basic") ?? document.SelectSingleNode("ms2/basic");
                 XmlNode npcStatsNode = document.SelectSingleNode("ms2/environment/stat") ?? document.SelectSingleNode("ms2/stat");
@@ -37,13 +51,29 @@ namespace GameDataParser.Parsers
                 // Metadata
                 NpcMetadata metadata = new NpcMetadata();
                 metadata.Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+                metadata.Name = npcIdToName.ContainsKey(metadata.Id) ? npcIdToName[metadata.Id] : "";
                 metadata.Model = npcModelNode.Attributes["kfm"].Value;
+
+                // Parse basic attribs.
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
+                metadata.Level = byte.Parse(npcBasicNode.Attributes["level"].Value);
+                if (npcBasicNode.Attributes["npcAttackGroup"] != null)
+                {
+                    metadata.NpcMetadataBasic.NpcAttackGroup = sbyte.Parse(npcBasicNode.Attributes["npcAttackGroup"].Value);
+                }
+                if (npcBasicNode.Attributes["npcDefenseGroup"] != null)
+                {
+                    metadata.NpcMetadataBasic.NpcDefenseGroup = sbyte.Parse(npcBasicNode.Attributes["npcDefenseGroup"].Value);
+                }
+                metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
+                metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
+                metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
+
                 metadata.Stats = GetNpcStats(statsCollection);
                 metadata.SkillIds = string.IsNullOrEmpty(npcSkillIdsNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillIdsNode.Attributes["ids"].Value.Split(","), int.Parse);
                 metadata.AiInfo = npcAiInfoNode.Attributes["path"].Value;
-                metadata.DeadTime = float.Parse(npcDeadNode.Attributes["time"].Value);
-                metadata.DeadActions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
+                metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
+                metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
                 metadata.GlobalDropBoxIds = string.IsNullOrEmpty(npcDropItemNode.Attributes["globalDropBoxId"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse);
                 npcs.Add(metadata);
             }
