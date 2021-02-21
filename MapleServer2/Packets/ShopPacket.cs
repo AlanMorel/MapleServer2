@@ -8,42 +8,44 @@ namespace MapleServer2.Packets
 {
     public static class ShopPacket
     {
-        public static Packet Open(int npcTemplateId, int shopCategory, string shopName)
+        private enum ShopMode : byte
+        {
+            Open = 0x0,
+            LoadProducts = 0x1,
+            Buy = 0x4,
+            Sell = 0x5,
+            Reload = 0x6
+        }
+        
+        public static Packet Open(int npcTemplateId, int shopId, int shopCategory, string shopName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-
-            // Currently unknown
-            const bool idk = false;
-
+            pWriter.WriteByte();
             pWriter.WriteInt(npcTemplateId);
-            pWriter.WriteInt(128);
-            pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds()); // current date/time in seconds
+            pWriter.WriteInt(shopId);
+            pWriter.WriteLong(1614265200); // timestamp for next restock
             pWriter.WriteInt();
-            pWriter.WriteShort(3);
-            pWriter.WriteInt(shopCategory); // ShopCategory (916 = Juice)
-            pWriter.WriteByte();
-            pWriter.WriteBool(false);
-            pWriter.WriteBool(idk);
-            pWriter.WriteBool(false);
-            pWriter.WriteByte();
-            pWriter.WriteBool(true);
+            pWriter.WriteShort(1);
+            pWriter.WriteInt(1); // ShopCategory (916 = Juice)
+            pWriter.WriteBool(false); //
+            pWriter.WriteBool(true); // restrict sales (default: false)
+            pWriter.WriteBool(false); // shop is restockable
             pWriter.WriteBool(false);
             pWriter.WriteBool(false);
+            pWriter.WriteBool(false); // show buyback tab (default: true)
             pWriter.WriteBool(false);
-            pWriter.WriteUnicodeString(shopName);
+            pWriter.WriteBool(false);
+            pWriter.WriteBool(false);
+            pWriter.WriteMapleString("shop"); // shopName
+            return pWriter;
+        }
 
-            // if (idk) {
-            //     pWriter.WriteByte(0);
-            //     pWriter.WriteByte(0);
-            //     pWriter.WriteInt(0);
-            //     pWriter.WriteInt(0);
-            //     pWriter.WriteBool(false);
-            //     pWriter.WriteInt(0);
-            //     pWriter.WriteByte(0);
-            //     pWriter.WriteBool(false);
-            //     pWriter.WriteBool(false);
-            // }
-
+        public static Packet Reload()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+            pWriter.WriteByte((byte) ShopMode.Reload);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
             return pWriter;
         }
 
@@ -74,11 +76,13 @@ namespace MapleServer2.Packets
         public static Packet LoadProducts(List<NpcShopProduct> products)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+            pWriter.WriteByte((byte) ShopMode.LoadProducts);
             pWriter.WriteByte((byte) products.Count);
             foreach (NpcShopProduct product in products)
             {
                 product.Encode(pWriter);
             }
+
             return pWriter;
         }
     }

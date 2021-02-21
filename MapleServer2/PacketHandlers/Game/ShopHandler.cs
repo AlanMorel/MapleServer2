@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -33,12 +36,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case ShopMode.Open:
-                    HandleOpen(session, packet);
-                    break;
-                case ShopMode.LoadProducts:
-                    HandleLoadProducts(session);
-                    break;
                 case ShopMode.Close:
                     HandleClose(session);
                     break;
@@ -54,44 +51,39 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpen(GameSession session, PacketReader packet)
+        public static void HandleOpen(GameSession session, IFieldObject<Npc> npcFieldObject)
         {
-            Console.WriteLine("Opening shop...");
-            Console.WriteLine($"NPC: {packet.ReadInt()}");
-
-            //Logger.LogInformation("Opening Shop ID %d;", packet);
-            // List<NpcShopProduct> products = shopData.get(npc.getTemplate().getShopID());
-            // user.sendPacket(FieldPacket.onSendShop(0, npc.getTemplateID(), null));
-            // user.sendPacket(FieldPacket.onSendShop(1, npc.getTemplateID(), products == null ? new ArrayList<NpcShopProduct>() : products));
-            // user.sendPacket(FieldPacket.onSendShop(6, npc.getTemplateID(), null));
-            // user.sendPacket(FieldPacket.onSendNpcTalk(npc.getEntityID(), 1, 0, NpcTalkFlag.NONE));
-        }
-
-        private static void HandleClose(GameSession session)
-        {
-            Console.WriteLine("Closing Shop");
-            session.Send(ShopPacket.Close());
-        }
-
-        private static void HandleLoadProducts(GameSession session)
-        {
+            NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
+            
             List<NpcShopProduct> products = new()
             {
                 new NpcShopProduct
                 {
                     UniqueId = GuidGenerator.Int(),
-                    ItemId = 20000110,
-                    TokenType = 0,
-                    Price = 20,
-                    SalePrice = 30,
-                    StockCount = 9999,
+                    ItemId = 20001697,
+                    TokenType = (byte) CurrencyType.Meso,
+                    Price = 10000,
+                    SalePrice = 0,
+                    ItemRank = 2,
+                    StockCount = 0,
                     StockPurchased = 0,
-                    Category = "PS",
-                    Quantity = 1,
-                    Flag = 0x1
+                    Category = "ETC"
                 }
             };
+            
+            session.Send(ShopPacket.Open(metadata.TemplateId, metadata.ShopId, 43, "eventshop"));
+            session.Send(ShopPacket.LoadProducts(products));
+            session.Send(ShopPacket.Reload());
+            session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
+        }
 
+        private static void HandleClose(GameSession session)
+        {
+            session.Send(ShopPacket.Close());
+        }
+
+        private static void HandleLoadProducts(GameSession session, List<NpcShopProduct> products)
+        {
             session.Send(ShopPacket.LoadProducts(products));
         }
 

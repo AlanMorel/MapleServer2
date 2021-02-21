@@ -2,14 +2,17 @@
 {
     public enum NpcType : byte
     {
+        Default = 01,
         Unk = 05,
         Dialog = 10,
+        Shop = 13,
         Unk2 = 14,
         Quest = 15,
     }
 
     public enum DialogType : int // All this worked with NpcType 10
     {
+        None = 0,
         NoOptions = 1, // no options to continue or exit
         Broken = 2, // appears "Quit:ESC" option
         Close1 = 3, // Close - Espace

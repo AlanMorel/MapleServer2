@@ -27,6 +27,12 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         return; // Invalid NPC
                     }
+                    // If NPC is a shop, load and open the shop
+                    if (npc.Value.IsShop())
+                    {
+                        ShopHandler.HandleOpen(session, npc);
+                        return;
+                    }
                     // Stellar Chest: 11004215
                     session.Send(NpcTalkPacket.Respond(npc, NpcType.Unk2, DialogType.TalkOption, 0));
                     break;

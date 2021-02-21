@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -37,7 +39,9 @@ namespace GameDataParser.Parsers
                 // Metadata
                 NpcMetadata metadata = new NpcMetadata();
                 metadata.Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+                metadata.Name = GetNpcName(metadata.Id);
                 metadata.Model = npcModelNode.Attributes["kfm"].Value;
+                metadata.TemplateId = int.TryParse(npcBasicNode.Attributes["illust"]?.Value, out _) ? int.Parse(npcBasicNode.Attributes["illust"].Value) : 0;
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
                 metadata.Stats = GetNpcStats(statsCollection);
                 metadata.SkillIds = string.IsNullOrEmpty(npcSkillIdsNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillIdsNode.Attributes["ids"].Value.Split(","), int.Parse);
@@ -45,10 +49,32 @@ namespace GameDataParser.Parsers
                 metadata.DeadTime = float.Parse(npcDeadNode.Attributes["time"].Value);
                 metadata.DeadActions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
                 metadata.GlobalDropBoxIds = string.IsNullOrEmpty(npcDropItemNode.Attributes["globalDropBoxId"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse);
+                metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
+                metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
                 npcs.Add(metadata);
             }
 
             return npcs;
+        }
+
+        private string GetNpcName(int npcId)
+        {
+            PackFileEntry npcNames = Resources.XmlFiles.Find(x => x.Name.Equals("string/en/npcname.xml"));
+            XmlDocument document = Resources.XmlMemFile.GetDocument(npcNames.FileHeader);
+            foreach (XmlNode node in document.DocumentElement.ChildNodes)
+            {
+                if (node.Name != "key")
+                {
+                    continue;
+                }
+
+                if (int.Parse(node.Attributes["id"].Value) == npcId)
+                {
+                    return node.Attributes["name"].Value;
+                }
+            }
+            
+            return null;
         }
 
         private NpcStats GetNpcStats(XmlAttributeCollection collection)
