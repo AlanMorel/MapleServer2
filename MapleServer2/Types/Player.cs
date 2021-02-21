@@ -89,11 +89,10 @@ namespace MapleServer2.Types
         public GameOptions GameOptions { get; private set; }
 
         public Inventory Inventory = new Inventory();
-        public Mailbox Mailbox = new Mailbox();
+        public BankInventory BankInventory = new BankInventory();
+        public DismantleInventory DismantleInventory = new DismantleInventory();
 
-        // Dismantle Inventory
-        public Tuple<long, int>[] DismantleSlots;
-        public Dictionary<int, int> Rewards;
+        public Mailbox Mailbox = new Mailbox();
 
         public long PartyId;
 
