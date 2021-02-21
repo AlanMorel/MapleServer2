@@ -30,7 +30,6 @@ namespace MapleServer2.PacketHandlers.Game
         {
             ItemStorageMode mode = (ItemStorageMode) packet.ReadByte();
 
-
             switch (mode)
             {
                 case ItemStorageMode.Add:

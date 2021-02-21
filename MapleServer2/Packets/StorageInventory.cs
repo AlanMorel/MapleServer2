@@ -72,20 +72,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
 
             pWriter.WriteEnum(ItemStorageMode.LoadItems);
-            pWriter.WriteLong();
-            pWriter.WriteShort((short) items.Count(x => x != null));
-            for (short i = 0; i < items.Length; i++)
-            {
-                if (items[i] == null)
-                {
-                    continue;
-                }
-                pWriter.WriteInt(items[i].Id);
-                pWriter.WriteLong(items[i].Uid);
-                pWriter.WriteShort(i);
-                pWriter.WriteInt();
-                pWriter.WriteItem(items[i]);
-            }
+            pWriter.LoadHelper(items);
 
             return pWriter;
         }
@@ -102,20 +89,8 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
             pWriter.WriteEnum(ItemStorageMode.Sort);
-            pWriter.WriteLong();
-            pWriter.WriteShort((short) items.Count(x => x != null));
-            for (short i = 0; i < items.Length; i++)
-            {
-                if (items[i] == null)
-                {
-                    continue;
-                }
-                pWriter.WriteInt(items[i].Id);
-                pWriter.WriteLong(items[i].Uid);
-                pWriter.WriteShort(i);
-                pWriter.WriteInt();
-                pWriter.WriteItem(items[i]);
-            }
+            pWriter.LoadHelper(items);
+
             return pWriter;
         }
 
@@ -132,6 +107,26 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
             pWriter.WriteEnum(ItemStorageMode.Expand);
             pWriter.WriteInt(amount);
+
+            return pWriter;
+        }
+
+        private static PacketWriter LoadHelper(this PacketWriter pWriter, Item[] items)
+        {
+            pWriter.WriteLong();
+            pWriter.WriteShort((short) items.Count(x => x != null));
+            for (short i = 0; i < items.Length; i++)
+            {
+                if (items[i] == null)
+                {
+                    continue;
+                }
+                pWriter.WriteInt(items[i].Id);
+                pWriter.WriteLong(items[i].Uid);
+                pWriter.WriteShort(i);
+                pWriter.WriteInt();
+                pWriter.WriteItem(items[i]);
+            }
 
             return pWriter;
         }
