@@ -65,8 +65,6 @@ namespace MapleServer2.PacketHandlers.Game
             short boxType = packet.ReadShort();
             int index = packet.ReadShort() - 0x30;
 
-            Console.WriteLine(index);
-
             if (item.Content.Count <= 0)
             {
                 return;
@@ -106,6 +104,5 @@ namespace MapleServer2.PacketHandlers.Game
 
             ItemUseHelper.OpenBox(session, item.Content);
         }
-
     }
 }

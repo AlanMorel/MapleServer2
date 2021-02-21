@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -21,13 +20,15 @@ namespace MapleServer2.Packets
 
         public static Packet LoadChatSticker(Player player)
         {
-            List<short> stickerSetIds = player.Stickers;
-
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteEnum(ChatStickerMode.LoadChatSticker);
-            pWriter.WriteShort();
-            pWriter.WriteShort((short) stickerSetIds.Count);
-            foreach (int sticker in stickerSetIds)
+            pWriter.WriteShort((short) player.FavoriteStickers.Count);
+            foreach (int favorite in player.FavoriteStickers)
+            {
+                pWriter.WriteInt(favorite);
+            }
+            pWriter.WriteShort((short) player.Stickers.Count);
+            foreach (int sticker in player.Stickers)
             {
                 pWriter.WriteInt(sticker);
                 pWriter.WriteLong(9223372036854775807); //expiration timestamp
@@ -44,7 +45,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddSticker(int itemId, int stickerGroupId, long expiration)
+        public static Packet AddSticker(int itemId, int stickerGroupId, long expiration = 9223372036854775807)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteEnum(ChatStickerMode.AddSticker);

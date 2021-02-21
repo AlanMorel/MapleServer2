@@ -16,7 +16,6 @@ namespace GameDataParser.Parsers
             List<ChatStickerMetadata> chatStickers = new List<ChatStickerMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
-
                 if (!entry.Name.StartsWith("table/chatemoticon"))
                 {
                     continue;
