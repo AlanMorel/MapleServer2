@@ -29,7 +29,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte();                // Unknown (0x00/0x01)
-            pWriter.WriteByte(0x23);            // Unknown
+            pWriter.WriteEnum(StatsMode.SendStats);
             WriteStats(ref pWriter, player.Value.Stats);
 
             return pWriter;
