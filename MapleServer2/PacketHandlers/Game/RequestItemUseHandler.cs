@@ -48,15 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionParameter));
             session.Player.Stickers.Add((short) item.FunctionParameter);
 
-            if (item.Amount <= 1)
-            {
-                InventoryController.Remove(session, item.Uid, out Item removed);
-            }
-            else
-            {
-                item.Amount -= 1;
-                InventoryController.Update(session, item.Uid, item.Amount);
-            }
+            InventoryController.Consume(session, item.Uid, 1);
         }
 
         private static void HandleSelectItemBox(GameSession session, PacketReader packet, Item item)
@@ -69,17 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            // Remove box if amount is 1 or less
-            if (item.Amount <= 1)
-            {
-                InventoryController.Remove(session, item.Uid, out Item removed);
-            }
-            // Decrement box amount to otherwise
-            else
-            {
-                item.Amount -= 1;
-                InventoryController.Update(session, item.Uid, item.Amount);
-            }
+            InventoryController.Consume(session, item.Uid, 1);
 
             if (index < item.Content.Count)
             {
@@ -91,16 +73,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             short boxType = packet.ReadShort();
 
-            if (item.Amount <= 1)
-            {
-                InventoryController.Remove(session, item.Uid, out Item removed);
-            }
-            else
-            {
-                item.Amount -= 1;
-                InventoryController.Update(session, item.Uid, item.Amount);
-            }
-
+            InventoryController.Consume(session, item.Uid, 1);
             ItemUseHelper.OpenBox(session, item.Content);
         }
     }
