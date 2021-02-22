@@ -46,7 +46,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
 
             session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionParameter));
-            session.Player.Stickers.Add((short) item.FunctionParameter);
+            session.Player.StickerGroups.Add((short) item.FunctionParameter);
 
             InventoryController.Consume(session, item.Uid, 1);
         }

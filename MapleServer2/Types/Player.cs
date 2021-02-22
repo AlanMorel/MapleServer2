@@ -48,7 +48,7 @@ namespace MapleServer2.Types
         public int[] Trophy = new int[3] { 0, 1, 2 };
         public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
-        public List<short> Stickers = new List<short> { 0 };
+        public List<short> StickerGroups = new List<short> { 0 };
         public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
 
@@ -149,7 +149,7 @@ namespace MapleServer2.Types
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
-                Stickers = new List<short>
+                StickerGroups = new List<short>
                 {
                     1, 2, 3, 4, 5, 6, 7
                 },
@@ -281,7 +281,7 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mailbox = new Mailbox(),
-                Stickers = new List<short>
+                StickerGroups = new List<short>
                 {
                     1, 2, 3, 4, 5, 6, 7
                 },
