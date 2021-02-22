@@ -211,7 +211,7 @@ namespace GameDataParser.Parsers
                 if (contentType == "ChatEmoticonAdd")
                 {
                     string rawParameter = function.Attributes["parameter"].Value;
-                    int parameter = int.Parse((rawParameter.Where(x => char.IsDigit(x)).ToArray())); // grab the proper value from parameter attribute
+                    int parameter = int.Parse(rawParameter.FirstOrDefault(x => char.IsDigit(x)).ToString()); // grab the proper value from parameter attribute
                     metadata.FunctionParameter = parameter;
                 }
 

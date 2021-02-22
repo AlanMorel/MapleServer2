@@ -44,6 +44,7 @@ namespace GameDataParser
                 new AchieveParser(resources),
                 new RecipeParser(resources),
                 new MasteryParser(resources),
+                new NpcParser(resources),
                 new ChatStickerParser(resources),
             };
 
