@@ -115,7 +115,7 @@ namespace MapleServer2.Types
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             Job job = Job.Archer;
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
             StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -177,7 +177,7 @@ namespace MapleServer2.Types
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
             Job job = Job.Archer;
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -216,7 +216,7 @@ namespace MapleServer2.Types
 
         public static Player NewCharacter(byte gender, Job job, string name, SkinColor skinColor, object equips)
         {
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -245,7 +245,7 @@ namespace MapleServer2.Types
         public static Player Priest(long accountId, long characterId, string name = "Priest")
         {
             Job job = Job.Priest;
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
             StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
