@@ -36,9 +36,6 @@ namespace Maple2Storage.Types.Metadata
         public int SkillID;
         [XmlElement(Order = 14)]
         public List<int> RecommendJobs = new List<int>();
-        [XmlElement(Order = 13)]
-        public List<int> Price = new List<int>();
-        [XmlElement(Order = 14)]
         [XmlElement(Order = 15)]
         public List<ItemContent> Content;
         [XmlElement(Order = 16)]

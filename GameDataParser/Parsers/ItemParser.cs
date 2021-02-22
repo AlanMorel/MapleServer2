@@ -52,9 +52,10 @@ namespace GameDataParser.Parsers
                     int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
                     int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
                     int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
-                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
+                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value); 
+                    int[] price = string.IsNullOrEmpty(individualBoxItem.Attributes["price"]?.Value) ? null : individualBoxItem.Attributes["price"].Value.Split(',').Select(int.Parse).ToArray();
 
-                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2);
+                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2, price);
                     if (itemDrops.ContainsKey(box))
                     {
                         itemDrops[box].Add(content);
@@ -171,10 +172,6 @@ namespace GameDataParser.Parsers
                     Console.WriteLine($"Failed to parse tab slot for {itemId}: {e.Message}");
                 }
                 metadata.StackLimit = int.Parse(property.Attributes["slotMax"].Value);
-                
-                // Price
-                List<int> price = string.IsNullOrEmpty(property.Attributes["price"]?.Value) ? null : property.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();
-                metadata.Price = price;
 
                 // Rarity
                 XmlNode option = item.SelectSingleNode("option");

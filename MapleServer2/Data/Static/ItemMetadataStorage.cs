@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -106,9 +107,9 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Content;
         }
         
-        public static List<int> GetPricePoints(int itemId)
+        public static int[] GetPricePoints(int itemId)
         {
-            return map.GetValueOrDefault(itemId).Price;
+            return map.GetValueOrDefault(itemId).Content.First().Price;
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

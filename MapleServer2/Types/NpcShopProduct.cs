@@ -117,7 +117,7 @@ namespace MapleServer2.Types
             pWriter.WriteInt(Price);
             pWriter.WriteInt(SalePrice);
             pWriter.WriteByte(ItemRank);
-            pWriter.WriteInt();
+            pWriter.WriteInt(930491735);
             pWriter.WriteInt(StockCount);
             pWriter.WriteInt(StockPurchased);
             pWriter.WriteInt(GuildTrophy);
@@ -128,14 +128,60 @@ namespace MapleServer2.Types
             pWriter.WriteShort(RequiredChampionshipJoinCount);
             pWriter.WriteByte(RequiredGuildMerchantType); // 2 = "Guild Supply Merchant" 3 = "Guild Gemstone Merchant"
             pWriter.WriteShort(RequiredGuildMerchantLevel); // The guild <type> merchant must be above level X
-            pWriter.WriteBool(false);
-            pWriter.WriteShort(Quantity); //Bundle Quantity
-            pWriter.WriteByte(1);
-            pWriter.WriteByte(Flag); // New, Sale, Event, Hot, etc.
-            pWriter.WriteMapleString("uwu");
+            pWriter.WriteByte();
+            pWriter.WriteShort(0x1); //Bundle Quantity
+            pWriter.WriteByte(1); // New, Sale, Event, Hot, etc.
+            pWriter.WriteShort(); // maplestring
             pWriter.WriteShort(RequiredQuestAlliance); // Required faction type
             pWriter.WriteInt(RequiredFameGrade); // Required reputation for the above faction type
-            pWriter.WriteBool(false);
+
+            // pure guesses
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(1);
+            pWriter.WriteUInt(4294967295); // 0xFFFFFFFF
+            pWriter.WriteInt(1613888761); // shop last updated?
+            pWriter.WriteLong(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteShort(0);
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(0);
+            
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteUInt(4294967295); // 0xFFFFFFFF
+            pWriter.WriteLong(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteShort(0);
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(0);
+            
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteUInt(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteLong(256);
+            pWriter.WriteLong(0);
+            pWriter.WriteInt(100663296);
+            pWriter.WriteInt(0);
+            pWriter.WriteLong(0);
+            pWriter.WriteShort(256);
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(0);
+            
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
+            pWriter.WriteInt(0);
 
             //
             // // sales/availability period

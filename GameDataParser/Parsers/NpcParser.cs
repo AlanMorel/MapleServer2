@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using System.Linq;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;

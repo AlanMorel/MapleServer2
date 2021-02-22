@@ -65,6 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Price = 10000,
                     SalePrice = 0,
                     ItemRank = 2,
+                    Quantity = 1,
                     StockCount = 0,
                     StockPurchased = 0,
                     Category = "ETC"
@@ -98,10 +99,10 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 // get random selling price from price points
                 Random rng = new();
-                List<int> pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
+                int[] pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
                 if (pricePoints.Any())
                 {
-                    int rand = rng.Next(0, pricePoints.Count);
+                    int rand = rng.Next(0, pricePoints.Length);
                     int price = pricePoints[rand];
                     session.Send(ShopPacket.Sell(itemUid, quantity, price));
                 }
