@@ -15,7 +15,7 @@
         private static DamageHandler HandleCrit(SkillCast skillCast)
         {
             double damage = skillCast.GetDamageRate();
-            bool crit = skillCast.RollCrit();
+            bool crit = SkillCast.RollCrit();
             if (crit)
             {
                 damage += damage;

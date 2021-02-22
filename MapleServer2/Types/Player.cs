@@ -55,7 +55,7 @@ namespace MapleServer2.Types
 
         public CoordF Coord;
         public CoordF Rotation;
-        public CoordF SafeCoord = CoordF.From(0, 0, 0);
+        public CoordF SafeBlock = CoordF.From(0, 0, 0);
         public bool OnAirMount = false;
 
         // Appearance
@@ -91,12 +91,17 @@ namespace MapleServer2.Types
         public GameOptions GameOptions { get; private set; }
 
         public Inventory Inventory = new Inventory();
+        public BankInventory BankInventory = new BankInventory();
+        public DismantleInventory DismantleInventory = new DismantleInventory();
+
         public Mailbox Mailbox = new Mailbox();
 
         public long PartyId;
 
         public long ClubId;
         // TODO make this as an array
+
+        public int[] GroupChatId = new int[3];
 
         public long GuildId;
         public int GuildContribution;
@@ -112,7 +117,7 @@ namespace MapleServer2.Types
         public static Player Char1(long accountId, long characterId, string name = "Char1")
         {
             Job job = Job.Archer;
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
             StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -174,12 +179,10 @@ namespace MapleServer2.Types
         public static Player Char2(long accountId, long characterId, string name = "Char2")
         {
             Job job = Job.Archer;
-            
+            PlayerStats stats = new PlayerStats();
+
             int mapId = (int) Map.Queenstown;
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-            
-            PlayerStats stats = PlayerStats.Default();
-            
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab(job)
@@ -217,7 +220,7 @@ namespace MapleServer2.Types
 
         public static Player NewCharacter(byte gender, Job job, string name, SkinColor skinColor, object equips)
         {
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
 
             List<SkillTab> skillTabs = new List<SkillTab>
             {
@@ -246,7 +249,7 @@ namespace MapleServer2.Types
         public static Player Priest(long accountId, long characterId, string name = "Priest")
         {
             Job job = Job.Priest;
-            PlayerStats stats = PlayerStats.Default();
+            PlayerStats stats = new PlayerStats();
             StatDistribution statPointDistribution = new StatDistribution(totalStats: 18);
             List<SkillTab> skillTabs = new List<SkillTab>
             {

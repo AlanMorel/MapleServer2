@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Ms2Database.DbClasses;
 
 namespace Ms2Database.Controllers
@@ -38,7 +34,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void UpdateSkill(SkillTree skillObject)
+        public static void UpdateSkill(SkillTree skillObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -47,7 +43,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public SkillTree GetSkill(long characterId, long skillId)
+        public static SkillTree GetSkill(long characterId, long skillId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -58,7 +54,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public List<SkillTree> GetSkillTree(long characterId)
+        public static List<SkillTree> GetSkillTree(long characterId)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

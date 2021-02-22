@@ -28,5 +28,7 @@ namespace Maple2Storage.Types
         EFFECT = 10,
         [Description("Pet Skin")]
         PET = 11,
+        [Description("Unknown")]
+        UNK1 = 12,
     }
 }

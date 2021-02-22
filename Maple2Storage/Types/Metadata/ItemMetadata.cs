@@ -21,49 +21,64 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 6)]
         public int StackLimit;
         [XmlElement(Order = 7)]
-        public bool IsTwoHand;
+        public bool EnableBreak;
         [XmlElement(Order = 8)]
-        public bool IsDress;
+        public bool IsTwoHand;
         [XmlElement(Order = 9)]
-        public bool IsTemplate;
+        public bool IsDress;
         [XmlElement(Order = 10)]
-        public int PlayCount;
+        public bool IsTemplate;
         [XmlElement(Order = 11)]
-        public int SkillID;
+        public int PlayCount;
         [XmlElement(Order = 12)]
+        public string FileName;
+        [XmlElement(Order = 13)]
+        public int SkillID;
+        [XmlElement(Order = 14)]
         public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 13)]
         public List<int> Price = new List<int>();
         [XmlElement(Order = 14)]
+        [XmlElement(Order = 15)]
         public List<ItemContent> Content;
+        [XmlElement(Order = 16)]
+        public List<ItemBreakReward> BreakRewards;
 
         // Required for deserialization
         public ItemMetadata()
         {
             Content = new List<ItemContent>();
+            BreakRewards = new List<ItemBreakReward>();
         }
 
         public override string ToString() =>
-            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},PlayCount:{PlayCount}," +
+            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},PlayCount:{PlayCount},FileName:{FileName}," +
             $"SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)})";
 
         protected bool Equals(ItemMetadata other)
         {
-            return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab &&
-                   Rarity == other.Rarity &&
-                   StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate &&
-                   PlayCount ==
-                   other.PlayCount && SkillID == other.SkillID && Content.SequenceEqual(other.Content);
+            return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab && Rarity == other.Rarity &&
+            StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate && PlayCount ==
+            other.PlayCount && FileName == other.FileName && SkillID == other.SkillID && Content.SequenceEqual(other.Content);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((ItemMetadata) obj);
         }
 
@@ -136,11 +151,20 @@ namespace Maple2Storage.Types.Metadata
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((ItemContent) obj);
         }
 
@@ -166,5 +190,24 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class ItemBreakReward
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public int Count;
+
+        public ItemBreakReward() { }
+
+        public ItemBreakReward(int id, int count)
+        {
+            Id = id;
+            Count = count;
+        }
+
+        public override string ToString() => $"Id: {Id}, Amount: {Count}";
     }
 }

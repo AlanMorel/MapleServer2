@@ -38,7 +38,7 @@ namespace MapleServer2.Types
 
         public double GetCriticalDamage() => RollCrit() ? GetDamageRate() * 2 : GetDamageRate();
 
-        public bool RollCrit()
+        public static bool RollCrit()
         {
             // TODO: Critic base on Stats
             Random rnd = new Random();

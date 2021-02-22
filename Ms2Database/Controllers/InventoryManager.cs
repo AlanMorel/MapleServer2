@@ -49,7 +49,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public Item FindItem(long uid)
+        public static Item FindItem(long uid)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {
@@ -59,7 +59,7 @@ namespace Ms2Database.Controllers
             }
         }
 
-        public void UpdateItem(Item itemObject)
+        public static void UpdateItem(Item itemObject)
         {
             using (Ms2DbContext context = new Ms2DbContext())
             {

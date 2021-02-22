@@ -46,7 +46,7 @@ namespace MapleServer2.Servers.Game
                     fieldNpc.Coord = npc.Coord.ToFloat();
                     AddNpc(fieldNpc);
                 }
-                if (fieldMob.Value.Friendly != 2)
+                else
                 {
                     fieldMob.Coord = npc.Coord.ToFloat();
                     AddMob(fieldMob);
@@ -67,6 +67,15 @@ namespace MapleServer2.Servers.Game
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);
             }
+
+            // Load default InteractActors
+            List<IFieldObject<InteractActor>> actors = new List<IFieldObject<InteractActor>> { };
+            foreach (MapInteractActor actor in MapEntityStorage.GetInteractActors(mapId))
+            {
+                // TODO: Group these fieldActors by their correct packet type. 
+                actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name) { }));
+            }
+            AddInteractActor(actors);
         }
 
         // Gets a list of packets to update the state of all field objects for client.
@@ -134,6 +143,10 @@ namespace MapleServer2.Servers.Game
                 sender.Send(FieldPacket.AddMob(existingMob));
                 sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
+            if (State.InteractActors.Values.Count > 0)
+            {
+                sender.Send(InteractActorPacket.AddInteractActors(State.InteractActors.Values));
+            }
             State.AddPlayer(player);
 
             // Broadcast new player to all players in map
@@ -190,6 +203,21 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
+        public void AddInteractActor(ICollection<IFieldObject<Types.InteractActor>> actors)
+        {
+            foreach (IFieldObject<InteractActor> actor in actors)
+            {
+                State.AddInteractActor(actor);
+            }
+
+            if (actors.Count > 0)
+            {
+                Broadcast(session =>
+                {
+                    session.Send(InteractActorPacket.AddInteractActors(actors));
+                });
+            }
+        }
         public void SendChat(Player player, string message, ChatType type)
         {
             Broadcast(session =>

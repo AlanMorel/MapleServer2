@@ -13,6 +13,7 @@ namespace MapleServer2.Types
         public Currency Rue { get; private set; }
         public Currency HaviFruit { get; private set; }
         public Currency MesoToken { get; private set; }
+        public Currency Bank { get; private set; }
 
         public Wallet(Player player)
         {
@@ -25,6 +26,7 @@ namespace MapleServer2.Types
             Rue = new Currency(player, CurrencyType.Rue, 2000);
             HaviFruit = new Currency(player, CurrencyType.HaviFruit, 2000);
             MesoToken = new Currency(player, CurrencyType.MesoToken, 2000);
+            Bank = new Currency(player, CurrencyType.Bank, 2000);
         }
 
         public bool RemoveMerets(long amount)
