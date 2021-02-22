@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -183,6 +184,7 @@ namespace GameDataParser.Parsers
                 // Item boxes
                 XmlNode function = item.SelectSingleNode("function");
                 string contentType = function.Attributes["name"].Value;
+                metadata.FunctionName = contentType;
                 if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
                 {
                     // selection boxes are SelectItemBox and 1,boxid
@@ -205,6 +207,12 @@ namespace GameDataParser.Parsers
                             }
                         }
                     }
+                }
+                if (contentType == "ChatEmoticonAdd")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    int parameter = int.Parse(rawParameter.FirstOrDefault(x => char.IsDigit(x)).ToString()); // grab the proper value from parameter attribute
+                    metadata.FunctionParameter = parameter;
                 }
 
                 // Music score charges

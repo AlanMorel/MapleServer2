@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
@@ -59,6 +60,13 @@ namespace MapleServer2.PacketHandlers.Game
             int stickerId = packet.ReadInt();
             string script = packet.ReadUnicodeString();
 
+            byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+
+            if (!session.Player.StickerGroups.Contains(groupId))
+            {
+                return;
+            }
+
             session.Send(ChatStickerPacket.UseSticker(stickerId, script));
         }
 
@@ -67,7 +75,12 @@ namespace MapleServer2.PacketHandlers.Game
             int stickerId = packet.ReadInt();
             string groupChatName = packet.ReadUnicodeString();
 
-            // TODO: Check if user has sticker
+            byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+
+            if (!session.Player.StickerGroups.Contains(groupId))
+            {
+                return;
+            }
 
             session.Send(ChatStickerPacket.GroupChatSticker(stickerId, groupChatName));
         }
@@ -76,6 +89,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int stickerId = packet.ReadInt();
 
+            session.Player.FavoriteStickers.Add(stickerId);
             session.Send(ChatStickerPacket.Favorite(stickerId));
         }
 
@@ -83,6 +97,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int stickerId = packet.ReadInt();
 
+            session.Player.FavoriteStickers.Remove(stickerId);
             session.Send(ChatStickerPacket.Unfavorite(stickerId));
         }
     }
