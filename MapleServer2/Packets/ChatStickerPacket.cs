@@ -27,8 +27,8 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(favorite);
             }
-            pWriter.WriteShort((short) player.Stickers.Count);
-            foreach (int sticker in player.Stickers)
+            pWriter.WriteShort((short) player.StickerGroups.Count);
+            foreach (int sticker in player.StickerGroups)
             {
                 pWriter.WriteInt(sticker);
                 pWriter.WriteLong(9223372036854775807); //expiration timestamp
