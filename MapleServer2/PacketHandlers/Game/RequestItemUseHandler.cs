@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (item.FunctionName)
             {
                 case "ChatEmoticonAdd":
-                    HandleChatEmoticonAdd(session, packet, item);
+                    HandleChatEmoticonAdd(session/*, packet*/, item);
                     break;
                 case "SelectItemBox":
                     HandleSelectItemBox(session, packet, item);
@@ -42,9 +42,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleChatEmoticonAdd(GameSession session, PacketReader packet, Item item)
+        private static void HandleChatEmoticonAdd(GameSession session/*, PacketReader packet*/, Item item)
         {
-
             session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionParameter));
             session.Player.StickerGroups.Add((short) item.FunctionParameter);
 

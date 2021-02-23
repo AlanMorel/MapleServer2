@@ -12,7 +12,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement]
         public int SightHeightUp;
         [XmlElement]
-        public int sightHeightDown;
+        public int SightHeightDown;
         [XmlElement]
         public int CustomLastSightRadius;
         [XmlElement]
