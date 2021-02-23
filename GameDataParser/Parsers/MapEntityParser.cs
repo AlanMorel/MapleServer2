@@ -8,6 +8,7 @@ using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using Maple2Storage.Enums;
 
 namespace GameDataParser.Parsers
 {
@@ -93,14 +94,19 @@ namespace GameDataParser.Parsers
                     {
                         XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
                         CoordS boundingBox = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-                        if (name.EndsWith("0"))
+                        if (name.EndsWith("0") && metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
                         {
                             metadata.BoundingBox0 = boundingBox;
                         }
-                        else if (name.EndsWith("1"))
+                        else if (name.EndsWith("1") && metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0)))
                         {
                             metadata.BoundingBox1 = boundingBox;
                         }
+                    }
+                    else if (modelName == "MS2Telescope")
+                    {
+                        string uuid = node.Attributes["id"].Value;
+                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars));
                     }
                     else if (modelName == "SpawnPointPC")  // Player Spawn point on map
                     {
@@ -188,7 +194,7 @@ namespace GameDataParser.Parsers
                             else if (modelData.ContainsKey("mixinMS2InteractActor"))
                             {
                                 string uuid = node.Attributes["id"].Value.ToLower();
-                                metadata.InteractActors.Add(new MapInteractActor(uuid, name));
+                                metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Unknown));
                             }
                             else if (modelData.ContainsKey("mixinMS2InteractDisplay"))
                             {
@@ -198,6 +204,12 @@ namespace GameDataParser.Parsers
                             else
                             {
                                 // TODO: Any others?
+
+                                if (name.Contains("funct_extract_"))
+                                {
+                                    string uuid = node.Attributes["id"].Value.ToLower();
+                                    metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Extractor));
+                                }
                             }
                         }
                         else if (modelData.ContainsKey("mixinSpawnPointNPC"))

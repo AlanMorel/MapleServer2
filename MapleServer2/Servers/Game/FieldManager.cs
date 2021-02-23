@@ -73,7 +73,7 @@ namespace MapleServer2.Servers.Game
             foreach (MapInteractActor actor in MapEntityStorage.GetInteractActors(mapId))
             {
                 // TODO: Group these fieldActors by their correct packet type. 
-                actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name) { }));
+                actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name, actor.Type) { }));
             }
             AddInteractActor(actors);
         }

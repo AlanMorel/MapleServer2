@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -337,12 +338,15 @@ namespace Maple2Storage.Types.Metadata
         public readonly string Uuid;
         [XmlElement(Order = 2)]
         public readonly string Name;
+        [XmlElement(Order = 3)]
+        public readonly InteractActorType Type;
 
         public MapInteractActor() { }
-        public MapInteractActor(string uuid, string name)
+        public MapInteractActor(string uuid, string name, InteractActorType type)
         {
             Uuid = uuid;
             Name = name;
+            Type = type;
         }
         public override string ToString() =>
             $"MapInteractActor(UUID:{Uuid},Name:{Name})";

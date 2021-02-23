@@ -1,5 +1,8 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
@@ -11,30 +14,36 @@ namespace MapleServer2.PacketHandlers.Game
 
         public InteractObjectHandler(ILogger<InteractObjectHandler> logger) : base(logger) { }
 
+        private enum InteractObjectMode : byte
+        {
+            Use = 0x0C,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();  // Action player did to this object
+            InteractObjectMode mode = (InteractObjectMode) packet.ReadByte();
 
             switch (mode)
             {
-                case 0x0B:  // Started interacting with object
-                    // We reply with method 0x04
-                    HandleInteractStarted(session, packet);
-                    break;
-                case 0x0C:  // Finished interacting with object
-                    HandleInteractFinished(session, packet);
+                case InteractObjectMode.Use:
+                    HandleUse(session, packet);
                     break;
             }
         }
 
-        private static void HandleInteractStarted(GameSession session, PacketReader packet)
+        private static void HandleUse(GameSession session, PacketReader packet)
         {
-
-        }
-
-        private static void HandleInteractFinished(GameSession session, PacketReader packet)
-        {
-
+            string uuid = packet.ReadMapleString();
+            foreach (MapInteractActor actor in MapEntityStorage.GetInteractActors(session.Player.MapId))
+            {
+                if (actor.Uuid != uuid)
+                {
+                    continue;
+                }
+                session.Send(InteractActorPacket.UseObject(actor));
+                session.Send(InteractActorPacket.Extra(actor));
+                break;
+            }
         }
     }
 }
