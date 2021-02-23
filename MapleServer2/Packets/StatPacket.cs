@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -9,22 +10,44 @@ namespace MapleServer2.Packets
     {
         private enum StatsMode : byte
         {
+            UpdateStats = 0x01,
             SendStats = 0x23,
             UpdateMobStats = 0x4
         }
 
-        public static Packet SetStats(IFieldObject<Player> player)
+        public static Packet UpdateStats(IFieldObject<Player> player, PlayerStatId statId, params PlayerStatId[] otherIds)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteByte();
-            pWriter.WriteEnum(StatsMode.SendStats);
-            WriteStats(ref pWriter, player.Value.Stats);
+            pWriter.WriteEnum(StatsMode.UpdateStats);
+            pWriter.WriteByte((byte) (1 + otherIds.Length));
+            pWriter.WriteEnum(statId);
+            pWriter.Write(player.Value.Stats[statId]);
+            foreach (PlayerStatId otherId in otherIds)
+            {
+                pWriter.WriteEnum(otherId);
+                pWriter.Write(player.Value.Stats[otherId]);
+            }
 
             return pWriter;
         }
 
-        public static Packet UpdateStats(IFieldObject<Player> player)
+        public static Packet UpdateStats(IFieldObject<Player> player, List<PlayerStatId> statIds)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteEnum(StatsMode.UpdateStats);
+            pWriter.WriteByte((byte) statIds.Count);
+            foreach (PlayerStatId statId in statIds)
+            {
+                pWriter.WriteEnum(statId);
+                pWriter.Write(player.Value.Stats[statId]);
+            }
+
+            return pWriter;
+        }
+
+        public static Packet SetStats(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
             pWriter.WriteInt(player.ObjectId);
