@@ -35,7 +35,12 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUse(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
-            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).First(x => x.Uuid == uuid);
+            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            if (actor == null)
+            {
+                return;
+            }
+
             session.Send(InteractActorPacket.UseObject(actor));
             session.Send(InteractActorPacket.Extra(actor));
         }
