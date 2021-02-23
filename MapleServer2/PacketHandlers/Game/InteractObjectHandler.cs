@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Linq;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -34,16 +35,9 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUse(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
-            foreach (MapInteractActor actor in MapEntityStorage.GetInteractActors(session.Player.MapId))
-            {
-                if (actor.Uuid != uuid)
-                {
-                    continue;
-                }
-                session.Send(InteractActorPacket.UseObject(actor));
-                session.Send(InteractActorPacket.Extra(actor));
-                break;
-            }
+            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).First(x => x.Uuid == uuid);
+            session.Send(InteractActorPacket.UseObject(actor));
+            session.Send(InteractActorPacket.Extra(actor));
         }
     }
 }
