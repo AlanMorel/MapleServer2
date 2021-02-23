@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using Renci.SshNet;
 
 namespace MapleServer2.Packets
 {
@@ -29,7 +30,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(1); // ShopCategory (916 = Juice)
             pWriter.WriteBool(false); //
             pWriter.WriteBool(true); // restrict sales (default: false)
-            pWriter.WriteBool(false); // shop is restockable
+            pWriter.WriteBool(false); // shop can be restocked
             pWriter.WriteBool(false);
             pWriter.WriteBool(false);
             pWriter.WriteBool(false); // show buyback tab (default: true)
@@ -73,16 +74,16 @@ namespace MapleServer2.Packets
             return null;
         }
 
-        public static Packet LoadProducts(List<NpcShopProduct> products)
+        public static Packet LoadProducts(Player owner, List<NpcShopItem> products)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP); 
             pWriter.WriteByte((byte) ShopMode.LoadProducts);
             pWriter.WriteByte((byte) products.Count);
-            foreach (NpcShopProduct product in products)
+            foreach (NpcShopItem product in products)
             {
                 product.Encode(pWriter);
             }
-
+            
             return pWriter;
         }
     }

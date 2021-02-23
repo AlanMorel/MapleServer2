@@ -1,9 +1,10 @@
 ﻿using System;
 using MaplePacketLib2.Tools;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
-    public class NpcShopProduct
+    public class NpcShopItem
     {
         public int UniqueId { get; set; }
 
@@ -103,7 +104,7 @@ namespace MapleServer2.Types
         public int RequiredFameGrade { get; set; }
         public bool Period { get; set; }
 
-        public NpcShopProduct()
+        public NpcShopItem()
         {
         }
 
@@ -117,7 +118,7 @@ namespace MapleServer2.Types
             pWriter.WriteInt(Price);
             pWriter.WriteInt(SalePrice);
             pWriter.WriteByte(ItemRank);
-            pWriter.WriteInt(930491735);
+            pWriter.WriteInt(0x1);
             pWriter.WriteInt(StockCount);
             pWriter.WriteInt(StockPurchased);
             pWriter.WriteInt(GuildTrophy);
@@ -130,81 +131,28 @@ namespace MapleServer2.Types
             pWriter.WriteShort(RequiredGuildMerchantLevel); // The guild <type> merchant must be above level X
             pWriter.WriteByte();
             pWriter.WriteShort(0x1); //Bundle Quantity
-            pWriter.WriteByte(1); // New, Sale, Event, Hot, etc.
-            pWriter.WriteShort(); // maplestring
+            pWriter.WriteByte(); // New, Sale, Event, Hot, etc.
+            pWriter.WriteByte();
             pWriter.WriteShort(RequiredQuestAlliance); // Required faction type
             pWriter.WriteInt(RequiredFameGrade); // Required reputation for the above faction type
 
-            // pure guesses
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(1);
-            pWriter.WriteUInt(4294967295); // 0xFFFFFFFF
-            pWriter.WriteInt(1613888761); // shop last updated?
-            pWriter.WriteLong(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteShort(0);
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
+            pWriter.WriteBool(false);
+            pWriter.WriteBool(false);
             
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteUInt(4294967295); // 0xFFFFFFFF
-            pWriter.WriteLong(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteShort(0);
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
-            
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteUInt(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteLong(256);
-            pWriter.WriteLong(0);
-            pWriter.WriteInt(100663296);
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteShort(256);
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
-            
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-
-            //
-            // // sales/availability period
-            // pWriter.WriteBool(Period != null);
-            // if (Period != null) {
-            //     pWriter.WriteBool(false);
-            //     if (false) {
-            //         pWriter.WriteLong(0);
-            //         pWriter.WriteLong(0);
-            //     }
-            //     pWriter.WriteBool(false);
-            //     if (false) {
-            //         pWriter.WriteByte(0);
-            //         for (int i = 0; i < 0; i++) {
-            //             pWriter.WriteInt(0);
-            //             pWriter.WriteInt(0);
-            //         }
-            //         pWriter.WriteByte(0);
-            //         for (int i = 0; i < 0; i++) {
-            //             pWriter.WriteByte(0);
-            //         }
-            //     }
-            // }
+            // shop item data
+            pWriter.WriteInt(0); // Unknown
+            pWriter.WriteInt(1); // Quantity
+            pWriter.WriteInt(0); // Unknown
+            pWriter.WriteInt(-1); // Unknown
+            pWriter.WriteLong(DateTimeOffset.UtcNow.Subtract(new TimeSpan(7,0,0,0)).ToUnixTimeSeconds()); // Item creation time
+            pWriter.WriteZero(52); // Unknown 52 zero bytes
+            pWriter.WriteInt(-1); // Unknown
+            pWriter.WriteZero(102); // Unknown 102 zero bytes
+            pWriter.WriteInt(0x1); // Unknown
+            pWriter.WriteZero(28); // Unknown 14 zero bytes
+            pWriter.WriteLong(0x1); // Unknown
+            pWriter.WriteString(string.Empty); // Unknown
+            pWriter.WriteZero(14); // Unknown 10 zero bytes
         }
     }
 }

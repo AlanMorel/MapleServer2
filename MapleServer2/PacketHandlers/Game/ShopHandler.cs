@@ -55,25 +55,27 @@ namespace MapleServer2.PacketHandlers.Game
         {
             NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
             
-            List<NpcShopProduct> products = new()
+            List<NpcShopItem> products = new()
             {
-                new NpcShopProduct
+                new NpcShopItem
                 {
                     UniqueId = GuidGenerator.Int(),
                     ItemId = 20001697,
-                    TokenType = (byte) CurrencyType.Meso,
+                    TokenType = 0x1,
                     Price = 10000,
                     SalePrice = 0,
-                    ItemRank = 2,
-                    Quantity = 1,
+                    ItemRank = 1,
+                    Quantity = 100,
                     StockCount = 0,
                     StockPurchased = 0,
-                    Category = "ETC"
+                    Category = "CoinEtc",
+                    RequiredItemId = 30000447,
+                    Flag = 0x1
                 }
             };
             
             session.Send(ShopPacket.Open(metadata.TemplateId, metadata.ShopId, 43, "eventshop"));
-            session.Send(ShopPacket.LoadProducts(products));
+            session.Send(ShopPacket.LoadProducts(session.Player, products));
             session.Send(ShopPacket.Reload());
             session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
         }
@@ -83,9 +85,9 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ShopPacket.Close());
         }
 
-        private static void HandleLoadProducts(GameSession session, List<NpcShopProduct> products)
+        private static void HandleLoadProducts(GameSession session, List<NpcShopItem> products)
         {
-            session.Send(ShopPacket.LoadProducts(products));
+            session.Send(ShopPacket.LoadProducts(session.Player, products));
         }
 
         private static void HandleSell(GameSession session, PacketReader packet)
