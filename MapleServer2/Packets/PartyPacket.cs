@@ -152,7 +152,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(PartyPacketMode.UpdateHitpoints);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteLong(player.AccountId);
-            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Total);
+            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
             pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Min);
             pWriter.WriteShort();
 
