@@ -154,7 +154,6 @@ namespace MapleServer2.Types
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
-
                 Emotes = new List<int>
                 {
                     90200011, 90200004, 90200024, 90200041, 90200042,
