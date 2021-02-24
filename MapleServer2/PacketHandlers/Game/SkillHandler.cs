@@ -62,9 +62,16 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadByte();
             CoordF coords = packet.Read<CoordF>();
             packet.ReadShort();
+
             SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
-            session.FieldPlayer.Value.SkillCast = skillCast;
-            session.Send(SkillUsePacket.SkillUse(skillCast, coords));
+            int skillCost = skillCast.GetCost();
+            if (session.Player.Stats[PlayerStatId.Spirit].Current >= skillCost)
+            {
+                session.FieldPlayer.Value.SkillCast = skillCast;
+                session.Player.ConsumeSp(skillCost);
+                session.Send(SkillUsePacket.SkillUse(skillCast, coords));
+                session.Send(StatPacket.SetStats(session.FieldPlayer));
+            }
         }
 
         private static void HandleDamage(GameSession session, PacketReader packet)

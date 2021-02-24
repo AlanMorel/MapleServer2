@@ -45,5 +45,7 @@ namespace MapleServer2.Types
             double roll = rnd.NextDouble();
             return roll > 0.5;
         }
+
+        public int GetCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Spirit;
     }
 }
