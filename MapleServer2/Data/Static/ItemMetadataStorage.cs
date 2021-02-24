@@ -131,11 +131,6 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).FunctionCapacity;
         }
 
-        public static byte GetFunctionTargetLevel(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionTargetLevel;
-        }
-
         public static List<ItemBreakReward> GetBreakRewards(int itemId)
         {
             return map.GetValueOrDefault(itemId).BreakRewards;

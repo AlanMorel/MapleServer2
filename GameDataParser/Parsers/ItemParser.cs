@@ -222,7 +222,6 @@ namespace GameDataParser.Parsers
                     if (functionParameters.Attributes["durationSec"] != null)
                     {
                         durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
-
                     }
                     metadata.FunctionDuration = durationSec;
                 }
