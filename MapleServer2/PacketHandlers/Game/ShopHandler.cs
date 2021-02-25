@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -23,8 +22,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum ShopMode : byte
         {
-            Open = 0x0,
-            LoadProducts = 0x1,
             Buy = 0x4,
             Sell = 0x5,
             Close = 0x6
@@ -54,28 +51,15 @@ namespace MapleServer2.PacketHandlers.Game
         public static void HandleOpen(GameSession session, IFieldObject<Npc> npcFieldObject)
         {
             NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
-            
-            List<NpcShopItem> products = new()
+
+            NpcShop shop = ShopStorage.Shops.FirstOrDefault(x => x.Key == metadata.ShopId).Value;
+            if (shop == null)
             {
-                new NpcShopItem
-                {
-                    UniqueId = GuidGenerator.Int(),
-                    ItemId = 20001697,
-                    TokenType = 0x1,
-                    Price = 10000,
-                    SalePrice = 0,
-                    ItemRank = 1,
-                    Quantity = 100,
-                    StockCount = 0,
-                    StockPurchased = 0,
-                    Category = "CoinEtc",
-                    RequiredItemId = 30000447,
-                    Flag = 0x1
-                }
-            };
-            
-            session.Send(ShopPacket.Open(metadata.TemplateId, metadata.ShopId, 43, "eventshop"));
-            session.Send(ShopPacket.LoadProducts(session.Player, products));
+                return;
+            }
+
+            session.Send(ShopPacket.Open(shop));
+            session.Send(ShopPacket.LoadProducts(shop.Items));
             session.Send(ShopPacket.Reload());
             session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
         }
@@ -83,11 +67,6 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleClose(GameSession session)
         {
             session.Send(ShopPacket.Close());
-        }
-
-        private static void HandleLoadProducts(GameSession session, List<NpcShopItem> products)
-        {
-            session.Send(ShopPacket.LoadProducts(session.Player, products));
         }
 
         private static void HandleSell(GameSession session, PacketReader packet)
@@ -113,10 +92,40 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleBuy(GameSession session, PacketReader packet)
         {
-            // buy from shop
-            int itemId = packet.ReadInt();
+            int itemUid = packet.ReadInt();
             int quantity = packet.ReadInt();
-            session.Send(ShopPacket.Buy(itemId, quantity));
+            
+            NpcShopItem shopItem = ShopStorage.GetItem(itemUid);
+
+            switch (shopItem.TokenType)
+            {
+                case CurrencyType.Meso:
+                    if (!session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity)))
+                    {
+                        session.SendNotice("You don't have enough mesos.");
+                        return;
+                    }
+
+                    break;
+                case CurrencyType.Meret:
+                    if (!session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity)))
+                    {
+                        session.SendNotice("You don't have enough merets.");
+                        return;
+                    }
+                    
+                    break;
+            }
+
+            // add item to inventory
+            Item item = new(shopItem.ItemId)
+            {
+                Amount = quantity
+            };
+            InventoryController.Add(session, item, true);
+            
+            // complete purchase
+            session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
         }
     }
 }

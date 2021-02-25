@@ -109,7 +109,7 @@ namespace MapleServer2.Data.Static
         
         public static int[] GetPricePoints(int itemId)
         {
-            return map.GetValueOrDefault(itemId).Content.First().Price;
+            return map.GetValueOrDefault(itemId).Content.First()?.Price;
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

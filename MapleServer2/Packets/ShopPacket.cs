@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Types;
-using Renci.SshNet;
 
 namespace MapleServer2.Packets
 {
@@ -18,26 +18,26 @@ namespace MapleServer2.Packets
             Reload = 0x6
         }
         
-        public static Packet Open(int npcTemplateId, int shopId, int shopCategory, string shopName)
+        public static Packet Open(NpcShop shop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteByte();
-            pWriter.WriteInt(npcTemplateId);
-            pWriter.WriteInt(shopId);
-            pWriter.WriteLong(1614265200); // timestamp for next restock
+            pWriter.WriteInt(shop.TemplateId);
+            pWriter.WriteInt(shop.Id);
+            pWriter.WriteLong(shop.NextRestock); // timestamp for next restock
             pWriter.WriteInt();
-            pWriter.WriteShort(1);
-            pWriter.WriteInt(1); // ShopCategory (916 = Juice)
+            pWriter.WriteShort(15);
+            pWriter.WriteInt(shop.Category); // ShopCategory (916 = Juice)
             pWriter.WriteBool(false); //
-            pWriter.WriteBool(true); // restrict sales (default: false)
+            pWriter.WriteBool(shop.RestrictSales); // restrict sales (default: false)
             pWriter.WriteBool(false); // shop can be restocked
             pWriter.WriteBool(false);
             pWriter.WriteBool(false);
-            pWriter.WriteBool(false); // show buyback tab (default: true)
+            pWriter.WriteBool(shop.AllowBuyback); // show buyback tab (default: true)
             pWriter.WriteBool(false);
+            pWriter.WriteBool(true); // unknown
             pWriter.WriteBool(false);
-            pWriter.WriteBool(false);
-            pWriter.WriteMapleString("shop"); // shopName
+            pWriter.WriteMapleString(shop.Name); // shopName
             return pWriter;
         }
 
@@ -57,11 +57,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Buy(int itemId, int quantity)
+        public static Packet Buy(int itemId, int quantity, int price, CurrencyType currencyType)
         {
-            // TODO: Implement buying item from shop
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            Console.WriteLine($"Buying {quantity}x {itemId}");
+            pWriter.WriteByte((byte) ShopMode.Buy);
+            pWriter.WriteInt(itemId); // Item ID
+            pWriter.WriteInt(quantity); // Quantity
+            pWriter.WriteInt(price * quantity); // Total price
+            pWriter.WriteShort((short) currencyType); // Currency type
             return pWriter;
         }
 
@@ -74,14 +77,14 @@ namespace MapleServer2.Packets
             return null;
         }
 
-        public static Packet LoadProducts(Player owner, List<NpcShopItem> products)
+        public static Packet LoadProducts(List<NpcShopItem> products)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP); 
             pWriter.WriteByte((byte) ShopMode.LoadProducts);
             pWriter.WriteByte((byte) products.Count);
             foreach (NpcShopItem product in products)
             {
-                product.Encode(pWriter);
+                product.Write(pWriter);
             }
             
             return pWriter;

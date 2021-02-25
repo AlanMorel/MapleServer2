@@ -1,6 +1,7 @@
 ﻿using System;
 using MaplePacketLib2.Tools;
-using MapleServer2.Tools;
+using MapleServer2.Enums;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Types
 {
@@ -13,7 +14,7 @@ namespace MapleServer2.Types
         /*
          * Currency type
          */
-        public byte TokenType { get; set; }
+        public CurrencyType TokenType { get; set; }
 
         /*
          * Only used when tokenType is type Capsule (1)
@@ -91,7 +92,7 @@ namespace MapleServer2.Types
         /*
          * New, Sale, Event, Hot, etc.
          */
-        public byte Flag { get; set; }
+        public ShopItemFlag Flag { get; set; }
 
         /*
          * Required faction type
@@ -102,57 +103,56 @@ namespace MapleServer2.Types
          * Required reputation for the above faction type
          */
         public int RequiredFameGrade { get; set; }
-        public bool Period { get; set; }
 
         public NpcShopItem()
         {
         }
 
-        public void Encode(PacketWriter pWriter)
+        public void Write(PacketWriter pWriter)
         {
-            pWriter.WriteInt(UniqueId);
+            pWriter.WriteInt(UniqueId); // 968620
             pWriter.WriteInt(ItemId);
-            pWriter.WriteByte(TokenType);
-            pWriter.WriteInt(RequiredItemId);
+            pWriter.WriteByte((byte) TokenType); // Currency Type
+            pWriter.WriteInt(RequiredItemId); // Only used when tokenType is type Capsule (1)
             pWriter.WriteInt();
-            pWriter.WriteInt(Price);
-            pWriter.WriteInt(SalePrice);
-            pWriter.WriteByte(ItemRank);
-            pWriter.WriteInt(0x1);
-            pWriter.WriteInt(StockCount);
-            pWriter.WriteInt(StockPurchased);
-            pWriter.WriteInt(GuildTrophy);
-            pWriter.WriteMapleString(Category);
+            pWriter.WriteInt(Price); // Current Price (e.g discounted price)
+            pWriter.WriteInt(SalePrice); // Original Price
+            pWriter.WriteByte(ItemRank); // Stars
+            pWriter.WriteUInt(0xEFDA5D2D);
+            pWriter.WriteInt(StockCount); // Total Stock
+            pWriter.WriteInt(StockPurchased); // Purchased Stock (remaining stock will show Total - Purchased)
+            pWriter.WriteInt(GuildTrophy); // "More than x guild trophies"
+            pWriter.WriteMapleString(Category); // Item Category (found in the item's xml)
             pWriter.WriteInt(RequiredAchievementId);
-            pWriter.WriteInt(RequiredAchievementGrade);
-            pWriter.WriteByte(RequiredChampionshipGrade);
-            pWriter.WriteShort(RequiredChampionshipJoinCount);
+            pWriter.WriteInt(RequiredAchievementGrade); // When > 0: "You must have the "X. TrophyNameHere" trophy to do this."
+            pWriter.WriteByte(RequiredChampionshipGrade); // Guild ranking above X
+            pWriter.WriteShort(RequiredChampionshipJoinCount); // Must participate more than X times
             pWriter.WriteByte(RequiredGuildMerchantType); // 2 = "Guild Supply Merchant" 3 = "Guild Gemstone Merchant"
             pWriter.WriteShort(RequiredGuildMerchantLevel); // The guild <type> merchant must be above level X
-            pWriter.WriteByte();
-            pWriter.WriteShort(0x1); //Bundle Quantity
-            pWriter.WriteByte(); // New, Sale, Event, Hot, etc.
-            pWriter.WriteByte();
-            pWriter.WriteShort(RequiredQuestAlliance); // Required faction type
-            pWriter.WriteInt(RequiredFameGrade); // Required reputation for the above faction type
-
             pWriter.WriteBool(false);
+            pWriter.WriteShort(Quantity); // Bundle Quantity
+            pWriter.WriteByte(1);
+            pWriter.WriteByte((byte) Flag); // New, Sale, Event, Hot, etc.
+            pWriter.WriteByte();
+            pWriter.WriteShort(RequiredQuestAlliance); // Required faction
+            pWriter.WriteInt(RequiredFameGrade); // Required reputation for the above faction type
             pWriter.WriteBool(false);
             
-            // shop item data
-            pWriter.WriteInt(0); // Unknown
-            pWriter.WriteInt(1); // Quantity
-            pWriter.WriteInt(0); // Unknown
-            pWriter.WriteInt(-1); // Unknown
-            pWriter.WriteLong(DateTimeOffset.UtcNow.Subtract(new TimeSpan(7,0,0,0)).ToUnixTimeSeconds()); // Item creation time
-            pWriter.WriteZero(52); // Unknown 52 zero bytes
-            pWriter.WriteInt(-1); // Unknown
-            pWriter.WriteZero(102); // Unknown 102 zero bytes
-            pWriter.WriteInt(0x1); // Unknown
-            pWriter.WriteZero(28); // Unknown 14 zero bytes
-            pWriter.WriteLong(0x1); // Unknown
-            pWriter.WriteString(string.Empty); // Unknown
-            pWriter.WriteZero(14); // Unknown 10 zero bytes
+            // Write item data
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteInt(1); // Unknown (amount?)
+            pWriter.WriteInt();
+            pWriter.WriteInt(-1);
+            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // Item creation time
+            pWriter.WriteZero(52);
+            pWriter.WriteInt(-1);
+            pWriter.WriteZero(102);
+            pWriter.WriteInt(1);
+            pWriter.WriteZero(28);
+            pWriter.WriteLong(1); // Item owner character id (shop items have no owner)
+            pWriter.WriteShort(); // Item owner name (shop items have no owner)
+            pWriter.WriteZero(12);
         }
     }
 }
