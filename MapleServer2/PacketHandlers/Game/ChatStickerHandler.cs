@@ -63,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
-            if (session.Player.ChatSticker.Any(p => p.GroupId == groupId))
+            if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
-            if (session.Player.ChatSticker.Any(p => p.GroupId == groupId))
+            if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
             {
                 return;
             }
