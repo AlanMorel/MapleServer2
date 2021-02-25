@@ -230,7 +230,7 @@ namespace MapleServer2.Types
             int newCurrent = stat.Current - amount;
             if (statIndex == PlayerStatId.Hp || statIndex == PlayerStatId.Spirit)
             {
-                newCurrent = Math.Clamp(stat.Current, stat.Min, newMax);
+                newCurrent = Math.Clamp(newCurrent, 50, newMax);    // TODO: Find Hp/Sp reset formula
             }
             Data[statIndex] = new PlayerStat(newMax, stat.Min, newCurrent);
         }
