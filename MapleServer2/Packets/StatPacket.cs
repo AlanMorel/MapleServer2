@@ -22,11 +22,11 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(StatsMode.UpdateStats);
             pWriter.WriteByte((byte) (1 + otherIds.Length));
             pWriter.WriteEnum(statId);
-            pWriter.Write(player.Value.Stats[statId]);
+            pWriter.WriteStat(statId, player.Value.Stats[statId]);
             foreach (PlayerStatId otherId in otherIds)
             {
                 pWriter.WriteEnum(otherId);
-                pWriter.Write(player.Value.Stats[otherId]);
+                pWriter.WriteStat(otherId, player.Value.Stats[otherId]);
             }
 
             return pWriter;
@@ -41,7 +41,7 @@ namespace MapleServer2.Packets
             foreach (PlayerStatId statId in statIds)
             {
                 pWriter.WriteEnum(statId);
-                pWriter.Write(player.Value.Stats[statId]);
+                pWriter.WriteStat(statId, player.Value.Stats[statId]);
             }
 
             return pWriter;
@@ -53,7 +53,10 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte();                // Unknown (0x00/0x01)
             pWriter.WriteEnum(StatsMode.SendStats);
-            WriteStats(ref pWriter, player.Value.Stats);
+            foreach (DictionaryEntry entry in player.Value.Stats.Data)
+            {
+                pWriter.WriteStat((PlayerStatId) entry.Key, (PlayerStat) entry.Value);
+            }
 
             return pWriter;
         }
@@ -114,21 +117,17 @@ namespace MapleServer2.Packets
             }
         }
 
-        public static void WriteStats(ref PacketWriter pWriter, PlayerStats stats)
+        public static void WriteStat(this PacketWriter pWriter, PlayerStatId statId, PlayerStat stat)
         {
-            foreach (DictionaryEntry entry in stats.Data)
+            if (statId == PlayerStatId.Hp)
             {
-                if (entry.Key.Equals(PlayerStatId.Hp))
+                for (int i = 0; i < 3; i++)
                 {
-                    // Iterate through Bonuses, Base, Capped. "(Normal, Min, Max)"
-                    for (int i = 0; i < 3; i++)
-                    {
-                        pWriter.WriteLong(((PlayerStat) entry.Value)[i]);
-                    }
-                    continue;
+                    pWriter.WriteLong(stat[i]);
                 }
-                pWriter.Write((PlayerStat) entry.Value);
+                return;
             }
+            pWriter.Write(stat);
         }
 
         public static void WriteFieldStats(this PacketWriter pWriter, PlayerStats stats)
