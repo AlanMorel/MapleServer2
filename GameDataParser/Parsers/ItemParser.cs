@@ -208,7 +208,7 @@ namespace GameDataParser.Parsers
                         }
                     }
                 }
-                if (contentType == "ChatEmoticonAdd")
+                else if (contentType == "ChatEmoticonAdd")
                 {
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
@@ -225,7 +225,7 @@ namespace GameDataParser.Parsers
                     }
                     metadata.FunctionDuration = durationSec;
                 }
-                if (contentType == "OpenMassive")
+                else if (contentType == "OpenMassive")
                 {
                     string rawParameter = function.Attributes["parameter"].Value;
                     string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
