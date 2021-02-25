@@ -18,7 +18,6 @@ namespace MapleServer2.PacketHandlers.Game
             OpenSidebar = 0x2,
         }
 
-
         public override void Handle(GameSession session, PacketReader packet)
         {
             short unk = packet.ReadShort();
@@ -27,10 +26,10 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case NewsNotificationMode.OpenBrowser:
-                    HandleOpenBrowser(session, packet);
+                    HandleOpenBrowser(session);
                     break;
                 case NewsNotificationMode.OpenSidebar:
-                    HandleOpenSidebar(session, packet);
+                    HandleOpenSidebar(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -38,12 +37,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpenBrowser(GameSession session, PacketReader packet)
+        private static void HandleOpenBrowser(GameSession session)
         {
             session.Send(NewsNotificationPacket.OpenBrowser());
         }
 
-        private static void HandleOpenSidebar(GameSession session, PacketReader packet)
+        private static void HandleOpenSidebar(GameSession session)
         {
             session.Send(NewsNotificationPacket.OpenSidebar());
         }
