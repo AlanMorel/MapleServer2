@@ -54,7 +54,9 @@ namespace MapleServer2.PacketHandlers.Common
             TimeSyncPacket.SetInitial1();
             TimeSyncPacket.SetInitial2();
             TimeSyncPacket.Request();
-            // SendStat 0x2F (How to send here without ObjectId?, Seems fine to send after entering field)
+            session.Send(StatPacket.SetStats(session.FieldPlayer));
+            // TODO: Grab Hp/Spirit/Stam from last login
+            player.Stats.InitializePools(player.Stats[PlayerStatId.Hp].Max, player.Stats[PlayerStatId.Spirit].Max, player.Stats[PlayerStatId.Stamina].Max);
 
             session.SyncTicks();
             session.Send(DynamicChannelPacket.DynamicChannel());

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Web;
 using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
@@ -185,6 +186,7 @@ namespace GameDataParser.Parsers
                 // Item boxes
                 XmlNode function = item.SelectSingleNode("function");
                 string contentType = function.Attributes["name"].Value;
+                metadata.FunctionName = contentType;
                 if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
                 {
                     // selection boxes are SelectItemBox and 1,boxid
@@ -207,6 +209,36 @@ namespace GameDataParser.Parsers
                             }
                         }
                     }
+                }
+                else if (contentType == "ChatEmoticonAdd")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionId = byte.Parse(functionParameters.Attributes["id"].Value);
+
+                    int durationSec = 0;
+
+                    if (functionParameters.Attributes["durationSec"] != null)
+                    {
+                        durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    }
+                    metadata.FunctionDuration = durationSec;
+                }
+                else if (contentType == "OpenMassive")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
+                    string decodedParameter = HttpUtility.HtmlDecode(cleanParameter);
+
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionFieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
+                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
+                    metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
                 }
 
                 // Music score charges

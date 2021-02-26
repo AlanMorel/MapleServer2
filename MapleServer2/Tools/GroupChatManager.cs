@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MapleServer2.Types;
 
 namespace MapleServer2.Tools

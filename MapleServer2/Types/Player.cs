@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -50,7 +51,8 @@ namespace MapleServer2.Types
         public int[] Trophy = new int[3] { 0, 1, 2 };
         public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
-        public List<short> Stickers = new List<short> { 0 };
+        public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
+        public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
 
         public CoordF Coord;
@@ -93,6 +95,7 @@ namespace MapleServer2.Types
         public Inventory Inventory = new Inventory();
         public BankInventory BankInventory = new BankInventory();
         public DismantleInventory DismantleInventory = new DismantleInventory();
+        public LockInventory LockInventory = new LockInventory();
 
         public Mailbox Mailbox = new Mailbox();
 
@@ -106,6 +109,10 @@ namespace MapleServer2.Types
         public long GuildId;
         public int GuildContribution;
         public Wallet Wallet { get; private set; }
+
+        private Task HpRegenThread;
+        private Task SpRegenThread;
+        private Task StaRegenThread;
 
         public Player()
         {
@@ -150,10 +157,6 @@ namespace MapleServer2.Types
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
-                Stickers = new List<short>
-                {
-                    1, 2, 3, 4, 5, 6, 7
-                },
                 Emotes = new List<int>
                 {
                     90200011, 90200004, 90200024, 90200041, 90200042,
@@ -284,10 +287,6 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mailbox = new Mailbox(),
-                Stickers = new List<short>
-                {
-                    1, 2, 3, 4, 5, 6, 7
-                },
                 TitleId = 10000503,
                 InsigniaId = 33,
                 Titles = new List<int> {
@@ -322,6 +321,66 @@ namespace MapleServer2.Types
                     break;
             }
             return null;
+        }
+
+        public void ConsumeHp(int amount)
+        {
+            Stats.Decrease(PlayerStatId.Hp, amount);
+
+            // TODO: merge regen updates with larger packets
+            if (HpRegenThread == null || HpRegenThread.IsCompleted)
+            {
+                HpRegenThread = StartRegen(PlayerStatId.Hp, PlayerStatId.HpRegen, PlayerStatId.HpRegenTime);
+            }
+        }
+
+        public void ConsumeSp(int amount)
+        {
+            Stats.Decrease(PlayerStatId.Spirit, amount);
+
+            // TODO: merge regen updates with larger packets
+            if (SpRegenThread == null || SpRegenThread.IsCompleted)
+            {
+                SpRegenThread = StartRegen(PlayerStatId.Spirit, PlayerStatId.SpRegen, PlayerStatId.SpRegenTime);
+            }
+        }
+
+        public void ConsumeStamina(int amount)
+        {
+            Stats.Decrease(PlayerStatId.Stamina, amount);
+
+            // TODO: merge regen updates with larger packets
+            if (StaRegenThread == null || StaRegenThread.IsCompleted)
+            {
+                StaRegenThread = StartRegen(PlayerStatId.Stamina, PlayerStatId.StaRegen, PlayerStatId.StaRegenTime);
+            }
+        }
+
+        private Task StartRegen(PlayerStatId statId, PlayerStatId regenStatId, PlayerStatId timeStatId)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(Stats[timeStatId].Current);
+
+                // TODO: Check if regen-enabled
+                while (Stats[statId].Current < Stats[statId].Max)
+                {
+                    lock (Stats)
+                    {
+                        Stats[statId] = AddStatRegen(statId, regenStatId);
+                        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                    }
+                    await Task.Delay(Stats[timeStatId].Current);
+                }
+            });
+        }
+
+        private PlayerStat AddStatRegen(PlayerStatId statIndex, PlayerStatId regenStatIndex)
+        {
+            PlayerStat stat = Stats[statIndex];
+            int regen = Stats[regenStatIndex].Current;
+            int postRegen = Math.Clamp(stat.Current + regen, 0, stat.Max);
+            return new PlayerStat(stat.Max, stat.Min, postRegen);
         }
     }
 }

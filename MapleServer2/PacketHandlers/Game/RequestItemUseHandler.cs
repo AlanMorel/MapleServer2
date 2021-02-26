@@ -1,6 +1,10 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data;
 using MapleServer2.PacketHandlers.Game.Helpers;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -14,64 +18,77 @@ namespace MapleServer2.PacketHandlers.Game
 
         public RequestItemUseHandler(ILogger<RequestItemUseHandler> logger) : base(logger) { }
 
-        private enum BoxType : byte
-        {
-            OPEN = 0x00,
-            SELECT = 0x01
-        }
-
         public override void Handle(GameSession session, PacketReader packet)
         {
-            long boxUid = packet.ReadLong();
-            BoxType boxType = (BoxType) packet.ReadShort();
+            long itemUid = packet.ReadLong();
 
-            int index = 0;
-            if (boxType == BoxType.SELECT)
+            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
             {
-                index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
-                if (index < 0)
-                {
+                return;
+            }
+
+            Item item = session.Player.Inventory.Items[itemUid];
+
+            switch (item.FunctionName)
+            {
+                case "ChatEmoticonAdd": // Chat stickers
+                    HandleChatEmoticonAdd(session, packet, item);
+                    break;
+                case "SelectItemBox": // Item box selection reward
+                    HandleSelectItemBox(session, packet, item);
+                    break;
+                case "OpenItemBox": // Item box random/fixed reward
+                    HandleOpenItemBox(session, packet, item);
+                    break;
+                default:
                     return;
-                }
+            }
+        }
+
+        private static void HandleChatEmoticonAdd(GameSession session, PacketReader packet, Item item)
+        {
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.FunctionDuration + AccountStorage.TickCount;
+
+            if (item.FunctionDuration == 0) // if no duration was set, set it to not expire
+            {
+                expiration = 9223372036854775807;
             }
 
-            if (!session.Player.Inventory.Items.ContainsKey(boxUid))
+            if (session.Player.ChatSticker.Any(p => p.GroupId == item.FunctionId))
+            {
+                // TODO: Find reject packet
+                return;
+            }
+
+            session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionId, expiration));
+            session.Player.ChatSticker.Add(new((byte) item.FunctionId, expiration));
+            InventoryController.Consume(session, item.Uid, 1);
+        }
+
+        private static void HandleSelectItemBox(GameSession session, PacketReader packet, Item item)
+        {
+            short boxType = packet.ReadShort();
+            int index = packet.ReadShort() - 0x30;
+
+            if (item.Content.Count <= 0)
             {
                 return;
             }
 
-            // Get the box item
-            Item box = session.Player.Inventory.Items[boxUid];
+            InventoryController.Consume(session, item.Uid, 1);
 
-            // Do nothing if box has no data stored
-            if (box.Content.Count <= 0)
+            if (index < item.Content.Count)
             {
-                return;
+                ItemUseHelper.GiveItem(session, item.Content[index]);
             }
+        }
 
-            // Remove box if amount is 1 or less
-            if (box.Amount <= 1)
-            {
-                InventoryController.Remove(session, boxUid, out Item removed);
-            }
-            // Decrement box amount to otherwise
-            else
-            {
-                box.Amount -= 1;
-                InventoryController.Update(session, boxUid, box.Amount);
-            }
+        private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
+        {
+            short boxType = packet.ReadShort();
 
-            // Handle selection box
-            if (boxType == BoxType.SELECT)
-            {
-                if (index < box.Content.Count)
-                {
-                    ItemUseHelper.GiveItem(session, box.Content[index]);
-                }
-                return;
-            }
-
-            ItemUseHelper.OpenBox(session, box.Content);
+            InventoryController.Consume(session, item.Uid, 1);
+            ItemUseHelper.OpenBox(session, item.Content);
         }
     }
 }
