@@ -75,9 +75,24 @@ namespace MapleServer2.PacketHandlers.Common
             }
 
             List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
-            IEnumerable<List<QuestMetadata>> packetCount = SplitList(questList, 200); // Split the quest list in 200 quests per packet, same way kms do
 
-            foreach (List<QuestMetadata> item in packetCount)
+            foreach (QuestMetadata quest in questList)
+            {
+                QuestStatus questStatus = new QuestStatus()
+                {
+                    Basic = quest.Basic,
+                    StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Condition = quest.Condition,
+                    Reward = quest.Reward,
+                    RewardItems = quest.RewardItem
+                };
+
+                session.Player.QuestList.Add(questStatus);
+            }
+
+            IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet, same way kms do
+
+            foreach (List<QuestStatus> item in packetCount)
             {
                 session.Send(QuestPacket.SendQuests(item));
             }
