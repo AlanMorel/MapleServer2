@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
@@ -50,6 +49,5 @@ namespace MapleServer2.Data.Static
             ShopMetadata shop = shopList.FirstOrDefault(x => x.Items.Exists(z => z.UniqueId == itemUid));
             return shop;
         }
-
     }
 }

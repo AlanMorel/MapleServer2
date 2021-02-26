@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -11,6 +8,7 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using Currency = Maple2Storage.Types.Currency;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -52,7 +50,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
 
-            NpcShop shop = ShopStorage.Shops.FirstOrDefault(x => x.Key == metadata.ShopId).Value;
+            ShopMetadata shop = ShopMetadataStorage.GetShop(metadata.ShopId);
             if (shop == null)
             {
                 return;
@@ -74,20 +72,23 @@ namespace MapleServer2.PacketHandlers.Game
             // sell to shop
             long itemUid = packet.ReadLong();
             int quantity = packet.ReadInt();
+            
+            session.SendNotice("Selling is not yet implemented.");
+            return;
 
             // get item
-            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
-            {
-                // get random selling price from price points
-                Random rng = new();
-                int[] pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
-                if (pricePoints.Any())
-                {
-                    int rand = rng.Next(0, pricePoints.Length);
-                    int price = pricePoints[rand];
-                    session.Send(ShopPacket.Sell(itemUid, quantity, price));
-                }
-            }
+            // if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            // {
+            //     // get random selling price from price points
+            //     Random rng = new();
+            //     int[] pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
+            //     if (pricePoints.Any())
+            //     {
+            //         int rand = rng.Next(0, pricePoints.Length);
+            //         int price = pricePoints[rand];
+            //         session.Send(ShopPacket.Sell(itemUid, quantity, price));
+            //     }
+            // }
         }
 
         private static void HandleBuy(GameSession session, PacketReader packet)
@@ -95,11 +96,11 @@ namespace MapleServer2.PacketHandlers.Game
             int itemUid = packet.ReadInt();
             int quantity = packet.ReadInt();
             
-            NpcShopItem shopItem = ShopStorage.GetItem(itemUid);
+            ShopItem shopItem = ShopMetadataStorage.GetItem(itemUid);
 
             switch (shopItem.TokenType)
             {
-                case CurrencyType.Meso:
+                case Currency.Meso:
                     if (!session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity)))
                     {
                         session.SendNotice("You don't have enough mesos.");
@@ -107,7 +108,7 @@ namespace MapleServer2.PacketHandlers.Game
                     }
 
                     break;
-                case CurrencyType.Meret:
+                case Currency.Meret:
                     if (!session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity)))
                     {
                         session.SendNotice("You don't have enough merets.");
