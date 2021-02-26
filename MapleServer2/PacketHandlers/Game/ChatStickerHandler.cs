@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -62,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
-            if (!session.Player.StickerGroups.Contains(groupId))
+            if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
             {
                 return;
             }
@@ -77,7 +78,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
-            if (!session.Player.StickerGroups.Contains(groupId))
+            if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
             {
                 return;
             }

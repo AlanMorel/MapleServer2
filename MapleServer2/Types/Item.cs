@@ -24,7 +24,10 @@ namespace MapleServer2.Types
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
         public string FunctionName { get; set; }
-        public int FunctionParameter { get; set; }
+        public int FunctionId { get; set; }
+        public int FunctionDuration { get; set; }
+        public int FunctionFieldId { get; set; }
+        public byte FunctionCapacity { get; set; }
 
         public readonly int Id;
         public long Uid;
@@ -79,7 +82,10 @@ namespace MapleServer2.Types
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
             FunctionName = ItemMetadataStorage.GetFunctionName(id);
-            FunctionParameter = ItemMetadataStorage.GetFunctionParameter(id);
+            FunctionId = ItemMetadataStorage.GetFunctionId(id);
+            FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
+            FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
+            FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
             Slot = -1;
             Amount = 1;
             Stats = new ItemStats(id, Rarity);
@@ -103,7 +109,10 @@ namespace MapleServer2.Types
             FileName = other.FileName;
             Content = other.Content;
             FunctionName = other.FunctionName;
-            FunctionParameter = other.FunctionParameter;
+            FunctionId = other.FunctionId;
+            FunctionDuration = other.FunctionDuration;
+            FunctionFieldId = other.FunctionFieldId;
+            FunctionCapacity = other.FunctionCapacity;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;

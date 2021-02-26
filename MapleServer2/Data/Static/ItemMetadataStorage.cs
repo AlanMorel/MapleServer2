@@ -111,9 +111,24 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).FunctionName;
         }
 
-        public static int GetFunctionParameter(int itemId)
+        public static int GetFunctionId(int itemId)
         {
-            return map.GetValueOrDefault(itemId).FunctionParameter;
+            return map.GetValueOrDefault(itemId).FunctionId;
+        }
+
+        public static int GetFunctionDuration(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionDuration;
+        }
+
+        public static int GetFunctionFieldId(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionFieldId;
+        }
+
+        public static byte GetFunctionCapacity(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionCapacity;
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

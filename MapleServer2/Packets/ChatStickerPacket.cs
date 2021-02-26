@@ -27,11 +27,11 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(favorite);
             }
-            pWriter.WriteShort((short) player.StickerGroups.Count);
-            foreach (int sticker in player.StickerGroups)
+            pWriter.WriteShort((short) player.ChatSticker.Count);
+            foreach (ChatSticker stickerGroup in player.ChatSticker)
             {
-                pWriter.WriteInt(sticker);
-                pWriter.WriteLong(9223372036854775807); //expiration timestamp
+                pWriter.WriteInt(stickerGroup.GroupId);
+                pWriter.WriteLong(stickerGroup.Expiration);
             }
             return pWriter;
         }
