@@ -57,14 +57,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Buy(int itemId, int quantity, int price, Currency currencyType)
+        public static Packet Buy(int itemId, int quantity, int price, byte currencyType)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteByte((byte) ShopMode.Buy);
             pWriter.WriteInt(itemId); // Item ID
             pWriter.WriteInt(quantity); // Quantity
             pWriter.WriteInt(price * quantity); // Total price
-            pWriter.WriteShort((short) currencyType); // Currency type
+            pWriter.WriteShort(currencyType); // Currency type
             return pWriter;
         }
 
@@ -86,7 +86,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(product.UniqueId); // 968620
                 pWriter.WriteInt(product.ItemId);
-                pWriter.WriteByte((byte) product.TokenType); // Currency Type
+                pWriter.WriteByte(product.TokenType); // Currency Type
                 pWriter.WriteInt(product.RequiredItemId); // Only used when tokenType is type Capsule (1)
                 pWriter.WriteInt();
                 pWriter.WriteInt(product.Price); // Current Price (e.g discounted price)
@@ -106,7 +106,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteBool(false);
                 pWriter.WriteShort(product.Quantity); // Bundle Quantity
                 pWriter.WriteByte(1);
-                pWriter.WriteByte((byte) product.Flag); // New, Sale, Event, Hot, etc.
+                pWriter.WriteByte(product.Flag); // New, Sale, Event, Hot, etc.
                 pWriter.WriteByte();
                 pWriter.WriteShort(product.RequiredQuestAlliance); // Required faction
                 pWriter.WriteInt(product.RequiredFameGrade); // Required reputation for the above faction type

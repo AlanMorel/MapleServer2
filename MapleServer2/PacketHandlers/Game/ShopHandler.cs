@@ -100,7 +100,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (shopItem.TokenType)
             {
-                case Currency.Meso:
+                case (byte) Currency.Meso:
                     if (!session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity)))
                     {
                         session.SendNotice("You don't have enough mesos.");
@@ -108,7 +108,7 @@ namespace MapleServer2.PacketHandlers.Game
                     }
 
                     break;
-                case Currency.Meret:
+                case (byte) Currency.Meret:
                     if (!session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity)))
                     {
                         session.SendNotice("You don't have enough merets.");

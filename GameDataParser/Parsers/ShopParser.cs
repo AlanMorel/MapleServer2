@@ -32,15 +32,183 @@ namespace GameDataParser.Parsers
                 {
                     new ShopItem
                     {
-                        UniqueId = 400000,
-                        ItemId = 30000272,
-                        TokenType = Currency.Meso,
-                        Price = 500,
-                        SalePrice = 1000,
+                        UniqueId = 436270,
+                        ItemId = 63000000,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 1000,
+                        SalePrice = 0,
                         ItemRank = 1,
+                        Category = "PS",
                         Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436271,
+                        ItemId = 40400020,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 3,
+                        Category = "Flight",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436272,
+                        ItemId = 40100039,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 1000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "SKC",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436273,
+                        ItemId = 20301053,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
                         Category = "ETC",
-                        Flag = ShopItemFlag.HalfPrice
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436274,
+                        ItemId = 20301054,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436275,
+                        ItemId = 20301057,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436276,
+                        ItemId = 20000022,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 750,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436277,
+                        ItemId = 20000023,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 2480,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436278,
+                        ItemId = 20000024,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 4280,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436279,
+                        ItemId = 20000028,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 210,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436280,
+                        ItemId = 20000029,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 980,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436281,
+                        ItemId = 20000030,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 2360,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436282,
+                        ItemId = 20000031,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 4160,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436283,
+                        ItemId = 20000032,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 5180,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 436284,
+                        ItemId = 20000033,
+                        TokenType = (byte) Currency.Meso,
+                        Price = 5670,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = (byte) ShopItemFlag.New
                     }
                 }
             };

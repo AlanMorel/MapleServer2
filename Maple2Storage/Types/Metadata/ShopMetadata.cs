@@ -90,7 +90,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int ItemId;
         [XmlElement(Order = 3)]
-        public Currency TokenType;
+        public byte TokenType;
         [XmlElement(Order = 4)]
         public int RequiredItemId;
         [XmlElement(Order = 5)]
@@ -122,7 +122,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 18)]
         public short Quantity;
         [XmlElement(Order = 19)]
-        public ShopItemFlag Flag;
+        public byte Flag;
         [XmlElement(Order = 20)]
         public short RequiredQuestAlliance;
         [XmlElement(Order = 21)]
