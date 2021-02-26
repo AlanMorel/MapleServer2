@@ -1,5 +1,8 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -28,13 +31,13 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (item.FunctionName)
             {
-                case "ChatEmoticonAdd":
+                case "ChatEmoticonAdd": // Chat stickers
                     HandleChatEmoticonAdd(session, packet, item);
                     break;
-                case "SelectItemBox":
+                case "SelectItemBox": // Item box selection reward
                     HandleSelectItemBox(session, packet, item);
                     break;
-                case "OpenItemBox":
+                case "OpenItemBox": // Item box random/fixed reward
                     HandleOpenItemBox(session, packet, item);
                     break;
                 default:
@@ -44,10 +47,21 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleChatEmoticonAdd(GameSession session, PacketReader packet, Item item)
         {
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.FunctionDuration + AccountStorage.TickCount;
 
-            session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionParameter));
-            session.Player.StickerGroups.Add((short) item.FunctionParameter);
+            if (item.FunctionDuration == 0) // if no duration was set, set it to not expire
+            {
+                expiration = 9223372036854775807;
+            }
 
+            if (session.Player.ChatSticker.Any(p => p.GroupId == item.FunctionId))
+            {
+                // TODO: Find reject packet
+                return;
+            }
+
+            session.Send(ChatStickerPacket.AddSticker(item.Id, item.FunctionId, expiration));
+            session.Player.ChatSticker.Add(new((byte) item.FunctionId, expiration));
             InventoryController.Consume(session, item.Uid, 1);
         }
 
