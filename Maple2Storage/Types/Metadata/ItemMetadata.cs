@@ -133,8 +133,7 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public ItemContent() { }
 
-        public ItemContent(int id, int minAmount, int maxAmount, int dropGroup, int smartDropRate, int rarity,
-            int enchant, int id2 = 0)
+        public ItemContent(int id, int minAmount, int maxAmount, int dropGroup, int smartDropRate, int rarity, int enchant, int id2 = 0)
         {
             Id = id;
             Id2 = id2;
@@ -149,7 +148,7 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"ItemContent(Id:{Id},Id2:{Id2},MinAmount:{MinAmount},MaxAmount:{MaxAmount},DropGroup:{DropGroup},SmartDropRate:{SmartDropRate},Rarity:{Rarity},EnchantLevel:{EnchantLevel})";
 
-        private bool Equals(ItemContent other)
+        protected bool Equals(ItemContent other)
         {
             return Id == other.Id && Id2 == other.Id2 && MinAmount == other.MinAmount && MaxAmount == other.MaxAmount &&
                    DropGroup == other.DropGroup &&
@@ -179,15 +178,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                Id,
-                Id2,
-                MinAmount,
-                MaxAmount,
-                DropGroup,
-                SmartDropRate,
-                Rarity,
-                EnchantLevel);
+            return HashCode.Combine(Id, Id2, MinAmount, MaxAmount, DropGroup, SmartDropRate, Rarity, EnchantLevel);
         }
 
         public static bool operator ==(ItemContent left, ItemContent right)
