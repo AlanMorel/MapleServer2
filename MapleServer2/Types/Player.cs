@@ -107,6 +107,7 @@ namespace MapleServer2.Types
         public long GuildId;
         public int GuildContribution;
         public Wallet Wallet { get; private set; }
+        public List<QuestStatus> QuestList = new List<QuestStatus>();
 
         private Task HpRegenThread;
         private Task SpRegenThread;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -10,6 +11,7 @@ namespace MapleServer2.Packets
     {
         private enum QuestType : byte
         {
+            Dialog = 0x01,
             AcceptQuest = 0x02,
             CompleteExplorationGoal = 0x03,
             CompleteQuest = 0x04,
@@ -18,23 +20,38 @@ namespace MapleServer2.Packets
 
         // Client has some sort of caching for this packet resulting subsequent packets to not change anything
         // TODO: Find an way to overwrite the cache in the client.
-        public static Packet SendQuests(List<QuestMetadata> questList)
+        public static Packet SendQuests(List<QuestStatus> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.SendQuests);
+
             pWriter.WriteInt(questList.Count);
-
-            foreach (QuestMetadata item in questList)
+            foreach (QuestStatus quest in questList)
             {
-                pWriter.WriteInt(item.Basic.QuestID);
-                pWriter.WriteInt(0); // 0 and 0 to set to not started, 1 and 0 to started not completed, use 2 and 1 to set to completed
-                pWriter.WriteInt(0);
-                pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // Timestamp of receiving the quest
-                pWriter.WriteLong(); // Timestamp of completion
-                pWriter.WriteByte(item.Basic.AutoStart); // unsure need more testing
-                pWriter.WriteInt(item.Condition.Count);
+                pWriter.WriteInt(quest.Basic.QuestID);
 
-                for (int j = 0; j < item.Condition.Count; j++)
+                if (quest.Completed)
+                {
+                    pWriter.WriteInt(2);
+                    pWriter.WriteInt(1);
+                }
+                else if (quest.Started)
+                {
+                    pWriter.WriteInt(1);
+                    pWriter.WriteInt(0);
+                }
+                else
+                {
+                    pWriter.WriteInt(0);
+                    pWriter.WriteInt(0);
+                }
+
+                pWriter.WriteLong(quest.StartTimestamp);
+                pWriter.WriteLong(quest.CompleteTimestamp);
+                pWriter.WriteByte(quest.Basic.AutoStart); // unsure need more testing
+                pWriter.WriteInt(quest.Condition.Count);
+
+                for (int j = 0; j < quest.Condition.Count; j++)
                 {
                     // if or switch check for condition types, for now just 0
                     pWriter.WriteInt(0);
@@ -67,20 +84,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendQuestDialog(int objectId, List<QuestMetadata> questList)
+        public static Packet SendDialogQuest(int objectId, List<QuestMetadata> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteByte(0x1);
+            pWriter.WriteEnum(QuestType.Dialog);
             pWriter.WriteInt(objectId);
             pWriter.WriteInt(questList.Count);
             foreach (QuestMetadata quest in questList)
             {
                 pWriter.WriteInt(quest.Basic.QuestID);
-
             }
 
             return pWriter;
-
         }
 
         public static Packet CompleteExplorationGoal(int questId)
