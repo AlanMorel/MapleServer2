@@ -29,8 +29,23 @@ namespace MapleServer2.Packets
             foreach (QuestStatus quest in questList)
             {
                 pWriter.WriteInt(quest.Basic.QuestID);
-                pWriter.WriteInt(quest.Completed ? 2 : quest.Started ? 1 : 0); // 0 and 0 to set to not started, 1 and 0 to started not completed, use 2 and 1 to set to completed
-                pWriter.WriteInt(quest.Completed ? 1 : 0);
+
+                if (quest.Completed)
+                {
+                    pWriter.WriteInt(2);
+                    pWriter.WriteInt(1);
+                }
+                else if (quest.Started)
+                {
+                    pWriter.WriteInt(1);
+                    pWriter.WriteInt(0);
+                }
+                else
+                {
+                    pWriter.WriteInt(0);
+                    pWriter.WriteInt(0);
+                }
+
                 pWriter.WriteLong(quest.StartTimestamp);
                 pWriter.WriteLong(quest.CompleteTimestamp);
                 pWriter.WriteByte(quest.Basic.AutoStart); // unsure need more testing

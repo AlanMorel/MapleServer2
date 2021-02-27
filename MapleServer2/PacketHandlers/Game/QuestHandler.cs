@@ -113,21 +113,23 @@ namespace MapleServer2.PacketHandlers.Game
             for (int i = 0; i < listSize; i++)
             {
                 int questId = packet.ReadInt();
-                if (!session.Player.QuestList.Exists(x => x.Basic.QuestID == questId))
+                if (session.Player.QuestList.Exists(x => x.Basic.QuestID == questId))
                 {
-                    QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                    QuestStatus questStatus = new QuestStatus()
-                    {
-                        Basic = metadata.Basic,
-                        Started = true,
-                        StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                        Condition = metadata.Condition,
-                        Reward = metadata.Reward,
-                        RewardItems = metadata.RewardItem
-                    };
-
-                    list.Add(questStatus);
+                    continue;
                 }
+
+                QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
+                QuestStatus questStatus = new QuestStatus()
+                {
+                    Basic = metadata.Basic,
+                    Started = true,
+                    StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Condition = metadata.Condition,
+                    Reward = metadata.Reward,
+                    RewardItems = metadata.RewardItem
+                };
+
+                list.Add(questStatus);
             }
 
             session.Player.QuestList.AddRange(list);
