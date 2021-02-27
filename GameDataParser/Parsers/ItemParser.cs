@@ -53,10 +53,9 @@ namespace GameDataParser.Parsers
                     int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
                     int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
                     int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
-                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value); 
-                    int[] price = string.IsNullOrEmpty(individualBoxItem.Attributes["price"]?.Value) ? null : individualBoxItem.Attributes["price"].Value.Split(',').Select(int.Parse).ToArray();
+                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
 
-                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2, price);
+                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2);
                     if (itemDrops.ContainsKey(box))
                     {
                         itemDrops[box].Add(content);
@@ -167,6 +166,11 @@ namespace GameDataParser.Parsers
                     bool skin = byte.Parse(property.Attributes["skin"].Value) != 0;
                     metadata.Tab = GetTab(type, subType, skin);
                     metadata.IsTemplate = byte.Parse(property.Attributes["skinType"]?.Value ?? "0") == 99;
+                    
+                    // sales price
+                    XmlNode sell = property.SelectSingleNode("sell");
+                    metadata.SellPrice = string.IsNullOrEmpty(sell.Attributes["price"]?.Value) ? null : sell.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();
+                    metadata.SellPriceCustom = string.IsNullOrEmpty(sell.Attributes["priceCustom"]?.Value) ? null : sell.Attributes["priceCustom"].Value.Split(',').Select(int.Parse).ToList();
                 }
                 catch (Exception e)
                 {

@@ -21,7 +21,7 @@ namespace MapleServer2.Packets
         public static Packet Open(ShopMetadata shop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteByte();
+            pWriter.WriteByte((byte) ShopMode.Open);
             pWriter.WriteInt(shop.TemplateId);
             pWriter.WriteInt(shop.Id);
             pWriter.WriteLong(shop.NextRestock); // timestamp for next restock
@@ -38,6 +38,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(true); // unknown
             pWriter.WriteBool(false);
             pWriter.WriteMapleString(shop.Name); // shopName
+            
             return pWriter;
         }
 
@@ -47,6 +48,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte) ShopMode.Reload);
             pWriter.WriteByte();
             pWriter.WriteByte();
+            
             return pWriter;
         }
 
@@ -54,6 +56,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteShort();
+            
             return pWriter;
         }
 
@@ -65,16 +68,39 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(quantity); // Quantity
             pWriter.WriteInt(price * quantity); // Total price
             pWriter.WriteShort(currencyType); // Currency type
+            
             return pWriter;
         }
 
-        public static Packet Sell(long itemUid, int quantity, int price)
+        public static Packet Sell(long itemUid, int itemId, int quantity)
         {
-            // TODO: Implement selling item to shop
-            // PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            Console.WriteLine($"Selling {quantity}x {itemUid} for {price * quantity} mesos");
-            // return pWriter;
-            return null;
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
+            pWriter.WriteByte((byte) ShopMode.Sell);
+            pWriter.WriteInt(quantity);
+            pWriter.WriteShort();
+            pWriter.WriteInt(itemId);
+            pWriter.WriteByte(1);
+            pWriter.WriteByte(1);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            
+            // Write item data
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteInt(1); // Unknown (amount?)
+            pWriter.WriteInt(-1);
+            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // Item creation time
+            pWriter.WriteZero(56);
+            pWriter.WriteInt(-1);
+            pWriter.WriteZero(69);
+            pWriter.WriteInt(1);
+            pWriter.WriteZero(14);
+            pWriter.WriteInt(6);
+            pWriter.WriteZero(10);
+            pWriter.WriteInt(1);
+            pWriter.WriteZero(18);
+
+            return pWriter;
         }
 
         public static Packet LoadProducts(List<ShopItem> products)
@@ -97,7 +123,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(product.StockPurchased); // Purchased Stock (remaining stock will show Total - Purchased)
                 pWriter.WriteInt(product.GuildTrophy); // "More than x guild trophies"
                 pWriter.WriteMapleString(product.Category); // Item Category (found in the item's xml)
-                pWriter.WriteInt(product.RequiredAchievementId);
+                pWriter.WriteInt(product.RequiredAchievementId); 
                 pWriter.WriteInt(product.RequiredAchievementGrade); // When > 0: "You must have the "X. TrophyNameHere" trophy to do this."
                 pWriter.WriteByte(product.RequiredChampionshipGrade); // Guild ranking above X
                 pWriter.WriteShort(product.RequiredChampionshipJoinCount); // Must participate more than X times
@@ -111,7 +137,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteShort(product.RequiredQuestAlliance); // Required faction
                 pWriter.WriteInt(product.RequiredFameGrade); // Required reputation for the above faction type
                 pWriter.WriteBool(false);
-
+                
                 // Write item data
                 pWriter.WriteByte();
                 pWriter.WriteByte();

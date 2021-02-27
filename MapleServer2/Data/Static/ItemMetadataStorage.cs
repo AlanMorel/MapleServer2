@@ -107,9 +107,34 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Content;
         }
         
-        public static int[] GetPricePoints(int itemId)
+        public static int GetSellPrice(int itemId)
         {
-            return map.GetValueOrDefault(itemId).Content.First()?.Price;
+            // get random selling price from price points
+            Random rng = new();
+            List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPrice;
+            if (pricePoints == null || !pricePoints.Any())
+            {
+                return 0;
+            }
+            
+            int rand = rng.Next(0, pricePoints.Count);
+            
+            return pricePoints.ElementAt(rand);
+        }
+        
+        public static int GetCustomSellPrice(int itemId)
+        {
+            // get random selling price from price points
+            Random rng = new();
+            List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPriceCustom;
+            if (pricePoints == null || !pricePoints.Any())
+            {
+                return 0;
+            }
+            
+            int rand = rng.Next(0, pricePoints.Count);
+
+            return pricePoints.ElementAt(rand);
         }
 
         public static string GetFunctionName(int itemId)

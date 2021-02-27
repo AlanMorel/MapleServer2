@@ -40,7 +40,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -52,7 +52,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Flight",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -64,7 +64,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "SKC",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -76,7 +76,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "ETC",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -88,7 +88,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "ETC",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -100,7 +100,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "ETC",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -112,7 +112,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -124,7 +124,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -136,7 +136,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -148,7 +148,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -160,7 +160,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -172,7 +172,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -184,7 +184,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -196,7 +196,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -208,7 +208,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = (byte) ShopItemFlag.New
+                        Flag = (byte) ShopItemFlag.None
                     }
                 }
             };

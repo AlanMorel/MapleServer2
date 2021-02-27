@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -72,23 +73,30 @@ namespace MapleServer2.PacketHandlers.Game
             // sell to shop
             long itemUid = packet.ReadLong();
             int quantity = packet.ReadInt();
-            
-            session.SendNotice("Selling is not yet implemented.");
-            return;
 
             // get item
-            // if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
-            // {
-            //     // get random selling price from price points
-            //     Random rng = new();
-            //     int[] pricePoints = ItemMetadataStorage.GetPricePoints(item.Id);
-            //     if (pricePoints.Any())
-            //     {
-            //         int rand = rng.Next(0, pricePoints.Length);
-            //         int price = pricePoints[rand];
-            //         session.Send(ShopPacket.Sell(itemUid, quantity, price));
-            //     }
-            // }
+            if (!session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            {
+                return;
+            }
+
+            // give mesos
+            int price = ItemMetadataStorage.GetCustomSellPrice(item.Id); // shops use priceCustom
+            session.Player.Wallet.Meso.Modify(price * quantity);
+
+            // check if whole stack will be used, and remove the item
+            // otherwise we want to just want to subtract the amount
+            if (quantity == item.Amount)
+            {
+                InventoryController.Remove(session, item.Uid, out _);
+            }
+            else
+            {
+                InventoryController.Update(session, item.Uid, item.Amount - quantity);
+            }
+
+            // complete sale
+            session.Send(ShopPacket.Sell(itemUid, item.Id, quantity));
         }
 
         private static void HandleBuy(GameSession session, PacketReader packet)
