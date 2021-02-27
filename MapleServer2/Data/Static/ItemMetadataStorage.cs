@@ -110,14 +110,13 @@ namespace MapleServer2.Data.Static
         public static int GetSellPrice(int itemId)
         {
             // get random selling price from price points
-            Random rng = new();
             List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPrice;
             if (pricePoints == null || !pricePoints.Any())
             {
                 return 0;
             }
             
-            int rand = rng.Next(0, pricePoints.Count);
+            int rand = new Random().Next(0, pricePoints.Count);
             
             return pricePoints.ElementAt(rand);
         }
@@ -125,14 +124,13 @@ namespace MapleServer2.Data.Static
         public static int GetCustomSellPrice(int itemId)
         {
             // get random selling price from price points
-            Random rng = new();
             List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPriceCustom;
             if (pricePoints == null || !pricePoints.Any())
             {
                 return 0;
             }
             
-            int rand = rng.Next(0, pricePoints.Count);
+            int rand = new Random().Next(0, pricePoints.Count);
 
             return pricePoints.ElementAt(rand);
         }
