@@ -31,8 +31,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (item.FunctionName)
             {
-                case "ChatEmoticonAdd": // Chat stickers
-                    HandleChatEmoticonAdd(session, packet, item);
+                case "ChatEmoticonAdd":
+                    HandleChatEmoticonAdd(session/*, packet*/, item);
                     break;
                 case "SelectItemBox": // Item box selection reward
                     HandleSelectItemBox(session, packet, item);
@@ -45,7 +45,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleChatEmoticonAdd(GameSession session, PacketReader packet, Item item)
+        private static void HandleChatEmoticonAdd(GameSession session/*, PacketReader packet*/, Item item)
         {
             long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.FunctionDuration + AccountStorage.TickCount;
 

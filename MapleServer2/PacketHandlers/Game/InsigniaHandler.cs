@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using Maple2Storage.Types;
+using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -42,14 +40,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "level":
                     return session.Player.Levels.Level >= 50;
                 case "enchant":
-                    foreach (KeyValuePair<ItemSlot, Item> item in session.Player.Equips)
-                    {
-                        if (item.Value.Enchants >= 12)
-                        {
-                            return true;
-                        }
-                    }
-                    break;
+                    return session.Player.Equips.FirstOrDefault(x => x.Value.Enchants >= 12).Value != null;
                 case "trophy_point":
                     return session.Player.Trophy[0] + session.Player.Trophy[1] + session.Player.Trophy[2] > 1000;
                 case "title":
