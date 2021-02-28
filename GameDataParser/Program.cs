@@ -46,6 +46,7 @@ namespace GameDataParser
                 new MasteryParser(resources),
                 new NpcParser(resources),
                 new ChatStickerParser(resources),
+                new ShopParser()
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

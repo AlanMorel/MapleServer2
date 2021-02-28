@@ -31,24 +31,28 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 11)]
         public int PlayCount;
         [XmlElement(Order = 12)]
-        public string FileName;
+        public List<int> SellPrice = new List<int>();
         [XmlElement(Order = 13)]
-        public int SkillID;
+        public List<int> SellPriceCustom = new List<int>();
         [XmlElement(Order = 14)]
-        public List<int> RecommendJobs = new List<int>();
+        public string FileName;
         [XmlElement(Order = 15)]
-        public List<ItemContent> Content;
+        public int SkillID;
         [XmlElement(Order = 16)]
-        public List<ItemBreakReward> BreakRewards;
+        public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 17)]
-        public string FunctionName;
+        public List<ItemContent> Content;
         [XmlElement(Order = 18)]
-        public int FunctionId;
+        public List<ItemBreakReward> BreakRewards;
         [XmlElement(Order = 19)]
-        public int FunctionDuration;
+        public string FunctionName;
         [XmlElement(Order = 20)]
-        public int FunctionFieldId;
+        public int FunctionId;
         [XmlElement(Order = 21)]
+        public int FunctionDuration;
+        [XmlElement(Order = 22)]
+        public int FunctionFieldId;
+        [XmlElement(Order = 23)]
         public byte FunctionCapacity;
 
         // Required for deserialization
@@ -146,8 +150,10 @@ namespace Maple2Storage.Types.Metadata
 
         protected bool Equals(ItemContent other)
         {
-            return Id == other.Id && Id2 == other.Id2 && MinAmount == other.MinAmount && MaxAmount == other.MaxAmount && DropGroup == other.DropGroup &&
-                    SmartDropRate == other.SmartDropRate && Rarity == other.Rarity && EnchantLevel == other.EnchantLevel;
+            return Id == other.Id && Id2 == other.Id2 && MinAmount == other.MinAmount && MaxAmount == other.MaxAmount &&
+                   DropGroup == other.DropGroup &&
+                   SmartDropRate == other.SmartDropRate && Rarity == other.Rarity &&
+                   EnchantLevel == other.EnchantLevel;
         }
 
         public override bool Equals(object obj)

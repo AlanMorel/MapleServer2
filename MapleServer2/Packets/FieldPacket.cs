@@ -227,7 +227,7 @@ namespace MapleServer2.Packets
 
             pWriter.WriteLong(); // uid
             pWriter.WriteByte();
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(1); // NPC level
             pWriter.WriteInt();
             pWriter.WriteByte();
 

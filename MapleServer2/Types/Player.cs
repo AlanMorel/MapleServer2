@@ -4,7 +4,9 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -183,6 +185,8 @@ namespace MapleServer2.Types
             Job job = Job.Archer;
             PlayerStats stats = new PlayerStats();
 
+            int mapId = (int) Map.Queenstown;
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab(job)
@@ -191,14 +195,14 @@ namespace MapleServer2.Types
             return new Player
             {
                 SkillTabs = skillTabs,
-                MapId = 2000062,
+                MapId = mapId,
                 AccountId = accountId,
                 CharacterId = characterId,
                 Name = name,
                 Gender = 0,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800),
+                Coord = CoordF.From(spawn.Coord.X, spawn.Coord.Y, spawn.Coord.Z),
                 Job = job,
                 SkinColor = new SkinColor()
                 {
