@@ -216,6 +216,279 @@ namespace GameDataParser.Parsers
 
             shops.Add(rumi);
 
+            /*
+             * Shop Name: Lazy (Habi Shop)
+             * Map: Queenstown
+             */
+            ShopMetadata lazy = new ShopMetadata()
+            {
+                TemplateId = 11003465,
+                Id = 152,
+                Category = 17,
+                Name = "habishop",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        UniqueId = 161251161,
+                        ItemId = 31000145,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 51200,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251162,
+                        ItemId = 31000146,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 76800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251163,
+                        ItemId = 20000521,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 25600,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251164,
+                        ItemId = 20000522,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 25600,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251165,
+                        ItemId = 20000523,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 25600,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251166,
+                        ItemId = 20000524,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 25600,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251167,
+                        ItemId = 20000525,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 25600,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251168,
+                        ItemId = 20000597,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1280000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEtc",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251169,
+                        ItemId = 11600806,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 204800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251170,
+                        ItemId = 11600807,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 204800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251171,
+                        ItemId = 11600808,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 204800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251172,
+                        ItemId = 11600809,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 204800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251173,
+                        ItemId = 11600810,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 204800,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251174,
+                        ItemId = 11600801,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251175,
+                        ItemId = 11600802,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251176,
+                        ItemId = 11600803,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251177,
+                        ItemId = 11600804,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251178,
+                        ItemId = 11600805,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiEquip",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251179,
+                        ItemId = 11300423,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1792000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiSkin",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251180,
+                        ItemId = 50600115,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 1536000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiMount",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        UniqueId = 161251181,
+                        ItemId = 11304766,
+                        TokenType = ShopCurrencyType.HaviFruit,
+                        Price = 3072000,
+                        SalePrice = 0,
+                        ItemRank = 0,
+                        Category = "HabiSkin",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    }
+                }
+            };
+
+            shops.Add(lazy);
+
             return shops;
         }
     }

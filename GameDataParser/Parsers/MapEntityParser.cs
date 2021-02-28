@@ -160,6 +160,21 @@ namespace GameDataParser.Parsers
                         CoordS rotation = CoordS.Parse(rotationValue);
                         metadata.Portals.Add(new MapPortal(portalId, flags, target, position, rotation));
                     }
+                    else if (modelName == "SpawnPointNPC" && !name.StartsWith("SpawnPointNPC"))
+                    {
+                        // These tend to be vendors, shops, etc.
+                        // If the name tag begins with SpawnPointNPC, I think these are mob spawn locations. Skipping these.
+                        string npcId = node.SelectSingleNode("property[@name='NpcList']")?.FirstChild.Attributes["index"].Value ?? "0";
+                        if (npcId == "0")
+                        {
+                            continue;
+                        }
+                        string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
+                        thisNpc.IsSpawnOnFieldCreate = true;
+                        metadata.Npcs.Add(thisNpc);
+                    }
                     // Parse the rest of the objects in the xblock if they have a flat component.
                     else if (mapObjects.ContainsKey(modelName))  // There was .flat file data about this item
                     {
