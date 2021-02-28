@@ -35,7 +35,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436270,
                         ItemId = 63000000,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 1000,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -47,7 +47,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436271,
                         ItemId = 40400020,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 50000,
                         SalePrice = 0,
                         ItemRank = 3,
@@ -59,7 +59,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436272,
                         ItemId = 40100039,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 1000,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -71,7 +71,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436273,
                         ItemId = 20301053,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 50000,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -83,7 +83,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436274,
                         ItemId = 20301054,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 50000,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -95,7 +95,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436275,
                         ItemId = 20301057,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 50000,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -107,7 +107,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436276,
                         ItemId = 20000022,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 750,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -119,7 +119,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436277,
                         ItemId = 20000023,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 2480,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -131,7 +131,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436278,
                         ItemId = 20000024,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 4280,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -143,7 +143,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436279,
                         ItemId = 20000028,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 210,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -155,7 +155,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436280,
                         ItemId = 20000029,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 980,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -167,7 +167,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436281,
                         ItemId = 20000030,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 2360,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -179,7 +179,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436282,
                         ItemId = 20000031,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 4160,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -191,7 +191,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436283,
                         ItemId = 20000032,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 5180,
                         SalePrice = 0,
                         ItemRank = 1,
@@ -203,7 +203,7 @@ namespace GameDataParser.Parsers
                     {
                         UniqueId = 436284,
                         ItemId = 20000033,
-                        TokenType = CurrencyType.Meso,
+                        TokenType = ShopCurrencyType.Meso,
                         Price = 5670,
                         SalePrice = 0,
                         ItemRank = 1,

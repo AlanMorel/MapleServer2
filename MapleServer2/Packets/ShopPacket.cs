@@ -62,14 +62,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Buy(int itemId, int quantity, int price, CurrencyType currencyType)
+        public static Packet Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.Buy);
             pWriter.WriteInt(itemId);
             pWriter.WriteInt(quantity);
             pWriter.WriteInt(price * quantity);
-            pWriter.WriteEnum(currencyType);
+            pWriter.WriteEnum(shopCurrencyType);
             pWriter.WriteByte();
 
             return pWriter;

@@ -91,7 +91,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int ItemId;
         [XmlElement(Order = 3)]
-        public CurrencyType TokenType;
+        public ShopCurrencyType TokenType;
         [XmlElement(Order = 4)]
         public int RequiredItemId;
         [XmlElement(Order = 5)]

@@ -95,32 +95,29 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (shopItem.TokenType)
             {
-                case CurrencyType.Meso:
+                case ShopCurrencyType.Meso:
                     session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity));
                     break;
-                case CurrencyType.ValorToken:
+                case ShopCurrencyType.ValorToken:
                     session.Player.Wallet.ValorToken.Modify(-(shopItem.Price * quantity));
                     break;
-                case CurrencyType.Treva:
+                case ShopCurrencyType.Treva:
                     session.Player.Wallet.Treva.Modify(-(shopItem.Price * quantity));
                     break;
-                case CurrencyType.Rue:
+                case ShopCurrencyType.Rue:
                     session.Player.Wallet.Rue.Modify(-(shopItem.Price * quantity));
                     break;
-                case CurrencyType.HaviFruit:
+                case ShopCurrencyType.HaviFruit:
                     session.Player.Wallet.HaviFruit.Modify(-(shopItem.Price * quantity));
                     break;
-                case CurrencyType.Meret:
-                case CurrencyType.GameMeret:
-                case CurrencyType.EventMeret:
-                    session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity));
+                case ShopCurrencyType.Meret:
+                case ShopCurrencyType.GameMeret:
+                case ShopCurrencyType.EventMeret:
+                    session.Player.Wallet.RemoveMerets(shopItem.Price * quantity);
                     break;
-                case CurrencyType.MesoToken:
-                    session.Player.Wallet.MesoToken.Modify(-(shopItem.Price * quantity));
-                    break;
-                case CurrencyType.Bank:
-                    session.Player.Wallet.Bank.Modify(-(shopItem.Price * quantity));
-                    break;
+                default:
+                    session.SendNotice($"Unknown currency: {shopItem.TokenType}");
+                    return;
             }
 
             // add item to inventory
