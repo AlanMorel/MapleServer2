@@ -39,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Login
                 characters.Add(AccountStorage.GetCharacter(characterId));
             }
 
-            session.Send(CharacterListPacket.SetMax(6, 12));
+            session.Send(CharacterListPacket.SetMax(4, 6));
             session.Send(CharacterListPacket.StartList());
             // Send each character data
             session.Send(CharacterListPacket.AddEntries(characters));

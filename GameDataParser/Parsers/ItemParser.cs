@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Web;
 using System.Linq;
+using System.Web;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -166,7 +166,7 @@ namespace GameDataParser.Parsers
                     bool skin = byte.Parse(property.Attributes["skin"].Value) != 0;
                     metadata.Tab = GetTab(type, subType, skin);
                     metadata.IsTemplate = byte.Parse(property.Attributes["skinType"]?.Value ?? "0") == 99;
-                    
+
                     // sales price
                     XmlNode sell = property.SelectSingleNode("sell");
                     metadata.SellPrice = string.IsNullOrEmpty(sell.Attributes["price"]?.Value) ? null : sell.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();

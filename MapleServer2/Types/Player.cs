@@ -190,7 +190,7 @@ namespace MapleServer2.Types
             {
                 new SkillTab(job)
             };
-            
+
             return new Player
             {
                 SkillTabs = skillTabs,

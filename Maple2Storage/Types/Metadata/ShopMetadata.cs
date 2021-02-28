@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -31,8 +32,8 @@ namespace Maple2Storage.Types.Metadata
         public ShopMetadata() { }
 
         public override string ToString() =>
-            $"ShopMetadata(TemplateId:{TemplateId},Id:{Id},Category:{Category},Name:{Name},RestrictSales:{RestrictSales},CanRestock:{CanRestock},NextRestock:{NextRestock},AllowBuyback:{AllowBuyback},Items:{Items})"; 
-        
+            $"ShopMetadata(TemplateId:{TemplateId},Id:{Id},Category:{Category},Name:{Name},RestrictSales:{RestrictSales},CanRestock:{CanRestock},NextRestock:{NextRestock},AllowBuyback:{AllowBuyback},Items:{Items})";
+
         protected bool Equals(ShopMetadata other)
         {
             return TemplateId == other.TemplateId &&
@@ -68,7 +69,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(TemplateId,Id,Category);
+            return HashCode.Combine(TemplateId, Id, Category);
         }
 
         public static bool operator ==(ShopMetadata left, ShopMetadata right)
@@ -90,7 +91,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int ItemId;
         [XmlElement(Order = 3)]
-        public byte TokenType;
+        public CurrencyType TokenType;
         [XmlElement(Order = 4)]
         public int RequiredItemId;
         [XmlElement(Order = 5)]
@@ -122,7 +123,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 18)]
         public short Quantity;
         [XmlElement(Order = 19)]
-        public byte Flag;
+        public ShopItemFlag Flag;
         [XmlElement(Order = 20)]
         public short RequiredQuestAlliance;
         [XmlElement(Order = 21)]

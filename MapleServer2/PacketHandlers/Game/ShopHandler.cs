@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -9,7 +9,6 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
-using Currency = Maple2Storage.Types.Currency;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -74,55 +73,53 @@ namespace MapleServer2.PacketHandlers.Game
             long itemUid = packet.ReadLong();
             int quantity = packet.ReadInt();
 
-            // get item
             if (!session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
             {
                 return;
             }
 
-            // give mesos
-            int price = ItemMetadataStorage.GetCustomSellPrice(item.Id); // shops use priceCustom
+            int price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
             session.Player.Wallet.Meso.Modify(price * quantity);
 
-            // check if whole stack will be used, and remove the item
-            // otherwise we want to just want to subtract the amount
-            if (quantity == item.Amount)
-            {
-                InventoryController.Remove(session, item.Uid, out _);
-            }
-            else
-            {
-                InventoryController.Update(session, item.Uid, item.Amount - quantity);
-            }
+            InventoryController.Consume(session, item.Uid, quantity);
 
-            // complete sale
-            session.Send(ShopPacket.Sell(itemUid, item.Id, quantity));
+            session.Send(ShopPacket.Sell(item.Id, quantity));
         }
 
         private static void HandleBuy(GameSession session, PacketReader packet)
         {
             int itemUid = packet.ReadInt();
             int quantity = packet.ReadInt();
-            
+
             ShopItem shopItem = ShopMetadataStorage.GetItem(itemUid);
 
             switch (shopItem.TokenType)
             {
-                case (byte) Currency.Meso:
-                    if (!session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity)))
-                    {
-                        session.SendNotice("You don't have enough mesos.");
-                        return;
-                    }
-
+                case CurrencyType.Meso:
+                    session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity));
                     break;
-                case (byte) Currency.Meret:
-                    if (!session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity)))
-                    {
-                        session.SendNotice("You don't have enough merets.");
-                        return;
-                    }
-                    
+                case CurrencyType.ValorToken:
+                    session.Player.Wallet.ValorToken.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.Treva:
+                    session.Player.Wallet.Treva.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.Rue:
+                    session.Player.Wallet.Rue.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.HaviFruit:
+                    session.Player.Wallet.HaviFruit.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.Meret:
+                case CurrencyType.GameMeret:
+                case CurrencyType.EventMeret:
+                    session.Player.Wallet.Meret.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.MesoToken:
+                    session.Player.Wallet.MesoToken.Modify(-(shopItem.Price * quantity));
+                    break;
+                case CurrencyType.Bank:
+                    session.Player.Wallet.Bank.Modify(-(shopItem.Price * quantity));
                     break;
             }
 
@@ -132,7 +129,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = quantity
             };
             InventoryController.Add(session, item, true);
-            
+
             // complete purchase
             session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
         }
