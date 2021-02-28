@@ -4,6 +4,8 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Packets.Helpers;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -68,6 +70,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(quantity);
             pWriter.WriteInt(price * quantity);
             pWriter.WriteEnum(currencyType);
+            pWriter.WriteByte();
 
             return pWriter;
         }
@@ -83,22 +86,12 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             pWriter.WriteByte();
             pWriter.WriteInt();
-
-            // Write item data
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteInt(1);
-            pWriter.WriteInt(-1);
-            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            pWriter.WriteZero(56);
-            pWriter.WriteInt(-1);
-            pWriter.WriteZero(69);
-            pWriter.WriteInt(1);
-            pWriter.WriteZero(14);
-            pWriter.WriteInt(6);
-            pWriter.WriteZero(10);
-            pWriter.WriteInt(1);
-            pWriter.WriteZero(18);
+            pWriter.WriteItem(new Item(itemId)
+            {
+                Amount = quantity,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = null
+            });
 
             return pWriter;
         }
@@ -136,23 +129,14 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte();
                 pWriter.WriteShort(product.RequiredQuestAlliance);
                 pWriter.WriteInt(product.RequiredFameGrade);
-                pWriter.WriteBool(false);
-
-                // Write item data
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-                pWriter.WriteInt(1);
-                pWriter.WriteInt();
-                pWriter.WriteInt(-1);
-                pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                pWriter.WriteZero(52);
-                pWriter.WriteInt(-1);
-                pWriter.WriteZero(102);
-                pWriter.WriteInt(1);
-                pWriter.WriteZero(28);
-                pWriter.WriteLong(1);
                 pWriter.WriteShort();
-                pWriter.WriteZero(12);
+                pWriter.WriteByte();
+                pWriter.WriteItem(new Item(product.ItemId)
+                {
+                    Amount = product.Quantity,
+                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Owner = null
+                });
             }
 
             return pWriter;
