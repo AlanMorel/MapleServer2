@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Enums;
+﻿using System;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -53,6 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
             ShopMetadata shop = ShopMetadataStorage.GetShop(metadata.ShopId);
             if (shop == null)
             {
+                Console.WriteLine($"Unknown shop ID: {metadata.ShopId}");
                 return;
             }
 
