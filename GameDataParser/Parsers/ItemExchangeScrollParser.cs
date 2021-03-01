@@ -51,18 +51,21 @@ namespace GameDataParser.Parsers
 
                             foreach (XmlNode itemNode in childNode)
                             {
-                                if (itemNode.Name == "item")
+                                if (itemNode.Name != "item")
                                 {
-                                    ItemRequirementMetadata item = new ItemRequirementMetadata();
-                                    string[] parameters = itemNode.Attributes["id"].Value.Split(",");
-                                    parameters[0] = Regex.Match(parameters[0], @"\d+").Value; // remove text from item id
-
-                                    item.Id = int.Parse(parameters[0]);
-                                    item.Rarity = byte.Parse(parameters[1]);
-                                    item.Amount = short.Parse(parameters[2]);
-
-                                    metadata.ItemCost.Add(item);
+                                    continue;
                                 }
+
+                                ItemRequirementMetadata item = new ItemRequirementMetadata();
+                                string[] parameters = itemNode.Attributes["id"].Value.Split(",");
+                                parameters[0] = Regex.Match(parameters[0], @"\d+").Value; // remove text from item id
+
+                                item.Id = int.Parse(parameters[0]);
+                                item.Rarity = byte.Parse(parameters[1]);
+                                item.Amount = short.Parse(parameters[2]);
+
+                                metadata.ItemCost.Add(item);
+
                             }
                         }
                     }

@@ -71,44 +71,32 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (exchange.ItemCost.Count != 0)
+            if (exchange.ItemCost.Count != 0 && !PlayerHasAllIngredients(session, exchange, quantity))
             {
-                if (!PlayerHasAllIngredients(session, exchange, quantity))
-                {
-                    session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
-                    return;
-                }
-
-                if (RemoveRequiredItemsFromInventory(session, exchange, item, quantity))
-                {
-                    Item exchangeRewardItem = new(exchange.RewardId)
-                    {
-                        Rarity = exchange.RewardRarity,
-                        Amount = exchange.RewardAmount * quantity,
-                    };
-
-                    InventoryController.Add(session, exchangeRewardItem, true);
-                    session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
-                }
+                session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
+                return;
             }
-            else
+
+            if (!RemoveRequiredItemsFromInventory(session, exchange, item, quantity))
             {
-                Item exchangeRewardItem = new(exchange.RewardId)
-                {
-                    Rarity = exchange.RewardRarity,
-                    Amount = exchange.RewardAmount * quantity,
-                };
-
-                InventoryController.Add(session, exchangeRewardItem, true);
-                InventoryController.Consume(session, item.Uid, exchange.RecipeAmount * quantity);
-                session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
+                return;
             }
+
+            Item exchangeRewardItem = new(exchange.RewardId)
+            {
+                Rarity = exchange.RewardRarity,
+                Amount = exchange.RewardAmount * quantity,
+            };
+
+            InventoryController.Add(session, exchangeRewardItem, true);
+            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
+
         }
 
         private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
         {
             // TODO: Check if rarity matches
-            
+
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
 
             for (int i = 0; i < exchange.ItemCost.Count; i++)
@@ -116,10 +104,12 @@ namespace MapleServer2.PacketHandlers.Game
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
                 Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
 
-                if (item != null)
+                if (item == null)
                 {
-                    return item.Amount >= exchangeItem.Amount * quantity;
+                    continue;
                 }
+
+                return item.Amount >= exchangeItem.Amount * quantity;
             }
             return false;
         }
@@ -128,22 +118,25 @@ namespace MapleServer2.PacketHandlers.Game
         {
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
 
-            for (int i = 0; i < exchange.ItemCost.Count; i++)
+            if (exchange.ItemCost.Count != 0)
             {
-                ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
-                if (item == null)
+                for (int i = 0; i < exchange.ItemCost.Count; i++)
                 {
-                    continue;
-                }
-                int exchangeAmount = exchangeItem.Amount * quantity;
-                if (exchangeAmount == item.Amount)
-                {
-                    InventoryController.Remove(session, item.Uid, out Item _);
-                }
-                else
-                {
-                    InventoryController.Update(session, item.Uid, item.Amount - exchangeAmount);
+                    ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
+                    Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+                    if (item == null)
+                    {
+                        continue;
+                    }
+                    int exchangeAmount = exchangeItem.Amount * quantity;
+                    if (exchangeAmount == item.Amount)
+                    {
+                        InventoryController.Remove(session, item.Uid, out Item _);
+                    }
+                    else
+                    {
+                        InventoryController.Update(session, item.Uid, item.Amount - exchangeAmount);
+                    }
                 }
             }
 
