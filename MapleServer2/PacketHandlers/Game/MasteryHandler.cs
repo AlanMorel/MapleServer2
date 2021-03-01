@@ -124,7 +124,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 else
                 {
-                    InventoryController.Update(session, item.Uid, item.Amount - 1);
+                    InventoryController.Update(session, item.Uid, item.Amount - ingredient.Amount);
                 }
             }
 
