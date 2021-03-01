@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using System.Linq;
+using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types;
@@ -55,6 +55,7 @@ namespace GameDataParser.Parsers
                 metadata.Model = npcModelNode.Attributes["kfm"].Value;
 
                 // Parse basic attribs.
+                metadata.TemplateId = int.TryParse(npcBasicNode.Attributes["illust"]?.Value, out _) ? int.Parse(npcBasicNode.Attributes["illust"].Value) : 0;
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
                 metadata.Level = byte.Parse(npcBasicNode.Attributes["level"].Value);
                 if (npcBasicNode.Attributes["npcAttackGroup"] != null)
@@ -75,6 +76,8 @@ namespace GameDataParser.Parsers
                 metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
                 metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
                 metadata.GlobalDropBoxIds = string.IsNullOrEmpty(npcDropItemNode.Attributes["globalDropBoxId"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse);
+                metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
+                metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
                 npcs.Add(metadata);
             }
 

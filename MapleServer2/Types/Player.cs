@@ -4,7 +4,9 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -49,7 +51,7 @@ namespace MapleServer2.Types
         public int[] Trophy = new int[3] { 0, 1, 2 };
         public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
-        public List<short> StickerGroups = new List<short> { 0 };
+        public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
         public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
 
@@ -93,6 +95,7 @@ namespace MapleServer2.Types
         public Inventory Inventory = new Inventory();
         public BankInventory BankInventory = new BankInventory();
         public DismantleInventory DismantleInventory = new DismantleInventory();
+        public LockInventory LockInventory = new LockInventory();
 
         public Mailbox Mailbox = new Mailbox();
 
@@ -106,6 +109,7 @@ namespace MapleServer2.Types
         public long GuildId;
         public int GuildContribution;
         public Wallet Wallet { get; private set; }
+        public List<QuestStatus> QuestList = new List<QuestStatus>();
 
         private Task HpRegenThread;
         private Task SpRegenThread;
@@ -154,10 +158,6 @@ namespace MapleServer2.Types
                     { ItemSlot.FD, Item.FaceDecoration() }
                 },
                 Stats = stats,
-                StickerGroups = new List<short>
-                {
-                    1, 2, 3, 4, 5, 6, 7
-                },
                 Emotes = new List<int>
                 {
                     90200011, 90200004, 90200024, 90200041, 90200042,
@@ -185,6 +185,8 @@ namespace MapleServer2.Types
             Job job = Job.Archer;
             PlayerStats stats = new PlayerStats();
 
+            int mapId = (int) Map.Queenstown;
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
             List<SkillTab> skillTabs = new List<SkillTab>
             {
                 new SkillTab(job)
@@ -193,14 +195,14 @@ namespace MapleServer2.Types
             return new Player
             {
                 SkillTabs = skillTabs,
-                MapId = 2000062,
+                MapId = mapId,
                 AccountId = accountId,
                 CharacterId = characterId,
                 Name = name,
                 Gender = 0,
                 Motto = "Motto",
                 HomeName = "HomeName",
-                Coord = CoordF.From(2850, 2550, 1800),
+                Coord = CoordF.From(spawn.Coord.X, spawn.Coord.Y, spawn.Coord.Z),
                 Job = job,
                 SkinColor = new SkinColor()
                 {
@@ -286,10 +288,6 @@ namespace MapleServer2.Types
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mailbox = new Mailbox(),
-                StickerGroups = new List<short>
-                {
-                    1, 2, 3, 4, 5, 6, 7
-                },
                 TitleId = 10000503,
                 InsigniaId = 33,
                 Titles = new List<int> {

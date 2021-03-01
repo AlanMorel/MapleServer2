@@ -38,8 +38,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement]
         public ushort Difficulty;  // 0-9
         [XmlElement]
-        public string[] PropertyTags = Array.Empty<string>();  // "", "ai_wander_freely ", "keep_battle"
-                                                               // "keep_battle,fixed_big_monster", etc
+        // "", "ai_wander_freely ", "keep_battle", "keep_battle,fixed_big_monster", etc
+        public string[] PropertyTags = Array.Empty<string>();
         /*
          * [XmlElement]
          * public bool BossNotify = false;  // "", field_elite, field_boss, dungeon_boss, dungeon_elite

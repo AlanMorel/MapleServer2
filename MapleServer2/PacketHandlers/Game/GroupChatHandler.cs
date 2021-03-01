@@ -1,10 +1,10 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case GroupChatMode.Create:
-                    HandleCreate(session, packet);
+                    HandleCreate(session);
                     break;
                 case GroupChatMode.Invite:
                     HandleInvite(session, packet);
@@ -52,7 +52,7 @@ namespace MapleServer2.PacketHandlers.Game
             MaxGroups = 0xA,
         }
 
-        private static void HandleCreate(GameSession session, PacketReader packet)
+        private static void HandleCreate(GameSession session)
         {
             GroupChat groupChat = new(session.Player);
             GameServer.GroupChatManager.AddGroupChat(groupChat);

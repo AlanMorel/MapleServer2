@@ -1,6 +1,6 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 
 namespace MapleServer2.Packets
 {

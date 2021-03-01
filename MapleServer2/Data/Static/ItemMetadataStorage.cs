@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -106,14 +107,57 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Content;
         }
 
+        public static int GetSellPrice(int itemId)
+        {
+            // get random selling price from price points
+            List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPrice;
+            if (pricePoints == null || !pricePoints.Any())
+            {
+                return 0;
+            }
+
+            int rand = new Random().Next(0, pricePoints.Count);
+
+            return pricePoints.ElementAt(rand);
+        }
+
+        public static int GetCustomSellPrice(int itemId)
+        {
+            // get random selling price from price points
+            List<int> pricePoints = map.GetValueOrDefault(itemId)?.SellPriceCustom;
+            if (pricePoints == null || !pricePoints.Any())
+            {
+                return 0;
+            }
+
+            int rand = new Random().Next(0, pricePoints.Count);
+
+            return pricePoints.ElementAt(rand);
+        }
+
         public static string GetFunctionName(int itemId)
         {
             return map.GetValueOrDefault(itemId).FunctionName;
         }
 
-        public static int GetFunctionParameter(int itemId)
+        public static int GetFunctionId(int itemId)
         {
-            return map.GetValueOrDefault(itemId).FunctionParameter;
+            return map.GetValueOrDefault(itemId).FunctionId;
+        }
+
+        public static int GetFunctionDuration(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionDuration;
+        }
+
+        public static int GetFunctionFieldId(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionFieldId;
+        }
+
+        public static byte GetFunctionCapacity(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionCapacity;
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

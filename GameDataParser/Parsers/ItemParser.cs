@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -165,6 +166,11 @@ namespace GameDataParser.Parsers
                     bool skin = byte.Parse(property.Attributes["skin"].Value) != 0;
                     metadata.Tab = GetTab(type, subType, skin);
                     metadata.IsTemplate = byte.Parse(property.Attributes["skinType"]?.Value ?? "0") == 99;
+
+                    // sales price
+                    XmlNode sell = property.SelectSingleNode("sell");
+                    metadata.SellPrice = string.IsNullOrEmpty(sell.Attributes["price"]?.Value) ? null : sell.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();
+                    metadata.SellPriceCustom = string.IsNullOrEmpty(sell.Attributes["priceCustom"]?.Value) ? null : sell.Attributes["priceCustom"].Value.Split(',').Select(int.Parse).ToList();
                 }
                 catch (Exception e)
                 {
@@ -208,11 +214,35 @@ namespace GameDataParser.Parsers
                         }
                     }
                 }
-                if (contentType == "ChatEmoticonAdd")
+                else if (contentType == "ChatEmoticonAdd")
                 {
                     string rawParameter = function.Attributes["parameter"].Value;
-                    int parameter = int.Parse(rawParameter.FirstOrDefault(x => char.IsDigit(x)).ToString()); // grab the proper value from parameter attribute
-                    metadata.FunctionParameter = parameter;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionId = byte.Parse(functionParameters.Attributes["id"].Value);
+
+                    int durationSec = 0;
+
+                    if (functionParameters.Attributes["durationSec"] != null)
+                    {
+                        durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    }
+                    metadata.FunctionDuration = durationSec;
+                }
+                else if (contentType == "OpenMassive")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
+                    string decodedParameter = HttpUtility.HtmlDecode(cleanParameter);
+
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionFieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
+                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
+                    metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
                 }
 
                 // Music score charges

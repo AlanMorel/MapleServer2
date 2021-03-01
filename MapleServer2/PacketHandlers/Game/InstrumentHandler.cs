@@ -43,13 +43,13 @@ namespace MapleServer2.PacketHandlers.Game
                     HandlePlayScore(session, packet);
                     break;
                 case InstrumentMode.StopScore:
-                    HandleStopScore(session, packet);
+                    HandleStopScore(session/*, packet*/);
                     break;
                 case InstrumentMode.Fireworks:
                     HandleFireworks(session);
                     break;
                 case InstrumentMode.AudienceEmote:
-                    HandleAudienceEmote(session, packet);
+                    HandleAudienceEmote(/*session,*/ packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -101,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
-        private static void HandleStopScore(GameSession session, PacketReader packet)
+        private static void HandleStopScore(GameSession session/*, PacketReader packet*/)
         {
             session.Send(InstrumentPacket.StopScore(session.FieldPlayer));
             session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.FieldPlayer));
@@ -112,7 +112,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(InstrumentPacket.Fireworks(session.FieldPlayer.ObjectId));
         }
 
-        private static void HandleAudienceEmote(GameSession session, PacketReader packet)
+        private static void HandleAudienceEmote(/*GameSession session,*/PacketReader packet)
         {
             int skillId = packet.ReadInt();
         }

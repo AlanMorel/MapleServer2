@@ -15,7 +15,19 @@ namespace MapleServer2.Types
                 Id = npc.Id;
                 Animation = 255;
                 Friendly = npc.Friendly;
+                Kind = npc.Kind;
+                ShopId = npc.ShopId;
             }
+        }
+
+        public bool IsShop()
+        {
+            return Kind == 13;
+        }
+
+        public bool IsBank()
+        {
+            return Kind == 2;
         }
     }
 }
