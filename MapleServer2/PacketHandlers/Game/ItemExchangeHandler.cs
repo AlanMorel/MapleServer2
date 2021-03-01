@@ -107,7 +107,10 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
         {
+            // TODO: Check if rarity matches
+            
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+
             for (int i = 0; i < exchange.ItemCost.Count; i++)
             {
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
@@ -124,6 +127,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
         {
             List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+
             for (int i = 0; i < exchange.ItemCost.Count; i++)
             {
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
