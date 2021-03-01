@@ -128,15 +128,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         continue;
                     }
-                    int exchangeAmount = exchangeItem.Amount * quantity;
-                    if (exchangeAmount == item.Amount)
-                    {
-                        InventoryController.Remove(session, item.Uid, out Item _);
-                    }
-                    else
-                    {
-                        InventoryController.Update(session, item.Uid, item.Amount - exchangeAmount);
-                    }
+                    InventoryController.Consume(session, item.Uid, exchangeItem.Amount * quantity); 
                 }
             }
 
