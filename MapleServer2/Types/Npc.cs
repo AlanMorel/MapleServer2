@@ -24,5 +24,10 @@ namespace MapleServer2.Types
         {
             return Kind == 13;
         }
+
+        public bool IsBank()
+        {
+            return Kind == 2;
+        }
     }
 }
