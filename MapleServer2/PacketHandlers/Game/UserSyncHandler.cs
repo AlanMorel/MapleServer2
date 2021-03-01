@@ -56,7 +56,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
-                int fallDamage = 100; // TODO: create a formula to determine HP loss
+                int currentHp = session.Player.Stats[PlayerStatId.Hp].Current;
+                int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
                 CoordF safeBlock = session.Player.SafeBlock;
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
                 // for some reason if coord is negative player is teleported one block over, which can result player being stuck inside a block
