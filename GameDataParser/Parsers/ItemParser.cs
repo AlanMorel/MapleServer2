@@ -31,13 +31,12 @@ namespace GameDataParser.Parsers
                 XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
                 foreach (XmlNode individualBoxItem in individualBoxItems)
                 {
-                    // Skip locales other than NA in table/na
-                    if (entry.Name.StartsWith("table/na/individualitemdrop") && individualBoxItem.Attributes["locale"] != null)
+                    // Skip locales other than NA and null
+                    string locale = string.IsNullOrEmpty(individualBoxItem.Attributes["locale"]?.Value) ? "" : individualBoxItem.Attributes["locale"].Value;
+
+                    if (locale != "NA" && locale != "")
                     {
-                        if (!individualBoxItem.Attributes["locale"].Value.Equals("NA"))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
