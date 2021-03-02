@@ -27,11 +27,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LearnEmote()
+        public static Packet LearnEmote(int emoteId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION);
             pWriter.WriteEnum(EmotePacketMode.LearnEmote);
-            pWriter.WriteInt(); // emoteID
+            pWriter.WriteInt(emoteId);
             pWriter.WriteInt(1); // quantity
             pWriter.WriteLong();
             return pWriter;
