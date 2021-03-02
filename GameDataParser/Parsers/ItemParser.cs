@@ -243,6 +243,19 @@ namespace GameDataParser.Parsers
                     metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
                     metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
                 }
+                else if (contentType == "LevelPotion")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionTargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                }
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll")
+                {
+                    metadata.FunctionId = int.Parse(function.Attributes["parameter"].Value);
+                }
 
                 // Music score charges
                 XmlNode musicScore = item.SelectSingleNode("MusicScore");
