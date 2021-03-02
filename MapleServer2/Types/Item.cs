@@ -89,7 +89,6 @@ namespace MapleServer2.Types
             FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
             FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
             FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
-            FunctionTargetLevel = ItemMetadataStorage.GetFunctionTargetLevel(id);
             Slot = -1;
             Amount = 1;
             Stats = new ItemStats(id, Rarity);
