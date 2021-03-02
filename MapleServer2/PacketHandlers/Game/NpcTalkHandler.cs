@@ -33,6 +33,11 @@ namespace MapleServer2.PacketHandlers.Game
                         ShopHandler.HandleOpen(session, npc);
                         return;
                     }
+                    else if (npc.Value.IsBank())
+                    {
+                        session.Send(HomeBank.OpenBank());
+                        return;
+                    }
                     // Stellar Chest: 11004215
                     session.Send(NpcTalkPacket.Respond(npc, NpcType.Unk2, DialogType.TalkOption, 0));
                     break;

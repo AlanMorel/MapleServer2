@@ -125,7 +125,7 @@ namespace MapleServer2.PacketHandlers.Game
             // add item to inventory
             Item item = new(shopItem.ItemId)
             {
-                Amount = quantity
+                Amount = quantity * shopItem.Quantity
             };
             InventoryController.Add(session, item, true);
 
