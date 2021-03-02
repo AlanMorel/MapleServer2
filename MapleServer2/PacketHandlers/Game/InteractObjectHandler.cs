@@ -57,6 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                     item.Completed = true;
                     item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
                     session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
                     break;
                 }
