@@ -21,6 +21,7 @@ namespace MapleServer2.Types
         public bool IsTemplate { get; set; }
         public int PlayCount { get; set; }
         public string FileName { get; set; }
+        public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
         public string FunctionName { get; set; }
@@ -28,6 +29,7 @@ namespace MapleServer2.Types
         public int FunctionDuration { get; set; }
         public int FunctionFieldId { get; set; }
         public byte FunctionCapacity { get; set; }
+        public byte FunctionTargetLevel { get; set; }
 
         public readonly int Id;
         public long Uid;
@@ -79,6 +81,7 @@ namespace MapleServer2.Types
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             FileName = ItemMetadataStorage.GetFileName(id);
+            SkillId = ItemMetadataStorage.GetSkillID(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
             FunctionName = ItemMetadataStorage.GetFunctionName(id);
@@ -86,6 +89,7 @@ namespace MapleServer2.Types
             FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
             FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
             FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
+            FunctionTargetLevel = ItemMetadataStorage.GetFunctionTargetLevel(id);
             Slot = -1;
             Amount = 1;
             Stats = new ItemStats(id, Rarity);
@@ -113,6 +117,7 @@ namespace MapleServer2.Types
             FunctionDuration = other.FunctionDuration;
             FunctionFieldId = other.FunctionFieldId;
             FunctionCapacity = other.FunctionCapacity;
+            FunctionTargetLevel = other.FunctionTargetLevel;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
