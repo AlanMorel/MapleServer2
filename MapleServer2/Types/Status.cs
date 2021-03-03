@@ -1,5 +1,5 @@
+﻿using System;
 using MapleServer2.Tools;
-using System;
 
 namespace MapleServer2.Types
 {
@@ -9,7 +9,6 @@ namespace MapleServer2.Types
         public int SkillId { get; set; }
         public int Owner { get; set; }
         public int Source { get; set; }
-        public int Duration { get; set; }
         public int Stacks { get; set; }
         public short Level { get; set; }
         public int Start { get; set; }
@@ -25,12 +24,11 @@ namespace MapleServer2.Types
             UniqueId = GuidGenerator.Int();
             Owner = owner;
             Source = source;
-            Duration = duration;
             Level = skillCast.SkillLevel;
             Stacks = stacks;
             SkillCast = skillCast;
             Start = (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-            End = Start + 30000;
+            End = Start + duration;
         }
 
         public Status(int id, int owner, int source, short level, int duration, int stacks)
@@ -39,11 +37,10 @@ namespace MapleServer2.Types
             UniqueId = GuidGenerator.Int();
             Owner = owner;
             Source = source;
-            Duration = duration;
             Level = level;
             Stacks = stacks;
             Start = (int) DateTime.UtcNow.Ticks;
-            End = Start + 1;
+            End = Start + duration;
         }
 
         public void Overlap(Status other)

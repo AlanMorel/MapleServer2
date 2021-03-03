@@ -25,7 +25,7 @@ namespace MapleServer2.Servers.Game
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
 
-        private Task HealingSpot;
+        private Task HealingSpotThread;
 
         public FieldManager(int mapId)
         {
@@ -151,9 +151,9 @@ namespace MapleServer2.Servers.Game
             }
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
-                if (HealingSpot == null || HealingSpot.IsCompleted)
+                if (HealingSpotThread == null || HealingSpotThread.IsCompleted)
                 {
-                    HealingSpot = StartHealingSpot(sender, player);
+                    HealingSpotThread = StartHealingSpot(sender, player);
                 }
                 sender.Send(RegionSkillPacket.Send(player, MapEntityStorage.GetHealingSpot(MapId), new SkillCast(70000018, 1, 0, 1)));
             }
@@ -343,7 +343,7 @@ namespace MapleServer2.Servers.Game
 
             return Task.Run(async () =>
             {
-                while (MapEntityStorage.HasHealingSpot(MapId) && !State.Players.IsEmpty)
+                while (!State.Players.IsEmpty)
                 {
                     CoordS healingCoord = MapEntityStorage.GetHealingSpot(MapId);
 

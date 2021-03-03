@@ -1,4 +1,4 @@
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -21,22 +21,17 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt();
-            if (tileCount == 0)
-            {
-                pWriter.WriteByte(1);
-                pWriter.Write(CoordF.From(0, 0, 0));
-            }
-            else
+            if (tileCount != 0)
             {
                 pWriter.WriteByte(tileCount);
                 for (int i = 0; i < tileCount; i++)
                 {
                     pWriter.Write(effectCoord.ToFloat());
                 }
+                pWriter.WriteInt(skill.SkillId);
+                pWriter.WriteShort(skill.SkillLevel);
+                pWriter.WriteLong();
             }
-            pWriter.WriteInt(skill.SkillId);
-            pWriter.WriteShort(skill.SkillLevel);
-            pWriter.WriteLong();
 
             return pWriter;
         }
