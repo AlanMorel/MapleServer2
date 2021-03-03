@@ -340,6 +340,7 @@ namespace MapleServer2.Servers.Game
         private Task StartHealingSpot(GameSession session, IFieldObject<Player> player)
         {
             int healAmount = 30;
+            Status status = new Status(new SkillCast(70000018, 1, 0, 1), player.ObjectId, player.ObjectId, 1, healAmount);
 
             return Task.Run(async () =>
             {
@@ -349,7 +350,6 @@ namespace MapleServer2.Servers.Game
 
                     if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
                     {
-                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), player.ObjectId, player.ObjectId, 1, healAmount);
                         session.Send(BuffPacket.SendBuff(0, status));
                         session.Send(SkillDamagePacket.ApplyHeal(player, status));
                         session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
