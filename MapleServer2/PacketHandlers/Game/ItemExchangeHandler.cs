@@ -128,7 +128,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         continue;
                     }
-                    InventoryController.Consume(session, item.Uid, exchangeItem.Amount * quantity); 
+                    InventoryController.Consume(session, item.Uid, exchangeItem.Amount * quantity);
                 }
             }
 
