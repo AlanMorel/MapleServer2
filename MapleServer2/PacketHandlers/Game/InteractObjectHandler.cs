@@ -21,8 +21,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum InteractObjectMode : byte
         {
+            Start = 0x0B,
             Use = 0x0C,
         }
+
+        private static bool multiInteract = false;
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -30,41 +33,65 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
+                case InteractObjectMode.Start:
+                    HandleStart(session, packet);
+                    break;
                 case InteractObjectMode.Use:
                     HandleUse(session, packet);
                     break;
             }
         }
 
-        private static void HandleUse(GameSession session, PacketReader packet)
+        private static void HandleStart(GameSession session, PacketReader packet)
         {
-            string uuid = packet.ReadMapleString();
-            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
-            if (actor == null)
-            {
-                return;
-            }
-            if (actor.Type == InteractActorType.Binoculars)
-            {
-                List<QuestStatus> questList = session.Player.QuestList;
-                foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
-                {
-                    QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.Id);
-                    if (condition == null)
-                    {
-                        continue;
-                    }
+            int numInteract = packet.ReadInt();
+            multiInteract = true;
 
-                    item.Completed = true;
-                    item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
-                    session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
-                    break;
+            for (int i = 0; i < numInteract; i++)
+            {
+                string uuid = packet.ReadMapleString();
+                MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+                if (actor.Type == InteractActorType.Extractor)
+                {
+                    // TODO: when player starts mining
                 }
             }
+        }
 
-            session.Send(InteractActorPacket.UseObject(actor));
-            session.Send(InteractActorPacket.Extra(actor));
+        private static void HandleUse(GameSession session, PacketReader packet)
+        {
+            int numInteract = multiInteract ? packet.ReadInt() : 1;
+
+            for (int i = 0; i < numInteract; i++)
+            {
+                string uuid = packet.ReadMapleString();
+                MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+                if (actor == null)
+                {
+                    return;
+                }
+                if (actor.Type == InteractActorType.Binoculars)
+                {
+                    List<QuestStatus> questList = session.Player.QuestList;
+                    foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
+                    {
+                        QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.Id);
+                        if (condition == null)
+                        {
+                            continue;
+                        }
+
+                        item.Completed = true;
+                        item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
+                        session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
+                        break;
+                    }
+                }
+
+                session.Send(InteractActorPacket.UseObject(actor));
+                session.Send(InteractActorPacket.Extra(actor));
+            }
         }
     }
 }

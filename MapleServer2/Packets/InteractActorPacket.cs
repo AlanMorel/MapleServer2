@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
     {
         private enum InteractObjectMode : byte
         {
-            Binoculars = 0x05,
+            Use = 0x05,
             AddInteractActor = 0x08,
             Extra = 0x0D
         }
@@ -32,11 +32,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        // TODO: if extractor, 0x002B is sent first; figure out why
         public static Packet UseObject(MapInteractActor actor)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
-            pWriter.WriteEnum(InteractObjectMode.Binoculars);
+            pWriter.WriteEnum(InteractObjectMode.Use);
             pWriter.WriteShort((short) actor.Uuid.Length);
             pWriter.WriteString(actor.Uuid);
             pWriter.WriteEnum(actor.Type);

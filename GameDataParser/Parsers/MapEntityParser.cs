@@ -109,6 +109,24 @@ namespace GameDataParser.Parsers
                         int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
                         metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
                     }
+                    else if (modelName.Contains("hub") || modelName.Contains("vein"))
+                    {
+                        string uuid = node.Attributes["id"].Value;
+                        XmlNode interactNode = node.SelectSingleNode("property[@name='interactID']");
+
+                        int interactId = 0;
+                        if (interactNode != null)
+                        {
+                            interactId = int.Parse(interactNode.FirstChild.Attributes["value"]?.Value);
+                        }
+                        // use preset InteractID if unique InteractID not found
+                        else
+                        {
+                            interactId = int.Parse(mapObjects[modelName]["interactID"]);
+                        }
+
+                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Extractor, interactId));
+                    }
                     else if (modelName == "SpawnPointPC")  // Player Spawn point on map
                     {
                         XmlNode playerCoord = node.SelectSingleNode("property[@name='Position']");
