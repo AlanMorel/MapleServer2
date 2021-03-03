@@ -110,15 +110,16 @@ namespace MapleServer2.PacketHandlers.Game
                 InventoryController.Add(session, bonusItem, true);
             }
 
-            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (vipPackage.VipPeriod * 3600); // Convert to seconds, as vipPeriod is given as hours
+            int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
 
-            if (session.Player.VIPExpiration < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            if (!IsVip(session.Player))
             {
                 session.Player.VIPExpiration = expiration;
             }
             else
             {
-                session.Player.VIPExpiration += vipPackage.VipPeriod * 3600;
+                session.Player.VIPExpiration += vipTime;
             }
 
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
