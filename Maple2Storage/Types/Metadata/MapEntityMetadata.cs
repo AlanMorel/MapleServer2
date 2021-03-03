@@ -28,7 +28,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 9)]
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 10)]
-        public CoordS HealthSpot;
+        public CoordS HealingSpot;
 
         // Required for deserialization
         public MapEntityMetadata()

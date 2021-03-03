@@ -111,7 +111,7 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-                        metadata.HealthSpot = healingCoord;
+                        metadata.HealingSpot = healingCoord;
                     }
                     else if (modelName == "MS2Telescope")
                     {

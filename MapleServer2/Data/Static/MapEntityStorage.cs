@@ -30,7 +30,7 @@ namespace MapleServer2.Data.Static
                 interactActors.Add(entity.MapId, entity.InteractActors);
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
-                healthSpot.Add(entity.MapId, entity.HealthSpot);
+                healthSpot.Add(entity.MapId, entity.HealingSpot);
             }
         }
 
