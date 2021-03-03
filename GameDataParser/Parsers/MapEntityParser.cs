@@ -103,6 +103,16 @@ namespace GameDataParser.Parsers
                             metadata.BoundingBox1 = boundingBox;
                         }
                     }
+                    else if (modelName.StartsWith("Skill_HealingSpot"))
+                    {
+                        XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
+                        CoordS healingCoord = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
+                        if (healingCoord.Equals(CoordS.From(0, 0, 0)))
+                        {
+                            continue;
+                        }
+                        metadata.HealthSpot = healingCoord;
+                    }
                     else if (modelName == "MS2Telescope")
                     {
                         string uuid = node.Attributes["id"].Value;

@@ -25,6 +25,8 @@ namespace MapleServer2.Servers.Game
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
 
+        private Task HealingSpot;
+
         public FieldManager(int mapId)
         {
             MapId = mapId;
@@ -147,6 +149,14 @@ namespace MapleServer2.Servers.Game
             {
                 sender.Send(InteractActorPacket.AddInteractActors(State.InteractActors.Values));
             }
+            if (MapEntityStorage.HasHealingSpot(MapId))
+            {
+                if (HealingSpot == null || HealingSpot.IsCompleted)
+                {
+                    HealingSpot = StartHealingSpot(sender, player);
+                }
+                sender.Send(RegionSkillPacket.Send(player, MapEntityStorage.GetHealingSpot(MapId), new SkillCast(70000018, 1, 0, 1)));
+            }
             State.AddPlayer(player);
 
             // Broadcast new player to all players in map
@@ -218,6 +228,7 @@ namespace MapleServer2.Servers.Game
                 });
             }
         }
+
         public void SendChat(Player player, string message, ChatType type)
         {
             Broadcast(session =>
@@ -324,6 +335,30 @@ namespace MapleServer2.Servers.Game
                 ObjectId = objectId;
                 Value = value;
             }
+        }
+
+        private Task StartHealingSpot(GameSession session, IFieldObject<Player> player)
+        {
+            int healAmount = 30;
+
+            return Task.Run(async () =>
+            {
+                while (MapEntityStorage.HasHealingSpot(MapId) && !State.Players.IsEmpty)
+                {
+                    CoordS healingCoord = MapEntityStorage.GetHealingSpot(MapId);
+
+                    if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
+                    {
+                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), player.ObjectId, player.ObjectId, 1, healAmount);
+                        session.Send(BuffPacket.SendBuff(0, status));
+                        session.Send(SkillDamagePacket.ApplyHeal(player, status));
+                        session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
+                        session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                    }
+
+                    await Task.Delay(1000);
+                }
+            });
         }
     }
 }
