@@ -26,6 +26,10 @@ namespace MapleServer2.PacketHandlers.Game
             session.EnterField(session.Player.MapId);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
+            foreach (MasteryExp mastery in session.Player.Levels.MasteryExp)
+            {
+                session.Send(MasteryPacket.SetExp(mastery.Type, mastery.CurrentExp));
+            }
             session.Send(EmotePacket.LoadEmotes(session.Player));
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
 

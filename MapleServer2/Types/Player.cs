@@ -390,10 +390,10 @@ namespace MapleServer2.Types
         {
             if (!GatheringCount.ContainsKey(recipeID))
             {
-                int maxLimit = RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount + 5; //hardcoded for now
+                int maxLimit = RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount;
                 GatheringCount[recipeID] = new PlayerStat(maxLimit, 0, maxLimit);
             }
-            if ((GatheringCount[recipeID].Current - amount) >= 0)
+            if ((GatheringCount[recipeID].Current - amount) >= -3)
             {
                 PlayerStat stat = GatheringCount[recipeID];
                 stat.Current -= amount;

@@ -25,7 +25,9 @@ namespace MapleServer2.PacketHandlers.Game
             Use = 0x0C,
         }
 
-        private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };
+        private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };         // drop rate of each rarity level
+        private static readonly float[] SuccessRate = new float[] { 1.0f, 0.5f, 0.25f, 0.0f };  // impact of success rate bracket on drop rate
+        private static readonly int[] SuccessRateThreshold = new int[] { 100, 20, 0, -30 };          // percentage of remaining count to reach next success rate bracket
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -79,7 +81,6 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
                     break;
                 }
-                session.Send(InteractActorPacket.UseObject(actor));
             }
             else if (actor.Type == InteractActorType.Gathering)
             {
@@ -88,22 +89,29 @@ namespace MapleServer2.PacketHandlers.Game
                 Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
 
                 session.Player.Levels.GainMasteryExp(type, 0);
-                long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (byte) type).CurrentExp;
+                long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == type).CurrentExp;
                 if (currentMastery < requireMastery)
                 {
                     return;
                 }
 
                 session.Player.ConsumeGatheringCount(actor.RecipeId, 0);
-                int remCount = session.Player.GatheringCount[actor.RecipeId].Current;
+                int remPercentile = session.Player.GatheringCount[actor.RecipeId].Current * 100 / session.Player.GatheringCount[actor.RecipeId].Max;
 
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
 
-                float probMultiplier = remCount > 3 ? 1 : remCount > 0 ? 0.5f : 0;
+                int r = 0;
+                float probMultiplier = 1.0f;
+                while (r < SuccessRate.Length && remPercentile <= SuccessRateThreshold[r])
+                {
+                    probMultiplier = SuccessRate[r];
+                    r++;
+                }
+
                 foreach (RecipeItem item in items)
                 {
-                    int prob = (int) (RarityChance[item.Rarity]/* * probMultiplier*/);
+                    int prob = (int) (RarityChance[item.Rarity] * probMultiplier);
                     if (rand.Next(100) < prob)
                     {
                         for (int i = 0; i < item.Amount; i++)
@@ -113,13 +121,13 @@ namespace MapleServer2.PacketHandlers.Game
                         numDrop += item.Amount;
                     }
                 }
-                if (numDrop > 0)
+                if (true/*numDrop > 0*/)
                 {
-                    session.Player.ConsumeGatheringCount(actor.RecipeId, numDrop);
+                    session.Player.ConsumeGatheringCount(actor.RecipeId, 1/*numDrop*/);
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
             }
-            session.Send(InteractActorPacket.UseObject(actor, numDrop > 0 ? 0 : 1, numDrop));
+            session.Send(InteractActorPacket.UseObject(actor, 0 /*numDrop > 0 ? 0 : 1*/, 1 /*numDrop*/));
             session.Send(InteractActorPacket.Extra(actor));
         }
     }

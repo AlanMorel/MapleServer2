@@ -4,12 +4,12 @@ namespace MapleServer2.Types
 {
     public class MasteryExp
     {
-        public byte Type { get; private set; }
+        public MasteryType Type { get; private set; }
         public long CurrentExp { get; set; }
 
         public MasteryExp(MasteryType type, long currentExp)
         {
-            Type = (byte) type;
+            Type = type;
             CurrentExp = currentExp;
         }
     }
