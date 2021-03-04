@@ -64,8 +64,7 @@ namespace GameDataParser.Parsers
             // fetch interactID and recipeID relation from xml (can be expanded to parse other xml info)
             Dictionary<int, int> interactRecipeMap = new Dictionary<int, int>();
             foreach (PackFileEntry entry in Resources.XmlFiles
-                .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success)
-                .OrderBy(entry => entry.Name))
+                .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success))
             {
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList interactNodes = document.SelectNodes("/ms2/interact");
