@@ -37,7 +37,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (type) // TODO: handling survivallevel
             {
                 case "vip":
-                    return Player.IsVip(session.Player);
+                    return session.Player.IsVip();
                 case "level":
                     return session.Player.Levels.Level >= 50;
                 case "enchant":

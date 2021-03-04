@@ -113,7 +113,7 @@ namespace MapleServer2.PacketHandlers.Game
             int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
             long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
 
-            if (!Player.IsVip(session.Player))
+            if (!session.Player.IsVip())
             {
                 session.Player.VIPExpiration = expiration;
             }

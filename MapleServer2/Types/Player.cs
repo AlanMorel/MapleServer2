@@ -383,9 +383,9 @@ namespace MapleServer2.Types
             return new PlayerStat(stat.Max, stat.Min, postRegen);
         }
 
-        public static bool IsVip(Player player)
+        public bool IsVip()
         {
-            return player.VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
     }
 }
