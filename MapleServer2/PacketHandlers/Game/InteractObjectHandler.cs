@@ -80,14 +80,17 @@ namespace MapleServer2.PacketHandlers.Game
             }
             if (actor.Type == InteractActorType.Gathering)
             {
-                // roll for item drop
                 RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
+                long requireMastery = int.Parse(recipe.RequireMastery);
+                Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
+                long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (byte) type).CurrentExp;
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
                 bool isSuccess = false;
+
                 foreach (RecipeItem item in items)
                 {
-                    if (rand.Next(100) < RarityChance[item.Rarity])
+                    if ((currentMastery >= requireMastery) && (rand.Next(100) < RarityChance[item.Rarity]))
                     {
                         session.FieldManager.AddItem(session, new Item(item.Id));
                         isSuccess = true;
@@ -95,14 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 if (isSuccess)
                 {
-                    if (actor.Name.Contains("vein"))
-                    {
-                        session.Player.Levels.GainMasteryExp(Enums.MasteryType.Mining, recipe.RewardMastery);
-                    }
-                    else if (actor.Name.Contains("hub"))
-                    {
-                        session.Player.Levels.GainMasteryExp(Enums.MasteryType.Foraging, recipe.RewardMastery);
-                    }
+                    session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
             }
             session.Send(InteractActorPacket.UseObject(actor));
