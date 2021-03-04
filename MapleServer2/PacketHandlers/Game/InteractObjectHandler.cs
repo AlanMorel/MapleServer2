@@ -81,7 +81,14 @@ namespace MapleServer2.PacketHandlers.Game
                 // TODO: figure out the drop rates of each rarity level
                 RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
-                session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                if (actor.Name.Contains("vein"))
+                {
+                    session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                }
+                else if (actor.Name.Contains("hub"))
+                {
+                    session.Send(MasteryPacket.SetExp(Enums.MasteryType.Foraging, recipe.RewardMastery));
+                }
                 // for now drop all items
                 foreach (RecipeItem drop in items)
                 {
