@@ -35,8 +35,8 @@ namespace GameDataParser.Parsers
                     newRecipe.RewardExp = recipe.Attributes["rewardExp"].Value;
                     newRecipe.RewardMastery = string.IsNullOrEmpty(recipe.Attributes["rewardMastery"]?.Value) ? 0 : long.Parse(recipe.Attributes["rewardMastery"].Value);
                     newRecipe.GatheringTime = recipe.Attributes["gatheringTime"].Value;
-                    newRecipe.HighPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["habitatMapId"]?.Value) ? 0 : int.Parse(recipe.Attributes["habitatMapId"].Value);
-                    newRecipe.NormalPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["habitatMapId"]?.Value) ? 0 : int.Parse(recipe.Attributes["habitatMapId"].Value);
+                    newRecipe.HighPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["highPropLimitCount"]?.Value) ? 0 : int.Parse(recipe.Attributes["highPropLimitCount"].Value);
+                    newRecipe.NormalPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["normalPropLimitCount"]?.Value) ? 0 : int.Parse(recipe.Attributes["normalPropLimitCount"].Value);
                     newRecipe.RequireItem1 = recipe.Attributes["requireItem1"].Value;
                     newRecipe.RequireItem2 = recipe.Attributes["requireItem2"].Value;
                     newRecipe.RequireItem3 = recipe.Attributes["requireItem3"].Value;

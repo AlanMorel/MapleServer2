@@ -115,6 +115,8 @@ namespace MapleServer2.Types
         private Task SpRegenThread;
         private Task StaRegenThread;
 
+        public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
+
         public Player()
         {
             GameOptions = new GameOptions();
@@ -382,6 +384,21 @@ namespace MapleServer2.Types
             int regen = Stats[regenStatIndex].Current;
             int postRegen = Math.Clamp(stat.Current + regen, 0, stat.Max);
             return new PlayerStat(stat.Max, stat.Min, postRegen);
+        }
+
+        public void ConsumeGatheringCount(int recipeID, int amount)
+        {
+            if (!GatheringCount.ContainsKey(recipeID))
+            {
+                int maxLimit = RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount + 5; //hardcoded for now
+                GatheringCount[recipeID] = new PlayerStat(maxLimit, 0, maxLimit);
+            }
+            if ((GatheringCount[recipeID].Current - amount) >= 0)
+            {
+                PlayerStat stat = GatheringCount[recipeID];
+                stat.Current -= amount;
+                GatheringCount[recipeID] = stat;
+            }
         }
     }
 }

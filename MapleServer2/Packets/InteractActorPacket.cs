@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteShort((short) actor.Value.Uuid.Length);
                 pWriter.WriteString(actor.Value.Uuid);
-                pWriter.WriteByte((byte) InteractStatus.Enabled);
+                pWriter.WriteEnum(InteractStatus.Enabled);
                 pWriter.WriteEnum(actor.Value.Type);
                 pWriter.WriteInt(0);
             }
@@ -40,7 +40,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UseObject(MapInteractActor actor, short result = 0)
+        public static Packet UseObject(MapInteractActor actor, short result = 0, int numDrops = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
@@ -52,7 +52,7 @@ namespace MapleServer2.Packets
             if (actor.Type == InteractActorType.Gathering)
             {
                 pWriter.WriteShort(result);
-                pWriter.WriteInt();
+                pWriter.WriteInt(numDrops);
             }
 
             return pWriter;
