@@ -17,6 +17,9 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "status":
+                    ProcessStatusCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
                 case "sethandicraft":
                     session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
@@ -230,6 +233,18 @@ namespace MapleServer2.Tools
             }
 
             session.FieldManager.AddMob(fieldMob);
+        }
+
+        // Example: "status id:10400081"
+        private static void ProcessStatusCommand(GameSession session, string command)
+        {
+            Dictionary<string, string> config = command.ToMap();
+            if (!int.TryParse(config.GetValueOrDefault("id", "10400081"), out int statusId))
+            {
+                return;
+            }
+            Status status = new Status(statusId, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, 1, 1);
+            session.Send(BuffPacket.SendBuff(0, status));
         }
 
         private static Dictionary<string, string> ToMap(this string command)
