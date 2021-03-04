@@ -25,6 +25,8 @@ namespace MapleServer2.PacketHandlers.Game
             Use = 0x0C,
         }
 
+        private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             InteractObjectMode mode = (InteractObjectMode) packet.ReadByte();
@@ -46,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
             if (actor.Type == InteractActorType.Gathering)
             {
-                // TODO: when player starts mining
+                // things to do when player starts gathering
             }
         }
 
@@ -78,21 +80,29 @@ namespace MapleServer2.PacketHandlers.Game
             }
             if (actor.Type == InteractActorType.Gathering)
             {
-                // TODO: figure out the drop rates of each rarity level
+                // roll for item drop
                 RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
-                if (actor.Name.Contains("vein"))
+                Random rand = new Random();
+                bool isSuccess = false;
+                foreach (RecipeItem item in items)
                 {
-                    session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                    if (rand.Next(100) < RarityChance[item.Rarity])
+                    {
+                        session.FieldManager.AddItem(session, new Item(item.Id));
+                        isSuccess = true;
+                    }
                 }
-                else if (actor.Name.Contains("hub"))
+                if (isSuccess)
                 {
-                    session.Send(MasteryPacket.SetExp(Enums.MasteryType.Foraging, recipe.RewardMastery));
-                }
-                // for now drop all items
-                foreach (RecipeItem drop in items)
-                {
-                    session.FieldManager.AddItem(session, new Item(drop.Id));
+                    if (actor.Name.Contains("vein"))
+                    {
+                        session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                    }
+                    else if (actor.Name.Contains("hub"))
+                    {
+                        session.Send(MasteryPacket.SetExp(Enums.MasteryType.Foraging, recipe.RewardMastery));
+                    }
                 }
             }
             session.Send(InteractActorPacket.UseObject(actor));
