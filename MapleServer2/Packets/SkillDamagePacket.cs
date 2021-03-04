@@ -48,14 +48,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ApplyHeal(IFieldObject<Player> player, int statusUid, int sourceId, int amount)
+        public static Packet ApplyHeal(IFieldObject<Player> player, Status status)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             pWriter.WriteByte(4);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(sourceId);
-            pWriter.WriteInt(statusUid);
-            pWriter.WriteInt(amount);
+            pWriter.WriteInt(status.Source);
+            pWriter.WriteInt(status.UniqueId);
+            pWriter.WriteInt(status.Stacks);
             pWriter.WriteLong();
             pWriter.WriteByte(1);
 
