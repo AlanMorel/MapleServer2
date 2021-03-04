@@ -124,7 +124,7 @@ namespace MapleServer2.Types
 
             if (masteryExp == null) // add mastery to list
             {
-                MasteryExp.Add(new MasteryExp(type, amount));
+                MasteryExp.Add(new MasteryExp(type, amount, 10));
                 Player.Session.Send(MasteryPacket.SetExp(type, amount));
             }
             else

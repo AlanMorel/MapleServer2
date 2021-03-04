@@ -40,8 +40,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        // TODO: if extractor, 0x002B is sent first; figure out why
-        public static Packet UseObject(MapInteractActor actor)
+        public static Packet UseObject(MapInteractActor actor, short result = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
@@ -50,11 +49,10 @@ namespace MapleServer2.Packets
             pWriter.WriteString(actor.Uuid);
             pWriter.WriteEnum(actor.Type);
 
-            // display victory dance if gathering successful
             if (actor.Type == InteractActorType.Gathering)
             {
-                pWriter.WriteShort(0);
-                pWriter.WriteInt(1);
+                pWriter.WriteShort(result);
+                pWriter.WriteInt();
             }
 
             return pWriter;

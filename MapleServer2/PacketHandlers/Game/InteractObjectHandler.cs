@@ -25,6 +25,12 @@ namespace MapleServer2.PacketHandlers.Game
             Use = 0x0C,
         }
 
+        public enum InteractObjecResult : short
+        {
+            Success = 0x00,
+            Fail = 0x01,
+        }
+
         private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -77,31 +83,43 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
                     break;
                 }
+                session.Send(InteractActorPacket.UseObject(actor));
             }
             if (actor.Type == InteractActorType.Gathering)
             {
                 RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
                 long requireMastery = int.Parse(recipe.RequireMastery);
                 Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
-                long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (byte) type).CurrentExp;
+                long currentMastery = 0;
+                int stamina = 10;
+                MasteryExp mastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (byte) type);
+                if (mastery != null)
+                {
+                    currentMastery = mastery.CurrentExp;
+                    stamina = mastery.Stamina;
+                }
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
-                bool isSuccess = false;
-
+                InteractObjecResult result = InteractObjecResult.Fail;
                 foreach (RecipeItem item in items)
                 {
-                    if ((currentMastery >= requireMastery) && (rand.Next(100) < RarityChance[item.Rarity]))
+                    if ((currentMastery >= requireMastery)
+                        && (rand.Next(100) < (RarityChance[item.Rarity] * stamina / 10)))
                     {
                         session.FieldManager.AddItem(session, new Item(item.Id));
-                        isSuccess = true;
+                        result = InteractObjecResult.Success;
                     }
                 }
-                if (isSuccess)
+                if (result == InteractObjecResult.Success)
                 {
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
+                if ((mastery != null) && (mastery.Stamina > 0))
+                {
+                    mastery.Stamina -= 1;
+                }
+                session.Send(InteractActorPacket.UseObject(actor, (short) result));
             }
-            session.Send(InteractActorPacket.UseObject(actor));
             session.Send(InteractActorPacket.Extra(actor));
         }
     }
