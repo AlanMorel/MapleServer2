@@ -93,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             PremiumClubPackageMetadata vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
 
-            if (!session.Player.Wallet.Meret.Modify(vipPackage.Price))
+            if (!session.Player.Wallet.RemoveMerets(vipPackage.Price))
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace MapleServer2.PacketHandlers.Game
             int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
             long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
 
-            if (!IsVip(session.Player))
+            if (!Player.IsVip(session.Player))
             {
                 session.Player.VIPExpiration = expiration;
             }
@@ -123,11 +123,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
-        }
-
-        public static bool IsVip(Player player)
-        {
-            return player.VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
     }
 }

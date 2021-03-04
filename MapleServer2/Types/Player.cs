@@ -382,5 +382,10 @@ namespace MapleServer2.Types
             int postRegen = Math.Clamp(stat.Current + regen, 0, stat.Max);
             return new PlayerStat(stat.Max, stat.Min, postRegen);
         }
+
+        public static bool IsVip(Player player)
+        {
+            return player.VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
     }
 }
