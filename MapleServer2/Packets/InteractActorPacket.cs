@@ -3,6 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.Packets
 {
@@ -15,6 +16,12 @@ namespace MapleServer2.Packets
             Extra = 0x0D
         }
 
+        private enum InteractStatus : byte
+        {
+            Disabled = 0x00,
+            Enabled = 0x01
+        }
+
         public static Packet AddInteractActors(ICollection<IFieldObject<InteractActor>> actors)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
@@ -25,8 +32,9 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteShort((short) actor.Value.Uuid.Length);
                 pWriter.WriteString(actor.Value.Uuid);
-                pWriter.WriteByte(1);
+                pWriter.WriteByte((byte) InteractStatus.Enabled);
                 pWriter.WriteEnum(actor.Value.Type);
+                pWriter.WriteInt(0);
             }
 
             return pWriter;
@@ -41,6 +49,13 @@ namespace MapleServer2.Packets
             pWriter.WriteShort((short) actor.Uuid.Length);
             pWriter.WriteString(actor.Uuid);
             pWriter.WriteEnum(actor.Type);
+
+            // display victory dance if gathering successful
+            if (actor.Type == InteractActorType.Gathering)
+            {
+                pWriter.WriteShort(0);
+                pWriter.WriteInt(1);
+            }
 
             return pWriter;
         }

@@ -31,13 +31,12 @@ namespace GameDataParser.Parsers
                 XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
                 foreach (XmlNode individualBoxItem in individualBoxItems)
                 {
-                    // Skip locales other than NA in table/na
-                    if (entry.Name.StartsWith("table/na/individualitemdrop") && individualBoxItem.Attributes["locale"] != null)
+                    // Skip locales other than NA and null
+                    string locale = string.IsNullOrEmpty(individualBoxItem.Attributes["locale"]?.Value) ? "" : individualBoxItem.Attributes["locale"].Value;
+
+                    if (locale != "NA" && locale != "")
                     {
-                        if (!individualBoxItem.Attributes["locale"].Value.Equals("NA"))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
@@ -243,6 +242,19 @@ namespace GameDataParser.Parsers
                     metadata.FunctionFieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
                     metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
                     metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
+                }
+                else if (contentType == "LevelPotion")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionTargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                }
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll")
+                {
+                    metadata.FunctionId = int.Parse(function.Attributes["parameter"].Value);
                 }
 
                 // Music score charges

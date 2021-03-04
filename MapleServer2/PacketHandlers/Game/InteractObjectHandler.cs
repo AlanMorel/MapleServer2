@@ -21,11 +21,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum InteractObjectMode : byte
         {
-            Start = 0x0B,
+            Cast = 0x0B,
             Use = 0x0C,
         }
-
-        private static bool multiInteract = false;
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -33,7 +31,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case InteractObjectMode.Start:
+                case InteractObjectMode.Cast:
                     HandleStart(session, packet);
                     break;
                 case InteractObjectMode.Use:
@@ -44,54 +42,54 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleStart(GameSession session, PacketReader packet)
         {
-            int numInteract = packet.ReadInt();
-            multiInteract = true;
-
-            for (int i = 0; i < numInteract; i++)
+            string uuid = packet.ReadMapleString();
+            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            if (actor.Type == InteractActorType.Gathering)
             {
-                string uuid = packet.ReadMapleString();
-                MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
-                if (actor.Type == InteractActorType.Extractor)
-                {
-                    // TODO: when player starts mining
-                }
+                // TODO: when player starts mining
             }
         }
 
         private static void HandleUse(GameSession session, PacketReader packet)
         {
-            int numInteract = multiInteract ? packet.ReadInt() : 1;
-
-            for (int i = 0; i < numInteract; i++)
+            string uuid = packet.ReadMapleString();
+            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            if (actor == null)
             {
-                string uuid = packet.ReadMapleString();
-                MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
-                if (actor == null)
-                {
-                    return;
-                }
-                if (actor.Type == InteractActorType.Binoculars)
-                {
-                    List<QuestStatus> questList = session.Player.QuestList;
-                    foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
-                    {
-                        QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.Id);
-                        if (condition == null)
-                        {
-                            continue;
-                        }
-
-                        item.Completed = true;
-                        item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                        session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
-                        session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
-                        break;
-                    }
-                }
-
-                session.Send(InteractActorPacket.UseObject(actor));
-                session.Send(InteractActorPacket.Extra(actor));
+                return;
             }
+            if (actor.Type == InteractActorType.Binoculars)
+            {
+                List<QuestStatus> questList = session.Player.QuestList;
+                foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
+                {
+                    QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
+                    if (condition == null)
+                    {
+                        continue;
+                    }
+
+                    item.Completed = true;
+                    item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
+                    session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
+                    break;
+                }
+            }
+            if (actor.Type == InteractActorType.Gathering)
+            {
+                // TODO: figure out the drop rates of each rarity level
+                RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
+                List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
+                session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                // for now drop all items
+                foreach (RecipeItem drop in items)
+                {
+                    session.FieldManager.AddItem(session, new Item(drop.Id));
+                }
+            }
+            session.Send(InteractActorPacket.UseObject(actor));
+            session.Send(InteractActorPacket.Extra(actor));
         }
     }
 }
