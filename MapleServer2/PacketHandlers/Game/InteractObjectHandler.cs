@@ -97,11 +97,11 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     if (actor.Name.Contains("vein"))
                     {
-                        session.Send(MasteryPacket.SetExp(Enums.MasteryType.Mining, recipe.RewardMastery));
+                        session.Player.Levels.GainMasteryExp(Enums.MasteryType.Mining, recipe.RewardMastery);
                     }
                     else if (actor.Name.Contains("hub"))
                     {
-                        session.Send(MasteryPacket.SetExp(Enums.MasteryType.Foraging, recipe.RewardMastery));
+                        session.Player.Levels.GainMasteryExp(Enums.MasteryType.Foraging, recipe.RewardMastery);
                     }
                 }
             }
