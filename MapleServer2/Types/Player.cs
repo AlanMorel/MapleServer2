@@ -386,17 +386,17 @@ namespace MapleServer2.Types
             return new PlayerStat(stat.Max, stat.Min, postRegen);
         }
 
-        public void ConsumeGatheringCount(int recipeID, int amount)
+        public void IncrementGatheringCount(int recipeID, int amount)
         {
             if (!GatheringCount.ContainsKey(recipeID))
             {
-                int maxLimit = RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount;
-                GatheringCount[recipeID] = new PlayerStat(maxLimit, 0, maxLimit);
+                int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount * 1.4);
+                GatheringCount[recipeID] = new PlayerStat(maxLimit, 0, 0);
             }
-            if ((GatheringCount[recipeID].Current - amount) >= -3)
+            if ((GatheringCount[recipeID].Current + amount) <= GatheringCount[recipeID].Max)
             {
                 PlayerStat stat = GatheringCount[recipeID];
-                stat.Current -= amount;
+                stat.Current += amount;
                 GatheringCount[recipeID] = stat;
             }
         }

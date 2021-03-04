@@ -27,7 +27,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };         // drop rate of each rarity level
         private static readonly float[] SuccessRate = new float[] { 1.0f, 0.5f, 0.25f, 0.0f };  // impact of success rate bracket on drop rate
-        private static readonly int[] SuccessRateThreshold = new int[] { 100, 20, 0, -30 };          // percentage of remaining count to reach next success rate bracket
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -95,19 +94,18 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                session.Player.ConsumeGatheringCount(actor.RecipeId, 0);
-                int remPercentile = session.Player.GatheringCount[actor.RecipeId].Current * 100 / session.Player.GatheringCount[actor.RecipeId].Max;
+                session.Player.IncrementGatheringCount(actor.RecipeId, 0);
+                int numCount = session.Player.GatheringCount[actor.RecipeId].Current;
 
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
-
-                int r = 0;
-                float probMultiplier = 1.0f;
-                while (r < SuccessRate.Length && remPercentile <= SuccessRateThreshold[r])
+                float probMultiplier = numCount switch
                 {
-                    probMultiplier = SuccessRate[r];
-                    r++;
-                }
+                    int n when n < recipe.HighPropLimitCount => SuccessRate[0],
+                    int n when n < recipe.NormalPropLimitCount => SuccessRate[1],
+                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => SuccessRate[2],
+                    _ => SuccessRate[3],
+                };
 
                 foreach (RecipeItem item in items)
                 {
@@ -121,13 +119,13 @@ namespace MapleServer2.PacketHandlers.Game
                         numDrop += item.Amount;
                     }
                 }
-                if (true/*numDrop > 0*/)
+                if (numDrop > 0)
                 {
-                    session.Player.ConsumeGatheringCount(actor.RecipeId, 1/*numDrop*/);
+                    session.Player.IncrementGatheringCount(actor.RecipeId, numDrop);
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
             }
-            session.Send(InteractActorPacket.UseObject(actor, 0 /*numDrop > 0 ? 0 : 1*/, 1 /*numDrop*/));
+            session.Send(InteractActorPacket.UseObject(actor, numDrop > 0 ? 0 : 1, numDrop));
             session.Send(InteractActorPacket.Extra(actor));
         }
     }

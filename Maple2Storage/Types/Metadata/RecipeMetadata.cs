@@ -59,7 +59,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"RecipeMetadata(Id:{Id}, MasteryType:{MasteryType}, RequireItem1: {RequireItem1}, RewardItem1: {RewardItem1}, NormalPropLimitCount: {NormalPropLimitCount}";
+            $"RecipeMetadata(Id:{Id}, MasteryType:{MasteryType}, RequireItem1: {RequireItem1}, RewardItem1: {RewardItem1}, NormalPropLimitCount: {NormalPropLimitCount}, HighPropLimitCount: {HighPropLimitCount}";
 
         public override bool Equals(object obj)
         {
