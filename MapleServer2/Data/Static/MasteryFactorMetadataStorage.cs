@@ -25,7 +25,7 @@ namespace MapleServer2.Data.Static
             return new List<int>(map.Keys);
         }
 
-        public static int GetMetadataFactor(int id)
+        public static int GetFactor(int id)
         {
             return map.GetValueOrDefault(id).Factor;
         }

@@ -100,10 +100,10 @@ namespace MapleServer2.PacketHandlers.Game
                 Random rand = new Random();
                 int masteryDiffFactor = numCount switch
                 {
-                    int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetMetadataFactor(0),
-                    int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetMetadataFactor(1),
-                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => MasteryFactorMetadataStorage.GetMetadataFactor(2),
-                    _ => MasteryFactorMetadataStorage.GetMetadataFactor(3),
+                    int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetFactor(0),
+                    int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetFactor(1),
+                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => MasteryFactorMetadataStorage.GetFactor(2),
+                    _ => MasteryFactorMetadataStorage.GetFactor(3),
                 };
 
                 foreach (RecipeItem item in items)
