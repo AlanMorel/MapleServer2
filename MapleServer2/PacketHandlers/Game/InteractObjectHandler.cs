@@ -25,8 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
             Use = 0x0C,
         }
 
-        private static readonly int[] RarityChance = new int[] { 100, 80, 60, 40, 20 };         // drop rate of each rarity level
-        private static readonly float[] SuccessRate = new float[] { 1.0f, 0.5f, 0.25f, 0.0f };  // impact of success rate bracket on drop rate
+        private static readonly int[] RarityChance = new int[] { 0, 100, 80, 60, 40, 20 };         // drop rate of each rarity level
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -99,17 +98,17 @@ namespace MapleServer2.PacketHandlers.Game
 
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
-                float probMultiplier = numCount switch
+                int masteryDiffFactor = numCount switch
                 {
-                    int n when n < recipe.HighPropLimitCount => SuccessRate[0],
-                    int n when n < recipe.NormalPropLimitCount => SuccessRate[1],
-                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => SuccessRate[2],
-                    _ => SuccessRate[3],
+                    int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetMetadataFactor(0),
+                    int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetMetadataFactor(1),
+                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => MasteryFactorMetadataStorage.GetMetadataFactor(2),
+                    _ => MasteryFactorMetadataStorage.GetMetadataFactor(3),
                 };
 
                 foreach (RecipeItem item in items)
                 {
-                    int prob = (int) (RarityChance[item.Rarity] * probMultiplier);
+                    int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
                     if (rand.Next(100) < prob)
                     {
                         for (int i = 0; i < item.Amount; i++)
