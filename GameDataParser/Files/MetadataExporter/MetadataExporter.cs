@@ -58,8 +58,8 @@ namespace GameDataParser.Files
                     Console.WriteLine($"Unable to serialize {debugWriteStream.Name}");
                 }
             }
-        }
 #endif
+        }
         protected abstract void Serialize();
     }
 }
