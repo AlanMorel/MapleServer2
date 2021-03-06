@@ -5,6 +5,7 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -36,7 +37,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (type) // TODO: handling survivallevel
             {
                 case "vip":
-                    return session.Player.IsVIP;
+                    return session.Player.IsVip();
                 case "level":
                     return session.Player.Levels.Level >= 50;
                 case "enchant":
