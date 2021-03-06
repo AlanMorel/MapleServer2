@@ -49,6 +49,8 @@ namespace GameDataParser
                 new ShopParser(),
                 new ItemExchangeScrollParser(resources),
                 new MasteryFactorParser(resources),
+                new PremiumClubPackageParser(resources),
+                new PremiumClubDailyBenefitParser(resources),
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

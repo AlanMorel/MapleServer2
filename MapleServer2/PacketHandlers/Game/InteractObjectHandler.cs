@@ -109,14 +109,15 @@ namespace MapleServer2.PacketHandlers.Game
                 foreach (RecipeItem item in items)
                 {
                     int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
-                    if (rand.Next(100) < prob)
+                    if (rand.Next(100) >= prob)
                     {
-                        for (int i = 0; i < item.Amount; i++)
-                        {
-                            session.FieldManager.AddItem(session, new Item(item.Id));
-                        }
-                        numDrop += item.Amount;
+                        continue;
                     }
+                    for (int i = 0; i < item.Amount; i++)
+                    {
+                        session.FieldManager.AddItem(session, new Item(item.Id));
+                    }
+                    numDrop += item.Amount;
                 }
                 if (numDrop > 0)
                 {
