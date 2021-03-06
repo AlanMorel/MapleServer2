@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     class MeretsPacket
     {
-        public static Packet UpdateMerets(GameSession session)
+        public static Packet UpdateMerets(GameSession session, long amountGain = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET);
 
@@ -14,7 +14,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(session.Player.Wallet.Meret.Amount); // Meret
             pWriter.WriteLong(session.Player.Wallet.GameMeret.Amount); // GameMeret
             pWriter.WriteLong(session.Player.Wallet.EventMeret.Amount); // EventMeret
-            pWriter.WriteLong(); // Message: 'You won {amount} merets', expects long
+            pWriter.WriteLong(amountGain); // Message: 'You won {amount} merets', expects long
 
             return pWriter;
         }

@@ -1,5 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -60,9 +62,17 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleStartImprovise(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
-            // TODO: Verify if item is an (playable) instrument
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer));
+            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            {
+                return;
+            }
+
+            Item item = session.Player.Inventory.Items[itemUid];
+
+            InsturmentInfoMetadata instrument = InstrumentInfoMetadataStorage.GetMetadata(item.FunctionId);
+            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrument.Category);
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer, instrumentCategory.GMId));
         }
 
         private static void HandlePlayNote(GameSession session, PacketReader packet)
@@ -82,10 +92,15 @@ namespace MapleServer2.PacketHandlers.Game
             long instrumentItemUid = packet.ReadLong();
             long scoreItemUid = packet.ReadLong();
 
-            if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid))
+            if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
             {
                 return;
             }
+
+            Item instrument = session.Player.Inventory.Items[instrumentItemUid];
+
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrument.FunctionId);
+            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
             Item score = session.Player.Inventory.Items[scoreItemUid];
 
@@ -96,8 +111,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             score.PlayCount -= 1;
 
-            session.Send(InstrumentPacket.PlayScore(session.FieldPlayer, score.FileName));
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.FieldPlayer, score.FileName));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score.FileName, instrumentCategory.GMId));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 

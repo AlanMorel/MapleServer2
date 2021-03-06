@@ -95,6 +95,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).SkillID;
         }
 
+        public static int GetShopID(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).ShopID;
+        }
+
         public static List<Job> GetRecommendJobs(int itemId)
         {
             Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
@@ -158,6 +163,26 @@ namespace MapleServer2.Data.Static
         public static byte GetFunctionCapacity(int itemId)
         {
             return map.GetValueOrDefault(itemId).FunctionCapacity;
+        }
+
+        public static byte GetFunctionTargetLevel(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionTargetLevel;
+        }
+
+        public static short GetFunctionCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionCount;
+        }
+
+        public static byte GetFunctionTotalUser(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).FunctionTotalUser;
+        }
+
+        public static string GetTag(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Tag;
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

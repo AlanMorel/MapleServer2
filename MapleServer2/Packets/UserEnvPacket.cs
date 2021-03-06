@@ -8,6 +8,14 @@ namespace MapleServer2.Packets
 {
     public static class UserEnvPacket
     {
+        public static Packet AddTitle(int titleId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
+            pWriter.WriteByte(0x0);
+            pWriter.WriteInt(titleId);
+            return pWriter;
+        }
+
         // Unlocked Titles
         public static Packet SetTitles(Player player)
         {

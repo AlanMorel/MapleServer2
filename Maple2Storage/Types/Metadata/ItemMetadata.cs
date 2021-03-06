@@ -56,6 +56,14 @@ namespace Maple2Storage.Types.Metadata
         public byte FunctionCapacity;
         [XmlElement(Order = 24)]
         public byte FunctionTargetLevel;
+        [XmlElement(Order = 25)]
+        public short FunctionCount;
+        [XmlElement(Order = 26)]
+        public byte FunctionTotalUser;
+        [XmlElement(Order = 27)]
+        public string Tag;
+        [XmlElement(Order = 28)]
+        public int ShopID;
 
         // Required for deserialization
         public ItemMetadata()
@@ -67,7 +75,7 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},PlayCount:{PlayCount},FileName:{FileName}," +
             $"SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},FunctionName:{FunctionName},FunctionId:{FunctionId},FunctionDuration:{FunctionDuration}," +
-            $"FunctionFieldId:{FunctionFieldId},FunctionCapacity:{FunctionCapacity},FunctionTargetLevel:{FunctionTargetLevel}";
+            $"FunctionFieldId:{FunctionFieldId},FunctionCapacity:{FunctionCapacity},FunctionTargetLevel:{FunctionTargetLevel},FunctionCount:{FunctionCount},FunctionTotalUser:{FunctionTotalUser},Tag:{Tag},ShopID:{ShopID}";
 
         protected bool Equals(ItemMetadata other)
         {
