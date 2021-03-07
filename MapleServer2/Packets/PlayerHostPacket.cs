@@ -34,7 +34,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.HongbaoGiftNotice);
             pWriter.WriteBool(hongBao.Active);
-            if (hongBao.Active == true)
+            if (hongBao.Active)
             {
                 pWriter.WriteInt(hongBao.ItemId);
                 pWriter.WriteInt(hongBao.RewardId);

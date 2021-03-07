@@ -56,7 +56,7 @@ namespace MapleServer2.Types
 
         public void DistributeReward()
         {
-            if (Active == false)
+            if (!Active)
             {
                 return;
             }
