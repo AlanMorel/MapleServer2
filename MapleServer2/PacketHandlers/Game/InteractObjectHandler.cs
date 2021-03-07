@@ -125,7 +125,7 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
             }
-            session.Send(InteractActorPacket.UseObject(actor, numDrop > 0 ? 0 : 1, numDrop));
+            session.Send(InteractActorPacket.UseObject(actor, (short) (numDrop > 0 ? 0 : 1), numDrop));
             session.Send(InteractActorPacket.Extra(actor));
         }
     }

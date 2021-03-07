@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
                     continue;
                 }
                 pWriter.WriteInt(mobs[i].ObjectId);
-                pWriter.WriteByte((byte) damage.GetDamage() > 0 ? 1 : 0);
+                pWriter.WriteByte((byte) (damage.GetDamage() > 0 ? 1 : 0));
                 pWriter.WriteBool(damage.IsCritical());
                 if (damage.GetDamage() != 0)
                 {

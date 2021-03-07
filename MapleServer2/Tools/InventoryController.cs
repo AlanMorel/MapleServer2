@@ -57,7 +57,7 @@ namespace MapleServer2.Tools
                     Item newItem = new Item(item)
                     {
                         Amount = 1,
-                        Slot = session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot,
+                        Slot = session.Player.Inventory.SlotTaken(item, item.Slot) ? (short)-1 : item.Slot,
                         Uid = GuidGenerator.Long()
                     };
                     if (!session.Player.Inventory.Add(newItem))
