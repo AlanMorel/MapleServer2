@@ -4,6 +4,7 @@
     {
         Unknown = 0,
         Binoculars = 2,
-        Extractor = 3
+        Extractor = 3,
+        Gathering = 6,
     }
 }

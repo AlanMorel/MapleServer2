@@ -78,11 +78,11 @@ namespace MapleServer2.Types
             Current = initial;
         }
 
-        public PlayerStat(int total, int min, int max)
+        public PlayerStat(int max, int min, int current)
         {
-            Max = total;
+            Max = max;
             Min = min;
-            Current = max;
+            Current = current;
         }
 
         public PlayerStat(PlayerStat sourceStat, int offset)

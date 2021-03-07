@@ -61,6 +61,23 @@ namespace GameDataParser.Parsers
                 mapObjects.Add(modelName, thisNode);
             }
 
+            // fetch interactID and recipeID relation from xml (can be expanded to parse other xml info)
+            Dictionary<int, int> interactRecipeMap = new Dictionary<int, int>();
+            foreach (PackFileEntry entry in Resources.XmlFiles
+                .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success))
+            {
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList interactNodes = document.SelectNodes("/ms2/interact");
+
+                foreach (XmlNode node in interactNodes)
+                {
+                    int interactID = int.Parse(node.Attributes["id"].Value);
+                    XmlNode gatheringNode = node.SelectSingleNode("gathering");
+                    int recipeID = int.Parse(gatheringNode.Attributes["receipeID"].Value);
+                    interactRecipeMap[interactID] = recipeID;
+                }
+            }
+
             // Iterate over map xblocks
             Dictionary<string, string> maps = new Dictionary<string, string>();  // Have we already parsed this map?
             foreach (PackFileEntry entry in Resources.ExportedFiles
@@ -118,6 +135,18 @@ namespace GameDataParser.Parsers
                         string uuid = node.Attributes["id"].Value;
                         int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
                         metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
+                    }
+                    else if (modelName.Contains("hub") || modelName.Contains("vein"))
+                    {
+                        string uuid = node.Attributes["id"].Value;
+                        bool parseRes = int.TryParse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value, out int interactId);
+                        // use preset InteractID if unique interactID is invalid or does not exist
+                        if (!parseRes || !interactRecipeMap.ContainsKey(interactId))
+                        {
+                            interactId = int.Parse(mapObjects[modelName]["interactID"]);
+                        }
+                        int recipeId = interactRecipeMap[interactId];
+                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Gathering, interactId, recipeId));
                     }
                     else if (modelName == "SpawnPointPC")  // Player Spawn point on map
                     {

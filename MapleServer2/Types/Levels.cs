@@ -120,7 +120,7 @@ namespace MapleServer2.Types
 
         public void GainMasteryExp(MasteryType type, long amount)
         {
-            MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == (byte) type);
+            MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == type);
 
             if (masteryExp == null) // add mastery to list
             {

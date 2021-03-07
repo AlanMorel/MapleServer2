@@ -3,6 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.Packets
 {
@@ -10,9 +11,15 @@ namespace MapleServer2.Packets
     {
         private enum InteractObjectMode : byte
         {
-            Binoculars = 0x05,
+            Use = 0x05,
             AddInteractActor = 0x08,
             Extra = 0x0D
+        }
+
+        private enum InteractStatus : byte
+        {
+            Disabled = 0x00,
+            Enabled = 0x01
         }
 
         public static Packet AddInteractActors(ICollection<IFieldObject<InteractActor>> actors)
@@ -25,21 +32,28 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteShort((short) actor.Value.Uuid.Length);
                 pWriter.WriteString(actor.Value.Uuid);
-                pWriter.WriteByte(1);
+                pWriter.WriteEnum(InteractStatus.Enabled);
                 pWriter.WriteEnum(actor.Value.Type);
+                pWriter.WriteInt(0);
             }
 
             return pWriter;
         }
 
-        public static Packet UseObject(MapInteractActor actor)
+        public static Packet UseObject(MapInteractActor actor, short result = 0, int numDrops = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
-            pWriter.WriteEnum(InteractObjectMode.Binoculars);
+            pWriter.WriteEnum(InteractObjectMode.Use);
             pWriter.WriteShort((short) actor.Uuid.Length);
             pWriter.WriteString(actor.Uuid);
             pWriter.WriteEnum(actor.Type);
+
+            if (actor.Type == InteractActorType.Gathering)
+            {
+                pWriter.WriteShort(result);
+                pWriter.WriteInt(numDrops);
+            }
 
             return pWriter;
         }
