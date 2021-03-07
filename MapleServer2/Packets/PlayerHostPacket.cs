@@ -34,17 +34,13 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.HongbaoGiftNotice);
             pWriter.WriteBool(hongBao.Active);
-            switch (hongBao.Active)
+            if (hongBao.Active == true)
             {
-                case true:
-                    pWriter.WriteInt(hongBao.ItemId);
-                    pWriter.WriteInt(hongBao.RewardId);
-                    pWriter.WriteInt(dividedRewardAmount);
-                    pWriter.WriteUnicodeString(hongBao.Giver.Name);
-                    pWriter.WriteUnicodeString(receiver.Name);
-                    break;
-                case false:
-                    break;
+                pWriter.WriteInt(hongBao.ItemId);
+                pWriter.WriteInt(hongBao.RewardId);
+                pWriter.WriteInt(dividedRewardAmount);
+                pWriter.WriteUnicodeString(hongBao.Giver.Name);
+                pWriter.WriteUnicodeString(receiver.Name);
             }
             return pWriter;
         }

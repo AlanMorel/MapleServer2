@@ -34,6 +34,7 @@ namespace GameDataParser.Parsers
                         {
                             metadata.GMId = byte.Parse(node.Attributes["GMId"].Value);
                         }
+
                         if (node.Attributes["defaultOctave"] != null)
                         {
                             metadata.Octave = node.Attributes["defaultOctave"].Value;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -183,13 +182,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
             InventoryController.Consume(session, item.Uid, 1);
-            StartHongBao(newHongBao);
-        }
-
-        private static async Task StartHongBao(HongBao hongBao)
-        {
-            await Task.Delay(hongBao.Duration * 1000);
-            hongBao.DistributeReward();
         }
     }
 }

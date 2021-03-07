@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -35,6 +36,7 @@ namespace MapleServer2.Types
 
             giver.Session.Send(MeretsPacket.UpdateMerets(giver.Session, rewardAmount));
             giver.Wallet.EventMeret.Modify(rewardAmount);
+            Start(this);
         }
 
         public void AddReceiver(Player player)
@@ -76,6 +78,13 @@ namespace MapleServer2.Types
 
             Active = false;
             GameServer.HongBaoManager.RemoveHongBao(this);
+        }
+
+        private static async Task Start(HongBao hongBao)
+        {
+            await Task.Delay(hongBao.Duration * 1000);
+
+            hongBao.DistributeReward();
         }
     }
 }

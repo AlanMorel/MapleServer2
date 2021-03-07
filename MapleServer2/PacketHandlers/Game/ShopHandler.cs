@@ -26,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
             Buy = 0x4,
             Sell = 0x5,
             Close = 0x6,
-            OpenViaItam = 0x0A,
+            OpenViaItem = 0x0A,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case ShopMode.Sell:
                     HandleSell(session, packet);
                     break;
-                case ShopMode.OpenViaItam:
+                case ShopMode.OpenViaItem:
                     HandleOpenViaItem(session, packet);
                     break;
                 default:
