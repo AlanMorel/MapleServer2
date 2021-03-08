@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
@@ -30,7 +31,7 @@ namespace MapleServer2.Types
             return Condition == 0 ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
         }
 
-        public void AddCounter(int amount)
+        public void AddCounter(long amount)
         {
             Counter += amount;
             // level up achievement if counter reached condition of next grade

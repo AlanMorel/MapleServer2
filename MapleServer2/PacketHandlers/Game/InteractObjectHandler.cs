@@ -123,6 +123,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     session.Player.IncrementGatheringCount(actor.RecipeId, numDrop);
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
+                    session.Player.AchieveUpdate(23100238, recipe.RewardMastery); //debug
                 }
             }
             session.Send(InteractActorPacket.UseObject(actor, numDrop > 0 ? 0 : 1, numDrop));
