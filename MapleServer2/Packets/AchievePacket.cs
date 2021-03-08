@@ -61,17 +61,17 @@ namespace MapleServer2.Packets
             int tCount = achieve.Timestamps.Count;
             PacketWriter pWriter = new PacketWriter();
 
-            pWriter.WriteEnum(achieve.GetGradeStatus());            // grade status (refer to GradeStatus enum)
-            pWriter.WriteInt(1);                                    // starting grade
-            pWriter.WriteInt(achieve.CurrentGrade);                 // current grade to achieve
-            pWriter.WriteInt(achieve.MaxGrade);                     // maximum grade
+            pWriter.WriteEnum(achieve.GetGradeStatus());
+            pWriter.WriteInt(1);
+            pWriter.WriteInt(achieve.CurrentGrade);
+            pWriter.WriteInt(achieve.MaxGrade);
             pWriter.WriteByte(0);                                   // unknown
-            pWriter.WriteLong(achieve.Counter);                     // progress counter
-            pWriter.WriteInt(tCount);                               // number of timestamps
+            pWriter.WriteLong(achieve.Counter);
+            pWriter.WriteInt(tCount);
             for (int t = 0; t < tCount; t++)
             {
-                pWriter.WriteInt(t + 1);                              // grade corresponding to timestamp
-                pWriter.WriteLong(achieve.Timestamps.ElementAt(t)); // timestamp in unix time (seconds)
+                pWriter.WriteInt(t + 1);
+                pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
             }
 
             return pWriter;

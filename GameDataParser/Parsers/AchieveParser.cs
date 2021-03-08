@@ -3,6 +3,7 @@ using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
+using Maple2Storage.Enums;
 
 namespace GameDataParser.Parsers
 {
@@ -38,7 +39,13 @@ namespace GameDataParser.Parsers
                     newGrade.Condition = long.Parse(condition.Attributes["value"].Value);
 
                     XmlNode reward = grade.SelectSingleNode("reward");
-                    newGrade.Reward = int.Parse(reward.Attributes["value"].Value);
+                    System.Console.WriteLine(reward.Attributes["type"].Value); //debug
+                    newGrade.RewardType = reward.Attributes["type"].Value switch
+                    {
+                        string s when s.Contains("title") => RewardType.Title,
+                        _ => RewardType.Unknown,
+                    };
+                    newGrade.RewardCode = int.Parse(reward.Attributes["code"].Value);
 
                     newAchieve.Grades.Add(newGrade);
                 }

@@ -8,7 +8,6 @@ namespace MapleServer2.Types
 {
     public class Achieve
     {
-        public Player Owner { get; private set; }
         public int Id { get; private set; }
         public int CurrentGrade { get; private set; }   // grade trying to achieve (value from 1 to MaxGrade)
         public int MaxGrade { get; private set; }

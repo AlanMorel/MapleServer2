@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -78,19 +79,22 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public long Condition;
         [XmlElement(Order = 3)]
-        public int Reward;
+        public RewardType RewardType;
+        [XmlElement(Order = 4)]
+        public int RewardCode;
 
         // Required for deserialization
         public AchieveGradeMetadata() { }
 
         public override string ToString() =>
-            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},Reward:{Reward})";
+            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode})";
 
         protected bool Equals(AchieveGradeMetadata other)
         {
             return Grade == other.Grade
                 && Condition == other.Condition
-                && Reward == other.Reward;
+                && RewardType == other.RewardType
+                && RewardCode == other.RewardCode;
         }
 
         public override bool Equals(object obj)
@@ -115,7 +119,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Grade, Condition, Reward);
+            return HashCode.Combine(Grade, Condition, RewardType, RewardCode);
         }
 
         public static bool operator ==(AchieveGradeMetadata left, AchieveGradeMetadata right)
