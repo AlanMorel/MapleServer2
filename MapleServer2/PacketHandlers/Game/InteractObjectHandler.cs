@@ -126,7 +126,7 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Player.AchieveUpdate(23100238, recipe.RewardMastery); //debug
                 }
             }
-            session.Send(InteractActorPacket.UseObject(actor, numDrop > 0 ? 0 : 1, numDrop));
+            session.Send(InteractActorPacket.UseObject(actor, (short) (numDrop > 0 ? 0 : 1), numDrop));
             session.Send(InteractActorPacket.Extra(actor));
         }
     }

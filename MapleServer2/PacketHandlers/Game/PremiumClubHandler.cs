@@ -3,6 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -111,15 +112,23 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
+
+            ActivatePremium(session, vipTime);
+        }
+
+        public static void ActivatePremium(GameSession session, long vipTime)
+        {
             long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
 
             if (!session.Player.IsVip())
             {
                 session.Player.VIPExpiration = expiration;
+                session.Send(NoticePacket.Notice(SystemNotice.PremiumActivated, NoticeType.ChatAndFastText));
             }
             else
             {
                 session.Player.VIPExpiration += vipTime;
+                session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
             }
 
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));

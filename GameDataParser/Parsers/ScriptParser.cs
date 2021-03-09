@@ -57,7 +57,7 @@ namespace GameDataParser.Parsers
                         string illust = string.IsNullOrEmpty(content.Attributes["illust"]?.Value) ? "" : content.Attributes["illust"].Value;
                         string speakerIllust = string.IsNullOrEmpty(content.Attributes["speakerIllust"]?.Value) ? "" : content.Attributes["speakerIllust"].Value;
                         bool myTalk = !string.IsNullOrEmpty(content.Attributes["myTalk"]?.Value);
-                        byte functionID = string.IsNullOrEmpty(content.Attributes["functionID"]?.Value) ? 0 : byte.Parse(content.Attributes["functionID"].Value);
+                        byte functionID = (byte) (string.IsNullOrEmpty(content.Attributes["functionID"]?.Value) ? 0 : byte.Parse(content.Attributes["functionID"].Value));
 
                         List<Distractor> distractors = new List<Distractor>();
                         List<Event> events = new List<Event>();
@@ -76,7 +76,7 @@ namespace GameDataParser.Parsers
                                     string illust2 = string.IsNullOrEmpty(item.Attributes["illust"]?.Value) ? "" : item.Attributes["illust"].Value;
                                     string speakerIllust2 = string.IsNullOrEmpty(item.Attributes["speakerIllust"]?.Value) ? "" : item.Attributes["speakerIllust"].Value;
                                     bool myTalk2 = !string.IsNullOrEmpty(item.Attributes["myTalk"]?.Value);
-                                    byte functionID2 = string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value);
+                                    byte functionID2 = (byte) (string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value));
 
                                     contents2.Add(new Content(voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
                                 }
@@ -178,7 +178,7 @@ namespace GameDataParser.Parsers
                             string illust = string.IsNullOrEmpty(content.Attributes["illust"]?.Value) ? "" : content.Attributes["illust"].Value;
                             string speakerIllust = string.IsNullOrEmpty(content.Attributes["speakerIllust"]?.Value) ? "" : content.Attributes["speakerIllust"].Value;
                             bool myTalk = !string.IsNullOrEmpty(content.Attributes["myTalk"]?.Value);
-                            byte functionID = string.IsNullOrEmpty(content.Attributes["functionID"]?.Value) ? 0 : byte.Parse(content.Attributes["functionID"].Value);
+                            byte functionID = (byte) (string.IsNullOrEmpty(content.Attributes["functionID"]?.Value) ? 0 : byte.Parse(content.Attributes["functionID"].Value));
 
                             List<Distractor> distractors = new List<Distractor>();
                             List<Event> events = new List<Event>();
@@ -197,7 +197,7 @@ namespace GameDataParser.Parsers
                                         string illust2 = string.IsNullOrEmpty(item.Attributes["illust"]?.Value) ? "" : item.Attributes["illust"].Value;
                                         string speakerIllust2 = string.IsNullOrEmpty(item.Attributes["speakerIllust"]?.Value) ? "" : item.Attributes["speakerIllust"].Value;
                                         bool myTalk2 = !string.IsNullOrEmpty(item.Attributes["myTalk"]?.Value);
-                                        byte functionID2 = string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value);
+                                        byte functionID2 = (byte) (string.IsNullOrEmpty(item.Attributes["functionID"]?.Value) ? 0 : byte.Parse(item.Attributes["functionID"].Value));
 
                                         contents2.Add(new Content(voiceID2, functionID2, leftIllust2, speakerIllust2, otherNpcTalk2, myTalk2, illust2, null));
                                     }

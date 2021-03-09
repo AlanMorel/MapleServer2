@@ -127,6 +127,10 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNode item = document.SelectSingleNode("ms2/environment");
 
+                // Tag
+                XmlNode basic = item.SelectSingleNode("basic");
+                metadata.Tag = basic.Attributes["stringTag"].Value;
+
                 // Gear/Cosmetic slot
                 XmlNode slots = item.SelectSingleNode("slots");
                 XmlNode slot = slots.FirstChild;
@@ -252,7 +256,33 @@ namespace GameDataParser.Parsers
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
                     metadata.FunctionTargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
                 }
-                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll")
+                else if (contentType == "VIPCoupon")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["period"].Value);
+                }
+                else if (contentType == "HongBao")
+                {
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    metadata.FunctionId = int.Parse(functionParameters.Attributes["itemId"].Value);
+                    metadata.FunctionCount = short.Parse(functionParameters.Attributes["totalCount"].Value);
+                    metadata.FunctionTotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
+                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                }
+                else if (contentType == "SuperWorldChat")
+                {
+                    string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                    metadata.FunctionId = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
+                }
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook")
                 {
                     metadata.FunctionId = int.Parse(function.Attributes["parameter"].Value);
                 }
@@ -263,6 +293,13 @@ namespace GameDataParser.Parsers
                 metadata.PlayCount = playCount;
                 string fileName = musicScore.Attributes["fileName"].Value;
                 metadata.FileName = fileName;
+
+                // Shop ID from currency items
+                if (item["Shop"] != null)
+                {
+                    XmlNode shop = item.SelectSingleNode("Shop");
+                    metadata.ShopID = int.Parse(shop.Attributes["systemShopID"].Value);
+                }
 
                 XmlNode skill = item.SelectSingleNode("skill");
                 int skillID = int.Parse(skill.Attributes["skillID"].Value);
