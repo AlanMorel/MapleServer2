@@ -13,7 +13,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteByte();
+            pWriter.WriteByte(0);
             pWriter.WriteUnicodeString(message);
             pWriter.WriteInt((int) type);
             pWriter.WriteByte();
@@ -25,16 +25,32 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString("???");
                     break;
                 case ChatType.Super:
-                    pWriter.WriteInt(20800017); // item id?
+                    pWriter.WriteInt(player.SuperChat);
                     break;
-                case ChatType.UnknownPurple:
-                    pWriter.WriteLong(); // char id?
+                case ChatType.Club:
+                    pWriter.WriteLong(); // clubId
                     break;
             }
-            pWriter.WriteByte();
 
+            pWriter.WriteByte();
             return pWriter;
         }
+
+        public static Packet Error(Player player, SystemNotice error, ChatType type)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte(1);
+            pWriter.WriteInt((int) error);
+            pWriter.WriteInt((int) type);
+            pWriter.WriteByte();
+            pWriter.WriteInt(); // Channel
+            pWriter.WriteByte();
+            return pWriter;
+        }
+
     }
 }
 // SendUserChatItem

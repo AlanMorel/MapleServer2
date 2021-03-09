@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -23,7 +25,8 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Buy = 0x4,
             Sell = 0x5,
-            Close = 0x6
+            Close = 0x6,
+            OpenViaItem = 0x0A,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -40,6 +43,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case ShopMode.Sell:
                     HandleSell(session, packet);
+                    break;
+                case ShopMode.OpenViaItem:
+                    HandleOpenViaItem(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -131,6 +137,24 @@ namespace MapleServer2.PacketHandlers.Game
 
             // complete purchase
             session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
+        }
+
+        private static void HandleOpenViaItem(GameSession session, PacketReader packet)
+        {
+            byte unk = packet.ReadByte();
+            int itemId = packet.ReadInt();
+
+            List<Item> playerInventory = new(session.Player.Inventory.Items.Values);
+
+            Item item = playerInventory.FirstOrDefault(x => x.Id == itemId);
+            if (item == null)
+            {
+                return;
+            }
+
+            ShopMetadata shop = ShopMetadataStorage.GetShop(item.ShopID);
+            session.Send(ShopPacket.Open(shop));
+            session.Send(ShopPacket.LoadProducts(shop.Items));
         }
     }
 }

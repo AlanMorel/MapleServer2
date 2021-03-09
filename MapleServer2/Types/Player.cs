@@ -46,6 +46,7 @@ namespace MapleServer2.Types
         public IFieldObject<Mount> Mount;
         public IFieldObject<Pet> Pet;
         public long VIPExpiration = 0;
+        public int SuperChat;
 
         // Combat, Adventure, Lifestyle
         public int[] Trophy = new int[3] { 0, 1, 2 };

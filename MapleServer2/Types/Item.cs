@@ -30,6 +30,10 @@ namespace MapleServer2.Types
         public int FunctionFieldId { get; set; }
         public byte FunctionCapacity { get; set; }
         public byte FunctionTargetLevel { get; set; }
+        public short FunctionCount { get; set; }
+        public byte FunctionTotalUser { get; set; }
+        public string Tag { get; set; }
+        public int ShopID { get; set; }
 
         public readonly int Id;
         public long Uid;
@@ -89,6 +93,11 @@ namespace MapleServer2.Types
             FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
             FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
             FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
+            FunctionTargetLevel = ItemMetadataStorage.GetFunctionTargetLevel(id);
+            FunctionCount = ItemMetadataStorage.GetFunctionCount(id);
+            FunctionTotalUser = ItemMetadataStorage.GetFunctionTotalUser(id);
+            Tag = ItemMetadataStorage.GetTag(id);
+            ShopID = ItemMetadataStorage.GetShopID(id);
             Slot = -1;
             Amount = 1;
             Stats = new ItemStats(id, Rarity);
@@ -117,6 +126,8 @@ namespace MapleServer2.Types
             FunctionFieldId = other.FunctionFieldId;
             FunctionCapacity = other.FunctionCapacity;
             FunctionTargetLevel = other.FunctionTargetLevel;
+            FunctionCount = other.FunctionCount;
+            FunctionTotalUser = other.FunctionTotalUser;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;

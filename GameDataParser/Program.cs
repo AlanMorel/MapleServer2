@@ -51,6 +51,8 @@ namespace GameDataParser
                 new MasteryFactorParser(resources),
                 new PremiumClubPackageParser(resources),
                 new PremiumClubDailyBenefitParser(resources),
+                new InstrumentInfoParser(resources),
+                new InstrumentCategoryInfoParser(resources),
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));
