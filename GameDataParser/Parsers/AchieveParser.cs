@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -13,6 +14,7 @@ namespace GameDataParser.Parsers
 
         protected override List<AchieveMetadata> Parse()
         {
+            HashSet<string> test = new HashSet<string>();
             List<AchieveMetadata> achieveList = new List<AchieveMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
@@ -39,18 +41,14 @@ namespace GameDataParser.Parsers
                     newGrade.Condition = long.Parse(condition.Attributes["value"].Value);
 
                     XmlNode reward = grade.SelectSingleNode("reward");
-                    System.Console.WriteLine(reward.Attributes["type"].Value); //debug
-                    newGrade.RewardType = reward.Attributes["type"].Value switch
-                    {
-                        string s when s.Contains("title") => RewardType.Title,
-                        _ => RewardType.Unknown,
-                    };
+                    Enum.TryParse(reward.Attributes["type"].Value, true, out newGrade.RewardType);
                     newGrade.RewardCode = int.Parse(reward.Attributes["code"].Value);
 
                     newAchieve.Grades.Add(newGrade);
                 }
                 achieveList.Add(newAchieve);
             }
+            System.Console.WriteLine(string.Join(", ", test));
 
             return achieveList;
         }

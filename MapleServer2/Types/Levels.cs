@@ -124,13 +124,20 @@ namespace MapleServer2.Types
 
             if (masteryExp == null) // add mastery to list
             {
-                MasteryExp.Add(new MasteryExp(type, amount));
-                Player.Session.Send(MasteryPacket.SetExp(type, amount));
+                masteryExp = new MasteryExp(type);
+                MasteryExp.Add(masteryExp);
             }
-            else
+            // user already has some exp in mastery, so simply update it
+            Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
+
+            // ACHIEVEMENT CHECKPOINT: 23100238, 23100239, 23100240
+            int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
+            if (currLevel > masteryExp.Level)
             {
-                // user already has some exp in mastery, so simply update it
-                Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
+                masteryExp.Level = currLevel;
+                Player.AchieveUpdate(23100238, 1);
+                Player.AchieveUpdate(23100239, 1);
+                Player.AchieveUpdate(23100240, 1);
             }
         }
     }

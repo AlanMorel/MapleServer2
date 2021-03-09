@@ -63,9 +63,9 @@ namespace MapleServer2.Packets
 
             pWriter.WriteEnum(achieve.GetGradeStatus());
             pWriter.WriteInt(1);
-            pWriter.WriteInt(achieve.CurrentGrade);
+            pWriter.WriteInt(achieve.CurrentGrade+1);
             pWriter.WriteInt(achieve.MaxGrade);
-            pWriter.WriteByte(0);                                   // unknown
+            pWriter.WriteByte(0);
             pWriter.WriteLong(achieve.Counter);
             pWriter.WriteInt(tCount);
             for (int t = 0; t < tCount; t++)
