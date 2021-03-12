@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -51,22 +52,21 @@ namespace MapleServer2.PacketHandlers.Game
 
                 if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
                 {
-                    int offset = 150;
                     if (dstPortal.Rotation.Z == 0) // Facing SE
                     {
-                        session.Player.Coord.Y -= offset;
+                        session.Player.Coord.Y -= Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == 90) // Facing NE
                     {
-                        session.Player.Coord.X += offset;
+                        session.Player.Coord.X += Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == 180) // Facing NW
                     {
-                        session.Player.Coord.Y += offset;
+                        session.Player.Coord.Y += Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == 270) // Facing SW
                     {
-                        session.Player.Coord.X -= offset;
+                        session.Player.Coord.X -= Block.BLOCK_SIZE;
                     }
                 }
 
