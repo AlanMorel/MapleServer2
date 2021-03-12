@@ -46,8 +46,31 @@ namespace MapleServer2.PacketHandlers.Game
 
                 // TODO: There needs to be a more centralized way to set coordinates...
                 session.Player.MapId = srcPortal.Target;
+                session.Player.Rotation = dstPortal.Rotation.ToFloat();
                 session.Player.Coord = dstPortal.Coord.ToFloat();
-                session.Player.SafeBlock = dstPortal.Coord.ToFloat();
+
+                if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
+                {
+                    int offset = 150;
+                    if (dstPortal.Rotation.Z == 0) // Facing SE
+                    {
+                        session.Player.Coord.Y -= offset;
+                    }
+                    else if (dstPortal.Rotation.Z == 90) // Facing NE
+                    {
+                        session.Player.Coord.X += offset;
+                    }
+                    else if (dstPortal.Rotation.Z == 180) // Facing NW
+                    {
+                        session.Player.Coord.Y += offset;
+                    }
+                    else if (dstPortal.Rotation.Z == 270) // Facing SW
+                    {
+                        session.Player.Coord.X -= offset;
+                    }
+                }
+
+                session.Player.SafeBlock = session.Player.Coord;
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
