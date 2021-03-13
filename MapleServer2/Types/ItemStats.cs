@@ -3,54 +3,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
+    public interface ItemStat { }
+
     [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
-    public struct ItemStat
+    public struct NormalStat : ItemStat
     {
-        public ItemAttribute Type { get; private set; }
-        public int Value { get; private set; }
+        public ItemAttribute Id { get; private set; }
+        public int Flat { get; private set; }
         public float Percent { get; private set; }
 
-        public static ItemStat Of(ItemAttribute type, int value)
+        public static NormalStat Of(ItemAttribute type, int flat)
         {
-            return new ItemStat
+            return new NormalStat
             {
-                Type = type,
-                Value = value,
+                Id = type,
+                Flat = flat,
                 Percent = 0,
             };
         }
 
-        public static ItemStat Of(ItemAttribute type, float percent)
+        public static NormalStat Of(ItemAttribute type, float percent)
         {
-            return new ItemStat
+            return new NormalStat
             {
-                Type = type,
-                Value = 0,
+                Id = type,
+                Flat = 0,
                 Percent = percent,
+            };
+        }
+
+        public static NormalStat Of(ParserStat stat)
+        {
+            return new NormalStat
+            {
+                Id = stat.Id,
+                Flat = stat.Flat,
+                Percent = stat.Percent,
             };
         }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
-    public struct SpecialItemStat
+    public struct SpecialStat : ItemStat
     {
-        public ItemSpecialAttribute Type { get; private set; }
-        public float Value { get; private set; }
-        public float Unknown { get; private set; }
+        public SpecialItemAttribute Id { get; private set; }
+        public float Percent { get; private set; }
+        public float Flat { get; private set; }
 
-        public static SpecialItemStat Of(ItemSpecialAttribute type, float value)
+        public static SpecialStat Of(SpecialItemAttribute type, float percent, float flat)
         {
-            return new SpecialItemStat
+            return new SpecialStat
             {
-                Type = type,
-                Value = value,
-                Unknown = 0,
+                Id = type,
+                Percent = percent,
+                Flat = flat,
+            };
+        }
+
+        public static SpecialStat Of(ParserSpecialStat stat)
+        {
+            return new SpecialStat
+            {
+                Id = stat.Id,
+                Percent = stat.Percent,
+                Flat = stat.Flat,
             };
         }
     }
@@ -73,69 +95,163 @@ namespace MapleServer2.Types
 
     public class ItemStats
     {
-        public readonly List<ItemStat> BasicAttributes;
-        public readonly List<ItemStat> BonusAttributes;
+        public readonly List<NormalStat> BasicAttributes;
+        public readonly List<SpecialStat> SpecialBasicAttributes;
+        public readonly List<NormalStat> BonusAttributes;
+        public readonly List<SpecialStat> SpecialBonusAttributes;
 
         public byte TotalSockets;
         public readonly List<Gemstone> Gemstones;
 
         public ItemStats(int itemId, int rarity)
         {
-            BasicAttributes = new List<ItemStat>();
-            BonusAttributes = new List<ItemStat>();
+            BasicAttributes = new List<NormalStat>();
+            SpecialBasicAttributes = new List<SpecialStat>();
+            BonusAttributes = new List<NormalStat>();
+            SpecialBonusAttributes = new List<SpecialStat>();
             Gemstones = new List<Gemstone>();
             if (rarity == 0)
             {
                 return;
             }
 
-            if (ItemStatsMetadataStorage.GetBasic(itemId, out List<ItemOptions> basicList))
+            if (ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOptions> basicList))
             {
                 ItemOptions itemoption = basicList.Find(options => options.Rarity == rarity);
                 if (itemoption != null)
                 {
-                    AddStat(BasicAttributes, itemoption.Stats);
+                    if (itemoption.MaxWeaponAtk != 0)
+                    {
+                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MinWeaponAtk, itemoption.MinWeaponAtk));
+                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MaxWeaponAtk, itemoption.MaxWeaponAtk));
+                    }
+                    List<ItemStat> itemStats = new List<ItemStat>();
+
+                    foreach (ItemAttribute attribute in itemoption.Stats)
+                    {
+                        itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+                    }
+
+                    foreach (SpecialItemAttribute attribute in itemoption.SpecialStats)
+                    {
+                        itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
+                    }
+
+                    foreach (ItemStat stat in itemStats)
+                    {
+                        if (stat.GetType() == typeof(NormalStat))
+                        {
+                            BasicAttributes.Add((NormalStat) stat);
+                        }
+                        else
+                        {
+                            SpecialBasicAttributes.Add((SpecialStat) stat);
+                        }
+                    }
                 }
             }
 
-            if (ItemStatsMetadataStorage.GetRandomBonus(itemId, out List<ItemOptions> randomBonusList))
+            if (ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOptions> randomBonusList))
             {
-                ItemOptions itemoption = randomBonusList.Find(options => options.Rarity == rarity && options.Slots > 0);
+                Random random = new Random();
+                ItemOptions itemoption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
                 if (itemoption != null)
                 {
-                    List<Stat> indexes = GetRandomOptions(itemoption, itemoption.Slots);
-                    AddStat(BonusAttributes, indexes);
+                    List<ItemStat> itemStats = new List<ItemStat>();
+
+                    foreach (ItemAttribute attribute in itemoption.Stats)
+                    {
+                        itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+                    }
+
+                    foreach (SpecialItemAttribute attribute in itemoption.SpecialStats)
+                    {
+                        itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
+                    }
+
+                    List<ItemStat> randomList = itemStats.OrderBy(x => random.Next()).Take(itemoption.Slots).ToList();
+
+                    foreach (ItemStat stat in randomList)
+                    {
+                        if (stat.GetType() == typeof(NormalStat))
+                        {
+                            BonusAttributes.Add((NormalStat) stat);
+                        }
+                        else
+                        {
+                            SpecialBonusAttributes.Add((SpecialStat) stat);
+                        }
+                    }
                 }
             }
         }
 
         public ItemStats(ItemStats other)
         {
-            BasicAttributes = new List<ItemStat>(other.BasicAttributes);
-            BonusAttributes = new List<ItemStat>(other.BonusAttributes);
+            BasicAttributes = new List<NormalStat>(other.BasicAttributes);
+            SpecialBasicAttributes = new List<SpecialStat>(other.SpecialBasicAttributes);
+            BonusAttributes = new List<NormalStat>(other.BonusAttributes);
+            SpecialBonusAttributes = new List<SpecialStat>(other.SpecialBonusAttributes);
             TotalSockets = other.TotalSockets;
             Gemstones = new List<Gemstone>(other.Gemstones);
         }
 
-        private static List<Stat> GetRandomOptions(ItemOptions list, int rolls)
+        private static Dictionary<ItemAttribute, List<ParserStat>> GetRange(int itemId)
         {
-            Random random = new Random();
-            return list.Stats.OrderBy(x => random.Next()).Take(rolls).ToList();
+            ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
+            if (Item.IsAccessory(slot))
+            {
+                return ItemOptionRangeStorage.GetAccessoryRanges();
+            }
+
+            if (Item.IsArmor(slot))
+            {
+                return ItemOptionRangeStorage.GetArmorRanges();
+            }
+
+            if (Item.IsWeapon(slot))
+            {
+                return ItemOptionRangeStorage.GetWeaponRanges();
+            }
+
+            return ItemOptionRangeStorage.GetPetRanges();
         }
 
-        private static void AddStat(List<ItemStat> listAttributes, List<Stat> listStats)
+        private static Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
         {
-            foreach (Stat stat in listStats)
+            ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
+            if (Item.IsAccessory(slot))
             {
-                if (stat.Value != 0)
-                {
-                    listAttributes.Add(ItemStat.Of(stat.Type, stat.Value)); // TODO: add randomness to value
-                }
-                else
-                {
-                    listAttributes.Add(ItemStat.Of(stat.Type, stat.Percentage)); // TODO: add randomness to value
-                }
+                return ItemOptionRangeStorage.GetAccessorySpecialRanges();
             }
+
+            if (Item.IsArmor(slot))
+            {
+                return ItemOptionRangeStorage.GetArmorSpecialRanges();
+            }
+
+            if (Item.IsWeapon(slot))
+            {
+                return ItemOptionRangeStorage.GetWeaponSpecialRanges();
+            }
+
+            return ItemOptionRangeStorage.GetPetSpecialRanges();
+        }
+
+        private static int Roll() // Returns index 0~7
+        {
+            Random random = new Random();
+            return random.NextDouble() switch
+            {
+                >= 0.0 and < 0.24 => 0,
+                >= 0.24 and < 0.48 => 1,
+                >= 0.48 and < 0.74 => 2,
+                >= 0.74 and < 0.9 => 3,
+                >= 0.9 and < 0.966 => 4,
+                >= 0.966 and < 0.985 => 5,
+                >= 0.985 and < 0.9975 => 6,
+                _ => 7,
+            };
         }
     }
 }

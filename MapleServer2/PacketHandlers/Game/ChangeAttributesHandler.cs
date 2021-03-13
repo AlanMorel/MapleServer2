@@ -57,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
                         continue;
                     }
                     // TODO: Don't RNG the same attribute twice
-                    newItem.Stats.BonusAttributes[i] = ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f);
+                    newItem.Stats.BonusAttributes[i] = NormalStat.Of((ItemAttribute) rng.Next(35), 0.01f);
                 }
 
                 session.StateStorage[NEW_ITEM_KEY] = newItem;

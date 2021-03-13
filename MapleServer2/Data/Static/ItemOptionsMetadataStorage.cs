@@ -6,17 +6,17 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static
 {
-    public static class ItemStatsMetadataStorage
+    public static class ItemOptionsMetadataStorage
     {
         private static readonly Dictionary<int, List<ItemOptions>> Basic = new Dictionary<int, List<ItemOptions>>();
         private static readonly Dictionary<int, List<ItemOptions>> RandomBonus = new Dictionary<int, List<ItemOptions>>();
         private static readonly Dictionary<int, List<ItemOptions>> StaticBonus = new Dictionary<int, List<ItemOptions>>();
 
-        static ItemStatsMetadataStorage()
+        static ItemOptionsMetadataStorage()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-stats-metadata");
-            List<ItemStatsMetadata> items = Serializer.Deserialize<List<ItemStatsMetadata>>(stream);
-            foreach (ItemStatsMetadata item in items)
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-options-metadata");
+            List<ItemOptionsMetadata> items = Serializer.Deserialize<List<ItemOptionsMetadata>>(stream);
+            foreach (ItemOptionsMetadata item in items)
             {
                 if (!Basic.ContainsKey(item.ItemId))
                 {
@@ -43,7 +43,6 @@ namespace MapleServer2.Data.Static
                     StaticBonus[item.ItemId].AddRange(item.StaticBonus);
                 }
             }
-
         }
 
         public static bool HasBasic(int itemId) => Basic.ContainsKey(itemId);

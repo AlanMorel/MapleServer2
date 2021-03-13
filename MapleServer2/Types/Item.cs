@@ -357,6 +357,7 @@ namespace MapleServer2.Types
                 ),
             };
         }
+
         public static Item ShoesMale()
         {
             return new Item(11700852)
@@ -370,6 +371,26 @@ namespace MapleServer2.Types
                     4
                 ),
             };
+        }
+
+        public static bool IsWeapon(ItemSlot slot)
+        {
+            return slot == ItemSlot.RH || slot == ItemSlot.LH || slot == ItemSlot.OH;
+        }
+
+        public static bool IsAccessory(ItemSlot slot)
+        {
+            return slot == ItemSlot.FH || slot == ItemSlot.EA || slot == ItemSlot.PD || slot == ItemSlot.RI || slot == ItemSlot.BE;
+        }
+
+        public static bool IsArmor(ItemSlot slot)
+        {
+            return slot == ItemSlot.CP || slot == ItemSlot.CL || slot == ItemSlot.PA || slot == ItemSlot.GL || slot == ItemSlot.SH || slot == ItemSlot.MT;
+        }
+
+        public static bool IsPet(int itemId)
+        {
+            return itemId >= 60000001 && itemId < 61000000;
         }
     }
 }
