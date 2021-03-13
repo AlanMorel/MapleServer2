@@ -57,5 +57,11 @@ namespace MapleServer2.Types
                 Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             }
         }
+
+        private static void ProvideReward(GameSession session)
+        {
+            // called when rank up
+            // check for any rewards receivable
+        }
     }
 }

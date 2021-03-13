@@ -133,18 +133,28 @@ namespace MapleServer2.Types
             }
             // user already has some exp in mastery, so simply update it
             Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
-
-
-            // ACHIEVEMENT CHECKPOINT: 23100238, 23100239, 23100240
-            if (type == MasteryType.Mining)
+            int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
+            
+            // ACHIEVEMENT CHECKPOINT
+            if (currLevel > masteryExp.Level)
             {
-                int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
-                if (currLevel > masteryExp.Level)
+                if (type == MasteryType.Mining)
                 {
                     masteryExp.Level = currLevel;
                     Player.AchieveUpdate(23100238, 1);
                     Player.AchieveUpdate(23100239, 1);
                     Player.AchieveUpdate(23100240, 1);
+                    Player.AchieveUpdate(23100241, 1);
+                    Player.AchieveUpdate(23100330, 1);
+                }
+                else if (type == MasteryType.Foraging)
+                {
+                    masteryExp.Level = currLevel;
+                    Player.AchieveUpdate(23100257, 1);
+                    Player.AchieveUpdate(23100258, 1);
+                    Player.AchieveUpdate(23100259, 1);
+                    Player.AchieveUpdate(23100260, 1);
+                    Player.AchieveUpdate(23100334, 1);
                 }
             }
         }
