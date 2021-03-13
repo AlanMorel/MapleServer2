@@ -33,7 +33,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleJump(GameSession session, PacketReader packet)
         {
-            // ACHIEVEMENT CHECKPOINT: 22100012
             session.Player.AchieveUpdate(22100012, 1, 5);
         }
     }

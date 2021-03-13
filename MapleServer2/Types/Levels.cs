@@ -135,7 +135,6 @@ namespace MapleServer2.Types
             Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
             int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
             
-            // ACHIEVEMENT CHECKPOINT
             if (currLevel > masteryExp.Level)
             {
                 if (type == MasteryType.Mining)

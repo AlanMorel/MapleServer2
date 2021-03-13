@@ -115,14 +115,29 @@ namespace MapleServer2.Types
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
-
+        private Task OnlineDurationThread;
+        private TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
+
+        class TimeInfo
+        {
+            public long charCreation = -1;
+            public int onlineDuration = 0;
+            public long lastOnline = -1;
+            public TimeInfo(long a = -1, int b = 0, long c = -1)
+            {
+                charCreation = a;
+                onlineDuration = b;
+                lastOnline = c;
+            }
+        }
 
         public Player()
         {
             GameOptions = new GameOptions();
             Wallet = new Wallet(this);
             Levels = new Levels(this, 70, 0, 0, 100, 0, new List<MasteryExp>());
+            Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
@@ -417,6 +432,20 @@ namespace MapleServer2.Types
             {
                 Session.Send(AchievePacket.WriteUpdate(Achieves[achieveId]));
             }
+        }
+
+        private Task OnlineTimer(PlayerStatId statId)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(60000);
+                lock (Timestamps)
+                {
+                    Timestamps.onlineDuration += 1;
+                    Timestamps.lastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    AchieveUpdate(23100001, 1);
+                }
+            });
         }
     }
 }
