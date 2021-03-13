@@ -128,3 +128,33 @@
 2021-03-13 00:43:30.7497 Info Validating config: TargetNames=file, console, ConfigItems=32, FilePath=/home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/nlog.config
 2021-03-13 00:43:30.7761 Info Configuration initialized.
 2021-03-13 00:43:30.7761 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.4.12037. Product version: 4.7.4+454058bafb2ed9f9432163ab9436e1afac0b231f. GlobalAssemblyCache: False
+2021-03-13 01:06:19.7443 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:06:19.7693 Info Loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:06:19.8116 Info NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 1.6.5.1409. Product version: 1.6.5+c05b105d8cd52581a50da2af91ebacf8d4bc8f0d. GlobalAssemblyCache: False
+2021-03-13 01:06:19.8293 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll succeeded!
+2021-03-13 01:06:19.8416 Info Message Template Auto Format enabled
+2021-03-13 01:06:20.1286 Info Adding target FileTarget(Name=file)
+2021-03-13 01:06:20.1409 Info Adding target ConsoleTarget(Name=console)
+2021-03-13 01:06:20.3189 Info Validating config: TargetNames=file, console, ConfigItems=32, FilePath=/home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/nlog.config
+2021-03-13 01:06:20.4052 Info Configuration initialized.
+2021-03-13 01:06:20.4085 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.4.12037. Product version: 4.7.4+454058bafb2ed9f9432163ab9436e1afac0b231f. GlobalAssemblyCache: False
+2021-03-13 01:11:38.9586 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:11:38.9822 Info Loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:11:39.0151 Info NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 1.6.5.1409. Product version: 1.6.5+c05b105d8cd52581a50da2af91ebacf8d4bc8f0d. GlobalAssemblyCache: False
+2021-03-13 01:11:39.0315 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll succeeded!
+2021-03-13 01:11:39.0396 Info Message Template Auto Format enabled
+2021-03-13 01:11:39.1811 Info Adding target FileTarget(Name=file)
+2021-03-13 01:11:39.1830 Info Adding target ConsoleTarget(Name=console)
+2021-03-13 01:11:39.2411 Info Validating config: TargetNames=file, console, ConfigItems=32, FilePath=/home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/nlog.config
+2021-03-13 01:11:39.2837 Info Configuration initialized.
+2021-03-13 01:11:39.2837 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.4.12037. Product version: 4.7.4+454058bafb2ed9f9432163ab9436e1afac0b231f. GlobalAssemblyCache: False
+2021-03-13 01:13:24.3750 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:13:24.3951 Info Loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+2021-03-13 01:13:24.4255 Info NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 1.6.5.1409. Product version: 1.6.5+c05b105d8cd52581a50da2af91ebacf8d4bc8f0d. GlobalAssemblyCache: False
+2021-03-13 01:13:24.4301 Info Auto loading assembly file: /home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/NLog.Extensions.Logging.dll succeeded!
+2021-03-13 01:13:24.4338 Info Message Template Auto Format enabled
+2021-03-13 01:13:24.5436 Info Adding target FileTarget(Name=file)
+2021-03-13 01:13:24.5436 Info Adding target ConsoleTarget(Name=console)
+2021-03-13 01:13:24.5985 Info Validating config: TargetNames=file, console, ConfigItems=32, FilePath=/home/andrew-gan/Documents/git/MapleServer2/MapleServer2/bin/Debug/net5.0/nlog.config
+2021-03-13 01:13:24.6392 Info Configuration initialized.
+2021-03-13 01:13:24.6440 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.4.12037. Product version: 4.7.4+454058bafb2ed9f9432163ab9436e1afac0b231f. GlobalAssemblyCache: False

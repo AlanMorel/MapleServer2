@@ -139,15 +139,13 @@ namespace MapleServer2.Types
             if (type == MasteryType.Mining)
             {
                 int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
-                // if (currLevel > masteryExp.Level)
-                // {
-                int levelChange = 1/*currLevel - masteryExp.Level*/;
-                Player.AchieveUpdate(23100238, levelChange);
-                Player.AchieveUpdate(23100239, levelChange);
-                Player.AchieveUpdate(23100240, levelChange);
-                System.Console.WriteLine("gain counter " + levelChange); //debug
-                masteryExp.Level = currLevel;
-                // }
+                if (currLevel > masteryExp.Level)
+                {
+                    masteryExp.Level = currLevel;
+                    Player.AchieveUpdate(23100238, 1);
+                    Player.AchieveUpdate(23100239, 1);
+                    Player.AchieveUpdate(23100240, 1);
+                }
             }
         }
     }

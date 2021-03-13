@@ -406,14 +406,17 @@ namespace MapleServer2.Types
             return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
 
-        public void AchieveUpdate(int achieveId, long addAmount)
+        public void AchieveUpdate(int achieveId, long addAmount, int sendUpdateInterval = 1)
         {
             if (!Achieves.ContainsKey(achieveId))
             {
                 Achieves[achieveId] = new Achieve(achieveId);
             }
             Achieves[achieveId].AddCounter(addAmount);
-            Session.Send(AchievePacket.WriteUpdate(Achieves[achieveId]));
+            if (Achieves[achieveId].Counter % sendUpdateInterval == 0)
+            {
+                Session.Send(AchievePacket.WriteUpdate(Achieves[achieveId]));
+            }
         }
     }
 }

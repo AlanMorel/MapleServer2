@@ -24,10 +24,17 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case StateHandlerMode.Jump:
+                    HandleJump(session, packet);
                     break;
                 case StateHandlerMode.Land:
                     break;
             }
+        }
+
+        private static void HandleJump(GameSession session, PacketReader packet)
+        {
+            // ACHIEVEMENT CHECKPOINT: 22100012
+            session.Player.AchieveUpdate(22100012, 100, 5);
         }
     }
 }
