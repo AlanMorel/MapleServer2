@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
     public class Achieve
     {
         public int Id { get; private set; }
-        public int CurrentGrade { get; private set; }   // next grade being achieved; cannot exceed max
+        public int NextGrade { get; private set; }   // next grade being achieved; cannot exceed max
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }
         public long Condition { get; private set; }
@@ -18,11 +20,11 @@ namespace MapleServer2.Types
         public Achieve(int achieveId, int grade = 1, int counter = 0, List<long> timestamps = null)
         {
             Id = achieveId;
-            CurrentGrade = grade;
+            NextGrade = grade;
             Counter = counter;
             Timestamps = timestamps ?? new List<long>();
             MaxGrade = AchieveMetadataStorage.GetNumGrades(Id);
-            Condition = AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
+            Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
         }
 
         public AchievePacket.GradeStatus GetGradeStatus()
@@ -30,38 +32,73 @@ namespace MapleServer2.Types
             return Condition == 0 ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
         }
 
-        public void AddCounter(long amount)
+        public void AddCounter(GameSession session, long amount)
         {
             if (Condition == 0)
             {
                 return;
             }
-
             Counter += amount;
             // level up achievement if counter reached condition of next grade
             if (Counter >= Condition)
             {
-                CurrentGrade++;
+                ProvideReward(session);
+                NextGrade++;
                 // level up but not fully completed
-                if (CurrentGrade <= MaxGrade)
+                if (NextGrade <= MaxGrade)
                 {
-                    Condition = AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
+                    Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
                 }
                 // level up and fully completed
                 else
                 {
                     Condition = 0;
-                    CurrentGrade--;
+                    NextGrade--;
                 }
 
                 Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             }
         }
 
-        private static void ProvideReward(GameSession session)
+        private void ProvideReward(GameSession session)
         {
-            // called when rank up
-            // check for any rewards receivable
+            AchieveGradeMetadata grade = AchieveMetadataStorage.GetGrade(Id, NextGrade);
+            RewardType type = grade.RewardType;
+            switch (type)
+            {
+                case RewardType.Unknown:
+                    break;
+                case RewardType.itemcoloring:
+                    break;
+                case RewardType.shop_ride:
+                    break;
+                case RewardType.title:
+                    break;
+                case RewardType.beauty_hair:
+                    break;
+                case RewardType.statPoint:
+                    session.Player.StatPointDistribution.AddTotalStatPoints(grade.RewardCode);
+                    session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
+                    break;
+                case RewardType.skillPoint:
+                    break;
+                case RewardType.beauty_makeup:
+                    break;
+                case RewardType.shop_build:
+                    break;
+                case RewardType.item:
+                    break;
+                case RewardType.shop_weapon:
+                    break;
+                case RewardType.dynamicaction:
+                    break;
+                case RewardType.etc:
+                    break;
+                case RewardType.beauty_skin:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

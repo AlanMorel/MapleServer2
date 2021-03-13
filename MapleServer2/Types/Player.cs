@@ -412,7 +412,7 @@ namespace MapleServer2.Types
             {
                 Achieves[achieveId] = new Achieve(achieveId);
             }
-            Achieves[achieveId].AddCounter(addAmount);
+            Achieves[achieveId].AddCounter(Session, addAmount);
             if (Achieves[achieveId].Counter % sendUpdateInterval == 0)
             {
                 Session.Send(AchievePacket.WriteUpdate(Achieves[achieveId]));

@@ -8,7 +8,6 @@ namespace MapleServer2.Types
     {
         public int TotalStatPoints { get; private set; }
         public Dictionary<OtherStatsIndex, int> OtherStats { get; private set; }
-
         public Dictionary<byte, int> AllocatedStats { get; private set; }
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
@@ -26,13 +25,13 @@ namespace MapleServer2.Types
             AddTotalStatPoints(4, OtherStatsIndex.Prestige);
         }
 
-        public void AddTotalStatPoints(int amount)
+        public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc = 0)
         {
             TotalStatPoints += amount;
-        }
-
-        public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc)
-        {
+            if (pointSrc == 0)
+            {
+                return;
+            }
             if (OtherStats.ContainsKey(pointSrc))
             {
                 OtherStats[pointSrc] += amount;
@@ -41,7 +40,6 @@ namespace MapleServer2.Types
             {
                 OtherStats[pointSrc] = amount;
             }
-            TotalStatPoints += amount;
         }
 
         public void AddPoint(byte statType)

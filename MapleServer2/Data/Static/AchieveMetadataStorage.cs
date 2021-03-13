@@ -30,13 +30,13 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(id);
         }
 
-        public static long GetCondition(int id, int grade)
+        public static AchieveGradeMetadata GetGrade(int id, int grade)
         {
             if ((grade < 1) || (grade > GetNumGrades(id)))
             {
-                return -1;
+                return null;
             }
-            return map.GetValueOrDefault(id).Grades[grade - 1].Condition;
+            return map.GetValueOrDefault(id).Grades[grade - 1];
         }
 
         public static int GetNumGrades(int id)
