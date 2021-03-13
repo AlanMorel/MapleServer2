@@ -9,13 +9,13 @@ namespace MapleServer2.Types
     public class Achieve
     {
         public int Id { get; private set; }
-        public int CurrentGrade { get; private set; }
+        public int CurrentGrade { get; private set; }   // next grade being achieved; cannot exceed max
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }
         public long Condition { get; private set; }
         public List<long> Timestamps { get; private set; }
 
-        public Achieve(int achieveId, int grade = 0, int counter = 0, List<long> timestamps = null)
+        public Achieve(int achieveId, int grade = 1, int counter = 0, List<long> timestamps = null)
         {
             Id = achieveId;
             CurrentGrade = grade;
@@ -32,20 +32,26 @@ namespace MapleServer2.Types
 
         public void AddCounter(long amount)
         {
+            if (Condition == 0)
+            {
+                return;
+            }
+
             Counter += amount;
             // level up achievement if counter reached condition of next grade
-            if ((Condition != 0) && (Counter >= Condition))
+            if (Counter >= Condition)
             {
+                CurrentGrade++;
                 // level up but not fully completed
-                if (CurrentGrade < MaxGrade)
+                if (CurrentGrade <= MaxGrade)
                 {
-                    CurrentGrade++;
                     Condition = AchieveMetadataStorage.GetCondition(Id, CurrentGrade);
                 }
                 // level up and fully completed
                 else
                 {
                     Condition = 0;
+                    CurrentGrade--;
                 }
 
                 Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
