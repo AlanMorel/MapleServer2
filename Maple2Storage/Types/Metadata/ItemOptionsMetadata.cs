@@ -36,11 +36,13 @@ namespace Maple2Storage.Types.Metadata
         public int MinWeaponAtk;
         [XmlElement(Order = 7)]
         public int MaxWeaponAtk;
+        [XmlElement(Order = 8)]
+        public int PetAtk;
 
         public ItemOption() { }
 
         public override string ToString() => $"Rarity {Rarity}, Slots {Slots}, MultiplyFactor {MultiplyFactor}," +
-        $"MinWeaponAtk {MinWeaponAtk}, MaxWeaponAtk {MaxWeaponAtk}, Stats: ({string.Join(",", Stats)}, SpecialStats: ({string.Join(",", SpecialStats)})";
+        $"MinWeaponAtk {MinWeaponAtk}, MaxWeaponAtk {MaxWeaponAtk}, PetAtk {PetAtk}, Stats: ({string.Join(",", Stats)}, SpecialStats: ({string.Join(",", SpecialStats)})";
     }
 
 }

@@ -126,6 +126,10 @@ namespace MapleServer2.Types
                         BasicAttributes.Add(NormalStat.Of(ItemAttribute.MinWeaponAtk, itemOptions.MinWeaponAtk));
                         BasicAttributes.Add(NormalStat.Of(ItemAttribute.MaxWeaponAtk, itemOptions.MaxWeaponAtk));
                     }
+                    if (itemOptions.PetAtk != 0)
+                    {
+                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.PetBonusAtk, itemOptions.PetAtk));
+                    }
 
                     List<ItemStat> itemStats = new List<ItemStat>();
                     foreach (ItemAttribute attribute in itemOptions.Stats)

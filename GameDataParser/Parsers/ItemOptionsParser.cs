@@ -70,9 +70,6 @@ namespace GameDataParser.Parsers
                             case "atp_value_base":
                                 optionsMetadata.Stats.Add(ItemAttribute.Accuracy);
                                 break;
-                            case "bap_pet_value_base":
-                                optionsMetadata.Stats.Add(ItemAttribute.PetBonusAtk);
-                                break;
                             case "bap_value_base":
                                 optionsMetadata.Stats.Add(ItemAttribute.BonusAtk);
                                 break;
@@ -209,6 +206,10 @@ namespace GameDataParser.Parsers
                             case "wapmin_value_base":
                                 int wapmin = string.IsNullOrEmpty(node.Attributes["wapmin_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["wapmin_value_base"].Value);
                                 optionsMetadata.MinWeaponAtk = wapmin;
+                                break;
+                            case "bap_pet_value_base":
+                                int petatk = string.IsNullOrEmpty(node.Attributes["bap_pet_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["bap_pet_value_base"].Value);
+                                optionsMetadata.PetAtk = petatk;
                                 break;
                             case "hiddennddadd_value_base":
                             case "hiddenwapadd_value_base":
