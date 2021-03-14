@@ -33,7 +33,7 @@ namespace GameDataParser.Parsers
                 foreach (XmlNode node in nodeList)
                 {
                     ItemOptionsMetadata metadata = new ItemOptionsMetadata();
-                    ItemOptions optionsMetadata = new ItemOptions();
+                    ItemOption optionsMetadata = new ItemOption();
                     int itemId = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? 0 : int.Parse(node.Attributes["code"].Value);
 
                     if (!string.IsNullOrEmpty(node.Attributes["optionNumPick"]?.Value))

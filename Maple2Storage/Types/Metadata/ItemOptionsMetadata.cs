@@ -10,17 +10,17 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int ItemId;
         [XmlElement(Order = 2)]
-        public List<ItemOptions> Basic = new List<ItemOptions>();
+        public List<ItemOption> Basic = new List<ItemOption>();
         [XmlElement(Order = 3)]
-        public List<ItemOptions> StaticBonus = new List<ItemOptions>();
+        public List<ItemOption> StaticBonus = new List<ItemOption>();
         [XmlElement(Order = 4)]
-        public List<ItemOptions> RandomBonus = new List<ItemOptions>();
+        public List<ItemOption> RandomBonus = new List<ItemOption>();
 
         public ItemOptionsMetadata() { }
     }
 
     [XmlType]
-    public class ItemOptions
+    public class ItemOption
     {
         [XmlElement(Order = 1)]
         public byte Rarity;
@@ -37,7 +37,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 7)]
         public int MaxWeaponAtk;
 
-        public ItemOptions() { }
+        public ItemOption() { }
 
         public override string ToString() => $"Rarity {Rarity}, Slots {Slots}, MultiplyFactor {MultiplyFactor}," +
         $"MinWeaponAtk {MinWeaponAtk}, MaxWeaponAtk {MaxWeaponAtk}, Stats: ({string.Join(",", Stats)}, SpecialStats: ({string.Join(",", SpecialStats)})";

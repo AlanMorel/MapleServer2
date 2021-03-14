@@ -8,9 +8,9 @@ namespace MapleServer2.Data.Static
 {
     public static class ItemOptionsMetadataStorage
     {
-        private static readonly Dictionary<int, List<ItemOptions>> Basic = new Dictionary<int, List<ItemOptions>>();
-        private static readonly Dictionary<int, List<ItemOptions>> RandomBonus = new Dictionary<int, List<ItemOptions>>();
-        private static readonly Dictionary<int, List<ItemOptions>> StaticBonus = new Dictionary<int, List<ItemOptions>>();
+        private static readonly Dictionary<int, List<ItemOption>> Basic = new Dictionary<int, List<ItemOption>>();
+        private static readonly Dictionary<int, List<ItemOption>> RandomBonus = new Dictionary<int, List<ItemOption>>();
+        private static readonly Dictionary<int, List<ItemOption>> StaticBonus = new Dictionary<int, List<ItemOption>>();
 
         static ItemOptionsMetadataStorage()
         {
@@ -51,7 +51,7 @@ namespace MapleServer2.Data.Static
 
         public static bool HasStaticBonus(int itemId) => StaticBonus.ContainsKey(itemId);
 
-        public static bool GetBasic(int itemId, out List<ItemOptions> list)
+        public static bool GetBasic(int itemId, out List<ItemOption> list)
         {
             list = null;
             if (HasBasic(itemId))
@@ -62,7 +62,7 @@ namespace MapleServer2.Data.Static
             return false;
         }
 
-        public static bool GetStaticBonus(int itemId, out List<ItemOptions> list)
+        public static bool GetStaticBonus(int itemId, out List<ItemOption> list)
         {
             list = null;
             if (HasStaticBonus(itemId))
@@ -72,7 +72,7 @@ namespace MapleServer2.Data.Static
             }
             return false;
         }
-        public static bool GetRandomBonus(int itemId, out List<ItemOptions> list)
+        public static bool GetRandomBonus(int itemId, out List<ItemOption> list)
         {
             list = null;
             if (HasRandomBonus(itemId))

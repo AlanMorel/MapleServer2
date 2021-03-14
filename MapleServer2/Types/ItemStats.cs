@@ -115,24 +115,25 @@ namespace MapleServer2.Types
                 return;
             }
 
-            if (ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOptions> basicList))
+            if (ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOption> basicList))
             {
-                ItemOptions itemoption = basicList.Find(options => options.Rarity == rarity);
-                if (itemoption != null)
+                ItemOption itemOptions = basicList.Find(options => options.Rarity == rarity);
+                if (itemOptions != null)
                 {
-                    if (itemoption.MaxWeaponAtk != 0)
+                    // Weapon atk comes from each Item option and not from stat ranges
+                    if (itemOptions.MaxWeaponAtk != 0)
                     {
-                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MinWeaponAtk, itemoption.MinWeaponAtk));
-                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MaxWeaponAtk, itemoption.MaxWeaponAtk));
+                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MinWeaponAtk, itemOptions.MinWeaponAtk));
+                        BasicAttributes.Add(NormalStat.Of(ItemAttribute.MaxWeaponAtk, itemOptions.MaxWeaponAtk));
                     }
-                    List<ItemStat> itemStats = new List<ItemStat>();
 
-                    foreach (ItemAttribute attribute in itemoption.Stats)
+                    List<ItemStat> itemStats = new List<ItemStat>();
+                    foreach (ItemAttribute attribute in itemOptions.Stats)
                     {
                         itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
                     }
 
-                    foreach (SpecialItemAttribute attribute in itemoption.SpecialStats)
+                    foreach (SpecialItemAttribute attribute in itemOptions.SpecialStats)
                     {
                         itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
                     }
@@ -151,10 +152,10 @@ namespace MapleServer2.Types
                 }
             }
 
-            if (ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOptions> randomBonusList))
+            if (ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
                 Random random = new Random();
-                ItemOptions itemoption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
+                ItemOption itemoption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
                 if (itemoption != null)
                 {
                     List<ItemStat> itemStats = new List<ItemStat>();
