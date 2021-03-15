@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace GameDataParser.Parsers
             Dictionary<string, Dictionary<string, string>> mapObjects = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (PackFileEntry entry in Resources.ExportedFiles
-                .Where(entry => Regex.Match(entry.Name, @"^flat/presets/presets (object|npc)/").Success)
+                .Where(entry => Regex.Match(entry.Name, @"^flat/presets/presets (common|object|npc)/").Success)
                 .OrderBy(entry => entry.Name))
             {
                 // Parse XML
@@ -75,6 +75,41 @@ namespace GameDataParser.Parsers
                     XmlNode gatheringNode = node.SelectSingleNode("gathering");
                     int recipeID = int.Parse(gatheringNode.Attributes["receipeID"].Value);
                     interactRecipeMap[interactID] = recipeID;
+                }
+            }
+
+            // Get mob spawn ID and mob spawn information from xml (can be expanded to parse other xml info)
+            Dictionary<string, Dictionary<string, SpawnMetadata>> spawnTagMap = new Dictionary<string, Dictionary<string, SpawnMetadata>>();
+            foreach (PackFileEntry entry in Resources.XmlFiles
+                .Where(entry => Regex.Match(entry.Name, "table/mapspawntag").Success))
+            {
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList regionNodes = document.SelectNodes("/ms2/region");
+
+                foreach (XmlNode node in regionNodes)
+                {
+                    string mapID = node.Attributes["mapCode"].Value;
+                    string spawnPointID = node.Attributes["spawnPointID"].Value;
+
+                    int difficulty = int.Parse(node.Attributes["difficulty"].Value);
+                    int minDifficulty = int.Parse(node.Attributes["difficultyMin"].Value);
+                    List<string> spawnTags = new List<string>(node.Attributes["tag"].Value.Split(", "));
+                    if (!int.TryParse(node.Attributes["coolTime"].Value, out int spawnTime))
+                    {
+                        spawnTime = 0;
+                    }
+                    if (!int.TryParse(node.Attributes["population"].Value, out int population))
+                    {
+                        population = 0;
+                    }
+                    bool isPetSpawn = node.Attributes["petPopulation"] != null && int.Parse(node.Attributes["petPopulation"].Value) > 0;
+
+                    SpawnMetadata spawnData = new SpawnMetadata(spawnTags, population, spawnTime, difficulty, minDifficulty, isPetSpawn);
+                    if (!spawnTagMap.ContainsKey(mapID))
+                    {
+                        spawnTagMap[mapID] = new Dictionary<string, SpawnMetadata>();
+                    }
+                    spawnTagMap[mapID][spawnPointID] = spawnData;
                 }
             }
 
@@ -157,6 +192,35 @@ namespace GameDataParser.Parsers
                         string playerRotationValue = playerRotation?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
                         metadata.PlayerSpawns.Add(new MapPlayerSpawn(CoordS.Parse(playerPositionValue), CoordS.Parse(playerRotationValue)));
+                    }
+                    else if (modelName.StartsWith("MS2RegionSpawn"))  // Mob Spawn point on map
+                    {
+                        XmlNode mobCoord = node.SelectSingleNode("property[@name='Position']");
+                        XmlNode spawnPointID = node.SelectSingleNode("property[@name='SpawnPointID']");
+                        XmlNode npcCount = node.SelectSingleNode("property[@name='NpcCount']");
+                        XmlNode npcList = node.SelectSingleNode("property[@name='NpcList']");
+                        XmlNode spawnRadius = node.SelectSingleNode("property[@name='SpawnRadius']");
+
+                        string mobPositionValue = mobCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string mobSpawnPointID = spawnPointID?.FirstChild.Attributes["value"]?.Value ?? mapObjects[modelName]["SpawnPointID"];
+                        SpawnMetadata mobSpawnData = (spawnTagMap.ContainsKey(mapId) && spawnTagMap[mapId].ContainsKey(mobSpawnPointID)) ? spawnTagMap[mapId][mobSpawnPointID] : null;  // Do we need this spawn data (?)
+                        int mobNpcCount = mobSpawnData?.Population ?? 6;
+                        List<int> mobNpcList = new List<int>();
+                        if (npcList != null)
+                        {
+                            foreach (XmlNode npcNode in npcList.ChildNodes)
+                            {
+                                // TODO: add mob spawn count to each ID
+                                mobNpcList.Add(int.Parse(npcNode.Attributes["index"].Value));
+                            }
+                        }
+                        if (mobNpcList.Count == 0)
+                        {
+                            mobNpcList.Add(21000025);  // Placeholder
+                        }
+                        int mobSpawnRadius = int.Parse(spawnRadius?.FirstChild.Attributes["value"]?.Value ?? "150");
+
+                        metadata.MobSpawns.Add(new MapMobSpawn(CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
                     }
                     else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
                     {

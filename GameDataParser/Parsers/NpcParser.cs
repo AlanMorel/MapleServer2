@@ -66,6 +66,20 @@ namespace GameDataParser.Parsers
                 {
                     metadata.NpcMetadataBasic.NpcDefenseGroup = sbyte.Parse(npcBasicNode.Attributes["npcDefenseGroup"].Value);
                 }
+                if (npcBasicNode.Attributes["difficulty"] != null)
+                {
+                    metadata.NpcMetadataBasic.Difficulty = ushort.Parse(npcBasicNode.Attributes["difficulty"].Value);
+                }
+                if (npcBasicNode.Attributes["maxSpawnCount"] != null)
+                {
+                    metadata.NpcMetadataBasic.MaxSpawnCount = byte.Parse(npcBasicNode.Attributes["maxSpawnCount"].Value);
+                }
+                if (npcBasicNode.Attributes["groupSpawnCount"] != null)
+                {
+                    metadata.NpcMetadataBasic.GroupSpawnCount = byte.Parse(npcBasicNode.Attributes["groupSpawnCount"].Value);
+                }
+                metadata.NpcMetadataBasic.MainTags = string.IsNullOrEmpty(npcBasicNode.Attributes["mainTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["mainTags"].Value.Split(",");
+                metadata.NpcMetadataBasic.SubTags = string.IsNullOrEmpty(npcBasicNode.Attributes["subTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["subTags"].Value.Split(",");
                 metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
                 metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
                 metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
