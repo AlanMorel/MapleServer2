@@ -244,20 +244,23 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly MapPortalFlag Flags;
+        public readonly string Name;
         [XmlElement(Order = 3)]
-        public readonly int Target;
+        public readonly MapPortalFlag Flags;
         [XmlElement(Order = 4)]
-        public readonly CoordS Coord;
+        public readonly int Target;
         [XmlElement(Order = 5)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 6)]
         public readonly CoordS Rotation;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
+        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
         {
             Id = id;
+            Name = name;
             Flags = flags;
             Target = target;
             Coord = coord;
@@ -265,11 +268,12 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord})";
+            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord})";
 
         protected bool Equals(MapPortal other)
         {
             return Id == other.Id
+                   && Name == other.Name
                    && Flags == other.Flags
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
