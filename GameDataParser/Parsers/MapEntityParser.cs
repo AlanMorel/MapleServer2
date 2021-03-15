@@ -226,7 +226,7 @@ namespace GameDataParser.Parsers
                     {
                         XmlNode portalIdNode = node.SelectSingleNode("property[@name='PortalID']");
                         XmlNode targetNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
-                        if (targetNode == null || portalIdNode == null)
+                        if (portalIdNode == null)
                         {
                             continue;
                         }
@@ -250,7 +250,11 @@ namespace GameDataParser.Parsers
                             minimapVisibleValue = true;
                         }
 
-                        int target = int.Parse(targetNode.FirstChild.Attributes["value"].Value);
+                        int target = 0;
+                        if (targetNode != null)
+                        {
+                            target = int.Parse(targetNode.FirstChild.Attributes["value"].Value ?? "0");
+                        }
                         int portalId = int.Parse(portalIdNode?.FirstChild.Attributes["value"].Value);
                         string positionValue = coordNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
@@ -261,7 +265,7 @@ namespace GameDataParser.Parsers
 
                         CoordS position = CoordS.Parse(positionValue);
                         CoordS rotation = CoordS.Parse(rotationValue);
-                        metadata.Portals.Add(new MapPortal(portalId, flags, target, position, rotation));
+                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation));
                     }
                     else if (modelName == "SpawnPointNPC" && !name.StartsWith("SpawnPointNPC"))
                     {

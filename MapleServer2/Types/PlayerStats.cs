@@ -37,12 +37,12 @@ namespace MapleServer2.Types
         MagRes = 0x1A,
         MinAtk = 0x1B,
         MaxAtk = 0x1C,
-        Unknown30 = 0x1D,
-        Unknown31 = 0x1E,
+        MinDmg = 0x1D,
+        MaxDmg = 0x1E,
         Pierce = 0x1F,
         MountSpeed = 0x20,
         BonusAtk = 0x21,
-        Unknown35 = 0x22,   // base 0 (bonuses can be added)
+        PetBonusAtk = 0x22,   // base 0 (bonuses can be added)
     }
 
     /* Max = Base + stat allocations + bonuses.
@@ -131,12 +131,12 @@ namespace MapleServer2.Types
                 { PlayerStatId.MagRes, new PlayerStat(4) },
                 { PlayerStatId.MinAtk, new PlayerStat(0) },
                 { PlayerStatId.MaxAtk, new PlayerStat(0) },
-                { PlayerStatId.Unknown30, new PlayerStat(0) },
-                { PlayerStatId.Unknown31, new PlayerStat(0) },
+                { PlayerStatId.MinDmg, new PlayerStat(0) },
+                { PlayerStatId.MaxDmg, new PlayerStat(0) },
                 { PlayerStatId.Pierce, new PlayerStat(0) },
                 { PlayerStatId.MountSpeed, new PlayerStat(100) },
                 { PlayerStatId.BonusAtk, new PlayerStat(0) },
-                { PlayerStatId.Unknown35, new PlayerStat(0) }
+                { PlayerStatId.PetBonusAtk, new PlayerStat(0) }
             };
         }
 
@@ -173,12 +173,12 @@ namespace MapleServer2.Types
                 { PlayerStatId.MagRes, new PlayerStat(4) },
                 { PlayerStatId.MinAtk, new PlayerStat(0) },
                 { PlayerStatId.MaxAtk, new PlayerStat(0) },
-                { PlayerStatId.Unknown30, new PlayerStat(0) },
-                { PlayerStatId.Unknown31, new PlayerStat(0) },
+                { PlayerStatId.MinDmg, new PlayerStat(0) },
+                { PlayerStatId.MaxDmg, new PlayerStat(0) },
                 { PlayerStatId.Pierce, new PlayerStat(0) },
                 { PlayerStatId.MountSpeed, new PlayerStat(100) },
                 { PlayerStatId.BonusAtk, new PlayerStat(0) },
-                { PlayerStatId.Unknown35, new PlayerStat(0) }
+                { PlayerStatId.PetBonusAtk, new PlayerStat(0) }
             };
         }
 
