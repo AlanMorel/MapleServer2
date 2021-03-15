@@ -63,7 +63,7 @@ namespace MapleServer2.Servers.Game
             {
                 if (mobSpawn.SpawnData == null)
                 {
-                    Console.WriteLine($"No spawn data: {mobSpawn}");
+                    Debug.WriteLine($"Missing mob spawn data: {mobSpawn}");
                     continue;
                 }
                 int maxPopulation = mobSpawn.NpcCount;
@@ -78,6 +78,7 @@ namespace MapleServer2.Servers.Game
                     {
                         break;
                     }
+
                     for (int i = 0; i < spawnCount; i++)
                     {
                         IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id));

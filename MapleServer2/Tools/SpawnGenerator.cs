@@ -7,36 +7,35 @@ using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Tools
 {
-    class SpawnGenerator
+    public class SpawnGenerator
     {
-        public static List<CoordF> Points(int spawnRadius = 150)
+        public static List<CoordF> Points(int spawnRadius = Block.BLOCK_SIZE)
         {
-            HashSet<CoordF> spawnOffsets = new HashSet<CoordF> { CoordS.From(0, 0, 0).ToFloat() };
-            int blockSize = 150;
-            int size = spawnRadius / 150;
-            for (int i = 0; i <= size; i++)
+            List<CoordF> spawnOffsets = new List<CoordF>();
+            int spawnSize = (spawnRadius / Block.BLOCK_SIZE) * 2;
+            for (int i = 0; i <= spawnSize; i++)
             {
-                for (int j = 0; j <= size; j++)
+                for (int j = 0; j <= spawnSize; j++)
                 {
-                    spawnOffsets.Add(CoordS.From((short) (i * blockSize), (short) (j * blockSize), 0).ToFloat());
-                    spawnOffsets.Add(CoordS.From((short) (i * -blockSize), (short) (j * -blockSize), 0).ToFloat());
+                    spawnOffsets.Add(CoordF.From(i * Block.BLOCK_SIZE - spawnRadius, j * Block.BLOCK_SIZE - spawnRadius, 0));
                 }
             }
             Random offsetRNG = new Random();
-            return spawnOffsets.ToList().OrderBy(x => offsetRNG.Next()).ToList();
+            return spawnOffsets.OrderBy(x => offsetRNG.Next()).ToList();
         }
 
-        public static List<CoordF> Points(int count, int spawnRadius = 150)
+        public static List<CoordF> Points(int count, int spawnRadius)
         {
             return Points(spawnRadius).Take(count).ToList();
         }
 
         public static List<NpcMetadata> Mobs(int difficulty, int minDifficulty, string[] tags)
         {
+            // Look into optimizing this.
             HashSet<NpcMetadata> matchedNpcs = new HashSet<NpcMetadata>();
             foreach (string tag in tags)
             {
-                foreach (NpcMetadata data in NpcMetadataStorage.GetMainNpcs(tag))
+                foreach (NpcMetadata data in NpcMetadataStorage.GetNpcsByMainTag(tag))
                 {
                     if (data.NpcMetadataBasic.Difficulty >= minDifficulty && data.NpcMetadataBasic.Difficulty <= difficulty)
                     {
