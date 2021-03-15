@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -93,7 +93,7 @@ namespace GameDataParser.Parsers
 
                     int difficulty = int.Parse(node.Attributes["difficulty"].Value);
                     int minDifficulty = int.Parse(node.Attributes["difficultyMin"].Value);
-                    List<string> spawnTags = new List<string>(node.Attributes["tag"].Value.Split(", "));
+                    string[] spawnTags = node.Attributes["tag"].Value.Split(",").Select(p => p.Trim()).ToArray();
                     if (!int.TryParse(node.Attributes["coolTime"].Value, out int spawnTime))
                     {
                         spawnTime = 0;

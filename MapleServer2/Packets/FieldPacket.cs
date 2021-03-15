@@ -282,7 +282,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
-            pWriter.Write(CoordF.From(0,0,0)); // Rotation
+            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsMob(pWriter, mob);

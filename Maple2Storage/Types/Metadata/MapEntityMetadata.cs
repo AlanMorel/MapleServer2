@@ -378,7 +378,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public readonly int MinDifficulty;
         [XmlElement(Order = 3)]
-        public List<string> Tags;
+        public readonly string[] Tags;
         [XmlElement(Order = 4)]
         public readonly int SpawnTime;
         [XmlElement(Order = 5)]
@@ -388,7 +388,7 @@ namespace Maple2Storage.Types.Metadata
 
         public SpawnMetadata() { }
 
-        public SpawnMetadata(List<string> tags, int population, int spawnTime, int difficulty, int minDifficulty = 1, bool isPetSpawn = false)
+        public SpawnMetadata(string[] tags, int population, int spawnTime, int difficulty, int minDifficulty = 1, bool isPetSpawn = false)
         {
             Tags = tags;
             Population = population;

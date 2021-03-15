@@ -78,8 +78,8 @@ namespace GameDataParser.Parsers
                 {
                     metadata.NpcMetadataBasic.GroupSpawnCount = byte.Parse(npcBasicNode.Attributes["groupSpawnCount"].Value);
                 }
-                metadata.NpcMetadataBasic.MainTags = string.IsNullOrEmpty(npcBasicNode.Attributes["mainTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["mainTags"].Value.Split(",");
-                metadata.NpcMetadataBasic.SubTags = string.IsNullOrEmpty(npcBasicNode.Attributes["subTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["subTags"].Value.Split(",");
+                metadata.NpcMetadataBasic.MainTags = string.IsNullOrEmpty(npcBasicNode.Attributes["mainTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["mainTags"].Value.Split(",").Select(p => p.Trim()).ToArray();
+                metadata.NpcMetadataBasic.SubTags = string.IsNullOrEmpty(npcBasicNode.Attributes["subTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["subTags"].Value.Split(",").Select(p => p.Trim()).ToArray();
                 metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
                 metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
                 metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);

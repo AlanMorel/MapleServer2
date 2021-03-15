@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Servers.Game
 {
@@ -45,39 +45,43 @@ namespace MapleServer2.Servers.Game
                     fieldNpc.Coord = npc.Coord.ToFloat();
                     AddNpc(fieldNpc);
                 }
+                else
+                {
+                    // NPC is an enemy
+                    IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
+                    {
+                        ZRotation = (short) (npc.Rotation.Z * 10)
+                    });
+
+                    fieldMob.Coord = npc.Coord.ToFloat();
+                    AddMob(fieldMob);
+                }
             }
 
-            // Spawn map's mobs at the mob spawn locations
-            Random offsetRNG = new Random();
-            List<CoordF> spawnOffsets = new List<CoordF>
-            {
-                CoordS.From(-150, -150, 0).ToFloat(),
-                CoordS.From(-150, 0, 0).ToFloat(),
-                CoordS.From(-150, 150, 0).ToFloat(),
-                CoordS.From(0, -150, 0).ToFloat(),
-                CoordS.From(0, 0, 0).ToFloat(),
-                CoordS.From(0, 150, 0).ToFloat(),
-                CoordS.From(150, -150, 0).ToFloat(),
-                CoordS.From(150, 0, 0).ToFloat(),
-                CoordS.From(150, 150, 0).ToFloat(),
-            };
+            // Spawn map's mobs at the mob spawners
             foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(mapId))
             {
-                int maxPopulation = mobSpawn.NpcCount;
-                // Pick spawn locations
-                List<CoordF> spawnPoints = spawnOffsets.OrderBy(x => offsetRNG.Next()).ToList();
-
-                // TODO: Pick mobs from generator/table (?)
-                int population = 0;
-                foreach (int mobID in mobSpawn.NpcList
-                    .OrderBy(x => offsetRNG.Next()))
+                if (mobSpawn.SpawnData == null)
                 {
-                    NpcMetadata mob = NpcMetadataStorage.GetNpcMetadata(mobID);
+                    Console.WriteLine($"No spawn data: {mobSpawn}");
+                    continue;
+                }
+                int maxPopulation = mobSpawn.NpcCount;
+                List<CoordF> spawnPoints = SpawnGenerator.Points(mobSpawn.SpawnRadius);
+                List<NpcMetadata> mobs = SpawnGenerator.Mobs(mobSpawn.SpawnData.Difficulty, mobSpawn.SpawnData.MinDifficulty, mobSpawn.SpawnData.Tags);
+
+                int population = 0;
+                foreach (NpcMetadata mob in mobs)
+                {
                     int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                    for (int i = 0; (i < spawnCount) && (population < maxPopulation); i++)
+                    if (spawnCount > maxPopulation)
+                    {
+                        break;
+                    }
+                    for (int i = 0; i < spawnCount; i++)
                     {
                         IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id));
-                        fieldMob.Coord = mobSpawn.Coord.ToFloat() + spawnPoints[population];
+                        fieldMob.Coord = mobSpawn.Coord.ToFloat() + spawnPoints[population % spawnPoints.Count];
                         AddMob(fieldMob);
                         population++;
                     }
