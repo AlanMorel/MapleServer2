@@ -1,5 +1,6 @@
 ﻿using System;
-using Maple2Storage.Enums;
+using System.Collections.Generic;
+using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
@@ -13,8 +14,6 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES;
 
-        private const string NEW_ITEM_KEY = "new_item_key";
-
         public ChangeAttributesHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -24,61 +23,69 @@ namespace MapleServer2.PacketHandlers.Game
             switch (function)
             {
                 case 0:
-                    HandleChangeAttributes(session, packet);
+                    HandleChangeStats(session, packet);
                     break;
                 case 2:
-                    HandleSelectNewAttributes(session, packet);
+                    HandleSelectNewStats(session, packet);
                     break;
             }
         }
 
-        private static void HandleChangeAttributes(GameSession session, PacketReader packet)
+        private static void HandleChangeStats(GameSession session, PacketReader packet)
         {
-            short lockIndex = -1;
+            short lockStatId = -1;
             long itemUid = packet.ReadLong();
             packet.Skip(8);
             bool useLock = packet.ReadBool();
             if (useLock)
             {
                 packet.Skip(1);
-                lockIndex = packet.ReadShort();
+                lockStatId = packet.ReadShort();
             }
 
-            if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+            Inventory inventory = session.Player.Inventory;
+            Item gear = inventory.Items.FirstOrDefault(x => x.Key == itemUid).Value;
+            if (gear == null)
             {
-                item.TimesAttributesChanged++;
-                Item newItem = new Item(item);
-                int attributeCount = newItem.Stats.BonusAttributes.Count;
-                Random rng = new Random();
-                for (int i = 0; i < attributeCount; i++)
+                return;
+            }
+
+            gear.TimesAttributesChanged++;
+
+            Random random = new Random();
+            Item newItem = new Item(gear);
+
+            // Get random stats ignoring stat that is locked
+            List<ItemStat> randomList = ItemStats.RollBonusStats(newItem.Id, newItem.Rarity, newItem.Stats.BonusStats.Count, lockStatId);
+
+            for (int i = 0; i < newItem.Stats.BonusStats.Count; i++)
+            {
+                if (newItem.Stats.BonusStats[i].GetId() == lockStatId)
                 {
-                    if (i == lockIndex)
-                    {
-                        continue;
-                    }
-                    // TODO: Don't RNG the same attribute twice
-                    newItem.Stats.BonusAttributes[i] = NormalStat.Of((ItemAttribute) rng.Next(35), 0.01f);
+                    continue;
                 }
 
-                session.StateStorage[NEW_ITEM_KEY] = newItem;
-                session.Send(ChangeAttributesPacket.PreviewNewItem(newItem));
+                newItem.Stats.BonusStats[i] = randomList[i];
             }
+
+            inventory.TemporaryStorage[newItem.Uid] = newItem;
+            session.Send(ChangeAttributesPacket.PreviewNewItem(newItem));
         }
 
-        private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
+        private static void HandleSelectNewStats(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
 
-            if (session.StateStorage.TryGetValue(NEW_ITEM_KEY, out object obj))
+            Inventory inventory = session.Player.Inventory;
+            Item gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == itemUid).Value;
+            if (gear == null)
             {
-                if (obj is not Item item || itemUid != item.Uid)
-                {
-                    return;
-                }
-
-                session.Player.Inventory.Replace(item);
-                session.Send(ChangeAttributesPacket.SelectNewItem(item));
+                return;
             }
+
+            inventory.TemporaryStorage.Remove(itemUid);
+            inventory.Replace(gear);
+            session.Send(ChangeAttributesPacket.AddNewItem(gear));
         }
     }
 }

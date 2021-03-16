@@ -105,7 +105,7 @@ namespace GameDataParser.Parsers
                             metadata.SpecialStats[SpecialItemAttribute.StunReduce] = ParseSpecialValues(SpecialItemAttribute.StunReduce, node, true);
                             break;
                         case "killHPRestoreValue":
-                            metadata.SpecialStats[SpecialItemAttribute.HpOnKill] = ParseSpecialValues(SpecialItemAttribute.HpOnKill, node, true);
+                            metadata.SpecialStats[SpecialItemAttribute.HpOnKill] = ParseSpecialValues(SpecialItemAttribute.HpOnKill, node, false);
                             break;
                         case "skillCooldownRate":
                             metadata.SpecialStats[SpecialItemAttribute.CooldownReduce] = ParseSpecialValues(SpecialItemAttribute.CooldownReduce, node, true);

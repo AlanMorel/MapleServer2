@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
@@ -118,44 +119,44 @@ namespace MapleServer2.Packets.Helpers
             return pWriter;
         }
 
-        // 9 Blocks of stats, Only handling Basic and Bonus attributes for now
+        // 9 Blocks of stats, still missing some stats
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<NormalStat> basicAttributes = stats.BasicAttributes;
-            pWriter.WriteShort((short) basicAttributes.Count);
-            foreach (NormalStat stat in basicAttributes)
+            List<ItemStat> basicStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) basicStats.Count);
+            foreach (NormalStat stat in basicStats)
             {
                 pWriter.Write(stat);
             }
-            List<SpecialStat> basicSpecialAttributes = stats.SpecialBasicAttributes;
-            pWriter.WriteShort((short) basicSpecialAttributes.Count);
-            foreach (SpecialStat stat in basicSpecialAttributes)
+            List<ItemStat> specialBasicStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) specialBasicStats.Count);
+            foreach (SpecialStat stat in specialBasicStats)
             {
                 pWriter.Write(stat);
             }
             pWriter.WriteInt();
 
-            // Another basic attributes block
+            // Another basic stats block
             pWriter.WriteShort();
             pWriter.WriteShort();
             pWriter.WriteInt();
 
-            List<NormalStat> bonusAttributes = stats.BonusAttributes;
-            pWriter.WriteShort((short) bonusAttributes.Count);
-            foreach (NormalStat stat in bonusAttributes)
+            List<ItemStat> bonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) bonusStats.Count);
+            foreach (NormalStat stat in bonusStats)
             {
                 pWriter.Write(stat);
             }
-            List<SpecialStat> bonusSpecialAttributes = stats.SpecialBonusAttributes;
-            pWriter.WriteShort((short) bonusSpecialAttributes.Count);
-            foreach (SpecialStat stat in bonusSpecialAttributes)
+            List<ItemStat> specialBonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) specialBonusStats.Count);
+            foreach (SpecialStat stat in specialBonusStats)
             {
                 pWriter.Write(stat);
             }
             pWriter.WriteInt();
 
-            // Ignore other attributes
+            // Ignore other stats
             pWriter.WriteShort();
             pWriter.WriteShort();
             pWriter.WriteInt();
