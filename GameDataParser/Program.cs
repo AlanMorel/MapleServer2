@@ -42,7 +42,7 @@ namespace GameDataParser
                 new ScriptParser(resources),
                 new GuildParser(resources),
                 new PrestigeParser(resources),
-                new AchieveParser(resources),
+                new TrophyParser(resources),
                 new RecipeParser(resources),
                 new MasteryParser(resources),
                 new NpcParser(resources),

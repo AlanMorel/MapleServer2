@@ -42,7 +42,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "enchant":
                     return session.Player.Equips.FirstOrDefault(x => x.Value.Enchants >= 12).Value != null;
                 case "trophy_point":
-                    return session.Player.Trophy[0] + session.Player.Trophy[1] + session.Player.Trophy[2] > 1000;
+                    return session.Player.TrophyCount[0] + session.Player.TrophyCount[1] + session.Player.TrophyCount[2] > 1000;
                 case "title":
                     return session.Player.Titles.Contains(InsigniaMetadataStorage.GetTitleId(insigniaId));
                 case "adventure_level":

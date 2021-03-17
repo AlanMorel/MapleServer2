@@ -6,31 +6,31 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static
 {
-    public static class AchieveMetadataStorage
+    public static class TrophyMetadataStorage
     {
-        private static readonly Dictionary<int, AchieveMetadata> map = new Dictionary<int, AchieveMetadata>();
+        private static readonly Dictionary<int, TrophyMetadata> map = new Dictionary<int, TrophyMetadata>();
 
-        static AchieveMetadataStorage()
+        static TrophyMetadataStorage()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-achieve-metadata");
-            List<AchieveMetadata> achieves = Serializer.Deserialize<List<AchieveMetadata>>(stream);
-            foreach (AchieveMetadata achieve in achieves)
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-trophy-metadata");
+            List<TrophyMetadata> trophies = Serializer.Deserialize<List<TrophyMetadata>>(stream);
+            foreach (TrophyMetadata trophy in trophies)
             {
-                map[achieve.Id] = achieve;
+                map[trophy.Id] = trophy;
             }
         }
 
-        public static List<int> GetAchieveIds()
+        public static List<int> GetTrophyIds()
         {
             return new List<int>(map.Keys);
         }
 
-        public static AchieveMetadata GetMetadata(int id)
+        public static TrophyMetadata GetMetadata(int id)
         {
             return map.GetValueOrDefault(id);
         }
 
-        public static AchieveGradeMetadata GetGrade(int id, int grade)
+        public static TrophyGradeMetadata GetGrade(int id, int grade)
         {
             if ((grade < 1) || (grade > GetNumGrades(id)))
             {

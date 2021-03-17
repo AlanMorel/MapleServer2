@@ -9,30 +9,30 @@ using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
-    public class Achieve
+    public class Trophy
     {
         public int Id { get; private set; }
-        public int NextGrade { get; private set; }   // next grade being achieved; cannot exceed max
+        public int NextGrade { get; private set; }
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }
         public long Condition { get; private set; }
         public bool IsDone { get; private set; }
         public List<long> Timestamps { get; private set; }
 
-        public Achieve(int achieveId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
+        public Trophy(int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
         {
-            Id = achieveId;
+            Id = trophyId;
             NextGrade = grade;
             Counter = counter;
             Timestamps = timestamps ?? new List<long>();
-            MaxGrade = AchieveMetadataStorage.GetNumGrades(Id);
-            Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
+            MaxGrade = TrophyMetadataStorage.GetNumGrades(Id);
+            Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
             IsDone = isDone;
         }
 
-        public AchievePacket.GradeStatus GetGradeStatus()
+        public TrophyPacket.GradeStatus GetGradeStatus()
         {
-            return IsDone ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
+            return IsDone ? TrophyPacket.GradeStatus.FinalGrade : TrophyPacket.GradeStatus.NotFinalGrade;
         }
 
         public void AddCounter(GameSession session, long amount)
@@ -50,23 +50,23 @@ namespace MapleServer2.Types
                 // level up but not completed
                 if (NextGrade <= MaxGrade)
                 {
-                    Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
+                    Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
                 }
                 // level up and completed
                 else
                 {
                     IsDone = true;
                     NextGrade--;
-                    string[] cats = AchieveMetadataStorage.GetMetadata(Id).Categories;
+                    string[] cats = TrophyMetadataStorage.GetMetadata(Id).Categories;
                     foreach (string cat in cats)
                     {
                         switch (cat)
                         {
-                            case string s when s.Contains("combat") : session.Player.Trophy[0] += 1;
+                            case string s when s.Contains("combat") : session.Player.TrophyCount[0] += 1;
                                 break;
-                            case string s when s.Contains("adventure") : session.Player.Trophy[0] += 1;
+                            case string s when s.Contains("adventure") : session.Player.TrophyCount[1] += 1;
                                 break;
-                            case string s when s.Contains("lifestyle") : session.Player.Trophy[0] += 1;
+                            case string s when s.Contains("lifestyle") : session.Player.TrophyCount[2] += 1;
                                 break;
                         }
                     }
@@ -77,7 +77,7 @@ namespace MapleServer2.Types
 
         private void ProvideReward(GameSession session)
         {
-            AchieveGradeMetadata grade = AchieveMetadataStorage.GetGrade(Id, NextGrade);
+            TrophyGradeMetadata grade = TrophyMetadataStorage.GetGrade(Id, NextGrade);
             RewardType type = (RewardType) grade.RewardType;
             switch (type)
             {

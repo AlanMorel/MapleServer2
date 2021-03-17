@@ -6,9 +6,9 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    public static class AchievePacket
+    public static class TrophyPacket
     {
-        private enum AchievePacketMode : byte
+        private enum TrophyPacketMode : byte
         {
             TableStart = 0x0,
             TableContent = 0x1,
@@ -24,53 +24,53 @@ namespace MapleServer2.Packets
         public static Packet WriteTableStart()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-            pWriter.WriteEnum(AchievePacketMode.TableStart);
+            pWriter.WriteEnum(TrophyPacketMode.TableStart);
 
             return pWriter;
         }
 
         // packet from WriteTableStart() must be sent immediately before sending these packets
-        public static Packet WriteTableContent(List<Achieve> achieves)
+        public static Packet WriteTableContent(List<Trophy> trophies)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-            pWriter.WriteEnum(AchievePacketMode.TableContent);
-            pWriter.WriteInt(achieves.Count);
+            pWriter.WriteEnum(TrophyPacketMode.TableContent);
+            pWriter.WriteInt(trophies.Count);
 
-            foreach (Achieve achieve in achieves)
+            foreach (Trophy trophy in trophies)
             {
-                pWriter.WriteInt(achieve.Id);
+                pWriter.WriteInt(trophy.Id);
                 pWriter.WriteInt(1);            // unknown 'SS' ?
-                WriteIndividualAchieve(pWriter, achieve);
+                WriteIndividualTrophy(pWriter, trophy);
             }
 
             return pWriter;
         }
 
-        public static Packet WriteUpdate(Achieve achieve)
+        public static Packet WriteUpdate(Trophy trophy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
-            pWriter.WriteEnum(AchievePacketMode.Update);
-            pWriter.WriteInt(achieve.Id);
-            WriteIndividualAchieve(pWriter, achieve);
+            pWriter.WriteEnum(TrophyPacketMode.Update);
+            pWriter.WriteInt(trophy.Id);
+            WriteIndividualTrophy(pWriter, trophy);
 
             return pWriter;
         }
 
-        private static void WriteIndividualAchieve(PacketWriter pWriter, Achieve achieve)
+        private static void WriteIndividualTrophy(PacketWriter pWriter, Trophy trophy)
         {
-            int tCount = achieve.Timestamps.Count;
+            int tCount = trophy.Timestamps.Count;
 
-            pWriter.WriteEnum(achieve.GetGradeStatus());
+            pWriter.WriteEnum(trophy.GetGradeStatus());
             pWriter.WriteInt(1);
-            pWriter.WriteInt(achieve.NextGrade);
-            pWriter.WriteInt(achieve.MaxGrade);
+            pWriter.WriteInt(trophy.NextGrade);
+            pWriter.WriteInt(trophy.MaxGrade);
             pWriter.WriteByte(0);
-            pWriter.WriteLong(achieve.Counter);
+            pWriter.WriteLong(trophy.Counter);
             pWriter.WriteInt(tCount);
             for (int t = 0; t < tCount; t++)
             {
                 pWriter.WriteInt(t + 1);
-                pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
+                pWriter.WriteLong(trophy.Timestamps.ElementAt(t));
             }
         }
     }

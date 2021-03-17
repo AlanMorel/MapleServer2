@@ -7,31 +7,31 @@ using Maple2Storage.Enums;
 namespace Maple2Storage.Types.Metadata
 {
     [XmlType]
-    public class AchieveMetadata
+    public class TrophyMetadata
     {
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
         public string[] Categories;
         [XmlElement(Order = 3)]
-        public List<AchieveGradeMetadata> Grades;
+        public List<TrophyGradeMetadata> Grades;
 
         // Required for deserialization
-        public AchieveMetadata()
+        public TrophyMetadata()
         {
-            Grades = new List<AchieveGradeMetadata>();
+            Grades = new List<TrophyGradeMetadata>();
         }
 
-        public AchieveMetadata(int id, List<AchieveGradeMetadata> grades)
+        public TrophyMetadata(int id, List<TrophyGradeMetadata> grades)
         {
             Id = id;
             Grades = grades;
         }
 
         public override string ToString() =>
-            $"AchieveMetadata(Id:{Id},Categories:{string.Join(",", Categories)},Grades:{string.Join(",", Grades)}";
+            $"TrophyMetadata(Id:{Id},Categories:{string.Join(",", Categories)},Grades:{string.Join(",", Grades)}";
 
-        protected bool Equals(AchieveMetadata other)
+        protected bool Equals(TrophyMetadata other)
         {
             return Id == other.Id
                 && Grades.SequenceEqual(other.Grades);
@@ -54,7 +54,7 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((AchieveMetadata) obj);
+            return Equals((TrophyMetadata) obj);
         }
 
         public override int GetHashCode()
@@ -62,19 +62,19 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Id);
         }
 
-        public static bool operator ==(AchieveMetadata left, AchieveMetadata right)
+        public static bool operator ==(TrophyMetadata left, TrophyMetadata right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(AchieveMetadata left, AchieveMetadata right)
+        public static bool operator !=(TrophyMetadata left, TrophyMetadata right)
         {
             return !Equals(left, right);
         }
     }
 
     [XmlType]
-    public class AchieveGradeMetadata
+    public class TrophyGradeMetadata
     {
         [XmlElement(Order = 1)]
         public int Grade;
@@ -88,12 +88,12 @@ namespace Maple2Storage.Types.Metadata
         public int RewardValue;
 
         // Required for deserialization
-        public AchieveGradeMetadata() { }
+        public TrophyGradeMetadata() { }
 
         public override string ToString() =>
-            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue})";
+            $"TrophyGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue})";
 
-        protected bool Equals(AchieveGradeMetadata other)
+        protected bool Equals(TrophyGradeMetadata other)
         {
             return Grade == other.Grade
                 && Condition == other.Condition
@@ -119,7 +119,7 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((AchieveGradeMetadata) obj);
+            return Equals((TrophyGradeMetadata) obj);
         }
 
         public override int GetHashCode()
@@ -127,12 +127,12 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Grade, Condition, RewardType, RewardCode);
         }
 
-        public static bool operator ==(AchieveGradeMetadata left, AchieveGradeMetadata right)
+        public static bool operator ==(TrophyGradeMetadata left, TrophyGradeMetadata right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(AchieveGradeMetadata left, AchieveGradeMetadata right)
+        public static bool operator !=(TrophyGradeMetadata left, TrophyGradeMetadata right)
         {
             return !Equals(left, right);
         }

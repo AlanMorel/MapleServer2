@@ -8,14 +8,14 @@ using Maple2Storage.Enums;
 
 namespace GameDataParser.Parsers
 {
-    class AchieveParser : Exporter<List<AchieveMetadata>>
+    class TrophyParser : Exporter<List<TrophyMetadata>>
     {
-        public AchieveParser(MetadataResources resources) : base(resources, "achieve") { }
+        public TrophyParser(MetadataResources resources) : base(resources, "trophy") { }
 
-        protected override List<AchieveMetadata> Parse()
+        protected override List<TrophyMetadata> Parse()
         {
             HashSet<string> test = new HashSet<string>();
-            List<AchieveMetadata> achieveList = new List<AchieveMetadata>();
+            List<TrophyMetadata> trophyList = new List<TrophyMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("achieve/"))
@@ -24,17 +24,17 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
-                XmlNode achieve = document.SelectSingleNode("/ms2/achieves");
+                XmlNode trophy = document.SelectSingleNode("/ms2/achieves");
 
-                AchieveMetadata newAchieve = new AchieveMetadata();
-                newAchieve.Id = int.Parse(achieve.Attributes["id"].Value);
-                newAchieve.Categories = achieve.Attributes["categoryTag"].Value.Split(",");
+                TrophyMetadata newTrophy = new TrophyMetadata();
+                newTrophy.Id = int.Parse(trophy.Attributes["id"].Value);
+                newTrophy.Categories = trophy.Attributes["categoryTag"]?.Value.Split(",");
 
-                XmlNodeList grades = achieve.SelectNodes("grade");
+                XmlNodeList grades = trophy.SelectNodes("grade");
 
                 foreach (XmlNode grade in grades)
                 {
-                    AchieveGradeMetadata newGrade = new AchieveGradeMetadata();
+                    TrophyGradeMetadata newGrade = new TrophyGradeMetadata();
                     newGrade.Grade = int.Parse(grade.Attributes["value"].Value);
 
                     XmlNode condition = grade.SelectSingleNode("condition");
@@ -46,13 +46,13 @@ namespace GameDataParser.Parsers
                     newGrade.RewardCode = int.Parse(reward.Attributes["code"].Value);
                     newGrade.RewardValue = int.Parse(reward.Attributes["value"].Value);
 
-                    newAchieve.Grades.Add(newGrade);
+                    newTrophy.Grades.Add(newGrade);
                 }
-                achieveList.Add(newAchieve);
+                trophyList.Add(newTrophy);
             }
             System.Console.WriteLine(string.Join(", ", test));
 
-            return achieveList;
+            return trophyList;
         }
     }
 }

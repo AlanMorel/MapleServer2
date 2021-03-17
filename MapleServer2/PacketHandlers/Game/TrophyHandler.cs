@@ -5,20 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
-    public class AchieveHandler : GamePacketHandler
+    public class TrophyHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.ACHIEVE;
 
-        private enum AchieveHandlerMode : byte
+        private enum TrophyHandlerMode : byte
         {
 
         }
 
-        public AchieveHandler(ILogger<BreakableHandler> logger) : base(logger) { }
+        public TrophyHandler(ILogger<BreakableHandler> logger) : base(logger) { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            AchieveHandlerMode mode = (AchieveHandlerMode) packet.ReadByte();
+            TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();
         }
     }
 }

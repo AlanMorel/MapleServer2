@@ -49,8 +49,8 @@ namespace MapleServer2.Types
         public int SuperChat;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy = new int[3] { 0, 0, 0 };
-        public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
+        public int[] TrophyCount = new int[3] { 0, 0, 0 };
+        public Dictionary<int, Trophy> TrophyData = new Dictionary<int, Trophy>();
 
         public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
         public List<int> FavoriteStickers = new List<int> { };
@@ -421,16 +421,16 @@ namespace MapleServer2.Types
             return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
 
-        public void AchieveUpdate(int achieveId, long addAmount, int sendUpdateInterval = 1)
+        public void TrophyUpdate(int trophyId, long addAmount, int sendUpdateInterval = 1)
         {
-            if (!Achieves.ContainsKey(achieveId))
+            if (!TrophyData.ContainsKey(trophyId))
             {
-                Achieves[achieveId] = new Achieve(achieveId);
+                TrophyData[trophyId] = new Trophy(trophyId);
             }
-            Achieves[achieveId].AddCounter(Session, addAmount);
-            if (Achieves[achieveId].Counter % sendUpdateInterval == 0)
+            TrophyData[trophyId].AddCounter(Session, addAmount);
+            if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
             {
-                Session.Send(AchievePacket.WriteUpdate(Achieves[achieveId]));
+                Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
             }
         }
 
@@ -443,7 +443,7 @@ namespace MapleServer2.Types
                 {
                     Timestamps.onlineDuration += 1;
                     Timestamps.lastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    AchieveUpdate(23100001, 1);
+                    TrophyUpdate(23100001, 1);
                 }
             });
         }
