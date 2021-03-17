@@ -31,7 +31,8 @@ namespace GameDataParser
             IEnumerable<MetadataExporter> exporters = new List<MetadataExporter>()
             {
                 new ItemParser(resources),
-                new ItemStatsParser(resources),
+                new ItemOptionsParser(resources),
+                new ItemOptionRangeParser(resources),
                 new MapEntityParser(resources),
                 new MapParser(resources),
                 new SkillParser(resources),

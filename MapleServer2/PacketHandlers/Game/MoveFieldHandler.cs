@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -46,8 +47,30 @@ namespace MapleServer2.PacketHandlers.Game
 
                 // TODO: There needs to be a more centralized way to set coordinates...
                 session.Player.MapId = srcPortal.Target;
+                session.Player.Rotation = dstPortal.Rotation.ToFloat();
                 session.Player.Coord = dstPortal.Coord.ToFloat();
-                session.Player.SafeBlock = dstPortal.Coord.ToFloat();
+
+                if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
+                {
+                    if (dstPortal.Rotation.Z == 0) // Facing SE
+                    {
+                        session.Player.Coord.Y -= Block.BLOCK_SIZE;
+                    }
+                    else if (dstPortal.Rotation.Z == 90) // Facing NE
+                    {
+                        session.Player.Coord.X += Block.BLOCK_SIZE;
+                    }
+                    else if (dstPortal.Rotation.Z == 180) // Facing NW
+                    {
+                        session.Player.Coord.Y += Block.BLOCK_SIZE;
+                    }
+                    else if (dstPortal.Rotation.Z == 270) // Facing SW
+                    {
+                        session.Player.Coord.X -= Block.BLOCK_SIZE;
+                    }
+                }
+
+                session.Player.SafeBlock = session.Player.Coord;
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }

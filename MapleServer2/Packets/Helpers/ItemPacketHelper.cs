@@ -122,13 +122,18 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<ItemStat> basicAttributes = stats.BasicAttributes;
+            List<NormalStat> basicAttributes = stats.BasicAttributes;
             pWriter.WriteShort((short) basicAttributes.Count);
-            foreach (ItemStat stat in basicAttributes)
+            foreach (NormalStat stat in basicAttributes)
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort(); // SpecialAttributes
+            List<SpecialStat> basicSpecialAttributes = stats.SpecialBasicAttributes;
+            pWriter.WriteShort((short) basicSpecialAttributes.Count);
+            foreach (SpecialStat stat in basicSpecialAttributes)
+            {
+                pWriter.Write(stat);
+            }
             pWriter.WriteInt();
 
             // Another basic attributes block
@@ -136,15 +141,19 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteShort();
             pWriter.WriteInt();
 
-            List<ItemStat> bonusAttributes = stats.BonusAttributes;
+            List<NormalStat> bonusAttributes = stats.BonusAttributes;
             pWriter.WriteShort((short) bonusAttributes.Count);
-            foreach (ItemStat stat in bonusAttributes)
+            foreach (NormalStat stat in bonusAttributes)
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort();
-            pWriter.WriteInt(); // SpecialAttributes
-
+            List<SpecialStat> bonusSpecialAttributes = stats.SpecialBonusAttributes;
+            pWriter.WriteShort((short) bonusSpecialAttributes.Count);
+            foreach (SpecialStat stat in bonusSpecialAttributes)
+            {
+                pWriter.Write(stat);
+            }
+            pWriter.WriteInt();
 
             // Ignore other attributes
             pWriter.WriteShort();
@@ -172,25 +181,25 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStatDiff(this PacketWriter pWriter/*, ItemStats old, ItemStats new*/)
         {
             // TODO: Find stat diffs (low priority)
-            List<ItemStat> generalStatDiff = new List<ItemStat>();
+            List<NormalStat> generalStatDiff = new List<NormalStat>();
             pWriter.WriteByte((byte) generalStatDiff.Count);
-            foreach (ItemStat stat in generalStatDiff)
+            foreach (NormalStat stat in generalStatDiff)
             {
                 pWriter.Write(stat);
             }
 
             pWriter.WriteInt(); // ???
 
-            List<ItemStat> statDiff = new List<ItemStat>();
+            List<NormalStat> statDiff = new List<NormalStat>();
             pWriter.WriteInt(statDiff.Count);
-            foreach (ItemStat stat in statDiff)
+            foreach (NormalStat stat in statDiff)
             {
                 pWriter.Write(stat);
             }
 
-            List<SpecialItemStat> bonusStatDiff = new List<SpecialItemStat>();
+            List<SpecialStat> bonusStatDiff = new List<SpecialStat>();
             pWriter.WriteInt(bonusStatDiff.Count);
-            foreach (SpecialItemStat stat in bonusStatDiff)
+            foreach (SpecialStat stat in bonusStatDiff)
             {
                 pWriter.Write(stat);
             }
