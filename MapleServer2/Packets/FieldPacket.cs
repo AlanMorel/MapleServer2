@@ -99,8 +99,12 @@ namespace MapleServer2.Packets
             if (true)
             {
                 PacketWriter appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte) player.Equips.Count); // num equips
+                appearanceBuffer.WriteByte((byte) (player.Equips.Count + player.Cosmetics.Count)); // num equips
                 foreach ((ItemSlot slot, Item equip) in player.Equips)
+                {
+                    CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
+                }
+                foreach ((ItemSlot slot, Item equip) in player.Cosmetics)
                 {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }

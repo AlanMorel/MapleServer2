@@ -64,6 +64,8 @@ namespace Maple2Storage.Types.Metadata
         public string Tag;
         [XmlElement(Order = 28)]
         public int ShopID;
+        [XmlElement(Order = 29)]
+        public List<HairPresets> HairPresets = new List<HairPresets>();
 
         // Required for deserialization
         public ItemMetadata()
@@ -219,5 +221,28 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() => $"Id: {Id}, Amount: {Count}";
+    }
+
+    [XmlType]
+    public class HairPresets
+    {
+        [XmlElement(Order = 1)]
+        public CoordF BackPositionCoord;
+        [XmlElement(Order = 2)]
+        public CoordF BackPositionRotation;
+        [XmlElement(Order = 3)]
+        public CoordF FrontPositionCoord;
+        [XmlElement(Order = 4)]
+        public CoordF FrontPositionRotation;
+        [XmlElement(Order = 5)]
+        public float MinScale;
+        [XmlElement(Order = 6)]
+        public float MaxScale;
+
+        public HairPresets() { }
+
+        public override string ToString() => $"HairPreset(BackPositionCoord: {BackPositionCoord}, BackPositionRotation: {BackPositionRotation}, " +
+            $"FrontPositionCoord: {FrontPositionCoord}, FrontPositionRotation: {FrontPositionRotation}), MinScale:{MinScale}, MaxScale:{MaxScale}";
+
     }
 }
