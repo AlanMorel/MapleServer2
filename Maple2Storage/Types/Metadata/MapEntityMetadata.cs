@@ -345,20 +345,23 @@ namespace Maple2Storage.Types.Metadata
     public class MapMobSpawn
     {
         [XmlElement(Order = 1)]
-        public readonly CoordS Coord;
+        public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly int NpcCount;
+        public readonly CoordS Coord;
         [XmlElement(Order = 3)]
-        public readonly List<int> NpcList;
+        public readonly int NpcCount;
         [XmlElement(Order = 4)]
-        public readonly int SpawnRadius;
+        public readonly List<int> NpcList;
         [XmlElement(Order = 5)]
+        public readonly int SpawnRadius;
+        [XmlElement(Order = 6)]
         public readonly SpawnMetadata SpawnData;
 
         public MapMobSpawn() { }
 
-        public MapMobSpawn(CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
+        public MapMobSpawn(int id, CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
         {
+            Id = id;
             Coord = coord;
             NpcCount = npcCount;
             NpcList = npcList;
@@ -367,7 +370,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapMobSpawn(Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
+            $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
     }
 
     [XmlType]
