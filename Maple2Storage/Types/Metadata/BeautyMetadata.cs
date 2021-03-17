@@ -12,32 +12,35 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int ShopId;
         [XmlElement(Order = 2)]
-        public BeautyCategory BeautyCategory;
+        public int UniqueId; // This needs to be correct to enable voucher use
         [XmlElement(Order = 3)]
-        public BeautyShopType BeautyType;
+        public BeautyCategory BeautyCategory;
         [XmlElement(Order = 4)]
-        public int VoucherId;
+        public BeautyShopType BeautyType;
         [XmlElement(Order = 5)]
-        public ShopCurrencyType TokenType;
+        public int VoucherId;
         [XmlElement(Order = 6)]
-        public int RequiredItemId;
+        public ShopCurrencyType TokenType;
         [XmlElement(Order = 7)]
-        public int TokenCost;
+        public int RequiredItemId;
         [XmlElement(Order = 8)]
-        public int SpecialCost;
+        public int TokenCost;
         [XmlElement(Order = 9)]
+        public int SpecialCost;
+        [XmlElement(Order = 10)]
         public List<BeautyItem> Items { get; set; }
 
         // Required for deserialization
         public BeautyMetadata() { }
 
         public override string ToString() =>
-    $"BeautyMetadata(ShopId:{ShopId},BeautyCategory:{BeautyCategory},BeautyType:{BeautyType},VoucherId:{VoucherId},TokenType:{TokenType},RequiredItemId:{RequiredItemId}," +
+    $"BeautyMetadata(ShopId:{ShopId},UniqueId:{UniqueId},BeautyCategory:{BeautyCategory},BeautyType:{BeautyType},VoucherId:{VoucherId},TokenType:{TokenType},RequiredItemId:{RequiredItemId}," +
             $"TokenCost:{TokenCost},SpecialCost:{SpecialCost},Items:{Items})";
 
         protected bool Equals(BeautyMetadata other)
         {
             return ShopId == other.ShopId &&
+                   UniqueId == other.UniqueId &&
                    BeautyCategory == other.BeautyCategory &&
                    BeautyType == other.BeautyType &&
                    VoucherId == other.VoucherId &&
@@ -70,7 +73,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(ShopId, BeautyCategory, BeautyType);
+            return HashCode.Combine(ShopId, UniqueId, BeautyCategory, BeautyType);
         }
 
         public static bool operator ==(BeautyMetadata left, BeautyMetadata right)

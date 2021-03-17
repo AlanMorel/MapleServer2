@@ -32,6 +32,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(0x1);
             pWriter.WriteInt((int) notice);
             pWriter.WriteInt();
+            pWriter.WriteShort();
             return pWriter;
         }
     }

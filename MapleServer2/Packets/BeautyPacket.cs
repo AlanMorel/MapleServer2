@@ -186,7 +186,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(beautyShop.VoucherId);
             pWriter.WriteByte(0);
             pWriter.WriteInt(0);
-            pWriter.WriteInt(18); // ?? this a certain number. don't know 
+            pWriter.WriteInt(beautyShop.UniqueId);
             pWriter.WriteByte(0);
             pWriter.WriteByte(4);
             pWriter.WriteInt(0);

@@ -18,6 +18,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata rosetta = new BeautyMetadata()
             {
                 ShopId = 504,
+                UniqueId = 17,
                 BeautyCategory = BeautyCategory.Standard,
                 BeautyType = BeautyShopType.Hair,
                 VoucherId = 20300035,
@@ -2011,6 +2012,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata paulie = new BeautyMetadata()
             {
                 ShopId = 508,
+                UniqueId = 21,
                 BeautyCategory = BeautyCategory.Special,
                 BeautyType = BeautyShopType.Hair,
                 VoucherId = 20300244,
@@ -2171,6 +2173,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata ren = new BeautyMetadata()
             {
                 ShopId = 505,
+                UniqueId = 15,
                 BeautyCategory = BeautyCategory.Standard,
                 BeautyType = BeautyShopType.Makeup,
                 VoucherId = 20300244,
@@ -3903,6 +3906,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata dixon = new BeautyMetadata()
             {
                 ShopId = 500,
+                UniqueId = 16,
                 BeautyCategory = BeautyCategory.Standard,
                 BeautyType = BeautyShopType.Face,
                 VoucherId = 20300036,
@@ -5386,6 +5390,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata zenko = new BeautyMetadata()
             {
                 ShopId = 501,
+                UniqueId = 19,
                 BeautyCategory = BeautyCategory.Dye,
                 BeautyType = BeautyShopType.Skin,
                 VoucherId = 20300042,
@@ -5412,6 +5417,7 @@ namespace GameDataParser.Parsers
             BeautyMetadata douglas = new BeautyMetadata()
             {
                 ShopId = 506,
+                UniqueId = 18,
                 BeautyCategory = BeautyCategory.Dye,
                 BeautyType = BeautyShopType.Dye,
                 VoucherId = 20300038,
