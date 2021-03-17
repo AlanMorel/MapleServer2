@@ -65,8 +65,8 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(BeautyPacketMode.LoadDyeShop);
             WriteBeautyShop(pWriter, beautyShop);
             return pWriter;
-
         }
+
         public static Packet LoadSaveShop(BeautyMetadata beautyShop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
@@ -77,6 +77,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(0);
             return pWriter;
         }
+
         public static Packet UseVoucher(int voucherId, int quantity)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);

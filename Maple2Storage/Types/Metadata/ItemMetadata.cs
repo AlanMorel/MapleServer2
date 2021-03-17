@@ -243,6 +243,5 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() => $"HairPreset(BackPositionCoord: {BackPositionCoord}, BackPositionRotation: {BackPositionRotation}, " +
             $"FrontPositionCoord: {FrontPositionCoord}, FrontPositionRotation: {FrontPositionRotation}), MinScale:{MinScale}, MaxScale:{MaxScale}";
-
     }
 }
