@@ -45,5 +45,15 @@ namespace MapleServer2.Data.Static
                 return Npcs.GetValueOrDefault(11000010);
             }
         }
+
+        public static List<NpcMetadata> GetNpcsByMainTag(string mainTag)
+        {
+            return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(mainTag)).ToList();
+        }
+
+        public static List<NpcMetadata> GetNpcsBySubTag(string subTag)
+        {
+            return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(subTag)).ToList();
+        }
     }
 }

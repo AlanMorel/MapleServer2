@@ -18,22 +18,25 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 4)]
         public readonly List<MapPlayerSpawn> PlayerSpawns;
         [XmlElement(Order = 5)]
-        public readonly List<MapObject> Objects;
+        public readonly List<MapMobSpawn> MobSpawns;
         [XmlElement(Order = 6)]
-        public CoordS BoundingBox0;
+        public readonly List<MapObject> Objects;
         [XmlElement(Order = 7)]
-        public CoordS BoundingBox1;
+        public CoordS BoundingBox0;
         [XmlElement(Order = 8)]
-        public readonly List<MapInteractActor> InteractActors;
+        public CoordS BoundingBox1;
         [XmlElement(Order = 9)]
-        public readonly List<MapInteractMesh> InteractMeshes;
+        public readonly List<MapInteractActor> InteractActors;
         [XmlElement(Order = 10)]
+        public readonly List<MapInteractMesh> InteractMeshes;
+        [XmlElement(Order = 11)]
         public CoordS HealingSpot;
 
         // Required for deserialization
         public MapEntityMetadata()
         {
             PlayerSpawns = new List<MapPlayerSpawn>();
+            MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
@@ -45,6 +48,7 @@ namespace Maple2Storage.Types.Metadata
         {
             MapId = mapId;
             PlayerSpawns = new List<MapPlayerSpawn>();
+            MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
@@ -53,11 +57,11 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
+            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
 
         protected bool Equals(MapEntityMetadata other)
         {
-            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
+            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && MobSpawns.SequenceEqual(other.MobSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
         }
 
         public override bool Equals(object obj)
@@ -335,6 +339,64 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
+    }
+
+    [XmlType]
+    public class MapMobSpawn
+    {
+        [XmlElement(Order = 1)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 2)]
+        public readonly int NpcCount;
+        [XmlElement(Order = 3)]
+        public readonly List<int> NpcList;
+        [XmlElement(Order = 4)]
+        public readonly int SpawnRadius;
+        [XmlElement(Order = 5)]
+        public readonly SpawnMetadata SpawnData;
+
+        public MapMobSpawn() { }
+
+        public MapMobSpawn(CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
+        {
+            Coord = coord;
+            NpcCount = npcCount;
+            NpcList = npcList;
+            SpawnRadius = spawnRadius;
+            SpawnData = spawnMetadata;
+        }
+
+        public override string ToString() =>
+            $"MapMobSpawn(Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
+    }
+
+    [XmlType]
+    public class SpawnMetadata
+    {
+        [XmlElement(Order = 1)]
+        public readonly int Difficulty;
+        [XmlElement(Order = 2)]
+        public readonly int MinDifficulty;
+        [XmlElement(Order = 3)]
+        public readonly string[] Tags;
+        [XmlElement(Order = 4)]
+        public readonly int SpawnTime;
+        [XmlElement(Order = 5)]
+        public readonly int Population;
+        [XmlElement(Order = 6)]
+        public readonly bool IsPetSpawn;
+
+        public SpawnMetadata() { }
+
+        public SpawnMetadata(string[] tags, int population, int spawnTime, int difficulty, int minDifficulty = 1, bool isPetSpawn = false)
+        {
+            Tags = tags;
+            Population = population;
+            SpawnTime = spawnTime;
+            Difficulty = difficulty;
+            MinDifficulty = minDifficulty;
+            IsPetSpawn = isPetSpawn;
+        }
     }
 
     [XmlType]
