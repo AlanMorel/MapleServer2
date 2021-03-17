@@ -4,6 +4,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Maple2Storage.Enums;
+using MapleServer2.Enums;
 using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
@@ -54,8 +55,23 @@ namespace MapleServer2.Types
                 {
                     Condition = 0;
                     NextGrade--;
+                    string[] cats = AchieveMetadataStorage.GetMetadata(Id).Categories;
+                    foreach (string cat in cats)
+                    {
+                        if (cat.Contains("combat"))
+                        {
+                            session.Player.Trophy[0] += 1;
+                        }
+                        else if (cat.Contains("adventure"))
+                        {
+                            session.Player.Trophy[1] += 1;
+                        }
+                        else if (cat.Contains("lifestyle"))
+                        {
+                            session.Player.Trophy[2] += 1;
+                        }
+                    }
                 }
-
                 Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             }
         }
@@ -63,7 +79,7 @@ namespace MapleServer2.Types
         private void ProvideReward(GameSession session)
         {
             AchieveGradeMetadata grade = AchieveMetadataStorage.GetGrade(Id, NextGrade);
-            RewardType type = grade.RewardType;
+            RewardType type = (RewardType) grade.RewardType;
             switch (type)
             {
                 case RewardType.Unknown:
@@ -77,7 +93,7 @@ namespace MapleServer2.Types
                 case RewardType.beauty_hair:
                     break;
                 case RewardType.statPoint:
-                    session.Player.StatPointDistribution.AddTotalStatPoints(grade.RewardCode);
+                    session.Player.StatPointDistribution.AddTotalStatPoints(grade.RewardValue, OtherStatsIndex.Trophy);
                     session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
                     break;
                 case RewardType.skillPoint:

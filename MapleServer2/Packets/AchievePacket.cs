@@ -40,7 +40,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(achieve.Id);
                 pWriter.WriteInt(1);            // unknown 'SS' ?
-                pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
+                WriteIndividualAchieve(pWriter, achieve);
             }
 
             return pWriter;
@@ -51,15 +51,14 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
             pWriter.WriteEnum(AchievePacketMode.Update);
             pWriter.WriteInt(achieve.Id);
-            pWriter.Write(WriteIndividualAchieve(achieve).Buffer);
+            WriteIndividualAchieve(pWriter, achieve);
 
             return pWriter;
         }
 
-        private static Packet WriteIndividualAchieve(Achieve achieve)
+        private static void WriteIndividualAchieve(PacketWriter pWriter, Achieve achieve)
         {
             int tCount = achieve.Timestamps.Count;
-            PacketWriter pWriter = new PacketWriter();
 
             pWriter.WriteEnum(achieve.GetGradeStatus());
             pWriter.WriteInt(1);
@@ -73,8 +72,6 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(t + 1);
                 pWriter.WriteLong(achieve.Timestamps.ElementAt(t));
             }
-
-            return pWriter;
         }
     }
 }

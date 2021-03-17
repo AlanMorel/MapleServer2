@@ -49,7 +49,7 @@ namespace MapleServer2.Types
         public int SuperChat;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy = new int[3] { 0, 1, 2 };
+        public int[] Trophy = new int[3] { 0, 0, 0 };
         public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
 
         public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };

@@ -18,11 +18,6 @@ namespace MapleServer2.Types
             TotalStatPoints = totalStats;
             AllocatedStats = allocatedStats ?? new Dictionary<byte, int>();
             OtherStats = otherStats ?? new Dictionary<OtherStatsIndex, int>();
-
-            AddTotalStatPoints(1, OtherStatsIndex.Quest);
-            AddTotalStatPoints(2, OtherStatsIndex.Trophy);
-            AddTotalStatPoints(3, OtherStatsIndex.Exploration);
-            AddTotalStatPoints(4, OtherStatsIndex.Prestige);
         }
 
         public void AddTotalStatPoints(int amount, OtherStatsIndex pointSrc = 0)
@@ -32,14 +27,11 @@ namespace MapleServer2.Types
             {
                 return;
             }
-            if (OtherStats.ContainsKey(pointSrc))
+            if (!OtherStats.ContainsKey(pointSrc))
             {
-                OtherStats[pointSrc] += amount;
+                OtherStats[pointSrc] = 0;
             }
-            else
-            {
-                OtherStats[pointSrc] = amount;
-            }
+            OtherStats[pointSrc] += amount;
         }
 
         public void AddPoint(byte statType)

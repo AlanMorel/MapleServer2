@@ -12,6 +12,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
+        public string[] Categories;
+        [XmlElement(Order = 3)]
         public List<AchieveGradeMetadata> Grades;
 
         // Required for deserialization
@@ -27,7 +29,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"AchieveMetadata(Id:{Id},Grades:{string.Join(",", Grades)}";
+            $"AchieveMetadata(Id:{Id},Categories:{string.Join(",", Categories)},Grades:{string.Join(",", Grades)}";
 
         protected bool Equals(AchieveMetadata other)
         {
@@ -79,22 +81,25 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public long Condition;
         [XmlElement(Order = 3)]
-        public RewardType RewardType;
+        public byte RewardType;
         [XmlElement(Order = 4)]
         public int RewardCode;
+        [XmlElement(Order = 5)]
+        public int RewardValue;
 
         // Required for deserialization
         public AchieveGradeMetadata() { }
 
         public override string ToString() =>
-            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode})";
+            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue})";
 
         protected bool Equals(AchieveGradeMetadata other)
         {
             return Grade == other.Grade
                 && Condition == other.Condition
                 && RewardType == other.RewardType
-                && RewardCode == other.RewardCode;
+                && RewardCode == other.RewardCode
+                && RewardValue == other.RewardValue;
         }
 
         public override bool Equals(object obj)
