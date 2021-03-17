@@ -29,5 +29,55 @@ namespace MapleServer2.Types
         {
             return Kind == 2;
         }
+
+        public bool IsBeauty()
+        {
+            if (IsHair())
+            {
+                return true;
+            }
+            else if (IsMakeUp())
+            {
+                return true;
+            }
+            else if (IsSkin())
+            {
+                return true;
+            }
+            else if (IsDye())
+            {
+                return true;
+            }
+            else if (IsMirror())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsMakeUp()
+        {
+            return Kind == 30;
+        }
+
+        public bool IsSkin()
+        {
+            return Kind == 32;
+        }
+
+        public bool IsHair()
+        {
+            return Kind == 33;
+        }
+
+        public bool IsDye()
+        {
+            return Kind == 34;
+        }
+
+        public bool IsMirror()
+        {
+            return Kind == 35;
+        }
     }
 }
