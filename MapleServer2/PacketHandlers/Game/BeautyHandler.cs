@@ -377,7 +377,7 @@ namespace MapleServer2.PacketHandlers.Game
             long[] unk2 = new long[itemCount];
             int[] unk3 = new int[itemCount];
             long[] itemUid = new long[itemCount];
-            int[] itemId = new int [itemCount];
+            int[] itemId = new int[itemCount];
             EquipColor[] equipColor = new EquipColor[itemCount];
             int[] paletteId = new int[itemCount];
             CoordF[] hatXPosition = new CoordF[itemCount];

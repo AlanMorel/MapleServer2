@@ -18,11 +18,11 @@ namespace MapleServer2.Packets
             ChooseRandomHair = 0xC,
             InitializeSaves = 0xD,
             LoadSavedHairCount = 0xE,
+            LoadSavedHairs = 0xF,
             SaveHair = 0x10,
             DeleteSavedHair = 0x12,
             LoadSaveWindow = 0x14,
             ChangeToSavedHair = 0x15,
-            LoadSavedHairs = 0xF,
         }
 
         public static Packet LoadBeautyShop(BeautyMetadata beautyShop)
@@ -119,6 +119,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet LoadSavedHairs(List<Item> savedHairs)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
+            pWriter.WriteEnum(BeautyPacketMode.LoadSavedHairs);
+            pWriter.WriteShort((short) savedHairs.Count);
+            foreach (Item hair in savedHairs)
+            {
+                pWriter.WriteInt(hair.Id);
+                pWriter.WriteLong(hair.Uid);
+                pWriter.WriteInt(savedHairs.IndexOf(hair));
+                pWriter.WriteLong(hair.CreationTime);
+                pWriter.Write(hair.Color);
+                pWriter.WriteInt();
+                pWriter.Write(hair.HairD.BackLength);
+                pWriter.Write(hair.HairD.BackPositionCoord);
+                pWriter.Write(hair.HairD.BackPositionRotation);
+                pWriter.Write(hair.HairD.FrontLength);
+                pWriter.Write(hair.HairD.FrontPositionCoord);
+                pWriter.Write(hair.HairD.FrontPositionRotation);
+            }
+            return pWriter;
+        }
+
         public static Packet SaveHair(Item playerHair, Item hairCopy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
@@ -151,29 +174,6 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
             pWriter.WriteEnum(BeautyPacketMode.ChangeToSavedHair);
-            return pWriter;
-        }
-
-        public static Packet LoadSavedHairs(List<Item> savedHairs)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
-            pWriter.WriteEnum(BeautyPacketMode.LoadSavedHairs);
-            pWriter.WriteShort((short)savedHairs.Count);
-            foreach (Item hair in savedHairs)
-            {
-                pWriter.WriteInt(hair.Id);
-                pWriter.WriteLong(hair.Uid);
-                pWriter.WriteInt(savedHairs.IndexOf(hair));
-                pWriter.WriteLong(hair.CreationTime);
-                pWriter.Write(hair.Color);
-                pWriter.WriteInt();
-                pWriter.Write(hair.HairD.BackLength);
-                pWriter.Write(hair.HairD.BackPositionCoord);
-                pWriter.Write(hair.HairD.BackPositionRotation);
-                pWriter.Write(hair.HairD.FrontLength);
-                pWriter.Write(hair.HairD.FrontPositionCoord);
-                pWriter.Write(hair.HairD.FrontPositionRotation);
-            }
             return pWriter;
         }
 
