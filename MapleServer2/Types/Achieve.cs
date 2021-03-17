@@ -16,9 +16,10 @@ namespace MapleServer2.Types
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }
         public long Condition { get; private set; }
+        public bool IsDone { get; private set; }
         public List<long> Timestamps { get; private set; }
 
-        public Achieve(int achieveId, int grade = 1, int counter = 0, List<long> timestamps = null)
+        public Achieve(int achieveId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
         {
             Id = achieveId;
             NextGrade = grade;
@@ -26,49 +27,47 @@ namespace MapleServer2.Types
             Timestamps = timestamps ?? new List<long>();
             MaxGrade = AchieveMetadataStorage.GetNumGrades(Id);
             Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
+            IsDone = isDone;
         }
 
         public AchievePacket.GradeStatus GetGradeStatus()
         {
-            return Condition == 0 ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
+            return IsDone ? AchievePacket.GradeStatus.FinalGrade : AchievePacket.GradeStatus.NotFinalGrade;
         }
 
         public void AddCounter(GameSession session, long amount)
         {
-            if (Condition == 0)
+            if (IsDone)
             {
                 return;
             }
             Counter += amount;
-            // level up achievement if counter reached condition of next grade
+            
             if (Counter >= Condition)
             {
                 ProvideReward(session);
                 NextGrade++;
-                // level up but not fully completed
+                // level up but not completed
                 if (NextGrade <= MaxGrade)
                 {
                     Condition = AchieveMetadataStorage.GetGrade(Id, NextGrade).Condition;
                 }
-                // level up and fully completed
+                // level up and completed
                 else
                 {
-                    Condition = 0;
+                    IsDone = true;
                     NextGrade--;
                     string[] cats = AchieveMetadataStorage.GetMetadata(Id).Categories;
                     foreach (string cat in cats)
                     {
-                        if (cat.Contains("combat"))
+                        switch (cat)
                         {
-                            session.Player.Trophy[0] += 1;
-                        }
-                        else if (cat.Contains("adventure"))
-                        {
-                            session.Player.Trophy[1] += 1;
-                        }
-                        else if (cat.Contains("lifestyle"))
-                        {
-                            session.Player.Trophy[2] += 1;
+                            case string s when s.Contains("combat") : session.Player.Trophy[0] += 1;
+                                break;
+                            case string s when s.Contains("adventure") : session.Player.Trophy[0] += 1;
+                                break;
+                            case string s when s.Contains("lifestyle") : session.Player.Trophy[0] += 1;
+                                break;
                         }
                     }
                 }
