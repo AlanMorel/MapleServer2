@@ -101,11 +101,9 @@ namespace MapleServer2.PacketHandlers.Game
                 if (beautyShop.BeautyType == BeautyShopType.Dye)
                 {
                     session.Send(BeautyPacket.LoadDyeShop(beautyShop));
+                    return;
                 }
-                else
-                {
-                    session.Send(BeautyPacket.LoadBeautyShop(beautyShop));
-                }
+                session.Send(BeautyPacket.LoadBeautyShop(beautyShop));
                 return;
             }
 
@@ -140,14 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item beautyItem = new Item(beautyItemId) { Color = equipColor, IsTemplate = false };
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItem.Id);
 
-            if (useVoucher)
-            {
-                PayWithVoucher(session, beautyShop);
-            }
-            else
-            {
-                PayWithShopItemTokenCost(session, beautyItemId);
-            }
+            HandlePay(session, beautyShop, useVoucher);
 
             ModifyBeauty(session, packet, beautyItem);
         }
@@ -163,14 +154,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item beautyItem = session.Player.Equips.FirstOrDefault(x => x.Value.Uid == beautyItemUid).Value;
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItem.Id);
 
-            if (useVoucher)
-            {
-                PayWithVoucher(session, beautyShop);
-            }
-            else
-            {
-                PayWithShopTokenCost(session, beautyShop);
-            }
+            HandlePay(session, beautyShop, useVoucher);
 
             beautyItem.Color = equipColor;
             ModifyBeauty(session, packet, beautyItem);
@@ -184,14 +168,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(501);
 
-            if (useVoucher)
-            {
-                PayWithVoucher(session, beautyShop);
-            }
-            else
-            {
-                PayWithShopTokenCost(session, beautyShop);
-            }
+            HandlePay(session, beautyShop, useVoucher);
 
             session.Player.SkinColor = skinColor;
             session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.FieldPlayer, skinColor));
@@ -204,41 +181,30 @@ namespace MapleServer2.PacketHandlers.Game
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(shopId);
             List<BeautyItem> beautyItems = BeautyMetadataStorage.GetGenderItems(beautyShop.ShopId, session.Player.Gender);
 
-            if (useVoucher)
-            {
-                PayWithVoucher(session, beautyShop);
-            }
-            else
-            {
-                PayWithShopTokenCost(session, beautyShop);
-            }
+            HandlePay(session, beautyShop, useVoucher);
 
             // Grab random hair
-            Random randomHair = new Random();
-            int indexHair = randomHair.Next(beautyItems.Count);
+            Random random = new Random();
+            int indexHair = random.Next(beautyItems.Count);
             BeautyItem chosenHair = beautyItems[indexHair];
 
             //Grab a preset hair and length of hair
             ItemMetadata beautyItemData = ItemMetadataStorage.GetMetadata(chosenHair.ItemId);
-            Random randomPreset = new Random();
-            int indexPreset = randomPreset.Next(beautyItemData.HairPresets.Count);
+            int indexPreset = random.Next(beautyItemData.HairPresets.Count);
             HairPresets chosenPreset = beautyItemData.HairPresets[indexPreset];
 
             //Grab random front hair length
-            Random randomFrontLength = new Random();
-            double chosenFrontLength = randomFrontLength.NextDouble() *
+            double chosenFrontLength = random.NextDouble() *
                 (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
 
             //Grab random back hair length
-            Random randomBackLength = new Random();
-            double chosenBackLength = randomBackLength.NextDouble() *
+            double chosenBackLength = random.NextDouble() *
                 (beautyItemData.HairPresets[indexPreset].MaxScale - beautyItemData.HairPresets[indexPreset].MinScale) + beautyItemData.HairPresets[indexPreset].MinScale;
 
             // Grab random preset color
             ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(2); // pick from palette 2. Seems like it's the correct palette for basic hair colors
 
-            Random randomColor = new Random();
-            int indexColor = randomColor.Next(palette.DefaultColors.Count);
+            int indexColor = random.Next(palette.DefaultColors.Count);
             EquipColor color = palette.DefaultColors[indexColor];
 
             Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
@@ -412,14 +378,7 @@ namespace MapleServer2.PacketHandlers.Game
                     hatScale[i] = packet.ReadInt();
                 }
 
-                if (useVoucher[i])
-                {
-                    PayWithVoucher(session, beautyShop);
-                }
-                else
-                {
-                    PayWithShopTokenCost(session, beautyShop);
-                }
+                HandlePay(session, beautyShop, useVoucher[i]);
 
                 item.Color = equipColor[i];
                 session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, item));
@@ -474,6 +433,18 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
+        private static void HandlePay(GameSession session, BeautyMetadata shop, bool useVoucher)
+        {
+            if (useVoucher)
+            {
+                PayWithVoucher(session, shop);
+            }
+            else
+            {
+                PayWithShopTokenCost(session, shop);
+            }
+        }
+
         private static void PayWithVoucher(GameSession session, BeautyMetadata shop)
         {
             string voucherTag = ""; // using an Item's tag to search for any applicable voucher
@@ -517,52 +488,13 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void PayWithShopTokenCost(GameSession session, BeautyMetadata beautyShop)
         {
-            int cost;
+            int cost = beautyShop.TokenCost;
             if (beautyShop.SpecialCost != 0)
             {
                 cost = beautyShop.SpecialCost;
             }
-            else
-            {
-                cost = beautyShop.TokenCost;
-            }
 
-            switch (beautyShop.TokenType)
-            {
-                case ShopCurrencyType.Meso:
-                    session.Player.Wallet.Meso.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.ValorToken:
-                    session.Player.Wallet.ValorToken.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.Treva:
-                    session.Player.Wallet.Treva.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.Rue:
-                    session.Player.Wallet.Rue.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.HaviFruit:
-                    session.Player.Wallet.HaviFruit.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.Meret:
-                case ShopCurrencyType.GameMeret:
-                    session.Player.Wallet.Meret.Modify(-(cost));
-                    break;
-                case ShopCurrencyType.EventMeret:
-                    session.Player.Wallet.RemoveMerets(cost);
-                    break;
-                case ShopCurrencyType.Item:
-                    Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == beautyShop.RequiredItemId).Value;
-                    if (itemCost.Amount < cost)
-                    {
-                        return;
-                    }
-                    InventoryController.Consume(session, itemCost.Uid, cost);
-                    break;
-                default:
-                    session.SendNotice($"Unknown currency: {beautyShop.TokenType}");
-                    break;
-            }
+            Pay(session, beautyShop.TokenType, cost, beautyShop.RequiredItemId);
         }
 
         private static void PayWithShopItemTokenCost(GameSession session, int beautyItemId)
@@ -570,40 +502,43 @@ namespace MapleServer2.PacketHandlers.Game
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItemId);
             BeautyItem item = beautyShop.Items.FirstOrDefault(x => x.ItemId == beautyItemId);
 
-            switch (item.TokenType)
+            Pay(session, item.TokenType, item.TokenCost, item.RequiredItemId);
+        }
+
+        private static void Pay(GameSession session, ShopCurrencyType type, int tokenCost, int requiredItemId)
+        {
+            switch (type)
             {
                 case ShopCurrencyType.Meso:
-                    session.Player.Wallet.Meso.Modify(-(item.TokenCost));
+                    session.Player.Wallet.Meso.Modify(-tokenCost);
                     break;
                 case ShopCurrencyType.ValorToken:
-                    session.Player.Wallet.ValorToken.Modify(-(item.TokenCost));
+                    session.Player.Wallet.ValorToken.Modify(-tokenCost);
                     break;
                 case ShopCurrencyType.Treva:
-                    session.Player.Wallet.Treva.Modify(-(item.TokenCost));
+                    session.Player.Wallet.Treva.Modify(-tokenCost);
                     break;
                 case ShopCurrencyType.Rue:
-                    session.Player.Wallet.Rue.Modify(-(item.TokenCost));
+                    session.Player.Wallet.Rue.Modify(-tokenCost);
                     break;
                 case ShopCurrencyType.HaviFruit:
-                    session.Player.Wallet.HaviFruit.Modify(-(item.TokenCost));
+                    session.Player.Wallet.HaviFruit.Modify(-tokenCost);
                     break;
                 case ShopCurrencyType.Meret:
                 case ShopCurrencyType.GameMeret:
-                    session.Player.Wallet.Meret.Modify(-(item.TokenCost));
-                    break;
                 case ShopCurrencyType.EventMeret:
-                    session.Player.Wallet.RemoveMerets(item.TokenCost);
+                    session.Player.Wallet.RemoveMerets(tokenCost);
                     break;
                 case ShopCurrencyType.Item:
-                    Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == item.RequiredItemId).Value;
-                    if (itemCost.Amount < item.TokenCost)
+                    Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == requiredItemId).Value;
+                    if (itemCost.Amount < tokenCost)
                     {
                         return;
                     }
-                    InventoryController.Consume(session, itemCost.Uid, item.TokenCost);
+                    InventoryController.Consume(session, itemCost.Uid, tokenCost);
                     break;
                 default:
-                    session.SendNotice($"Unknown currency: {item.TokenType}");
+                    session.SendNotice($"Unknown currency: {type}");
                     break;
             }
         }

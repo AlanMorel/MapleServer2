@@ -86,7 +86,6 @@ namespace MapleServer2.PacketHandlers.Game
                             case 510: // Mino
                                 session.Send(NpcTalkPacket.Action(ActionType.OpenWindow, "BeautyShopDialog", "hair,styleSave"));
                                 break;
-
                         }
                         session.Send(UserMoveByPortalPacket.Move(session, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
                     }

@@ -91,11 +91,6 @@ namespace Maple2Storage.Types
                 float.Parse(coord[2])
             );
         }
-
-        public static CoordF Parse(int v)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     [XmlType]

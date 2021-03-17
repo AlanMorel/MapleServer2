@@ -4,7 +4,6 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-
     public static class ItemExtraDataPacket
     {
         public static Packet Update(IFieldObject<Player> player, Item item)

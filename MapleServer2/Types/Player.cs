@@ -337,10 +337,7 @@ namespace MapleServer2.Types
                 Item cosmeticItem = Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
                 return cosmeticItem;
             }
-            else
-            {
-                return gearItem;
-            }
+            return gearItem;
         }
 
         public void ConsumeHp(int amount)

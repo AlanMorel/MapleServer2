@@ -28,7 +28,6 @@ namespace GameDataParser.Parsers
                 {
                     ColorPaletteMetadata metadata = new ColorPaletteMetadata();
 
-
                     if (node.Name == "colorPalette")
                     {
                         metadata.PaletteId = int.Parse(node.Attributes["id"].Value);

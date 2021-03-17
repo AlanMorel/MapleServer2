@@ -2167,7 +2167,6 @@ namespace GameDataParser.Parsers
 
             shops.Add(paulie);
 
-
             // Ren - Makeup
             BeautyMetadata ren = new BeautyMetadata()
             {
