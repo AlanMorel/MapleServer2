@@ -137,23 +137,70 @@ namespace MapleServer2.Types
             
             if (currLevel > masteryExp.Level)
             {
-                if (type == MasteryType.Mining)
+                masteryExp.Level = currLevel;
+                switch (type)
                 {
-                    masteryExp.Level = currLevel;
-                    Player.AchieveUpdate(23100238, 1);
-                    Player.AchieveUpdate(23100239, 1);
-                    Player.AchieveUpdate(23100240, 1);
-                    Player.AchieveUpdate(23100241, 1);
-                    Player.AchieveUpdate(23100330, 1);
-                }
-                else if (type == MasteryType.Foraging)
-                {
-                    masteryExp.Level = currLevel;
-                    Player.AchieveUpdate(23100257, 1);
-                    Player.AchieveUpdate(23100258, 1);
-                    Player.AchieveUpdate(23100259, 1);
-                    Player.AchieveUpdate(23100260, 1);
-                    Player.AchieveUpdate(23100334, 1);
+                    case MasteryType.Mining:
+                        Player.AchieveUpdate(23100238, 1);
+                        Player.AchieveUpdate(23100239, 1);
+                        Player.AchieveUpdate(23100240, 1);
+                        Player.AchieveUpdate(23100241, 1);
+                        Player.AchieveUpdate(23100330, 1);
+                        break;
+                    case MasteryType.Foraging:
+                        Player.AchieveUpdate(23100257, 1);
+                        Player.AchieveUpdate(23100258, 1);
+                        Player.AchieveUpdate(23100259, 1);
+                        Player.AchieveUpdate(23100260, 1);
+                        Player.AchieveUpdate(23100334, 1);
+                        break;
+                    case MasteryType.Ranching:
+                        Player.AchieveUpdate(23100242, 1);
+                        Player.AchieveUpdate(23100243, 1);
+                        Player.AchieveUpdate(23100244, 1);
+                        Player.AchieveUpdate(23100245, 1);
+                        Player.AchieveUpdate(23100331, 1);
+                        break;
+                    case MasteryType.Farming:
+                        Player.AchieveUpdate(23100261, 1);
+                        Player.AchieveUpdate(23100262, 1);
+                        Player.AchieveUpdate(23100263, 1);
+                        Player.AchieveUpdate(23100264, 1);
+                        Player.AchieveUpdate(23100335, 1);
+                        break;
+                    case MasteryType.Smithing:
+                        Player.AchieveUpdate(23100246, 1);
+                        Player.AchieveUpdate(23100247, 1);
+                        Player.AchieveUpdate(23100248, 1);
+                        Player.AchieveUpdate(23100249, 1);
+                        Player.AchieveUpdate(23100332, 1);
+                        break;
+                    case MasteryType.Handicraft:
+                        Player.AchieveUpdate(23100250, 1);
+                        Player.AchieveUpdate(23100251, 1);
+                        Player.AchieveUpdate(23100252, 1);
+                        Player.AchieveUpdate(23100253, 1);
+                        Player.AchieveUpdate(23100333, 1);
+                        break;
+                    case MasteryType.Alchemy:
+                        Player.AchieveUpdate(23100265, 1);
+                        Player.AchieveUpdate(23100266, 1);
+                        Player.AchieveUpdate(23100267, 1);
+                        Player.AchieveUpdate(23100268, 1);
+                        Player.AchieveUpdate(23100336, 1);
+                        break;
+                    case MasteryType.Cooking:
+                        Player.AchieveUpdate(23100269, 1);
+                        Player.AchieveUpdate(23100270, 1);
+                        Player.AchieveUpdate(23100271, 1);
+                        Player.AchieveUpdate(23100272, 1);
+                        Player.AchieveUpdate(23100337, 1);
+                        break;
+                    case MasteryType.PetTaming:
+                        Player.AchieveUpdate(23100273, 1);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
