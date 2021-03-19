@@ -140,14 +140,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (useVoucher)
             {
-                if(!PayWithVoucher(session, beautyShop))
+                if (!PayWithVoucher(session, beautyShop))
                 {
                     return;
                 }
             }
             else
             {
-                if(!PayWithShopItemTokenCost(session, beautyItemId))
+                if (!PayWithShopItemTokenCost(session, beautyItemId))
                 {
                     return;
                 }
@@ -184,7 +184,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(501);
 
-            if(!HandleShopPay(session, beautyShop, useVoucher))
+            if (!HandleShopPay(session, beautyShop, useVoucher))
             {
                 return;
             }
@@ -403,7 +403,7 @@ namespace MapleServer2.PacketHandlers.Game
                     hatScale[i] = packet.ReadInt();
                 }
 
-                if(!HandleShopPay(session, beautyShop, useVoucher[i]))
+                if (!HandleShopPay(session, beautyShop, useVoucher[i]))
                 {
                     return;
                 }
@@ -530,7 +530,7 @@ namespace MapleServer2.PacketHandlers.Game
                 cost = beautyShop.SpecialCost;
             }
 
-            if(!Pay(session, beautyShop.TokenType, cost, beautyShop.RequiredItemId))
+            if (!Pay(session, beautyShop.TokenType, cost, beautyShop.RequiredItemId))
             {
                 return false;
             }
@@ -602,7 +602,6 @@ namespace MapleServer2.PacketHandlers.Game
                 default:
                     session.SendNotice($"Unknown currency: {type}");
                     return false;
-                    break;
             }
             return true;
         }
