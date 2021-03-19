@@ -106,9 +106,11 @@ namespace MapleServer2.Packets.Helpers
                 case ItemSlot.HR:
                     //pWriter.Write<HairData>(item.HairD);
                     pWriter.Write(item.HairD.BackLength);
-                    pWriter.Write(item.HairD.BackPositionArray);
+                    pWriter.Write(item.HairD.BackPositionCoord);
+                    pWriter.Write(item.HairD.BackPositionRotation);
                     pWriter.Write(item.HairD.FrontLength);
-                    pWriter.Write(item.HairD.FrontPositionArray);
+                    pWriter.Write(item.HairD.FrontPositionCoord);
+                    pWriter.Write(item.HairD.FrontPositionRotation);
                     break;
                 case ItemSlot.FD:
                     pWriter.Write(item.FaceDecorationD);

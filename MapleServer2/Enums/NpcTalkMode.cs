@@ -22,6 +22,7 @@
         QuestReward = 7,
         Close2 = 8, // same as 3 and 9
         NextClose1 = 9, // same as 3 and 8
+        Beauty = 10,
         JobAdv = 11, // Nevermind - ESC || Perform Job Advancement
         AcceptDecline2 = 12, // Decline - Esc || Accept - Space
         GetTreatment = 13, // Decline - ESC || Get Treatment - Space
@@ -38,4 +39,9 @@
         Quest = 4,
     }
 
+    public enum ActionType : byte
+    {
+        Portal = 3,
+        OpenWindow = 4,
+    }
 }

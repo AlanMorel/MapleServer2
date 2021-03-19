@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
@@ -55,6 +56,7 @@ namespace MapleServer2.Types
         public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
         public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
+        public IFieldObject<Npc> NpcTalk; // Needs a better solution to save what NPC a Player is talking to
 
         public CoordF Coord;
         public CoordF Rotation;
@@ -97,6 +99,7 @@ namespace MapleServer2.Types
         public BankInventory BankInventory = new BankInventory();
         public DismantleInventory DismantleInventory = new DismantleInventory();
         public LockInventory LockInventory = new LockInventory();
+        public HairInventory HairInventory = new HairInventory();
 
         public Mailbox Mailbox = new Mailbox();
 
@@ -324,6 +327,17 @@ namespace MapleServer2.Types
                     break;
             }
             return null;
+        }
+
+        public Item GetEquippedItem(long itemUid)
+        {
+            Item gearItem = Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+            if (gearItem == null)
+            {
+                Item cosmeticItem = Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+                return cosmeticItem;
+            }
+            return gearItem;
         }
 
         public void ConsumeHp(int amount)

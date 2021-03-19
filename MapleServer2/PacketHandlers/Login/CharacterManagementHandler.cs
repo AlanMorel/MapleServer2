@@ -93,15 +93,17 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.HR: // Hair
                         // Hair Length/Position
                         float backLength = BitConverter.ToSingle(packet.Read(4), 0);
-                        byte[] backPositionArray = packet.Read(24);
+                        CoordF backPositionCoord = packet.Read<CoordF>();
+                        CoordF backPositionRotation = packet.Read<CoordF>();
                         float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
-                        byte[] frontPositionArray = packet.Read(24);
+                        CoordF frontPositionCoord = packet.Read<CoordF>();
+                        CoordF frontPositionRotation = packet.Read<CoordF>();
 
                         equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
                         {
                             CreationTime = 1565575851,
                             Color = equipColor,
-                            HairD = new HairData(backLength, frontLength, backPositionArray, frontPositionArray),
+                            HairD = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
                             IsTemplate = false,
                         });
                         break;
