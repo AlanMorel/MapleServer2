@@ -70,9 +70,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item gear = inventory.Items.FirstOrDefault(x => x.Key == itemUid).Value;
             Item scrollLock = null;
-            Console.WriteLine("greenCrystalTotalAmount" + greenCrystalTotalAmount);
-            Console.WriteLine("metacellTotalAmount" + metacellTotalAmount);
-            Console.WriteLine("crystalFragmentTotalAmount" + crystalFragmentTotalAmount);
+
             // Check if gear exist in inventory
             if (gear == null)
             {
