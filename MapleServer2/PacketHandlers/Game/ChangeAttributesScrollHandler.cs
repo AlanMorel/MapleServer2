@@ -17,8 +17,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum ChangeAttributeMode : byte
         {
-            Roll = 1,
-            Apply = 3,
+            ChangeAttributes = 1,
+            SelectNewAttributes = 3,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -26,11 +26,11 @@ namespace MapleServer2.PacketHandlers.Game
             ChangeAttributeMode mode = (ChangeAttributeMode) packet.ReadByte();
             switch (mode)
             {
-                case ChangeAttributeMode.Roll:
-                    HandleChangeStats(session, packet);
+                case ChangeAttributeMode.ChangeAttributes:
+                    HandleChangeAttributes(session, packet);
                     break;
-                case ChangeAttributeMode.Apply:
-                    HandleSelectNewStats(session, packet);
+                case ChangeAttributeMode.SelectNewAttributes:
+                    HandleSelectNewAttributes(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -38,29 +38,78 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleChangeStats(GameSession session, PacketReader packet)
+        private static void HandleChangeAttributes(GameSession session, PacketReader packet)
         {
+            short lockStatId = -1;
+            bool isSpecialStat = false;
             long scrollUid = packet.ReadLong();
             long gearUid = packet.ReadLong();
+            packet.Skip(9);
+            bool useLock = packet.ReadBool();
+            if (useLock)
+            {
+                isSpecialStat = packet.ReadBool();
+                lockStatId = packet.ReadShort();
+            }
 
             Inventory inventory = session.Player.Inventory;
             Item scroll = inventory.Items.FirstOrDefault(x => x.Key == scrollUid).Value;
             Item gear = inventory.Items.FirstOrDefault(x => x.Key == gearUid).Value;
+            Item scrollLock = null;
+
+            // Check if gear and scroll exists in inventory
             if (scroll == null || gear == null)
             {
                 return;
             }
+
+            string tag = "";
+            if (Item.IsAccessory(gear.ItemSlot))
+            {
+                tag = "LockItemOptionAccessory";
+            }
+            else if (Item.IsArmor(gear.ItemSlot))
+            {
+                tag = "LockItemOptionArmor";
+            }
+            else if (Item.IsWeapon(gear.ItemSlot))
+            {
+                tag = "LockItemOptionWeapon";
+            }
+            else if (Item.IsPet(gear.Id))
+            {
+                tag = "LockItemOptionPet";
+            }
+
+            if (useLock)
+            {
+                scrollLock = inventory.Items.FirstOrDefault(x => x.Value.Tag == tag && x.Value.Rarity == gear.Rarity).Value;
+                // Check if scroll lock exists in inventory
+                if (scrollLock == null)
+                {
+                    return;
+                }
+            }
+
             gear.TimesAttributesChanged++;
 
             Item newItem = new Item(gear);
-            ItemStats.RollNewBonusValues(newItem);
+
+            // Set new values for attributes
+            newItem.Stats.BonusStats = ItemStats.RollNewBonusValues(newItem, lockStatId, isSpecialStat);
+
             inventory.TemporaryStorage[newItem.Uid] = newItem;
 
-            InventoryController.Consume(session, scrollUid, 1);
+            InventoryController.Consume(session, scroll.Uid, 1);
+            if (useLock)
+            {
+                InventoryController.Consume(session, scrollLock.Uid, 1);
+            }
+
             session.Send(ChangeAttributesScrollPacket.PreviewNewItem(newItem));
         }
 
-        private static void HandleSelectNewStats(GameSession session, PacketReader packet)
+        private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
         {
             long gearUid = packet.ReadLong();
 

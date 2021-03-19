@@ -190,7 +190,7 @@ namespace MapleServer2.Types
         }
 
         // Roll new bonus stats and values
-        public static List<ItemStat> RollBonusStats(int itemId, int rarity, int slots = -1, short ignoreStat = -1)
+        public static List<ItemStat> RollBonusStats(int itemId, int rarity)
         {
             if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
@@ -206,39 +206,78 @@ namespace MapleServer2.Types
 
             List<ItemStat> itemStats = new List<ItemStat>();
 
-            foreach (ItemAttribute attribute in itemOption.Stats.Where(x => (short) x != ignoreStat))
+            foreach (ItemAttribute attribute in itemOption.Stats)
             {
                 itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
             }
 
-            foreach (SpecialItemAttribute attribute in itemOption.SpecialStats.Where(x => (short) x != ignoreStat))
+            foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
             {
                 itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
             }
 
-            if (slots == -1)
+            return itemStats.OrderBy(x => random.Next()).Take(itemOption.Slots).ToList();
+        }
+
+        // Roll new bonus stats and values except the locked stat
+        public static List<ItemStat> RollBonusStatsWithStatLocked(int itemId, int rarity, int slots, short ignoreStat, bool isSpecialStat)
+        {
+            if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
-                slots = itemOption.Slots;
+                return null;
+            }
+
+            Random random = new Random();
+            ItemOption itemOption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
+            if (itemOption == null)
+            {
+                return null;
+            }
+
+            List<ItemStat> itemStats = new List<ItemStat>();
+
+            List<ItemAttribute> attributes = isSpecialStat ? itemOption.Stats : itemOption.Stats.Where(x => (short) x != ignoreStat).ToList();
+            List<SpecialItemAttribute> specialAttributes = isSpecialStat ? itemOption.SpecialStats.Where(x => (short) x != ignoreStat).ToList() : itemOption.SpecialStats;
+
+            foreach (ItemAttribute attribute in attributes)
+            {
+                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+            }
+
+            foreach (SpecialItemAttribute attribute in specialAttributes)
+            {
+                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
             }
 
             return itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
         }
 
         // Roll new values for existing bonus stats
-        public static void RollNewBonusValues(Item item)
+        public static List<ItemStat> RollNewBonusValues(Item item, short ignoreStat, bool isSpecialStat)
         {
             List<ItemStat> newBonus = new List<ItemStat>();
 
             foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
             {
+                if (!isSpecialStat && (short) stat.Id == ignoreStat)
+                {
+                    newBonus.Add(stat);
+                    continue;
+                }
                 newBonus.Add(NormalStat.Of(GetRange(item.Id)[stat.Id][Roll()]));
             }
+
             foreach (SpecialStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)))
             {
+                if (isSpecialStat && (short) stat.Id == ignoreStat)
+                {
+                    newBonus.Add(stat);
+                    continue;
+                }
                 newBonus.Add(SpecialStat.Of(GetSpecialRange(item.Id)[stat.Id][Roll()]));
             }
 
-            item.Stats.BonusStats = newBonus;
+            return newBonus;
         }
 
         private static Dictionary<ItemAttribute, List<ParserStat>> GetRange(int itemId)
