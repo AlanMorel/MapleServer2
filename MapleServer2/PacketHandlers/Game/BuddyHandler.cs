@@ -94,12 +94,12 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if ((byte) session.Player.BuddyList.Count(b => b.Blocked != true) >= 100) // 100 is friend limit
+            if ((byte) session.Player.BuddyList.Count(b => !b.Blocked) >= 100) // 100 is friend limit
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotAddFriends, targetPlayer.Name));
             }
 
-            if ((byte) targetPlayer.BuddyList.Count(b => b.Blocked != true) >= 100)
+            if ((byte) targetPlayer.BuddyList.Count(b => !b.Blocked) >= 100)
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.OtherUserCannotAddFriends, targetPlayer.Name));
                 return;
@@ -219,7 +219,7 @@ namespace MapleServer2.PacketHandlers.Game
             string target = packet.ReadUnicodeString();
             string message = packet.ReadUnicodeString();
 
-            if ((byte) session.Player.BuddyList.Count(b => b.Blocked == true) >= 100)  // 100 is block limit
+            if ((byte) session.Player.BuddyList.Count(b => b.Blocked) >= 100)  // 100 is block limit
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotBlock, target));
                 return;
