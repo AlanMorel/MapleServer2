@@ -29,12 +29,12 @@ namespace MapleServer2.Tools
             return allBuddyList.Where(o => o.Friend.CharacterId != player.CharacterId && o.SharedId == id).FirstOrDefault();
         }
 
-        public bool IsFriend(Player player1, Player player2)
+        public static bool IsFriend(Player player1, Player player2)
         {
             return player1.BuddyList.Any(o => o.Friend.CharacterId == player2.CharacterId && o.Blocked == false);
         }
 
-        public bool IsBlocked(Player player, Player otherPlayer)
+        public static bool IsBlocked(Player player, Player otherPlayer)
         {
             return otherPlayer.BuddyList.Any(o => o.Friend.CharacterId == player.CharacterId && o.Blocked == true);
         }

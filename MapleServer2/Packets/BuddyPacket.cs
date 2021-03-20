@@ -198,7 +198,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(buddy.IsPending);
             pWriter.WriteBool(buddy.Blocked);
             pWriter.WriteBool(true); // TODO: Change to online check
-            pWriter.WriteByte(0); 
+            pWriter.WriteByte(0);
             pWriter.WriteLong(buddy.Timestamp);
             pWriter.WriteUnicodeString(buddy.Friend.ProfileUrl);
             pWriter.WriteUnicodeString(buddy.Friend.Motto);

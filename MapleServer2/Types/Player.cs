@@ -107,7 +107,7 @@ namespace MapleServer2.Types
 
         public long PartyId;
 
-        public long ClubId;
+        public long[] ClubId = new long[3];
         // TODO make this as an array
 
         public int[] GroupChatId = new int[3];

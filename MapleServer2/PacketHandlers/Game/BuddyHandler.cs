@@ -107,13 +107,13 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (GameServer.BuddyManager.IsBlocked(session.Player, targetPlayer))
+            if (BuddyManager.IsBlocked(session.Player, targetPlayer))
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.DeclinedRequest, targetPlayer.Name));
                 return;
             }
 
-            if (GameServer.BuddyManager.IsFriend(session.Player, targetPlayer))
+            if (BuddyManager.IsFriend(session.Player, targetPlayer))
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.AlreadyFriends, targetPlayer.Name));
             }

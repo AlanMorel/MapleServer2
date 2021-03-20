@@ -148,7 +148,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (GameServer.BuddyManager.IsBlocked(session.Player, recipientPlayer))
+            if (BuddyManager.IsBlocked(session.Player, recipientPlayer))
             {
                 session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
                 return;
