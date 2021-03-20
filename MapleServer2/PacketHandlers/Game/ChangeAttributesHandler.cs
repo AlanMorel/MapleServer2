@@ -110,7 +110,7 @@ namespace MapleServer2.PacketHandlers.Game
             int metacellCosts = 25;
             if (gear.TimesAttributesChanged < 14)
             {
-                metacellCosts = 11 + gear.TimesAttributesChanged * 1;
+                metacellCosts = 11 + gear.TimesAttributesChanged;
             }
 
             // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
