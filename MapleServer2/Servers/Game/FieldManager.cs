@@ -9,8 +9,8 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
-using MapleServer2.Types;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game
 {
@@ -213,6 +213,7 @@ namespace MapleServer2.Servers.Game
             Broadcast(session =>
             {
                 session.Send(FieldPacket.RemovePlayer(player));
+                session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
