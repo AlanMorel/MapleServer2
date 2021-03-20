@@ -81,7 +81,6 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string otherPlayerName = packet.ReadUnicodeString();
             string message = packet.ReadUnicodeString();
-            bool notFound = false;
 
             Player targetPlayer = GameServer.Storage.GetPlayerByName(otherPlayerName);
             if (targetPlayer == null) // TODO: Change this so it checks if player exists
@@ -98,7 +97,6 @@ namespace MapleServer2.PacketHandlers.Game
             if ((byte) session.Player.BuddyList.Count(b => b.Blocked != true) >= 100) // 100 is friend limit
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotAddFriends, targetPlayer.Name));
-
             }
 
             if ((byte) targetPlayer.BuddyList.Count(b => b.Blocked != true) >= 100)
@@ -126,7 +124,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(BuddyPacket.Notice((byte) BuddyNotice.RequestSent, targetPlayer.Name));
 
-            if (notFound == false)
+            if (targetPlayer != null) // TODO: Change this to only send if player exists
             {
                 session.Send(BuddyPacket.AddToList(buddy));
             }
@@ -236,7 +234,6 @@ namespace MapleServer2.PacketHandlers.Game
 
                 session.Send(BuddyPacket.AddToList(buddy));
                 session.Send(BuddyPacket.Block(buddy));
-                return;
             }
             else
             {

@@ -148,7 +148,6 @@ namespace MapleServer2.PacketHandlers.Game
             item.Score.Notes = scoreNotes;
 
             session.Send(InstrumentPacket.Compose(item));
-
         }
         private static void HandleFireworks(GameSession session)
         {

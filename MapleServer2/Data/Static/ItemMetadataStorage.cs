@@ -85,6 +85,7 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).IsCustomScore;
 
         }
+
         public static byte GetGender(int itemId)
         {
             return map.GetValueOrDefault(itemId).Gender;

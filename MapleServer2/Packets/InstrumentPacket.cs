@@ -55,11 +55,10 @@ namespace MapleServer2.Packets
 
         public static Packet PlayScore(GameSession session, Item score, byte gmId)
         {
-            Console.WriteLine(session.ServerTick - Environment.TickCount);
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayScore);
             pWriter.WriteBool(score.IsCustomScore);
-            pWriter.WriteInt(session.FieldPlayer.ObjectId + (session.ClientTick - Environment.TickCount)); // This needs to be objectid + player tick count on map
+            pWriter.WriteInt(session.FieldPlayer.ObjectId + (session.ClientTick - Environment.TickCount)); // This needs to be objectid + player tick count on map?
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(session.Player.Coord);
             pWriter.WriteInt(session.ClientTick);
