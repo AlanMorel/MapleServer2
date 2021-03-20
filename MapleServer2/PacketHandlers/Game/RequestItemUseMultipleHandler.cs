@@ -40,6 +40,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
+            int opened = 0;
             Dictionary<long, Item> items = new Dictionary<long, Item>(session.Player.Inventory.Items.Where(x => x.Value.Id == boxId)); // Make copy of items in-case new item is added
 
             foreach (KeyValuePair<long, Item> kvp in items)
@@ -51,7 +52,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 }
 
-                for (int i = 0; i < amount; i++)
+                for (int i = opened; i < amount; i++)
                 {
                     bool breakOut = false; // Needed to remove box before adding item to prevent item duping
 
@@ -60,6 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
                         breakOut = true; // Break out of the amount loop because this stack of boxes is empty, look for next stack
                     }
 
+                    opened++;
                     InventoryController.Consume(session, item.Uid, 1);
 
                     // Handle selection box
