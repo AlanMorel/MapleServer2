@@ -148,6 +148,12 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            if (GameServer.BuddyManager.IsBlocked(session.Player, recipientPlayer))
+            {
+                session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
+                return;
+            }
+
             recipientPlayer.Session.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
             session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
         }

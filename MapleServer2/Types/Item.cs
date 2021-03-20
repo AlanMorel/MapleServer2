@@ -19,19 +19,14 @@ namespace MapleServer2.Types
         public bool IsTwoHand { get; private set; }
         public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
+        public bool IsCustomScore { get; set; }
         public int PlayCount { get; set; }
+        public byte Gender { get; }
         public string FileName { get; set; }
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
-        public string FunctionName { get; set; }
-        public int FunctionId { get; set; }
-        public int FunctionDuration { get; set; }
-        public int FunctionFieldId { get; set; }
-        public byte FunctionCapacity { get; set; }
-        public byte FunctionTargetLevel { get; set; }
-        public short FunctionCount { get; set; }
-        public byte FunctionTotalUser { get; set; }
+        public Function Function { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
 
@@ -68,6 +63,8 @@ namespace MapleServer2.Types
         public byte[] FaceDecorationD;
         public byte AppearanceFlag;
 
+        public MusicScore Score;
+
         public ItemStats Stats;
 
         public Item(int id)
@@ -83,23 +80,19 @@ namespace MapleServer2.Types
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
+            IsCustomScore = ItemMetadataStorage.GetIsCustomScore(id);
+            Gender = ItemMetadataStorage.GetGender(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             FileName = ItemMetadataStorage.GetFileName(id);
             SkillId = ItemMetadataStorage.GetSkillID(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
-            FunctionName = ItemMetadataStorage.GetFunctionName(id);
-            FunctionId = ItemMetadataStorage.GetFunctionId(id);
-            FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
-            FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
-            FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
-            FunctionTargetLevel = ItemMetadataStorage.GetFunctionTargetLevel(id);
-            FunctionCount = ItemMetadataStorage.GetFunctionCount(id);
-            FunctionTotalUser = ItemMetadataStorage.GetFunctionTotalUser(id);
+            Function = ItemMetadataStorage.GetFunction(id);
             Tag = ItemMetadataStorage.GetTag(id);
             ShopID = ItemMetadataStorage.GetShopID(id);
             Slot = -1;
             Amount = 1;
+            Score = new MusicScore();
             Stats = new ItemStats(id, Rarity);
             CanRepackage = true; // If false, item becomes untradable
         }
@@ -117,17 +110,11 @@ namespace MapleServer2.Types
             IsTwoHand = other.IsTwoHand;
             IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
+            IsCustomScore = other.IsCustomScore;
             PlayCount = other.PlayCount;
             FileName = other.FileName;
             Content = other.Content;
-            FunctionName = other.FunctionName;
-            FunctionId = other.FunctionId;
-            FunctionDuration = other.FunctionDuration;
-            FunctionFieldId = other.FunctionFieldId;
-            FunctionCapacity = other.FunctionCapacity;
-            FunctionTargetLevel = other.FunctionTargetLevel;
-            FunctionCount = other.FunctionCount;
-            FunctionTotalUser = other.FunctionTotalUser;
+            Function = other.Function;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
@@ -149,6 +136,7 @@ namespace MapleServer2.Types
             Color = other.Color;
             HairD = other.HairD;
             AppearanceFlag = other.AppearanceFlag;
+            Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
         }
 

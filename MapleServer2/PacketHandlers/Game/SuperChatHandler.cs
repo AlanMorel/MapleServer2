@@ -51,8 +51,8 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            session.Player.SuperChat = superChatItem.FunctionId;
-            session.Send(SuperChatPacket.Select(session.FieldPlayer, superChatItem.FunctionId));
+            session.Player.SuperChat = superChatItem.Function.Id;
+            session.Send(SuperChatPacket.Select(session.FieldPlayer, superChatItem.Function.Id));
         }
 
         private static void HandleDeselect(GameSession session)

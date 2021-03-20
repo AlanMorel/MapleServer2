@@ -103,6 +103,8 @@ namespace MapleServer2.Types
 
         public Mailbox Mailbox = new Mailbox();
 
+        public List<Buddy> BuddyList = new List<Buddy>();
+
         public long PartyId;
 
         public long ClubId;
