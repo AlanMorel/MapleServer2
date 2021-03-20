@@ -27,6 +27,20 @@ namespace MapleServer2.PacketHandlers.Game
             CancelRequest = 0x11,
         }
 
+        public enum BuddyNotice : byte
+        {
+            RequestSent = 0x0,
+            CharacterNotFound = 0x1,
+            RequestAlreadySent = 0x2,
+            AlreadyFriends = 0x3,
+            CannotAddSelf = 0x4,
+            CannotSendRequest = 0x5,
+            CannotBlock = 0x6,
+            CannotAddFriends = 0x7,
+            OtherUserCannotAddFriends = 0x8,
+            DeclinedRequest = 0x9,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             BuddyMode mode = (BuddyMode) packet.ReadByte();
@@ -61,20 +75,6 @@ namespace MapleServer2.PacketHandlers.Game
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
-        }
-
-        public enum BuddyNotice : byte
-        {
-            RequestSent = 0x0,
-            CharacterNotFound = 0x1,
-            RequestAlreadySent = 0x2,
-            AlreadyFriends = 0x3,
-            CannotAddSelf = 0x4,
-            CannotSendRequest = 0x5,
-            CannotBlock = 0x6,
-            CannotAddFriends = 0x7,
-            OtherUserCannotAddFriends = 0x8,
-            DeclinedRequest = 0x9,
         }
 
         private static void HandleSendRequest(GameSession session, PacketReader packet)
@@ -192,6 +192,7 @@ namespace MapleServer2.PacketHandlers.Game
                 buddy.Friend.Session.Send(BuddyPacket.AcceptNotification(buddyFriend));
             }
         }
+
         private static void HandleDecline(GameSession session, PacketReader packet)
         {
             long buddyId = packet.ReadLong();

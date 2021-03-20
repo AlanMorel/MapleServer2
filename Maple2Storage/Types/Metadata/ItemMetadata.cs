@@ -49,7 +49,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 21)]
         public List<ItemBreakReward> BreakRewards;
         [XmlElement(Order = 22)]
-        public Function FunctionData;
+        public ItemFunction FunctionData;
         [XmlElement(Order = 23)]
         public string Tag;
         [XmlElement(Order = 24)]
@@ -62,7 +62,7 @@ namespace Maple2Storage.Types.Metadata
         {
             Content = new List<ItemContent>();
             BreakRewards = new List<ItemBreakReward>();
-            FunctionData = new Function();
+            FunctionData = new ItemFunction();
         }
 
         public override string ToString() =>
@@ -214,7 +214,7 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class Function
+    public class ItemFunction
     {
         [XmlElement(Order = 1)]
         public string Name;
@@ -233,9 +233,9 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public byte TotalUser;
 
-        public Function() { }
+        public ItemFunction() { }
 
-        public Function(string name, int id)
+        public ItemFunction(string name, int id)
         {
             Name = name;
             Id = id;
@@ -244,7 +244,7 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() => $"Function(Name: {Name}, Id: {Id}, " +
             $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}";
 
-        protected bool Equals(Function other)
+        protected bool Equals(ItemFunction other)
         {
             return Name == other.Name &&
                 Id == other.Id &&
@@ -273,7 +273,7 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((Function) obj);
+            return Equals((ItemFunction) obj);
         }
 
         public override int GetHashCode()
@@ -281,12 +281,12 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Id, Name);
         }
 
-        public static bool operator ==(Function left, Function right)
+        public static bool operator ==(ItemFunction left, ItemFunction right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Function left, Function right)
+        public static bool operator !=(ItemFunction left, ItemFunction right)
         {
             return !Equals(left, right);
         }

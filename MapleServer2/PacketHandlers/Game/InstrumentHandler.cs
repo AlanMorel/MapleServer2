@@ -149,6 +149,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(InstrumentPacket.Compose(item));
         }
+
         private static void HandleFireworks(GameSession session)
         {
             session.Send(InstrumentPacket.Fireworks(session.FieldPlayer.ObjectId));

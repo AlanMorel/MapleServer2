@@ -147,7 +147,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
         public static Packet LoginLogoutNotifcation(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);

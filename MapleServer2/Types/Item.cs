@@ -26,7 +26,7 @@ namespace MapleServer2.Types
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
-        public Function Function { get; set; }
+        public ItemFunction Function { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
 

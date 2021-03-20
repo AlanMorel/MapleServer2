@@ -151,7 +151,7 @@ namespace MapleServer2.Data.Static
             return pricePoints.ElementAt(rand);
         }
 
-        public static Function GetFunction(int itemId)
+        public static ItemFunction GetFunction(int itemId)
         {
             return map.GetValueOrDefault(itemId).FunctionData;
         }
