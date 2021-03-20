@@ -116,7 +116,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
             int[] crystalFragmentsEpicGear = new int[] { 200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063 };
 
-            int crystalFragmentsCosts = Math.Min(crystalFragmentsEpicGear[gear.TimesAttributesChanged], crystalFragmentsEpicGear[14]);
+            int crystalFragmentsCosts = crystalFragmentsEpicGear[Math.Min(gear.TimesAttributesChanged, 14)];
 
             if (gear.Rarity > (short) RarityType.Epic)
             {
