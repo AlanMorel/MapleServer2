@@ -114,22 +114,9 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
-            Dictionary<int, int> crystalFragmentsEpicGear = new Dictionary<int, int>
-            {
-                {0, 200}, {1, 250}, {2, 312}, {3, 390}, {4, 488},
-                {5, 610}, {6, 762}, {7, 953}, {8, 1192}, {9, 1490},
-                {10, 1718}, {11, 2131}, {12, 2642},{13, 3277}, {14, 4063}
-            };
+            int[] crystalFragmentsEpicGear = new int[] { 200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063 };
 
-            int crystalFragmentsCosts = 0;
-            if (gear.TimesAttributesChanged < 14)
-            {
-                crystalFragmentsCosts = crystalFragmentsEpicGear[gear.TimesAttributesChanged];
-            }
-            else
-            {
-                crystalFragmentsCosts = crystalFragmentsEpicGear[14];
-            }
+            int crystalFragmentsCosts = Math.Min(crystalFragmentsEpicGear[gear.TimesAttributesChanged], crystalFragmentsEpicGear[14]);
 
             if (gear.Rarity > (short) RarityType.Epic)
             {
