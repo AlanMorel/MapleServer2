@@ -30,11 +30,13 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(actors.Count);
             foreach (IFieldObject<InteractActor> actor in actors)
             {
-                pWriter.WriteShort((short) actor.Value.Uuid.Length);
-                pWriter.WriteString(actor.Value.Uuid);
+                pWriter.WriteMapleString(actor.Value.Uuid);
                 pWriter.WriteEnum(InteractStatus.Enabled);
                 pWriter.WriteEnum(actor.Value.Type);
-                pWriter.WriteInt(0);
+                if (actor.Value.Type == InteractActorType.Extractor || actor.Value.Type == InteractActorType.Gathering)
+                {
+                    pWriter.WriteInt();
+                }
             }
 
             return pWriter;
