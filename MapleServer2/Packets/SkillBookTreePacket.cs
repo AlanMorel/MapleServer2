@@ -9,8 +9,6 @@ namespace MapleServer2.Packets
 {
     public static class SkillBookTreePacket
     {
-
-
         public static Packet Open(Player character)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
@@ -43,8 +41,14 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1); // Mode (0 = open) (1 = save)
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
-            pWriter.WriteInt(2); // Mode (1 = assigned points, 2 = assigned no points)
+            pWriter.WriteInt(2); // Set Client Mode (1 = assigned points, 2 = assigned no points)
 
+            return pWriter;
+        }
+
+        public static Packet AddTab(Player character)
+        {
+            PacketWriter pWriter = new PacketWriter();
             return pWriter;
         }
     }

@@ -35,12 +35,12 @@ namespace MapleServer2.Types
             return skillJob;
         }
 
-        public void AddOrUpdate(int id, short level)
+        public void AddOrUpdate(int id, short level, bool isLearned)
         {
-            SkillLevels[id] = level;
+            SkillLevels[id] = isLearned ? level : 0;
             foreach (int sub in SkillJob[id].SubSkills)
             {
-                SkillLevels[sub] = level;
+                SkillLevels[sub] = isLearned ? level : 0;
             }
         }
 

@@ -55,7 +55,7 @@ namespace MapleServer2.PacketHandlers.Game
                 byte learned = packet.ReadByte(); // 00 if unlearned 01 if learned
 
                 // Update current character skill tree data with new skill
-                skillTab.AddOrUpdate(id, level);
+                skillTab.AddOrUpdate(id, level, learned > 0);
             }
 
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars

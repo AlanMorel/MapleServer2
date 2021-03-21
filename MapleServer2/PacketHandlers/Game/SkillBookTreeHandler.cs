@@ -17,11 +17,16 @@ namespace MapleServer2.PacketHandlers.Game
             byte mode = packet.ReadByte();
             switch (mode)
             {
-                case 0: // Open skill tree
+                case 0x00: // Open skill tree
                     HandleOpen(session);
                     break;
-                case 1: // Save skill tree
+                case 0x01: // Save skill tree
                     HandleSave(session);
+                    break;
+                case 0x04:
+                    HandleAddTab(session);
+                    break;
+                default:
                     break;
             }
         }
@@ -34,6 +39,11 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleSave(GameSession session)
         {
             session.Send(SkillBookTreePacket.Save(session.Player));
+        }
+
+        private static void HandleAddTab(GameSession session)
+        {
+            session.Send(SkillBookTreePacket.AddTab(session.Player));
         }
     }
 }
