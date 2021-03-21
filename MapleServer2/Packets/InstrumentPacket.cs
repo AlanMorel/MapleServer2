@@ -66,14 +66,13 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteByte();
 
-            switch (score.IsCustomScore)
+            if (score.IsCustomScore)
             {
-                case true:
-                    pWriter.WriteMapleString(score.Score.Notes);
-                    break;
-                case false:
-                    pWriter.WriteUnicodeString(score.FileName);
-                    break;
+                pWriter.WriteMapleString(score.Score.Notes);
+            }
+            else
+            {
+                pWriter.WriteUnicodeString(score.FileName);
             }
             return pWriter;
         }

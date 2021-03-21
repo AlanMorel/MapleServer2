@@ -190,8 +190,8 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(buddy.Message);
             pWriter.WriteShort();
             pWriter.WriteInt(); // player Home map ID
-            pWriter.WriteInt((int) buddy.Friend.Job);
-            pWriter.WriteInt((int) buddy.Friend.JobCode);
+            pWriter.WriteEnum(buddy.Friend.Job);
+            pWriter.WriteEnum(buddy.Friend.JobCode);
             pWriter.WriteShort(buddy.Friend.Levels.Level);
             pWriter.WriteBool(buddy.IsFriendRequest);
             pWriter.WriteBool(buddy.IsPending);
@@ -207,9 +207,10 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteUnicodeString(buddy.Friend.HomeName);
             pWriter.WriteLong();
-            pWriter.WriteInt(buddy.Friend.Trophy[0]);
-            pWriter.WriteInt(buddy.Friend.Trophy[1]);
-            pWriter.WriteInt(buddy.Friend.Trophy[2]);
+            foreach (int trophyCount in buddy.Friend.Trophy)
+            {
+                pWriter.WriteInt(trophyCount);
+            }
         }
     }
 }
