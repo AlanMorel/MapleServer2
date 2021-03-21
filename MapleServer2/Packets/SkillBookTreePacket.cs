@@ -21,7 +21,6 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(character.SkillTabs[0].Id); // Same as previous identifier
             pWriter.WriteUnicodeString("Build 1"); // Page name
 
-            // Get feature skills, for now just rank 1 skills, not sure how to tell which tab is opened
             // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
             Dictionary<int, int> skills = character.SkillTabs[0].SkillLevels.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
             pWriter.WriteInt(skills.Count); // Skill count
