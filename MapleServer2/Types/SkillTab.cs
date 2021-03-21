@@ -12,23 +12,23 @@ namespace MapleServer2.Types
         public long Id { get; set; }
         public string Name { get; private set; }
         public List<int> Order { get; private set; }
-        public List<SkillMetadata> Skills { get; private set; }
-        public Dictionary<int, SkillMetadata> SkillJob { get; set; }
+        public Dictionary<int, SkillMetadata> SkillJob { get; private set; }
+        public Dictionary<int, int> SkillLevels { get; private set; }  // TODO: fill using database
 
         public SkillTab(Job job)
         {
             Id = 0x000032DF995949B9; // temporary hard coded id
             Name = "Build";
-            Skills = SkillMetadataStorage.GetJobSkills(job);
             Order = SkillTreeOrdered.GetListOrdered(job);
-            SkillJob = AddOnDictionary();
+            SkillJob = AddOnDictionary(job);
+            SkillLevels = SkillJob.ToDictionary(x => x.Key, x => (int) x.Value.Learned);
         }
 
-        public Dictionary<int, SkillMetadata> AddOnDictionary()
+        public static Dictionary<int, SkillMetadata> AddOnDictionary(Job job)
         {
             Dictionary<int, SkillMetadata> skillJob = new Dictionary<int, SkillMetadata>();
 
-            foreach (SkillMetadata skill in Skills)
+            foreach (SkillMetadata skill in SkillMetadataStorage.GetJobSkills(job))
             {
                 skillJob[skill.SkillId] = skill;
             }
@@ -37,18 +37,10 @@ namespace MapleServer2.Types
 
         public void AddOrUpdate(int id, short level, byte learned)
         {
-            SkillJob[id].Learned = learned;
-            SkillJob[id].SkillLevels.Find(x => x.Level != 0).Level = level;
-            if (SkillJob[id].SubSkills.Length != 0)
+            SkillLevels[id] = level;
+            foreach (int sub in SkillJob[id].SubSkills)
             {
-                foreach (int sub in SkillJob[id].SubSkills.Select(x => x))
-                {
-                    if (SkillJob.ContainsKey(sub))
-                    {
-                        SkillJob[sub].Learned = learned;
-                        SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
-                    }
-                }
+                SkillLevels[sub] = level;
             }
         }
 

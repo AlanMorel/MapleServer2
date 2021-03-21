@@ -9,6 +9,8 @@ namespace MapleServer2.Packets
 {
     public static class SkillBookTreePacket
     {
+
+
         public static Packet Open(Player character)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
@@ -44,7 +46,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1); // Mode (0 = open) (1 = save)
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
-            pWriter.WriteInt(1); // Possibly always 1
+            pWriter.WriteInt(2); // Possibly always 1 (job code ?)
 
             return pWriter;
         }

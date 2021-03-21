@@ -9,9 +9,9 @@ namespace Maple2Storage.Types.Metadata
     public class SkillMetadata
     {
         [XmlElement(Order = 1)]
-        public int SkillId;
+        public readonly int SkillId;
         [XmlElement(Order = 2)]
-        public List<SkillLevel> SkillLevels;
+        public readonly List<SkillLevel> SkillLevels;
         [XmlElement(Order = 3)]
         public int[] SubSkills = Array.Empty<int>();
         [XmlElement(Order = 4)]
@@ -19,13 +19,30 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 5)]
         public byte Learned = 0;
         [XmlElement(Order = 6)]
-        public string State;
+        public readonly string State;
         [XmlElement(Order = 7)]
-        public byte Type;
+        public readonly byte Type;
 
         public SkillMetadata()
         {
             SkillLevels = new List<SkillLevel>();
+        }
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte type)
+        {
+            SkillId = id;
+            SkillLevels = skillLevels;
+            State = state;
+            Type = type;
+        }
+
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte type)
+        {
+            SkillId = id;
+            SkillLevels = skillLevels;
+            SubSkills = subSkills;
+            Job = job;
+            State = state;
+            Type = type;
         }
 
         public override int GetHashCode()
@@ -41,15 +58,15 @@ namespace Maple2Storage.Types.Metadata
     public class SkillLevel
     {
         [XmlElement(Order = 1)]
-        public int Level;
+        public readonly int Level;
         [XmlElement(Order = 2)]
-        public int Spirit;
+        public readonly int Spirit;
         [XmlElement(Order = 3)]
-        public float DamageRate;
+        public readonly float DamageRate;
         [XmlElement(Order = 4)]
-        public string Feature = "";
+        public readonly string Feature = "";
         [XmlElement(Order = 5)]
-        public SkillMotion SkillMotions;
+        public readonly SkillMotion SkillMotions;
 
         // Required for deserialization
         public SkillLevel()

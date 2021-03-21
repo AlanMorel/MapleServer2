@@ -1,4 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using System.Linq;
+using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -18,11 +21,16 @@ namespace MapleServer2.PacketHandlers.Game
             byte mode = packet.ReadByte();
             switch (mode)
             {
-                case 8: // Close Skill Tree
+                case 0x08: // Close Skill Tree
                     HandleCloseSkillTree(session);
                     break;
-                case 9: // Save Skill Tree
+                case 0x09: // Save Skill Tree
                     HandleSaveSkillTree(session, packet);
+                    break;
+                case 0x0A:
+                    HandleResetSkillTree(session, packet);
+                    break;
+                default:
                     break;
             }
         }
@@ -53,6 +61,18 @@ namespace MapleServer2.PacketHandlers.Game
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
+        }
+
+        private static void HandleResetSkillTree(GameSession session, PacketReader packet)
+        {
+            int unknown = packet.ReadInt();
+            session.Player.SkillTabs[0] = new SkillTab(session.Player.Job);
+            foreach (SkillMetadata m in session.Player.SkillTabs[0].SkillJob.Values)
+            {
+                Console.WriteLine(m.SkillLevels.Select(x => x.Level).FirstOrDefault());
+            }
+
+            session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
         }
     }
 }

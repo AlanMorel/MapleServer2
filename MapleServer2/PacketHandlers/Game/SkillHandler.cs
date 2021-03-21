@@ -67,8 +67,8 @@ namespace MapleServer2.PacketHandlers.Game
             int skillCost = skillCast.GetCost();
             if (session.Player.Stats[PlayerStatId.Spirit].Current >= skillCost)
             {
-                session.FieldPlayer.Value.SkillCast = skillCast;
                 session.Player.ConsumeSp(skillCost);
+                session.FieldPlayer.Value.SkillCast = skillCast;
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
