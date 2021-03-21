@@ -38,6 +38,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             pWriter.WriteEnum(player.Job);
             JobPacket.WriteSkills(pWriter, player);
+            //pWriter.WriteByte(); // KMS2
 
             // Coords
             pWriter.Write(fieldPlayer.Coord);

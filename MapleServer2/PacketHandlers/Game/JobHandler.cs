@@ -55,7 +55,7 @@ namespace MapleServer2.PacketHandlers.Game
                 byte learned = packet.ReadByte(); // 00 if unlearned 01 if learned
 
                 // Update current character skill tree data with new skill
-                skillTab.AddOrUpdate(id, level, learned);
+                skillTab.AddOrUpdate(id, level);
             }
 
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
@@ -67,11 +67,6 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int unknown = packet.ReadInt();
             session.Player.SkillTabs[0] = new SkillTab(session.Player.Job);
-            foreach (SkillMetadata m in session.Player.SkillTabs[0].SkillJob.Values)
-            {
-                Console.WriteLine(m.SkillLevels.Select(x => x.Level).FirstOrDefault());
-            }
-
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
         }
     }

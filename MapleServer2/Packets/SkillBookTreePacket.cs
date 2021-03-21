@@ -25,15 +25,12 @@ namespace MapleServer2.Packets
 
             // Get feature skills, for now just rank 1 skills, not sure how to tell which tab is opened
             // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
-            List<SkillMetadata> skills = SkillTab.GetJobFeatureSkills(character.Job);
-            skills.RemoveAll(x => x.Learned < 1); // Remove all unlearned skills
+            Dictionary<int, int> skills = character.SkillTabs[0].SkillLevels.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
             pWriter.WriteInt(skills.Count); // Skill count
-
-            // List of learned skills for given tab in format (int skill_id) (int skill_level)
-            for (int i = 0; i < skills.Count; i++)
+            foreach (KeyValuePair<int, int> p in skills)
             {
-                pWriter.WriteInt(skills[i].SkillId);
-                pWriter.WriteInt(skills[i].SkillLevels.Select(x => x.Level).FirstOrDefault());
+                pWriter.WriteInt(p.Key);
+                pWriter.WriteInt(p.Value);
             }
 
             return pWriter;
@@ -46,7 +43,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1); // Mode (0 = open) (1 = save)
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
-            pWriter.WriteInt(2); // Possibly always 1 (job code ?)
+            pWriter.WriteInt(2); // Mode (1 = assigned points, 2 = assigned no points)
 
             return pWriter;
         }
