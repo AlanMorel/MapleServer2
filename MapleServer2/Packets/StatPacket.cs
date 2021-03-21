@@ -68,9 +68,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteByte(1);
             pWriter.WriteEnum(StatsMode.UpdateMobStats);
+            pWriter.WriteLong(mob.Value.Stats.Hp.Bonus);
+            pWriter.WriteLong(mob.Value.Stats.Hp.Base);
             pWriter.WriteLong(mob.Value.Stats.Hp.Total);
-            pWriter.WriteLong(mob.Value.Stats.Hp.Min);
-            pWriter.WriteLong(mob.Value.Stats.Hp.Max);
 
             return pWriter;
         }

@@ -81,29 +81,37 @@ namespace Maple2Storage.Types
     public struct NpcStat<T>
     {
         [XmlElement(Order = 1)]
-        public T Total;
+        public T Bonus;
         [XmlElement(Order = 2)]
-        public T Min;
+        public T Base;
         [XmlElement(Order = 3)]
-        public T Max;
+        public T Total;
 
-        public T this[T i]
+        public T this[int i]
         {
             get
             {
                 return i switch
                 {
-                    1 => Min,
-                    2 => Max,
-                    _ => Total
+                    1 => Base,
+                    2 => Total,
+                    _ => Bonus
                 };
             }
         }
+
+        public NpcStat(T max)
+        {
+            Bonus = max;
+            Base = max;
+            Total = max;
+        }
+
         public NpcStat(T total, T min, T max)
         {
-            Total = total;
-            Min = min;
-            Max = max;
+            Bonus = total;
+            Base = min;
+            Total = max;
         }
     }
 }
