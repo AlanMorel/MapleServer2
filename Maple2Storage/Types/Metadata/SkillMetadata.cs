@@ -22,20 +22,23 @@ namespace Maple2Storage.Types.Metadata
         public readonly string State;
         [XmlElement(Order = 7)]
         public readonly byte Type;
+        [XmlElement(Order = 8)]
+        public readonly bool IsSpRecovery;
 
         public SkillMetadata()
         {
             SkillLevels = new List<SkillLevel>();
         }
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte type)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte type, bool isSpRecovery)
         {
             SkillId = id;
             SkillLevels = skillLevels;
             State = state;
             Type = type;
+            IsSpRecovery = isSpRecovery;
         }
 
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte type)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte type, bool isSpRecovery)
         {
             SkillId = id;
             SkillLevels = skillLevels;
@@ -43,6 +46,7 @@ namespace Maple2Storage.Types.Metadata
             Job = job;
             State = state;
             Type = type;
+            IsSpRecovery = isSpRecovery;
         }
 
         public override int GetHashCode()
@@ -62,22 +66,22 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public readonly int Spirit;
         [XmlElement(Order = 3)]
-        public readonly float DamageRate;
+        public readonly int Stamina;
         [XmlElement(Order = 4)]
-        public readonly string Feature = "";
+        public readonly float DamageRate;
         [XmlElement(Order = 5)]
+        public readonly string Feature = "";
+        [XmlElement(Order = 6)]
         public readonly SkillMotion SkillMotions;
 
         // Required for deserialization
-        public SkillLevel()
-        {
+        public SkillLevel() { }
 
-        }
-
-        public SkillLevel(int level, int spirit, float damageRate, string feature, SkillMotion skillMotions)
+        public SkillLevel(int level, int spirit, int stamina, float damageRate, string feature, SkillMotion skillMotions)
         {
             Level = level;
             Spirit = spirit;
+            Stamina = stamina;
             DamageRate = damageRate;
             Feature = feature;
             SkillMotions = skillMotions;
@@ -89,7 +93,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"SkillLevel(Level:{Level},Spirit:{Spirit},DamageRate:{DamageRate},Feature:{Feature},SkillMotion:{SkillMotions})";
+            $"SkillLevel(Level:{Level},Spirit:{Spirit},Stamina:{Stamina},DamageRate:{DamageRate},Feature:{Feature},SkillMotion:{SkillMotions})";
     }
 
     [XmlType]

@@ -64,10 +64,13 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadShort();
 
             SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
-            int skillCost = skillCast.GetCost();
-            if (session.Player.Stats[PlayerStatId.Spirit].Current >= skillCost)
+            int spiritCost = skillCast.GetSpCost();
+            int staminaCost = skillCast.GetStaCost();
+            if (session.Player.Stats[PlayerStatId.Spirit].Current >= spiritCost && session.Player.Stats[PlayerStatId.Stamina].Current >= staminaCost)
             {
-                session.Player.ConsumeSp(skillCost);
+                session.Player.ConsumeSp(spiritCost);
+                session.Player.ConsumeStamina(staminaCost);
+                // TODO: Add SP recovery
                 session.FieldPlayer.Value.SkillCast = skillCast;
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
