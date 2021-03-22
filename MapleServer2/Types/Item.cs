@@ -175,7 +175,7 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     15
                 ),
-                HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
+                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
                 AppearanceFlag = 2,
             };
         }
@@ -306,7 +306,7 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
                     4
                 ),
-                HairD = new HairData(0.3f, 0.3f, new byte[24], new byte[24]),
+                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
                 AppearanceFlag = 2,
             };
         }

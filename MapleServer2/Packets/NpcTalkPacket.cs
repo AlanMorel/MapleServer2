@@ -35,6 +35,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+            pWriter.WriteByte(0x03);
+            pWriter.WriteEnum(actionType);
+            switch (actionType)
+            {
+                case ActionType.Portal:
+                    pWriter.WriteInt(function);
+                    break;
+                case ActionType.OpenWindow:
+                    pWriter.WriteUnicodeString(window);
+                    pWriter.WriteUnicodeString(parameters);
+                    break;
+            }
+            return pWriter;
+        }
+
         public static Packet Close()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);

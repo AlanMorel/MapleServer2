@@ -11,6 +11,7 @@ namespace MapleServer2.Packets
         private enum ProxyGameObjMode : byte
         {
             LoadPlayer = 0x03,
+            RemovePlayer = 0x04,
             UpdateEntity = 0x05,
             LoadNpc = 0x6,
         }
@@ -21,19 +22,19 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.LoadPlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
-            pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteLong(player.AccountId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteUnicodeString(player.Motto);
             pWriter.WriteByte();
             pWriter.Write(fieldPlayer.Coord);
             pWriter.WriteShort(player.Levels.Level);
-            pWriter.WriteEnum(player.Job); // short
-            pWriter.WriteEnum(player.JobCode);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
+            pWriter.WriteShort((short) player.Job);
+            pWriter.WriteShort((short) player.JobCode);
+            pWriter.WriteShort();
+            pWriter.WriteInt(player.MapId);
+            pWriter.WriteLong(1); // unk
             pWriter.WriteUnicodeString(player.HomeName);
             pWriter.WriteInt();
             pWriter.WriteShort();
@@ -41,6 +42,16 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(trophyCount);
             }
+
+            return pWriter;
+        }
+
+        public static Packet RemovePlayer(IFieldObject<Player> fieldPlayer)
+        {
+            Player player = fieldPlayer.Value;
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
+            pWriter.WriteEnum(ProxyGameObjMode.RemovePlayer);
+            pWriter.WriteInt(fieldPlayer.ObjectId);
 
             return pWriter;
         }

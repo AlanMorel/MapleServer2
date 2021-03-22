@@ -151,6 +151,125 @@ namespace GameDataParser.Parsers
                         metadata.IsTwoHand = true;
                     }
                 }
+                // Hair data
+                if (slot.Attributes["name"].Value == "HR")
+                {
+                    int assetNodeCount = slot.SelectNodes("asset").Count;
+                    XmlNode asset = slot.FirstChild;
+
+                    XmlNode scaleNode = slot.SelectSingleNode("scale");
+
+                    if (assetNodeCount == 3) // This hair has a front and back positionable hair
+                    {
+                        XmlNode backHair = asset.NextSibling; // back hair info
+                        XmlNode frontHair = backHair.NextSibling; // front hair info
+
+                        int backHairNodes = backHair.SelectNodes("custom").Count;
+
+                        CoordF[] bPosCord = new CoordF[backHairNodes];
+                        CoordF[] bPosRotation = new CoordF[backHairNodes];
+                        CoordF[] fPosCord = new CoordF[backHairNodes];
+                        CoordF[] fPosRotation = new CoordF[backHairNodes];
+
+                        for (int i = 0; i < backHairNodes; i++)
+                        {
+                            foreach (XmlNode backPresets in backHair)
+                            {
+                                if (backPresets.Name == "custom")
+                                {
+                                    bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
+                                    bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
+                                }
+                            }
+                            foreach (XmlNode frontPresets in frontHair)
+                            {
+                                if (frontPresets.Name == "custom")
+                                {
+                                    fPosCord[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
+                                    fPosRotation[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
+                                }
+                            }
+                            HairPresets hairPresets = new HairPresets() { };
+
+                            hairPresets.BackPositionCoord = bPosCord[i];
+                            hairPresets.BackPositionRotation = bPosRotation[i];
+                            hairPresets.FrontPositionCoord = fPosCord[i];
+                            hairPresets.FrontPositionRotation = fPosRotation[i];
+                            if (scaleNode != null)
+                            {
+                                hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
+                                hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
+                            }
+                            else
+                            {
+                                hairPresets.MinScale = 0;
+                                hairPresets.MaxScale = 0;
+                            }
+
+                            metadata.HairPresets.Add(hairPresets);
+                        }
+                    }
+                    else if (assetNodeCount == 2) // This hair only has back positionable hair
+                    {
+                        XmlNode backHair = asset.NextSibling; // back hair info
+
+                        int backHairNodes = backHair.SelectNodes("custom").Count;
+
+                        CoordF[] bPosCord = new CoordF[backHairNodes];
+                        CoordF[] bPosRotation = new CoordF[backHairNodes];
+
+                        for (int i = 0; i < backHairNodes; i++)
+                        {
+                            foreach (XmlNode backPresets in backHair)
+                            {
+                                if (backPresets.Name == "custom")
+                                {
+                                    bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
+                                    bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
+                                }
+                            }
+
+                            HairPresets hairPresets = new HairPresets() { };
+
+                            hairPresets.BackPositionCoord = bPosCord[i];
+                            hairPresets.BackPositionRotation = bPosRotation[i];
+                            hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
+                            hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
+                            if (scaleNode != null)
+                            {
+                                hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
+                                hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
+                            }
+                            else
+                            {
+                                hairPresets.MinScale = 0;
+                                hairPresets.MaxScale = 0;
+                            }
+
+                            metadata.HairPresets.Add(hairPresets);
+                        }
+                    }
+                    else // hair does not have back or front positionable hair
+                    {
+                        HairPresets hairPresets = new HairPresets() { };
+                        hairPresets.BackPositionCoord = CoordF.Parse("0, 0, 0");
+                        hairPresets.BackPositionRotation = CoordF.Parse("0, 0, 0");
+                        hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
+                        hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
+                        if (scaleNode != null)
+                        {
+                            hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
+                            hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
+                        }
+                        else
+                        {
+                            hairPresets.MinScale = 0;
+                            hairPresets.MaxScale = 0;
+                        }
+
+                        metadata.HairPresets.Add(hairPresets);
+                    }
+                }
 
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");

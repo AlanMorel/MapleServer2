@@ -9,6 +9,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game
@@ -38,10 +39,6 @@ namespace MapleServer2.Servers.Game
                 {
                     ZRotation = (short) (npc.Rotation.Z * 10)
                 });
-                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
-                {
-                    ZRotation = (short) (npc.Rotation.Z * 10)
-                });
 
                 if (fieldNpc.Value.Friendly == 2)
                 {
@@ -50,8 +47,45 @@ namespace MapleServer2.Servers.Game
                 }
                 else
                 {
+                    // NPC is an enemy
+                    IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
+                    {
+                        ZRotation = (short) (npc.Rotation.Z * 10)
+                    });
+
                     fieldMob.Coord = npc.Coord.ToFloat();
                     AddMob(fieldMob);
+                }
+            }
+
+            // Spawn map's mobs at the mob spawners
+            foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(mapId))
+            {
+                if (mobSpawn.SpawnData == null)
+                {
+                    Debug.WriteLine($"Missing mob spawn data: {mobSpawn}");
+                    continue;
+                }
+                int maxPopulation = mobSpawn.NpcCount;
+                List<CoordF> spawnPoints = SpawnGenerator.Points(mobSpawn.SpawnRadius);
+                List<NpcMetadata> mobs = SpawnGenerator.Mobs(mobSpawn.SpawnData.Difficulty, mobSpawn.SpawnData.MinDifficulty, mobSpawn.SpawnData.Tags);
+
+                int population = 0;
+                foreach (NpcMetadata mob in mobs)
+                {
+                    int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
+                    if (spawnCount > maxPopulation)
+                    {
+                        break;
+                    }
+
+                    for (int i = 0; i < spawnCount; i++)
+                    {
+                        IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id));
+                        fieldMob.Coord = mobSpawn.Coord.ToFloat() + spawnPoints[population % spawnPoints.Count];
+                        AddMob(fieldMob);
+                        population++;
+                    }
                 }
             }
 
@@ -179,6 +213,7 @@ namespace MapleServer2.Servers.Game
             Broadcast(session =>
             {
                 session.Send(FieldPacket.RemovePlayer(player));
+                session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
@@ -267,6 +302,7 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveMob(IFieldObject<Mob> mob)
         {
+            // TODO: Spawn mob based on timer
             if (!State.RemoveMob(mob.ObjectId))
             {
                 return false;
