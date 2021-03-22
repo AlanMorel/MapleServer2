@@ -131,9 +131,9 @@ namespace MapleServer2.Tools
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
                 PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
                 Rarity = rarity,
-                Amount = amount,
-                Stats = new ItemStats(itemId, rarity)
+                Amount = amount
             };
+            item.Stats = new ItemStats(item);
 
             // Simulate looting item
             InventoryController.Add(session, item, true);

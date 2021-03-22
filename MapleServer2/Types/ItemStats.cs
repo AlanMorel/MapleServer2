@@ -114,33 +114,14 @@ namespace MapleServer2.Types
         public byte TotalSockets;
         public List<Gemstone> Gemstones;
 
-        public ItemStats(int itemId, int rarity)
+        public ItemStats(Item item)
         {
-            BasicStats = new List<ItemStat>();
-            BonusStats = new List<ItemStat>();
-            Gemstones = new List<Gemstone>();
-            if (rarity == 0)
-            {
-                return;
-            }
+            CreateNewStats(item.Id, item.Rarity, item.Level);
+        }
 
-            List<ItemStat> basicStats = RollBasicStats(itemId, rarity);
-            if (basicStats != null)
-            {
-                foreach (ItemStat stat in basicStats)
-                {
-                    BasicStats.Add(stat);
-                }
-            }
-
-            List<ItemStat> bonusStats = RollBonusStats(itemId, rarity);
-            if (bonusStats != null)
-            {
-                foreach (ItemStat stat in bonusStats)
-                {
-                    BonusStats.Add(stat);
-                }
-            }
+        public ItemStats(int itemId, int rarity, int level)
+        {
+            CreateNewStats(itemId, rarity, level);
         }
 
         public ItemStats(ItemStats other)
@@ -151,8 +132,37 @@ namespace MapleServer2.Types
             Gemstones = new List<Gemstone>(other.Gemstones);
         }
 
+        public void CreateNewStats(int itemId, int rarity, int level)
+        {
+            BasicStats = new List<ItemStat>();
+            BonusStats = new List<ItemStat>();
+            Gemstones = new List<Gemstone>();
+            if (rarity == 0)
+            {
+                return;
+            }
+
+            List<ItemStat> basicStats = RollBasicStats(itemId, rarity, level);
+            if (basicStats != null)
+            {
+                foreach (ItemStat stat in basicStats)
+                {
+                    BasicStats.Add(stat);
+                }
+            }
+
+            List<ItemStat> bonusStats = RollBonusStats(itemId, rarity, level);
+            if (bonusStats != null)
+            {
+                foreach (ItemStat stat in bonusStats)
+                {
+                    BonusStats.Add(stat);
+                }
+            }
+        }
+
         // Roll new basic stats and values
-        public List<ItemStat> RollBasicStats(int itemId, int rarity)
+        public List<ItemStat> RollBasicStats(int itemId, int rarity, int level)
         {
             if (!ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOption> basicList))
             {
@@ -178,19 +188,19 @@ namespace MapleServer2.Types
             List<ItemStat> itemStats = new List<ItemStat>();
             foreach (ItemAttribute attribute in itemOptions.Stats)
             {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
             }
 
             foreach (SpecialItemAttribute attribute in itemOptions.SpecialStats)
             {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
+                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
             }
 
             return itemStats;
         }
 
         // Roll new bonus stats and values
-        public static List<ItemStat> RollBonusStats(int itemId, int rarity)
+        public static List<ItemStat> RollBonusStats(int itemId, int rarity, int level)
         {
             if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
@@ -208,19 +218,19 @@ namespace MapleServer2.Types
 
             foreach (ItemAttribute attribute in itemOption.Stats)
             {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
             }
 
             foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
             {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
+                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
             }
 
             return itemStats.OrderBy(x => random.Next()).Take(itemOption.Slots).ToList();
         }
 
         // Roll new bonus stats and values except the locked stat
-        public static List<ItemStat> RollBonusStatsWithStatLocked(int itemId, int rarity, int slots, short ignoreStat, bool isSpecialStat)
+        public static List<ItemStat> RollBonusStatsWithStatLocked(int itemId, int rarity, int slots, int level, short ignoreStat, bool isSpecialStat)
         {
             if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
@@ -241,12 +251,12 @@ namespace MapleServer2.Types
 
             foreach (ItemAttribute attribute in attributes)
             {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll()]));
+                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
             }
 
             foreach (SpecialItemAttribute attribute in specialAttributes)
             {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll()]));
+                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
             }
 
             return itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
@@ -264,7 +274,7 @@ namespace MapleServer2.Types
                     newBonus.Add(stat);
                     continue;
                 }
-                newBonus.Add(NormalStat.Of(GetRange(item.Id)[stat.Id][Roll()]));
+                newBonus.Add(NormalStat.Of(GetRange(item.Id)[stat.Id][Roll(item.Level)]));
             }
 
             foreach (SpecialStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)))
@@ -274,7 +284,7 @@ namespace MapleServer2.Types
                     newBonus.Add(stat);
                     continue;
                 }
-                newBonus.Add(SpecialStat.Of(GetSpecialRange(item.Id)[stat.Id][Roll()]));
+                newBonus.Add(SpecialStat.Of(GetSpecialRange(item.Id)[stat.Id][Roll(item.Level)]));
             }
 
             return newBonus;
@@ -322,9 +332,25 @@ namespace MapleServer2.Types
             return ItemOptionRangeStorage.GetPetSpecialRanges();
         }
 
-        private static int Roll() // Returns index 0~7
+        // Returns index 0~7 for equip level 70-
+        // Returns index 8~15 for equip level 70+
+        private static int Roll(int level)
         {
             Random random = new Random();
+            if (level >= 70)
+            {
+                return random.NextDouble() switch
+                {
+                    >= 0.0 and < 0.24 => 8,
+                    >= 0.24 and < 0.48 => 9,
+                    >= 0.48 and < 0.74 => 10,
+                    >= 0.74 and < 0.9 => 11,
+                    >= 0.9 and < 0.966 => 12,
+                    >= 0.966 and < 0.985 => 13,
+                    >= 0.985 and < 0.9975 => 14,
+                    _ => 15,
+                };
+            }
             return random.NextDouble() switch
             {
                 >= 0.0 and < 0.24 => 0,
