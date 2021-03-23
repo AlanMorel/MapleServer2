@@ -24,7 +24,6 @@ namespace MapleServer2.Types
             SpawnRadius = spawnRadius;
             MaxPopulation = maxPopulation;
             SpawnMobs = SelectMobs(spawnData.Difficulty, spawnData.MinDifficulty, spawnData.Tags);
-            //mobs.ForEach(Console.WriteLine);
             SpawnData = spawnData;
             Mobs = new List<IFieldObject<Mob>>();
         }
@@ -34,31 +33,10 @@ namespace MapleServer2.Types
 
         }
 
-        public void Spawn(int count)
-        {
-            //List<CoordF> spawnPoints = SelectPoints(SpawnRadius);
-            //foreach (NpcMetadata mob in SpawnMobs)
-            //{
-            //    int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-            //    if (spawnCount > SpawnData.Population)
-            //    {
-            //        break;
-            //    }
-
-            //    for (int i = 0; i < count && i < MaxPopulation; i++)
-            //    {
-            //        IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id));
-            //        fieldMob.Coord = SpawnPosition + spawnPoints[Mobs.Count % spawnPoints.Count];
-            //        AddMob(fieldMob);
-            //        Mobs.Add(fieldMob);
-            //    }
-            //}
-        }
-
         public static List<CoordF> SelectPoints(int spawnRadius = Block.BLOCK_SIZE)
         {
             List<CoordF> spawnOffsets = new List<CoordF>();
-            int spawnSize = (spawnRadius / Block.BLOCK_SIZE) * 2;
+            int spawnSize = 2 * (spawnRadius / Block.BLOCK_SIZE);
             for (int i = 0; i <= spawnSize; i++)
             {
                 for (int j = 0; j <= spawnSize; j++)
