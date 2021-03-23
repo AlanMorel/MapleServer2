@@ -26,7 +26,7 @@ namespace GameDataParser.Parsers
 
                     string skillId = Path.GetFileNameWithoutExtension(entry.Name);
                     string skillType = document.SelectSingleNode("/ms2/basic/kinds").Attributes["type"].Value;
-                    bool skillRecovery = (int.Parse(document.SelectSingleNode("/ms2/basic/kinds").Attributes["spRecoverySkill"]?.Value ?? "0") > 0) ? true : false;
+                    bool skillRecovery = int.Parse(document.SelectSingleNode("/ms2/basic/kinds").Attributes["spRecoverySkill"]?.Value ?? "0") > 0;
 
                     List<SkillLevel> skillLevels = new List<SkillLevel>();
                     foreach (XmlNode level in levels)

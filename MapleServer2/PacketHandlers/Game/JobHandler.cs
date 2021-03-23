@@ -16,21 +16,29 @@ namespace MapleServer2.PacketHandlers.Game
 
         public JobHandler(ILogger<JobHandler> logger) : base(logger) { }
 
+        private enum JobMode : byte
+        {
+            Close = 0x08,
+            Save = 0x09,
+            Reset = 0x0A,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            JobMode mode = (JobMode) packet.ReadByte();
             switch (mode)
             {
-                case 0x08: // Close Skill Tree
+                case JobMode.Close: // Close Skill Tree
                     HandleCloseSkillTree(session);
                     break;
-                case 0x09: // Save Skill Tree
+                case JobMode.Save: // Save Skill Tree
                     HandleSaveSkillTree(session, packet);
                     break;
-                case 0x0A:
+                case JobMode.Reset:
                     HandleResetSkillTree(session, packet);
                     break;
                 default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }

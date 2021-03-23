@@ -60,8 +60,8 @@ namespace MapleServer2.Packets
                     pWriter.WriteByte(split); // Write that there are (split) skills left
                 }
                 pWriter.WriteByte();
-                pWriter.WriteByte((skills[id] > 0) ? 1 : 0);    // Is it learned?
-                pWriter.WriteInt(id);                           // Skill to display
+                pWriter.WriteBool(skills[id] > 0);  // Is it learned?
+                pWriter.WriteInt(id);               // Skill to display
                 pWriter.WriteInt(Math.Clamp(skills[id], skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault(), int.MaxValue));    // Level to display
                 pWriter.WriteByte();
             }
@@ -69,37 +69,6 @@ namespace MapleServer2.Packets
 
             return pWriter;
         }
-
-        // KMS2
-        //public static Packet WriteSkills(this PacketWriter pWriter, Player character)
-        //{
-        //    // Get skills
-        //    // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
-        //    Dictionary<int, SkillMetadata> skillData = character.SkillTabs[0].SkillJob;
-        //    Dictionary<int, int> skills = character.SkillTabs[0].SkillLevels;
-
-        //    // Ordered list of skill ids (must be sent in this order)
-        //    List<int> ids = character.SkillTabs[0].Order;
-        //    byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(character.Job));
-        //    int countId = ids[ids.Count - split]; // Split to last skill id
-        //    pWriter.WriteShort((short) (ids.Count - split)); // Skill count minus split
-
-        //    // List of skills for given tab in format (byte zero) (byte learned) (int skill_id) (int skill_level) (byte zero)
-        //    foreach (int id in ids)
-        //    {
-        //        if (id == countId)
-        //        {
-        //            pWriter.WriteByte(split); // Write that there are (split) skills left
-        //        }
-        //        pWriter.WriteByte();
-        //        pWriter.WriteByte((skills[id] > 0) ? 1 : 0);
-        //        pWriter.WriteInt(id);
-        //        pWriter.WriteInt(skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault() + ((skills[id] > 0) ? skills[id] - 1 : 0));
-        //        pWriter.WriteByte();
-        //    }
-
-        //    return pWriter;
-        //}
 
         public static Packet WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
         {

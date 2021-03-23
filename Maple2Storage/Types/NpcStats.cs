@@ -100,18 +100,18 @@ namespace Maple2Storage.Types
             }
         }
 
-        public NpcStat(T max)
+        public NpcStat(T totalStat)
         {
-            Bonus = max;
-            Base = max;
-            Total = max;
+            Bonus = totalStat;
+            Base = totalStat;
+            Total = totalStat;
         }
 
-        public NpcStat(T total, T min, T max)
+        public NpcStat(T bonusStat, T baseStat, T totalStat)
         {
-            Bonus = total;
-            Base = min;
-            Total = max;
+            Bonus = bonusStat;
+            Base = baseStat;
+            Total = totalStat;
         }
     }
 }
