@@ -57,10 +57,10 @@ namespace MapleServer2.Types
                 {
                     IsDone = true;
                     NextGrade--;
-                    string[] cats = TrophyMetadataStorage.GetMetadata(Id).Categories;
-                    foreach (string cat in cats)
+                    string[] categories = TrophyMetadataStorage.GetMetadata(Id).Categories;
+                    foreach (string category in categories)
                     {
-                        switch (cat)
+                        switch (category)
                         {
                             case string s when s.Contains("combat"):
                                 session.Player.TrophyCount[0] += 1;

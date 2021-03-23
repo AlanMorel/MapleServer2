@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -32,11 +33,7 @@ namespace MapleServer2.Data.Static
 
         public static TrophyGradeMetadata GetGrade(int id, int grade)
         {
-            if ((grade < 1) || (grade > GetNumGrades(id)))
-            {
-                return null;
-            }
-            return map.GetValueOrDefault(id).Grades[grade - 1];
+            return map.GetValueOrDefault(id).Grades.FirstOrDefault(x => x.Grade == grade);
         }
 
         public static int GetNumGrades(int id)
