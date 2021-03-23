@@ -99,8 +99,12 @@ namespace MapleServer2.Packets
             if (true)
             {
                 PacketWriter appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte) player.Equips.Count); // num equips
+                appearanceBuffer.WriteByte((byte) (player.Equips.Count + player.Cosmetics.Count)); // num equips
                 foreach ((ItemSlot slot, Item equip) in player.Equips)
+                {
+                    CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
+                }
+                foreach ((ItemSlot slot, Item equip) in player.Cosmetics)
                 {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
@@ -203,7 +207,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.Write(npc.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
+            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsNpc(pWriter);
@@ -241,7 +245,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
+            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
             pWriter.WriteMapleString(mob.Value.Model); // StrA - kfm model string
             // If NPC is not valid, the packet seems to stop here
 
@@ -282,7 +286,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Unknown
+            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsMob(pWriter, mob);

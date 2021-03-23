@@ -13,6 +13,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
+        private static readonly Dictionary<int, List<MapMobSpawn>> mobSpawns = new Dictionary<int, List<MapMobSpawn>>();
         private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
         private static readonly Dictionary<int, List<MapInteractActor>> interactActors = new Dictionary<int, List<MapInteractActor>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
@@ -27,6 +28,7 @@ namespace MapleServer2.Data.Static
                 npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
+                mobSpawns.Add(entity.MapId, entity.MobSpawns);
                 interactActors.Add(entity.MapId, entity.InteractActors);
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
@@ -47,6 +49,11 @@ namespace MapleServer2.Data.Static
         public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId)
         {
             return playerSpawns.GetValueOrDefault(mapId);
+        }
+
+        public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId)
+        {
+            return mobSpawns.GetValueOrDefault(mapId);
         }
 
         public static IEnumerable<MapObject> GetObjects(int mapId)

@@ -1,13 +1,19 @@
 ﻿using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 
 namespace Maple2Storage.Types
 {
+    [XmlType]
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 4)]
     public struct Color
     {
+        [XmlElement(Order = 1)]
         public byte Blue { get; private set; }
+        [XmlElement(Order = 2)]
         public byte Green { get; private set; }
+        [XmlElement(Order = 3)]
         public byte Red { get; private set; }
+        [XmlElement(Order = 4)]
         public byte Alpha { get; private set; }
 
         public static Color Argb(byte alpha, byte red, byte green, byte blue)
@@ -42,12 +48,17 @@ namespace Maple2Storage.Types
         public override string ToString() => $"Primary:{Primary}|Secondary:{Secondary}";
     }
 
+    [XmlType]
     [StructLayout(LayoutKind.Sequential, Size = 16)]
     public struct EquipColor
     {
+        [XmlElement(Order = 1)]
         public Color Primary { get; private set; }
+        [XmlElement(Order = 2)]
         public Color Secondary { get; private set; }
+        [XmlElement(Order = 3)]
         public Color Tertiary { get; private set; }
+        [XmlElement(Order = 4)]
         public int Index { get; private set; }
 
         public static EquipColor Argb(Color color, int index = -1)

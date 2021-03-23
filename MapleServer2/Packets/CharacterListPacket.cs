@@ -49,8 +49,12 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
-            pWriter.WriteByte((byte) player.Equips.Count); // num equips
+            pWriter.WriteByte((byte) (player.Equips.Count + player.Cosmetics.Count)); // num equips
             foreach ((ItemSlot slot, Item equip) in player.Equips)
+            {
+                WriteEquip(slot, equip, pWriter);
+            }
+            foreach ((ItemSlot slot, Item equip) in player.Cosmetics)
             {
                 WriteEquip(slot, equip, pWriter);
             }
@@ -110,7 +114,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.Write(player.Rotation); // NOT char Coord/UnknownCoord
-            pWriter.WriteInt();
+            pWriter.WriteInt(); // gearscore
             pWriter.Write(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);
             foreach (int trophyCount in player.TrophyCount)
@@ -118,7 +122,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(trophyCount);
             }
 
-            pWriter.WriteLong(); // some uid
+            pWriter.WriteLong(player.GuildId);
             pWriter.WriteUnicodeString(player.GuildName);
             pWriter.WriteUnicodeString(player.Motto);
 
@@ -136,7 +140,7 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString("club name");
                 }
             }
-            pWriter.WriteByte();
+            pWriter.WriteByte(); // groups?
             for (int i = 0; i < 12; i++)
             {
                 pWriter.WriteInt(); // ???

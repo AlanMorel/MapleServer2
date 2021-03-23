@@ -4,11 +4,15 @@ using System.Xml.Serialization;
 
 namespace Maple2Storage.Types
 {
+    [XmlType]
     [StructLayout(LayoutKind.Sequential, Size = 12)]
     public struct CoordF
     {
+        [XmlElement(Order = 1)]
         public float X { get; set; }
+        [XmlElement(Order = 2)]
         public float Y { get; set; }
+        [XmlElement(Order = 3)]
         public float Z { get; set; }
 
         public static CoordF From(float x, float y, float z)

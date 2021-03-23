@@ -76,13 +76,20 @@ namespace MapleServer2.Tools
         // Removes item based on quantity
         public static void Consume(GameSession session, long uid, int amount)
         {
-            int amountOwned = session.Player.Inventory.Items[uid].Amount;
-            if (amount >= amountOwned)
+            Item item = session.Player.Inventory.Items[uid];
+            if (amount > item.Amount)
             {
-                Remove(session, uid, out Item item);
                 return;
             }
-            Update(session, uid, amountOwned - amount);
+            if (amount == item.Amount)
+            {
+                Remove(session, uid, out Item _);
+                return;
+            }
+
+            item.Amount -= amount;
+            session.Send(ItemInventoryPacket.Update(uid, item.Amount));
+            return;
         }
 
         // Removes Item from inventory by reference
@@ -173,21 +180,6 @@ namespace MapleServer2.Tools
         public static void Split()
         {
 
-        }
-
-        // Updates item information
-        public static void Update(GameSession session, long uid, int amount)
-        {
-            Item item = session.Player.Inventory.Items[uid];
-            if ((item.Amount + amount) >= item.StackLimit)
-            {
-                item.Amount = item.StackLimit;
-            }
-            else
-            {
-                item.Amount = amount;
-            }
-            session.Send(ItemInventoryPacket.Update(uid, amount));
         }
 
         public static void ExpandInventory(GameSession session, InventoryTab tab)

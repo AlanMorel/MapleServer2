@@ -81,7 +81,7 @@ namespace MapleServer2.Packets
             for (int i = 0; i < 3; i++)
             {
                 pWriter.WriteLong(mob.Value.Stats.Hp[i]);
-                pWriter.WriteInt();
+                pWriter.WriteInt(100);  // Move speed (?)
             }
         }
 

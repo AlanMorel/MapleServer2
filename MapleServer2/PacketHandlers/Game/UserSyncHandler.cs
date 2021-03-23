@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 session.Player.ConsumeHp(fallDamage);
 
-                session.Send(UserMoveByPortalPacket.Move(session, safeBlock));
+                session.Send(UserMoveByPortalPacket.Move(session, safeBlock, session.Player.Rotation));
                 session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
                 session.Send(FallDamagePacket.FallDamage(session, fallDamage));
             }
