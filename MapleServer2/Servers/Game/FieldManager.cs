@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -224,6 +224,7 @@ namespace MapleServer2.Servers.Game
             {
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
+                // TODO: Add spawn buff (ID: 0x055D4DAE)
             });
         }
 
