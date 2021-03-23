@@ -42,7 +42,7 @@ namespace MapleServer2.Types
                 return;
             }
             Counter += amount;
-            
+
             if (Counter >= Condition)
             {
                 ProvideReward(session);
@@ -62,11 +62,14 @@ namespace MapleServer2.Types
                     {
                         switch (cat)
                         {
-                            case string s when s.Contains("combat") : session.Player.TrophyCount[0] += 1;
+                            case string s when s.Contains("combat"):
+                                session.Player.TrophyCount[0] += 1;
                                 break;
-                            case string s when s.Contains("adventure") : session.Player.TrophyCount[1] += 1;
+                            case string s when s.Contains("adventure"):
+                                session.Player.TrophyCount[1] += 1;
                                 break;
-                            case string s when s.Contains("lifestyle") : session.Player.TrophyCount[2] += 1;
+                            case string s when s.Contains("lifestyle"):
+                                session.Player.TrophyCount[2] += 1;
                                 break;
                         }
                     }

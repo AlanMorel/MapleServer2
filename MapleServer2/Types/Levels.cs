@@ -134,7 +134,7 @@ namespace MapleServer2.Types
             // user already has some exp in mastery, so simply update it
             Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
             int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
-            
+
             if (currLevel > masteryExp.Level)
             {
                 masteryExp.Level = currLevel;
