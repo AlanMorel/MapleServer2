@@ -7,7 +7,7 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class TrophyHandler : GamePacketHandler
     {
-        public override RecvOp OpCode => RecvOp.ACHIEVE;
+        public override RecvOp OpCode => RecvOp.TROPHY;
 
         private enum TrophyHandlerMode : byte
         {

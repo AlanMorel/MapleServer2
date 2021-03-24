@@ -85,34 +85,22 @@ namespace MapleServer2.Types
             switch (type)
             {
                 case RewardType.Unknown:
-                    break;
                 case RewardType.itemcoloring:
-                    break;
                 case RewardType.shop_ride:
-                    break;
                 case RewardType.title:
-                    break;
                 case RewardType.beauty_hair:
+                case RewardType.skillPoint:
+                case RewardType.beauty_makeup:
+                case RewardType.shop_build:
+                case RewardType.item:
+                case RewardType.shop_weapon:
+                case RewardType.dynamicaction:
+                case RewardType.etc:
+                case RewardType.beauty_skin:
                     break;
                 case RewardType.statPoint:
                     session.Player.StatPointDistribution.AddTotalStatPoints(grade.RewardValue, OtherStatsIndex.Trophy);
                     session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-                    break;
-                case RewardType.skillPoint:
-                    break;
-                case RewardType.beauty_makeup:
-                    break;
-                case RewardType.shop_build:
-                    break;
-                case RewardType.item:
-                    break;
-                case RewardType.shop_weapon:
-                    break;
-                case RewardType.dynamicaction:
-                    break;
-                case RewardType.etc:
-                    break;
-                case RewardType.beauty_skin:
                     break;
                 default:
                     break;

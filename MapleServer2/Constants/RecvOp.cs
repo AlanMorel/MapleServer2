@@ -67,7 +67,7 @@
         BONUS_GAME = 0x0044,
         RESOLVE_PENALTY = 0x0045,
         TAKE_BOAT = 0x0046,
-        ACHIEVE = 0x0047,
+        TROPHY = 0x0047,
         REQUEST_GEM_EQUIPMENT = 0x0048,
         REQUEST_TAXI = 0x0049,
         TRADE_EX = 0x004A,

@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
 
         public static Packet WriteTableStart()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
             pWriter.WriteEnum(TrophyPacketMode.TableStart);
 
             return pWriter;
@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
         // packet from WriteTableStart() must be sent immediately before sending these packets
         public static Packet WriteTableContent(List<Trophy> trophies)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
             pWriter.WriteEnum(TrophyPacketMode.TableContent);
             pWriter.WriteInt(trophies.Count);
 
@@ -48,7 +48,7 @@ namespace MapleServer2.Packets
 
         public static Packet WriteUpdate(Trophy trophy)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ACHIEVE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
             pWriter.WriteEnum(TrophyPacketMode.Update);
             pWriter.WriteInt(trophy.Id);
             WriteIndividualTrophy(pWriter, trophy);
