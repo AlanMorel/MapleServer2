@@ -91,8 +91,6 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            gear.TimesAttributesChanged++;
-
             Item newItem = new Item(gear);
 
             // Set new values for attributes

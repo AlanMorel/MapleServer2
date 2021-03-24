@@ -106,12 +106,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int greenCrystalCost = 5;
-
-            int metacellCosts = 25;
-            if (gear.TimesAttributesChanged < 14)
-            {
-                metacellCosts = 11 + gear.TimesAttributesChanged;
-            }
+            int metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
 
             // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
             int[] crystalFragmentsEpicGear = new int[] { 200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063 };
@@ -121,15 +116,14 @@ namespace MapleServer2.PacketHandlers.Game
             if (gear.Rarity > (short) RarityType.Epic)
             {
                 greenCrystalCost = 25;
-                metacellCosts = 375;
-                if (gear.TimesAttributesChanged < 14)
+                metacellCosts = Math.Min(165 + gear.TimesAttributesChanged * 15, 375);
+                if (gear.Rarity == (short) RarityType.Legendary)
                 {
-                    metacellCosts = 165 + gear.TimesAttributesChanged * 15;
+                    crystalFragmentsCosts = Math.Min(400 + gear.TimesAttributesChanged * 400, 6000);
                 }
-                crystalFragmentsCosts = 6000;
-                if (gear.TimesAttributesChanged < 14)
+                else if (gear.Rarity == (short) RarityType.Ascendant)
                 {
-                    crystalFragmentsCosts = 400 + gear.TimesAttributesChanged * 400;
+                    crystalFragmentsCosts = Math.Min(600 + gear.TimesAttributesChanged * 600, 9000);
                 }
             }
 
@@ -141,7 +135,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             gear.TimesAttributesChanged++;
 
-            Random random = new Random();
             Item newItem = new Item(gear);
 
             // Get random stats except stat that is locked
