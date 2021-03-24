@@ -394,12 +394,12 @@ namespace MapleServer2.Servers.Game
             foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
             {
                 int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                if (spawnCount > mobSpawn.Value.MaxPopulation)
+                if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
                 {
                     break;
                 }
 
-                for (int i = 0; i < spawnCount && i < mobSpawn.Value.MaxPopulation; i++)
+                for (int i = 0; i < spawnCount; i++)
                 {
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
@@ -410,9 +410,10 @@ namespace MapleServer2.Servers.Game
 
         private Task StartSpawnTimer(IFieldObject<MobSpawn> mobSpawn)
         {
+            int spawnTimer = mobSpawn.Value.SpawnData.SpawnTime * 1000;
             return Task.Run(async () =>
             {
-                await Task.Delay(mobSpawn.Value.SpawnData.SpawnTime * 1000);
+                await Task.Delay(spawnTimer);
 
                 if (mobSpawn.Value.Mobs.Count == 0)
                 {
