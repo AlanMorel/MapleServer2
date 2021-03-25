@@ -14,7 +14,6 @@ namespace GameDataParser.Parsers
 
         protected override List<TrophyMetadata> Parse()
         {
-            HashSet<string> test = new HashSet<string>();
             List<TrophyMetadata> trophyList = new List<TrophyMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
@@ -50,7 +49,6 @@ namespace GameDataParser.Parsers
                 }
                 trophyList.Add(newTrophy);
             }
-            System.Console.WriteLine(string.Join(", ", test));
 
             return trophyList;
         }

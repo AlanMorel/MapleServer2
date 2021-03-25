@@ -124,14 +124,15 @@ namespace MapleServer2.Types
 
         class TimeInfo
         {
-            public long charCreation = -1;
-            public int onlineDuration = 0;
-            public long lastOnline = -1;
-            public TimeInfo(long a = -1, int b = 0, long c = -1)
+            public long CharCreation;
+            public long OnlineDuration;
+            public long LastOnline;
+
+            public TimeInfo(long a = -1, long b = 0, long c = -1)
             {
-                charCreation = a;
-                onlineDuration = b;
-                lastOnline = c;
+                CharCreation = a;
+                OnlineDuration = b;
+                LastOnline = c;
             }
         }
 
