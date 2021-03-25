@@ -10,6 +10,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Player>> Players;
         public readonly ConcurrentDictionary<int, IFieldObject<Npc>> Npcs;
         public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
+        public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
         public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
 
@@ -19,6 +20,7 @@ namespace MapleServer2.Types
             Players = new ConcurrentDictionary<int, IFieldObject<Player>>();
             Npcs = new ConcurrentDictionary<int, IFieldObject<Npc>>();
             Portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
+            MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
             InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
         }
@@ -74,6 +76,16 @@ namespace MapleServer2.Types
         public void AddInteractActor(IFieldObject<InteractActor> actor)
         {
             InteractActors[actor.Value.Uuid] = actor;
+        }
+
+        public void AddMobSpawn(IFieldObject<MobSpawn> spawn)
+        {
+            MobSpawns[spawn.ObjectId] = spawn;
+        }
+
+        public bool RemoveMobSpawn(int objectId)
+        {
+            return MobSpawns.Remove(objectId, out _);
         }
 
         public void AddMob(IFieldObject<Mob> mob)

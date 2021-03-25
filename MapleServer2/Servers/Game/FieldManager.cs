@@ -66,27 +66,10 @@ namespace MapleServer2.Servers.Game
                     Debug.WriteLine($"Missing mob spawn data: {mobSpawn}");
                     continue;
                 }
-                int maxPopulation = mobSpawn.NpcCount;
-                List<CoordF> spawnPoints = SpawnGenerator.Points(mobSpawn.SpawnRadius);
-                List<NpcMetadata> mobs = SpawnGenerator.Mobs(mobSpawn.SpawnData.Difficulty, mobSpawn.SpawnData.MinDifficulty, mobSpawn.SpawnData.Tags);
-
-                int population = 0;
-                foreach (NpcMetadata mob in mobs)
-                {
-                    int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                    if (spawnCount > maxPopulation)
-                    {
-                        break;
-                    }
-
-                    for (int i = 0; i < spawnCount; i++)
-                    {
-                        IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id));
-                        fieldMob.Coord = mobSpawn.Coord.ToFloat() + spawnPoints[population % spawnPoints.Count];
-                        AddMob(fieldMob);
-                        population++;
-                    }
-                }
+                IFieldObject<MobSpawn> fieldMobSpawn = RequestFieldObject(new MobSpawn(mobSpawn));
+                fieldMobSpawn.Coord = mobSpawn.Coord.ToFloat();
+                State.AddMobSpawn(fieldMobSpawn);
+                SpawnMobs(fieldMobSpawn);
             }
 
             // Load default portals for map from config
@@ -235,10 +218,13 @@ namespace MapleServer2.Servers.Game
         {
             State.AddMob(fieldMob);
 
+            fieldMob.Value.OriginSpawn.Value.Mobs.Add(fieldMob);
+
             Broadcast(session =>
             {
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
+                // TODO: Add spawn buff (ID: 0x055D4DAE)
             });
         }
 
@@ -302,10 +288,14 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveMob(IFieldObject<Mob> mob)
         {
-            // TODO: Spawn mob based on timer
             if (!State.RemoveMob(mob.ObjectId))
             {
                 return false;
+            }
+
+            if (mob.Value.OriginSpawn.Value.Mobs.Remove(mob) && mob.Value.OriginSpawn.Value.Mobs.Count == 0)
+            {
+                StartSpawnTimer(mob.Value.OriginSpawn);
             }
 
             Broadcast(session =>
@@ -393,6 +383,41 @@ namespace MapleServer2.Servers.Game
                     }
 
                     await Task.Delay(1000);
+                }
+            });
+        }
+
+        private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
+        {
+            List<CoordF> spawnPoints = MobSpawn.SelectPoints(mobSpawn.Value.SpawnRadius);
+
+            foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
+            {
+                int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
+                if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
+                {
+                    break;
+                }
+
+                for (int i = 0; i < spawnCount; i++)
+                {
+                    IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
+                    fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
+                    AddMob(fieldMob);
+                }
+            }
+        }
+
+        private Task StartSpawnTimer(IFieldObject<MobSpawn> mobSpawn)
+        {
+            int spawnTimer = mobSpawn.Value.SpawnData.SpawnTime * 1000;
+            return Task.Run(async () =>
+            {
+                await Task.Delay(spawnTimer);
+
+                if (mobSpawn.Value.Mobs.Count == 0)
+                {
+                    SpawnMobs(mobSpawn);
                 }
             });
         }
