@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
@@ -28,8 +29,8 @@ namespace MapleServer2.Types
 
         public void UpdateStats(double damage)
         {
-            Stats.Hp.Max -= (long) damage;
-            IsDead = Stats.Hp.Max <= 0;
+            Stats.Hp.Total -= (long) damage;
+            IsDead = Stats.Hp.Total <= 0;
         }
     }
 }

@@ -46,6 +46,8 @@ namespace MapleServer2.Types
             return roll > 0.5;
         }
 
-        public int GetCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Spirit;
+        public int GetSpCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Spirit;
+
+        public int GetStaCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Stamina;
     }
 }
