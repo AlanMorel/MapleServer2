@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using MaplePacketLib2.Tools;
@@ -15,10 +14,6 @@ namespace MapleServer2.Servers.Game
     public class GameSession : Session
     {
         protected override SessionType Type => SessionType.Game;
-
-        // TODO: Come up with a better solution
-        // Using this for now to store arbitrary state objects by key.
-        public readonly Dictionary<string, object> StateStorage;
 
         public int ServerTick { get; private set; }
         public int ClientTick;
@@ -37,7 +32,6 @@ namespace MapleServer2.Servers.Game
         {
             FieldManagerFactory = fieldManagerFactory;
             CancellationToken = new CancellationTokenSource();
-            StateStorage = new Dictionary<string, object>();
 
             // Continuously sends field updates to client
             new Thread(() =>

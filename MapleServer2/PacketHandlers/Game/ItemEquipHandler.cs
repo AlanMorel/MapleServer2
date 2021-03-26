@@ -155,17 +155,17 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void DecreaseStats(GameSession session, Item item)
         {
-            if (item.Stats.BasicAttributes.Count != 0)
+            if (item.Stats.BasicStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BasicAttributes)
+                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
                 {
                     session.Player.Stats.DecreaseMax((PlayerStatId) stat.Id, stat.Flat);
                 }
             }
 
-            if (item.Stats.BonusAttributes.Count != 0)
+            if (item.Stats.BonusStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BonusAttributes)
+                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
                 {
                     session.Player.Stats.DecreaseMax((PlayerStatId) stat.Id, stat.Flat);
                 }
@@ -176,17 +176,17 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void IncreaseStats(GameSession session, Item item)
         {
-            if (item.Stats.BasicAttributes.Count != 0)
+            if (item.Stats.BasicStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BasicAttributes)
+                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
                 {
                     session.Player.Stats.IncreaseMax((PlayerStatId) stat.Id, stat.Flat);
                 }
             }
 
-            if (item.Stats.BonusAttributes.Count != 0)
+            if (item.Stats.BonusStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BonusAttributes)
+                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
                 {
                     session.Player.Stats.IncreaseMax((PlayerStatId) stat.Id, stat.Flat);
                 }

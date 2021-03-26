@@ -105,7 +105,7 @@ namespace GameDataParser.Parsers
                             metadata.SpecialStats[SpecialItemAttribute.StunReduce] = ParseSpecialValues(SpecialItemAttribute.StunReduce, node, true);
                             break;
                         case "killHPRestoreValue":
-                            metadata.SpecialStats[SpecialItemAttribute.HpOnKill] = ParseSpecialValues(SpecialItemAttribute.HpOnKill, node, true);
+                            metadata.SpecialStats[SpecialItemAttribute.HpOnKill] = ParseSpecialValues(SpecialItemAttribute.HpOnKill, node, false);
                             break;
                         case "skillCooldownRate":
                             metadata.SpecialStats[SpecialItemAttribute.CooldownReduce] = ParseSpecialValues(SpecialItemAttribute.CooldownReduce, node, true);
@@ -235,7 +235,7 @@ namespace GameDataParser.Parsers
         private static List<ParserStat> ParseIntValues(ItemAttribute attribute, XmlNode node)
         {
             List<ParserStat> values = new List<ParserStat>();
-            for (int i = 2; i <= 9; i++)
+            for (int i = 2; i <= 17; i++)
             {
                 values.Add(new ParserStat(attribute, int.Parse(node.Attributes[$"idx{i}"].Value)));
             }
@@ -245,7 +245,7 @@ namespace GameDataParser.Parsers
         private static List<ParserStat> ParseFloatValues(ItemAttribute attribute, XmlNode node)
         {
             List<ParserStat> values = new List<ParserStat>();
-            for (int i = 2; i <= 9; i++)
+            for (int i = 2; i <= 17; i++)
             {
                 values.Add(new ParserStat(attribute, float.Parse(node.Attributes[$"idx{i}"].Value)));
             }
@@ -255,7 +255,7 @@ namespace GameDataParser.Parsers
         private static List<ParserSpecialStat> ParseSpecialValues(SpecialItemAttribute attribute, XmlNode node, bool isPercent)
         {
             List<ParserSpecialStat> values = new List<ParserSpecialStat>();
-            for (int i = 2; i <= 9; i++)
+            for (int i = 2; i <= 17; i++)
             {
                 float value = float.Parse(node.Attributes[$"idx{i}"].Value);
                 values.Add(new ParserSpecialStat(attribute, isPercent ? value : 0, !isPercent ? value : 0));

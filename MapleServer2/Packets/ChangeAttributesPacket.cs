@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SelectNewItem(Item item)
+        public static Packet AddNewItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
             pWriter.WriteByte(0x02);

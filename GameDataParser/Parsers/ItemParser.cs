@@ -428,6 +428,9 @@ namespace GameDataParser.Parsers
                 bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
                 metadata.EnableBreak = enableBreak;
 
+                int level = int.Parse(limit.Attributes["levelLimit"].Value);
+                metadata.Level = level;
+
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
                 {
                     List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));
