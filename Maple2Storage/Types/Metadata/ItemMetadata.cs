@@ -55,6 +55,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 24)]
         public int ShopID;
         [XmlElement(Order = 25)]
+        public int Level;
+        [XmlElement(Order = 26)]
         public List<HairPresets> HairPresets = new List<HairPresets>();
 
         // Required for deserialization
@@ -67,13 +69,15 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
-            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},Function:{FunctionData},Tag:{Tag},ShopID:{ShopID}";
+            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},Function:{FunctionData},Tag:{Tag},ShopID:{ShopID}" +
+            $"Level:{Level}";
 
         protected bool Equals(ItemMetadata other)
         {
             return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab && Rarity == other.Rarity &&
             StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate && other.IsCustomScore == IsCustomScore
-            && PlayCount == other.PlayCount && FileName == other.FileName && SkillID == other.SkillID && Content.SequenceEqual(other.Content);
+            && PlayCount == other.PlayCount && FileName == other.FileName && SkillID == other.SkillID && Content.SequenceEqual(other.Content) &&
+            Level == other.Level;
         }
 
         public override bool Equals(object obj)

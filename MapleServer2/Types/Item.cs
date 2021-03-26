@@ -10,6 +10,7 @@ namespace MapleServer2.Types
 {
     public class Item
     {
+        public int Level { get; set; }
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
         public GemSlot GemSlot { get; private set; }
@@ -55,21 +56,19 @@ namespace MapleServer2.Types
         public string PairedCharacterName;
 
         public Player Owner;
-
         public EquipColor Color;
-
         public HairData HairD;
+        public ItemStats Stats;
 
         public byte[] FaceDecorationD;
         public byte AppearanceFlag;
 
         public MusicScore Score;
 
-        public ItemStats Stats;
-
         public Item(int id)
         {
             Id = id;
+            Level = ItemMetadataStorage.GetLevel(id);
             Uid = GuidGenerator.Long();
             InventoryTab = ItemMetadataStorage.GetTab(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
@@ -93,7 +92,7 @@ namespace MapleServer2.Types
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
-            Stats = new ItemStats(id, Rarity);
+            Stats = new ItemStats(id, Rarity, Level);
             CanRepackage = true; // If false, item becomes untradable
         }
 
@@ -101,6 +100,7 @@ namespace MapleServer2.Types
         public Item(Item other)
         {
             Id = other.Id;
+            Level = other.Level;
             InventoryTab = other.InventoryTab;
             ItemSlot = other.ItemSlot;
             GemSlot = other.GemSlot;
