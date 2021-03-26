@@ -50,8 +50,8 @@ namespace MapleServer2.Types
         public int SuperChat;
 
         // Combat, Adventure, Lifestyle
-        public int[] Trophy = new int[3] { 0, 1, 2 };
-        public Dictionary<int, Achieve> Achieves = new Dictionary<int, Achieve>();
+        public int[] TrophyCount = new int[3] { 0, 0, 0 };
+        public Dictionary<int, Trophy> TrophyData = new Dictionary<int, Trophy>();
 
         public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
         public List<int> FavoriteStickers = new List<int> { };
@@ -118,14 +118,30 @@ namespace MapleServer2.Types
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
-
+        private Task OnlineDurationThread;
+        private TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
+
+        class TimeInfo
+        {
+            public long CharCreation;
+            public long OnlineDuration;
+            public long LastOnline;
+
+            public TimeInfo(long charCreation = -1, long onlineDuration = 0, long lastOnline = -1)
+            {
+                CharCreation = charCreation;
+                OnlineDuration = onlineDuration;
+                LastOnline = lastOnline;
+            }
+        }
 
         public Player()
         {
             GameOptions = new GameOptions();
             Wallet = new Wallet(this);
             Levels = new Levels(this, 70, 0, 0, 100, 0, new List<MasteryExp>());
+            Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
@@ -418,6 +434,33 @@ namespace MapleServer2.Types
         public bool IsVip()
         {
             return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
+
+        public void TrophyUpdate(int trophyId, long addAmount, int sendUpdateInterval = 1)
+        {
+            if (!TrophyData.ContainsKey(trophyId))
+            {
+                TrophyData[trophyId] = new Trophy(trophyId);
+            }
+            TrophyData[trophyId].AddCounter(Session, addAmount);
+            if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
+            {
+                Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
+            }
+        }
+
+        private Task OnlineTimer(PlayerStatId statId)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(60000);
+                lock (Timestamps)
+                {
+                    Timestamps.onlineDuration += 1;
+                    Timestamps.lastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    TrophyUpdate(23100001, 1);
+                }
+            });
         }
     }
 }

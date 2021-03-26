@@ -2,33 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
     [XmlType]
-    public class AchieveMetadata
+    public class TrophyMetadata
     {
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
-        public List<AchieveGradeMetadata> Grades;
+        public string[] Categories;
+        [XmlElement(Order = 3)]
+        public List<TrophyGradeMetadata> Grades;
 
         // Required for deserialization
-        public AchieveMetadata()
+        public TrophyMetadata()
         {
-            Grades = new List<AchieveGradeMetadata>();
+            Grades = new List<TrophyGradeMetadata>();
         }
 
-        public AchieveMetadata(int id, List<AchieveGradeMetadata> grades)
+        public TrophyMetadata(int id, List<TrophyGradeMetadata> grades)
         {
             Id = id;
             Grades = grades;
         }
 
         public override string ToString() =>
-            $"AchieveMetadata(Id:{Id},Grades:{string.Join(",", Grades)}";
+            $"TrophyMetadata(Id:{Id},Categories:{string.Join(",", Categories)},Grades:{string.Join(",", Grades)}";
 
-        protected bool Equals(AchieveMetadata other)
+        protected bool Equals(TrophyMetadata other)
         {
             return Id == other.Id
                 && Grades.SequenceEqual(other.Grades);
@@ -51,7 +54,7 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((AchieveMetadata) obj);
+            return Equals((TrophyMetadata) obj);
         }
 
         public override int GetHashCode()
@@ -59,38 +62,44 @@ namespace Maple2Storage.Types.Metadata
             return HashCode.Combine(Id);
         }
 
-        public static bool operator ==(AchieveMetadata left, AchieveMetadata right)
+        public static bool operator ==(TrophyMetadata left, TrophyMetadata right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(AchieveMetadata left, AchieveMetadata right)
+        public static bool operator !=(TrophyMetadata left, TrophyMetadata right)
         {
             return !Equals(left, right);
         }
     }
 
     [XmlType]
-    public class AchieveGradeMetadata
+    public class TrophyGradeMetadata
     {
         [XmlElement(Order = 1)]
         public int Grade;
         [XmlElement(Order = 2)]
         public long Condition;
         [XmlElement(Order = 3)]
-        public int Reward;
+        public byte RewardType;
+        [XmlElement(Order = 4)]
+        public int RewardCode;
+        [XmlElement(Order = 5)]
+        public int RewardValue;
 
         // Required for deserialization
-        public AchieveGradeMetadata() { }
+        public TrophyGradeMetadata() { }
 
         public override string ToString() =>
-            $"AchieveGradeMetadata(Grade:{Grade},Condition:{Condition},Reward:{Reward})";
+            $"TrophyGradeMetadata(Grade:{Grade},Condition:{Condition},RewardType:{RewardType},RewardCode:{RewardCode},RewardValue:{RewardValue})";
 
-        protected bool Equals(AchieveGradeMetadata other)
+        protected bool Equals(TrophyGradeMetadata other)
         {
             return Grade == other.Grade
                 && Condition == other.Condition
-                && Reward == other.Reward;
+                && RewardType == other.RewardType
+                && RewardCode == other.RewardCode
+                && RewardValue == other.RewardValue;
         }
 
         public override bool Equals(object obj)
@@ -110,20 +119,20 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((AchieveGradeMetadata) obj);
+            return Equals((TrophyGradeMetadata) obj);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Grade, Condition, Reward);
+            return HashCode.Combine(Grade, Condition, RewardType, RewardCode);
         }
 
-        public static bool operator ==(AchieveGradeMetadata left, AchieveGradeMetadata right)
+        public static bool operator ==(TrophyGradeMetadata left, TrophyGradeMetadata right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(AchieveGradeMetadata left, AchieveGradeMetadata right)
+        public static bool operator !=(TrophyGradeMetadata left, TrophyGradeMetadata right)
         {
             return !Equals(left, right);
         }

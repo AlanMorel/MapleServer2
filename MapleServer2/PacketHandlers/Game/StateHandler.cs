@@ -24,10 +24,16 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case StateHandlerMode.Jump:
+                    HandleJump(session, packet);
                     break;
                 case StateHandlerMode.Land:
                     break;
             }
+        }
+
+        private static void HandleJump(GameSession session, PacketReader packet)
+        {
+            session.Player.TrophyUpdate(22100012, 1, 5);
         }
     }
 }

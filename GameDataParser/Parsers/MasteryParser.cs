@@ -12,7 +12,7 @@ namespace GameDataParser.Parsers
 
         protected override List<MasteryMetadata> Parse()
         {
-            List<MasteryMetadata> masteryList = new();
+            List<MasteryMetadata> masteryList = new List<MasteryMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("table/mastery") || entry.Name.StartsWith("table/masteryrecipe"))

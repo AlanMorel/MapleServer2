@@ -15,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Game
         private enum UserEnvMode : byte
         {
             Change = 0x1,
-            Achieve = 0x3,
+            Trophy = 0x3,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -27,8 +27,8 @@ namespace MapleServer2.PacketHandlers.Game
                 case UserEnvMode.Change:
                     HandleTitleChange(session, packet);
                     break;
-                case UserEnvMode.Achieve:
-                    HandleAchieve(session);
+                case UserEnvMode.Trophy:
+                    HandleTrophy(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -49,9 +49,9 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session, titleID));
         }
 
-        private static void HandleAchieve(GameSession session)
+        private static void HandleTrophy(GameSession session)
         {
-            session.Send(UserEnvPacket.UpdateAchieve());
+            session.Send(UserEnvPacket.UpdateTrophy());
         }
     }
 }
