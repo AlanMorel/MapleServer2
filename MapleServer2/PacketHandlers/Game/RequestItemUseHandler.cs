@@ -67,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleItemRemakeScroll(session, itemUid);
                     break;
                 default:
-                    Console.WriteLine("Unhandled item function: " + item.FunctionName);
+                    Console.WriteLine("Unhandled item function: " + item.Function.Name);
                     break;
             }
         }

@@ -10,6 +10,7 @@ namespace MapleServer2.Types
 {
     public class Item
     {
+        public int Level { get; set; }
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; private set; }
         public GemSlot GemSlot { get; private set; }
@@ -70,6 +71,7 @@ namespace MapleServer2.Types
         public Item(int id)
         {
             Id = id;
+            Level = ItemMetadataStorage.GetLevel(id);
             Uid = GuidGenerator.Long();
             InventoryTab = ItemMetadataStorage.GetTab(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);

@@ -207,7 +207,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteUnicodeString(buddy.Friend.HomeName);
             pWriter.WriteLong();
-            foreach (int trophyCount in buddy.Friend.Trophy)
+            foreach (int trophyCount in buddy.Friend.TrophyCount)
             {
                 pWriter.WriteInt(trophyCount);
             }

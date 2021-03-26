@@ -55,6 +55,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 24)]
         public int ShopID;
         [XmlElement(Order = 25)]
+        public int Level;
+        [XmlElement(Order = 26)]
         public List<HairPresets> HairPresets = new List<HairPresets>();
 
         // Required for deserialization
