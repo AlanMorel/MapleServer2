@@ -12,16 +12,29 @@ namespace MapleServer2.PacketHandlers.Game
 
         public SkillBookTreeHandler(ILogger<SkillBookTreeHandler> logger) : base(logger) { }
 
+        private enum SkillBookMode : byte
+        {
+            Open = 0x00,
+            Save = 0x01,
+            AddTab = 0x04,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            SkillBookMode mode = (SkillBookMode) packet.ReadByte();
             switch (mode)
             {
-                case 0: // Open skill tree
+                case SkillBookMode.Open: // Open skill tree
                     HandleOpen(session);
                     break;
-                case 1: // Save skill tree
+                case SkillBookMode.Save: // Save skill tree
                     HandleSave(session);
+                    break;
+                case SkillBookMode.AddTab:
+                    HandleAddTab(session);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
@@ -34,6 +47,11 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleSave(GameSession session)
         {
             session.Send(SkillBookTreePacket.Save(session.Player));
+        }
+
+        private static void HandleAddTab(GameSession session)
+        {
+            session.Send(SkillBookTreePacket.AddTab(session.Player));
         }
     }
 }

@@ -117,7 +117,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(); // gearscore
             pWriter.Write(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);
-            foreach (int trophyCount in player.Trophy)
+            foreach (int trophyCount in player.TrophyCount)
             {
                 pWriter.WriteInt(trophyCount);
             }

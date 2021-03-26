@@ -63,9 +63,18 @@ namespace MapleServer2.PacketHandlers.Game
                 case "HongBao":
                     HandleHongBao(session, item);
                     break;
+                case "ItemRemakeScroll":
+                    HandleItemRemakeScroll(session, itemUid);
+                    break;
                 default:
-                    return;
+                    Console.WriteLine("Unhandled item function: " + item.FunctionName);
+                    break;
             }
+        }
+
+        private static void HandleItemRemakeScroll(GameSession session, long itemUid)
+        {
+            session.Send(ChangeAttributesScrollPacket.Open(itemUid));
         }
 
         private static void HandleChatEmoticonAdd(GameSession session, Item item)

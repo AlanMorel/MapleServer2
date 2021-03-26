@@ -118,14 +118,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 // check if whole stack will be used, and remove the item
                 // otherwise we want to just want to subtract the amount
-                if (ingredient.Amount == item.Amount)
-                {
-                    InventoryController.Remove(session, item.Uid, out Item _);
-                }
-                else
-                {
-                    InventoryController.Update(session, item.Uid, item.Amount - ingredient.Amount);
-                }
+                InventoryController.Consume(session, item.Uid, ingredient.Amount);
             }
 
             return true;

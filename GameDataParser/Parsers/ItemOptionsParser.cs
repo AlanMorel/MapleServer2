@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -21,7 +22,7 @@ namespace GameDataParser.Parsers
                 {
                     continue;
                 }
-                if (entry.Name.Contains("armormanual.xml") || entry.Name.Contains("etc.xml") || entry.Name.Contains("mergematerial.xml"))
+                if (entry.Name.Contains("etc.xml") || entry.Name.Contains("mergematerial.xml"))
                 {
                     continue;
                 }
@@ -200,8 +201,19 @@ namespace GameDataParser.Parsers
                                 optionsMetadata.SpecialStats.Add(SpecialItemAttribute.ElectricDamageReduce);
                                 break;
                             case "wapmax_value_base":
-                                int wapmax = string.IsNullOrEmpty(node.Attributes["wapmax_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["wapmax_value_base"].Value);
-                                optionsMetadata.MaxWeaponAtk = wapmax;
+                                string wapMax = node.Attributes["wapmax_value_base"]?.Value;
+                                if (!string.IsNullOrEmpty(wapMax))
+                                {
+                                    if (wapMax.Contains(","))
+                                    {
+                                        List<int> list = node.Attributes["wapmax_value_base"].Value.Split(",").Select(int.Parse).ToList();
+                                        optionsMetadata.MaxWeaponAtk = list[0];
+                                    }
+                                    else
+                                    {
+                                        optionsMetadata.MaxWeaponAtk = int.Parse(wapMax);
+                                    }
+                                }
                                 break;
                             case "wapmin_value_base":
                                 int wapmin = string.IsNullOrEmpty(node.Attributes["wapmin_value_base"]?.Value) ? 0 : int.Parse(node.Attributes["wapmin_value_base"].Value);

@@ -30,6 +30,9 @@ namespace MapleServer2.Types
             { InventoryTab.Badge, 0}, { InventoryTab.Lapenshard, 0}, { InventoryTab.Fragment, 0}
         };
 
+        // Only use to share information between handler functions. Should always be empty
+        public Dictionary<long, Item> TemporaryStorage = new Dictionary<long, Item>();
+
         public Inventory()
         {
             Items = new Dictionary<long, Item>();

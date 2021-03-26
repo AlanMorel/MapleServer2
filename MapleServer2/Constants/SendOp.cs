@@ -89,7 +89,7 @@
         FIELD_REMOVE_PET = 0x005C,
         SYNC_PET_TAMING_POINT = 0x005D,
         TOMBSTONE = 0x005E,
-        ACHIEVE = 0x005F,
+        TROPHY = 0x005F,
         USER_MOVE_BY_PORTAL = 0x0060,
         ITEM_TITLE = 0x0061,
         MASSIVE_EVENT = 0x0062,

@@ -195,14 +195,14 @@ namespace GameDataParser.Parsers
                     }
                     else if (modelName.StartsWith("MS2RegionSpawn"))  // Mob Spawn point on map
                     {
-                        XmlNode mobCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode spawnPointID = node.SelectSingleNode("property[@name='SpawnPointID']");
+                        XmlNode mobCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode npcCount = node.SelectSingleNode("property[@name='NpcCount']");
                         XmlNode npcList = node.SelectSingleNode("property[@name='NpcList']");
                         XmlNode spawnRadius = node.SelectSingleNode("property[@name='SpawnRadius']");
 
-                        string mobPositionValue = mobCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string mobSpawnPointID = spawnPointID?.FirstChild.Attributes["value"]?.Value ?? mapObjects[modelName]["SpawnPointID"];
+                        string mobPositionValue = mobCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         SpawnMetadata mobSpawnData = (spawnTagMap.ContainsKey(mapId) && spawnTagMap[mapId].ContainsKey(mobSpawnPointID)) ? spawnTagMap[mapId][mobSpawnPointID] : null;  // Do we need this spawn data (?)
                         int mobNpcCount = mobSpawnData?.Population ?? 6;
                         List<int> mobNpcList = new List<int>();
@@ -220,7 +220,7 @@ namespace GameDataParser.Parsers
                         }
                         int mobSpawnRadius = int.Parse(spawnRadius?.FirstChild.Attributes["value"]?.Value ?? "150");
 
-                        metadata.MobSpawns.Add(new MapMobSpawn(CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
+                        metadata.MobSpawns.Add(new MapMobSpawn(int.Parse(mobSpawnPointID), CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
                     }
                     else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
                     {

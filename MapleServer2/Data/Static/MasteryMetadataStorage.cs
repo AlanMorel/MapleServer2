@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Data.Static
 {
@@ -28,6 +30,11 @@ namespace MapleServer2.Data.Static
         public static MasteryMetadata GetMastery(int type)
         {
             return masteries.GetValueOrDefault(type);
+        }
+
+        public static int GetGradeFromXP(MasteryType type, long xp)
+        {
+            return GetMastery((int) type).Grades.Count(x => x.Value <= xp);
         }
     }
 }

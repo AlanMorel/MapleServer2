@@ -291,25 +291,9 @@ namespace MapleServer2.Packets
 
             StatPacket.DefaultStatsMob(pWriter, mob);
 
-            pWriter.WriteByte();
-            int count = 0;
-            pWriter.WriteInt(count); // branch
-            for (int i = 0; i < count; i++)
-            {
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteShort();
-                pWriter.WriteInt();
-                pWriter.WriteByte();
-                pWriter.WriteLong();
-            }
             pWriter.WriteLong();
-            pWriter.WriteByte();
-            pWriter.WriteInt(1);
+            pWriter.WriteInt();
+            pWriter.WriteInt(0x0E); // Unknown
             pWriter.WriteInt();
             pWriter.WriteByte();
 
