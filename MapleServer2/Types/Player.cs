@@ -128,11 +128,11 @@ namespace MapleServer2.Types
             public long OnlineDuration;
             public long LastOnline;
 
-            public TimeInfo(long a = -1, long b = 0, long c = -1)
+            public TimeInfo(long charCreation = -1, long onlineDuration = 0, long lastOnline = -1)
             {
-                CharCreation = a;
-                OnlineDuration = b;
-                LastOnline = c;
+                CharCreation = charCreation;
+                OnlineDuration = onlineDuration;
+                LastOnline = lastOnline;
             }
         }
 
