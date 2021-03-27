@@ -103,6 +103,8 @@ namespace MapleServer2.Types
 
         public Mailbox Mailbox = new Mailbox();
 
+        public List<Buddy> BuddyList = new List<Buddy>();
+
         public long PartyId;
 
         public long ClubId;
@@ -456,8 +458,8 @@ namespace MapleServer2.Types
                 await Task.Delay(60000);
                 lock (Timestamps)
                 {
-                    Timestamps.onlineDuration += 1;
-                    Timestamps.lastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    Timestamps.OnlineDuration += 1;
+                    Timestamps.LastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     TrophyUpdate(23100001, 1);
                 }
             });

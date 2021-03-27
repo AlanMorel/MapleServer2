@@ -11,6 +11,7 @@ namespace MapleServer2.Enums
         Tradeable = 4,
         Binds = 8,
         Unknown2 = 16,
+        Unknown4 = 24,
         Unknown3 = 32,
     }
 }

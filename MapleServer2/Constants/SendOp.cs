@@ -246,10 +246,12 @@
         SPECTATE = 0x011C,
         ITEM_LAPENSHARD = 0x011D,
         PRESTIGE = 0x011E,
-        WORLD_CHAMPION = 0x0121,
+        WORLD_CHAMPION = 0x120,
         SYNC_VALUE = 0x0122,
         NO = 0x0123,
         CHAT_STICKER = 0x0128,
+        MARRIAGE = 0x12A,
+        LIMIT_BREAK = 0x130,
         UNKNOWN_SYNC = 0x0132
     }
 }

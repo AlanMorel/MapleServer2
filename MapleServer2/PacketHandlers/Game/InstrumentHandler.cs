@@ -22,6 +22,7 @@ namespace MapleServer2.PacketHandlers.Game
             StopImprovise = 0x2,
             PlayScore = 0x3,
             StopScore = 0x4,
+            Compose = 0x8,
             Fireworks = 0xE,
             AudienceEmote = 0xF,
         }
@@ -47,6 +48,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case InstrumentMode.StopScore:
                     HandleStopScore(session/*, packet*/);
                     break;
+                case InstrumentMode.Compose:
+                    HandleCompose(session, packet);
+                    break;
                 case InstrumentMode.Fireworks:
                     HandleFireworks(session);
                     break;
@@ -70,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item item = session.Player.Inventory.Items[itemUid];
 
-            InsturmentInfoMetadata instrument = InstrumentInfoMetadataStorage.GetMetadata(item.FunctionId);
+            InsturmentInfoMetadata instrument = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrument.Category);
             session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer, instrumentCategory.GMId));
         }
@@ -99,7 +103,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item instrument = session.Player.Inventory.Items[instrumentItemUid];
 
-            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrument.FunctionId);
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrument.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
             Item score = session.Player.Inventory.Items[scoreItemUid];
@@ -111,7 +115,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             score.PlayCount -= 1;
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score.FileName, instrumentCategory.GMId));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score, instrumentCategory.GMId));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
@@ -119,6 +123,31 @@ namespace MapleServer2.PacketHandlers.Game
         {
             session.Send(InstrumentPacket.StopScore(session.FieldPlayer));
             session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.FieldPlayer));
+        }
+
+        private static void HandleCompose(GameSession session, PacketReader packet)
+        {
+            long itemUid = packet.ReadLong();
+            int length = packet.ReadInt();
+            int instrumentType = packet.ReadInt();
+            string scoreName = packet.ReadUnicodeString();
+            string scoreNotes = packet.ReadMapleString();
+
+            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            {
+                return;
+            }
+
+            Item item = session.Player.Inventory.Items[itemUid];
+
+            item.Score.Length = length;
+            item.Score.Type = instrumentType;
+            item.Score.Title = scoreName;
+            item.Score.Composer = session.Player.Name;
+            item.Score.ComposerCharacterId = session.Player.CharacterId;
+            item.Score.Notes = scoreNotes;
+
+            session.Send(InstrumentPacket.Compose(item));
         }
 
         private static void HandleFireworks(GameSession session)

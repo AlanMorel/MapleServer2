@@ -80,6 +80,17 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).IsTemplate;
         }
 
+        public static bool GetIsCustomScore(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsCustomScore;
+
+        }
+
+        public static byte GetGender(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Gender;
+        }
+
         public static int GetPlayCount(int itemId)
         {
             return map.GetValueOrDefault(itemId).PlayCount;
@@ -140,44 +151,9 @@ namespace MapleServer2.Data.Static
             return pricePoints.ElementAt(rand);
         }
 
-        public static string GetFunctionName(int itemId)
+        public static ItemFunction GetFunction(int itemId)
         {
-            return map.GetValueOrDefault(itemId).FunctionName;
-        }
-
-        public static int GetFunctionId(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionId;
-        }
-
-        public static int GetFunctionDuration(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionDuration;
-        }
-
-        public static int GetFunctionFieldId(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionFieldId;
-        }
-
-        public static byte GetFunctionCapacity(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionCapacity;
-        }
-
-        public static byte GetFunctionTargetLevel(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionTargetLevel;
-        }
-
-        public static short GetFunctionCount(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionCount;
-        }
-
-        public static byte GetFunctionTotalUser(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionTotalUser;
+            return map.GetValueOrDefault(itemId).FunctionData;
         }
 
         public static string GetTag(int itemId)

@@ -312,7 +312,7 @@ namespace GameDataParser.Parsers
                 // Item boxes
                 XmlNode function = item.SelectSingleNode("function");
                 string contentType = function.Attributes["name"].Value;
-                metadata.FunctionName = contentType;
+                metadata.FunctionData.Name = contentType;
                 if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
                 {
                     // selection boxes are SelectItemBox and 1,boxid
@@ -343,7 +343,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionId = byte.Parse(functionParameters.Attributes["id"].Value);
+                    metadata.FunctionData.Id = byte.Parse(functionParameters.Attributes["id"].Value);
 
                     int durationSec = 0;
 
@@ -351,7 +351,7 @@ namespace GameDataParser.Parsers
                     {
                         durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
                     }
-                    metadata.FunctionDuration = durationSec;
+                    metadata.FunctionData.Duration = durationSec;
                 }
                 else if (contentType == "OpenMassive")
                 {
@@ -362,9 +362,9 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionFieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
-                    metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
+                    metadata.FunctionData.FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
+                    metadata.FunctionData.Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
                 }
                 else if (contentType == "LevelPotion")
                 {
@@ -373,7 +373,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionTargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                    metadata.FunctionData.TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
                 }
                 else if (contentType == "VIPCoupon")
                 {
@@ -382,7 +382,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["period"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["period"].Value);
                 }
                 else if (contentType == "HongBao")
                 {
@@ -391,19 +391,19 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionId = int.Parse(functionParameters.Attributes["itemId"].Value);
-                    metadata.FunctionCount = short.Parse(functionParameters.Attributes["totalCount"].Value);
-                    metadata.FunctionTotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    metadata.FunctionData.Id = int.Parse(functionParameters.Attributes["itemId"].Value);
+                    metadata.FunctionData.Count = short.Parse(functionParameters.Attributes["totalCount"].Value);
+                    metadata.FunctionData.TotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
                 }
                 else if (contentType == "SuperWorldChat")
                 {
                     string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                    metadata.FunctionId = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
+                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
                 }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook")
                 {
-                    metadata.FunctionId = int.Parse(function.Attributes["parameter"].Value);
+                    metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
                 }
 
                 // Music score charges
@@ -411,6 +411,7 @@ namespace GameDataParser.Parsers
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
                 string fileName = musicScore.Attributes["fileName"].Value;
+                metadata.IsCustomScore = bool.Parse(musicScore.Attributes["isCustomNote"].Value);
                 metadata.FileName = fileName;
 
                 // Shop ID from currency items
@@ -439,6 +440,8 @@ namespace GameDataParser.Parsers
                         metadata.RecommendJobs.Add(int.Parse(recommendJob));
                     }
                 }
+
+                byte gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 // Item breaking ingredients
                 if (rewards.ContainsKey(itemId))

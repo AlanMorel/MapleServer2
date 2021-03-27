@@ -1,5 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Packets.Helpers;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -15,6 +17,7 @@ namespace MapleServer2.Packets
             StopImprovise = 0x2,
             PlayScore = 0x3,
             StopScore = 0x4,
+            Compose = 0x8,
             UpdateScoreUses = 0x9,
             Fireworks = 0xE,
         }
@@ -50,19 +53,27 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlayScore(GameSession session, string itemFileName, byte gmId)
+        public static Packet PlayScore(GameSession session, Item score, byte gmId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayScore);
-            pWriter.WriteByte();
-            pWriter.WriteInt(session.FieldPlayer.ObjectId + 0x10); // playId?
+            pWriter.WriteBool(score.IsCustomScore);
+            pWriter.WriteInt(session.FieldPlayer.ObjectId + (session.ClientTick - Environment.TickCount)); // This needs to be objectid + player tick count on map?
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(session.Player.Coord);
             pWriter.WriteInt(session.ClientTick);
             pWriter.WriteInt(gmId);
             pWriter.WriteInt();
             pWriter.WriteByte();
-            pWriter.WriteUnicodeString(itemFileName);
+
+            if (score.IsCustomScore)
+            {
+                pWriter.WriteMapleString(score.Score.Notes);
+            }
+            else
+            {
+                pWriter.WriteUnicodeString(score.FileName);
+            }
             return pWriter;
         }
 
@@ -72,6 +83,15 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(InstrumentPacketMode.StopScore);
             pWriter.WriteInt(player.ObjectId + 0x10); // playId ?
             pWriter.WriteInt(player.ObjectId);
+            return pWriter;
+        }
+
+        public static Packet Compose(Item item)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+            pWriter.WriteEnum(InstrumentPacketMode.Compose);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteItem(item);
             return pWriter;
         }
 

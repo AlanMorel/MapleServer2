@@ -38,11 +38,12 @@ namespace MapleServer2.PacketHandlers.Common
             session.InitPlayer(player);
 
             //session.Send(0x27, 0x01); // Meret market related...?
+            session.Send(BuddyPacket.Initialize());
 
             session.Send(LoginPacket.LoginRequired(accountId));
 
-            session.Send(BuddyListPacket.StartList());
-            session.Send(BuddyListPacket.EndList());
+            session.Send(BuddyPacket.LoadList(player));
+            session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
             // Meret market
             //session.Send("6E 00 0B 00 00 00 00 00 00 00 00 00 00 00 00".ToByteArray());

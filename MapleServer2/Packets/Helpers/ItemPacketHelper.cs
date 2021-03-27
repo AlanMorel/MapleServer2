@@ -39,6 +39,12 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
+
+            if (item.IsCustomScore)
+            {
+                pWriter.WriteMusicScore(item);
+            }
+
             if (item.IsTemplate)
             {
                 // Not implemented, causes issues for non-default character creation outfits
@@ -268,6 +274,20 @@ namespace MapleServer2.Packets.Helpers
                 }
             }
 
+            return pWriter;
+        }
+
+        private static PacketWriter WriteMusicScore(this PacketWriter pWriter, Item item)
+        {
+            pWriter.WriteInt(item.Score.Length);
+            pWriter.WriteInt(item.Score.Type);
+            pWriter.WriteUnicodeString(item.Score.Title);
+            pWriter.WriteUnicodeString(item.Score.Composer);
+            pWriter.WriteInt(4); // seems like it's always 4. 1 in KMS2. 
+            pWriter.WriteLong(item.Score.ComposerCharacterId);
+            pWriter.WriteBool(item.Score.Locked);
+            pWriter.WriteLong();
+            pWriter.WriteLong();
             return pWriter;
         }
     }
