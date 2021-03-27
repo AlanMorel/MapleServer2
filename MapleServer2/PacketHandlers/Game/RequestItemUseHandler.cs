@@ -246,26 +246,27 @@ namespace MapleServer2.PacketHandlers.Game
             int index = random.Next(gacha.Contents.Count);
 
             GachaContent contents = gacha.Contents[index];
-            if (contents.SmartGender)
+            if (!contents.SmartGender)
             {
-                byte itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
-                if (playerGender != itemGender || itemGender != 2)  // if it's not the same gender or unisex, roll again
+                return contents;
+            }
+
+            byte itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
+            if (playerGender != itemGender || itemGender != 2)  // if it's not the same gender or unisex, roll again
+            {
+                bool sameGender = false;
+                do
                 {
-                    bool sameGender = false;
-                    do
+                    int indexReroll = random.Next(gacha.Contents.Count);
+
+                    GachaContent rerollContents = gacha.Contents[indexReroll];
+                    byte rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
+
+                    if (rerollContentsGender == playerGender || rerollContentsGender == 2)
                     {
-                        int indexReroll = random.Next(gacha.Contents.Count);
-
-                        GachaContent rerollContents = gacha.Contents[indexReroll];
-                        byte rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
-
-                        if (rerollContentsGender == playerGender || rerollContentsGender == 2)
-                        {
-                            return rerollContents;
-                        }
-
-                    } while (!sameGender);
-                }
+                        return rerollContents;
+                    }
+                } while (!sameGender);
             }
             return contents;
         }

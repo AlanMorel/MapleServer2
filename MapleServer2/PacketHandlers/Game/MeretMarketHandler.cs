@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             };
             if (marketItem.Duration != 0)
             {
-                item.ExpiryTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (marketItem.Duration * 86400);
+                item.ExpiryTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (marketItem.Duration * (24 * 60 * 60));
             }
             InventoryController.Add(session, item, true);
             session.Send(MeretMarketPacket.Purchase(marketItem, itemIndex, totalQuantity));
