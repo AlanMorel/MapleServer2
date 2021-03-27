@@ -59,9 +59,9 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 26)]
         public bool ShowSaleTime;
         [XmlElement(Order = 27)]
-        public long PromoBannerBeginTime; // ?? rename?
+        public long PromoBannerBeginTime; // time when you can buy (buy banner still up)
         [XmlElement(Order = 28)]
-        public long PromoBannerEndTime; // ?? rename?
+        public long PromoBannerEndTime; // time when you can't buy (expiration. banner still up)
         [XmlElement(Order = 29)]
         public List<MeretMarketMetadata> AdditionalQuantities = new List<MeretMarketMetadata>();
 

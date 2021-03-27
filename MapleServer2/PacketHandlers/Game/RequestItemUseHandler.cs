@@ -229,7 +229,6 @@ namespace MapleServer2.PacketHandlers.Game
                     Amount = itemAmount,
                 };
                 items.Add(gachaItem);
-                Console.WriteLine(gachaItem.EnableBreak);
                 InventoryController.Consume(session, capsule.Uid, 1);
             }
 

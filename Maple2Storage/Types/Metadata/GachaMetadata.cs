@@ -37,7 +37,6 @@ namespace Maple2Storage.Types.Metadata
     $"GachaMetadata:(GachaId:{GachaId},BoxGroup:{BoxGroup},DropBoxId:{DropBoxId},ShopId:{ShopId},CoinId:{CoinId},CoinAmount:{CoinAmount})";
     }
 
-
     [XmlType]
     public class GachaContent
     {

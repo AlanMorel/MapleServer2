@@ -104,8 +104,8 @@ namespace MapleServer2.Packets
 
                 pWriter.WriteByte(1);
                 pWriter.WriteMapleString(item.PromoImageName);
-                pWriter.WriteLong(item.PromoBannerBeginTime); // time when you can buy (buy banner still up)
-                pWriter.WriteLong(item.PromoBannerEndTime); // time when you can't buy (expiration. banner still up)
+                pWriter.WriteLong(item.PromoBannerBeginTime);
+                pWriter.WriteLong(item.PromoBannerEndTime);
                 pWriter.WriteByte(0);
                 pWriter.WriteBool(item.ShowSaleTime);
                 pWriter.WriteInt(0);
@@ -154,7 +154,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             pWriter.WriteInt(item.ParentMarketItemId);
             pWriter.WriteInt(254);
-            pWriter.WriteInt(); // is promo?
+            pWriter.WriteInt(); // promo bool
             pWriter.WriteByte(2);
             pWriter.WriteEnum(item.Flag);
             pWriter.WriteEnum(item.TokenType);
@@ -182,8 +182,8 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(item.PromoFlag);
             pWriter.WriteMapleString(item.PromoName);
             pWriter.WriteMapleString("");
-            pWriter.WriteByte(); // turning this to 1 hides it.
-            pWriter.WriteByte(0); //if 1 =...do something else ?
+            pWriter.WriteByte();
+            pWriter.WriteByte(0);
             pWriter.WriteInt(0);
             pWriter.WriteByte(0);
             pWriter.WriteInt(item.RequiredAchievementId);

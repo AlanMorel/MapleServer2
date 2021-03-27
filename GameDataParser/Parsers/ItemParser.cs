@@ -277,8 +277,6 @@ namespace GameDataParser.Parsers
                 metadata.ColorIndex = int.Parse(customize.Attributes["defaultColorIndex"].Value);
                 metadata.ColorPalette = int.Parse(customize.Attributes["colorPalette"].Value);
 
-
-
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");
                 bool gemResult = Enum.TryParse<GemSlot>(gem.Attributes["system"].Value, out metadata.Gem);
