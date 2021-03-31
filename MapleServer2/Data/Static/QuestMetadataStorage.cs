@@ -16,7 +16,7 @@ namespace MapleServer2.Data.Static
             List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
             foreach (QuestMetadata item in items)
             {
-                map[item.Basic.QuestID] = item;
+                map[item.Basic.Id] = item;
             }
         }
         public static QuestMetadata GetMetadata(int questId)

@@ -65,7 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (actor.Type == InteractActorType.Binoculars)
             {
                 List<QuestStatus> questList = session.Player.QuestList;
-                foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
+                foreach (QuestStatus item in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
                 {
                     QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
                     if (condition == null)
@@ -75,8 +75,8 @@ namespace MapleServer2.PacketHandlers.Game
 
                     item.Completed = true;
                     item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
-                    session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
+                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.Id));
+                    session.Send(QuestPacket.CompleteQuest(item.Basic.Id));
                     break;
                 }
             }

@@ -66,7 +66,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int ChapterID;
         [XmlElement(Order = 2)]
-        public int QuestID;
+        public int Id;
         [XmlElement(Order = 3)]
         public byte QuestType;
         [XmlElement(Order = 4)]
@@ -100,7 +100,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString()
         {
-            return $"\r\nchapterID: {ChapterID}, questID: {QuestID}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
+            return $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
                 $"autoStart: {AutoStart}, disableGiveup: {DisableGiveup}, exceptChapterClear: {ExceptChapterClear}, repeatable: {Repeatable}, " +
                 $"usePeriod: {UsePeriod}, eventTag: {EventTag}, locking: {Locking}, tabIndex: {TabIndex}, forceRegistGuide: {ForceRegistGuide}, " +
                 $"useNavi: {UseNavigation}";

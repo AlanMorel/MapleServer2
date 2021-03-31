@@ -76,6 +76,7 @@ namespace MapleServer2.PacketHandlers.Common
             }
 
             List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
+            questList.Add(QuestMetadataStorage.GetMetadata(60100000)); // Manually adding "the caravan" for testing purposes
 
             foreach (QuestMetadata quest in questList)
             {
@@ -83,6 +84,8 @@ namespace MapleServer2.PacketHandlers.Common
                 {
                     Basic = quest.Basic,
                     StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    StartNpcId = quest.StartNpc,
+                    CompleteNpcId = quest.CompleteNpc,
                     Condition = quest.Condition,
                     Reward = quest.Reward,
                     RewardItems = quest.RewardItem

@@ -56,7 +56,7 @@ namespace MapleServer2.Types
         public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
         public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
-        public IFieldObject<Npc> NpcTalk; // Needs a better solution to save what NPC a Player is talking to
+        public NpcTalk NpcTalk;
 
         public CoordF Coord;
         public CoordF Rotation;

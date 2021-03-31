@@ -56,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
             int questId = packet.ReadInt();
             int objectId = packet.ReadInt();
 
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
+            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
             if (quest == null)
             {
                 return;
@@ -71,23 +71,40 @@ namespace MapleServer2.PacketHandlers.Game
             int questId = packet.ReadInt();
             int objectId = packet.ReadInt();
 
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
-            if (quest == null)
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
             {
                 return;
             }
 
-            quest.Completed = true;
+            questStatus.Completed = true;
             session.Send(QuestPacket.CompleteQuest(questId));
+            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+            {
+                QuestMetadata quest = kvp.Value;
+                QuestStatus newQuestStatus = new QuestStatus()
+                {
+                    Basic = quest.Basic,
+                    StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    StartNpcId = quest.StartNpc,
+                    CompleteNpcId = quest.CompleteNpc,
+                    Condition = quest.Condition,
+                    Reward = quest.Reward,
+                    RewardItems = quest.RewardItem
+                };
 
-            session.Player.Levels.GainExp(quest.Reward.Exp);
-            session.Player.Wallet.Meso.Modify(quest.Reward.Money);
+                session.Player.QuestList.Add(newQuestStatus);
+            }
+            // TODO: give item rewards
+            session.Player.Levels.GainExp(questStatus.Reward.Exp);
+            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
         }
 
         private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
         {
             int questId = packet.ReadInt();
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
+            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
             if (quest == null)
             {
                 return;
@@ -113,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             for (int i = 0; i < listSize; i++)
             {
                 int questId = packet.ReadInt();
-                if (session.Player.QuestList.Exists(x => x.Basic.QuestID == questId))
+                if (session.Player.QuestList.Exists(x => x.Basic.Id == questId))
                 {
                     continue;
                 }

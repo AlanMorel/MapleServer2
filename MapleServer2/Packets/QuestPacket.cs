@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -28,7 +27,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(questList.Count);
             foreach (QuestStatus quest in questList)
             {
-                pWriter.WriteInt(quest.Basic.QuestID);
+                pWriter.WriteInt(quest.Basic.Id);
 
                 if (quest.Completed)
                 {
@@ -84,15 +83,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendDialogQuest(int objectId, List<QuestMetadata> questList)
+        public static Packet SendDialogQuest(int objectId, List<QuestStatus> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.Dialog);
             pWriter.WriteInt(objectId);
             pWriter.WriteInt(questList.Count);
-            foreach (QuestMetadata quest in questList)
+            foreach (QuestStatus quest in questList)
             {
-                pWriter.WriteInt(quest.Basic.QuestID);
+                pWriter.WriteInt(quest.Basic.Id);
             }
 
             return pWriter;

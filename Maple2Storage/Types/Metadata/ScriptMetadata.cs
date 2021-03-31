@@ -11,200 +11,47 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int Id;
         [XmlElement(Order = 3)]
-        public Dictionary<int, Script> Scripts = new Dictionary<int, Script>();
-        [XmlElement(Order = 4)]
-        public Dictionary<int, Monologue> Monologues = new Dictionary<int, Monologue>();
-        [XmlElement(Order = 5)]
-        public Dictionary<int, Select> Selects = new Dictionary<int, Select>();
+        public List<Option> Options = new List<Option>();
 
         public ScriptMetadata() { }
 
-        public override string ToString()
-        {
-            string text = "";
-            foreach (KeyValuePair<int, Script> kvp in Scripts)
-            {
-                text += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
-            }
-            string text2 = "";
-            foreach (KeyValuePair<int, Monologue> kvp in Monologues)
-            {
-                text2 += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
-            }
-            string text3 = "";
-            foreach (KeyValuePair<int, Select> kvp in Selects)
-            {
-                text3 += ("\r\n" + kvp.Key + " = " + kvp.Value.ToString());
-            }
-
-            return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Scripts: ({text}), Monologues: ({text2}), Selects: ({text3})";
-        }
+        public override string ToString() => $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", Options)})";
     }
 
     [XmlType]
-    public class Script
+    public class Option
     {
         [XmlElement(Order = 1)]
-        public int Id;
+        public ScriptType Type;
         [XmlElement(Order = 2)]
-        public string Feature;
+        public int Id;
         [XmlElement(Order = 3)]
-        public int RandomPick;
+        public List<int> Goto = new List<int>();
         [XmlElement(Order = 4)]
-        public List<int> GoToConditionTalkID = new List<int>();
+        public List<int> GotoFail = new List<int>();
         [XmlElement(Order = 5)]
-        public List<Content> Content = new List<Content>();
+        public int AmountContent;
 
-        public Script() { }
+        public Option() { }
 
-        public Script(int id, string feature, int randomPick, List<int> goToConditionTalkID, List<Content> content)
+        public Option(ScriptType type, int id, List<int> goTo, List<int> gotoFail, int amountContent)
         {
+            Type = type;
             Id = id;
-            Feature = feature;
-            RandomPick = randomPick;
-            GoToConditionTalkID = goToConditionTalkID;
-            Content = content;
+            Goto = goTo;
+            GotoFail = gotoFail;
+            AmountContent = amountContent;
         }
 
         public override string ToString()
         {
-            return $"Id: {Id}, Feature: {Feature}, RandomPick: {RandomPick}, GoToConditionTalkID: ({string.Join(",", GoToConditionTalkID)}), Content: ({string.Join(",", Content)})\r\n";
+            return $"Type: {Type}, Id: {Id}, AmountContent: {AmountContent}, GoTo: ({string.Join(",", Goto)}), GotoFail: ({string.Join(",", GotoFail)})\r\n";
         }
     }
 
-    [XmlType]
-    public class Select
+    public enum ScriptType
     {
-        [XmlElement(Order = 1)]
-        public int Id;
-        [XmlElement(Order = 2)]
-        public List<Content> Content = new List<Content>();
-
-        public Select() { }
-
-        public Select(int id, List<Content> content)
-        {
-            Id = id;
-            Content = content;
-        }
-
-        public override string ToString()
-        {
-            return $"Id: {Id}, Content: ({string.Join(",", Content)})\r\n";
-        }
+        Select = 0,
+        Script = 1
     }
-
-    [XmlType]
-    public class Monologue
-    {
-        [XmlElement(Order = 1)]
-        public int Id;
-        [XmlElement(Order = 2)]
-        public int PopupState;
-        [XmlElement(Order = 3)]
-        public int PopupProp;
-        [XmlElement(Order = 4)]
-        public List<Content> Content = new List<Content>();
-
-        public Monologue() { }
-
-        public Monologue(int id, int popupState, int popupProp, List<Content> content)
-        {
-            Id = id;
-            PopupState = popupState;
-            PopupProp = popupProp;
-            Content = content;
-        }
-
-        public override string ToString()
-        {
-            return $"Id: {Id}, PopupState: {PopupState}, PopupProp: {PopupProp}, Content: ({string.Join(",", Content)})\r\n";
-        }
-    }
-
-    [XmlType]
-    public class Content
-    {
-        [XmlElement(Order = 1)]
-        public string VoiceId;
-        [XmlElement(Order = 2)]
-        public byte FunctionId;
-        [XmlElement(Order = 3)]
-        public string LeftIllust;
-        [XmlElement(Order = 4)]
-        public string SpeakerIllust;
-        [XmlElement(Order = 5)]
-        public int OtherNpcTalk;
-        [XmlElement(Order = 6)]
-        public bool MyTalk;
-        [XmlElement(Order = 7)]
-        public string Illust;
-        [XmlElement(Order = 8)]
-        public List<Distractor> Distractor = new List<Distractor>();
-
-        public Content() { }
-
-        public Content(string voiceId, byte functionId, string leftIllust, string speakerIllust, int otherNpcTalk, bool myTalk, string illust, List<Distractor> distractor)
-        {
-            VoiceId = voiceId;
-            FunctionId = functionId;
-            LeftIllust = leftIllust;
-            SpeakerIllust = speakerIllust;
-            OtherNpcTalk = otherNpcTalk;
-            MyTalk = myTalk;
-            Illust = illust;
-            Distractor = distractor;
-        }
-
-        public override string ToString()
-        {
-            return $"VoiceId: {VoiceId}, FunctionId: {FunctionId}, LeftIllust: {LeftIllust}, SpeakerIllust: {SpeakerIllust}, " +
-            $"OtherNpcTalk: {OtherNpcTalk}, MyTalk: {MyTalk}, Illust: {Illust}, Distractor: ({string.Join(",", Distractor)})\r\n";
-        }
-    }
-
-    [XmlType]
-    public class Distractor
-    {
-        [XmlElement(Order = 1)]
-        public List<int> GoTo = new List<int>();
-        [XmlElement(Order = 2)]
-        public List<int> GoToFail = new List<int>();
-
-        public Distractor() { }
-
-        public Distractor(List<int> goTo, List<int> goToFail)
-        {
-            GoTo = goTo;
-            GoToFail = goToFail;
-        }
-
-        public override string ToString()
-        {
-            return $"GoTo: ({string.Join(",", GoTo)}), GoToFail: ({string.Join(",", GoToFail)})\r\n";
-        }
-    }
-
-    [XmlType]
-    public class Event
-    {
-        [XmlElement(Order = 1)]
-        public int ID;
-        [XmlElement(Order = 2)]
-        public List<Content> Content = new List<Content>();
-
-        public Event() { }
-
-        public Event(int id, List<Content> content)
-        {
-            ID = id;
-            Content = content;
-        }
-
-        public override string ToString()
-        {
-            return $"ID: {ID}, Content: ({string.Join(",", Content)})\r\n";
-        }
-    }
-
 }
