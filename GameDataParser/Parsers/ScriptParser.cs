@@ -39,6 +39,14 @@ namespace GameDataParser.Parsers
                     {
                         continue;
                     }
+                    // Skip locales other than NA and null
+                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+
                     ScriptType type = ScriptType.Script;
                     List<int> gotoList = new List<int>();
                     List<int> gotoFailList = new List<int>();
@@ -105,6 +113,14 @@ namespace GameDataParser.Parsers
                 XmlDocument document = resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
                 {
+                    // Skip locales other than NA and null
+                    string locale = string.IsNullOrEmpty(questNode.Attributes["locale"]?.Value) ? "" : questNode.Attributes["locale"].Value;
+
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+
                     ScriptMetadata metadata = new ScriptMetadata();
                     int questId = int.Parse(questNode.Attributes["id"].Value);
                     foreach (XmlNode script in questNode.ChildNodes)
