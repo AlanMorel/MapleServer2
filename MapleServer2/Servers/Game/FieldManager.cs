@@ -110,7 +110,6 @@ namespace MapleServer2.Servers.Game
                 TriggerState startState = initializer.Invoke(context);
                 return new TriggerScript(context, startState);
             }).ToArray();
-            Triggers = Array.Empty<TriggerScript>();
         }
 
         // Gets a list of packets to update the state of all field objects for client.
