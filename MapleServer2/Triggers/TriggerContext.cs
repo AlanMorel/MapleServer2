@@ -1,11 +1,9 @@
-﻿using System.Numerics;
-using Maple2.Trigger;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger;
 using MapleServer2.Servers.Game;
 using NLog;
 
 namespace MapleServer2.Triggers
-{    
+{
     public partial class TriggerContext : ITriggerContext
     {
         public int NextTick;
@@ -22,7 +20,7 @@ namespace MapleServer2.Triggers
         public void WriteLog(string arg1, int arg2, string arg3, byte arg4, string arg5)
         {
         }
-        
+
         public void DebugString(string message, string feature)
         {
             Logger.Debug(message);

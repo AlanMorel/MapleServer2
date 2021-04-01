@@ -1,4 +1,4 @@
-namespace Maple2Storage.Enums
+﻿namespace Maple2Storage.Enums
 {
     public enum RewardType : byte
     {

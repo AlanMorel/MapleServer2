@@ -13,7 +13,7 @@
         public void CameraSelectPath(int[] pathIds, bool arg2)
         {
         }
-        
+
         public void SetLocalCamera(int cameraId, bool enable)
         {
         }

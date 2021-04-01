@@ -53,11 +53,11 @@
         public void SetDungeonVariable(int varId, bool value)
         {
         }
-        
+
         public void SetTimer(string id, int arg2, bool arg3, bool arg4, int arg5, string arg6)
         {
         }
-        
+
         public void ResetTimer(string id)
         {
         }
@@ -65,11 +65,11 @@
         public void RoomExpire()
         {
         }
-        
+
         public void FieldWarEnd(bool isClear)
         {
         }
-        
+
         public void StartTutorial()
         {
         }
@@ -91,7 +91,7 @@
         {
         }
         #endregion
-        
+
         #region ShadowExpedition
         public void ShadowExpeditionOpenBossGauge(int maxGaugePoint, string title)
         {

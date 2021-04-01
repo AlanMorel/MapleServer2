@@ -9,7 +9,7 @@
         public void SetAgent(int[] arg1, bool arg2)
         {
         }
-        
+
         public void SetCube(int[] ids, bool isVisible, byte randomCount)
         {
         }
@@ -25,7 +25,7 @@
         public void SetLadder(int arg1, bool arg2, bool arg3, byte arg4)
         {
         }
-        
+
         public void SetMesh(int[] arg1, bool arg2, int arg3, int arg4, float arg5)
         {
         }
@@ -37,7 +37,7 @@
         public void SetBreakable(int[] arg1, bool arg2)
         {
         }
-        
+
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)
         {
         }
@@ -49,7 +49,7 @@
         public void SetRope(int arg1, bool arg2, bool arg3, byte arg4)
         {
         }
-        
+
         public void SetSkill(int[] arg1, bool arg2)
         {
         }
@@ -61,7 +61,7 @@
         public void SetVisibleBreakableObject(int[] arg1, bool arg2)
         {
         }
-        
+
         public void CreateItem(int[] arg1, int arg2, int arg3, int arg5)
         {
         }

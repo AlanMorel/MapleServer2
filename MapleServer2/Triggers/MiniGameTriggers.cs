@@ -11,7 +11,7 @@ namespace MapleServer2.Triggers
         public void StartMiniGameRound(int boxId, byte round)
         {
         }
-        
+
         public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)
         {
         }
@@ -19,7 +19,7 @@ namespace MapleServer2.Triggers
         public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
         {
         }
-        
+
         public void MiniGameCameraDirection(int boxId, int cameraId)
         {
         }
@@ -31,15 +31,15 @@ namespace MapleServer2.Triggers
         public void MiniGameGiveReward(int winnerBoxId, string contentType, MiniGame type)
         {
         }
-        
+
         public void SetMiniGameAreaForHack(int boxId)
         {
         }
-        
+
         public void UnSetMiniGameAreaForHack()
         {
         }
-        
+
         public void SetState(byte arg1, string arg2, bool arg3)
         {
         }
@@ -47,12 +47,12 @@ namespace MapleServer2.Triggers
         public void UseState(byte arg1, bool arg2)
         {
         }
-        
+
         #region FieldGame
         public void CreateFieldGame(FieldGame type, bool reset)
         {
         }
-        
+
         public void FieldGameConstant(string key, string value, string feature, Locale locale)
         {
         }
@@ -61,7 +61,7 @@ namespace MapleServer2.Triggers
         {
         }
         #endregion
-        
+
         #region GuildVsGame
         public void GuildVsGameEndGame()
         {
@@ -90,7 +90,7 @@ namespace MapleServer2.Triggers
         public void GuildVsGameScoreByUser(int triggerBoxId, bool score, string desc)
         {
         }
-        
+
         public void SetUserValueFromGuildVsGameScore(int teamId, string key)
         {
         }

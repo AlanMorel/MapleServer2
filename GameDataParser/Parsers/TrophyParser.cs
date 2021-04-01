@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
-using Maple2Storage.Types.Metadata;
 using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {

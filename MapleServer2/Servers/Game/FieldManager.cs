@@ -135,7 +135,8 @@ namespace MapleServer2.Servers.Game
                     RemoveMob(mob);
                 }
             }
-            foreach (TriggerScript trigger in Triggers) {
+            foreach (TriggerScript trigger in Triggers)
+            {
                 trigger.Next();
             }
             return updates;
