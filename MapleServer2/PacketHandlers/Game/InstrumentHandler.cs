@@ -115,7 +115,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             score.PlayCount -= 1;
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score, instrumentCategory.GMId));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score, instrumentCategory.GMId, instrumentCategory.PercussionId));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 

@@ -34,7 +34,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(shop.RestrictSales);
             pWriter.WriteBool(shop.CanRestock);
             pWriter.WriteBool(false);
-            pWriter.WriteBool(false);
+            pWriter.WriteEnum(shop.ShopType);
             pWriter.WriteBool(shop.AllowBuyback);
             pWriter.WriteBool(false);
             pWriter.WriteBool(true);

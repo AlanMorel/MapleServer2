@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
@@ -65,6 +67,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case "ItemRemakeScroll":
                     HandleItemRemakeScroll(session, itemUid);
+                    break;
+                case "OpenGachaBox": // Gacha capsules
+                    HandleOpenGachaBox(session, packet, item);
                     break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
@@ -191,6 +196,79 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
             InventoryController.Consume(session, item.Uid, 1);
+        }
+
+        private static void HandleOpenGachaBox(GameSession session, PacketReader packet, Item capsule)
+        {
+            string amount = packet.ReadUnicodeString();
+            int rollCount = 0;
+
+            GachaMetadata gacha = GachaMetadataStorage.GetMetadata(capsule.Function.Id);
+
+            Random random = new Random();
+            List<Item> items = new List<Item>() { };
+
+            if (amount == "single")
+            {
+                rollCount = 1;
+            }
+            else if (amount == "multi")
+            {
+                rollCount = 10;
+            }
+
+            for (int i = 0; i < rollCount; i++)
+            {
+                GachaContent contents = HandleSmartGender(gacha, session.Player.Gender);
+
+                int itemAmount = random.Next(contents.MinAmount, contents.MaxAmount);
+
+                Item gachaItem = new Item(contents.ItemId)
+                {
+                    Rarity = contents.Rarity,
+                    Amount = itemAmount,
+                };
+                items.Add(gachaItem);
+                InventoryController.Consume(session, capsule.Uid, 1);
+            }
+
+            session.Send(FireWorksPacket.Gacha(items));
+
+            foreach (Item item in items)
+            {
+                InventoryController.Add(session, item, true);
+            }
+        }
+
+        private static GachaContent HandleSmartGender(GachaMetadata gacha, byte playerGender)
+        {
+            Random random = new Random();
+            int index = random.Next(gacha.Contents.Count);
+
+            GachaContent contents = gacha.Contents[index];
+            if (!contents.SmartGender)
+            {
+                return contents;
+            }
+
+            byte itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
+            if (playerGender != itemGender || itemGender != 2)  // if it's not the same gender or unisex, roll again
+            {
+                bool sameGender = false;
+                do
+                {
+                    int indexReroll = random.Next(gacha.Contents.Count);
+
+                    GachaContent rerollContents = gacha.Contents[indexReroll];
+                    byte rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
+
+                    if (rerollContentsGender == playerGender || rerollContentsGender == 2)
+                    {
+                        return rerollContents;
+                    }
+                } while (!sameGender);
+            }
+            return contents;
         }
     }
 }

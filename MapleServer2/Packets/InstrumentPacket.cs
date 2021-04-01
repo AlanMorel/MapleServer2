@@ -53,7 +53,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlayScore(GameSession session, Item score, byte gmId)
+        public static Packet PlayScore(GameSession session, Item score, byte gmId, byte percussionId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayScore);
@@ -63,7 +63,7 @@ namespace MapleServer2.Packets
             pWriter.Write(session.Player.Coord);
             pWriter.WriteInt(session.ClientTick);
             pWriter.WriteInt(gmId);
-            pWriter.WriteInt();
+            pWriter.WriteInt(percussionId);
             pWriter.WriteByte();
 
             if (score.IsCustomScore)
