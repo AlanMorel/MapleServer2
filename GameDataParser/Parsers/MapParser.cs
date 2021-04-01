@@ -42,6 +42,19 @@ namespace GameDataParser.Parsers
                 mapCubes.Add(cubeName);
             }
 
+            // Parse map names
+            Dictionary<int, string> mapNames = new Dictionary<int, string>();
+            foreach (PackFileEntry entry in Resources.XmlFiles.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
+            {
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["name"].Value;
+                    mapNames[id] = name;
+                }
+            }
+
             // Parse every block for each map
             List<MapMetadata> mapsList = new List<MapMetadata>();
             foreach (PackFileEntry entry in Resources.ExportedFiles.Where(x => x.Name.StartsWith("xblock/")))
@@ -88,6 +101,10 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
+                if (mapNames.ContainsKey(metadata.Id))
+                {
+                    metadata.Name = mapNames[metadata.Id];
+                }
                 metadata.Blocks.AddRange(blockList);
                 mapsList.Add(metadata);
             }

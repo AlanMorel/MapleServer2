@@ -22,8 +22,8 @@ namespace MapleServer2.Servers.Game
     // This seems to be done every ~2s rather than on every update.
     public class FieldManager
     {
-        private static TriggerLoader triggerLoader = new TriggerLoader();
-        
+        private static readonly TriggerLoader TriggerLoader = new TriggerLoader();
+
         private int Counter = 10000000;
 
         public readonly int MapId;
@@ -102,16 +102,15 @@ namespace MapleServer2.Servers.Game
                 actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name, actor.Type) { }));
             }
             AddInteractActor(actors);
-            
-            // TODO: Someone needs to update parser to include map name
-            /*string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
-            Triggers = triggerLoader.GetTriggers(mapName).Select(initializer =>
+
+            string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
+            Triggers = TriggerLoader.GetTriggers(mapName).Select(initializer =>
             {
                 TriggerContext context = new TriggerContext(this, Logger);
                 TriggerState startState = initializer.Invoke(context);
                 return new TriggerScript(context, startState);
-            }).ToArray();*/
-            Triggers = new TriggerScript[0];
+            }).ToArray();
+            Triggers = Array.Empty<TriggerScript>();
         }
 
         // Gets a list of packets to update the state of all field objects for client.
