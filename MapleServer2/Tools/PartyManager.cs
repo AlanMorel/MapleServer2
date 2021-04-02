@@ -25,7 +25,7 @@ namespace MapleServer2.Tools
 
         public List<Party> GetPartyFinderList()
         {
-            return PartyList.Cast<Party>().Where(party => party.PartyFinderId != 0).ToList();
+            return PartyList.Values.Where(party => party.PartyFinderId != 0).ToList();
         }
 
         public Party GetPartyById(long id)
