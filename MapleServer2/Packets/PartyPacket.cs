@@ -49,7 +49,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             JobPacket.WriteSkills(pWriter, player);
             pWriter.WriteLong();
-
             return pWriter;
         }
 
@@ -59,7 +58,6 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(PartyPacketMode.Leave);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteByte(self); //0 = Other leaving, 1 = Self leaving
-
             return pWriter;
         }
 
@@ -68,7 +66,6 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.Kick);
             pWriter.WriteLong(player.CharacterId);
-
             return pWriter;
         }
 
@@ -130,7 +127,6 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.SetLeader);
             pWriter.WriteLong(player.CharacterId);
-
             return pWriter;
         }
 
@@ -153,7 +149,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
             pWriter.WriteInt(); // dungeonID
             pWriter.WriteByte(); // dungeon clear count
-
             return pWriter;
         }
 
@@ -166,7 +161,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
             pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
             pWriter.WriteShort();
-
             return pWriter;
         }
 
@@ -223,7 +217,6 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-
         public static Packet StartReadyCheck(Player leader, List<Player> members, int count)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
@@ -240,7 +233,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(1); //unk
             pWriter.WriteLong(leader.CharacterId);
             pWriter.WriteInt(); //unk
-
             return pWriter;
         }
 
@@ -250,7 +242,6 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(PartyPacketMode.ReadyCheck);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteByte(accept);
-
             return pWriter;
         }
 
@@ -258,7 +249,6 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.EndReadyCheck);
-
             return pWriter;
         }
     }

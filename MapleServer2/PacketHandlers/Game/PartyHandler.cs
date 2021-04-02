@@ -193,20 +193,19 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(PartyPacket.Create(party));
                 party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(party.Leader));
                 party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+                return;
             }
-            else
-            {
-                party.BroadcastPacketParty(PartyPacket.Join(session.Player));
-                party.AddMember(session.Player);
-                session.Send(PartyPacket.Create(party));
-                party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
 
-                foreach (Player member in party.Members)
+            party.BroadcastPacketParty(PartyPacket.Join(session.Player));
+            party.AddMember(session.Player);
+            session.Send(PartyPacket.Create(party));
+            party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+
+            foreach (Player member in party.Members)
+            {
+                if (member != session.Player)
                 {
-                    if (member != session.Player)
-                    {
-                        party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(member));
-                    }
+                    party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(member));
                 }
             }
         }

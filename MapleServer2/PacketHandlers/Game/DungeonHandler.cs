@@ -51,7 +51,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(DungeonPacket.UpdateDungeonInfo(3, dungeonId));
             // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));
-
         }
 
         private static void HandleGetHelp(GameSession session, PacketReader packet)
@@ -66,14 +65,14 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(PartyPacket.Create(newParty));
                 session.Send(PartyPacket.PartyHelp(dungeonId));
                 MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(newParty, dungeonId));
-            }
-            else
-            {
-                Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
 
-                party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
-                MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));
+                return;
             }
+
+            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+
+            party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
+            MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));
         }
 
         private static void HandleVeteran(GameSession session, PacketReader packet)
