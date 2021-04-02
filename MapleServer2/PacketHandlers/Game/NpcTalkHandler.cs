@@ -142,9 +142,8 @@ namespace MapleServer2.PacketHandlers.Game
             ScriptMetadata scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
             ResponseType responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
 
-            if (npcTalk.ScriptId != 0
-                && scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).AmountContent <= npcTalk.ContentIndex
-                && scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).Goto.Count == 0)
+            Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+            if (npcTalk.ScriptId != 0 && option.AmountContent <= npcTalk.ContentIndex && option.Goto.Count == 0)
             {
                 session.Send(NpcTalkPacket.Close());
                 return;
@@ -268,13 +267,14 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 else
                 {
-                    if (scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).Goto.Count == 0)
+                    Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+                    if (option.Goto.Count == 0)
                     {
                         return npcTalk.ScriptId;
                     }
                     else
                     {
-                        return scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).Goto[index];
+                        return option.Goto[index];
                     }
                 }
             }
