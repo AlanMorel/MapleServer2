@@ -202,21 +202,24 @@ namespace Maple2Storage.Types.Metadata
         public byte Rank;
         [XmlElement(Order = 3)]
         public int Count;
+        [XmlElement(Order = 4)]
+        public bool JobItem;
 
         public QuestRewardItem()
         {
         }
 
-        public QuestRewardItem(int pItemId, byte pRank, int pCount)
+        public QuestRewardItem(int pItemId, byte pRank, int pCount, bool jobItem)
         {
             Code = pItemId;
             Rank = pRank;
             Count = pCount;
+            JobItem = jobItem;
         }
 
         public override string ToString()
         {
-            return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}";
+            return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}, JobItem: {JobItem}";
         }
     }
 

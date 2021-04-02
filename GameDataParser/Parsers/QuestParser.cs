@@ -136,10 +136,25 @@ namespace GameDataParser.Parsers
 
                             foreach (XmlNode reward in node.ChildNodes)
                             {
+                                if (!reward.Name.Contains("global"))
+                                {
+                                    continue;
+                                }
                                 int itemid = string.IsNullOrEmpty(reward.Attributes["code"]?.Value) ? 0 : int.Parse(reward.Attributes["code"].Value);
+                                if (itemid == 0)
+                                {
+                                    continue;
+                                }
+
                                 byte rank = (byte) (string.IsNullOrEmpty(reward.Attributes["rank"]?.Value) ? 0 : byte.Parse(reward.Attributes["rank"].Value));
                                 int count = string.IsNullOrEmpty(reward.Attributes["count"]?.Value) ? 0 : int.Parse(reward.Attributes["count"].Value);
-                                QuestRewardItem item = new QuestRewardItem(itemid, rank, count);
+                                bool jobItem = false;
+                                if (reward.Name == "globalEssentialJobItem")
+                                {
+                                    jobItem = true;
+                                }
+
+                                QuestRewardItem item = new QuestRewardItem(itemid, rank, count, jobItem);
                                 metadata.RewardItem.Add(item);
                             }
                         }
