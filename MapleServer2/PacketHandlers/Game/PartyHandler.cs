@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -112,7 +109,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 other.Session.Send(PartyPacket.SendInvite(session.Player, party));
             }
-            else if (session.Player.PartyId == 0)
+            else
             {
                 if (other.PartyId != 0)
                 {
@@ -130,7 +127,6 @@ namespace MapleServer2.PacketHandlers.Game
 
                     session.Send(PartyPacket.Notice(other, PartyNotice.RequestToJoin));
                     otherParty.Leader.Session.Send(PartyPacket.JoinRequest(session.Player));
-
                     return;
                 }
                 else
@@ -355,7 +351,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(PartyPacket.DungeonFindParty());
         }
 
-        private static void CancelFindDungeonParty(GameSession session, PacketReader packet)
+        private static void CancelFindDungeonParty(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
             if (party == null)
