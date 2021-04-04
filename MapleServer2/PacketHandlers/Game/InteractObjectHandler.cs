@@ -65,18 +65,21 @@ namespace MapleServer2.PacketHandlers.Game
             if (actor.Type == InteractActorType.Binoculars)
             {
                 List<QuestStatus> questList = session.Player.QuestList;
-                foreach (QuestStatus item in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
+                foreach (QuestStatus quest in questList.Where(x => x.Basic.QuestID >= 72000000 && x.Condition != null))
                 {
-                    QuestCondition condition = item.Condition.FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
+                    QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
                     if (condition == null)
                     {
                         continue;
                     }
 
-                    item.Completed = true;
-                    item.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    session.Send(QuestPacket.CompleteExplorationGoal(item.Basic.QuestID));
-                    session.Send(QuestPacket.CompleteQuest(item.Basic.QuestID));
+                    quest.Completed = true;
+                    quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                    session.Player.Levels.GainExp(quest.Reward.Exp);
+                    session.Player.Wallet.Meso.Modify(quest.Reward.Money);
+                    session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.QuestID));
+                    session.Send(QuestPacket.CompleteQuest(quest.Basic.QuestID));
                     break;
                 }
             }
