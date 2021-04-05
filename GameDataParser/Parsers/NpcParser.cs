@@ -118,7 +118,7 @@ namespace GameDataParser.Parsers
             npcStats.EpInv = new NpcStat<int>(int.Parse(collection["ep_inv"].Value));
             npcStats.AtkSpd = new NpcStat<int>(int.Parse(collection["asp"].Value));
             npcStats.MoveSpd = new NpcStat<int>(int.Parse(collection["msp"].Value));
-            npcStats.Attack = new NpcStat<int>(int.Parse(collection["atp"].Value));
+            npcStats.Accuracy = new NpcStat<int>(int.Parse(collection["atp"].Value));
             npcStats.Evasion = new NpcStat<int>(int.Parse(collection["evp"].Value));
             npcStats.Cap = new NpcStat<int>(int.Parse(collection["cap"].Value));
             npcStats.Cad = new NpcStat<int>(int.Parse(collection["cad"].Value));
