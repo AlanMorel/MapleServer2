@@ -10,6 +10,8 @@ namespace MapleServer2.Types
         public bool Completed { get; set; }
         public long StartTimestamp { get; set; }
         public long CompleteTimestamp { get; set; }
+        public long StartNpcId { get; set; }
+        public long CompleteNpcId { get; set; }
         public List<QuestCondition> Condition { get; set; }
         public QuestReward Reward { get; set; }
         public List<QuestRewardItem> RewardItems { get; set; }
