@@ -4,7 +4,7 @@
     {
         #region BoomBoomOcean
         public void ArcadeBoomBoomOceanSetSkillScore(int id, int score)
-        {    
+        {
         }
 
         public void ArcadeBoomBoomOceanStartGame(byte lifeCount)

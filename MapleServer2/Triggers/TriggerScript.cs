@@ -12,19 +12,21 @@ namespace MapleServer2.Triggers
 
         public TriggerScript(TriggerContext context, TriggerState start)
         {
-            this.Context = context;
-            this.NextState = start;
+            Context = context;
+            NextState = start;
         }
 
-        public void Next() {
+        public void Next()
+        {
             if (Environment.TickCount < Context.NextTick)
             {
                 return;
             }
-            
+
             Context.NextTick = Environment.TickCount + 200; // Wait 200ms between execution
 
-            if (NextState != null) {
+            if (NextState != null)
+            {
                 State?.OnExit();
                 State = NextState;
                 State.OnEnter();

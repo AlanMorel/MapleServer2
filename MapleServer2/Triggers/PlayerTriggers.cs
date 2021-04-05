@@ -8,7 +8,7 @@ namespace MapleServer2.Triggers
         public void AddEffectNif(int spawnPointId, string nifPath, bool isOutline, float scale, int rotateZ)
         {
         }
-        
+
         public void RemoveEffectNif(int spawnPointId)
         {
         }
@@ -20,7 +20,7 @@ namespace MapleServer2.Triggers
         public void FaceEmotion(int spawnPointId, string emotionName)
         {
         }
-        
+
         public void GiveExp(byte arg1, byte arg2)
         {
         }
@@ -68,7 +68,7 @@ namespace MapleServer2.Triggers
         public void RandomAdditionalEffect(string target, int triggerBoxId, int spawnPointId, byte targetCount, int tick, int waitTick, string targetEffect, int additionalEffectId)
         {
         }
-        
+
         public void SetPcEmotionLoop(string arg1, float arg2, bool arg3)
         {
         }
@@ -80,7 +80,7 @@ namespace MapleServer2.Triggers
         public void SetPcRotation(Vector3 rotation)
         {
         }
-        
+
         public void SetAchievement(int arg1, string arg2, string arg3)
         {
         }
@@ -92,15 +92,15 @@ namespace MapleServer2.Triggers
         public void SetOnetimeEffect(int id, bool enable, string path)
         {
         }
-        
+
         public void SetTimeScale(bool enable, float startScale, float endScale, float duration, byte interpolator)
         {
         }
-        
+
         public void AddBuff(int[] arg1, int arg2, byte arg3, bool arg4, bool arg5, string feature)
         {
         }
-        
+
         public void RemoveBuff(int arg1, int arg2, bool arg3)
         {
         }
@@ -108,7 +108,7 @@ namespace MapleServer2.Triggers
         public void AddUserValue(string key, int value)
         {
         }
-        
+
         public void SetUserValue(int triggerId, string key, int value)
         {
         }

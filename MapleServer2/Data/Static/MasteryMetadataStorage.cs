@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
-using ProtoBuf;
 using MapleServer2.Enums;
+using ProtoBuf;
 
 namespace MapleServer2.Data.Static
 {
