@@ -99,9 +99,12 @@ namespace MapleServer2.PacketHandlers.Game
                 ScriptMetadata scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npc.Value.Id);
                 int firstScript = scriptMetadata.Options.First(x => x.Type == ScriptType.Script).Id;
                 session.Player.NpcTalk.ScriptId = firstScript;
-                bool hasNextScript = scriptMetadata.Options.First(x => x.Id == firstScript).Goto.Count != 0;
+
+                Option option = scriptMetadata.Options.First(x => x.Id == firstScript);
+
+                bool hasNextScript = option.Goto.Count != 0;
                 DialogType dialogType = DialogType.CloseNext1;
-                if (scriptMetadata.Options.First(x => x.Id == firstScript).Goto.Count == 0)
+                if (option.Goto.Count == 0)
                 {
                     session.Player.NpcTalk.ContentIndex++;
                     dialogType = DialogType.CloseNext1;
@@ -111,7 +114,8 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     dialogType = DialogType.Close1;
                 }
-                if (scriptMetadata.Options.First(x => x.Id == firstScript).AmountContent > 1)
+
+                if (option.AmountContent > 1)
                 {
                     dialogType = DialogType.CloseNext;
                 }
