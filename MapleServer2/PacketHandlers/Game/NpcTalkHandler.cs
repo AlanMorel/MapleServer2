@@ -224,11 +224,12 @@ namespace MapleServer2.PacketHandlers.Game
         private static DialogType GetDialogType(ScriptMetadata scriptMetadata, NpcTalk npcTalk, bool hasNextScript)
         {
             DialogType dialogType = DialogType.CloseNext1;
-            if (scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).Goto.Count == 0)
+            Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+            if (option.Goto.Count == 0)
             {
                 dialogType = DialogType.CloseNext1;
             }
-            if (scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).AmountContent > 1)
+            if (option.AmountContent > 1)
             {
                 dialogType = DialogType.CloseNext;
             }
@@ -276,13 +277,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
+                Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
                 if (npcTalk.ScriptId == 0)
                 {
-                    return scriptMetadata.Options.First(x => x.Id > npcTalk.ScriptId).Id;
+                    return option.Id;
                 }
                 else
                 {
-                    Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
                     if (option.Goto.Count == 0)
                     {
                         return npcTalk.ScriptId;
