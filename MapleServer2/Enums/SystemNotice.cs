@@ -124,5 +124,7 @@
         CannotFishHere = 0xC00,
         PremiumExtended = 0xCE7,
         PremiumActivated = 0xCE8,
+        CharacterNotFound = 0xCFA,
+        BuddyBadgeMailedToUser = 0xD00,
     }
 }

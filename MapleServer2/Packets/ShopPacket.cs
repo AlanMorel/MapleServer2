@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -37,7 +36,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(shop.ShopType);
             pWriter.WriteBool(shop.AllowBuyback);
             pWriter.WriteBool(false);
-            pWriter.WriteBool(true);
+            pWriter.WriteBool(false);
             pWriter.WriteBool(false);
             pWriter.WriteMapleString(shop.Name);
 
@@ -96,48 +95,46 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadProducts(List<ShopItem> products)
+        public static Packet LoadProducts(ShopItem product)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.LoadProducts);
-            pWriter.WriteByte((byte) products.Count);
-            foreach (ShopItem product in products)
+            pWriter.WriteByte(1);
+            pWriter.WriteInt(product.UniqueId);
+            pWriter.WriteInt(product.ItemId);
+            pWriter.WriteEnum(product.TokenType);
+            pWriter.WriteInt(product.RequiredItemId);
+            pWriter.WriteInt();
+            pWriter.WriteInt(product.Price);
+            pWriter.WriteInt(product.SalePrice);
+            pWriter.WriteByte(product.ItemRank);
+            pWriter.WriteUInt(0xEFDA5D2D);
+            pWriter.WriteInt(product.StockCount);
+            pWriter.WriteInt(product.StockPurchased);
+            pWriter.WriteInt(product.GuildTrophy);
+            pWriter.WriteMapleString(product.Category);
+            pWriter.WriteInt(product.RequiredAchievementId);
+            pWriter.WriteInt(product.RequiredAchievementGrade);
+            pWriter.WriteByte(product.RequiredChampionshipGrade);
+            pWriter.WriteShort(product.RequiredChampionshipJoinCount);
+            pWriter.WriteByte(product.RequiredGuildMerchantType);
+            pWriter.WriteShort(product.RequiredGuildMerchantLevel);
+            pWriter.WriteBool(false);
+            pWriter.WriteShort(product.Quantity);
+            pWriter.WriteByte(1);
+            pWriter.WriteEnum(product.Flag);
+            pWriter.WriteMapleString(product.TokenName);
+            pWriter.WriteShort(product.RequiredQuestAlliance);
+            pWriter.WriteInt(product.RequiredFameGrade);
+            pWriter.WriteBool(product.AutoPreviewEquip);
+            pWriter.WriteByte();
+            pWriter.WriteItem(new Item(product.ItemId)
             {
-                pWriter.WriteInt(product.UniqueId);
-                pWriter.WriteInt(product.ItemId);
-                pWriter.WriteEnum(product.TokenType);
-                pWriter.WriteInt(product.RequiredItemId);
-                pWriter.WriteInt();
-                pWriter.WriteInt(product.Price);
-                pWriter.WriteInt(product.SalePrice);
-                pWriter.WriteByte(product.ItemRank);
-                pWriter.WriteUInt(0xEFDA5D2D);
-                pWriter.WriteInt(product.StockCount);
-                pWriter.WriteInt(product.StockPurchased);
-                pWriter.WriteInt(product.GuildTrophy);
-                pWriter.WriteMapleString(product.Category);
-                pWriter.WriteInt(product.RequiredAchievementId);
-                pWriter.WriteInt(product.RequiredAchievementGrade);
-                pWriter.WriteByte(product.RequiredChampionshipGrade);
-                pWriter.WriteShort(product.RequiredChampionshipJoinCount);
-                pWriter.WriteByte(product.RequiredGuildMerchantType);
-                pWriter.WriteShort(product.RequiredGuildMerchantLevel);
-                pWriter.WriteBool(false);
-                pWriter.WriteShort(product.Quantity);
-                pWriter.WriteByte(1);
-                pWriter.WriteEnum(product.Flag);
-                pWriter.WriteByte();
-                pWriter.WriteShort(product.RequiredQuestAlliance);
-                pWriter.WriteInt(product.RequiredFameGrade);
-                pWriter.WriteShort();
-                pWriter.WriteByte();
-                pWriter.WriteItem(new Item(product.ItemId)
-                {
-                    Amount = product.Quantity,
-                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Owner = null
-                });
-            }
+                Amount = product.Quantity,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Owner = null
+            });
+
 
             return pWriter;
         }

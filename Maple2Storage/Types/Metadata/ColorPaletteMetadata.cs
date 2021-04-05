@@ -11,11 +11,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int PaletteId;
         [XmlElement(Order = 2)]
-        public List<EquipColor> DefaultColors;
+        public List<MixedColor> DefaultColors;
 
         public ColorPaletteMetadata()
         {
-            DefaultColors = new List<EquipColor>();
+            DefaultColors = new List<MixedColor>();
         }
 
         public override string ToString() =>

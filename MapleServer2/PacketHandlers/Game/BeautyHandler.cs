@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -133,7 +134,6 @@ namespace MapleServer2.PacketHandlers.Game
             bool useVoucher = packet.ReadBool();
             int beautyItemId = packet.ReadInt();
             EquipColor equipColor = packet.Read<EquipColor>();
-            int colorIndex = packet.ReadInt();
 
             Item beautyItem = new Item(beautyItemId) { Color = equipColor, IsTemplate = false };
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItem.Id);
@@ -162,9 +162,17 @@ namespace MapleServer2.PacketHandlers.Game
             bool useVoucher = packet.ReadBool();
             long beautyItemUid = packet.ReadLong();
             EquipColor equipColor = packet.Read<EquipColor>();
-            int colorIndex = packet.ReadInt();
 
-            Item beautyItem = session.Player.Equips.FirstOrDefault(x => x.Value.Uid == beautyItemUid).Value;
+            Item beautyItem = session.Player.GetEquippedItem(beautyItemUid);
+
+            if (beautyItem.ItemSlot == ItemSlot.CP)
+            {
+                HatData hatData = packet.Read<HatData>();
+                beautyItem.HatD = hatData;
+                session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, beautyItem));
+                return;
+            }
+
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItem.Id);
 
             if (!HandleShopPay(session, beautyShop, useVoucher))
@@ -227,13 +235,13 @@ namespace MapleServer2.PacketHandlers.Game
             ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(2); // pick from palette 2. Seems like it's the correct palette for basic hair colors
 
             int indexColor = random.Next(palette.DefaultColors.Count);
-            EquipColor color = palette.DefaultColors[indexColor];
+            MixedColor color = palette.DefaultColors[indexColor];
 
             Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
 
             Item newHair = new Item(chosenHair.ItemId)
             {
-                Color = color,
+                Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
                 HairD = new HairData((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
                 IsTemplate = false
             };
@@ -370,12 +378,7 @@ namespace MapleServer2.PacketHandlers.Game
             long[] itemUid = new long[itemCount];
             int[] itemId = new int[itemCount];
             EquipColor[] equipColor = new EquipColor[itemCount];
-            int[] paletteId = new int[itemCount];
-            CoordF[] hatXPosition = new CoordF[itemCount];
-            CoordF[] hatYPosition = new CoordF[itemCount];
-            CoordF[] hatZPosition = new CoordF[itemCount];
-            CoordF[] hatRotation = new CoordF[itemCount];
-            int[] hatScale = new int[itemCount];
+            HatData[] hatData = new HatData[itemCount];
 
             for (int i = 0; i < itemCount; i++)
             {
@@ -387,7 +390,6 @@ namespace MapleServer2.PacketHandlers.Game
                 itemUid[i] = packet.ReadLong();
                 itemId[i] = packet.ReadInt();
                 equipColor[i] = packet.Read<EquipColor>();
-                paletteId[i] = packet.ReadInt();
                 Item item = session.Player.GetEquippedItem(itemUid[i]);
                 if (item == null)
                 {
@@ -396,11 +398,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 if (item.ItemSlot == ItemSlot.CP)
                 {
-                    hatXPosition[i] = packet.Read<CoordF>(); // TODO: implement correct hat positioning
-                    hatYPosition[i] = packet.Read<CoordF>();
-                    hatZPosition[i] = packet.Read<CoordF>();
-                    hatRotation[i] = packet.Read<CoordF>();
-                    hatScale[i] = packet.ReadInt();
+                    hatData[i] = packet.Read<HatData>();
                 }
 
                 if (!HandleShopPay(session, beautyShop, useVoucher[i]))

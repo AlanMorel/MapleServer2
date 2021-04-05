@@ -49,8 +49,8 @@ namespace Maple2Storage.Types
     }
 
     [XmlType]
-    [StructLayout(LayoutKind.Sequential, Size = 16)]
-    public struct EquipColor
+    [StructLayout(LayoutKind.Sequential, Size = 12)]
+    public struct MixedColor
     {
         [XmlElement(Order = 1)]
         public Color Primary { get; private set; }
@@ -58,32 +58,63 @@ namespace Maple2Storage.Types
         public Color Secondary { get; private set; }
         [XmlElement(Order = 3)]
         public Color Tertiary { get; private set; }
-        [XmlElement(Order = 4)]
-        public int Index { get; private set; }
 
-        public static EquipColor Argb(Color color, int index = -1)
+        public static MixedColor Argb(Color color)
         {
-            return new EquipColor
+            return new MixedColor
             {
                 Primary = color,
                 Secondary = color,
-                Tertiary = color,
-                Index = index
+                Tertiary = color
             };
         }
 
-        public static EquipColor Custom(Color primary, Color secondary, Color tertiary, int index = -1)
+        public static MixedColor Custom(Color primary, Color secondary, Color tertiary)
         {
-            return new EquipColor
+            return new MixedColor
             {
                 Primary = primary,
                 Secondary = secondary,
                 Tertiary = tertiary,
-                Index = index
             };
         }
 
         public override string ToString() =>
-            $"Primary:{Primary}|Secondary:{Secondary}|Tertiary:{Tertiary}|Index:{Index}";
+            $"Primary:{Primary}, Secondary:{Secondary}, Tertiary:{Tertiary}";
+    }
+
+    [XmlType]
+    [StructLayout(LayoutKind.Sequential, Size = 20)]
+    public struct EquipColor
+    {
+        [XmlElement(Order = 1)]
+        public MixedColor Color { get; private set; }
+        [XmlElement(Order = 2)]
+        public int Index { get; private set; }
+        [XmlElement(Order = 2)]
+        public int Palette { get; private set; }
+
+        public static EquipColor Argb(MixedColor color, int index, int palette)
+        {
+            return new EquipColor
+            {
+                Color = color,
+                Index = index,
+                Palette = palette
+            };
+        }
+
+        public static EquipColor Custom(MixedColor color, int index, int palette)
+        {
+            return new EquipColor
+            {
+                Color = color,
+                Index = index,
+                Palette = palette
+            };
+        }
+
+        public override string ToString() =>
+            $"Color:{Color}, Index:{Index}, Palette:{Palette}";
     }
 }

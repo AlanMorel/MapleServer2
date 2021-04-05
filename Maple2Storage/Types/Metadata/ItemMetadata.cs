@@ -238,6 +238,8 @@ namespace Maple2Storage.Types.Metadata
         public short Count;
         [XmlElement(Order = 8)]
         public byte TotalUser;
+        [XmlElement(Order = 9)]
+        public byte Rarity;
 
         public ItemFunction() { }
 
@@ -248,7 +250,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() => $"Function(Name: {Name}, Id: {Id}, " +
-            $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}";
+            $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}, Rarity:{Rarity}";
 
         protected bool Equals(ItemFunction other)
         {
@@ -259,7 +261,8 @@ namespace Maple2Storage.Types.Metadata
                 Capacity == other.Capacity &&
                 TargetLevel == other.TargetLevel &&
                 Count == other.Count &&
-                TotalUser == other.TotalUser;
+                TotalUser == other.TotalUser &&
+                Rarity == other.Rarity;
         }
 
         public override bool Equals(object obj)

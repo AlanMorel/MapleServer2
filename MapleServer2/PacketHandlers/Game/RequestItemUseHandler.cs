@@ -7,6 +7,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -70,6 +71,12 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case "OpenGachaBox": // Gacha capsules
                     HandleOpenGachaBox(session, packet, item);
+                    break;
+                case "OpenCoupleEffectBox": // Buddy badges
+                    HandleOpenCoupleEffectBox(session, packet, item);
+                    break;
+                case "PetExtraction": // Pet skin scroll
+                    HandlePetExtraction(session, packet, item);
                     break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
@@ -227,6 +234,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     Rarity = contents.Rarity,
                     Amount = itemAmount,
+                    GachaDismantleId = gacha.GachaId
                 };
                 items.Add(gachaItem);
                 InventoryController.Consume(session, capsule.Uid, 1);
@@ -269,6 +277,60 @@ namespace MapleServer2.PacketHandlers.Game
                 } while (!sameGender);
             }
             return contents;
+        }
+
+        public static void HandleOpenCoupleEffectBox(GameSession session, PacketReader packet, Item item)
+        {
+            string targetUser = packet.ReadUnicodeString();
+
+            Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
+            if (otherPlayer == null)
+            {
+                session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, NoticeType.Popup));
+                return;
+            }
+
+            Item badge = new Item(item.Function.Id)
+            {
+                Rarity = item.Function.Rarity,
+                PairedCharacterId = otherPlayer.CharacterId,
+                PairedCharacterName = otherPlayer.Name
+            };
+
+            Item otherUserBadge = new Item(item.Function.Id)
+            {
+                Rarity = item.Function.Rarity,
+                PairedCharacterId = session.Player.CharacterId,
+                PairedCharacterName = session.Player.Name
+            };
+
+            //InventoryController.Consume(session, item.Uid, 1);
+            InventoryController.Add(session, badge, true);
+            session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, otherPlayer.Name, NoticeType.ChatAndFastText));
+
+            //otherPlayer.Session.Send(MailPacket.Notify(otherPlayer.Session));
+            // TODO: Mail the badge to the other user
+        }
+
+        public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
+        {
+            long petUid = long.Parse(packet.ReadUnicodeString());
+            if (!session.Player.Inventory.Items.ContainsKey(petUid))
+            {
+                return;
+            }
+
+            Item pet = session.Player.Inventory.Items[petUid];
+
+            Item badge = new Item(70100000)
+            {
+                PetSkinBadgeId = pet.Id,
+                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            };
+
+            InventoryController.Consume(session, item.Uid, 1);
+            InventoryController.Add(session, badge, true);
+            session.Send(PetSkinPacket.Extract(petUid, badge));
         }
     }
 }

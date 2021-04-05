@@ -236,6 +236,8 @@
         ITEM_ENCHANT_TRANSFORM = 0x0106,
         PLAYER_HOST = 0x0107,
         GM_COMMAND = 0x0108,
+        ITEM_EXTRACTION = 0x109,
+        PET_SKIN = 0x10A,
         DUNGEON_HELPER = 0x010B,
         SKILL_BOOK_TREE = 0x010E,
         BUDDY_EMOTE = 0x10F,

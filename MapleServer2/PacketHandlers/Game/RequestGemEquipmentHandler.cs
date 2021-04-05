@@ -17,7 +17,8 @@ namespace MapleServer2.PacketHandlers.Game
         private enum RequestGemEquipmentMode : byte
         {
             EquipItem = 0x00,
-            UnequipItem = 0x01
+            UnequipItem = 0x01,
+            Transprency = 0x03
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -31,6 +32,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestGemEquipmentMode.UnequipItem:
                     HandleUnequipItem(session, packet);
+                    break;
+                case RequestGemEquipmentMode.Transprency:
+                    HandleTransparency(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -88,5 +92,18 @@ namespace MapleServer2.PacketHandlers.Game
                 session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, (byte) item.GemSlot));
             }
         }
+
+        private static void HandleTransparency(GameSession session, PacketReader packet)
+        {
+            byte slot = packet.ReadByte();
+            byte[] transparencyBools = packet.Read(10);
+
+            Item item = session.Player.Badges[slot];
+
+            item.TransparencyBadgeBools = transparencyBools;
+
+            session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item));
+        }
+
     }
 }

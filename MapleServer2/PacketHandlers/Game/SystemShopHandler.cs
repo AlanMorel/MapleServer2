@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -43,17 +44,24 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int itemId = packet.ReadInt();
 
-            List<Item> playerInventory = new(session.Player.Inventory.Items.Values);
-
-            Item item = playerInventory.FirstOrDefault(x => x.Id == itemId);
+            Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
             if (item == null)
             {
                 return;
             }
 
             ShopMetadata shop = ShopMetadataStorage.GetShop(item.ShopID);
+            if (shop == null)
+            {
+                Console.WriteLine($"Unknown shop ID: {item.ShopID}");
+                return;
+            }
+
             session.Send(ShopPacket.Open(shop));
-            session.Send(ShopPacket.LoadProducts(shop.Items));
+            foreach (ShopItem shopItem in shop.Items)
+            {
+                session.Send(ShopPacket.LoadProducts(shopItem));
+            }
             session.Send(ShopPacket.Reload());
             session.Send(SystemShopPacket.Open());
         }
