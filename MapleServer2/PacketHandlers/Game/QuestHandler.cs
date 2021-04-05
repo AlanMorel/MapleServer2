@@ -56,13 +56,14 @@ namespace MapleServer2.PacketHandlers.Game
             int questId = packet.ReadInt();
             int objectId = packet.ReadInt();
 
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
-            if (quest == null)
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
             {
                 return;
             }
 
-            quest.Started = true;
+            questStatus.Started = true;
+            questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             session.Send(QuestPacket.AcceptQuest(questId));
         }
 
@@ -71,36 +72,67 @@ namespace MapleServer2.PacketHandlers.Game
             int questId = packet.ReadInt();
             int objectId = packet.ReadInt();
 
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
-            if (quest == null)
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
             {
                 return;
             }
 
-            quest.Completed = true;
+            questStatus.Completed = true;
+            questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             session.Send(QuestPacket.CompleteQuest(questId));
+            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+            {
+                QuestMetadata quest = kvp.Value;
+                QuestStatus newQuestStatus = new QuestStatus()
+                {
+                    Basic = quest.Basic,
+                    StartNpcId = quest.StartNpc,
+                    CompleteNpcId = quest.CompleteNpc,
+                    Condition = quest.Condition,
+                    Reward = quest.Reward,
+                    RewardItems = quest.RewardItem
+                };
 
-            session.Player.Levels.GainExp(quest.Reward.Exp);
-            session.Player.Wallet.Meso.Modify(quest.Reward.Money);
+                session.Player.QuestList.Add(newQuestStatus);
+            }
+            foreach (QuestRewardItem reward in questStatus.RewardItems)
+            {
+                Item newItem = new Item(reward.Code)
+                {
+                    Amount = reward.Count,
+                    Rarity = reward.Rank
+                };
+                if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
+                {
+                    InventoryController.Add(session, newItem, true);
+                }
+            }
+            session.Player.Levels.GainExp(questStatus.Reward.Exp);
+            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
         }
 
         private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
         {
             int questId = packet.ReadInt();
-            QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.QuestID == questId);
-            if (quest == null)
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
             {
                 return;
             }
 
-            foreach (QuestRewardItem rewardItem in quest.RewardItems)
+            foreach (QuestRewardItem rewardItem in questStatus.RewardItems)
             {
                 Item item = new Item(rewardItem.Code)
                 {
-                    Amount = rewardItem.Count
+                    Amount = rewardItem.Count,
+                    Rarity = rewardItem.Rank
                 };
                 InventoryController.Add(session, item, true);
             }
+            questStatus.Completed = true;
+            questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             session.Send(QuestPacket.CompleteQuest(questId));
         }
@@ -113,7 +145,7 @@ namespace MapleServer2.PacketHandlers.Game
             for (int i = 0; i < listSize; i++)
             {
                 int questId = packet.ReadInt();
-                if (session.Player.QuestList.Exists(x => x.Basic.QuestID == questId))
+                if (session.Player.QuestList.Exists(x => x.Basic.Id == questId))
                 {
                     continue;
                 }

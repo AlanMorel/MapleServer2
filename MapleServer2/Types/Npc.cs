@@ -32,27 +32,7 @@ namespace MapleServer2.Types
 
         public bool IsBeauty()
         {
-            if (IsHair())
-            {
-                return true;
-            }
-            else if (IsMakeUp())
-            {
-                return true;
-            }
-            else if (IsSkin())
-            {
-                return true;
-            }
-            else if (IsDye())
-            {
-                return true;
-            }
-            else if (IsMirror())
-            {
-                return true;
-            }
-            return false;
+            return IsHair() || IsMakeUp() || IsSkin() || IsDye() || IsMirror();
         }
 
         public bool IsMakeUp()
