@@ -141,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Game
             ScriptMetadata scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
             ResponseType responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
 
-            if (!npcTalk.IsQuest || npcTalk.ScriptId == 0)
+            if (npcTalk.ScriptId != 0)
             {
                 Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
                 if (option.AmountContent <= npcTalk.ContentIndex && option.Goto.Count == 0)
@@ -153,20 +153,25 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Find next script id
             int nextScript = GetNextScript(scriptMetadata, npcTalk, index);
-
-            bool hasNextScript = scriptMetadata.Options.First(x => x.Id == nextScript).Goto.Count != 0;
-            npcTalk.ContentIndex++;
-
-            if (scriptMetadata.Options.First(x => x.Id == nextScript).AmountContent > npcTalk.ContentIndex)
+            if (scriptMetadata.Options.FirstOrDefault(x => x.Id == npcTalk.ScriptId)?.AmountContent > npcTalk.ContentIndex)
             {
-                hasNextScript = true;
+                nextScript = npcTalk.ScriptId;
+            }
+
+            if (npcTalk.ScriptId != nextScript)
+            {
+                npcTalk.ContentIndex = 1;
             }
             else
             {
-                if (npcTalk.ScriptId != nextScript)
-                {
-                    npcTalk.ContentIndex = 1;
-                }
+                npcTalk.ContentIndex++;
+            }
+
+            Option option1 = scriptMetadata.Options.First(x => x.Id == nextScript);
+            bool hasNextScript = option1.Goto.Count != 0;
+            if (option1.AmountContent > npcTalk.ContentIndex)
+            {
+                hasNextScript = true;
             }
             npcTalk.ScriptId = nextScript;
 
