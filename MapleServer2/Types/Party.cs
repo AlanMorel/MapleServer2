@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MaplePacketLib2.Tools;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -16,38 +17,46 @@ namespace MapleServer2.Types
         public string Name { get; set; }
         public bool Approval { get; set; } //Require approval before someone can join
         public Player Leader { get; set; }
-        public int MaxMembers { get; set; }
-        public int ReadyChecks { get; set; }
+        public int RecruitMemberCount { get; set; }
+        public List<Player> ReadyCheck { get; set; }
         public int RemainingMembers { get; set; } //# of members left to reply to ready check
         public int Dungeon { get; set; }
 
         //List of players and their session.
         public List<Player> Members { get; }
 
-        public Party(int pMaxMembers, List<Player> pPlayers)
+        public Party(Player partyLeader)
         {
             Id = GuidGenerator.Int();
-            MaxMembers = pMaxMembers;
-            Leader = pPlayers.First();
-            Members = pPlayers;
-            ReadyChecks = 0;
+            Leader = partyLeader;
+            ReadyCheck = new List<Player>() { };
+            Members = new List<Player>() { };
             PartyFinderId = 0;
             Approval = true;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
 
-            Members.ForEach(member => member.PartyId = Id);
+            AddMember(partyLeader);
         }
 
-        public Party(int pMaxMembers, List<Player> pPlayers, string pName, bool pApproval) : this(pMaxMembers, pPlayers)
+        public Party(string pName, bool pApproval, Player player, int recruitMemberCount)
         {
+            Id = GuidGenerator.Int();
             Name = pName;
+            ReadyCheck = new List<Player>() { };
+            Members = new List<Player>() { };
             Approval = pApproval;
             PartyFinderId = GuidGenerator.Long();
+            Leader = player;
+            RecruitMemberCount = recruitMemberCount;
+            CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+
+            AddMember(player);
         }
 
         public void AddMember(Player player)
         {
             Members.Add(player);
+            player.PartyId = Id;
         }
 
         public void RemoveMember(Player player)
@@ -55,7 +64,7 @@ namespace MapleServer2.Types
             Members.Remove(player);
             player.PartyId = 0;
 
-            if (Leader.CharacterId == player.CharacterId)
+            if (Leader.CharacterId == player.CharacterId && Members.Count > 2)
             {
                 FindNewLeader();
             }
@@ -74,7 +83,7 @@ namespace MapleServer2.Types
 
         public void CheckDisband()
         {
-            if (Members.Count >= 2 || PartyFinderId != 0)
+            if (Members.Count >= 2)
             {
                 return;
             }
@@ -115,6 +124,31 @@ namespace MapleServer2.Types
         private List<GameSession> GetSessions()
         {
             return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
+        }
+
+        public Task StartReadyCheck()
+        {
+            ReadyCheck = new List<Player>() { Leader };
+            BroadcastPacketParty(PartyPacket.StartReadyCheck(Leader, Members, ReadyCheck.Count));
+            return Task.Run(async () =>
+            {
+                await Task.Delay(20000);
+                if (Members.Count == ReadyCheck.Count || ReadyCheck.Count == 0) // Cancel this. Ready check was successfully responded by each player
+                {
+                    return;
+                }
+
+                foreach (Player member in Members)
+                {
+                    if (!ReadyCheck.Contains(member))
+                    {
+                        BroadcastPacketParty(PartyPacket.ReadyCheck(member, 0)); // Force player who did not respond to respond with 'not ready'
+                    }
+                }
+
+                BroadcastPacketParty(PartyPacket.EndReadyCheck());
+                ReadyCheck.Clear();
+            });
         }
     }
 }

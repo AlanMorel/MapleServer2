@@ -106,8 +106,8 @@ namespace MapleServer2.Packets
             pWriter.WriteShort();
             pWriter.WriteEnum(player.Job);
             pWriter.WriteEnum(player.JobCode);
-            pWriter.WriteInt(); // CurHp?
-            pWriter.WriteInt(); // MaxHp?
+            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
+            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
             pWriter.WriteShort();
             pWriter.WriteLong();
             pWriter.WriteLong(); // Some timestamp
