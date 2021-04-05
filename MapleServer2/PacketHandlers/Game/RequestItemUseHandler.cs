@@ -306,7 +306,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             //InventoryController.Consume(session, item.Uid, 1);
             InventoryController.Add(session, badge, true);
-            session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, otherPlayer.Name, NoticeType.ChatAndFastText));
+            //session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, otherPlayer.Name, NoticeType.ChatAndFastText));
 
             //otherPlayer.Session.Send(MailPacket.Notify(otherPlayer.Session));
             // TODO: Mail the badge to the other user

@@ -123,7 +123,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort(product.Quantity);
             pWriter.WriteByte(1);
             pWriter.WriteEnum(product.Flag);
-            pWriter.WriteMapleString(product.TokenName);
+            pWriter.WriteMapleString(product.TemplateName);
             pWriter.WriteShort(product.RequiredQuestAlliance);
             pWriter.WriteInt(product.RequiredFameGrade);
             pWriter.WriteBool(product.AutoPreviewEquip);

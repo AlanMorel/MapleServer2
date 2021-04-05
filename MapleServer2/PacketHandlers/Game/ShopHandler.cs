@@ -175,6 +175,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Send(ShopPacket.LoadProducts(shopItem));
             }
+            session.Send(ShopPacket.Reload());
         }
     }
 }

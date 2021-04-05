@@ -56,7 +56,6 @@ namespace MapleServer2.PacketHandlers.Game
             sourceItem.RemainingGlamorForges -= 1;
 
             session.Send(ItemExtractionPacket.Extract(sourceItem));
-
         }
     }
 }

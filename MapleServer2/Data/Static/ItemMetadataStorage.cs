@@ -179,12 +179,10 @@ namespace MapleServer2.Data.Static
 
                 int index = random.Next(palette.DefaultColors.Count);
 
-                return EquipColor.Argb(palette.DefaultColors[index], colorIndex, colorPalette); 
+                return EquipColor.Argb(palette.DefaultColors[index], colorIndex, colorPalette);
             }
-            else
-            {
-                return EquipColor.Argb(palette.DefaultColors[colorIndex], colorIndex, colorPalette);
-            }
+
+            return EquipColor.Argb(palette.DefaultColors[colorIndex], colorIndex, colorPalette);
         }
 
         public static List<ItemBreakReward> GetBreakRewards(int itemId)

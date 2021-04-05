@@ -14,9 +14,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 4)]
         public int ResultItemId;
 
-        public ItemExtractionMetadata()
-        {
-        }
+        public ItemExtractionMetadata() { }
 
         public ItemExtractionMetadata(int sourceItemId, byte tryCount, byte scrollCount, int resultItemId)
         {
