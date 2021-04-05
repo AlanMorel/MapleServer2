@@ -36,7 +36,7 @@ namespace MapleServer2.Data.Static
             foreach (KeyValuePair<int, QuestMetadata> item in map)
             {
                 // Only getting navigator quests to not annoy everyone with quests popping up every restart
-                if (level >= item.Value.Require.Level && item.Value.Require.RequiredQuests.Count == 0 && item.Key > 70000000 && item.Key < 70100000)
+                if (level >= item.Value.Require.Level && item.Value.Require.RequiredQuests.Count == 0)
                 {
                     list.Add(item.Value);
                 }
