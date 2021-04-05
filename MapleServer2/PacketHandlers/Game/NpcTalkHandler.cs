@@ -142,11 +142,14 @@ namespace MapleServer2.PacketHandlers.Game
             ScriptMetadata scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
             ResponseType responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
 
-            Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
-            if (npcTalk.ScriptId != 0 && option.AmountContent <= npcTalk.ContentIndex && option.Goto.Count == 0)
+            if (npcTalk.ScriptId != 0)
             {
-                session.Send(NpcTalkPacket.Close());
-                return;
+                Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+                if (option.AmountContent <= npcTalk.ContentIndex && option.Goto.Count == 0)
+                {
+                    session.Send(NpcTalkPacket.Close());
+                    return;
+                }
             }
 
             // Find next script id
