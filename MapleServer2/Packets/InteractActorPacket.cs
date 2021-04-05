@@ -33,7 +33,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteMapleString(actor.Value.Uuid);
                 pWriter.WriteEnum(InteractStatus.Enabled);
                 pWriter.WriteEnum(actor.Value.Type);
-                if (actor.Value.Type == InteractActorType.Extractor || actor.Value.Type == InteractActorType.Gathering)
+                if (actor.Value.Type == InteractActorType.Gathering)
                 {
                     pWriter.WriteInt();
                 }
