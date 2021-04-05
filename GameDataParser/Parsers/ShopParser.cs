@@ -3120,7 +3120,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3133,7 +3133,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3146,7 +3146,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3159,7 +3159,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3172,7 +3172,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3185,7 +3185,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3198,7 +3198,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3211,7 +3211,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3224,7 +3224,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3237,7 +3237,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3250,7 +3250,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3263,7 +3263,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3276,7 +3276,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3289,7 +3289,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3302,7 +3302,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3315,7 +3315,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3328,7 +3328,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3341,7 +3341,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3354,7 +3354,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3367,7 +3367,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3380,7 +3380,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3393,7 +3393,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3406,7 +3406,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3419,7 +3419,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3432,7 +3432,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3445,7 +3445,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3458,7 +3458,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3471,7 +3471,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3484,7 +3484,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3497,7 +3497,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3510,7 +3510,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3523,7 +3523,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3536,7 +3536,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3549,7 +3549,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3562,7 +3562,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3575,7 +3575,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3588,7 +3588,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3601,7 +3601,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3614,7 +3614,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3627,7 +3627,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3640,7 +3640,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3653,7 +3653,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3666,7 +3666,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3679,7 +3679,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3692,7 +3692,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3705,7 +3705,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3718,7 +3718,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3731,7 +3731,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3744,7 +3744,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     }
                 }
@@ -3775,7 +3775,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3788,7 +3788,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3801,7 +3801,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3814,7 +3814,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3827,7 +3827,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3840,7 +3840,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3853,7 +3853,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3866,7 +3866,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3879,7 +3879,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3892,7 +3892,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3905,7 +3905,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3918,7 +3918,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3931,7 +3931,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3944,7 +3944,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3957,7 +3957,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3970,7 +3970,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3983,7 +3983,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -3996,7 +3996,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4009,7 +4009,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4022,7 +4022,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4035,7 +4035,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4048,7 +4048,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4061,7 +4061,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4074,7 +4074,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4087,7 +4087,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4100,7 +4100,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4113,7 +4113,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4126,7 +4126,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4139,7 +4139,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4152,7 +4152,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4165,7 +4165,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4178,7 +4178,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4191,7 +4191,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4204,7 +4204,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4217,7 +4217,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4230,7 +4230,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4243,7 +4243,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4256,7 +4256,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4269,7 +4269,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4282,7 +4282,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4295,7 +4295,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4308,7 +4308,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4321,7 +4321,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4334,7 +4334,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4347,7 +4347,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4360,7 +4360,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4373,7 +4373,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4386,7 +4386,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4399,7 +4399,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4412,7 +4412,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     }
                 },
@@ -4443,7 +4443,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4456,7 +4456,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4469,7 +4469,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4482,7 +4482,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4495,7 +4495,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4508,7 +4508,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4521,7 +4521,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4534,7 +4534,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4547,7 +4547,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4560,7 +4560,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4573,7 +4573,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4586,7 +4586,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4599,7 +4599,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4612,7 +4612,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4625,7 +4625,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4638,7 +4638,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4651,7 +4651,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4664,7 +4664,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4677,7 +4677,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4690,7 +4690,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4703,7 +4703,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4716,7 +4716,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4729,7 +4729,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4742,7 +4742,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4755,7 +4755,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4768,7 +4768,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4781,7 +4781,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4794,7 +4794,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4807,7 +4807,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4820,7 +4820,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4833,7 +4833,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4846,7 +4846,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4859,7 +4859,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4872,7 +4872,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4885,7 +4885,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4898,7 +4898,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4911,7 +4911,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4924,7 +4924,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4937,7 +4937,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4950,7 +4950,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4963,7 +4963,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4976,7 +4976,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -4989,7 +4989,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5002,7 +5002,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5015,7 +5015,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5028,7 +5028,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5041,7 +5041,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5054,7 +5054,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5067,7 +5067,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5080,7 +5080,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -5111,7 +5111,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5124,7 +5124,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5137,7 +5137,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5150,7 +5150,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5163,7 +5163,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5176,7 +5176,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5189,7 +5189,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5202,7 +5202,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5215,7 +5215,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5228,7 +5228,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5241,7 +5241,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5254,7 +5254,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5267,7 +5267,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5280,7 +5280,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5293,7 +5293,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5306,7 +5306,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5319,7 +5319,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5332,7 +5332,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5345,7 +5345,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5358,7 +5358,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5371,7 +5371,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5384,7 +5384,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5397,7 +5397,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5410,7 +5410,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5423,7 +5423,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5436,7 +5436,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5449,7 +5449,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5462,7 +5462,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5475,7 +5475,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5488,7 +5488,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5501,7 +5501,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5514,7 +5514,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5527,7 +5527,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5540,7 +5540,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5553,7 +5553,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5566,7 +5566,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5579,7 +5579,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5592,7 +5592,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5605,7 +5605,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5618,7 +5618,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5631,7 +5631,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5644,7 +5644,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5657,7 +5657,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5670,7 +5670,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5683,7 +5683,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5696,7 +5696,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5709,7 +5709,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5722,7 +5722,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -5753,7 +5753,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5766,7 +5766,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5779,7 +5779,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5792,7 +5792,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5805,7 +5805,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5818,7 +5818,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5831,7 +5831,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5844,7 +5844,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5857,7 +5857,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5870,7 +5870,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5883,7 +5883,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5896,7 +5896,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5909,7 +5909,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5922,7 +5922,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5935,7 +5935,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5948,7 +5948,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5961,7 +5961,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5974,7 +5974,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -5987,7 +5987,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6000,7 +6000,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6013,7 +6013,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6026,7 +6026,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6039,7 +6039,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6052,7 +6052,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6065,7 +6065,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6078,7 +6078,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6091,7 +6091,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6104,7 +6104,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6117,7 +6117,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6130,7 +6130,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6143,7 +6143,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6156,7 +6156,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6169,7 +6169,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6182,7 +6182,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6195,7 +6195,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6208,7 +6208,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6221,7 +6221,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6234,7 +6234,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6247,7 +6247,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6260,7 +6260,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6273,7 +6273,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6286,7 +6286,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6299,7 +6299,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6312,7 +6312,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6325,7 +6325,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6338,7 +6338,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6351,7 +6351,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6364,7 +6364,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6377,7 +6377,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6390,7 +6390,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -6421,7 +6421,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6434,7 +6434,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6447,7 +6447,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6460,7 +6460,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6473,7 +6473,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6486,7 +6486,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6499,7 +6499,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6512,7 +6512,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6525,7 +6525,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6538,7 +6538,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6551,7 +6551,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6564,7 +6564,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6577,7 +6577,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6590,7 +6590,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6603,7 +6603,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6616,7 +6616,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6629,7 +6629,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6642,7 +6642,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6655,7 +6655,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6668,7 +6668,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6681,7 +6681,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6694,7 +6694,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6707,7 +6707,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6720,7 +6720,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
 
@@ -6734,7 +6734,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6747,7 +6747,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6760,7 +6760,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6773,7 +6773,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6786,7 +6786,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6799,7 +6799,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6812,7 +6812,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6825,7 +6825,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6838,7 +6838,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6851,7 +6851,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6864,7 +6864,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6877,7 +6877,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6890,7 +6890,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6903,7 +6903,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6916,7 +6916,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6929,7 +6929,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6942,7 +6942,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6955,7 +6955,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6968,7 +6968,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6981,7 +6981,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -6994,7 +6994,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7007,7 +7007,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7020,7 +7020,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7033,7 +7033,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7046,7 +7046,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7059,7 +7059,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -7090,7 +7090,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7103,7 +7103,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7116,7 +7116,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7129,7 +7129,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7142,7 +7142,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7155,7 +7155,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7168,7 +7168,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7181,7 +7181,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7194,7 +7194,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7207,7 +7207,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7220,7 +7220,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7233,7 +7233,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7246,7 +7246,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7259,7 +7259,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7272,7 +7272,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7285,7 +7285,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7298,7 +7298,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7311,7 +7311,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7324,7 +7324,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7337,7 +7337,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7350,7 +7350,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7363,7 +7363,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7376,7 +7376,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7389,7 +7389,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
 
@@ -7403,7 +7403,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7416,7 +7416,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7429,7 +7429,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7442,7 +7442,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7455,7 +7455,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7468,7 +7468,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7481,7 +7481,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7494,7 +7494,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7507,7 +7507,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7520,7 +7520,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7533,7 +7533,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7546,7 +7546,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7559,7 +7559,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7572,7 +7572,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7585,7 +7585,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7598,7 +7598,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7611,7 +7611,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7624,7 +7624,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7637,7 +7637,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7650,7 +7650,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7663,7 +7663,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7676,7 +7676,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7689,7 +7689,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7702,7 +7702,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7715,7 +7715,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7728,7 +7728,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -7759,7 +7759,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7772,7 +7772,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7785,7 +7785,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7798,7 +7798,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7811,7 +7811,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7824,7 +7824,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7837,7 +7837,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7850,7 +7850,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7863,7 +7863,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7876,7 +7876,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7889,7 +7889,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7902,7 +7902,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7915,7 +7915,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7928,7 +7928,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7941,7 +7941,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7954,7 +7954,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7967,7 +7967,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7980,7 +7980,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -7993,7 +7993,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8006,7 +8006,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8019,7 +8019,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8032,7 +8032,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8045,7 +8045,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8058,7 +8058,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
 
@@ -8072,7 +8072,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8085,7 +8085,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8098,7 +8098,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8111,7 +8111,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8124,7 +8124,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8137,7 +8137,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8150,7 +8150,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8163,7 +8163,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8176,7 +8176,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8189,7 +8189,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8202,7 +8202,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8215,7 +8215,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8228,7 +8228,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8241,7 +8241,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8254,7 +8254,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8267,7 +8267,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8280,7 +8280,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8293,7 +8293,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8306,7 +8306,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8319,7 +8319,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8332,7 +8332,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8345,7 +8345,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8358,7 +8358,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8371,7 +8371,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8384,7 +8384,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8397,7 +8397,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -8428,7 +8428,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8441,7 +8441,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8454,7 +8454,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8467,7 +8467,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8480,7 +8480,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8493,7 +8493,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8506,7 +8506,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8519,7 +8519,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8532,7 +8532,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8545,7 +8545,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8558,7 +8558,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8571,7 +8571,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8584,7 +8584,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8597,7 +8597,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8610,7 +8610,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8623,7 +8623,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8636,7 +8636,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8649,7 +8649,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8662,7 +8662,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8675,7 +8675,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8688,7 +8688,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8701,7 +8701,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8714,7 +8714,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8727,7 +8727,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
 
@@ -8741,7 +8741,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8754,7 +8754,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8767,7 +8767,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8780,7 +8780,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8793,7 +8793,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8806,7 +8806,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8819,7 +8819,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8832,7 +8832,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8845,7 +8845,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8858,7 +8858,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8871,7 +8871,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8884,7 +8884,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8897,7 +8897,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8910,7 +8910,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8923,7 +8923,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8936,7 +8936,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8949,7 +8949,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8962,7 +8962,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8975,7 +8975,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -8988,7 +8988,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9001,7 +9001,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9014,7 +9014,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9027,7 +9027,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9040,7 +9040,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9053,7 +9053,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9066,7 +9066,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -9097,7 +9097,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9110,7 +9110,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9123,7 +9123,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9136,7 +9136,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9149,7 +9149,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9162,7 +9162,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9175,7 +9175,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9188,7 +9188,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9201,7 +9201,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9214,7 +9214,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9227,7 +9227,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9240,7 +9240,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt01",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9253,7 +9253,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9266,7 +9266,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9279,7 +9279,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9292,7 +9292,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9305,7 +9305,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9318,7 +9318,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9331,7 +9331,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9344,7 +9344,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9357,7 +9357,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9370,7 +9370,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9383,7 +9383,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9396,7 +9396,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Excellecnt02",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
 
@@ -9410,7 +9410,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9423,7 +9423,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9436,7 +9436,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9449,7 +9449,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9462,7 +9462,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9475,7 +9475,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9488,7 +9488,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9501,7 +9501,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9514,7 +9514,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9527,7 +9527,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Elite",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9540,7 +9540,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9553,7 +9553,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9566,7 +9566,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9579,7 +9579,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9592,7 +9592,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9605,7 +9605,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9618,7 +9618,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9631,7 +9631,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9644,7 +9644,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9657,7 +9657,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9670,7 +9670,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9683,7 +9683,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9696,7 +9696,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9709,7 +9709,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9722,7 +9722,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -9735,7 +9735,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Normal",
                         Quantity = 1,
-                        TokenName = "22201001",
+                        TemplateName = "22201001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -9767,7 +9767,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9780,7 +9780,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9793,7 +9793,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9806,7 +9806,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9819,7 +9819,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9832,7 +9832,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9845,7 +9845,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9858,7 +9858,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9871,7 +9871,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9884,7 +9884,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9896,7 +9896,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9908,7 +9908,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9920,7 +9920,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9932,7 +9932,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9944,7 +9944,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9956,7 +9956,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9968,7 +9968,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9980,7 +9980,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -9992,7 +9992,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10004,7 +10004,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -10034,7 +10034,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10047,7 +10047,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10060,7 +10060,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10073,7 +10073,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10086,7 +10086,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10099,7 +10099,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10112,7 +10112,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10125,7 +10125,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10138,7 +10138,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10151,7 +10151,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10163,7 +10163,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10175,7 +10175,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10187,7 +10187,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10199,7 +10199,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10211,7 +10211,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10223,7 +10223,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10235,7 +10235,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10247,7 +10247,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10259,7 +10259,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10271,7 +10271,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -10302,7 +10302,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10315,7 +10315,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10328,7 +10328,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10341,7 +10341,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10354,7 +10354,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10367,7 +10367,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10380,7 +10380,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10393,7 +10393,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10406,7 +10406,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10419,7 +10419,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10431,7 +10431,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10443,7 +10443,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10455,7 +10455,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10467,7 +10467,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10479,7 +10479,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10491,7 +10491,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10503,7 +10503,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10515,7 +10515,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10527,7 +10527,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10539,7 +10539,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -10570,7 +10570,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10583,7 +10583,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10596,7 +10596,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10609,7 +10609,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10622,7 +10622,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10635,7 +10635,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10648,7 +10648,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10661,7 +10661,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10674,7 +10674,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10687,7 +10687,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10699,7 +10699,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10711,7 +10711,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10723,7 +10723,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10735,7 +10735,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10747,7 +10747,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10759,7 +10759,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10771,7 +10771,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10783,7 +10783,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10795,7 +10795,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10807,7 +10807,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -10838,7 +10838,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10851,7 +10851,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10864,7 +10864,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10877,7 +10877,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10890,7 +10890,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10903,7 +10903,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10916,7 +10916,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10929,7 +10929,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10942,7 +10942,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10955,7 +10955,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10967,7 +10967,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10979,7 +10979,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -10991,7 +10991,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11003,7 +11003,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11015,7 +11015,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11027,7 +11027,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11039,7 +11039,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11051,7 +11051,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11063,7 +11063,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11075,7 +11075,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -11106,7 +11106,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11119,7 +11119,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11132,7 +11132,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11145,7 +11145,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11158,7 +11158,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11171,7 +11171,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11184,7 +11184,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11197,7 +11197,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11210,7 +11210,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11223,7 +11223,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11235,7 +11235,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11247,7 +11247,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11259,7 +11259,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11271,7 +11271,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11283,7 +11283,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11295,7 +11295,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11307,7 +11307,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11319,7 +11319,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11331,7 +11331,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11343,7 +11343,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -11374,7 +11374,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11387,7 +11387,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11400,7 +11400,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11413,7 +11413,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11426,7 +11426,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11439,7 +11439,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11452,7 +11452,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11465,7 +11465,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11478,7 +11478,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11491,7 +11491,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11503,7 +11503,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11515,7 +11515,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11527,7 +11527,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11539,7 +11539,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11551,7 +11551,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11563,7 +11563,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11575,7 +11575,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11587,7 +11587,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11599,7 +11599,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11611,7 +11611,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -11642,7 +11642,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11655,7 +11655,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11668,7 +11668,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11681,7 +11681,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Ride",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11694,7 +11694,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11707,7 +11707,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11720,7 +11720,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11733,7 +11733,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11746,7 +11746,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11759,7 +11759,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Badge",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11771,7 +11771,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11783,7 +11783,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11795,7 +11795,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11807,7 +11807,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11819,7 +11819,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11831,7 +11831,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11843,7 +11843,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11855,7 +11855,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 1,
                         Category = "Action",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11867,7 +11867,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                     new ShopItem
                     {
@@ -11879,7 +11879,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 2,
                         Category = "ETC",
                         Quantity = 1,
-                        TokenName = "22202001",
+                        TemplateName = "22202001",
                     },
                 }
             };
@@ -11909,7 +11909,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11922,7 +11922,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11935,7 +11935,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11948,7 +11948,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11961,7 +11961,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11974,7 +11974,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -11987,7 +11987,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12000,7 +12000,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12013,7 +12013,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12026,7 +12026,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12039,7 +12039,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12052,7 +12052,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12065,7 +12065,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12078,7 +12078,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12091,7 +12091,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12104,7 +12104,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12117,7 +12117,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12130,7 +12130,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12143,7 +12143,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12156,7 +12156,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12169,7 +12169,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12182,7 +12182,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12195,7 +12195,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12208,7 +12208,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12221,7 +12221,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12234,7 +12234,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12247,7 +12247,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12260,7 +12260,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12273,7 +12273,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12286,7 +12286,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12299,7 +12299,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12312,7 +12312,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12325,7 +12325,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12338,7 +12338,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12351,7 +12351,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12364,7 +12364,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12377,7 +12377,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12390,7 +12390,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12403,7 +12403,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12416,7 +12416,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12429,7 +12429,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12442,7 +12442,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                 }
@@ -12473,7 +12473,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12486,7 +12486,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12499,7 +12499,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12512,7 +12512,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12525,7 +12525,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12538,7 +12538,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12551,7 +12551,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12564,7 +12564,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12577,7 +12577,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12590,7 +12590,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12603,7 +12603,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12616,7 +12616,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary01",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12629,7 +12629,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12642,7 +12642,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12655,7 +12655,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12668,7 +12668,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12681,7 +12681,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12694,7 +12694,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12707,7 +12707,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12720,7 +12720,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12733,7 +12733,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12746,7 +12746,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12759,7 +12759,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12772,7 +12772,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary02",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12785,7 +12785,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12798,7 +12798,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12811,7 +12811,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12824,7 +12824,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12837,7 +12837,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12850,7 +12850,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12863,7 +12863,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12876,7 +12876,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12889,7 +12889,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12902,7 +12902,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 5,
                         Category = "Legendary03",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12915,7 +12915,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12928,7 +12928,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12941,7 +12941,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12954,7 +12954,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 3,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12967,7 +12967,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                     new ShopItem
@@ -12980,7 +12980,7 @@ namespace GameDataParser.Parsers
                         ItemRank = 4,
                         Category = "Other",
                         Quantity = 1,
-                        TokenName = "22204001",
+                        TemplateName = "22204001",
                         AutoPreviewEquip = true
                     },
                 }
