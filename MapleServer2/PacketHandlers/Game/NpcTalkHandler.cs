@@ -56,6 +56,21 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return; // Invalid NPC
             }
+            foreach (QuestStatus item in session.Player.QuestList.Where(x => !x.Completed))
+            {
+                if (npc.Value.Id == item.StartNpcId)
+                {
+                    npcQuests.Add(item);
+                }
+                if (item.Started && npc.Value.Id == item.CompleteNpcId)
+                {
+                    if (!npcQuests.Contains(item))
+                    {
+                        npcQuests.Add(item);
+                    }
+                }
+            }
+            session.Player.NpcTalk = new NpcTalk(npc.Value, npcQuests);
             // If NPC is a shop, load and open the shop
             if (npc.Value.IsShop())
             {
@@ -73,23 +88,6 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            foreach (QuestStatus item in session.Player.QuestList.Where(x => !x.Completed))
-            {
-                if (npc.Value.Id == item.StartNpcId)
-                {
-                    npcQuests.Add(item);
-                }
-                if (item.Started && npc.Value.Id == item.CompleteNpcId)
-                {
-                    if (!npcQuests.Contains(item))
-                    {
-                        npcQuests.Add(item);
-                    }
-                }
-            }
-
-            session.Player.NpcTalk = new NpcTalk(npc.Value, npcQuests);
-
             if (npcQuests.Count != 0)
             {
                 session.Player.NpcTalk.ScriptId = 0;
@@ -105,7 +103,8 @@ namespace MapleServer2.PacketHandlers.Game
                 DialogType dialogType = DialogType.CloseNext1;
                 if (scriptMetadata.Options.First(x => x.Id == firstScript).Goto.Count == 0)
                 {
-                    dialogType = DialogType.CloseNext;
+                    session.Player.NpcTalk.ContentIndex++;
+                    dialogType = DialogType.CloseNext1;
                 }
 
                 if (!hasNextScript)
@@ -114,7 +113,6 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 if (scriptMetadata.Options.First(x => x.Id == firstScript).AmountContent > 1)
                 {
-                    session.Player.NpcTalk.ContentIndex++;
                     dialogType = DialogType.CloseNext;
                 }
 
@@ -128,6 +126,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (npcTalk.Npc.IsBeauty())
             {
                 HandleBeauty(session);
+                return;
             }
 
             int index = packet.ReadInt(); // selection index
@@ -142,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Game
             ScriptMetadata scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
             ResponseType responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
 
-            if (npcTalk.ScriptId != 0)
+            if (!npcTalk.IsQuest || npcTalk.ScriptId == 0)
             {
                 Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
                 if (option.AmountContent <= npcTalk.ContentIndex && option.Goto.Count == 0)
@@ -217,6 +216,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             DialogType dialogType = DialogType.CloseNext1;
             if (scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).Goto.Count == 0)
+            {
+                dialogType = DialogType.CloseNext1;
+            }
+            if (scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId).AmountContent > 1)
             {
                 dialogType = DialogType.CloseNext;
             }
