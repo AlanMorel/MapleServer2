@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -72,9 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
-            Item superChatItem = playerInventoryItems.FirstOrDefault(x => x.Id == session.Player.SuperChat);
+            Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Function.Id == session.Player.SuperChat);
             if (superChatItem == null)
             {
                 session.Player.SuperChat = 0;
@@ -85,14 +82,13 @@ namespace MapleServer2.PacketHandlers.Game
 
             MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
             InventoryController.Consume(session, superChatItem.Uid, 1);
+            session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
             session.Player.SuperChat = 0;
         }
 
         private static void HandleWorldChat(GameSession session, string message, ChatType type)
         {
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
-            Item voucher = playerInventoryItems.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
+            Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
             if (voucher != null)
             {
                 session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));

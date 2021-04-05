@@ -9,6 +9,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
+        public string Name = "";
+        [XmlElement(Order = 3)]
         public List<CoordS> Blocks = new List<CoordS>();
 
         public MapMetadata() { }

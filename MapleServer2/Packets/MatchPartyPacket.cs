@@ -58,7 +58,7 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(party.Name);
             pWriter.WriteBool(party.Approval);
             pWriter.WriteInt(party.Members.Count);
-            pWriter.WriteInt(party.MaxMembers);
+            pWriter.WriteInt(party.RecruitMemberCount);
             pWriter.WriteLong(party.Leader.AccountId);
             pWriter.WriteLong(party.Leader.CharacterId);
             pWriter.WriteUnicodeString(party.Leader.Name);

@@ -18,21 +18,23 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 4)]
         public string Name { get; set; }
         [XmlElement(Order = 5)]
-        public bool RestrictSales { get; set; }
+        public ShopType ShopType { get; set; }
         [XmlElement(Order = 6)]
-        public bool CanRestock { get; set; }
+        public bool RestrictSales { get; set; }
         [XmlElement(Order = 7)]
-        public long NextRestock { get; set; }
+        public bool CanRestock { get; set; }
         [XmlElement(Order = 8)]
-        public bool AllowBuyback { get; set; }
+        public long NextRestock { get; set; }
         [XmlElement(Order = 9)]
+        public bool AllowBuyback { get; set; }
+        [XmlElement(Order = 10)]
         public List<ShopItem> Items { get; set; }
 
         // Required for deserialization
         public ShopMetadata() { }
 
         public override string ToString() =>
-            $"ShopMetadata(TemplateId:{TemplateId},Id:{Id},Category:{Category},Name:{Name},RestrictSales:{RestrictSales},CanRestock:{CanRestock},NextRestock:{NextRestock},AllowBuyback:{AllowBuyback},Items:{Items})";
+            $"ShopMetadata(TemplateId:{TemplateId},Id:{Id},Category:{Category},Name:{Name},ShopType{ShopType},RestrictSales:{RestrictSales},CanRestock:{CanRestock},NextRestock:{NextRestock},AllowBuyback:{AllowBuyback},Items:{Items})";
 
         protected bool Equals(ShopMetadata other)
         {
@@ -40,6 +42,7 @@ namespace Maple2Storage.Types.Metadata
                    Id == other.Id &&
                    Category == other.Category &&
                    Name == other.Name &&
+                   ShopType == other.ShopType &&
                    RestrictSales == other.RestrictSales &&
                    CanRestock == other.CanRestock &&
                    NextRestock == other.NextRestock &&

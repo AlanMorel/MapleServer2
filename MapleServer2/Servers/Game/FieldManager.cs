@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Maple2.Trigger;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Triggers;
 using MapleServer2.Types;
+using NLog;
 
 namespace MapleServer2.Servers.Game
 {
@@ -18,14 +22,18 @@ namespace MapleServer2.Servers.Game
     // This seems to be done every ~2s rather than on every update.
     public class FieldManager
     {
+        private static readonly TriggerLoader TriggerLoader = new TriggerLoader();
+
         private int Counter = 10000000;
 
         public readonly int MapId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
+        private readonly TriggerScript[] Triggers;
 
         private Task HealingSpotThread;
+        private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
         public FieldManager(int mapId)
         {
@@ -94,6 +102,14 @@ namespace MapleServer2.Servers.Game
                 actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name, actor.Type) { }));
             }
             AddInteractActor(actors);
+
+            string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
+            Triggers = TriggerLoader.GetTriggers(mapName).Select(initializer =>
+            {
+                TriggerContext context = new TriggerContext(this, Logger);
+                TriggerState startState = initializer.Invoke(context);
+                return new TriggerScript(context, startState);
+            }).ToArray();
         }
 
         // Gets a list of packets to update the state of all field objects for client.
@@ -117,6 +133,10 @@ namespace MapleServer2.Servers.Game
                 {
                     RemoveMob(mob);
                 }
+            }
+            foreach (TriggerScript trigger in Triggers)
+            {
+                trigger.Next();
             }
             return updates;
         }

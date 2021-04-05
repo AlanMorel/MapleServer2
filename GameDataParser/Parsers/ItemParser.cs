@@ -271,6 +271,12 @@ namespace GameDataParser.Parsers
                     }
                 }
 
+
+                // Color data
+                XmlNode customize = item.SelectSingleNode("customize");
+                metadata.ColorIndex = int.Parse(customize.Attributes["defaultColorIndex"].Value);
+                metadata.ColorPalette = int.Parse(customize.Attributes["colorPalette"].Value);
+
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");
                 bool gemResult = Enum.TryParse<GemSlot>(gem.Attributes["system"].Value, out metadata.Gem);
@@ -401,6 +407,11 @@ namespace GameDataParser.Parsers
                     string[] parameters = function.Attributes["parameter"].Value.Split(",");
                     metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
                 }
+                else if (contentType == "OpenGachaBox")
+                {
+                    string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
+                }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook")
                 {
                     metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
@@ -441,7 +452,7 @@ namespace GameDataParser.Parsers
                     }
                 }
 
-                byte gender = byte.Parse(limit.Attributes["genderLimit"].Value);
+                metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 // Item breaking ingredients
                 if (rewards.ContainsKey(itemId))

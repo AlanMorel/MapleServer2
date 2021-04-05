@@ -67,7 +67,7 @@ namespace MapleServer2.Types
 
         public void GainExp(int amount)
         {
-            if (amount <= 0 && !ExpMetadataStorage.LevelExist((short) (Level + 1)))
+            if (amount <= 0 || !ExpMetadataStorage.LevelExist((short) (Level + 1)))
             {
                 return;
             }

@@ -282,6 +282,18 @@ namespace GameDataParser.Parsers
                         thisNpc.IsSpawnOnFieldCreate = true;
                         metadata.Npcs.Add(thisNpc);
                     }
+                    else if (modelName == "EventSpawnPointNPC")
+                    {
+                        string npcId = node.SelectSingleNode("property[@name='NpcList']")?.FirstChild?.Attributes["index"].Value ?? "0";
+                        if (npcId == "0")
+                        {
+                            continue;
+                        }
+                        string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
+                        metadata.Npcs.Add(thisNpc);
+                    }
                     // Parse the rest of the objects in the xblock if they have a flat component.
                     else if (mapObjects.ContainsKey(modelName))  // There was .flat file data about this item
                     {
@@ -345,6 +357,11 @@ namespace GameDataParser.Parsers
                         {
                             // These can be full natural spawns, or only spawnable as a reaction to a quest, or something else as well.
                             string npcId = Regex.Match(modelName, @"^(\d{8})_").Groups[1].Value;
+                            string indexNpcId = node.SelectSingleNode("property[@name='NpcList']")?.FirstChild.Attributes["index"].Value ?? "0";
+                            if (indexNpcId != "0")
+                            {
+                                npcId = indexNpcId;
+                            }
                             string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                             string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                             MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
