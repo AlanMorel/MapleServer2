@@ -28,6 +28,11 @@ namespace Maple2Storage.Types
         }
 
         public override string ToString() => $"ARGB({Alpha:X2}, {Red:X2}, {Green:X2}, {Blue:X2})";
+
+        public static Color FromBytes(byte[] byteArray)
+        {
+            return Argb(byteArray[0], byteArray[1], byteArray[2], byteArray[3]);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Size = 8)]
