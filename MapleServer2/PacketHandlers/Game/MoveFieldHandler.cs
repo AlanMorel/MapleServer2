@@ -42,6 +42,13 @@ namespace MapleServer2.PacketHandlers.Game
                 if (dstPortal == default)
                 {
                     Logger.Warning($"Unable to find return portal to map:{srcMapId} in map:{srcPortal.Target}");
+                }
+
+                dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
+                .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId);
+                if (dstPortal == default)
+                {
+                    Logger.Warning($"Unable to find portal id:{srcPortal.TargetPortalId} in map:{srcPortal.Target}");
                     return;
                 }
 

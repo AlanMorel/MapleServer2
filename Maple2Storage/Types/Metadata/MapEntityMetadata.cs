@@ -257,11 +257,13 @@ namespace Maple2Storage.Types.Metadata
         public readonly CoordS Coord;
         [XmlElement(Order = 6)]
         public readonly CoordS Rotation;
+        [XmlElement(Order = 7)]
+        public readonly int TargetPortalId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
+        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId)
         {
             Id = id;
             Name = name;
@@ -269,10 +271,11 @@ namespace Maple2Storage.Types.Metadata
             Target = target;
             Coord = coord;
             Rotation = rotation;
+            TargetPortalId = targetPortalId;
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord})";
+            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId})";
 
         protected bool Equals(MapPortal other)
         {
@@ -281,7 +284,8 @@ namespace Maple2Storage.Types.Metadata
                    && Flags == other.Flags
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
-                   && Rotation.Equals(other.Rotation);
+                   && Rotation.Equals(other.Rotation)
+                   && TargetPortalId == other.TargetPortalId;
         }
 
         public override bool Equals(object obj)
