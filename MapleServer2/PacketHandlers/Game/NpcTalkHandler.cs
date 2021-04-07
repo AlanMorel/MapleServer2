@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -87,6 +88,8 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 1));
                 return;
             }
+
+            CheckForExplorationQuest(session);
 
             if (npcQuests.Count != 0)
             {
@@ -294,6 +297,29 @@ namespace MapleServer2.PacketHandlers.Game
                         return option.Goto[index];
                     }
                 }
+            }
+        }
+
+        private static void CheckForExplorationQuest(GameSession session)
+        {
+            List<QuestStatus> questList = session.Player.QuestList;
+            foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
+            {
+                QuestCondition condition = quest.Condition.Where(x => x.Type == "talk_in")
+                    .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(session.Player.NpcTalk.Npc.Id.ToString()));
+                if (condition == null)
+                {
+                    continue;
+                }
+
+                quest.Completed = true;
+                quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                session.Player.Levels.GainExp(quest.Reward.Exp);
+                session.Player.Wallet.Meso.Modify(quest.Reward.Money);
+                session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.Id));
+                session.Send(QuestPacket.CompleteQuest(quest.Basic.Id));
+                break;
             }
         }
     }
