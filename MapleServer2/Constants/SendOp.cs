@@ -100,7 +100,7 @@
         STATE_FALL_DAMAGE = 0x0067,
         CINEMATIC = 0x0068,
         ADMIN = 0x0069,
-        SET_CRAFT_MODE = 0x006A,
+        SET_BUILD_MODE = 0x006A,
         RESPONSE_CUBE = 0x006B,
         CUBES = 0x006C,
         UGC = 0x006D,

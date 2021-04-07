@@ -104,6 +104,5 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item));
         }
-
     }
 }
