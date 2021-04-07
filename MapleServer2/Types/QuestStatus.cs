@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
@@ -22,7 +21,6 @@ namespace MapleServer2.Types
         public QuestStatus(QuestMetadata metadata)
         {
             Basic = metadata.Basic;
-            StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             StartNpcId = metadata.StartNpc;
             CompleteNpcId = metadata.CompleteNpc;
             Condition = metadata.Condition;
