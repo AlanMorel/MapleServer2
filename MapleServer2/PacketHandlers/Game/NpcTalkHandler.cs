@@ -157,7 +157,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Find next script id
             int nextScript = GetNextScript(scriptMetadata, npcTalk, index);
-            if (scriptMetadata.Options.FirstOrDefault(x => x.Id == npcTalk.ScriptId)?.AmountContent > npcTalk.ContentIndex)
+            Option option2 = scriptMetadata.Options.FirstOrDefault(x => x.Id == npcTalk.ScriptId);
+            if (option2?.AmountContent > 1 && option2?.AmountContent > npcTalk.ContentIndex)
             {
                 nextScript = npcTalk.ScriptId;
             }
@@ -280,7 +281,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
                 if (npcTalk.ScriptId == 0)
                 {
-                    return option.Id;
+                    return scriptMetadata.Options.First(x => x.Id > npcTalk.ScriptId).Id;
                 }
                 else
                 {
