@@ -52,8 +52,9 @@ namespace MapleServer2.Packets
 
                 for (int j = 0; j < quest.Condition.Count; j++)
                 {
-                    // if or switch check for condition types, for now just 0
-                    pWriter.WriteInt(0);
+                    // This int is the value of each condition. 
+                    // Ex: 'Kill x/20 monsters'
+                    pWriter.WriteInt();
                 }
             }
 

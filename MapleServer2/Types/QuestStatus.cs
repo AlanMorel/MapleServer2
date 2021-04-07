@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
@@ -17,5 +18,16 @@ namespace MapleServer2.Types
         public List<QuestRewardItem> RewardItems { get; set; }
 
         public QuestStatus() { }
+
+        public QuestStatus(QuestMetadata metadata)
+        {
+            Basic = metadata.Basic;
+            StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            StartNpcId = metadata.StartNpc;
+            CompleteNpcId = metadata.CompleteNpc;
+            Condition = metadata.Condition;
+            Reward = metadata.Reward;
+            RewardItems = metadata.RewardItem;
+        }
     }
 }

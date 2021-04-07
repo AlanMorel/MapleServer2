@@ -67,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Game
                 List<QuestStatus> questList = session.Player.QuestList;
                 foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
                 {
-                    QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
+                    QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(actor.InteractId.ToString()));
                     if (condition == null)
                     {
                         continue;

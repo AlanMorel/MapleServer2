@@ -80,18 +80,7 @@ namespace MapleServer2.PacketHandlers.Common
 
             foreach (QuestMetadata quest in questList)
             {
-                QuestStatus questStatus = new QuestStatus()
-                {
-                    Basic = quest.Basic,
-                    StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    StartNpcId = quest.StartNpc,
-                    CompleteNpcId = quest.CompleteNpc,
-                    Condition = quest.Condition,
-                    Reward = quest.Reward,
-                    RewardItems = quest.RewardItem
-                };
-
-                session.Player.QuestList.Add(questStatus);
+                session.Player.QuestList.Add(new QuestStatus(quest));
             }
 
             IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet, same way kms do

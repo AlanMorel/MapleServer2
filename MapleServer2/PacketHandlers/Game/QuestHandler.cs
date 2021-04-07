@@ -84,18 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
             IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
             foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
             {
-                QuestMetadata quest = kvp.Value;
-                QuestStatus newQuestStatus = new QuestStatus()
-                {
-                    Basic = quest.Basic,
-                    StartNpcId = quest.StartNpc,
-                    CompleteNpcId = quest.CompleteNpc,
-                    Condition = quest.Condition,
-                    Reward = quest.Reward,
-                    RewardItems = quest.RewardItem
-                };
-
-                session.Player.QuestList.Add(newQuestStatus);
+                session.Player.QuestList.Add(new QuestStatus(kvp.Value));
             }
             foreach (QuestRewardItem reward in questStatus.RewardItems)
             {
@@ -151,17 +140,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                QuestStatus questStatus = new QuestStatus()
-                {
-                    Basic = metadata.Basic,
-                    Started = true,
-                    StartTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Condition = metadata.Condition,
-                    Reward = metadata.Reward,
-                    RewardItems = metadata.RewardItem
-                };
-
-                list.Add(questStatus);
+                list.Add(new QuestStatus(metadata));
             }
 
             session.Player.QuestList.AddRange(list);
