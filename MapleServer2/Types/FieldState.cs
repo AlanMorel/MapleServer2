@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
         public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
-        public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
+        public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractActors;
 
         public FieldState()
         {
@@ -22,7 +22,7 @@ namespace MapleServer2.Types
             Portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
             MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
-            InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
+            InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractObject>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -73,9 +73,9 @@ namespace MapleServer2.Types
             return Portals.Remove(objectId, out _);
         }
 
-        public void AddInteractActor(IFieldObject<InteractActor> actor)
+        public void AddInteractActor(IFieldObject<InteractObject> interactObject)
         {
-            InteractActors[actor.Value.Uuid] = actor;
+            InteractActors[interactObject.Value.Uuid] = interactObject;
         }
 
         public void AddMobSpawn(IFieldObject<MobSpawn> spawn)

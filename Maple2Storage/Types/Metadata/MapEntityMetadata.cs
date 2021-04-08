@@ -26,7 +26,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public CoordS BoundingBox1;
         [XmlElement(Order = 9)]
-        public readonly List<MapInteractActor> InteractActors;
+        public readonly List<MapInteractObject> InteractObjects;
         [XmlElement(Order = 10)]
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 11)]
@@ -40,7 +40,7 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractActors = new List<MapInteractActor>();
+            InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
         }
 
@@ -52,7 +52,7 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractActors = new List<MapInteractActor>();
+            InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
         }
 
@@ -407,21 +407,21 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class MapInteractActor
+    public class MapInteractObject
     {
         [XmlElement(Order = 1)]
         public readonly string Uuid;
         [XmlElement(Order = 2)]
         public readonly string Name;
         [XmlElement(Order = 3)]
-        public readonly InteractActorType Type;
+        public readonly InteractObjectType Type;
         [XmlElement(Order = 4)]
         public readonly int InteractId;
         [XmlElement(Order = 5)]
         public readonly int RecipeId;
 
-        public MapInteractActor() { }
-        public MapInteractActor(string uuid, string name, InteractActorType type, int interactId, int recipeId = 0)
+        public MapInteractObject() { }
+        public MapInteractObject(string uuid, string name, InteractObjectType type, int interactId, int recipeId = 0)
         {
             Uuid = uuid;
             Name = name;
@@ -430,7 +430,7 @@ namespace Maple2Storage.Types.Metadata
             RecipeId = recipeId;
         }
         public override string ToString() =>
-            $"MapInteractActor(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
+            $"MapInteractObject(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
     }
 
     [XmlType]

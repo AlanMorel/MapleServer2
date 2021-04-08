@@ -95,11 +95,11 @@ namespace MapleServer2.Servers.Game
             }
 
             // Load default InteractActors
-            List<IFieldObject<InteractActor>> actors = new List<IFieldObject<InteractActor>> { };
-            foreach (MapInteractActor actor in MapEntityStorage.GetInteractActors(mapId))
+            List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
+            foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
             {
                 // TODO: Group these fieldActors by their correct packet type. 
-                actors.Add(RequestFieldObject(new InteractActor(actor.Uuid, actor.Name, actor.Type) { }));
+                actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
             }
             AddInteractActor(actors);
 
@@ -183,7 +183,7 @@ namespace MapleServer2.Servers.Game
             }
             if (State.InteractActors.Values.Count > 0)
             {
-                sender.Send(InteractActorPacket.AddInteractActors(State.InteractActors.Values));
+                sender.Send(InteractObjectPacket.AddInteractActors(State.InteractActors.Values));
             }
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
@@ -253,18 +253,18 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-        public void AddInteractActor(ICollection<IFieldObject<Types.InteractActor>> actors)
+        public void AddInteractActor(ICollection<IFieldObject<Types.InteractObject>> objects)
         {
-            foreach (IFieldObject<InteractActor> actor in actors)
+            foreach (IFieldObject<InteractObject> interactObject in objects)
             {
-                State.AddInteractActor(actor);
+                State.AddInteractActor(interactObject);
             }
 
-            if (actors.Count > 0)
+            if (objects.Count > 0)
             {
                 Broadcast(session =>
                 {
-                    session.Send(InteractActorPacket.AddInteractActors(actors));
+                    session.Send(InteractObjectPacket.AddInteractActors(objects));
                 });
             }
         }
