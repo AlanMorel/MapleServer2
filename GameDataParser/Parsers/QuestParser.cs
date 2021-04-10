@@ -212,15 +212,15 @@ namespace GameDataParser.Parsers
                         else if (node.Name == "condition")
                         {
                             string type = node.Attributes["type"].Value;
-                            string code = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? "" : node.Attributes["code"].Value;
+                            string[] codes = node.Attributes["code"]?.Value.Split(",");
                             int value = string.IsNullOrEmpty(node.Attributes["value"]?.Value) ? 0 : int.Parse(node.Attributes["value"].Value);
-                            List<string> temp = null;
+                            List<string> targets = null;
                             if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
                             {
-                                temp = new List<string>(node.Attributes["target"].Value.Split(","));
+                                targets = new List<string>(node.Attributes["target"].Value.Split(","));
 
                             }
-                            metadata.Condition.Add(new QuestCondition(type, code, value, temp));
+                            metadata.Condition.Add(new QuestCondition(type, codes, value, targets));
                         }
                         else if (node.Name == "navi")
                         {

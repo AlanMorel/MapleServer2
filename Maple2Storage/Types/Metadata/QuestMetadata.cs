@@ -350,7 +350,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public string Type;
         [XmlElement(Order = 2)]
-        public string Code;
+        public string[] Codes;
         [XmlElement(Order = 3)]
         public int Value;
         [XmlElement(Order = 4)]
@@ -360,17 +360,17 @@ namespace Maple2Storage.Types.Metadata
         {
         }
 
-        public QuestCondition(string type, string code, int value, List<string> target)
+        public QuestCondition(string type, string[] codes, int value, List<string> target)
         {
             Type = type;
-            Code = code;
+            Codes = codes;
             Value = value;
             Target = target;
         }
 
         public override string ToString()
         {
-            return $"\r\ntype: {Type}, code: {Code}, value: {Value}, Targets: {string.Join(",", Target)}";
+            return $"\r\ntype: {Type}, codes: {Codes}, value: {Value}, Targets: {string.Join(",", Target)}";
         }
     }
 

@@ -237,7 +237,7 @@ namespace MapleServer2.Servers.Game
         {
             State.AddMob(fieldMob);
 
-            fieldMob.Value.OriginSpawn.Value.Mobs.Add(fieldMob);
+            fieldMob.Value.OriginSpawn?.Value.Mobs.Add(fieldMob);
 
             Broadcast(session =>
             {

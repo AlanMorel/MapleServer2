@@ -225,7 +225,8 @@ namespace GameDataParser.Parsers
                     else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
                     {
                         XmlNode portalIdNode = node.SelectSingleNode("property[@name='PortalID']");
-                        XmlNode targetNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
+                        XmlNode targetFieldNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
+                        XmlNode targetIdNode = node.SelectSingleNode("property[@name='TargetPortalID']");
                         if (portalIdNode == null)
                         {
                             continue;
@@ -251,11 +252,16 @@ namespace GameDataParser.Parsers
                         }
 
                         int target = 0;
-                        if (targetNode != null)
+                        if (targetFieldNode != null)
                         {
-                            target = int.Parse(targetNode.FirstChild.Attributes["value"].Value ?? "0");
+                            target = int.Parse(targetFieldNode.FirstChild.Attributes["value"].Value ?? "0");
                         }
                         int portalId = int.Parse(portalIdNode?.FirstChild.Attributes["value"].Value);
+                        int targetPortalId = 0;
+                        if (targetIdNode != null)
+                        {
+                            targetPortalId = int.Parse(targetIdNode?.FirstChild.Attributes["value"].Value);
+                        }
                         string positionValue = coordNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
@@ -265,7 +271,7 @@ namespace GameDataParser.Parsers
 
                         CoordS position = CoordS.Parse(positionValue);
                         CoordS rotation = CoordS.Parse(rotationValue);
-                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation));
+                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation, targetPortalId));
                     }
                     else if (modelName == "SpawnPointNPC" && !name.StartsWith("SpawnPointNPC"))
                     {

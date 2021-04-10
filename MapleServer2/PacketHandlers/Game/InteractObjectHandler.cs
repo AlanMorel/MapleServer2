@@ -64,24 +64,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             if (actor.Type == InteractActorType.Binoculars)
             {
-                List<QuestStatus> questList = session.Player.QuestList;
-                foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
-                {
-                    QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Code != "" && int.Parse(x.Code) == actor.InteractId);
-                    if (condition == null)
-                    {
-                        continue;
-                    }
-
-                    quest.Completed = true;
-                    quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-                    session.Player.Levels.GainExp(quest.Reward.Exp);
-                    session.Player.Wallet.Meso.Modify(quest.Reward.Money);
-                    session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.Id));
-                    session.Send(QuestPacket.CompleteQuest(quest.Basic.Id));
-                    break;
-                }
+                CheckForExplorationQuest(session, actor);
             }
             else if (actor.Type == InteractActorType.Gathering)
             {
@@ -130,6 +113,28 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.Send(InteractActorPacket.UseObject(actor, (short) (numDrop > 0 ? 0 : 1), numDrop));
             session.Send(InteractActorPacket.Extra(actor));
+        }
+
+        private static void CheckForExplorationQuest(GameSession session, MapInteractActor actor)
+        {
+            List<QuestStatus> questList = session.Player.QuestList;
+            foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
+            {
+                QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(actor.InteractId.ToString()));
+                if (condition == null)
+                {
+                    continue;
+                }
+
+                quest.Completed = true;
+                quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                session.Player.Levels.GainExp(quest.Reward.Exp);
+                session.Player.Wallet.Meso.Modify(quest.Reward.Money);
+                session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.Id));
+                session.Send(QuestPacket.CompleteQuest(quest.Basic.Id));
+                break;
+            }
         }
     }
 }
