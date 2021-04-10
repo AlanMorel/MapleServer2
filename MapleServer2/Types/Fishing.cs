@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -55,8 +57,20 @@ namespace MapleServer2.Types
                 return;
             }
 
+            int expChance;
             Random rnd = new Random();
-            int expChance = rnd.Next(0, 100);
+            MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
+            FishingSpotMetadata fishingSpot = FishingSpotMetadataStorage.GetMetadata(session.Player.MapId);
+
+            if (masteryExp.CurrentExp > fishingSpot.MaxMastery)
+            {
+                expChance = rnd.Next(0, 200); // decrease chance of gaining mastery by half
+            }
+            else
+            {
+                expChance = rnd.Next(0, 100);
+            }
+
             if (expChance <= 10)
             {
                 int exp = rnd.Next(1, 3);
