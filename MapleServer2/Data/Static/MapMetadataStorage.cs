@@ -43,11 +43,7 @@ namespace MapleServer2.Data.Static
             MapMetadata mapD = GetMetadata(mapId);
             coord.Z += Block.BLOCK_SIZE;
             MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
-            if (block == null)
-            {
-                return false;
-            }
-            return true;
+            return block != null;
         }
 
         public static MapBlock GetMapBlock(int mapId, CoordS coord)
