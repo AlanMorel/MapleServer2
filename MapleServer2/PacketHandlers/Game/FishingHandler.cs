@@ -147,25 +147,11 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         checkBlock.X += Block.BLOCK_SIZE;
 
-                        for (int zAxis = 0; zAxis < 3; zAxis++)
+                        MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                        if (block != null)
                         {
-
-                            if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
-                            {
-                                break;
-                            }
-
-                            MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
-                            if (block == null || !IsLiquidBlock(block))
-                            {
-                                checkBlock.Z -= Block.BLOCK_SIZE;
-                                continue;
-                            }
-
                             blocks.Add(block);
-                            checkBlock.Z -= Block.BLOCK_SIZE;
                         }
-                        checkBlock.Z = startCoord.Z; // reset Z
                     }
                     checkBlock.Y -= Block.BLOCK_SIZE;
                     checkBlock.X = startCoord.X; // reset X
@@ -180,25 +166,11 @@ namespace MapleServer2.PacketHandlers.Game
                     for (int yAxis = 0; yAxis < 3; yAxis++)
                     {
                         checkBlock.Y += Block.BLOCK_SIZE;
-                        for (int zAxis = 0; zAxis < 3; zAxis++)
+                        MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                        if (block != null)
                         {
-
-                            if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
-                            {
-                                break;
-                            }
-
-                            MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
-                            if (block == null || !IsLiquidBlock(block))
-                            {
-                                checkBlock.Z -= Block.BLOCK_SIZE;
-                                continue;
-                            }
-
                             blocks.Add(block);
-                            checkBlock.Z -= Block.BLOCK_SIZE;
                         }
-                        checkBlock.Z = startCoord.Z; // reset Z
                     }
                     checkBlock.X -= Block.BLOCK_SIZE;
                     checkBlock.Y = startCoord.Y; // reset Y
@@ -213,25 +185,12 @@ namespace MapleServer2.PacketHandlers.Game
                     for (int xAxis = 0; xAxis < 3; xAxis++)
                     {
                         checkBlock.X -= Block.BLOCK_SIZE;
-                        for (int zAxis = 0; zAxis < 3; zAxis++)
+
+                        MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                        if (block != null)
                         {
-
-                            if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
-                            {
-                                break;
-                            }
-
-                            MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
-                            if (block == null || !IsLiquidBlock(block))
-                            {
-                                checkBlock.Z -= Block.BLOCK_SIZE;
-                                continue;
-                            }
-
                             blocks.Add(block);
-                            checkBlock.Z -= Block.BLOCK_SIZE;
                         }
-                        checkBlock.Z = startCoord.Z; // reset Z
                     }
                     checkBlock.Y += Block.BLOCK_SIZE;
                     checkBlock.X = startCoord.X; // reset X
@@ -246,25 +205,12 @@ namespace MapleServer2.PacketHandlers.Game
                     for (int yAxis = 0; yAxis < 3; yAxis++)
                     {
                         checkBlock.Y -= Block.BLOCK_SIZE;
-                        for (int zAxis = 0; zAxis < 3; zAxis++)
+
+                        MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                        if (block != null)
                         {
-
-                            if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
-                            {
-                                break;
-                            }
-
-                            MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
-                            if (block == null || !IsLiquidBlock(block))
-                            {
-                                checkBlock.Z -= Block.BLOCK_SIZE;
-                                continue;
-                            }
-
                             blocks.Add(block);
-                            checkBlock.Z -= Block.BLOCK_SIZE;
                         }
-                        checkBlock.Z = startCoord.Z; // reset Z
                     }
                     checkBlock.X += Block.BLOCK_SIZE;
                     checkBlock.Y = startCoord.Y; // reset Y
@@ -287,6 +233,28 @@ namespace MapleServer2.PacketHandlers.Game
                 block.Attribute == "poison" ||
                 block.Attribute == "oil" ||
                 block.Attribute == "emeraldwater";
+        }
+
+        private static MapBlock ScanZAxisForLiquidBlock(CoordF checkBlock, int mapId)
+        {
+            for (int zAxis = 0; zAxis < 3; zAxis++)
+            {
+                if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
+                {
+                    return null;
+                }
+
+                MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
+                if (block == null || !IsLiquidBlock(block))
+                {
+                    checkBlock.Z -= Block.BLOCK_SIZE;
+                    continue;
+                }
+
+                return block;
+                checkBlock.Z -= Block.BLOCK_SIZE;
+            }
+            return null;
         }
 
         private static void HandleStop(GameSession session)
