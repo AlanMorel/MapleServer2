@@ -12,7 +12,7 @@ namespace MapleServer2.Packets
         private enum InteractObjectMode : byte
         {
             Use = 0x05,
-            AddInteractActor = 0x08,
+            AddInteractObject = 0x08,
             Extra = 0x0D
         }
 
@@ -22,11 +22,11 @@ namespace MapleServer2.Packets
             Enabled = 0x01
         }
 
-        public static Packet AddInteractActors(ICollection<IFieldObject<InteractObject>> objects)
+        public static Packet AddInteractObjects(ICollection<IFieldObject<InteractObject>> objects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
-            pWriter.WriteEnum(InteractObjectMode.AddInteractActor);
+            pWriter.WriteEnum(InteractObjectMode.AddInteractObject);
             pWriter.WriteInt(objects.Count);
             foreach (IFieldObject<InteractObject> interactObject in objects)
             {

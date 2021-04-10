@@ -94,14 +94,14 @@ namespace MapleServer2.Servers.Game
                 AddPortal(fieldPortal);
             }
 
-            // Load default InteractActors
+            // Load default InteractObjects
             List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
             foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
             {
                 // TODO: Group these fieldActors by their correct packet type. 
                 actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
             }
-            AddInteractActor(actors);
+            AddInteractObject(actors);
 
             string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
             Triggers = TriggerLoader.GetTriggers(mapName).Select(initializer =>
@@ -181,9 +181,9 @@ namespace MapleServer2.Servers.Game
                 sender.Send(FieldPacket.AddMob(existingMob));
                 sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
-            if (State.InteractActors.Values.Count > 0)
+            if (State.InteractObjects.Values.Count > 0)
             {
-                sender.Send(InteractObjectPacket.AddInteractActors(State.InteractActors.Values));
+                sender.Send(InteractObjectPacket.AddInteractObjects(State.InteractObjects.Values));
             }
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
@@ -253,18 +253,18 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-        public void AddInteractActor(ICollection<IFieldObject<Types.InteractObject>> objects)
+        public void AddInteractObject(ICollection<IFieldObject<InteractObject>> objects)
         {
             foreach (IFieldObject<InteractObject> interactObject in objects)
             {
-                State.AddInteractActor(interactObject);
+                State.AddInteractObject(interactObject);
             }
 
             if (objects.Count > 0)
             {
                 Broadcast(session =>
                 {
-                    session.Send(InteractObjectPacket.AddInteractActors(objects));
+                    session.Send(InteractObjectPacket.AddInteractObjects(objects));
                 });
             }
         }
