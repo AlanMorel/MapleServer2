@@ -128,15 +128,19 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 19)]
         public ShopItemFlag Flag;
         [XmlElement(Order = 20)]
-        public short RequiredQuestAlliance;
+        public string TemplateName = "";
         [XmlElement(Order = 21)]
+        public short RequiredQuestAlliance;
+        [XmlElement(Order = 22)]
         public int RequiredFameGrade;
+        [XmlElement(Order = 23)]
+        public bool AutoPreviewEquip;
 
         // Required for deserialization
         public ShopItem() { }
 
         public override string ToString() =>
-            $"ShopItem(UniqueId:{UniqueId},ItemId:{ItemId},TokenType:{TokenType},RequiredItemId:{RequiredItemId},Price:{Price},SalePrice:{SalePrice},ItemRank:{ItemRank},StockCount:{StockCount},StockPurchased:{StockPurchased},GuildTrophy:{GuildTrophy},Category:{Category},RequiredAchievementId:{RequiredAchievementId},RequiredAchievementGrade:{RequiredAchievementGrade},RequiredChampionshipGrade:{RequiredChampionshipGrade},RequiredChampionshipJoinCount:{RequiredChampionshipJoinCount},RequiredGuildMerchantType:{RequiredGuildMerchantType},RequiredGuildMerchantLevel:{RequiredGuildMerchantLevel},Quantity:{Quantity},Flag:{Flag},RequiredQuestAlliance:{RequiredQuestAlliance},RequiredFameGrade:{RequiredFameGrade})";
+            $"ShopItem(UniqueId:{UniqueId},ItemId:{ItemId},TokenType:{TokenType},RequiredItemId:{RequiredItemId},Price:{Price},SalePrice:{SalePrice},ItemRank:{ItemRank},StockCount:{StockCount},StockPurchased:{StockPurchased},GuildTrophy:{GuildTrophy},Category:{Category},RequiredAchievementId:{RequiredAchievementId},RequiredAchievementGrade:{RequiredAchievementGrade},RequiredChampionshipGrade:{RequiredChampionshipGrade},RequiredChampionshipJoinCount:{RequiredChampionshipJoinCount},RequiredGuildMerchantType:{RequiredGuildMerchantType},RequiredGuildMerchantLevel:{RequiredGuildMerchantLevel},Quantity:{Quantity},Flag:{Flag},TemplateName:{TemplateName},RequiredQuestAlliance:{RequiredQuestAlliance},RequiredFameGrade:{RequiredFameGrade},AutoPreviewEquip{AutoPreviewEquip})";
 
         private bool Equals(ShopItem other)
         {
@@ -159,8 +163,10 @@ namespace Maple2Storage.Types.Metadata
                    RequiredGuildMerchantLevel == other.RequiredGuildMerchantLevel &&
                    Quantity == other.Quantity &&
                    Flag == other.Flag &&
+                   TemplateName == other.TemplateName &&
                    RequiredQuestAlliance == other.RequiredQuestAlliance &&
-                   RequiredFameGrade == other.RequiredFameGrade;
+                   RequiredFameGrade == other.RequiredFameGrade &&
+                   AutoPreviewEquip == other.AutoPreviewEquip;
         }
 
         public override bool Equals(object obj)

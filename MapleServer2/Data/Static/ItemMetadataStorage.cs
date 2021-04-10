@@ -161,6 +161,30 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Tag;
         }
 
+        public static EquipColor GetEquipColor(int itemId)
+        {
+            int colorPalette = map.GetValueOrDefault(itemId).ColorPalette;
+            int colorIndex = map.GetValueOrDefault(itemId).ColorIndex;
+
+            if (colorPalette == 0) // item has no color
+            {
+                return EquipColor.Custom(MixedColor.Custom(Color.Argb(0, 0, 0, 0), Color.Argb(0, 0, 0, 0), Color.Argb(0, 0, 0, 0)), colorIndex, colorPalette);
+            }
+
+            ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(colorPalette);
+
+            if (colorPalette > 0 && colorIndex == -1) // random color from color palette
+            {
+                Random random = new Random();
+
+                int index = random.Next(palette.DefaultColors.Count);
+
+                return EquipColor.Argb(palette.DefaultColors[index], colorIndex, colorPalette);
+            }
+
+            return EquipColor.Argb(palette.DefaultColors[colorIndex], colorIndex, colorPalette);
+        }
+
         public static List<ItemBreakReward> GetBreakRewards(int itemId)
         {
             return map.GetValueOrDefault(itemId).BreakRewards;

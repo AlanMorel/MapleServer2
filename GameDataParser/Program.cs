@@ -58,6 +58,7 @@ namespace GameDataParser
                 new ColorPaletteParser(resources),
                 new GachaParser(resources),
                 new MeretMarketParser(),
+                new ItemExtractionParser(resources),
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

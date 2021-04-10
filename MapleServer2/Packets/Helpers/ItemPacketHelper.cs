@@ -22,7 +22,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteLong(item.UnlockTime);
             pWriter.WriteShort(item.RemainingGlamorForges);
             pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteInt(item.GachaDismantleId);
 
             // Write Appearance 
             pWriter.WriteAppearance(item);
@@ -62,6 +62,15 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteBool(true);
                 pWriter.WriteByte((byte) item.GemSlot);
                 pWriter.WriteUnicodeString(item.Id.ToString());
+                switch (item.GemSlot)
+                {
+                    case GemSlot.PET:
+                        pWriter.WriteInt(item.PetSkinBadgeId);
+                        break;
+                    case GemSlot.TRANS:
+                        pWriter.Write(item.TransparencyBadgeBools);
+                        break;
+                }
             }
 
             // Item Transfer Data 0x058AD00
@@ -99,19 +108,14 @@ namespace MapleServer2.Packets.Helpers
 
         private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
         {
-            pWriter.Write<EquipColor>(item.Color);
-            pWriter.WriteInt(item.AppearanceFlag);
+            pWriter.Write(item.Color);
             // Positioning Data
             switch (item.ItemSlot)
             {
                 case ItemSlot.CP:
-                    for (int i = 0; i < 13; i++)
-                    {
-                        pWriter.Write(0);
-                    }
+                    pWriter.Write(item.HatD);
                     break;
                 case ItemSlot.HR:
-                    //pWriter.Write<HairData>(item.HairD);
                     pWriter.Write(item.HairD.BackLength);
                     pWriter.Write(item.HairD.BackPositionCoord);
                     pWriter.Write(item.HairD.BackPositionRotation);

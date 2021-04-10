@@ -412,7 +412,13 @@ namespace GameDataParser.Parsers
                     string[] parameters = function.Attributes["parameter"].Value.Split(",");
                     metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
                 }
-                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook")
+                else if (contentType == "OpenCoupleEffectBox")
+                {
+                    string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                    metadata.FunctionData.Id = int.Parse(parameters[0]);
+                    metadata.FunctionData.Rarity = byte.Parse(parameters[1]);
+                }
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod")
                 {
                     metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
                 }

@@ -43,6 +43,7 @@ namespace MapleServer2.Types
         public bool IsLocked;
         public long UnlockTime;
         public short RemainingGlamorForges;
+        public int GachaDismantleId;
         public int Enchants;
         // EnchantExp (10000 = 100%) for Peachy
         public int EnchantExp;
@@ -54,6 +55,8 @@ namespace MapleServer2.Types
         // For friendship badges
         public long PairedCharacterId;
         public string PairedCharacterName;
+        public int PetSkinBadgeId;
+        public byte[] TransparencyBadgeBools = new byte[10];
 
         public Player Owner;
 
@@ -61,8 +64,9 @@ namespace MapleServer2.Types
 
         public HairData HairD;
 
+        public HatData HatD;
+
         public byte[] FaceDecorationD;
-        public byte AppearanceFlag;
 
         public MusicScore Score;
 
@@ -84,6 +88,7 @@ namespace MapleServer2.Types
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             IsCustomScore = ItemMetadataStorage.GetIsCustomScore(id);
             Gender = ItemMetadataStorage.GetGender(id);
+            RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             FileName = ItemMetadataStorage.GetFileName(id);
             SkillId = ItemMetadataStorage.GetSkillID(id);
@@ -96,6 +101,7 @@ namespace MapleServer2.Types
             Amount = 1;
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, Level);
+            Color = ItemMetadataStorage.GetEquipColor(id);
             CanRepackage = true; // If false, item becomes untradable
         }
 
@@ -126,6 +132,7 @@ namespace MapleServer2.Types
             IsLocked = other.IsLocked;
             UnlockTime = other.UnlockTime;
             RemainingGlamorForges = other.RemainingGlamorForges;
+            GachaDismantleId = other.GachaDismantleId;
             Enchants = other.Enchants;
             EnchantExp = other.EnchantExp;
             CanRepackage = other.CanRepackage;
@@ -134,10 +141,11 @@ namespace MapleServer2.Types
             RemainingTrades = other.RemainingTrades;
             PairedCharacterId = other.PairedCharacterId;
             PairedCharacterName = other.PairedCharacterName;
+            PetSkinBadgeId = other.PetSkinBadgeId;
             Owner = other.Owner;
             Color = other.Color;
             HairD = other.HairD;
-            AppearanceFlag = other.AppearanceFlag;
+            HatD = other.HatD;
             Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
         }
@@ -158,14 +166,14 @@ namespace MapleServer2.Types
             {
                 Uid = 2867972925711604442,
                 CreationTime = 1565575851,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xCC, 0xF7),
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    15
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)
+                    ),
+                    15, 2
                 ),
                 HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-                AppearanceFlag = 2,
             };
         }
 
@@ -175,13 +183,13 @@ namespace MapleServer2.Types
             {
                 Uid = 2754959794416496483,
                 CreationTime = 1558494660,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0xB5, 0x24, 0x29),
                     Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02),
-                    0
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02)
+                    ),
+                    0, 3
                 ),
-                AppearanceFlag = 3,
             };
         }
 
@@ -218,13 +226,13 @@ namespace MapleServer2.Types
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
                     Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)
+                    ),
+                    10, 0x13
                 ),
-                AppearanceFlag = 0x5,
                 TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
             };
         }
@@ -253,13 +261,12 @@ namespace MapleServer2.Types
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
                     Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)),
+                    10, 0x13
                 ),
-                AppearanceFlag = 0x5,
                 TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
             };
         }
@@ -272,13 +279,12 @@ namespace MapleServer2.Types
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
                     Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
+                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)),
+                    10, 0x13
                 ),
-                AppearanceFlag = 0x5,
                 TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
             };
         }
@@ -289,14 +295,13 @@ namespace MapleServer2.Types
             {
                 Uid = 2867972925711604442,
                 CreationTime = 1565575851,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
+                    10, 4
                 ),
                 HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-                AppearanceFlag = 2,
             };
         }
         public static Item EarMale()
@@ -314,13 +319,12 @@ namespace MapleServer2.Types
             {
                 Uid = 2754959794416496483,
                 CreationTime = 1558494660,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xF3, 0xF8),
                     Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02),
-                    0
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02)),
+                    10, 0
                 ),
-                AppearanceFlag = 3,
             };
         }
         public static Item FaceDecorationMale()
@@ -339,11 +343,11 @@ namespace MapleServer2.Types
             {
                 Uid = 2754959794416496484,
                 CreationTime = 1558494660,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
+                    10, 4
                 ),
             };
         }
@@ -354,11 +358,11 @@ namespace MapleServer2.Types
             {
                 Uid = 2754959794416496484,
                 CreationTime = 1558494660,
-                Color = EquipColor.Custom(
+                Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
+                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
+                    10, 4
                 ),
             };
         }
