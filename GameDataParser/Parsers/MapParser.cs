@@ -57,7 +57,7 @@ namespace GameDataParser.Parsers
                 }
             }
 
-            // Parse every block for each map 
+            // Parse every block for each map
             List<MapMetadata> mapsList = new List<MapMetadata>();
             foreach (PackFileEntry entry in Resources.ExportedFiles.Where(x => x.Name.StartsWith("xblock/")))
             {
