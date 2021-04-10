@@ -24,7 +24,7 @@ namespace MapleServer2.Types
             {
                 session.Player.FishAlbum[fish.Id].LargestFish = size;
             }
-            // TODO: Lower exp chance if player's fishing exp is higher than FishingSpot maxMastery
+
             AddMastery(session, fish, false);
 
             if (size >= fish.BigSize[0])
