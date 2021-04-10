@@ -16,7 +16,7 @@ namespace MapleServer2.Types
         public int LargestFish;
         public Fishing() { }
 
-        public void AddExistingFish(GameSession session, FishMetadata fish, int size)
+        public static void AddExistingFish(GameSession session, FishMetadata fish, int size)
         {
             session.Player.FishAlbum[fish.Id].TotalCaught += 1;
 
@@ -33,11 +33,14 @@ namespace MapleServer2.Types
             }
         }
 
-        public void AddNewFish(GameSession session, FishMetadata fish, int size)
+        public static void AddNewFish(GameSession session, FishMetadata fish, int size)
         {
-            session.Player.FishAlbum[fish.Id].FishId = fish.Id;
-            session.Player.FishAlbum[fish.Id].TotalCaught = 1;
-            session.Player.FishAlbum[fish.Id].LargestFish = size;
+            session.Player.FishAlbum[fish.Id] = new Fishing()
+            {
+                FishId = fish.Id,
+                TotalCaught = 1,
+                LargestFish = size
+            };
 
             AddMastery(session, fish, true);
 

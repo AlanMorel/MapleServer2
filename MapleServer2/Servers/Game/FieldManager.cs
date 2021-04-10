@@ -254,12 +254,7 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
         {
-            if (!State.RemoveGuide(fieldGuide.ObjectId))
-            {
-                return false;
-            }
-
-            return true;
+            return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
         public void AddPortal(IFieldObject<Portal> portal)

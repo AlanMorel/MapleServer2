@@ -127,7 +127,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static CoordF GetObjectBlock(List<MapBlock> blocks, CoordF playerCoord)
         {
-            MapBlock guideBlock = blocks.OrderBy(o => Math.Sqrt(Math.Pow((playerCoord.X - o.Coord.X), 2) + Math.Pow((playerCoord.Y - o.Coord.Y), 2))).First();
+            MapBlock guideBlock = blocks.OrderBy(o => Math.Sqrt(Math.Pow(playerCoord.X - o.Coord.X, 2) + Math.Pow(playerCoord.Y - o.Coord.Y, 2))).First();
             return guideBlock.Coord.ToFloat();
         }
 
@@ -139,7 +139,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF checkBlock = startCoord;
             if (direction == Direction.NORTH_EAST)
             {
-                checkBlock.Y += (2 * Block.BLOCK_SIZE); // start at the corner
+                checkBlock.Y += 2 * Block.BLOCK_SIZE; // start at the corner
 
                 for (int yAxis = 0; yAxis < 5; yAxis++)
                 {
@@ -173,7 +173,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else if (direction == Direction.NORTH_WEST)
             {
-                checkBlock.X += (2 * Block.BLOCK_SIZE); // start at the corner
+                checkBlock.X += 2 * Block.BLOCK_SIZE; // start at the corner
 
                 for (int xAxis = 0; xAxis < 5; xAxis++)
                 {
@@ -206,7 +206,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else if (direction == Direction.SOUTH_WEST)
             {
-                checkBlock.Y -= (2 * Block.BLOCK_SIZE); // start at the corner
+                checkBlock.Y -= 2 * Block.BLOCK_SIZE; // start at the corner
 
                 for (int yAxis = 0; yAxis < 5; yAxis++)
                 {
@@ -239,7 +239,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else if (direction == Direction.SOUTH_EAST)
             {
-                checkBlock.X -= (2 * Block.BLOCK_SIZE); // start at the corner
+                checkBlock.X -= 2 * Block.BLOCK_SIZE; // start at the corner
 
                 for (int xAxis = 0; xAxis < 5; xAxis++)
                 {
@@ -280,17 +280,13 @@ namespace MapleServer2.PacketHandlers.Game
                 return false;
             }
 
-            if (block.Attribute == "water" ||
+            return block.Attribute == "water" ||
                 block.Attribute == "seawater" ||
                 block.Attribute == "devilwater" ||
                 block.Attribute == "lava" ||
                 block.Attribute == "poison" ||
                 block.Attribute == "oil" ||
-                block.Attribute == "emeraldwater")
-            {
-                return true;
-            }
-            return false;
+                block.Attribute == "emeraldwater";
         }
 
         private static void HandleStop(GameSession session)
@@ -321,7 +317,7 @@ namespace MapleServer2.PacketHandlers.Game
             int fishSize = rnd.NextDouble() switch
             {
                 >= 0.0 and < 0.03 => rnd.Next(fish.SmallSize[0], fish.SmallSize[1]),
-                >= 0.03 and < 0.15 => rnd.Next((fish.SmallSize[1]), (fish.BigSize[0])),
+                >= 0.03 and < 0.15 => rnd.Next(fish.SmallSize[1], fish.BigSize[0]),
                 >= 0.15 => rnd.Next(fish.SmallSize[0], fish.SmallSize[1]),
                 _ => rnd.Next(fish.SmallSize[0], fish.SmallSize[1]),
             };
@@ -330,22 +326,20 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 if (session.Player.FishAlbum.ContainsKey(fish.Id))
                 {
-                    session.Player.FishAlbum[fish.Id].AddExistingFish(session, fish, fishSize);
+                    Fishing.AddExistingFish(session, fish, fishSize);
                 }
                 else
                 {
-                    session.Player.FishAlbum[fish.Id] = new Fishing();
-                    session.Player.FishAlbum[fish.Id].AddNewFish(session, fish, fishSize);
+                    Fishing.AddNewFish(session, fish, fishSize);
                 }
 
                 session.Send(FishingPacket.CatchFish(session.Player, fish, fishSize, true));
                 HandleCatchItem(session);
                 session.Player.Levels.GainMasteryExp(MasteryType.Fishing, fish.Rarity);
+                return;
             }
-            else
-            {
-                session.Send(FishingPacket.CatchFish(session.Player, fish, fishSize, false));
-            }
+
+            session.Send(FishingPacket.CatchFish(session.Player, fish, fishSize, false));
         }
 
         private static List<FishMetadata> FilterFishesByRarity(List<FishMetadata> fishes)
@@ -375,12 +369,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordB coord = packet.Read<CoordB>();
             CoordS fishingBlock = coord.ToShort();
             MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, fishingBlock);
-            if (block == null)
-            {
-                return;
-            }
-
-            if (!IsLiquidBlock(block))
+            if (block == null || !IsLiquidBlock(block))
             {
                 return;
             }
@@ -409,7 +398,7 @@ namespace MapleServer2.PacketHandlers.Game
                 fishingTick = 20000; // if tick is over the base fishing tick, it will fail
             }
 
-            session.Send(FishingPacket.Start((session.ClientTick + fishingTick), minigame));
+            session.Send(FishingPacket.Start(session.ClientTick + fishingTick, minigame));
         }
 
         private static void HandleFailMinigame()
