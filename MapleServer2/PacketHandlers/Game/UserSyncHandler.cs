@@ -53,6 +53,9 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.FieldPlayer.Coord = syncStates[0].Coord.ToFloat();
+            CoordF rotation = new CoordF();
+            rotation.Z = syncStates[0].Rotation / 10;
+            session.FieldPlayer.Rotation = rotation;
 
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
@@ -60,15 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
                 int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
                 CoordF safeBlock = session.Player.SafeBlock;
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
-                // for some reason if coord is negative player is teleported one block over, which can result player being stuck inside a block
-                if (session.FieldPlayer.Coord.X < 0)
-                {
-                    safeBlock.X -= Block.BLOCK_SIZE;
-                }
-                if (session.FieldPlayer.Coord.Y < 0)
-                {
-                    safeBlock.Y -= Block.BLOCK_SIZE;
-                }
+
                 session.Player.ConsumeHp(fallDamage);
 
                 session.Send(UserMoveByPortalPacket.Move(session, safeBlock, session.Player.Rotation));

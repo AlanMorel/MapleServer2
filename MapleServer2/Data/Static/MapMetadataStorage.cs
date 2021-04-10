@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -28,7 +29,31 @@ namespace MapleServer2.Data.Static
 
         public static bool BlockExists(int mapId, CoordS coord)
         {
-            return !map[mapId].Blocks.Find(x => x == coord).Equals(CoordS.From(0, 0, 0));
+            MapMetadata mapD = GetMetadata(mapId);
+            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            if (block == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool BlockAboveExists(int mapId, CoordS coord)
+        {
+            MapMetadata mapD = GetMetadata(mapId);
+            coord.Z += Block.BLOCK_SIZE;
+            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            if (block == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static MapBlock GetMapBlock(int mapId, CoordS coord)
+        {
+            MapMetadata mapD = GetMetadata(mapId);
+            return mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
         }
     }
 }

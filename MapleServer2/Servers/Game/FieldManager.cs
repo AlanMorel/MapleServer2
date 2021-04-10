@@ -247,6 +247,21 @@ namespace MapleServer2.Servers.Game
             });
         }
 
+        public void AddGuide(IFieldObject<GuideObject> fieldGuide)
+        {
+            State.AddGuide(fieldGuide);
+        }
+
+        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
+        {
+            if (!State.RemoveGuide(fieldGuide.ObjectId))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public void AddPortal(IFieldObject<Portal> portal)
         {
             State.AddPortal(portal);
@@ -374,6 +389,8 @@ namespace MapleServer2.Servers.Game
             public T Value { get; }
 
             public CoordF Coord { get; set; }
+
+            public CoordF Rotation { get; set; }
 
             public FieldObject(int objectId, T value)
             {
