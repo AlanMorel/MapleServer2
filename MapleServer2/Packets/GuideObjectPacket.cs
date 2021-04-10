@@ -41,22 +41,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Sync(IFieldObject<GuideObject> guide, int unk2, CoordS unkCoord)
+        public static Packet Sync(IFieldObject<GuideObject> guide, byte unk2, byte unk3, byte unk4, byte unk5, CoordS unkCoord, short unk6, int unk7)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
             pWriter.WriteEnum(GuideObjectPacketMode.Sync);
             pWriter.WriteInt(guide.ObjectId);
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-            pWriter.Write(guide.Coord);
-            pWriter.WriteShort();
-            pWriter.WriteShort();
-            pWriter.WriteByte();
-            pWriter.Write(guide.Rotation);
-            pWriter.WriteByte();
+            pWriter.WriteByte(unk2);
+            pWriter.WriteByte(unk3);
+            pWriter.WriteByte(unk4);
+            pWriter.WriteByte(unk5);
+            pWriter.Write(guide.Coord.ToShort());
+            pWriter.Write(unkCoord);
+            pWriter.Write(guide.Rotation.ToShort());
+            pWriter.WriteShort(unk6);
+            pWriter.WriteInt(unk7);
 
             return pWriter;
         }
