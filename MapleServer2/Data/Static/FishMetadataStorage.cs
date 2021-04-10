@@ -35,7 +35,7 @@ namespace MapleServer2.Data.Static
         {
             if (habitat == "water") // temp fix for maps with seawater. 
             {
-                return map.Values.Where(x => x.HabitatMapId.Contains(mapId) && 
+                return map.Values.Where(x => x.HabitatMapId.Contains(mapId) &&
                 (x.Habitat == habitat || x.Habitat == "seawater")).ToList();
             }
             return map.Values.Where(x => x.HabitatMapId.Contains(mapId) && x.Habitat == habitat).ToList();

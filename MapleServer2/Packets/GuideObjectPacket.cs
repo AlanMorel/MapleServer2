@@ -14,16 +14,16 @@ namespace MapleServer2.Packets
             Sync = 0x2,
         }
 
-        public static Packet Add(IFieldObject<Player> player, short type)
+        public static Packet Add(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
             pWriter.WriteEnum(GuideObjectPacketMode.Add);
-            pWriter.WriteShort(type);
+            pWriter.WriteShort(player.Value.Guide.Value.Type);
             pWriter.WriteInt(player.Value.Guide.ObjectId);
             pWriter.WriteLong(player.Value.CharacterId);
             pWriter.Write(player.Value.Guide.Coord);
             pWriter.Write(player.Rotation);
-            if (type == 0)
+            if (player.Value.Guide.Value.Type == 0)
             {
                 pWriter.WriteLong();
             }
@@ -45,7 +45,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
             pWriter.WriteEnum(GuideObjectPacketMode.Sync);
-            pWriter.WriteInt(guide.ObjectId); // object Id
+            pWriter.WriteInt(guide.ObjectId);
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteByte();

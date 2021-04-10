@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -15,8 +12,7 @@ namespace MapleServer2.Types
         public int TotalCaught;
         public int TotalPrizeFish;
         public int LargestFish;
-        public Fishing()
-        { }
+        public Fishing() { }
 
         public void AddExistingFish(GameSession session, FishMetadata fish, int size)
         {
@@ -49,7 +45,7 @@ namespace MapleServer2.Types
             }
         }
 
-        public void AddMastery(GameSession session, FishMetadata fish, bool newFish)
+        public static void AddMastery(GameSession session, FishMetadata fish, bool newFish)
         {
             if (newFish)
             {

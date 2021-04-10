@@ -63,7 +63,6 @@ namespace MapleServer2.PacketHandlers.Game
                 int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
                 CoordF safeBlock = session.Player.SafeBlock;
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
-
                 session.Player.ConsumeHp(fallDamage);
 
                 session.Send(UserMoveByPortalPacket.Move(session, safeBlock, session.Player.Rotation));

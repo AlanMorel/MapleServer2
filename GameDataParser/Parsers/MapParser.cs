@@ -32,7 +32,6 @@ namespace GameDataParser.Parsers
                 }
                 if (mapCubes.ContainsKey(objStr))
                 {
-                    System.Console.WriteLine(objStr);
                     continue;
                 }
 
@@ -100,12 +99,12 @@ namespace GameDataParser.Parsers
                     mapBlock.Coord = coordS;
 
                     XmlNode blockType = node.SelectSingleNode("property[@name='CubeType']");
-                    if(blockType != null)
+                    if (blockType != null)
                     {
                         mapBlock.Type = blockType?.FirstChild.Attributes["value"].Value;
                     }
 
-                    if(mapCubes.ContainsKey(modelName))
+                    if (mapCubes.ContainsKey(modelName))
                     {
                         mapBlock.Attribute = mapCubes[modelName];
                     }

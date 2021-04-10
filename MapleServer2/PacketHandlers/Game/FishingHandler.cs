@@ -59,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleStart(session, packet);
                     break;
                 case FishingMode.FailMinigame:
-                    HandleFailMinigame(session, packet);
+                    HandleFailMinigame();
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -111,14 +111,17 @@ namespace MapleServer2.PacketHandlers.Game
             // Adding GuideObject
             CoordF guideBlock = GetObjectBlock(fishingBlocks, session.FieldPlayer.Coord);
             guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
-            GuideObject guide = new GuideObject();
+            GuideObject guide = new GuideObject()
+            {
+                Type = 1,
+            };
             IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
             fieldGuide.Coord = guideBlock;
             session.Player.Guide = fieldGuide;
             session.FieldManager.AddGuide(fieldGuide);
 
             session.Send(FishingPacket.LoadFishTiles(fishingBlocks, rodMetadata.ReduceTime));
-            session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(session.FieldPlayer, 1));
+            session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(session.FieldPlayer));
             session.Send(FishingPacket.PrepareFishing(fishingRodUid));
         }
 
@@ -403,14 +406,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                session.Send(NoticePacket.Notice("This will fail"));
                 fishingTick = 20000; // if tick is over the base fishing tick, it will fail
             }
 
             session.Send(FishingPacket.Start((session.ClientTick + fishingTick), minigame));
         }
 
-        private static void HandleFailMinigame(GameSession session, PacketReader packet)
+        private static void HandleFailMinigame()
         {
             // nothing happens?
         }
