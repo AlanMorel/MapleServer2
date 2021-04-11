@@ -7,7 +7,6 @@ namespace MapleServer2.Packets
     {
         private enum TriggerPacketMode : byte
         {
-            Reset = 0x2,
             Trigger = 0x3,
             Banner = 0x8,
             Timer = 0xE,
