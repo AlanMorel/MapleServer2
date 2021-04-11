@@ -252,7 +252,6 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 return block;
-                checkBlock.Z -= Block.BLOCK_SIZE;
             }
             return null;
         }
