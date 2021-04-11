@@ -13,6 +13,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
         public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
+        public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
 
         public FieldState()
         {
@@ -23,6 +24,7 @@ namespace MapleServer2.Types
             MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
             InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
+            Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -76,6 +78,16 @@ namespace MapleServer2.Types
         public void AddInteractActor(IFieldObject<InteractActor> actor)
         {
             InteractActors[actor.Value.Uuid] = actor;
+        }
+
+        public void AddGuide(IFieldObject<GuideObject> guide)
+        {
+            Guide[guide.ObjectId] = guide;
+        }
+
+        public bool RemoveGuide(int objectId)
+        {
+            return Guide.Remove(objectId, out _);
         }
 
         public void AddMobSpawn(IFieldObject<MobSpawn> spawn)

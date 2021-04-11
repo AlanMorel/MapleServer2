@@ -59,6 +59,9 @@ namespace GameDataParser
                 new GachaParser(resources),
                 new MeretMarketParser(),
                 new ItemExtractionParser(resources),
+                new FishParser(resources),
+                new FishingSpotParser(resources),
+                new FishingRodParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

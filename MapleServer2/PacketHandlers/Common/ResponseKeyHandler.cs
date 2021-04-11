@@ -114,7 +114,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(UserEnvPacket.Send12());
 
             // SendMeretMarket f(0xC9)
-            session.Send(FishingPacket.LoadLog());
+            session.Send(FishingPacket.LoadAlbum(player));
             // SendPvp f(0x16,0x17), ResponsePet f(0x07), 0xF6
             // CharacterAbility
             // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
