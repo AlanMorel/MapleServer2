@@ -36,7 +36,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(); // exp gained
             pWriter.WriteByte(3); // 3 = time
             pWriter.WriteInt(); // clear time
-            pWriter.WriteInt(itemRewards.Count); // quantity of items awarded. Also determines the loop amount
+            pWriter.WriteInt(itemRewards.Count);
 
             foreach (Item item in itemRewards)
             {
@@ -49,9 +49,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(0x0);
             pWriter.WriteByte(0x0);
 
-            if (bonus == true)
+            if (bonus)
             {
-                pWriter.WriteInt(); // quantity of items awarded for bonus. Also determines the loop amount
+                pWriter.WriteInt();
 
                 foreach (Item item in itemRewardsBonus)
                 {
