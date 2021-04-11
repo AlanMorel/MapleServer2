@@ -36,6 +36,9 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (item.Function.Name)
             {
+                case "CallAirTaxi":
+                    HandleCallAirTaxi(session, packet, item);
+                    break;
                 case "ChatEmoticonAdd":
                     HandleChatEmoticonAdd(session, item);
                     break;
@@ -77,9 +80,6 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case "PetExtraction": // Pet skin scroll
                     HandlePetExtraction(session, packet, item);
-                    break;
-                case "CallAirTaxi":
-                    HandleCallAirTaxi(session, packet, item);
                     break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
