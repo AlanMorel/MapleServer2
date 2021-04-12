@@ -322,9 +322,10 @@ namespace MapleServer2.Servers.Game
                 return false;
             }
 
-            if (mob.Value.OriginSpawn.Value.Mobs.Remove(mob) && mob.Value.OriginSpawn.Value.Mobs.Count == 0)
+            IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
+            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
             {
-                StartSpawnTimer(mob.Value.OriginSpawn);
+                StartSpawnTimer(originSpawn);
             }
 
             Broadcast(session =>

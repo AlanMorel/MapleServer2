@@ -80,12 +80,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            session.Send(QuestPacket.CompleteQuest(questId));
-            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
-            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
-            {
-                session.Player.QuestList.Add(new QuestStatus(kvp.Value));
-            }
+
+            session.Player.Levels.GainExp(questStatus.Reward.Exp);
+            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+
             foreach (QuestRewardItem reward in questStatus.RewardItems)
             {
                 Item newItem = new Item(reward.Code)
@@ -98,8 +96,19 @@ namespace MapleServer2.PacketHandlers.Game
                     InventoryController.Add(session, newItem, true);
                 }
             }
-            session.Player.Levels.GainExp(questStatus.Reward.Exp);
-            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+
+            session.Send(QuestPacket.CompleteQuest(questId, true));
+
+            // Add next quest
+            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+            {
+                if (session.Player.QuestList.Exists(x => x.Basic.Id == kvp.Value.Basic.Id))
+                {
+                    continue;
+                }
+                session.Player.QuestList.Add(new QuestStatus(kvp.Value));
+            }
         }
 
         private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
@@ -123,7 +132,7 @@ namespace MapleServer2.PacketHandlers.Game
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-            session.Send(QuestPacket.CompleteQuest(questId));
+            session.Send(QuestPacket.CompleteQuest(questId, false));
         }
 
         private static void HandleAddExplorationQuests(GameSession session, PacketReader packet)
@@ -134,17 +143,18 @@ namespace MapleServer2.PacketHandlers.Game
             for (int i = 0; i < listSize; i++)
             {
                 int questId = packet.ReadInt();
-                if (session.Player.QuestList.Exists(x => x.Basic.Id == questId))
+                if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.Started))
                 {
                     continue;
                 }
 
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                list.Add(new QuestStatus(metadata));
+                QuestStatus questStatus = new QuestStatus(metadata) { Started = true, StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds() };
+                list.Add(questStatus);
+                session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
             }
 
             session.Player.QuestList.AddRange(list);
-            session.Send(QuestPacket.SendQuests(list));
         }
     }
 }

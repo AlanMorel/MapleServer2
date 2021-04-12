@@ -2,6 +2,7 @@
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -150,6 +151,14 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     mobs[i].Value.UpdateStats(session.FieldPlayer.Value.SkillCast.GetDamage());
                     session.Send(StatPacket.UpdateMobStats(mobs[i]));
+
+                    // TODO: There needs to be a more centralized way to give rewards from killing mobs...
+                    // TODO: Add trophy, exp, meso and item drops
+                    if (mobs[i].Value.IsDead)
+                    {
+                        QuestHelper.UpdateQuest(session, mobs[i].Value.Id.ToString(), "npc");
+                    }
+
                     if (mobs[i].Value.Id == 29000128) // Temp fix for tutorial barrier
                     {
                         session.Send("4F 00 03 E8 03 00 00 00 00 00 00 00 00 00 00 00 00 80 3F".ToByteArray());

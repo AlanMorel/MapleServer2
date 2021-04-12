@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -68,7 +69,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int Id;
         [XmlElement(Order = 3)]
-        public byte QuestType;
+        public QuestType QuestType;
         [XmlElement(Order = 4)]
         public byte Account;
         [XmlElement(Order = 5)]
@@ -202,24 +203,21 @@ namespace Maple2Storage.Types.Metadata
         public byte Rank;
         [XmlElement(Order = 3)]
         public int Count;
-        [XmlElement(Order = 4)]
-        public bool JobItem;
 
         public QuestRewardItem()
         {
         }
 
-        public QuestRewardItem(int pItemId, byte pRank, int pCount, bool jobItem)
+        public QuestRewardItem(int pItemId, byte pRank, int pCount)
         {
             Code = pItemId;
             Rank = pRank;
             Count = pCount;
-            JobItem = jobItem;
         }
 
         public override string ToString()
         {
-            return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}, JobItem: {JobItem}";
+            return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}";
         }
     }
 
@@ -352,25 +350,27 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public string[] Codes;
         [XmlElement(Order = 3)]
-        public int Value;
+        public int Goal;
         [XmlElement(Order = 4)]
+        public int Current { get; set; }
+        [XmlElement(Order = 5)]
         public List<string> Target = new List<string>();
 
         public QuestCondition()
         {
         }
 
-        public QuestCondition(string type, string[] codes, int value, List<string> target)
+        public QuestCondition(string type, string[] codes, int goal, List<string> target)
         {
             Type = type;
             Codes = codes;
-            Value = value;
+            Goal = goal;
             Target = target;
         }
 
         public override string ToString()
         {
-            return $"\r\ntype: {Type}, codes: {Codes}, value: {Value}, Targets: {string.Join(",", Target)}";
+            return $"\r\ntype: {Type}, codes: {Codes}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
         }
     }
 
