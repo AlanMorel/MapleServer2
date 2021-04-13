@@ -32,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
             // [knuckles] Pugilist knuckles - 15500514
             // [orb] Guidance training orb - 15600514
 
-            int[] itemIds = new int[] { 15100216, 15200223, 13200220, 14100190, 15000224, 13300219, 14000181, 15300199, 13100225, 13400218, 15400274, 15500514, 15600514, };
+            int[] itemIds = new int[] { 15100216, 15200223, 13200220, 14100190, 15000224, 13300219, 14000181, 15300199, 13100225, 13400218, 15400274, 15500514, 15600514 };
             foreach (int id in itemIds)
             {
                 ItemMetadata metadata = ItemMetadataStorage.GetMetadata(id);

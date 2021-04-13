@@ -149,7 +149,11 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                QuestStatus questStatus = new QuestStatus(metadata) { Started = true, StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds() };
+                QuestStatus questStatus = new QuestStatus(metadata)
+                {
+                    Started = true,
+                    StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds()
+                };
                 list.Add(questStatus);
                 session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
             }
