@@ -213,7 +213,10 @@ namespace Maple2Storage.Types
 
         public readonly CoordF ToFloat()
         {
-            return CoordF.From(X, Y, Z);
+            return CoordF.From(
+                (float) (X * Block.BLOCK_SIZE),
+                (float) (Y * Block.BLOCK_SIZE),
+                (float) (Z * Block.BLOCK_SIZE));
         }
 
         public readonly CoordS ToShort()
@@ -221,8 +224,7 @@ namespace Maple2Storage.Types
             return CoordS.From(
                 (short) (X * Block.BLOCK_SIZE),
                 (short) (Y * Block.BLOCK_SIZE),
-                (short) (Z * Block.BLOCK_SIZE))
-            ;
+                (short) (Z * Block.BLOCK_SIZE));
         }
 
         public static bool operator ==(CoordB left, CoordB right)

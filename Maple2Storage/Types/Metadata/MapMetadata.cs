@@ -34,6 +34,8 @@ namespace Maple2Storage.Types.Metadata
         public string Attribute;
         [XmlElement(Order = 3)]
         public string Type;
+        [XmlElement(Order = 4)]
+        public int SaleableGroup;
 
         public MapBlock() { }
 

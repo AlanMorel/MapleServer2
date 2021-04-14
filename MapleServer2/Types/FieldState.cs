@@ -14,6 +14,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
         public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
+        public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
 
         public FieldState()
         {
@@ -25,6 +26,7 @@ namespace MapleServer2.Types
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
             InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
+            Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -88,6 +90,16 @@ namespace MapleServer2.Types
         public bool RemoveGuide(int objectId)
         {
             return Guide.Remove(objectId, out _);
+        }
+
+        public void AddUGCCube(IFieldObject<Cube> ugcCube)
+        {
+            Cubes[ugcCube.ObjectId] = ugcCube;
+        }
+
+        public bool RemoveUGCCube(int objectId)
+        {
+            return Cubes.Remove(objectId, out _);
         }
 
         public void AddMobSpawn(IFieldObject<MobSpawn> spawn)

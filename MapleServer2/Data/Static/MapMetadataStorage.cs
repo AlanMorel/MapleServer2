@@ -51,5 +51,28 @@ namespace MapleServer2.Data.Static
             MapMetadata mapD = GetMetadata(mapId);
             return mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
         }
+
+        public static int GetPlotNumber(int mapId, CoordB coord)
+        {
+            CoordS coordS = coord.ToShort();
+            List<MapBlock> blocks = new List<MapBlock>();
+            MapMetadata mapD = GetMetadata(mapId);
+            for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
+            {
+                MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coordS);
+                if(block == null)
+                {
+                    coordS.Z -= Block.BLOCK_SIZE;
+                    continue;
+                }
+
+                if (block.SaleableGroup > 0)
+                {
+                    return block.SaleableGroup;
+                }
+                coordS.Z -= Block.BLOCK_SIZE;
+            }
+            return 0;
+        }
     }
 }

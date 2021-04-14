@@ -111,17 +111,14 @@ namespace MapleServer2.PacketHandlers.Game
             // Adding GuideObject
             CoordF guideBlock = GetObjectBlock(fishingBlocks, session.FieldPlayer.Coord);
             guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
-            GuideObject guide = new GuideObject()
-            {
-                Type = 1,
-            };
+            GuideObject guide = new GuideObject(1, session.Player.CharacterId) { };
             IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
             fieldGuide.Coord = guideBlock;
             session.Player.Guide = fieldGuide;
             session.FieldManager.AddGuide(fieldGuide);
 
             session.Send(FishingPacket.LoadFishTiles(fishingBlocks, rodMetadata.ReduceTime));
-            session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
             session.Send(FishingPacket.PrepareFishing(fishingRodUid));
         }
 
@@ -259,7 +256,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleStop(GameSession session)
         {
             session.Send(FishingPacket.Stop());
-            session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
             session.FieldManager.RemoveGuide(session.FieldPlayer.Value.Guide);
             session.Player.Guide = null; // remove guide from player
         }

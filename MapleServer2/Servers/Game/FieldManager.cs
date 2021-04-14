@@ -185,6 +185,14 @@ namespace MapleServer2.Servers.Game
             {
                 sender.Send(InteractActorPacket.AddInteractActors(State.InteractActors.Values));
             }
+            if (State.Cubes.Values.Count > 0)
+            {
+                sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
+            }
+            foreach(IFieldObject<GuideObject> guide in State.Guide.Values)
+            {
+                sender.Send(GuideObjectPacket.Add(guide));
+            }
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 if (HealingSpotThread == null || HealingSpotThread.IsCompleted)
@@ -193,6 +201,7 @@ namespace MapleServer2.Servers.Game
                 }
                 sender.Send(RegionSkillPacket.Send(player, MapEntityStorage.GetHealingSpot(MapId), new SkillCast(70000018, 1, 0, 1)));
             }
+
             State.AddPlayer(player);
 
             // Broadcast new player to all players in map
@@ -255,6 +264,17 @@ namespace MapleServer2.Servers.Game
         public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
         {
             return State.RemoveGuide(fieldGuide.ObjectId);
+        }
+
+        public void AddUGCCube(IFieldObject<Cube> cube)
+        {
+            State.AddUGCCube(cube);
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube));
+        }
+
+        public bool RemoveUGCCube(IFieldObject<Cube> cube)
+        {
+            return State.RemoveUGCCube(cube.ObjectId);
         }
 
         public void AddPortal(IFieldObject<Portal> portal)
