@@ -20,7 +20,7 @@ namespace MapleServer2.Packets
             ReplaceCube = 0xF,
             Pickup = 0x11,
             Drop = 0x12,
-            UpdatePlot = 0x14,
+            LoadHome = 0x14,
             NameHome = 0x15,
             PurchasePlot = 0x16
         }
@@ -42,7 +42,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.EnablePlotFurnishing);
             pWriter.WriteByte(); // disable bool
-            pWriter.WriteInt(player.HomeMapPlotId);
+            pWriter.WriteInt(player.HomePlotNumber);
             pWriter.WriteInt(player.ApartmentNumber);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(player.HomeExpiration);
@@ -137,19 +137,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdatePlot(IFieldObject<Player> fieldPlayer)
+        public static Packet LoadHome(IFieldObject<Player> fieldPlayer)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.UpdatePlot);
+            pWriter.WriteEnum(ResponseCubePacketMode.LoadHome);
             pWriter.WriteInt(fieldPlayer.ObjectId);
-            pWriter.WriteInt(62000000);// interior map ID?
             pWriter.WriteInt(fieldPlayer.Value.HomeMapId);
-            pWriter.WriteInt(fieldPlayer.Value.HomeMapPlotId);
+            pWriter.WriteInt(fieldPlayer.Value.PlotMapId);
+            pWriter.WriteInt(fieldPlayer.Value.HomePlotNumber);
             pWriter.WriteInt(fieldPlayer.Value.ApartmentNumber);
             pWriter.WriteUnicodeString(fieldPlayer.Value.HomeName);
             pWriter.WriteLong(fieldPlayer.Value.HomeExpiration);
-            pWriter.WriteLong(); // some timestamp
-            pWriter.WriteByte();
+            pWriter.WriteLong();
+            pWriter.WriteByte(1);
             return pWriter;
         }
 
@@ -159,7 +159,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ResponseCubePacketMode.NameHome);
             pWriter.WriteByte();
             pWriter.WriteLong(player.AccountId);
-            pWriter.WriteInt(player.HomeMapPlotId);
+            pWriter.WriteInt(player.HomePlotNumber);
             pWriter.WriteInt(player.ApartmentNumber);
             pWriter.WriteUnicodeString(player.HomeName);
             return pWriter;
@@ -168,7 +168,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.PurchasePlot);
-            pWriter.WriteInt(player.HomeMapPlotId);
+            pWriter.WriteInt(player.HomePlotNumber);
             pWriter.WriteInt(player.ApartmentNumber);
             pWriter.WriteByte(1);
             pWriter.WriteLong(player.HomeExpiration);

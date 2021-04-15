@@ -231,6 +231,7 @@ namespace MapleServer2.Network
                     {
                         case RecvOp.USER_SYNC:
                         case RecvOp.KEY_TABLE:
+                        case RecvOp.GUIDE_OBJECT_SYNC:
                             break;
                         default:
                             string packetString = packet.ToString();

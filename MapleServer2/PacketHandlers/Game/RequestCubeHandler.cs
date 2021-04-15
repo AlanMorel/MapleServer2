@@ -89,19 +89,19 @@ namespace MapleServer2.PacketHandlers.Game
 
             UGCMapGroup land = UGCMapMetadataStorage.GetMetadata(session.Player.MapId, (byte) groupId);
 
-            if(!HandlePlotPayment(session, land.PriceItemCode, land.Price))
+            if (!HandlePlotPayment(session, land.PriceItemCode, land.Price))
             {
                 return;
             }
 
-            session.Player.HomeMapId = session.Player.MapId;
-            session.Player.HomeMapPlotId = land.Id;
+            session.Player.PlotMapId = session.Player.MapId;
+            session.Player.HomePlotNumber = land.Id;
             session.Player.HomeExpiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (land.ContractDate * (24 * 60 * 60));
             session.Player.HomeName = session.Player.Name;
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(session.Player));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePlotFurnishing(session.Player));
-            session.Send(ResponseCubePacket.UpdatePlot(session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.NameHome(session.Player), session);
             session.Send(ResponseCubePacket.CompletePurchase());
         }
@@ -267,7 +267,7 @@ namespace MapleServer2.PacketHandlers.Game
             string name = packet.ReadUnicodeString();
             session.Player.HomeName = name;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.NameHome(session.Player));
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdatePlot(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
         }
 
         private static bool PurchaseFurnishingItem(GameSession session, FurnishingShopMetadata shop) // bool it

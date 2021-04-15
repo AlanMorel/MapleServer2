@@ -72,10 +72,11 @@ namespace MapleServer2.Types
         public string Motto = "";
 
         // Home
-        public int HomeMapId;
-        public int HomeMapPlotId;
+        public int HomeMapId = 62000000;
+        public int PlotMapId;
+        public int HomePlotNumber;
         public int ApartmentNumber;
-        public long HomeExpiration;
+        public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
         public string HomeName = "";
 
         public Vector3 ReturnPosition;
