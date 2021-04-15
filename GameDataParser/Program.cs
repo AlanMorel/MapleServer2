@@ -61,7 +61,9 @@ namespace GameDataParser
                 new ItemExtractionParser(resources),
                 new FishParser(resources),
                 new FishingSpotParser(resources),
-                new FishingRodParser(resources)
+                new FishingRodParser(resources),
+                new UGCMapParser(resources),
+                new FurnishingShopParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

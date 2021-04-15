@@ -14,16 +14,16 @@ namespace MapleServer2.Packets
             Sync = 0x2,
         }
 
-        public static Packet Add(IFieldObject<Player> player)
+        public static Packet Add(IFieldObject<GuideObject> guide)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
             pWriter.WriteEnum(GuideObjectPacketMode.Add);
-            pWriter.WriteShort(player.Value.Guide.Value.Type);
-            pWriter.WriteInt(player.Value.Guide.ObjectId);
-            pWriter.WriteLong(player.Value.CharacterId);
-            pWriter.Write(player.Value.Guide.Coord);
-            pWriter.Write(player.Rotation);
-            if (player.Value.Guide.Value.Type == 0)
+            pWriter.WriteShort(guide.Value.Type);
+            pWriter.WriteInt(guide.ObjectId);
+            pWriter.WriteLong(guide.Value.BoundCharacterId);
+            pWriter.Write(guide.Coord);
+            pWriter.Write(guide.Rotation);
+            if (guide.Value.Type == 0)
             {
                 pWriter.WriteLong();
             }
@@ -31,12 +31,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Remove(IFieldObject<Player> player)
+        public static Packet Remove(IFieldObject<GuideObject> guide)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
             pWriter.WriteEnum(GuideObjectPacketMode.Remove);
-            pWriter.WriteInt(player.Value.Guide.ObjectId);
-            pWriter.WriteLong(player.Value.CharacterId);
+            pWriter.WriteInt(guide.ObjectId);
+            pWriter.WriteLong(guide.Value.BoundCharacterId);
 
             return pWriter;
         }
