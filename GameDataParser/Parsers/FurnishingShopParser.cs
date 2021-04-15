@@ -21,23 +21,21 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/key");
+                foreach (XmlNode node in nodes)
                 {
-                    if (node.Name == "key")
+                    FurnishingShopMetadata metadata = new FurnishingShopMetadata();
+
+                    metadata.ItemId = int.Parse(node.Attributes["id"].Value);
+                    byte buyable = byte.Parse(node.Attributes["ugcHousingBuy"].Value);
+                    if (buyable == 1)
                     {
-                        FurnishingShopMetadata metadata = new FurnishingShopMetadata();
-
-                        metadata.ItemId = int.Parse(node.Attributes["id"].Value);
-                        byte buyable = byte.Parse(node.Attributes["ugcHousingBuy"].Value);
-                        if (buyable == 1)
-                        {
-                            metadata.Buyable = true;
-                        }
-                        metadata.FurnishingTokenType = byte.Parse(node.Attributes["ugcHousingMoneyType"].Value);
-                        metadata.Price = int.Parse(node.Attributes["ugcHousingDefaultPrice"].Value);
-
-                        furnishingShops.Add(metadata);
+                        metadata.Buyable = true;
                     }
+                    metadata.FurnishingTokenType = byte.Parse(node.Attributes["ugcHousingMoneyType"].Value);
+                    metadata.Price = int.Parse(node.Attributes["ugcHousingDefaultPrice"].Value);
+
+                    furnishingShops.Add(metadata);
                 }
             }
             return furnishingShops;

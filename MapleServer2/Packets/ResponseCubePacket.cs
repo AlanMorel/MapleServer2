@@ -66,7 +66,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(cube.Value.PlotNumber);
             pWriter.WriteInt();
-            pWriter.Write(cube.Coord.ToShort().ToByte());
+            pWriter.Write(cube.Coord.ToByte());
             pWriter.WriteByte();
             pWriter.WriteLong(cube.Value.Item.Uid);
             pWriter.WriteInt(cube.Value.Item.Id);
@@ -100,7 +100,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
-            pWriter.Write(newCube.Coord.ToShort().ToByte());
+            pWriter.Write(newCube.Coord.ToByte());
             pWriter.WriteByte();
             pWriter.WriteInt(newCube.Value.Item.Id);
             pWriter.WriteLong(newCube.Value.Item.Uid);

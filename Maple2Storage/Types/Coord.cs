@@ -30,6 +30,14 @@ namespace Maple2Storage.Types
             return CoordS.From((short) X, (short) Y, (short) Z);
         }
 
+        public readonly CoordB ToByte()
+        {
+            return CoordB.From(
+                (sbyte) (X / Block.BLOCK_SIZE),
+                (sbyte) (Y / Block.BLOCK_SIZE),
+                (sbyte) (Z / Block.BLOCK_SIZE));
+        }
+
         public static bool operator ==(CoordF left, CoordF right)
         {
             return Equals(left, right);

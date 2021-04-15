@@ -115,46 +115,22 @@ namespace MapleServer2.PacketHandlers.Game
                 case 90000001:
                 case 90000002:
                 case 90000003:
-                    if (!session.Player.Wallet.Meso.Modify(-price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return !session.Player.Wallet.Meso.Modify(-price);
                 case 90000004:
-                    if (!session.Player.Wallet.RemoveMerets(price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.RemoveMerets(price);
                 case 90000006:
-                    if (!session.Player.Wallet.ValorToken.Modify(-price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.ValorToken.Modify(-price);
                 case 90000013:
-                    if (!session.Player.Wallet.Rue.Modify(-price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.Rue.Modify(-price);
                 case 90000014:
-                    if (!session.Player.Wallet.HaviFruit.Modify(-price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.HaviFruit.Modify(-price);
                 case 90000017:
-                    if (!session.Player.Wallet.Treva.Modify(-price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.Treva.Modify(-price);
                 default:
                     session.SendNotice($"Unknown item currency: {priceItemCode}");
-                    return false;
+                    break;
             }
-            return true;
+            return false;
         }
 
         private static void HandleForfeitPlot()
@@ -299,22 +275,14 @@ namespace MapleServer2.PacketHandlers.Game
             switch (shop.FurnishingTokenType)
             {
                 case 1: // meso
-                    if (!session.Player.Wallet.Meso.Modify(-shop.Price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.Meso.Modify(-shop.Price);
                 case 3: // meret
-                    if (!session.Player.Wallet.RemoveMerets(shop.Price))
-                    {
-                        return false;
-                    }
-                    break;
+                    return session.Player.Wallet.RemoveMerets(shop.Price);
                 default:
                     session.SendNotice($"Unknown currency: {shop.FurnishingTokenType}");
-                    return false;
+                    break;
             }
-            return true;
+            return false;
         }
     }
 }

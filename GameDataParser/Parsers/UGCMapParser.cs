@@ -28,34 +28,32 @@ namespace GameDataParser.Parsers
                 metadata.MapId = int.Parse(filename);
 
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ugcmap/group");
+
+                foreach (XmlNode node in nodes)
                 {
-                    if (node.Name == "group")
+                    UGCMapGroup group = new UGCMapGroup();
+
+                    group.Id = byte.Parse(node.Attributes["no"].Value);
+                    group.Price = int.Parse(node.Attributes["contractPrice"].Value);
+                    group.PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value);
+                    group.ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value);
+                    group.ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value);
+                    group.ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value);
+                    group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
+                    group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
+                    group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
+                    if (node.Attributes["returnPlaceID"] != null)
                     {
-                        UGCMapGroup group = new UGCMapGroup();
-
-                        group.Id = byte.Parse(node.Attributes["no"].Value);
-                        group.Price = int.Parse(node.Attributes["contractPrice"].Value);
-                        group.PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value);
-                        group.ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value);
-                        group.ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value);
-                        group.ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value);
-                        group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
-                        group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
-                        group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
-                        if (node.Attributes["returnPlaceID"] != null)
-                        {
-                            group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"].Value);
-                        }
-                        group.Area = short.Parse(node.Attributes["area"].Value);
-                        group.SellType = byte.Parse(node.Attributes["sellType"].Value);
-                        group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);
-                        group.HouseNumber = short.Parse(node.Attributes["houseNumber"].Value);
-
-                        metadata.Groups.Add(group);
+                        group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"].Value);
                     }
-                }
+                    group.Area = short.Parse(node.Attributes["area"].Value);
+                    group.SellType = byte.Parse(node.Attributes["sellType"].Value);
+                    group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);
+                    group.HouseNumber = short.Parse(node.Attributes["houseNumber"].Value);
 
+                    metadata.Groups.Add(group);
+                }
                 ugcmap.Add(metadata);
             }
             return ugcmap;
