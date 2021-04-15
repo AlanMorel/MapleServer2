@@ -61,7 +61,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Guide = fieldGuide;
             session.FieldManager.AddGuide(fieldGuide);
 
-
             session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
             session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.FieldPlayer, true, furnishingItemId, furnishingItemUid));
         }
