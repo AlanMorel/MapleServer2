@@ -115,7 +115,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case 90000001:
                 case 90000002:
                 case 90000003:
-                    return !session.Player.Wallet.Meso.Modify(-price);
+                    return session.Player.Wallet.Meso.Modify(-price);
                 case 90000004:
                     return session.Player.Wallet.RemoveMerets(price);
                 case 90000006:
