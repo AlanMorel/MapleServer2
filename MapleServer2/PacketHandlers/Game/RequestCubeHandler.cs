@@ -202,7 +202,7 @@ namespace MapleServer2.PacketHandlers.Game
                 IFieldObject<Cube> fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coord.ToFloat();
                 fieldCube.Rotation = rotation;
-                session.FieldManager.AddCube(fieldCube);
+                session.FieldManager.AddCube(fieldCube, session.FieldPlayer);
             }
         }
 
@@ -252,7 +252,7 @@ namespace MapleServer2.PacketHandlers.Game
             fieldCube.Rotation = rotation;
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, fieldCube));
-            session.FieldManager.AddCube(fieldCube);
+            session.FieldManager.AddCube(fieldCube, session.FieldPlayer);
         }
 
         private static void HandlePickup(GameSession session, PacketReader packet)

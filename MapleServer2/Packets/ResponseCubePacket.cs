@@ -57,24 +57,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlaceFurnishing(IFieldObject<Cube> cube)
+        public static Packet PlaceFurnishing(IFieldObject<Cube> cube, IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
             pWriter.WriteBool(false); // unk bool
-            pWriter.WriteInt(cube.ObjectId); // objectId PALYER!
-            pWriter.WriteInt(cube.ObjectId); // objectId PALYER!
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(cube.Value.PlotNumber);
             pWriter.WriteInt();
-            pWriter.Write(cube.Coord.ToShort().ToByte()); // coords of block
+            pWriter.Write(cube.Coord.ToShort().ToByte());
             pWriter.WriteByte();
-            pWriter.WriteLong(cube.Value.Item.Uid); // item uid
-            pWriter.WriteInt(cube.Value.Item.Id); // itemid
-            pWriter.WriteLong(cube.Value.Item.Uid); // item uid
+            pWriter.WriteLong(cube.Value.Item.Uid);
+            pWriter.WriteInt(cube.Value.Item.Id);
+            pWriter.WriteLong(cube.Value.Item.Uid);
             pWriter.WriteLong();
             pWriter.WriteByte();
             pWriter.WriteByte();
-            pWriter.Write(cube.Rotation.Z); // CoordF.Z rotation
+            pWriter.Write(cube.Rotation.Z);
             pWriter.WriteInt();
             pWriter.WriteByte();
             return pWriter;

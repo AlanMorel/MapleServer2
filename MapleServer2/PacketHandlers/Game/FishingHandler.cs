@@ -111,7 +111,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Adding GuideObject
             CoordF guideBlock = GetObjectBlock(fishingBlocks, session.FieldPlayer.Coord);
             guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
-            GuideObject guide = new GuideObject(1, session.Player.CharacterId) { };
+            GuideObject guide = new GuideObject(1, session.Player.CharacterId);
             IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
             fieldGuide.Coord = guideBlock;
             session.Player.Guide = fieldGuide;

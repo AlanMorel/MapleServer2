@@ -16,6 +16,7 @@ namespace MapleServer2.Packets
             UpdateQuantity = 0x5,
             EndList = 0x8,
         }
+
         public static Packet StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
