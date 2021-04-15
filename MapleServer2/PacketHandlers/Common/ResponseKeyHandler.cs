@@ -99,7 +99,7 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(TrophyPacket.WriteTableContent(trophy));
             }
 
-            session.Send(WarehouseInventoryPacket.Count(session.Player.FurnishingInventory)); // Typically sent after buddylist
+            session.Send(WarehouseInventoryPacket.Count()); // Typically sent after buddylist
             session.Send(WarehouseInventoryPacket.StartList());
             session.Send(WarehouseInventoryPacket.EndList());
             session.Send(FurnishingInventoryPacket.StartList());

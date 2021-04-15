@@ -60,7 +60,7 @@ namespace MapleServer2.Data.Static
             for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
             {
                 MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coordS);
-                if(block == null)
+                if (block == null)
                 {
                     coordS.Z -= Block.BLOCK_SIZE;
                     continue;

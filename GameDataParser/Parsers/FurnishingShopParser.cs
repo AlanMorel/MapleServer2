@@ -20,7 +20,6 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {

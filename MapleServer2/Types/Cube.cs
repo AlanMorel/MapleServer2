@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Enums;
-using MapleServer2.Tools;
+﻿using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -13,6 +12,7 @@ namespace MapleServer2.Types
         {
             Id = GuidGenerator.Long();
             Item = item;
+            PlotNumber = plotNumber;
         }
     }
 }

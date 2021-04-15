@@ -92,12 +92,12 @@ namespace MapleServer2.Types
             return Guide.Remove(objectId, out _);
         }
 
-        public void AddUGCCube(IFieldObject<Cube> ugcCube)
+        public void AddCube(IFieldObject<Cube> ugcCube)
         {
             Cubes[ugcCube.ObjectId] = ugcCube;
         }
 
-        public bool RemoveUGCCube(int objectId)
+        public bool RemoveCube(int objectId)
         {
             return Cubes.Remove(objectId, out _);
         }

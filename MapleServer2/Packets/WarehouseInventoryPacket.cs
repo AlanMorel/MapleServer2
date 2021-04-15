@@ -18,39 +18,39 @@ namespace MapleServer2.Packets
         }
         public static Packet StartList()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.StartList);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.StartList);
             return pWriter;
         }
 
         public static Packet Load(Item item) // this packet is wrong. It needs a modified version of WriteItem
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.Load);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.Load);
             pWriter.WriteItem(item);
             return pWriter;
         }
 
-        public static Packet Count(FurnishingInventory inventory)
+        public static Packet Count()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.Count);
-            pWriter.WriteInt(inventory.Items.Count);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.Count);
+            pWriter.WriteInt();
             return pWriter;
         }
 
         public static Packet Add(long itemUid)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.Add);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.Add);
             pWriter.WriteLong(itemUid);
             return pWriter;
         }
 
         public static Packet UpdateQuantity(Item item)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.UpdateQuantity);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.UpdateQuantity);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(item.Amount);
             return pWriter;
@@ -58,8 +58,8 @@ namespace MapleServer2.Packets
 
         public static Packet EndList()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MARKET_INVENTORY);
-            pWriter.WriteEnum(MarketInventoryPacketMode.EndList);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.EndList);
             return pWriter;
         }
     }

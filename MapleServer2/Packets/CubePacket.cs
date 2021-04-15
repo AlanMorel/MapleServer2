@@ -1,12 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-
     public static class CubePacket
     {
         private enum CubePacketMode : byte
@@ -21,7 +19,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(CubePacketMode.LoadCubes);
             pWriter.WriteByte();
             pWriter.WriteInt(fieldCube.Count);
-            foreach(IFieldObject<Cube> cube in fieldCube)
+            foreach (IFieldObject<Cube> cube in fieldCube)
             {
                 pWriter.Write(cube.Coord.ToShort().ToByte());
                 pWriter.WriteByte();

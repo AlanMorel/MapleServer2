@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -39,7 +38,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 4)]
         public int ExtensionPrice;
         [XmlElement(Order = 5)]
-        public int  ExtensionPriceItemCode;
+        public int ExtensionPriceItemCode;
         [XmlElement(Order = 6)]
         public short ContractDate;
         [XmlElement(Order = 7)]

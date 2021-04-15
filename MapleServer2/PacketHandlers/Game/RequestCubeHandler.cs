@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -45,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleBuyPlot(session, packet);
                     break;
                 case RequestCubeMode.ForfeitPlot:
-                    HandleForfeitPlot(session);
+                    HandleForfeitPlot();
                     break;
                 case RequestCubeMode.HandleAddFurnishing:
                     HandleAddFurnishing(session, packet);
@@ -54,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleRemoveCube(session, packet);
                     break;
                 case RequestCubeMode.RotateCube:
-                    HandleRotateCube(session, packet);
+                    HandleRotateCube(packet);
                     break;
                 case RequestCubeMode.ReplaceCube:
                     HandleReplaceCube(session, packet);
@@ -90,11 +89,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             UGCMapGroup land = UGCMapMetadataStorage.GetMetadata(session.Player.MapId, (byte) groupId);
 
-            /*
             if(!HandlePlotPayment(session, land.PriceItemCode, land.Price))
             {
                 return;
-            }*/
+            }
 
             session.Player.HomeMapId = session.Player.MapId;
             session.Player.HomeMapPlotId = land.Id;
@@ -159,7 +157,7 @@ namespace MapleServer2.PacketHandlers.Game
             return true;
         }
 
-        private static void HandleForfeitPlot(GameSession session)
+        private static void HandleForfeitPlot()
         {
             // TODO
         }
@@ -204,9 +202,8 @@ namespace MapleServer2.PacketHandlers.Game
                 IFieldObject<Cube> fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coord.ToFloat();
                 fieldCube.Rotation = rotation;
-                session.FieldManager.AddUGCCube(fieldCube);
+                session.FieldManager.AddCube(fieldCube);
             }
-
         }
 
         private static void HandleRemoveCube(GameSession session, PacketReader packet)
@@ -219,7 +216,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ResponseCubePacket.RemoveCube(session.FieldPlayer, coord));
         }
 
-        private static void HandleRotateCube(GameSession session, PacketReader packet)
+        private static void HandleRotateCube(PacketReader packet)
         {
             CoordB coord = packet.Read<CoordB>();
 
@@ -255,8 +252,7 @@ namespace MapleServer2.PacketHandlers.Game
             fieldCube.Rotation = rotation;
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, fieldCube));
-
-            session.FieldManager.AddUGCCube(fieldCube);
+            session.FieldManager.AddCube(fieldCube);
         }
 
         private static void HandlePickup(GameSession session, PacketReader packet)
@@ -296,7 +292,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.HomeName = name;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.NameHome(session.Player));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdatePlot(session.FieldPlayer));
-
         }
 
         private static bool PurchaseFurnishingItem(GameSession session, FurnishingShopMetadata shop) // bool it
@@ -321,6 +316,5 @@ namespace MapleServer2.PacketHandlers.Game
             }
             return true;
         }
-
     }
 }

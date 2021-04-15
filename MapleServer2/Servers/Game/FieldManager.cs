@@ -189,7 +189,7 @@ namespace MapleServer2.Servers.Game
             {
                 sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
             }
-            foreach(IFieldObject<GuideObject> guide in State.Guide.Values)
+            foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
             {
                 sender.Send(GuideObjectPacket.Add(guide));
             }
@@ -203,7 +203,6 @@ namespace MapleServer2.Servers.Game
             }
 
             State.AddPlayer(player);
-
             // Broadcast new player to all players in map
             Broadcast(session =>
             {
@@ -266,15 +265,15 @@ namespace MapleServer2.Servers.Game
             return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
-        public void AddUGCCube(IFieldObject<Cube> cube)
+        public void AddCube(IFieldObject<Cube> cube)
         {
-            State.AddUGCCube(cube);
+            State.AddCube(cube);
             BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube));
         }
 
-        public bool RemoveUGCCube(IFieldObject<Cube> cube)
+        public bool RemoveCube(IFieldObject<Cube> cube)
         {
-            return State.RemoveUGCCube(cube.ObjectId);
+            return State.RemoveCube(cube.ObjectId);
         }
 
         public void AddPortal(IFieldObject<Portal> portal)
