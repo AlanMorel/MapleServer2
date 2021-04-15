@@ -18,8 +18,8 @@ namespace MapleServer2.Types
     public struct NormalStat : ItemStat
     {
         public ItemAttribute Id { get; private set; }
-        public int Flat { get; private set; }
-        public float Percent { get; private set; }
+        public int Flat { get; set; }
+        public float Percent { get; set; }
 
         public static NormalStat Of(ItemAttribute type, int flat)
         {
@@ -61,8 +61,8 @@ namespace MapleServer2.Types
     public struct SpecialStat : ItemStat
     {
         public SpecialItemAttribute Id { get; private set; }
-        public float Percent { get; private set; }
-        public float Flat { get; private set; }
+        public float Percent { get; set; }
+        public float Flat { get; set; }
 
         public static SpecialStat Of(SpecialItemAttribute type, float percent, float flat)
         {
@@ -116,12 +116,12 @@ namespace MapleServer2.Types
 
         public ItemStats(Item item)
         {
-            CreateNewStats(item.Id, item.Rarity, item.Level);
+            CreateNewStats(item.Id, item.Rarity, item.Level, item.IsTwoHand);
         }
 
-        public ItemStats(int itemId, int rarity, int level)
+        public ItemStats(int itemId, int rarity, int level, bool isTwoHand)
         {
-            CreateNewStats(itemId, rarity, level);
+            CreateNewStats(itemId, rarity, level, isTwoHand);
         }
 
         public ItemStats(ItemStats other)
@@ -132,7 +132,7 @@ namespace MapleServer2.Types
             Gemstones = new List<Gemstone>(other.Gemstones);
         }
 
-        public void CreateNewStats(int itemId, int rarity, int level)
+        public void CreateNewStats(int itemId, int rarity, int level, bool isTwoHand)
         {
             BasicStats = new List<ItemStat>();
             BonusStats = new List<ItemStat>();
@@ -142,7 +142,7 @@ namespace MapleServer2.Types
                 return;
             }
 
-            List<ItemStat> basicStats = RollBasicStats(itemId, rarity, level);
+            List<ItemStat> basicStats = GetBasicStats(itemId, rarity, level, isTwoHand);
             if (basicStats != null)
             {
                 foreach (ItemStat stat in basicStats)
@@ -151,7 +151,7 @@ namespace MapleServer2.Types
                 }
             }
 
-            List<ItemStat> bonusStats = RollBonusStats(itemId, rarity, level);
+            List<ItemStat> bonusStats = GetBonusStats(itemId, rarity, level, isTwoHand);
             if (bonusStats != null)
             {
                 foreach (ItemStat stat in bonusStats)
@@ -161,8 +161,8 @@ namespace MapleServer2.Types
             }
         }
 
-        // Roll new basic stats and values
-        public List<ItemStat> RollBasicStats(int itemId, int rarity, int level)
+        // Get basic stats
+        public List<ItemStat> GetBasicStats(int itemId, int rarity, int level, bool isTwoHand)
         {
             if (!ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOption> basicList))
             {
@@ -185,22 +185,13 @@ namespace MapleServer2.Types
                 BasicStats.Add(NormalStat.Of(ItemAttribute.PetBonusAtk, itemOptions.PetAtk));
             }
 
-            List<ItemStat> itemStats = new List<ItemStat>();
-            foreach (ItemAttribute attribute in itemOptions.Stats)
-            {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
-            }
-
-            foreach (SpecialItemAttribute attribute in itemOptions.SpecialStats)
-            {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
-            }
+            List<ItemStat> itemStats = RollStats(itemId, level, isTwoHand, itemOptions);
 
             return itemStats;
         }
 
-        // Roll new bonus stats and values
-        public static List<ItemStat> RollBonusStats(int itemId, int rarity, int level)
+        // Get bonus stats
+        public static List<ItemStat> GetBonusStats(int itemId, int rarity, int level, bool isTwoHand)
         {
             if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
             {
@@ -214,31 +205,55 @@ namespace MapleServer2.Types
                 return null;
             }
 
-            List<ItemStat> itemStats = new List<ItemStat>();
-
-            foreach (ItemAttribute attribute in itemOption.Stats)
-            {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
-            }
-
-            foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
-            {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
-            }
+            List<ItemStat> itemStats = RollStats(itemId, level, isTwoHand, itemOption);
 
             return itemStats.OrderBy(x => random.Next()).Take(itemOption.Slots).ToList();
         }
 
-        // Roll new bonus stats and values except the locked stat
-        public static List<ItemStat> RollBonusStatsWithStatLocked(int itemId, int rarity, int slots, int level, short ignoreStat, bool isSpecialStat)
+        // Get random values for each stat and check if item is two-handed
+        private static List<ItemStat> RollStats(int itemId, int level, bool isTwoHand, ItemOption itemOption)
         {
-            if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
+            List<ItemStat> itemStats = new List<ItemStat>();
+
+            foreach (ItemAttribute attribute in itemOption.Stats)
+            {
+                NormalStat normalStat = NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]);
+                if (isTwoHand)
+                {
+                    normalStat.Flat *= 2;
+                    normalStat.Percent *= 2;
+                }
+                itemStats.Add(normalStat);
+            }
+
+            foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
+            {
+                SpecialStat specialStat = SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]);
+                if (isTwoHand)
+                {
+                    specialStat.Flat *= 2;
+                    specialStat.Percent *= 2;
+                }
+                itemStats.Add(specialStat);
+            }
+
+            return itemStats;
+        }
+
+        // Roll new bonus stats and values except the locked stat
+        public static List<ItemStat> RollBonusStatsWithStatLocked(Item item, short ignoreStat, bool isSpecialStat)
+        {
+            int id = item.Id;
+            int level = item.Level;
+            bool isTwoHand = item.IsTwoHand;
+
+            if (!ItemOptionsMetadataStorage.GetRandomBonus(id, out List<ItemOption> randomBonusList))
             {
                 return null;
             }
 
             Random random = new Random();
-            ItemOption itemOption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
+            ItemOption itemOption = randomBonusList.FirstOrDefault(options => options.Rarity == item.Rarity && options.Slots > 0);
             if (itemOption == null)
             {
                 return null;
@@ -251,15 +266,27 @@ namespace MapleServer2.Types
 
             foreach (ItemAttribute attribute in attributes)
             {
-                itemStats.Add(NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]));
+                NormalStat normalStat = NormalStat.Of(GetRange(id)[attribute][Roll(level)]);
+                if (isTwoHand)
+                {
+                    normalStat.Flat *= 2;
+                    normalStat.Percent *= 2;
+                }
+                itemStats.Add(normalStat);
             }
 
             foreach (SpecialItemAttribute attribute in specialAttributes)
             {
-                itemStats.Add(SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]));
+                SpecialStat specialStat = SpecialStat.Of(GetSpecialRange(id)[attribute][Roll(level)]);
+                if (isTwoHand)
+                {
+                    specialStat.Flat *= 2;
+                    specialStat.Percent *= 2;
+                }
+                itemStats.Add(specialStat);
             }
 
-            return itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
+            return itemStats.OrderBy(x => random.Next()).Take(item.Stats.BonusStats.Count).ToList();
         }
 
         // Roll new values for existing bonus stats

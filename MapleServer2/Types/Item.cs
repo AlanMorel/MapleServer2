@@ -100,7 +100,7 @@ namespace MapleServer2.Types
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
-            Stats = new ItemStats(id, Rarity, Level);
+            Stats = new ItemStats(id, Rarity, Level, IsTwoHand);
             Color = ItemMetadataStorage.GetEquipColor(id);
             CanRepackage = true; // If false, item becomes untradable
         }
