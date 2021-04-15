@@ -265,10 +265,10 @@ namespace MapleServer2.Servers.Game
             return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
-        public void AddCube(IFieldObject<Cube> cube)
+        public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player));
         }
 
         public bool RemoveCube(IFieldObject<Cube> cube)
