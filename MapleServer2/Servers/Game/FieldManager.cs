@@ -199,7 +199,12 @@ namespace MapleServer2.Servers.Game
                 {
                     HealingSpotThread = StartHealingSpot(sender, player);
                 }
-                sender.Send(RegionSkillPacket.Send(player, MapEntityStorage.GetHealingSpot(MapId), new SkillCast(70000018, 1, 0, 1)));
+
+                List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
+                foreach (CoordS healingSpot in healingSpots)
+                {
+                    sender.Send(RegionSkillPacket.Send(player, healingSpot, new SkillCast(70000018, 1, 0, 1)));
+                }
             }
 
             State.AddPlayer(player);
@@ -422,14 +427,16 @@ namespace MapleServer2.Servers.Game
             {
                 while (!State.Players.IsEmpty)
                 {
-                    CoordS healingCoord = MapEntityStorage.GetHealingSpot(MapId);
-
-                    if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
+                    List<CoordS> healingCoords = MapEntityStorage.GetHealingSpot(MapId);
+                    foreach (CoordS healingCoord in healingCoords)
                     {
-                        session.Send(BuffPacket.SendBuff(0, status));
-                        session.Send(SkillDamagePacket.ApplyHeal(player, status));
-                        session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
-                        session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                        if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
+                        {
+                            session.Send(BuffPacket.SendBuff(0, status));
+                            session.Send(SkillDamagePacket.ApplyHeal(player, status));
+                            session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
+                            session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                        }
                     }
 
                     await Task.Delay(1000);

@@ -17,7 +17,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
         private static readonly Dictionary<int, List<MapInteractActor>> interactActors = new Dictionary<int, List<MapInteractActor>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
-        private static readonly Dictionary<int, CoordS> healthSpot = new Dictionary<int, CoordS>();
+        private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
 
         static MapEntityStorage()
         {
@@ -91,10 +91,10 @@ namespace MapleServer2.Data.Static
 
         public static bool HasHealingSpot(int mapId)
         {
-            return !healthSpot.GetValueOrDefault(mapId).Equals(CoordS.From(0, 0, 0));
+            return healthSpot.GetValueOrDefault(mapId).Count != 0;
         }
 
-        public static CoordS GetHealingSpot(int mapId)
+        public static List<CoordS> GetHealingSpot(int mapId)
         {
             return healthSpot.GetValueOrDefault(mapId);
         }
