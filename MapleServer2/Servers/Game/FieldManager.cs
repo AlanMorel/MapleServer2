@@ -215,10 +215,14 @@ namespace MapleServer2.Servers.Game
 
             State.AddPlayer(player);
 
-            if (HealingSpotThread == null)
+            if (!State.HealingSpots.IsEmpty)
             {
-                HealingSpotThread = StartHealingSpot();
+                if (HealingSpotThread == null)
+                {
+                    HealingSpotThread = StartHealingSpot();
+                }
             }
+
             // Broadcast new player to all players in map
             Broadcast(session =>
             {
