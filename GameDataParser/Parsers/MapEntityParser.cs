@@ -232,7 +232,7 @@ namespace GameDataParser.Parsers
 
                         metadata.MobSpawns.Add(new MapMobSpawn(int.Parse(mobSpawnPointID), CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
                     }
-                    else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
+                    else if (modelName == "Portal_entrance" || modelName == "Portal_cube" || modelName.Contains("Portal_memberance"))
                     {
                         XmlNode portalIdNode = node.SelectSingleNode("property[@name='PortalID']");
                         XmlNode targetFieldNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
