@@ -104,6 +104,12 @@ namespace GameDataParser.Parsers
                         mapBlock.Type = blockType?.FirstChild.Attributes["value"].Value;
                     }
 
+                    XmlNode saleable = node.SelectSingleNode("property[@name='CubeSalableGroup']");
+                    if (saleable != null)
+                    {
+                        mapBlock.SaleableGroup = int.Parse(saleable?.FirstChild.Attributes["value"].Value);
+                    }
+
                     if (mapCubes.ContainsKey(modelName))
                     {
                         mapBlock.Attribute = mapCubes[modelName];

@@ -47,8 +47,15 @@ namespace MapleServer2.Packets
             // Stats
             StatPacket.WriteFieldStats(pWriter, player.Stats);
 
-            pWriter.WriteByte();
-            pWriter.WriteByte();
+            pWriter.WriteByte(); // battle stance bool
+            if (player.Guide != null)
+            {
+                pWriter.WriteByte(player.Guide.Value.Type);
+            }
+            else
+            {
+                pWriter.WriteByte();
+            }
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong();
@@ -136,7 +143,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(); // Another timestamp
                 pWriter.WriteInt(int.MaxValue);
                 pWriter.WriteByte();
-                pWriter.WriteInt();
+                pWriter.WriteInt(); // MushkingRoyale taileffect kill count
                 pWriter.WriteInt();
                 pWriter.WriteShort();
             }
@@ -293,7 +300,7 @@ namespace MapleServer2.Packets
 
             pWriter.WriteLong();
             pWriter.WriteInt();
-            pWriter.WriteInt(0x0E); // Unknown
+            pWriter.WriteInt(0x0E); // NPC level
             pWriter.WriteInt();
             pWriter.WriteByte();
 
@@ -324,10 +331,10 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(portal.Value.IsMinimapVisible);
             pWriter.WriteLong();
             pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteInt(portal.Value.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
-            pWriter.WriteBool(false);
+            pWriter.WriteBool(portal.Value.IsPassEnabled);
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
