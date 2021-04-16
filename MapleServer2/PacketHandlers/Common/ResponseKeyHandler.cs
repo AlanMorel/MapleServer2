@@ -99,9 +99,9 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(TrophyPacket.WriteTableContent(trophy));
             }
 
-            session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
-            session.Send(MarketInventoryPacket.StartList());
-            session.Send(MarketInventoryPacket.EndList());
+            session.Send(WarehouseInventoryPacket.Count()); // Typically sent after buddylist
+            session.Send(WarehouseInventoryPacket.StartList());
+            session.Send(WarehouseInventoryPacket.EndList());
             session.Send(FurnishingInventoryPacket.StartList());
             session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
@@ -114,7 +114,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(UserEnvPacket.Send12());
 
             // SendMeretMarket f(0xC9)
-            session.Send(FishingPacket.LoadLog());
+            session.Send(FishingPacket.LoadAlbum(player));
             // SendPvp f(0x16,0x17), ResponsePet f(0x07), 0xF6
             // CharacterAbility
             // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00

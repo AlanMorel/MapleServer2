@@ -185,6 +185,14 @@ namespace MapleServer2.Servers.Game
             {
                 sender.Send(InteractObjectPacket.AddInteractObjects(State.InteractObjects.Values));
             }
+            if (State.Cubes.Values.Count > 0)
+            {
+                sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
+            }
+            foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
+            {
+                sender.Send(GuideObjectPacket.Add(guide));
+            }
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 if (HealingSpotThread == null || HealingSpotThread.IsCompleted)
@@ -193,8 +201,8 @@ namespace MapleServer2.Servers.Game
                 }
                 sender.Send(RegionSkillPacket.Send(player, MapEntityStorage.GetHealingSpot(MapId), new SkillCast(70000018, 1, 0, 1)));
             }
-            State.AddPlayer(player);
 
+            State.AddPlayer(player);
             // Broadcast new player to all players in map
             Broadcast(session =>
             {
@@ -245,6 +253,27 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
                 // TODO: Add spawn buff (ID: 0x055D4DAE)
             });
+        }
+
+        public void AddGuide(IFieldObject<GuideObject> fieldGuide)
+        {
+            State.AddGuide(fieldGuide);
+        }
+
+        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
+        {
+            return State.RemoveGuide(fieldGuide.ObjectId);
+        }
+
+        public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
+        {
+            State.AddCube(cube);
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player));
+        }
+
+        public bool RemoveCube(IFieldObject<Cube> cube)
+        {
+            return State.RemoveCube(cube.ObjectId);
         }
 
         public void AddPortal(IFieldObject<Portal> portal)
@@ -374,6 +403,8 @@ namespace MapleServer2.Servers.Game
             public T Value { get; }
 
             public CoordF Coord { get; set; }
+
+            public CoordF Rotation { get; set; }
 
             public FieldObject(int objectId, T value)
             {

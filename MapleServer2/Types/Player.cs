@@ -46,6 +46,7 @@ namespace MapleServer2.Types
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
         public IFieldObject<Pet> Pet;
+        public IFieldObject<GuideObject> Guide;
         public long VIPExpiration = 0;
         public int SuperChat;
 
@@ -69,6 +70,13 @@ namespace MapleServer2.Types
         public string GuildName = "";
         public string ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
         public string Motto = "";
+
+        // Home
+        public int HomeMapId = 62000000;
+        public int PlotMapId;
+        public int HomePlotNumber;
+        public int ApartmentNumber;
+        public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
         public string HomeName = "";
 
         public Vector3 ReturnPosition;
@@ -114,6 +122,9 @@ namespace MapleServer2.Types
 
         public long GuildId;
         public int GuildContribution;
+
+        public Dictionary<int, Fishing> FishAlbum = new Dictionary<int, Fishing>();
+        public Item FishingRod; // Possibly temp solution?
         public Wallet Wallet { get; private set; }
         public List<QuestStatus> QuestList = new List<QuestStatus>();
 

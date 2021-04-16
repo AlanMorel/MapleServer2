@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -28,7 +29,50 @@ namespace MapleServer2.Data.Static
 
         public static bool BlockExists(int mapId, CoordS coord)
         {
-            return !map[mapId].Blocks.Find(x => x == coord).Equals(CoordS.From(0, 0, 0));
+            MapMetadata mapD = GetMetadata(mapId);
+            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            if (block == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool BlockAboveExists(int mapId, CoordS coord)
+        {
+            MapMetadata mapD = GetMetadata(mapId);
+            coord.Z += Block.BLOCK_SIZE;
+            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            return block != null;
+        }
+
+        public static MapBlock GetMapBlock(int mapId, CoordS coord)
+        {
+            MapMetadata mapD = GetMetadata(mapId);
+            return mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+        }
+
+        public static int GetPlotNumber(int mapId, CoordB coord)
+        {
+            CoordS coordS = coord.ToShort();
+            List<MapBlock> blocks = new List<MapBlock>();
+            MapMetadata mapD = GetMetadata(mapId);
+            for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
+            {
+                MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coordS);
+                if (block == null)
+                {
+                    coordS.Z -= Block.BLOCK_SIZE;
+                    continue;
+                }
+
+                if (block.SaleableGroup > 0)
+                {
+                    return block.SaleableGroup;
+                }
+                coordS.Z -= Block.BLOCK_SIZE;
+            }
+            return 0;
         }
     }
 }

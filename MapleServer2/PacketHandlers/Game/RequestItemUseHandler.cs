@@ -36,6 +36,9 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (item.Function.Name)
             {
+                case "CallAirTaxi":
+                    HandleCallAirTaxi(session, packet, item);
+                    break;
                 case "ChatEmoticonAdd":
                     HandleChatEmoticonAdd(session, item);
                     break;
@@ -331,6 +334,17 @@ namespace MapleServer2.PacketHandlers.Game
             InventoryController.Consume(session, item.Uid, 1);
             InventoryController.Add(session, badge, true);
             session.Send(PetSkinPacket.Extract(petUid, badge));
+        }
+
+        public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
+        {
+            int fieldID = int.Parse(packet.ReadUnicodeString());
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(fieldID);
+            if (spawn != null)
+            {
+                InventoryController.Consume(session, item.Uid, 1);
+                session.Player.Warp(spawn, fieldID);
+            }
         }
     }
 }

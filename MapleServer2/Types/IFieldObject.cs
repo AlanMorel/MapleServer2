@@ -8,5 +8,7 @@ namespace MapleServer2.Types
         public T Value { get; }
 
         public CoordF Coord { get; set; }
+
+        public CoordF Rotation { get; set; }
     }
 }

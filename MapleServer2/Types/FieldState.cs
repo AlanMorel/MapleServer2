@@ -13,6 +13,8 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
         public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractObjects;
+        public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
+        public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
 
         public FieldState()
         {
@@ -23,6 +25,8 @@ namespace MapleServer2.Types
             MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
             InteractObjects = new ConcurrentDictionary<string, IFieldObject<InteractObject>>();
+            Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
+            Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -76,6 +80,26 @@ namespace MapleServer2.Types
         public void AddInteractObject(IFieldObject<InteractObject> interactObject)
         {
             InteractObjects[interactObject.Value.Uuid] = interactObject;
+        }
+
+        public void AddGuide(IFieldObject<GuideObject> guide)
+        {
+            Guide[guide.ObjectId] = guide;
+        }
+
+        public bool RemoveGuide(int objectId)
+        {
+            return Guide.Remove(objectId, out _);
+        }
+
+        public void AddCube(IFieldObject<Cube> ugcCube)
+        {
+            Cubes[ugcCube.ObjectId] = ugcCube;
+        }
+
+        public bool RemoveCube(int objectId)
+        {
+            return Cubes.Remove(objectId, out _);
         }
 
         public void AddMobSpawn(IFieldObject<MobSpawn> spawn)
