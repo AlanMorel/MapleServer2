@@ -422,12 +422,12 @@ namespace MapleServer2.Servers.Game
         {
             int healAmount = 30;
             Status status = new Status(new SkillCast(70000018, 1, 0, 1), player.ObjectId, player.ObjectId, 1, healAmount);
+            List<CoordS> healingCoords = MapEntityStorage.GetHealingSpot(MapId);
 
             return Task.Run(async () =>
             {
                 while (!State.Players.IsEmpty)
                 {
-                    List<CoordS> healingCoords = MapEntityStorage.GetHealingSpot(MapId);
                     foreach (CoordS healingCoord in healingCoords)
                     {
                         if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
