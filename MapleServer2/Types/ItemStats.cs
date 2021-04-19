@@ -217,7 +217,13 @@ namespace MapleServer2.Types
 
             foreach (ItemAttribute attribute in itemOption.Stats)
             {
-                NormalStat normalStat = NormalStat.Of(GetRange(itemId)[attribute][Roll(level)]);
+                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(itemId);
+                if (!dictionary.ContainsKey(attribute))
+                {
+                    continue;
+                }
+
+                NormalStat normalStat = NormalStat.Of(dictionary[attribute][Roll(level)]);
                 if (isTwoHand)
                 {
                     normalStat.Flat *= 2;
@@ -228,7 +234,13 @@ namespace MapleServer2.Types
 
             foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
             {
-                SpecialStat specialStat = SpecialStat.Of(GetSpecialRange(itemId)[attribute][Roll(level)]);
+                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(itemId);
+                if (!dictionary.ContainsKey(attribute))
+                {
+                    continue;
+                }
+
+                SpecialStat specialStat = SpecialStat.Of(dictionary[attribute][Roll(level)]);
                 if (isTwoHand)
                 {
                     specialStat.Flat *= 2;
@@ -266,7 +278,13 @@ namespace MapleServer2.Types
 
             foreach (ItemAttribute attribute in attributes)
             {
-                NormalStat normalStat = NormalStat.Of(GetRange(id)[attribute][Roll(level)]);
+                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(id);
+                if (!dictionary.ContainsKey(attribute))
+                {
+                    continue;
+                }
+
+                NormalStat normalStat = NormalStat.Of(dictionary[attribute][Roll(level)]);
                 if (isTwoHand)
                 {
                     normalStat.Flat *= 2;
@@ -277,7 +295,13 @@ namespace MapleServer2.Types
 
             foreach (SpecialItemAttribute attribute in specialAttributes)
             {
-                SpecialStat specialStat = SpecialStat.Of(GetSpecialRange(id)[attribute][Roll(level)]);
+                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(id);
+                if (!dictionary.ContainsKey(attribute))
+                {
+                    continue;
+                }
+
+                SpecialStat specialStat = SpecialStat.Of(dictionary[attribute][Roll(level)]);
                 if (isTwoHand)
                 {
                     specialStat.Flat *= 2;
@@ -301,7 +325,13 @@ namespace MapleServer2.Types
                     newBonus.Add(stat);
                     continue;
                 }
-                newBonus.Add(NormalStat.Of(GetRange(item.Id)[stat.Id][Roll(item.Level)]));
+
+                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(item.Id);
+                if (!dictionary.ContainsKey(stat.Id))
+                {
+                    continue;
+                }
+                newBonus.Add(NormalStat.Of(dictionary[stat.Id][Roll(item.Level)]));
             }
 
             foreach (SpecialStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)))
@@ -311,7 +341,13 @@ namespace MapleServer2.Types
                     newBonus.Add(stat);
                     continue;
                 }
-                newBonus.Add(SpecialStat.Of(GetSpecialRange(item.Id)[stat.Id][Roll(item.Level)]));
+
+                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
+                if (!dictionary.ContainsKey(stat.Id))
+                {
+                    continue;
+                }
+                newBonus.Add(SpecialStat.Of(dictionary[stat.Id][Roll(item.Level)]));
             }
 
             return newBonus;
