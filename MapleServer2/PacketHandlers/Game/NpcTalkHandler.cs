@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -63,12 +63,9 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     npcQuests.Add(item);
                 }
-                if (item.Started && npc.Value.Id == item.CompleteNpcId)
+                if (item.Started && npc.Value.Id == item.CompleteNpcId && !npcQuests.Contains(item))
                 {
-                    if (!npcQuests.Contains(item))
-                    {
-                        npcQuests.Add(item);
-                    }
+                    npcQuests.Add(item);
                 }
             }
             session.Player.NpcTalk = new NpcTalk(npc.Value, npcQuests);
@@ -89,7 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            CheckForExplorationQuest(session);
+            QuestHelper.UpdateExplorationQuest(session, npc.Value.Id.ToString(), "talk_in");
 
             if (npcQuests.Count != 0)
             {
@@ -262,65 +259,30 @@ namespace MapleServer2.PacketHandlers.Game
         {
             if (npcTalk.IsQuest && npcTalk.ScriptId == 0)
             {
-                if (npcTalk.Quests[index].Started)
+                QuestStatus questStatus = npcTalk.Quests[index];
+                if (questStatus.Started)
                 {
-                    // Talking to npc that start the quest and is started
-                    if (npcTalk.Quests[index].StartNpcId == npcTalk.Npc.Id)
+                    // Talking to npc that start the quest and condition is not completed
+                    if (questStatus.StartNpcId == npcTalk.Npc.Id && questStatus.Condition.Count != questStatus.Condition.Count(x => x.Goal == x.Current))
                     {
                         return 200;
                     }
-                    else // Talking to npc that end the quest
-                    {
-                        return 300;
-                    }
+                    return 300; // Talking to npc that end the quest
                 }
-                else // Talking to npc that start the quest and isn't started
-                {
-                    return 100;
-                }
+                return 100; // Talking to npc that start the quest and isn't started
             }
-            else
+
+            Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+            if (npcTalk.ScriptId == 0)
             {
-                Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
-                if (npcTalk.ScriptId == 0)
-                {
-                    return scriptMetadata.Options.First(x => x.Id > npcTalk.ScriptId).Id;
-                }
-                else
-                {
-                    if (option.Goto.Count == 0)
-                    {
-                        return npcTalk.ScriptId;
-                    }
-                    else
-                    {
-                        return option.Goto[index];
-                    }
-                }
+                return scriptMetadata.Options.First(x => x.Id > npcTalk.ScriptId).Id;
             }
-        }
 
-        private static void CheckForExplorationQuest(GameSession session)
-        {
-            List<QuestStatus> questList = session.Player.QuestList;
-            foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
+            if (option.Goto.Count == 0)
             {
-                QuestCondition condition = quest.Condition.Where(x => x.Type == "talk_in")
-                    .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(session.Player.NpcTalk.Npc.Id.ToString()));
-                if (condition == null)
-                {
-                    continue;
-                }
-
-                quest.Completed = true;
-                quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-                session.Player.Levels.GainExp(quest.Reward.Exp);
-                session.Player.Wallet.Meso.Modify(quest.Reward.Money);
-                session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.Id));
-                session.Send(QuestPacket.CompleteQuest(quest.Basic.Id));
-                break;
+                return npcTalk.ScriptId;
             }
+            return option.Goto[index];
         }
     }
 }

@@ -6,6 +6,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -64,7 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             if (interactObject.Type == InteractObjectType.Binoculars)
             {
-                CheckForExplorationQuest(session, interactObject);
+                QuestHelper.UpdateExplorationQuest(session, interactObject.InteractId.ToString(), "interact_object_rep");
             }
             else if (interactObject.Type == InteractObjectType.Gathering)
             {
@@ -113,28 +114,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.Send(InteractObjectPacket.UseObject(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
             session.Send(InteractObjectPacket.Extra(interactObject));
-        }
-
-        private static void CheckForExplorationQuest(GameSession session, MapInteractObject interactObject)
-        {
-            List<QuestStatus> questList = session.Player.QuestList;
-            foreach (QuestStatus quest in questList.Where(x => x.Basic.Id >= 72000000 && x.Condition != null))
-            {
-                QuestCondition condition = quest.Condition.Where(x => x.Type == "interact_object_rep").FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(interactObject.InteractId.ToString()));
-                if (condition == null)
-                {
-                    continue;
-                }
-
-                quest.Completed = true;
-                quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-                session.Player.Levels.GainExp(quest.Reward.Exp);
-                session.Player.Wallet.Meso.Modify(quest.Reward.Money);
-                session.Send(QuestPacket.CompleteExplorationGoal(quest.Basic.Id));
-                session.Send(QuestPacket.CompleteQuest(quest.Basic.Id));
-                break;
-            }
         }
     }
 }

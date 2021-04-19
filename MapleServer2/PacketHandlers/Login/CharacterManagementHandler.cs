@@ -10,6 +10,7 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -65,12 +66,9 @@ namespace MapleServer2.PacketHandlers.Login
         public void HandleCreate(LoginSession session, PacketReader packet)
         {
             byte gender = packet.ReadByte();
-            //packet.ReadShort(); // const?
-            // var jobCode = (Job)packet.ReadShort();
             Job job = (Job) packet.ReadShort();
             string name = packet.ReadUnicodeString();
             SkinColor skinColor = packet.Read<SkinColor>();
-            //packet.ReadShort(); // const?
             packet.Skip(2);
             Dictionary<ItemSlot, Item> equips = new Dictionary<ItemSlot, Item>();
 
@@ -86,7 +84,6 @@ namespace MapleServer2.PacketHandlers.Login
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
                 EquipColor equipColor = packet.Read<EquipColor>();
-                int colorIndex = packet.ReadInt();
 
                 switch (type)
                 {
@@ -159,7 +156,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                 }
-                Logger.Info($" > {type} - id: {id}, color: {equipColor}, colorIndex: {colorIndex}");
+                Logger.Info($" > {type} - id: {id}, color: {equipColor}");
             }
             packet.ReadInt(); // const? (4)
 
@@ -181,7 +178,17 @@ namespace MapleServer2.PacketHandlers.Login
             }
 
             // Create new player object
-            Player newCharacter = Player.NewCharacter(gender, job, name, skinColor, equips);
+            Player newCharacter = new Player(AccountStorage.DEFAULT_ACCOUNT_ID, GuidGenerator.Long(), name, gender, job)
+            {
+                SkillTabs = new List<SkillTab> { new SkillTab(job) },
+                MapId = 52000065,
+                Stats = new PlayerStats(),
+                SkinColor = skinColor,
+                Equips = equips,
+                Motto = "Motto",
+                HomeName = "HomeName",
+                Coord = CoordF.From(-675, 525, 600) // Intro map (52000065)
+            };
 
             // Add player object to account storage
             AccountStorage.AddCharacter(newCharacter);

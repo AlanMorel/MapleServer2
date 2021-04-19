@@ -1,5 +1,8 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -15,20 +18,38 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            // No data passed in
+            // [bow] Henesys 47 Bow - 15100216
+            // [staff] Modded Student Staff - 15200223
+            // [longsword] Sword of tria - 13200220
+            // [shield] Shield of tria - 14100190
+            // [greatsword] Riena - 15000224
+            // [scepter] Saint Mushliel Mace - 13300219
+            // [codex] Words of Saint mushliel - 14000181
+            // [cannon] Cannon of beginnings - 15300199
+            // [dagger] Walker knife - 13100225
+            // [star] Rook's Star - 13400218
+            // [blade] Runesteel Blade - 15400274
+            // [knuckles] Pugilist knuckles - 15500514
+            // [orb] Guidance training orb - 15600514
 
-            // TODO - Determine item from player's job
-            Item tutorialBow = Item.TutorialBow(session.Player);
+            int[] itemIds = new int[] { 15100216, 15200223, 13200220, 14100190, 15000224, 13300219, 14000181, 15300199, 13100225, 13400218, 15400274, 15500514, 15600514 };
+            foreach (int id in itemIds)
+            {
+                ItemMetadata metadata = ItemMetadataStorage.GetMetadata(id);
 
-            // Add the item to the inventory
-            InventoryController.Add(session, tutorialBow, true);
+                if (!metadata.RecommendJobs.Contains((int) session.Player.Job))
+                {
+                    continue;
+                }
 
-            // The below packet is sent with the inventory packets, but doesn't seem to be needed
-            //session.Send(PacketWriter.Of(0x0105).WriteHexString("3F A6 36 E2 94 98 9B 2F 01 00 00 00 00 00 00 00 FF FF FF FF 89 18 84 5E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 B3 BC BC FF 3D DA C3 FF BA B4 B0 FF 13 00 00 00 05 00 00 00 00 03 00 11 00 0C 00 00 00 00 00 00 00 1B 00 0F 00 00 00 00 00 00 00 1C 00 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0E 00 00 00 01 00 00 00 00 00 00 00 00 00 01 01 66 66 66 66 66 66 66 66 08 00 61 00 73 00 61 00 73 00 61 00 73 00 31 00 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-            // The below two are kept for future reference in regards to the above
-            //session.Send(PacketWriter.Of(0x16).WriteHexString("00 38 69 E6 00 3F A6 36 E2 94 98 9B 2F 00 00 01 00 00 00 00 00 01 00 00 00 00 00 00 00 FF FF FF FF 89 18 84 5E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 B3 BC BC FF 3D DA C3 FF BA B4 B0 FF 13 00 00 00 05 00 00 00 00 03 00 11 00 0C 00 00 00 00 00 00 00 1B 00 0F 00 00 00 00 00 00 00 1C 00 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0E 00 00 00 01 00 00 00 00 00 00 00 00 00 01 01 66 66 66 66 66 66 66 66 08 00 61 00 73 00 61 00 73 00 61 00 73 00 31 00 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"));
-            //session.Send(PacketWriter.Of(0x16).WriteHexString("08 3F A6 36 E2 94 98 9B 2F 01 00 00 00 00 00"));
+                Item item = new Item(id);
+                if (session.Player.Job == Job.Thief || session.Player.Job == Job.Assassin)
+                {
+                    item.Amount = 2;
+                }
 
+                InventoryController.Add(session, item, true);
+            }
         }
     }
 }

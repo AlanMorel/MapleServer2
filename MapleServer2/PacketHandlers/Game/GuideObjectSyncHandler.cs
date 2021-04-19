@@ -34,6 +34,13 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            // TODO: If possible, find a way to stop having the client spam the server with this packet
+
+            if (coord.ToFloat() == session.Player.Guide.Coord) // Possibly a temp fix to avoid spamming all players
+            {
+                return;
+            }
+
             session.Player.Guide.Rotation = rotation.ToFloat();
             session.Player.Guide.Coord = coord.ToFloat();
             session.FieldManager.BroadcastPacket(GuideObjectPacket.Sync(session.Player.Guide, unk2, unk3, unk4, unk5, unkCoord, unk6, unk7), session);

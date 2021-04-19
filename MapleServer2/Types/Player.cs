@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -153,7 +151,20 @@ namespace MapleServer2.Types
         {
             GameOptions = new GameOptions();
             Wallet = new Wallet(this);
-            Levels = new Levels(this, 70, 0, 0, 100, 0, new List<MasteryExp>());
+            Levels = new Levels(this, playerLevel: 70, exp: 0, restExp: 0, prestigeLevel: 100, prestigeExp: 0, new List<MasteryExp>());
+            Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        }
+
+        public Player(long accountId, long characterId, string name, byte gender, Job job)
+        {
+            AccountId = accountId;
+            CharacterId = characterId;
+            Name = name;
+            Gender = gender;
+            Job = job;
+            GameOptions = new GameOptions();
+            Wallet = new Wallet(this);
+            Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>());
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         }
 
@@ -254,34 +265,6 @@ namespace MapleServer2.Types
 
                 },
                 Stats = stats
-            };
-        }
-
-        public static Player NewCharacter(byte gender, Job job, string name, SkinColor skinColor, object equips)
-        {
-            PlayerStats stats = new PlayerStats();
-
-            List<SkillTab> skillTabs = new List<SkillTab>
-            {
-                new SkillTab(job)
-            };
-
-            return new Player
-            {
-                SkillTabs = skillTabs,
-                AccountId = AccountStorage.DEFAULT_ACCOUNT_ID,
-                CharacterId = GuidGenerator.Long(),
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + AccountStorage.TickCount,
-                Name = name,
-                Gender = gender,
-                Job = job,
-                MapId = 52000065,
-                Stats = stats,
-                SkinColor = skinColor,
-                Equips = (Dictionary<ItemSlot, Item>) equips,
-                Motto = "Motto",
-                HomeName = "HomeName",
-                Coord = CoordF.From(-675, 525, 600) // Intro map (52000065)
             };
         }
 

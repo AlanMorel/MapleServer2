@@ -73,12 +73,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CompleteQuest(int questId)
+        // Animation: Animates the quest helper
+        public static Packet CompleteQuest(int questId, bool animation)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.CompleteQuest);
             pWriter.WriteInt(questId);
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(animation ? 1 : 0);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             return pWriter;
@@ -98,13 +99,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CompleteExplorationGoal(int questId)
+        public static Packet UpdateCondition(int questId, int conditionIndex, int value)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
             pWriter.WriteInt(questId);
-            pWriter.WriteInt(1);
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(conditionIndex);
+            pWriter.WriteInt(value);
 
             return pWriter;
         }
