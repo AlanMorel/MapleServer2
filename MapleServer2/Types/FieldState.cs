@@ -15,6 +15,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractObjects;
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
+        public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
 
         public FieldState()
         {
@@ -27,6 +28,7 @@ namespace MapleServer2.Types
             InteractObjects = new ConcurrentDictionary<string, IFieldObject<InteractObject>>();
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
+            HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -120,6 +122,11 @@ namespace MapleServer2.Types
         public bool RemoveMob(int objectId)
         {
             return Mobs.Remove(objectId, out _);
+        }
+
+        public void AddHealingSpot(IFieldObject<HealingSpot> healingSpot)
+        {
+            HealingSpots[healingSpot.ObjectId] = healingSpot;
         }
     }
 }

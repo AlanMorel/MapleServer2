@@ -30,7 +30,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 10)]
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 11)]
-        public CoordS HealingSpot;
+        public List<CoordS> HealingSpot;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -42,6 +42,7 @@ namespace Maple2Storage.Types.Metadata
             Objects = new List<MapObject>();
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -54,6 +55,7 @@ namespace Maple2Storage.Types.Metadata
             Objects = new List<MapObject>();
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public override string ToString() =>

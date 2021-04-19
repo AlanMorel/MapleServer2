@@ -220,7 +220,8 @@ namespace MapleServer2.Types
         public void Increase(PlayerStatId statIndex, int amount)
         {
             PlayerStat stat = this[statIndex];
-            Data[statIndex] = new PlayerStat(stat.Max, stat.Min, stat.Current + amount);
+            int newCurrent = Math.Min(stat.Max, stat.Current + amount);
+            Data[statIndex] = new PlayerStat(stat.Max, stat.Min, newCurrent);
         }
 
         public void DecreaseMax(PlayerStatId statIndex, int amount)
