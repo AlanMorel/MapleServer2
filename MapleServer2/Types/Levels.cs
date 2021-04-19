@@ -2,6 +2,7 @@
 using System.Linq;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 
 namespace MapleServer2.Types
@@ -34,6 +35,8 @@ namespace MapleServer2.Types
             Exp = 0;
             Player.Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
             Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+
+            QuestHelper.GetNewQuests(Player.Session, Level);
         }
 
         public bool LevelUp()
@@ -48,6 +51,8 @@ namespace MapleServer2.Types
             Player.StatPointDistribution.AddTotalStatPoints(5);
             Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
             Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+
+            QuestHelper.GetNewQuests(Player.Session, Level);
             return true;
         }
 
