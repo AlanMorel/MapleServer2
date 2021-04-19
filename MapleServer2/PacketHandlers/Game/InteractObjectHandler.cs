@@ -46,8 +46,8 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleStart(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
-            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
-            if (actor.Type == InteractActorType.Gathering)
+            MapInteractObject interactObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            if (interactObject.Type == InteractObjectType.Gathering)
             {
                 // things to do when player starts gathering
             }
@@ -56,20 +56,20 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUse(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
-            MapInteractActor actor = MapEntityStorage.GetInteractActors(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            MapInteractObject interactObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
             int numDrop = 0;
 
-            if (actor == null)
+            if (interactObject == null)
             {
                 return;
             }
-            if (actor.Type == InteractActorType.Binoculars)
+            if (interactObject.Type == InteractObjectType.Binoculars)
             {
-                QuestHelper.UpdateExplorationQuest(session, actor.InteractId.ToString(), "interact_object_rep");
+                QuestHelper.UpdateExplorationQuest(session, interactObject.InteractId.ToString(), "interact_object_rep");
             }
-            else if (actor.Type == InteractActorType.Gathering)
+            else if (interactObject.Type == InteractObjectType.Gathering)
             {
-                RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(actor.RecipeId);
+                RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(interactObject.RecipeId);
                 long requireMastery = int.Parse(recipe.RequireMastery);
                 Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
 
@@ -80,8 +80,8 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                session.Player.IncrementGatheringCount(actor.RecipeId, 0);
-                int numCount = session.Player.GatheringCount[actor.RecipeId].Current;
+                session.Player.IncrementGatheringCount(interactObject.RecipeId, 0);
+                int numCount = session.Player.GatheringCount[interactObject.RecipeId].Current;
 
                 List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
                 Random rand = new Random();
@@ -108,12 +108,12 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 if (numDrop > 0)
                 {
-                    session.Player.IncrementGatheringCount(actor.RecipeId, numDrop);
+                    session.Player.IncrementGatheringCount(interactObject.RecipeId, numDrop);
                     session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
                 }
             }
-            session.Send(InteractActorPacket.UseObject(actor, (short) (numDrop > 0 ? 0 : 1), numDrop));
-            session.Send(InteractActorPacket.Extra(actor));
+            session.Send(InteractObjectPacket.UseObject(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
+            session.Send(InteractObjectPacket.Extra(interactObject));
         }
     }
 }

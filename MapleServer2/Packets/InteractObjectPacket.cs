@@ -7,12 +7,12 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    class InteractActorPacket
+    class InteractObjectPacket
     {
         private enum InteractObjectMode : byte
         {
             Use = 0x05,
-            AddInteractActor = 0x08,
+            AddInteractObject = 0x08,
             Extra = 0x0D
         }
 
@@ -22,18 +22,18 @@ namespace MapleServer2.Packets
             Enabled = 0x01
         }
 
-        public static Packet AddInteractActors(ICollection<IFieldObject<InteractActor>> actors)
+        public static Packet AddInteractObjects(ICollection<IFieldObject<InteractObject>> objects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
-            pWriter.WriteEnum(InteractObjectMode.AddInteractActor);
-            pWriter.WriteInt(actors.Count);
-            foreach (IFieldObject<InteractActor> actor in actors)
+            pWriter.WriteEnum(InteractObjectMode.AddInteractObject);
+            pWriter.WriteInt(objects.Count);
+            foreach (IFieldObject<InteractObject> interactObject in objects)
             {
-                pWriter.WriteMapleString(actor.Value.Uuid);
+                pWriter.WriteMapleString(interactObject.Value.Uuid);
                 pWriter.WriteEnum(InteractStatus.Enabled);
-                pWriter.WriteEnum(actor.Value.Type);
-                if (actor.Value.Type == InteractActorType.Gathering)
+                pWriter.WriteEnum(interactObject.Value.Type);
+                if (interactObject.Value.Type == InteractObjectType.Gathering)
                 {
                     pWriter.WriteInt();
                 }
@@ -42,16 +42,16 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UseObject(MapInteractActor actor, short result = 0, int numDrops = 0)
+        public static Packet UseObject(MapInteractObject interactObject, short result = 0, int numDrops = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
             pWriter.WriteEnum(InteractObjectMode.Use);
-            pWriter.WriteShort((short) actor.Uuid.Length);
-            pWriter.WriteString(actor.Uuid);
-            pWriter.WriteEnum(actor.Type);
+            pWriter.WriteShort((short) interactObject.Uuid.Length);
+            pWriter.WriteString(interactObject.Uuid);
+            pWriter.WriteEnum(interactObject.Type);
 
-            if (actor.Type == InteractActorType.Gathering)
+            if (interactObject.Type == InteractObjectType.Gathering)
             {
                 pWriter.WriteShort(result);
                 pWriter.WriteInt(numDrops);
@@ -62,15 +62,15 @@ namespace MapleServer2.Packets
 
         // for binoculars this shows "You get a good look at the area"
         // for extractor it does nothing
-        public static Packet Extra(MapInteractActor actor)
+        public static Packet Extra(MapInteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
             pWriter.WriteEnum(InteractObjectMode.Extra);
             pWriter.WriteByte();
-            pWriter.WriteShort((short) actor.Uuid.Length);
-            pWriter.WriteString(actor.Uuid);
-            pWriter.WriteEnum(actor.Type);
+            pWriter.WriteShort((short) interactObject.Uuid.Length);
+            pWriter.WriteString(interactObject.Uuid);
+            pWriter.WriteEnum(interactObject.Type);
 
             return pWriter;
         }

@@ -2,13 +2,13 @@
 
 namespace MapleServer2.Types
 {
-    public class InteractActor
+    public class InteractObject
     {
         public string Uuid;
         public string Name;
-        public InteractActorType Type;
+        public InteractObjectType Type;
 
-        public InteractActor(string uuid, string name, InteractActorType type)
+        public InteractObject(string uuid, string name, InteractObjectType type)
         {
             Uuid = uuid;
             Name = name;

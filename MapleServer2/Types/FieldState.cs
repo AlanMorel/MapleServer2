@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
         public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
-        public readonly ConcurrentDictionary<string, IFieldObject<InteractActor>> InteractActors;
+        public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractObjects;
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
 
@@ -24,7 +24,7 @@ namespace MapleServer2.Types
             Portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
             MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
-            InteractActors = new ConcurrentDictionary<string, IFieldObject<InteractActor>>();
+            InteractObjects = new ConcurrentDictionary<string, IFieldObject<InteractObject>>();
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
         }
@@ -77,9 +77,9 @@ namespace MapleServer2.Types
             return Portals.Remove(objectId, out _);
         }
 
-        public void AddInteractActor(IFieldObject<InteractActor> actor)
+        public void AddInteractObject(IFieldObject<InteractObject> interactObject)
         {
-            InteractActors[actor.Value.Uuid] = actor;
+            InteractObjects[interactObject.Value.Uuid] = interactObject;
         }
 
         public void AddGuide(IFieldObject<GuideObject> guide)

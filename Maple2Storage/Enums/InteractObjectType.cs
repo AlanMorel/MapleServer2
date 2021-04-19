@@ -1,6 +1,6 @@
 ﻿namespace Maple2Storage.Enums
 {
-    public enum InteractActorType : byte
+    public enum InteractObjectType : byte
     {
         Unknown = 0,
         Binoculars = 2,

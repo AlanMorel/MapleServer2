@@ -169,7 +169,7 @@ namespace GameDataParser.Parsers
                     {
                         string uuid = node.Attributes["id"].Value;
                         int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
-                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
+                        metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Binoculars, interactId));
                     }
                     else if (modelName == "MS2InteractMesh")
                     {
@@ -191,7 +191,7 @@ namespace GameDataParser.Parsers
                             interactId = int.Parse(mapObjects[modelName]["interactID"]);
                         }
                         int recipeId = interactRecipeMap[interactId];
-                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Gathering, interactId, recipeId));
+                        metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Gathering, interactId, recipeId));
                     }
                     else if (modelName == "SpawnPointPC")  // Player Spawn point on map
                     {
@@ -345,7 +345,7 @@ namespace GameDataParser.Parsers
                             else if (modelData.ContainsKey("mixinMS2InteractActor"))
                             {
                                 string uuid = node.Attributes["id"].Value.ToLower();
-                                metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Unknown, 0));
+                                metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Unknown, 0));
                             }
                             else if (modelData.ContainsKey("mixinMS2InteractDisplay"))
                             {
@@ -359,13 +359,13 @@ namespace GameDataParser.Parsers
                                 if (name.Contains("funct_extract_"))
                                 {
                                     string uuid = node.Attributes["id"].Value.ToLower();
-                                    metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Extractor, 0));
+                                    metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Extractor, 0));
                                 }
                                 else if (name.Contains("funct_telescope_"))
                                 {
                                     string uuid = node.Attributes["id"].Value;
                                     int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
-                                    metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
+                                    metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Binoculars, interactId));
                                 }
                             }
                         }
