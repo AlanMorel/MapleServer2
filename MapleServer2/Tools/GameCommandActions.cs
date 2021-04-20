@@ -4,6 +4,7 @@ using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -18,6 +19,16 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "save":
+                    Player player = session.Player;
+                    DatabaseManager.Update(player);
+                    DatabaseManager.Update(player.Wallet);
+                    DatabaseManager.Update(player.Levels);
+                    DatabaseManager.Update(player.GameOptions);
+                    DatabaseManager.Update(player.BankInventory);
+                    DatabaseManager.Update(player.Inventory);
+
+                    break;
                 case "completequest":
                     ProcessQuestCommand(session, args.Length > 1 ? args[1] : "");
                     break;

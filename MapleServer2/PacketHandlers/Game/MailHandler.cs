@@ -48,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Mailbox.ClearExpired();
 
             session.Send(MailPacket.StartOpen());
-            session.Send(MailPacket.Open(session.Player.Mailbox.Box));
+            session.Send(MailPacket.Open(session.Player.Mailbox.Mails));
             session.Send(MailPacket.EndOpen());
         }
 

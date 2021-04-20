@@ -40,7 +40,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "level":
                     return session.Player.Levels.Level >= 50;
                 case "enchant":
-                    return session.Player.Equips.FirstOrDefault(x => x.Value.Enchants >= 12).Value != null;
+                    return session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.Enchants >= 12).Value != null;
                 case "trophy_point":
                     return session.Player.TrophyCount[0] + session.Player.TrophyCount[1] + session.Player.TrophyCount[2] > 1000;
                 case "title":

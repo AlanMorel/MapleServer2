@@ -113,18 +113,18 @@ namespace MapleServer2.Packets.Helpers
             switch (item.ItemSlot)
             {
                 case ItemSlot.CP:
-                    pWriter.Write(item.HatD);
+                    pWriter.Write(item.HatData);
                     break;
                 case ItemSlot.HR:
-                    pWriter.Write(item.HairD.BackLength);
-                    pWriter.Write(item.HairD.BackPositionCoord);
-                    pWriter.Write(item.HairD.BackPositionRotation);
-                    pWriter.Write(item.HairD.FrontLength);
-                    pWriter.Write(item.HairD.FrontPositionCoord);
-                    pWriter.Write(item.HairD.FrontPositionRotation);
+                    pWriter.Write(item.HairData.BackLength);
+                    pWriter.Write(item.HairData.BackPositionCoord);
+                    pWriter.Write(item.HairData.BackPositionRotation);
+                    pWriter.Write(item.HairData.FrontLength);
+                    pWriter.Write(item.HairData.FrontPositionCoord);
+                    pWriter.Write(item.HairData.FrontPositionRotation);
                     break;
                 case ItemSlot.FD:
-                    pWriter.Write(item.FaceDecorationD);
+                    pWriter.Write(item.FaceDecorationData);
                     break;
             }
 

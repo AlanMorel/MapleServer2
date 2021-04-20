@@ -6,11 +6,13 @@ namespace MapleServer2.Types
 {
     public class StatDistribution
     {
-        public int TotalStatPoints { get; private set; }
-        public Dictionary<OtherStatsIndex, int> OtherStats { get; private set; }
-        public Dictionary<byte, int> AllocatedStats { get; private set; }
+        public int TotalStatPoints { get; set; }
+        public Dictionary<OtherStatsIndex, int> OtherStats { get; set; }
+        public Dictionary<byte, int> AllocatedStats { get; set; }
         // key = index representing the stat type (ie. a value of 00 corresponds to Str)
         // value = number of points allocated to the stat
+
+        public StatDistribution() { }
 
         public StatDistribution(int totalStats = 0, Dictionary<byte, int> allocatedStats = null, Dictionary<OtherStatsIndex, int> otherStats = null)
         {

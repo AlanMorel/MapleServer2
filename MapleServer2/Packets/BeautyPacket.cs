@@ -133,12 +133,12 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(hair.CreationTime);
                 pWriter.Write(hair.Color);
                 pWriter.WriteInt();
-                pWriter.Write(hair.HairD.BackLength);
-                pWriter.Write(hair.HairD.BackPositionCoord);
-                pWriter.Write(hair.HairD.BackPositionRotation);
-                pWriter.Write(hair.HairD.FrontLength);
-                pWriter.Write(hair.HairD.FrontPositionCoord);
-                pWriter.Write(hair.HairD.FrontPositionRotation);
+                pWriter.Write(hair.HairData.BackLength);
+                pWriter.Write(hair.HairData.BackPositionCoord);
+                pWriter.Write(hair.HairData.BackPositionRotation);
+                pWriter.Write(hair.HairData.FrontLength);
+                pWriter.Write(hair.HairData.FrontPositionCoord);
+                pWriter.Write(hair.HairData.FrontPositionRotation);
             }
             return pWriter;
         }

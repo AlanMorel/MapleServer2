@@ -5,7 +5,6 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
@@ -94,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleChatEmoticonAdd(GameSession session, Item item)
         {
-            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.Duration + AccountStorage.TickCount;
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.Duration + Environment.TickCount;
 
             if (item.Function.Duration == 0) // if no duration was set, set it to not expire
             {
@@ -143,7 +142,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Major WIP
 
             string password = packet.ReadUnicodeString();
-            int duration = item.Function.Duration + AccountStorage.TickCount;
+            int duration = item.Function.Duration + Environment.TickCount;
             CoordF portalCoord = session.Player.Coord;
             CoordF portalRotation = session.Player.Rotation;
 

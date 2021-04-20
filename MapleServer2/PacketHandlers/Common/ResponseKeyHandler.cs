@@ -6,6 +6,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -32,7 +33,12 @@ namespace MapleServer2.PacketHandlers.Common
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            Player player = AccountStorage.GetCharacter(authData.CharacterId);
+            Player player = DatabaseManager.GetCharacter(authData.CharacterId);
+            if (player == default)
+            {
+                throw new ArgumentException("Character not found!");
+            }
+
             player.Session = session;
 
             session.InitPlayer(player);

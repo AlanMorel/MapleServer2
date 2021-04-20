@@ -22,6 +22,8 @@ namespace MapleServer2.Types
         public bool Searchable { get; set; }
         public int HouseMapId { get; set; }
 
+        public Guild() { }
+
         public Guild(string name, List<Player> gPlayers)
         {
             Id = GuidGenerator.Long();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -9,13 +10,16 @@ namespace MapleServer2.Types
 {
     public class Levels
     {
-        private readonly Player Player;
+        public readonly long Id;
+        public readonly Player Player;
         public short Level { get; private set; }
         public long Exp { get; private set; }
         public long RestExp { get; private set; }
         public int PrestigeLevel { get; private set; }
         public long PrestigeExp { get; private set; }
         public List<MasteryExp> MasteryExp { get; private set; }
+
+        public Levels() { }
 
         public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
             List<MasteryExp> masteryExp)
@@ -29,12 +33,25 @@ namespace MapleServer2.Types
             MasteryExp = masteryExp;
         }
 
+        public Levels(Player player, Levels levels)
+        {
+            Id = levels.Id;
+            Player = player;
+            Level = levels.Level;
+            Exp = levels.Exp;
+            RestExp = levels.RestExp;
+            PrestigeLevel = levels.PrestigeLevel;
+            PrestigeExp = levels.PrestigeExp;
+            MasteryExp = levels.MasteryExp;
+        }
+
         public void SetLevel(short level)
         {
             Level = level;
             Exp = 0;
             Player.Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
             Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+            DatabaseManager.Update(this);
 
             QuestHelper.GetNewQuests(Player.Session, Level);
         }
@@ -51,6 +68,7 @@ namespace MapleServer2.Types
             Player.StatPointDistribution.AddTotalStatPoints(5);
             Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
             Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+            DatabaseManager.Update(this);
 
             QuestHelper.GetNewQuests(Player.Session, Level);
             return true;
@@ -62,12 +80,14 @@ namespace MapleServer2.Types
             PrestigeExp = 0;
             Player.Session.Send(PrestigePacket.ExpUp(Player, 0));
             Player.Session.Send(PrestigePacket.LevelUp(Player.Session.FieldPlayer, PrestigeLevel));
+            DatabaseManager.Update(this);
         }
 
         public void PrestigeLevelUp()
         {
             PrestigeLevel++;
             Player.Session.Send(PrestigePacket.LevelUp(Player.Session.FieldPlayer, PrestigeLevel));
+            DatabaseManager.Update(this);
         }
 
         public void GainExp(int amount)
@@ -100,6 +120,7 @@ namespace MapleServer2.Types
 
             Exp = newExp;
             Player.Session.Send(ExperiencePacket.ExpUp(amount, newExp, RestExp));
+            DatabaseManager.Update(this);
         }
 
         public void GainPrestigeExp(long amount)
@@ -121,6 +142,7 @@ namespace MapleServer2.Types
 
             PrestigeExp = newPrestigeExp;
             Player.Session.Send(PrestigePacket.ExpUp(Player, amount));
+            DatabaseManager.Update(this);
         }
 
         public void GainMasteryExp(MasteryType type, long amount)
@@ -138,6 +160,7 @@ namespace MapleServer2.Types
             }
             // user already has some exp in mastery, so simply update it
             Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
+            DatabaseManager.Update(this);
             int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
 
             if (currLevel > masteryExp.Level)

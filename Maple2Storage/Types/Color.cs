@@ -8,13 +8,13 @@ namespace Maple2Storage.Types
     public struct Color
     {
         [XmlElement(Order = 1)]
-        public byte Blue { get; private set; }
+        public byte Blue { get; set; }
         [XmlElement(Order = 2)]
-        public byte Green { get; private set; }
+        public byte Green { get; set; }
         [XmlElement(Order = 3)]
-        public byte Red { get; private set; }
+        public byte Red { get; set; }
         [XmlElement(Order = 4)]
-        public byte Alpha { get; private set; }
+        public byte Alpha { get; set; }
 
         public static Color Argb(byte alpha, byte red, byte green, byte blue)
         {
@@ -39,7 +39,7 @@ namespace Maple2Storage.Types
     public struct SkinColor
     {
         public Color Primary { get; set; }
-        public Color Secondary { get; private set; }
+        public Color Secondary { get; set; }
 
         public static SkinColor Argb(Color color)
         {
@@ -58,11 +58,11 @@ namespace Maple2Storage.Types
     public struct MixedColor
     {
         [XmlElement(Order = 1)]
-        public Color Primary { get; private set; }
+        public Color Primary { get; set; }
         [XmlElement(Order = 2)]
-        public Color Secondary { get; private set; }
+        public Color Secondary { get; set; }
         [XmlElement(Order = 3)]
-        public Color Tertiary { get; private set; }
+        public Color Tertiary { get; set; }
 
         public static MixedColor Argb(Color color)
         {
@@ -93,11 +93,11 @@ namespace Maple2Storage.Types
     public struct EquipColor
     {
         [XmlElement(Order = 1)]
-        public MixedColor Color { get; private set; }
+        public MixedColor Color { get; set; }
         [XmlElement(Order = 2)]
-        public int Index { get; private set; }
+        public int Index { get; set; }
         [XmlElement(Order = 2)]
-        public int Palette { get; private set; }
+        public int Palette { get; set; }
 
         public static EquipColor Argb(MixedColor color, int index, int palette)
         {

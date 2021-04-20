@@ -9,12 +9,21 @@ namespace MapleServer2.Packets
 {
     public static class CharacterListPacket
     {
-        // TODO: Load real data
+        private enum ListMode : byte
+        {
+            AddEntries = 0x00,
+            AppendEntry = 0x01,
+            DeleteCharacter = 0x02,
+            StartList = 0x03,
+            EndList = 0x04,
+            DeletePending = 0x05,
+            DeleteCancel = 0x06,
+        }
         public static Packet AddEntries(List<Player> players)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteByte(0x00);
-            pWriter.WriteByte((byte) players.Count); // CharCount
+            pWriter.WriteEnum(ListMode.AddEntries);
+            pWriter.WriteByte((byte) players.Count);
             foreach (Player player in players)
             {
                 pWriter.WriteCharacterEntry(player);
@@ -27,8 +36,39 @@ namespace MapleServer2.Packets
         public static Packet AppendEntry(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteByte(0x01);
+            pWriter.WriteEnum(ListMode.AppendEntry);
             WriteCharacterEntry(pWriter, player);
+
+            return pWriter;
+        }
+
+        public static Packet DeleteCharacter(long playerId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+            pWriter.WriteEnum(ListMode.DeleteCharacter);
+            pWriter.WriteInt(); // unk
+            pWriter.WriteLong(playerId);
+
+            return pWriter;
+        }
+
+        public static Packet DeletePending(long playerId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+            pWriter.WriteEnum(ListMode.DeletePending);
+            pWriter.WriteLong(playerId);
+            pWriter.WriteInt(); // unk
+            pWriter.WriteLong(); // delete timestamp
+
+            return pWriter;
+        }
+
+        public static Packet DeleteCancel(long playerId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+            pWriter.WriteEnum(ListMode.DeleteCancel);
+            pWriter.WriteLong(playerId);
+            pWriter.WriteInt(); // unk
 
             return pWriter;
         }
@@ -49,12 +89,12 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
-            pWriter.WriteByte((byte) (player.Equips.Count + player.Cosmetics.Count)); // num equips
-            foreach ((ItemSlot slot, Item equip) in player.Equips)
+            pWriter.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count)); // num equips
+            foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
             {
                 WriteEquip(slot, equip, pWriter);
             }
-            foreach ((ItemSlot slot, Item equip) in player.Cosmetics)
+            foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
             {
                 WriteEquip(slot, equip, pWriter);
             }
@@ -208,7 +248,7 @@ namespace MapleServer2.Packets
         public static Packet StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteByte(0x03);
+            pWriter.WriteEnum(ListMode.StartList);
 
             return pWriter;
         }
@@ -217,7 +257,7 @@ namespace MapleServer2.Packets
         public static Packet EndList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteByte(0x04);
+            pWriter.WriteEnum(ListMode.EndList);
             pWriter.WriteBool(false);
 
             return pWriter;

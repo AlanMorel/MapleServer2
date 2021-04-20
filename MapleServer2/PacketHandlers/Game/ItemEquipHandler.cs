@@ -125,10 +125,10 @@ namespace MapleServer2.PacketHandlers.Game
             long itemUid = packet.ReadLong();
 
             // Unequip gear
-            KeyValuePair<ItemSlot, Item> kvpEquips = session.Player.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
+            KeyValuePair<ItemSlot, Item> kvpEquips = session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
             if (kvpEquips.Value != null)
             {
-                if (session.Player.Equips.Remove(kvpEquips.Key, out Item unequipItem))
+                if (session.Player.Inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
                     InventoryController.Add(session, unequipItem, false);
@@ -141,10 +141,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Unequip cosmetics
-            KeyValuePair<ItemSlot, Item> kvpCosmetics = session.Player.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
+            KeyValuePair<ItemSlot, Item> kvpCosmetics = session.Player.Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
             if (kvpCosmetics.Value != null)
             {
-                if (session.Player.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
+                if (session.Player.Inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
                     InventoryController.Add(session, unequipItem, false);

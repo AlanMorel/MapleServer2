@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -20,10 +19,12 @@ namespace MapleServer2.Types
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
         public GameSession Session;
 
+        public readonly Account Account;
         // Constant Values
         public long AccountId { get; private set; }
-        public long CharacterId { get; private set; }
+        public long CharacterId { get; set; }
         public long CreationTime { get; private set; }
+
         public string Name { get; private set; }
         // Gender - 0 = male, 1 = female
         public byte Gender { get; private set; }
@@ -34,98 +35,91 @@ namespace MapleServer2.Types
         public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
 
         // Mutable Values
-        public Levels Levels { get; private set; }
-        public int MapId;
-        public int TitleId;
-        public List<int> Titles = new List<int> { 0 };
-        public List<short> Insignias = new List<short> { 0 };
-        public short InsigniaId;
+        public Levels Levels { get; set; }
+        public int MapId { get; set; }
+        public int TitleId { get; set; }
+        public short InsigniaId { get; set; }
+        public List<int> Titles { get; set; }
+
         public byte Animation;
         public PlayerStats Stats;
         public IFieldObject<Mount> Mount;
         public IFieldObject<Pet> Pet;
         public IFieldObject<GuideObject> Guide;
-        public long VIPExpiration = 0;
+
+        public long VIPExpiration { get; set; }
         public int SuperChat;
 
         // Combat, Adventure, Lifestyle
-        public int[] TrophyCount = new int[3] { 0, 0, 0 };
+        public int[] TrophyCount;
+
         public Dictionary<int, Trophy> TrophyData = new Dictionary<int, Trophy>();
 
-        public List<ChatSticker> ChatSticker = new List<ChatSticker>() { };
-        public List<int> FavoriteStickers = new List<int> { };
-        public List<int> Emotes = new List<int> { 0 };
+        public List<ChatSticker> ChatSticker;
+        public List<int> FavoriteStickers;
+        public List<int> Emotes;
+
         public NpcTalk NpcTalk;
 
         public CoordF Coord;
         public CoordF Rotation;
+        public int ReturnMapId;
+        public CoordF ReturnCoord;
         public CoordF SafeBlock = CoordF.From(0, 0, 0);
         public bool OnAirMount = false;
 
         // Appearance
         public SkinColor SkinColor;
 
-        public string GuildName = "";
-        public string ProfileUrl = ""; // profile/e2/5a/2755104031905685000/637207943431921205.png
-        public string Motto = "";
+        public string ProfileUrl; // profile/e2/5a/2755104031905685000/637207943431921205.png
+        public string Motto;
 
-        // Home
+        // TODO: Rework to use class Home
         public int HomeMapId = 62000000;
         public int PlotMapId;
         public int HomePlotNumber;
         public int ApartmentNumber;
         public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
-        public string HomeName = "";
+        public string HomeName;
 
-        public int ReturnMapId = (int) Map.Tria;
-        public CoordF ReturnCoord = CoordF.From(-900, -900, 3000);
+        public int MaxSkillTabs { get; set; }
+        public long ActiveSkillTabId { get; set; }
 
-        public int MaxSkillTabs;
-        public long ActiveSkillTabId;
         public SkillCast SkillCast = new SkillCast();
 
-        public List<SkillTab> SkillTabs = new List<SkillTab>();
-        public StatDistribution StatPointDistribution = new StatDistribution();
+        public List<SkillTab> SkillTabs;
+        public StatDistribution StatPointDistribution;
 
-        public Dictionary<ItemSlot, Item> Equips = new Dictionary<ItemSlot, Item>();
-        public Dictionary<ItemSlot, Item> Cosmetics = new Dictionary<ItemSlot, Item>();
         public List<Item> Badges = new List<Item>();
-        public ItemSlot[] EquipSlots { get; }
-        private ItemSlot DefaultEquipSlot => EquipSlots.Length > 0 ? EquipSlots[0] : ItemSlot.NONE;
-        public bool IsBeauty => DefaultEquipSlot == ItemSlot.HR
-                        || DefaultEquipSlot == ItemSlot.FA
-                        || DefaultEquipSlot == ItemSlot.FD
-                        || DefaultEquipSlot == ItemSlot.CL
-                        || DefaultEquipSlot == ItemSlot.PA
-                        || DefaultEquipSlot == ItemSlot.SH
-                        || DefaultEquipSlot == ItemSlot.ER;
 
         public GameOptions GameOptions { get; private set; }
 
-        public Inventory Inventory = new Inventory();
-        public BankInventory BankInventory = new BankInventory();
+        public Inventory Inventory;
+        public BankInventory BankInventory;
         public DismantleInventory DismantleInventory = new DismantleInventory();
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
 
-        public Mailbox Mailbox = new Mailbox();
+        public Mailbox Mailbox;
 
-        public List<Buddy> BuddyList = new List<Buddy>();
+        public List<Buddy> BuddyList;
 
         public long PartyId;
-
         public long ClubId;
         // TODO make this as an array
 
-        public int[] GroupChatId = new int[3];
+        public int[] GroupChatId;
 
+        // TODO: Rework to use Class Guild
         public long GuildId;
+        public string GuildName;
         public int GuildContribution;
 
         public Dictionary<int, Fishing> FishAlbum = new Dictionary<int, Fishing>();
         public Item FishingRod; // Possibly temp solution?
-        public Wallet Wallet { get; private set; }
-        public List<QuestStatus> QuestList = new List<QuestStatus>();
+
+        public Wallet Wallet { get; set; }
+        public List<QuestStatus> QuestList;
 
         private Task HpRegenThread;
         private Task SpRegenThread;
@@ -148,14 +142,9 @@ namespace MapleServer2.Types
             }
         }
 
-        public Player()
-        {
-            GameOptions = new GameOptions();
-            Wallet = new Wallet(this);
-            Levels = new Levels(this, playerLevel: 70, exp: 0, restExp: 0, prestigeLevel: 100, prestigeExp: 0, new List<MasteryExp>());
-            Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-        }
+        public Player() { }
 
+        // Initializes all values to be saved into the database
         public Player(long accountId, long characterId, string name, byte gender, Job job)
         {
             AccountId = accountId;
@@ -164,9 +153,39 @@ namespace MapleServer2.Types
             Gender = gender;
             Job = job;
             GameOptions = new GameOptions();
-            Wallet = new Wallet(this);
+            Wallet = new Wallet(this, meso: 0, meret: 0, gameMeret: 0, eventMeret: 0, valorToken: 0, treva: 0, rue: 0,
+                                haviFruit: 0, mesoToken: 0, bank: 0);
             Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>());
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            MapId = 52000065;
+            Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
+            Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
+            Motto = "Motto";
+            ProfileUrl = "";
+            HomeName = "HomeName";
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
+            TitleId = 10000503;
+            InsigniaId = 33;
+            Titles = new List<int> {
+                    10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
+                    10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
+                    10000603, 10000638, 10000644
+                };
+            ChatSticker = new List<ChatSticker>() { };
+            FavoriteStickers = new List<int> { 5 };
+            Emotes = new List<int> { 10 };
+            SkillTabs = new List<SkillTab> { new SkillTab(job) };
+            StatPointDistribution = new StatDistribution(20);
+            Inventory = new Inventory();
+            BankInventory = new BankInventory();
+            Mailbox = new Mailbox();
+            BuddyList = new List<Buddy>();
+            QuestList = new List<QuestStatus>();
+            GuildName = "";
+            TrophyCount = new int[3] { 0, 0, 0 };
+            ReturnMapId = (int) Map.Tria;
+            ReturnCoord = CoordF.From(-900, -900, 3000);
+            GroupChatId = new int[3];
         }
 
         public static Player Char1(long accountId, long characterId, string name = "Char1")
@@ -198,12 +217,6 @@ namespace MapleServer2.Types
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
                 CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
-                Equips = new Dictionary<ItemSlot, Item> {
-                    { ItemSlot.ER, Item.Ear() },
-                    { ItemSlot.HR, Item.Hair() },
-                    { ItemSlot.FA, Item.Face() },
-                    { ItemSlot.FD, Item.FaceDecoration() }
-                },
                 Stats = stats,
                 Emotes = new List<int>
                 {
@@ -223,7 +236,13 @@ namespace MapleServer2.Types
                     10000603, 10000638, 10000644
                 }
             };
-            player.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
+            player.Inventory.Equips = new Dictionary<ItemSlot, Item> {
+                { ItemSlot.ER, Item.Ear() },
+                { ItemSlot.HR, Item.Hair() },
+                { ItemSlot.FA, Item.Face() },
+                { ItemSlot.FD, Item.FaceDecoration() }
+            };
+            player.Inventory.Equips.Add(ItemSlot.RH, Item.TutorialBow(player));
             return player;
         }
 
@@ -239,7 +258,7 @@ namespace MapleServer2.Types
                 new SkillTab(job)
             };
 
-            return new Player
+            Player player = new Player
             {
                 SkillTabs = skillTabs,
                 MapId = mapId,
@@ -256,17 +275,17 @@ namespace MapleServer2.Types
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
                 CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
-                Equips = new Dictionary<ItemSlot, Item> {
-                    { ItemSlot.ER, Item.EarMale() },
-                    { ItemSlot.HR, Item.HairMale() },
-                    { ItemSlot.FA, Item.FaceMale() },
-                    { ItemSlot.FD, Item.FaceDecorationMale() },
-                    { ItemSlot.CL, Item.CloathMale() },
-                    { ItemSlot.SH, Item.ShoesMale() },
-
-                },
                 Stats = stats
             };
+            player.Inventory.Equips = new Dictionary<ItemSlot, Item> {
+                { ItemSlot.ER, Item.EarMale() },
+                { ItemSlot.HR, Item.HairMale() },
+                { ItemSlot.FA, Item.FaceMale() },
+                { ItemSlot.FD, Item.FaceDecorationMale() },
+                { ItemSlot.CL, Item.CloathMale() },
+                { ItemSlot.SH, Item.ShoesMale() },
+            };
+            return player;
         }
 
         public static Player Priest(long accountId, long characterId, string name = "Priest")
@@ -298,12 +317,6 @@ namespace MapleServer2.Types
                     Primary = Color.Argb(0xFF, 0xEA, 0xBF, 0xAE)
                 },
                 CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount,
-                Equips = new Dictionary<ItemSlot, Item> {
-                    { ItemSlot.ER, Item.Ear() },
-                    { ItemSlot.HR, Item.Hair() },
-                    { ItemSlot.FA, Item.Face() },
-                    { ItemSlot.FD, Item.FaceDecoration() }
-                },
                 Stats = stats,
                 GameOptions = new GameOptions(),
                 Mailbox = new Mailbox(),
@@ -315,8 +328,14 @@ namespace MapleServer2.Types
                     10000603, 10000638, 10000644
                 },
             };
-            player.Equips.Add(ItemSlot.RH, Item.DefaultScepter(player));
-            player.Equips.Add(ItemSlot.LH, Item.DefaultCodex(player));
+            player.Inventory.Equips = new Dictionary<ItemSlot, Item> {
+                    { ItemSlot.ER, Item.Ear() },
+                    { ItemSlot.HR, Item.Hair() },
+                    { ItemSlot.FA, Item.Face() },
+                    { ItemSlot.FD, Item.FaceDecoration() }
+                };
+            player.Inventory.Equips.Add(ItemSlot.RH, Item.DefaultScepter(player));
+            player.Inventory.Equips.Add(ItemSlot.LH, Item.DefaultCodex(player));
             return player;
         }
 
@@ -333,9 +352,9 @@ namespace MapleServer2.Types
             switch (tab)
             {
                 case InventoryTab.Gear:
-                    return Equips;
+                    return Inventory.Equips;
                 case InventoryTab.Outfit:
-                    return Cosmetics;
+                    return Inventory.Cosmetics;
                 default:
                     break;
             }
@@ -344,10 +363,10 @@ namespace MapleServer2.Types
 
         public Item GetEquippedItem(long itemUid)
         {
-            Item gearItem = Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+            Item gearItem = Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
             if (gearItem == null)
             {
-                Item cosmeticItem = Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
+                Item cosmeticItem = Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
                 return cosmeticItem;
             }
             return gearItem;

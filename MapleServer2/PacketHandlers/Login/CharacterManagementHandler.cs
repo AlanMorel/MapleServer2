@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -34,12 +36,22 @@ namespace MapleServer2.PacketHandlers.Login
                     HandleCreate(session, packet);
                     break;
                 case 2: // Delete
-                    long deleteCharId = packet.ReadLong();
-                    Logger.Info($"Deleting {deleteCharId}");
+                    HandleDelete(session, packet);
                     break;
                 default:
                     throw new ArgumentException($"Invalid Char select mode {mode}");
             }
+        }
+
+        private void HandleDelete(LoginSession session, PacketReader packet)
+        {
+            long deleteCharId = packet.ReadLong();
+            if (!DatabaseManager.DeleteCharacter(DatabaseManager.GetCharacter(deleteCharId)))
+            {
+                throw new ArgumentException("Could not delete character");
+            }
+            session.Send(CharacterListPacket.DeleteCharacter(deleteCharId));
+            Logger.Info($"Deleting {deleteCharId}");
         }
 
         public void HandleSelect(LoginSession session, PacketReader packet)
@@ -98,16 +110,16 @@ namespace MapleServer2.PacketHandlers.Login
 
                         equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
-                            HairD = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
+                            HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
                             IsTemplate = false,
                         });
                         break;
                     case ItemSlot.FA: // Face
                         equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                         });
@@ -116,16 +128,16 @@ namespace MapleServer2.PacketHandlers.Login
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
                         equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
-                            FaceDecorationD = faceDecoration,
+                            FaceDecorationData = faceDecoration,
                             IsTemplate = false,
                         });
                         break;
                     case ItemSlot.CL: // Clothes
                         equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                         });
@@ -133,7 +145,7 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.PA: // Pants
                         equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                         });
@@ -141,7 +153,7 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.SH: // Shoes
                         equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                         });
@@ -150,7 +162,7 @@ namespace MapleServer2.PacketHandlers.Login
                         // Assign ER
                         equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
+                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                         });
@@ -160,38 +172,32 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            // Check if name is in use (currently just on local account)
-            bool taken = false;
-
-            foreach (Player character in AccountStorage.Characters.Values)
+            Player newCharacter;
+            using (DatabaseContext context = new DatabaseContext())
             {
-                if (character.Name.ToLower().Equals(name.ToLower()))
+                Player result = context.Characters.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
+
+                if (result != null)
                 {
-                    taken = true;
+                    session.Send(ResponseCharCreatePacket.NameTaken());
+                    return;
                 }
+
+                newCharacter = new Player(session.AccountId, GuidGenerator.Long(), name, gender, job)
+                {
+                    SkinColor = skinColor,
+                };
+                foreach (Item item in equips.Values)
+                {
+                    item.Owner = newCharacter;
+                }
+                newCharacter.Inventory.Equips = equips;
             }
 
-            if (taken)
+            if (!DatabaseManager.CreateCharacter(newCharacter))
             {
-                session.Send(ResponseCharCreatePacket.NameTaken());
-                return;
+                throw new ArgumentException("Could not create character");
             }
-
-            // Create new player object
-            Player newCharacter = new Player(AccountStorage.DEFAULT_ACCOUNT_ID, GuidGenerator.Long(), name, gender, job)
-            {
-                SkillTabs = new List<SkillTab> { new SkillTab(job) },
-                MapId = 52000065,
-                Stats = new PlayerStats(),
-                SkinColor = skinColor,
-                Equips = equips,
-                Motto = "Motto",
-                HomeName = "HomeName",
-                Coord = CoordF.From(-675, 525, 600) // Intro map (52000065)
-            };
-
-            // Add player object to account storage
-            AccountStorage.AddCharacter(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
             session.Send(CharacterListPacket.SetMax(4, 6));

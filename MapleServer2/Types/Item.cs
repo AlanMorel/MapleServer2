@@ -59,18 +59,14 @@ namespace MapleServer2.Types
         public byte[] TransparencyBadgeBools = new byte[10];
 
         public Player Owner;
-
         public EquipColor Color;
-
-        public HairData HairD;
-
-        public HatData HatD;
-
-        public byte[] FaceDecorationD;
-
+        public HairData HairData;
+        public HatData HatData;
+        public byte[] FaceDecorationData;
         public MusicScore Score;
-
         public ItemStats Stats;
+
+        public Item() { }
 
         public Item(int id)
         {
@@ -144,8 +140,8 @@ namespace MapleServer2.Types
             PetSkinBadgeId = other.PetSkinBadgeId;
             Owner = other.Owner;
             Color = other.Color;
-            HairD = other.HairD;
-            HatD = other.HatD;
+            HairData = other.HairData;
+            HatData = other.HatData;
             Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
         }
@@ -154,7 +150,7 @@ namespace MapleServer2.Types
         {
             return new Item(10500001)
             {
-                Uid = 2754959794416496488,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
             };
@@ -164,7 +160,7 @@ namespace MapleServer2.Types
         {
             return new Item(10200148)
             {
-                Uid = 2867972925711604442,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1565575851,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xCC, 0xF7),
@@ -173,7 +169,7 @@ namespace MapleServer2.Types
                     ),
                     15, 2
                 ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
+                HairData = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
             };
         }
 
@@ -181,7 +177,7 @@ namespace MapleServer2.Types
         {
             return new Item(10300004)
             {
-                Uid = 2754959794416496483,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0xB5, 0x24, 0x29),
@@ -197,10 +193,10 @@ namespace MapleServer2.Types
         {
             return new Item(10400000)
             {
-                Uid = 2754959794416496484,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
+                FaceDecorationData = new byte[16],
             };
         }
 
@@ -222,7 +218,7 @@ namespace MapleServer2.Types
             // [orb] Tairen Royal Spirit - 15600228
             return new Item(15100216)
             {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Uid = GuidGenerator.Long(),
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
@@ -257,7 +253,7 @@ namespace MapleServer2.Types
         {
             return new Item(13300308)
             {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Uid = GuidGenerator.Long(),
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
@@ -275,7 +271,7 @@ namespace MapleServer2.Types
         {
             return new Item(14000270)
             {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
+                Uid = GuidGenerator.Long(),
                 Rarity = 1,
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Owner = owner,
@@ -293,7 +289,7 @@ namespace MapleServer2.Types
         {
             return new Item(10200003)
             {
-                Uid = 2867972925711604442,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1565575851,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
@@ -301,14 +297,14 @@ namespace MapleServer2.Types
                     Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
                     10, 4
                 ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
+                HairData = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
             };
         }
         public static Item EarMale()
         {
             return new Item(10500001)
             {
-                Uid = 2754959794416496488,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
             };
@@ -317,7 +313,7 @@ namespace MapleServer2.Types
         {
             return new Item(10300051)
             {
-                Uid = 2754959794416496483,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xF3, 0xF8),
@@ -331,17 +327,17 @@ namespace MapleServer2.Types
         {
             return new Item(10400002)
             {
-                Uid = 2754959794416496484,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
+                FaceDecorationData = new byte[16],
             };
         }
         public static Item CloathMale()
         {
             return new Item(12200398)
             {
-                Uid = 2754959794416496484,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
@@ -356,7 +352,7 @@ namespace MapleServer2.Types
         {
             return new Item(11700852)
             {
-                Uid = 2754959794416496484,
+                Uid = GuidGenerator.Long(),
                 CreationTime = 1558494660,
                 Color = EquipColor.Custom(MixedColor.Custom(
                     Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
