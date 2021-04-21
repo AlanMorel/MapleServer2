@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
@@ -57,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string uuid = packet.ReadMapleString();
 
-            if(uuid.StartsWith("BillBoard")) // Possible temp solution?
+            if (uuid.StartsWith("BillBoard")) // Possible temp solution?
             {
                 IFieldObject<AdBalloon> balloon = session.FieldManager.State.Balloons[uuid];
                 session.Send(PlayerHostPacket.AdBalloonWindow(balloon));

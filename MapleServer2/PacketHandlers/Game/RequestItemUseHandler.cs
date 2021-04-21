@@ -355,14 +355,14 @@ namespace MapleServer2.PacketHandlers.Game
             string[] parameters = packet.ReadUnicodeString().Split("'");
             string title = parameters[0];
             string description = parameters[1];
-            bool publicHouse = parameters[2].Equals("1") ? true : false;
+            bool publicHouse = parameters[2].Equals("1");
 
             AdBalloon balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
             IFieldObject<AdBalloon> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
             fieldBalloon.Coord = session.FieldPlayer.Coord;
             fieldBalloon.Rotation = session.FieldPlayer.Rotation;
             session.FieldManager.AddBalloon(fieldBalloon);
-            
+
             session.Send(PlayerHostPacket.AdBalloonPlace());
             InventoryController.Consume(session, item.Uid, 1);
         }
