@@ -72,21 +72,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AdBalloonWindow(Player player)
+        public static Packet AdBalloonWindow(IFieldObject<InteractAdBalloon> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);
-            pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(player.CharacterId);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteShort(player.Levels.Level);
-            pWriter.WriteInt(); // objectId?
-            pWriter.WriteUnicodeString(""); // title
-            pWriter.WriteUnicodeString(""); // message
-            pWriter.WriteBool(true); // house button enabled
-            pWriter.WriteLong(); // created timestamp
-            pWriter.WriteLong(); // expiration timestamp
+            pWriter.WriteLong(balloon.Value.Owner.AccountId);
+            pWriter.WriteLong(balloon.Value.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Value.Owner.Name);
+            pWriter.WriteUnicodeString(balloon.Value.Owner.Name);
+            pWriter.WriteShort(balloon.Value.Owner.Levels.Level);
+            pWriter.WriteInt(balloon.ObjectId);
+            pWriter.WriteUnicodeString(balloon.Value.Title);
+            pWriter.WriteUnicodeString(balloon.Value.Description);
+            pWriter.WriteBool(balloon.Value.PublicHouse);
+            pWriter.WriteLong(balloon.Value.CreationTimestamp);
+            pWriter.WriteLong(balloon.Value.ExpirationTimestamp);
             pWriter.WriteLong();
             return pWriter;
         }
@@ -95,7 +95,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonPlace);
-            pWriter.WriteInt(); // objectId ?
+            pWriter.WriteInt();
             return pWriter;
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
@@ -56,6 +56,14 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUse(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
+
+            if(uuid.StartsWith("BillBoard")) // Possible temp solution?
+            {
+                IFieldObject<InteractAdBalloon> balloon = session.FieldManager.State.Balloons[uuid];
+                session.Send(PlayerHostPacket.AdBalloonWindow(balloon));
+                return;
+            }
+
             MapInteractObject interactObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
             int numDrop = 0;
 

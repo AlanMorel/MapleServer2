@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace MapleServer2.Types
@@ -16,6 +16,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
+        public readonly ConcurrentDictionary<string, IFieldObject<InteractAdBalloon>> Balloons;
 
         public FieldState()
         {
@@ -29,6 +30,7 @@ namespace MapleServer2.Types
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
+            Balloons = new ConcurrentDictionary<string, IFieldObject<InteractAdBalloon>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -82,6 +84,16 @@ namespace MapleServer2.Types
         public void AddInteractObject(IFieldObject<InteractObject> interactObject)
         {
             InteractObjects[interactObject.Value.Uuid] = interactObject;
+        }
+
+        public void AddBalloon(IFieldObject<InteractAdBalloon> balloon)
+        {
+            Balloons[balloon.Value.Name] = balloon;
+        }
+
+        public bool RemoveBalloon(string name)
+        {
+            return Balloons.Remove(name, out _);
         }
 
         public void AddGuide(IFieldObject<GuideObject> guide)
