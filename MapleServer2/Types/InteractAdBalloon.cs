@@ -17,7 +17,7 @@ namespace MapleServer2.Types
         public string Title;
         public string Description;
         public bool PublicHouse;
-        public InteractActorType Type;
+        public InteractObjectType Type;
         public long CreationTimestamp;
         public long ExpirationTimestamp; // TODO: Remove from field if expired
 
@@ -35,7 +35,7 @@ namespace MapleServer2.Types
             Title = title;
             Description = description;
             PublicHouse = publicHouse;
-            Type = InteractActorType.AdBalloon;
+            Type = InteractObjectType.AdBalloon;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + item.Function.Duration;
         }

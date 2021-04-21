@@ -214,7 +214,7 @@ namespace MapleServer2.Servers.Game
             }
             foreach (IFieldObject<InteractAdBalloon> balloon in State.Balloons.Values)
             {
-                sender.Send(InteractActorPacket.AddAdBallons(balloon));
+                sender.Send(InteractObjectPacket.AddAdBallons(balloon));
             }
 
             State.AddPlayer(player);
@@ -328,7 +328,7 @@ namespace MapleServer2.Servers.Game
 
             Broadcast(session =>
             {
-                session.Send(InteractActorPacket.AddAdBallons(balloon));
+                session.Send(InteractObjectPacket.AddAdBallons(balloon));
             });
         }
 
