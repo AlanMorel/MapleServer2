@@ -59,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if(uuid.StartsWith("BillBoard")) // Possible temp solution?
             {
-                IFieldObject<InteractAdBalloon> balloon = session.FieldManager.State.Balloons[uuid];
+                IFieldObject<AdBalloon> balloon = session.FieldManager.State.Balloons[uuid];
                 session.Send(PlayerHostPacket.AdBalloonWindow(balloon));
                 return;
             }

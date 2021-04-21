@@ -16,7 +16,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
-        public readonly ConcurrentDictionary<string, IFieldObject<InteractAdBalloon>> Balloons;
+        public readonly ConcurrentDictionary<string, IFieldObject<AdBalloon>> Balloons;
 
         public FieldState()
         {
@@ -30,7 +30,7 @@ namespace MapleServer2.Types
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
-            Balloons = new ConcurrentDictionary<string, IFieldObject<InteractAdBalloon>>();
+            Balloons = new ConcurrentDictionary<string, IFieldObject<AdBalloon>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -86,7 +86,7 @@ namespace MapleServer2.Types
             InteractObjects[interactObject.Value.Uuid] = interactObject;
         }
 
-        public void AddBalloon(IFieldObject<InteractAdBalloon> balloon)
+        public void AddBalloon(IFieldObject<AdBalloon> balloon)
         {
             Balloons[balloon.Value.Name] = balloon;
         }

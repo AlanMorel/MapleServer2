@@ -43,7 +43,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddAdBallons(IFieldObject<InteractAdBalloon> balloon)
+        public static Packet AddAdBallons(IFieldObject<AdBalloon> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 

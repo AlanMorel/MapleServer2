@@ -357,8 +357,8 @@ namespace MapleServer2.PacketHandlers.Game
             string description = parameters[1];
             bool publicHouse = parameters[2].Equals("1") ? true : false;
 
-            InteractAdBalloon balloon = new InteractAdBalloon(session.Player, item, title, description, publicHouse);
-            IFieldObject<InteractAdBalloon> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
+            AdBalloon balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
+            IFieldObject<AdBalloon> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
             fieldBalloon.Coord = session.FieldPlayer.Coord;
             fieldBalloon.Rotation = session.FieldPlayer.Rotation;
             session.FieldManager.AddBalloon(fieldBalloon);

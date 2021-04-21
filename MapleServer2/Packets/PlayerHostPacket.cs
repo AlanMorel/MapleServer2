@@ -72,7 +72,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AdBalloonWindow(IFieldObject<InteractAdBalloon> balloon)
+        public static Packet AdBalloonWindow(IFieldObject<AdBalloon> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);

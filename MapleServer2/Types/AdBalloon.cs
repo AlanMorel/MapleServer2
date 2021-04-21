@@ -4,7 +4,7 @@ using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
-    public class InteractAdBalloon
+    public class AdBalloon
     {
         public string Name;
         public int InteractId;
@@ -21,7 +21,7 @@ namespace MapleServer2.Types
         public long CreationTimestamp;
         public long ExpirationTimestamp; // TODO: Remove from field if expired
 
-        public InteractAdBalloon(Player owner, Item item, string title, string description, bool publicHouse)
+        public AdBalloon(Player owner, Item item, string title, string description, bool publicHouse)
         {
             int nameId = GuidGenerator.Int();
             Name = "BillBoard_" + nameId.ToString();

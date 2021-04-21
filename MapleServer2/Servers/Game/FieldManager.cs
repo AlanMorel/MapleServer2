@@ -212,7 +212,7 @@ namespace MapleServer2.Servers.Game
             {
                 sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new SkillCast(70000018, 1, 0, 1)));
             }
-            foreach (IFieldObject<InteractAdBalloon> balloon in State.Balloons.Values)
+            foreach (IFieldObject<AdBalloon> balloon in State.Balloons.Values)
             {
                 sender.Send(InteractObjectPacket.AddAdBallons(balloon));
             }
@@ -322,7 +322,7 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public void AddBalloon(IFieldObject<InteractAdBalloon> balloon)
+        public void AddBalloon(IFieldObject<AdBalloon> balloon)
         {
             State.AddBalloon(balloon);
 
@@ -332,7 +332,7 @@ namespace MapleServer2.Servers.Game
             });
         }
 
-        public bool RemoveBalloon(IFieldObject<InteractAdBalloon> balloon)
+        public bool RemoveBalloon(IFieldObject<AdBalloon> balloon)
         {
             return State.RemoveBalloon(balloon.Value.Name);
         }

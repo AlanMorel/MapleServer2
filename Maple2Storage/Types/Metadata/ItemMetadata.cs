@@ -260,7 +260,8 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() => $"Function(Name: {Name}, Id: {Id}, " +
-            $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}, Rarity:{Rarity}";
+            $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}, Rarity:{Rarity}" +
+            $"Model: {Model}, Asset:{Asset}, NormalState: {NormalState}, Reactable: {Reactable}, Scale:{Scale}";
 
         protected bool Equals(ItemFunction other)
         {
@@ -272,7 +273,12 @@ namespace Maple2Storage.Types.Metadata
                 TargetLevel == other.TargetLevel &&
                 Count == other.Count &&
                 TotalUser == other.TotalUser &&
-                Rarity == other.Rarity;
+                Rarity == other.Rarity &&
+                Model == other.Model &&
+                Asset == other.Asset &&
+                NormalState == other.NormalState &&
+                Reactable == other.Reactable &&
+                Scale == other.Scale;
         }
 
         public override bool Equals(object obj)
