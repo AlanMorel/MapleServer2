@@ -30,6 +30,7 @@ namespace MapleServer2.PacketHandlers.Game
             ModifyExistingBeauty = 0x5,
             ModifySkin = 0x6,
             RandomHair = 0x7,
+            Teleport = 0xA,
             ChooseRandomHair = 0xC,
             SaveHair = 0x10,
             DeleteSavedHair = 0x12,
@@ -63,6 +64,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case BeautyMode.SaveHair:
                     HandleSaveHair(session, packet);
+                    break;
+                case BeautyMode.Teleport:
+                    HandleTeleport(session, packet);
                     break;
                 case BeautyMode.DeleteSavedHair:
                     HandleDeleteSavedHair(session, packet);
@@ -316,6 +320,30 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.HairInventory.SavedHair.Add(hairCopy);
 
             session.Send(BeautyPacket.SaveHair(hair, hairCopy));
+        }
+
+        private static void HandleTeleport(GameSession session, PacketReader packet)
+        {
+            byte teleportId = packet.ReadByte();
+
+            Map mapId;
+            switch (teleportId)
+            {
+                case 1:
+                    mapId = Map.RosettaBeautySalon;
+                    break;
+                case 3:
+                    mapId = Map.TriaPlasticSurgery;
+                    break;
+                case 5:
+                    mapId = Map.DouglasDyeWorkshop;
+                    break;
+                default:
+                    Console.WriteLine($"teleportId: {teleportId} not found");
+                    return;
+            }
+
+            MoveFieldHandler.HandleInstanceMove(session, (int) mapId);
         }
 
         private static void HandleDeleteSavedHair(GameSession session, PacketReader packet)

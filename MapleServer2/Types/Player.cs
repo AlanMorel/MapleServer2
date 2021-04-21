@@ -77,7 +77,8 @@ namespace MapleServer2.Types
         public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
         public string HomeName = "";
 
-        public Vector3 ReturnPosition;
+        public int ReturnMapId = (int) Map.Tria;
+        public CoordF ReturnCoord = CoordF.From(-900, -900, 3000);
 
         public int MaxSkillTabs;
         public long ActiveSkillTabId;

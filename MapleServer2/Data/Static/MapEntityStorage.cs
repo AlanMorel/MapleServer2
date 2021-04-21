@@ -89,6 +89,12 @@ namespace MapleServer2.Data.Static
             return boundingBox.GetValueOrDefault(mapId);
         }
 
+        public static bool HasSafePortal(int mapId)
+        {
+            List<MapPortal> items = portals.GetValueOrDefault(mapId).Where(x => x.TargetPortalId != 0).ToList();
+            return items.Count != 0;
+        }
+
         public static bool HasHealingSpot(int mapId)
         {
             return healthSpot.GetValueOrDefault(mapId).Count != 0;
