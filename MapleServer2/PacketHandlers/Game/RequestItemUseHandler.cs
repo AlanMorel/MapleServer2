@@ -364,6 +364,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.AddBalloon(fieldBalloon);
             
             session.Send(PlayerHostPacket.AdBalloonPlace());
+            InventoryController.Consume(session, item.Uid, 1);
         }
     }
 }
