@@ -178,7 +178,7 @@ namespace GameDataParser.Parsers
                             string uuid = node.Attributes["id"].Value;
                             int interactId = string.IsNullOrEmpty(node.SelectSingleNode("property[@name='interactID']").Value) ? 0 :
                                 int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
-                            metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Extractor, interactId));
+                            metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Extractor, interactId));
                         }
                     }
                     else if (modelName.Contains("hub") || modelName.Contains("vein"))
