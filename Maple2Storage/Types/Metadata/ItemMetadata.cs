@@ -240,6 +240,16 @@ namespace Maple2Storage.Types.Metadata
         public byte TotalUser;
         [XmlElement(Order = 9)]
         public byte Rarity;
+        [XmlElement(Order = 10)]
+        public string Model;
+        [XmlElement(Order = 11)]
+        public string Asset = "";
+        [XmlElement(Order = 12)]
+        public string NormalState;
+        [XmlElement(Order = 13)]
+        public string Reactable;
+        [XmlElement(Order = 14)]
+        public float Scale = 1;
 
         public ItemFunction() { }
 
