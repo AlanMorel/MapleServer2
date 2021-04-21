@@ -97,7 +97,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(player.Gender);
             pWriter.WriteByte(1);
 
-            pWriter.WriteLong();
+            pWriter.WriteLong(player.AccountId);
             pWriter.WriteInt();
             pWriter.WriteInt(player.MapId);
             pWriter.WriteInt(player.MapId); // Sometimes 0
@@ -112,8 +112,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong();
             pWriter.WriteLong(); // Some timestamp
             pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.Write(player.Rotation); // NOT char Coord/UnknownCoord
+            pWriter.WriteInt(player.ReturnMapId);
+            pWriter.Write(player.ReturnCoord);
             pWriter.WriteInt(); // gearscore
             pWriter.Write(player.SkinColor);
             pWriter.WriteLong(player.CreationTime);
