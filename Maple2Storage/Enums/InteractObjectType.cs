@@ -6,5 +6,6 @@
         Binoculars = 2,
         Extractor = 3,
         Gathering = 6,
+        AdBalloon = 8
     }
 }
