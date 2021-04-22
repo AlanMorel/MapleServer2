@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Maple2.Trigger;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -197,7 +199,19 @@ namespace MapleServer2.Servers.Game
             }
             if (State.InteractObjects.Values.Count > 0)
             {
-                sender.Send(InteractObjectPacket.AddInteractObjects(State.InteractObjects.Values));
+                ICollection<IFieldObject<InteractObject>> balloons = State.InteractObjects.Values.Where(x => x.Value.Type == InteractObjectType.AdBalloon).ToList();
+                if (balloons.Count > 0)
+                {
+                    foreach (IFieldObject<InteractObject> balloon in balloons)
+                    {
+                        sender.Send(InteractObjectPacket.AddAdBallons(balloon));
+                    }
+                }
+                ICollection<IFieldObject<InteractObject>> objects = State.InteractObjects.Values.Where(x => x.Value.Type != InteractObjectType.AdBalloon).ToList();
+                if (objects.Count > 0)
+                {
+                    sender.Send(InteractObjectPacket.AddInteractObjects(objects));
+                }
             }
             if (State.Cubes.Values.Count > 0)
             {
@@ -211,10 +225,6 @@ namespace MapleServer2.Servers.Game
             foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
             {
                 sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new SkillCast(70000018, 1, 0, 1)));
-            }
-            foreach (IFieldObject<AdBalloon> balloon in State.Balloons.Values)
-            {
-                sender.Send(InteractObjectPacket.AddAdBallons(balloon));
             }
 
             State.AddPlayer(player);
@@ -322,7 +332,7 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public void AddBalloon(IFieldObject<AdBalloon> balloon)
+        public void AddBalloon(IFieldObject<InteractObject> balloon)
         {
             State.AddBalloon(balloon);
 
@@ -332,7 +342,7 @@ namespace MapleServer2.Servers.Game
             });
         }
 
-        public bool RemoveBalloon(IFieldObject<AdBalloon> balloon)
+        public bool RemoveBalloon(IFieldObject<InteractObject> balloon)
         {
             return State.RemoveBalloon(balloon.Value.Name);
         }

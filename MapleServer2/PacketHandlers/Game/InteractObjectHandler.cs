@@ -56,72 +56,70 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUse(GameSession session, PacketReader packet)
         {
             string uuid = packet.ReadMapleString();
-
-            if (uuid.StartsWith("BillBoard")) // Possible temp solution?
-            {
-                IFieldObject<AdBalloon> balloon = session.FieldManager.State.Balloons[uuid];
-                session.Send(PlayerHostPacket.AdBalloonWindow(balloon));
-                return;
-            }
-
-            MapInteractObject interactObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
-            int numDrop = 0;
-
+            IFieldObject<InteractObject> interactObject = session.FieldManager.State.InteractObjects[uuid];
             if (interactObject == null)
             {
                 return;
             }
-            if (interactObject.Type == InteractObjectType.Binoculars)
-            {
-                QuestHelper.UpdateExplorationQuest(session, interactObject.InteractId.ToString(), "interact_object_rep");
-            }
-            else if (interactObject.Type == InteractObjectType.Gathering)
-            {
-                RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(interactObject.RecipeId);
-                long requireMastery = int.Parse(recipe.RequireMastery);
-                Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
 
-                session.Player.Levels.GainMasteryExp(type, 0);
-                long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == type).CurrentExp;
-                if (currentMastery < requireMastery)
-                {
+            MapInteractObject mapObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
+            int numDrop = 0;
+
+            switch (interactObject.Value.Type)
+            {
+                case InteractObjectType.Binoculars:
+                    QuestHelper.UpdateExplorationQuest(session, mapObject.InteractId.ToString(), "interact_object_rep");
+                    break;
+                case InteractObjectType.Gathering:
+                    RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(mapObject.RecipeId);
+                    long requireMastery = int.Parse(recipe.RequireMastery);
+                    Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
+
+                    session.Player.Levels.GainMasteryExp(type, 0);
+                    long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == type).CurrentExp;
+                    if (currentMastery < requireMastery)
+                    {
+                        return;
+                    }
+
+                    session.Player.IncrementGatheringCount(mapObject.RecipeId, 0);
+                    int numCount = session.Player.GatheringCount[mapObject.RecipeId].Current;
+
+                    List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
+                    Random rand = new Random();
+                    int masteryDiffFactor = numCount switch
+                    {
+                        int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetFactor(0),
+                        int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetFactor(1),
+                        int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => MasteryFactorMetadataStorage.GetFactor(2),
+                        _ => MasteryFactorMetadataStorage.GetFactor(3),
+                    };
+
+                    foreach (RecipeItem item in items)
+                    {
+                        int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
+                        if (rand.Next(100) >= prob)
+                        {
+                            continue;
+                        }
+                        for (int i = 0; i < item.Amount; i++)
+                        {
+                            session.FieldManager.AddItem(session, new Item(item.Id));
+                        }
+                        numDrop += item.Amount;
+                    }
+                    if (numDrop > 0)
+                    {
+                        session.Player.IncrementGatheringCount(mapObject.RecipeId, numDrop);
+                        session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
+                    }
+                    break;
+                case InteractObjectType.AdBalloon:
+                    session.Send(PlayerHostPacket.AdBalloonWindow(interactObject));
                     return;
-                }
-
-                session.Player.IncrementGatheringCount(interactObject.RecipeId, 0);
-                int numCount = session.Player.GatheringCount[interactObject.RecipeId].Current;
-
-                List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
-                Random rand = new Random();
-                int masteryDiffFactor = numCount switch
-                {
-                    int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetFactor(0),
-                    int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetFactor(1),
-                    int n when n < (int) (recipe.NormalPropLimitCount * 1.3) => MasteryFactorMetadataStorage.GetFactor(2),
-                    _ => MasteryFactorMetadataStorage.GetFactor(3),
-                };
-
-                foreach (RecipeItem item in items)
-                {
-                    int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
-                    if (rand.Next(100) >= prob)
-                    {
-                        continue;
-                    }
-                    for (int i = 0; i < item.Amount; i++)
-                    {
-                        session.FieldManager.AddItem(session, new Item(item.Id));
-                    }
-                    numDrop += item.Amount;
-                }
-                if (numDrop > 0)
-                {
-                    session.Player.IncrementGatheringCount(interactObject.RecipeId, numDrop);
-                    session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
-                }
             }
-            session.Send(InteractObjectPacket.UseObject(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
-            session.Send(InteractObjectPacket.Extra(interactObject));
+            session.Send(InteractObjectPacket.UseObject(mapObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
+            session.Send(InteractObjectPacket.Extra(mapObject));
         }
     }
 }

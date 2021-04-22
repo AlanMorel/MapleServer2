@@ -72,21 +72,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AdBalloonWindow(IFieldObject<AdBalloon> balloon)
+        public static Packet AdBalloonWindow(IFieldObject<InteractObject> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);
-            pWriter.WriteLong(balloon.Value.Owner.AccountId);
-            pWriter.WriteLong(balloon.Value.Owner.CharacterId);
-            pWriter.WriteUnicodeString(balloon.Value.Owner.Name);
-            pWriter.WriteUnicodeString(balloon.Value.Owner.Name);
-            pWriter.WriteShort(balloon.Value.Owner.Levels.Level);
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.AccountId);
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
+            pWriter.WriteShort(balloon.Value.Balloon.Owner.Levels.Level);
             pWriter.WriteInt(balloon.ObjectId);
-            pWriter.WriteUnicodeString(balloon.Value.Title);
-            pWriter.WriteUnicodeString(balloon.Value.Description);
-            pWriter.WriteBool(balloon.Value.PublicHouse);
-            pWriter.WriteLong(balloon.Value.CreationTimestamp);
-            pWriter.WriteLong(balloon.Value.ExpirationTimestamp);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Title);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Description);
+            pWriter.WriteBool(balloon.Value.Balloon.PublicHouse);
+            pWriter.WriteLong(balloon.Value.Balloon.CreationTimestamp);
+            pWriter.WriteLong(balloon.Value.Balloon.ExpirationTimestamp);
             pWriter.WriteLong();
             return pWriter;
         }

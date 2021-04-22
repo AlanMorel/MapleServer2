@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -43,7 +43,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddAdBallons(IFieldObject<AdBalloon> balloon)
+        public static Packet AddAdBallons(IFieldObject<InteractObject> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
 
@@ -51,17 +51,17 @@ namespace MapleServer2.Packets
             pWriter.WriteMapleString(balloon.Value.Name);
             pWriter.WriteByte(1);
             pWriter.WriteEnum(balloon.Value.Type);
-            pWriter.WriteInt(balloon.Value.InteractId);
+            pWriter.WriteInt(balloon.Value.Balloon.InteractId);
             pWriter.Write(balloon.Coord);
             pWriter.Write(balloon.Rotation);
-            pWriter.WriteUnicodeString(balloon.Value.Model);
-            pWriter.WriteUnicodeString(balloon.Value.Asset);
-            pWriter.WriteUnicodeString(balloon.Value.NormalState);
-            pWriter.WriteUnicodeString(balloon.Value.Reactable);
-            pWriter.WriteFloat(balloon.Value.Scale);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Model);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Asset);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.NormalState);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Reactable);
+            pWriter.WriteFloat(balloon.Value.Balloon.Scale);
             pWriter.WriteByte();
-            pWriter.WriteLong(balloon.Value.Owner.CharacterId);
-            pWriter.WriteUnicodeString(balloon.Value.Owner.Name);
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
             return pWriter;
         }
 
