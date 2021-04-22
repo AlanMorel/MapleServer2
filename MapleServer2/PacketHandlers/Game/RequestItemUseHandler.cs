@@ -359,7 +359,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             int balloonUid = GuidGenerator.Int();
             string uuid = "AdBalloon_" + balloonUid.ToString();
-            InteractObject balloon = new InteractObject(uuid, "AdBalloon", Maple2Storage.Enums.InteractObjectType.AdBalloon);
+            InteractObject balloon = new InteractObject(uuid, uuid, Maple2Storage.Enums.InteractObjectType.AdBalloon);
             balloon.Balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
             IFieldObject<InteractObject> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
             fieldBalloon.Coord = session.FieldPlayer.Coord;
