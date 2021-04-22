@@ -26,18 +26,18 @@ namespace MapleServer2.Types
             int nameId = GuidGenerator.Int();
             Name = "BillBoard_" + nameId.ToString();
             Owner = owner;
-            InteractId = item.Function.Id;
-            Model = item.Function.Model;
-            Asset = item.Function.Asset;
-            NormalState = item.Function.NormalState;
-            Reactable = item.Function.Reactable;
-            Scale = item.Function.Scale;
+            InteractId = item.AdBalloon.InteractId;
+            Model = item.AdBalloon.Model;
+            Asset = item.AdBalloon.Asset;
+            NormalState = item.AdBalloon.NormalState;
+            Reactable = item.AdBalloon.Reactable;
+            Scale = item.AdBalloon.Scale;
             Title = title;
             Description = description;
             PublicHouse = publicHouse;
             Type = InteractObjectType.AdBalloon;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-            ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + item.Function.Duration;
+            ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + item.AdBalloon.Duration;
         }
     }
 }

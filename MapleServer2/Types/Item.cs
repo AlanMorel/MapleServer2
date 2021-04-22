@@ -28,6 +28,7 @@ namespace MapleServer2.Types
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
         public ItemFunction Function { get; set; }
+        public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
 
@@ -95,6 +96,7 @@ namespace MapleServer2.Types
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             Content = ItemMetadataStorage.GetContent(id);
             Function = ItemMetadataStorage.GetFunction(id);
+            AdBalloon = ItemMetadataStorage.GetBalloonData(id);
             Tag = ItemMetadataStorage.GetTag(id);
             ShopID = ItemMetadataStorage.GetShopID(id);
             Slot = -1;
@@ -123,6 +125,7 @@ namespace MapleServer2.Types
             FileName = other.FileName;
             Content = other.Content;
             Function = other.Function;
+            AdBalloon = other.AdBalloon;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;

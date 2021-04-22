@@ -420,24 +420,26 @@ namespace GameDataParser.Parsers
                 }
                 else if (contentType == "InstallBillBoard")
                 {
+                    AdBalloonData balloon = new AdBalloonData();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.Id = int.Parse(functionParameters.Attributes["interactID"].Value);
-                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
-                    metadata.FunctionData.Model = functionParameters.Attributes["model"].Value;
+                    balloon.InteractId = int.Parse(functionParameters.Attributes["interactID"].Value);
+                    balloon.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    balloon.Model = functionParameters.Attributes["model"].Value;
                     if (functionParameters.Attributes["asset"] != null)
                     {
-                        metadata.FunctionData.Asset = functionParameters.Attributes["asset"].Value;
+                        balloon.Asset = functionParameters.Attributes["asset"].Value;
                     }
-                    metadata.FunctionData.NormalState = functionParameters.Attributes["normal"].Value;
-                    metadata.FunctionData.Reactable = functionParameters.Attributes["reactable"].Value;
+                    balloon.NormalState = functionParameters.Attributes["normal"].Value;
+                    balloon.Reactable = functionParameters.Attributes["reactable"].Value;
                     if (functionParameters.Attributes["scale"] != null)
                     {
-                        metadata.FunctionData.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
+                        balloon.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
                     }
+                    metadata.AdBalloonData = balloon;
                 }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod")
                 {
