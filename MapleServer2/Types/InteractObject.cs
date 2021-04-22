@@ -1,6 +1,5 @@
 ﻿using System;
 using Maple2Storage.Enums;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
