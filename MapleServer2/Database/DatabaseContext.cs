@@ -164,7 +164,7 @@ namespace MapleServer2.Database
 
             modelBuilder.Entity<SkillTab>(entity =>
             {
-                entity.Property(e => e.Name).HasDefaultValue("");
+                entity.Property(e => e.Name).HasDefaultValue("").HasMaxLength(25);
                 entity.Property(e => e.SkillLevels).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new Dictionary<int, int>() : JsonConvert.DeserializeObject<Dictionary<int, int>>(i));
@@ -279,7 +279,7 @@ namespace MapleServer2.Database
                 entity.HasMany(e => e.Items);
                 entity.Property(e => e.SenderName).HasMaxLength(25).HasDefaultValue("");
                 entity.Property(e => e.Title).HasMaxLength(25).HasDefaultValue("");
-                entity.Property(e => e.Body).HasDefaultValue("");
+                entity.Property(e => e.Body);
             });
 
             modelBuilder.Entity<Buddy>(entity =>
