@@ -109,14 +109,15 @@ namespace MapleServer2.Database
                 .FirstOrDefault(p => p.CharacterId == characterId);
             }
 
+            Levels levels = player.Levels;
+            Wallet wallet = player.Wallet;
             player.BankInventory = new BankInventory(player.BankInventory);
             player.Inventory = new Inventory(player.Inventory);
-            player.Levels = new Levels(player, player.Levels);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
-            Wallet wallet = player.Wallet;
-            wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount, wallet.EventMeret.Amount,
-            wallet.ValorToken.Amount, wallet.Treva.Amount, wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount,
-            wallet.Bank.Amount);
+            levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp);
+            wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
+                                wallet.EventMeret.Amount, wallet.ValorToken.Amount, wallet.Treva.Amount,
+                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount);
 
             return player;
         }

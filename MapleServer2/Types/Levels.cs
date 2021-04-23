@@ -33,18 +33,6 @@ namespace MapleServer2.Types
             MasteryExp = masteryExp;
         }
 
-        public Levels(Player player, Levels levels)
-        {
-            Id = levels.Id;
-            Player = player;
-            Level = levels.Level;
-            Exp = levels.Exp;
-            RestExp = levels.RestExp;
-            PrestigeLevel = levels.PrestigeLevel;
-            PrestigeExp = levels.PrestigeExp;
-            MasteryExp = levels.MasteryExp;
-        }
-
         public void SetLevel(short level)
         {
             Level = level;
