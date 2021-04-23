@@ -68,7 +68,8 @@ namespace MapleServer2.Database
             foreach (Player player in characters)
             {
                 player.Inventory = new Inventory(player.Inventory);
-                player.Levels = new Levels(player, player.Levels);
+                Levels levels = player.Levels;
+                player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp);
             }
 
             return characters;
