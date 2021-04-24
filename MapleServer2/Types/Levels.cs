@@ -22,7 +22,7 @@ namespace MapleServer2.Types
         public Levels() { }
 
         public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
-            List<MasteryExp> masteryExp)
+            List<MasteryExp> masteryExp, long id = 0)
         {
             Player = player;
             Level = playerLevel;
@@ -31,6 +31,7 @@ namespace MapleServer2.Types
             PrestigeLevel = prestigeLevel;
             PrestigeExp = prestigeExp;
             MasteryExp = masteryExp;
+            Id = id;
         }
 
         public void SetLevel(short level)

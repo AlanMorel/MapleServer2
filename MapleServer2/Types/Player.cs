@@ -90,8 +90,6 @@ namespace MapleServer2.Types
         public List<SkillTab> SkillTabs;
         public StatDistribution StatPointDistribution;
 
-        public List<Item> Badges = new List<Item>();
-
         public GameOptions GameOptions { get; private set; }
 
         public Inventory Inventory;
@@ -164,16 +162,12 @@ namespace MapleServer2.Types
             ProfileUrl = "";
             HomeName = "HomeName";
             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
-            TitleId = 10000503;
-            InsigniaId = 33;
-            Titles = new List<int> {
-                    10000569, 10000152, 10000570, 10000171, 10000196, 10000195, 10000571, 10000331, 10000190,
-                    10000458, 10000465, 10000503, 10000512, 10000513, 10000514, 10000537, 10000565, 10000602,
-                    10000603, 10000638, 10000644
-                };
-            ChatSticker = new List<ChatSticker>() { };
-            FavoriteStickers = new List<int> { 5 };
-            Emotes = new List<int> { 10 };
+            TitleId = 0;
+            InsigniaId = 0;
+            Titles = new List<int>();
+            ChatSticker = new List<ChatSticker>();
+            FavoriteStickers = new List<int>();
+            Emotes = new List<int>();
             SkillTabs = new List<SkillTab> { new SkillTab(job) };
             StatPointDistribution = new StatDistribution(20);
             Inventory = new Inventory();

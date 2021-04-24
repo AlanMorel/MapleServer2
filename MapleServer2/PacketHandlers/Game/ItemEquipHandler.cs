@@ -65,6 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (equippedInventory.Remove(equipSlot, out Item prevItem))
             {
                 prevItem.Slot = item.Slot;
+                prevItem.IsEquipped = false;
                 InventoryController.Add(session, prevItem, false);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
 
@@ -85,6 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         prevItem2.Slot = item.Slot;
                     }
+                    prevItem2.IsEquipped = false;
                     InventoryController.Add(session, prevItem2, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                 }
@@ -102,6 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
                         if (equippedInventory.Remove(prevItemSlot, out Item prevItem2))
                         {
                             prevItem2.Slot = item.Slot;
+                            prevItem2.IsEquipped = false;
                             InventoryController.Add(session, prevItem2, false);
                             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                         }
@@ -110,6 +113,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Equip new item
+            item.IsEquipped = true;
             equippedInventory[equipSlot] = item;
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
 
@@ -131,6 +135,7 @@ namespace MapleServer2.PacketHandlers.Game
                 if (session.Player.Inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
+                    unequipItem.IsEquipped = false;
                     InventoryController.Add(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
 
@@ -147,6 +152,7 @@ namespace MapleServer2.PacketHandlers.Game
                 if (session.Player.Inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
+                    unequipItem.IsEquipped = false;
                     InventoryController.Add(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                 }

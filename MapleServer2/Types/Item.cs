@@ -35,6 +35,7 @@ namespace MapleServer2.Types
         public long Uid;
         public short Slot;
         public int Amount;
+        public bool IsEquipped;
 
         public long CreationTime;
         public long ExpiryTime;

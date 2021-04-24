@@ -19,7 +19,7 @@ namespace MapleServer2.Types
         public Wallet() { }
 
         public Wallet(Player player, long meso, long meret, long gameMeret, long eventMeret, long valorToken, long treva,
-                    long rue, long haviFruit, long mesoToken, long bank)
+                    long rue, long haviFruit, long mesoToken, long bank, long id = 0)
         {
             Meso = new Currency(player, CurrencyType.Meso, meso);
             Meret = new Currency(player, CurrencyType.Meret, meret);
@@ -31,6 +31,7 @@ namespace MapleServer2.Types
             HaviFruit = new Currency(player, CurrencyType.HaviFruit, haviFruit);
             MesoToken = new Currency(player, CurrencyType.MesoToken, mesoToken);
             Bank = new Currency(player, CurrencyType.Bank, bank);
+            Id = id;
         }
 
         public bool RemoveMerets(long amount)

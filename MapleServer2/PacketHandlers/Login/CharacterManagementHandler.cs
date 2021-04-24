@@ -114,6 +114,7 @@ namespace MapleServer2.PacketHandlers.Login
                             Color = equipColor,
                             HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.FA: // Face
@@ -122,6 +123,7 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.FD: // Face Decoration
@@ -132,6 +134,7 @@ namespace MapleServer2.PacketHandlers.Login
                             Color = equipColor,
                             FaceDecorationData = faceDecoration,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.CL: // Clothes
@@ -140,6 +143,7 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.PA: // Pants
@@ -148,6 +152,7 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.SH: // Shoes
@@ -156,6 +161,7 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.ER: // Ear
@@ -165,6 +171,7 @@ namespace MapleServer2.PacketHandlers.Login
                             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                 }

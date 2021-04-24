@@ -15,9 +15,8 @@ namespace MapleServer2.Types
         public readonly Dictionary<long, Item> Items;
         public Dictionary<ItemSlot, Item> Equips;
         public Dictionary<ItemSlot, Item> Cosmetics;
+        public List<Item> Badges;
 
-        public List<Item> DB_Equips { get; set; }
-        public List<Item> DB_Cosmetics { get; set; }
         public List<Item> DB_Items { get; set; }
 
         // Map of Slot to Uid for each inventory
@@ -44,6 +43,7 @@ namespace MapleServer2.Types
         {
             Equips = new Dictionary<ItemSlot, Item>();
             Cosmetics = new Dictionary<ItemSlot, Item>();
+            Badges = new List<Item>();
             Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
             SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -65,19 +65,27 @@ namespace MapleServer2.Types
         {
             Equips = new Dictionary<ItemSlot, Item>();
             Cosmetics = new Dictionary<ItemSlot, Item>();
+            Badges = new List<Item>();
             Id = inventory.Id;
-            foreach (Item item in inventory.DB_Equips)
-            {
-                Equips.Add(item.ItemSlot, item);
-            }
-            foreach (Item item in inventory.DB_Cosmetics)
-            {
-                Cosmetics.Add(item.ItemSlot, item);
-            }
             ExtraSize = inventory.ExtraSize;
             foreach (Item item in inventory.DB_Items)
             {
-                Add(item);
+                if (item.IsEquipped)
+                {
+                    Equips.Add(item.ItemSlot, item);
+                }
+                else if (item.IsEquipped && item.InventoryTab == InventoryTab.Outfit)
+                {
+                    Cosmetics.Add(item.ItemSlot, item);
+                }
+                else if (item.IsEquipped && item.InventoryTab == InventoryTab.Badge)
+                {
+                    Badges.Add(item);
+                }
+                else
+                {
+                    Add(item);
+                }
             }
         }
 

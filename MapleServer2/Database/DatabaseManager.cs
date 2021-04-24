@@ -58,8 +58,6 @@ namespace MapleServer2.Database
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
-                .Include(p => p.Inventory).ThenInclude(p => p.DB_Equips)
-                .Include(p => p.Inventory).ThenInclude(p => p.DB_Cosmetics)
                 .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
                 .Include(p => p.QuestList)
                 .ToList();
@@ -69,7 +67,7 @@ namespace MapleServer2.Database
             {
                 player.Inventory = new Inventory(player.Inventory);
                 Levels levels = player.Levels;
-                player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp);
+                player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
             }
 
             return characters;
@@ -79,8 +77,8 @@ namespace MapleServer2.Database
         {
             player.BankInventory.DB_Items = player.BankInventory.Items.Where(x => x != null).ToList();
             player.Inventory.DB_Items = player.Inventory.Items.Values.Where(x => x != null).ToList();
-            player.Inventory.DB_Equips = player.Inventory.Equips.Values.Where(x => x != null).ToList();
-            player.Inventory.DB_Cosmetics = player.Inventory.Cosmetics.Values.Where(x => x != null).ToList();
+            player.Inventory.DB_Items.AddRange(player.Inventory.Equips.Values.Where(x => x != null).ToList());
+            player.Inventory.DB_Items.AddRange(player.Inventory.Cosmetics.Values.Where(x => x != null).ToList());
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Characters.Add(player);
@@ -104,8 +102,6 @@ namespace MapleServer2.Database
                 .Include(p => p.BuddyList)
                 .Include(p => p.QuestList)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
-                .Include(p => p.Inventory).ThenInclude(p => p.DB_Equips)
-                .Include(p => p.Inventory).ThenInclude(p => p.DB_Cosmetics)
                 .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
                 .FirstOrDefault(p => p.CharacterId == characterId);
             }
@@ -115,10 +111,10 @@ namespace MapleServer2.Database
             player.BankInventory = new BankInventory(player.BankInventory);
             player.Inventory = new Inventory(player.Inventory);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
-            levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp);
-            wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
+            player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
+            player.Wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
                                 wallet.EventMeret.Amount, wallet.ValorToken.Amount, wallet.Treva.Amount,
-                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount);
+                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount, wallet.Id);
 
             return player;
         }

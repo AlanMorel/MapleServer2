@@ -111,10 +111,6 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new int[3] : JsonConvert.DeserializeObject<int[]>(i));
 
-                entity.Property(e => e.Badges).HasConversion(
-                    i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new List<Item>() : JsonConvert.DeserializeObject<List<Item>>(i));
-
                 entity.HasMany(e => e.SkillTabs).WithOne(x => x.Player);
                 entity.HasOne(e => e.GameOptions);
                 entity.HasOne(e => e.Inventory);
@@ -140,6 +136,7 @@ namespace MapleServer2.Database
                 entity.Property(e => e.MasteryExp).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<MasteryExp>() : JsonConvert.DeserializeObject<List<MasteryExp>>(i));
+                entity.Ignore(e => e.Player);
             });
 
             // modelBuilder.Entity<Guild>(entity =>
@@ -193,8 +190,6 @@ namespace MapleServer2.Database
                     i => i == null ? new Dictionary<InventoryTab, short>() : JsonConvert.DeserializeObject<Dictionary<InventoryTab, short>>(i));
 
                 entity.HasMany(e => e.DB_Items);
-                entity.HasMany(e => e.DB_Equips);
-                entity.HasMany(e => e.DB_Cosmetics);
 
                 entity.Ignore(e => e.Equips);
                 entity.Ignore(e => e.Cosmetics);
@@ -228,6 +223,7 @@ namespace MapleServer2.Database
                 entity.Property(e => e.PairedCharacterId);
                 entity.Property(e => e.PairedCharacterName).HasMaxLength(25).HasDefaultValue("");
                 entity.Property(e => e.PetSkinBadgeId);
+                entity.Property(e => e.IsEquipped);
                 entity.HasOne(e => e.Owner);
 
                 entity.Property(e => e.RecommendJobs).HasConversion(
