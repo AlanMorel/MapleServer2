@@ -72,15 +72,18 @@ namespace MapleServer2.Types
             {
                 if (item.IsEquipped)
                 {
-                    Equips.Add(item.ItemSlot, item);
-                }
-                else if (item.IsEquipped && item.InventoryTab == InventoryTab.Outfit)
-                {
-                    Cosmetics.Add(item.ItemSlot, item);
-                }
-                else if (item.IsEquipped && item.InventoryTab == InventoryTab.Badge)
-                {
-                    Badges.Add(item);
+                    if (item.InventoryTab == InventoryTab.Outfit)
+                    {
+                        Cosmetics.Add(item.ItemSlot, item);
+                    }
+                    else if (item.InventoryTab == InventoryTab.Badge)
+                    {
+                        Badges.Add(item);
+                    }
+                    else
+                    {
+                        Equips.Add(item.ItemSlot, item);
+                    }
                 }
                 else
                 {

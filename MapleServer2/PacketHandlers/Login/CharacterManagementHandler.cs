@@ -110,7 +110,6 @@ namespace MapleServer2.PacketHandlers.Login
 
                         equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
                             IsTemplate = false,
@@ -120,7 +119,6 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.FA: // Face
                         equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                             IsEquipped = true
@@ -130,7 +128,6 @@ namespace MapleServer2.PacketHandlers.Login
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
                         equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             FaceDecorationData = faceDecoration,
                             IsTemplate = false,
@@ -140,7 +137,6 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.CL: // Clothes
                         equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                             IsEquipped = true
@@ -149,7 +145,6 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.PA: // Pants
                         equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                             IsEquipped = true
@@ -158,7 +153,6 @@ namespace MapleServer2.PacketHandlers.Login
                     case ItemSlot.SH: // Shoes
                         equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                             IsEquipped = true
@@ -168,7 +162,6 @@ namespace MapleServer2.PacketHandlers.Login
                         // Assign ER
                         equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
                             Color = equipColor,
                             IsTemplate = false,
                             IsEquipped = true

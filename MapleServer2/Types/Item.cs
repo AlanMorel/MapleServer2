@@ -94,6 +94,7 @@ namespace MapleServer2.Types
             Function = ItemMetadataStorage.GetFunction(id);
             Tag = ItemMetadataStorage.GetTag(id);
             ShopID = ItemMetadataStorage.GetShopID(id);
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
