@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using MapleServer2.Database;
 using MapleServer2.Packets;
 
 namespace MapleServer2.Types
@@ -42,7 +41,6 @@ namespace MapleServer2.Types
 
         private void UpdateWallet()
         {
-            DatabaseManager.Update(Player.Wallet);
             switch (Type)
             {
                 case CurrencyType.Meso:

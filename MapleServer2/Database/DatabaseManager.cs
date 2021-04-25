@@ -104,6 +104,10 @@ namespace MapleServer2.Database
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
                 .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
                 .FirstOrDefault(p => p.CharacterId == characterId);
+                if (player == null)
+                {
+                    return null;
+                }
             }
 
             Levels levels = player.Levels;
@@ -117,6 +121,19 @@ namespace MapleServer2.Database
                                 wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount, wallet.Id);
 
             return player;
+        }
+
+        public static void UpdateCharacter(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(player).State = EntityState.Modified;
+                context.Entry(player.Wallet).State = EntityState.Modified;
+                context.Entry(player.Levels).State = EntityState.Modified;
+                context.Entry(player.BankInventory).State = EntityState.Modified;
+                context.Entry(player.Inventory).State = EntityState.Modified;
+                SaveChanges(context);
+            }
         }
 
         public static bool DeleteCharacter(Player player)
