@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Maple2.Trigger;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -197,7 +198,19 @@ namespace MapleServer2.Servers.Game
             }
             if (State.InteractObjects.Values.Count > 0)
             {
-                sender.Send(InteractObjectPacket.AddInteractObjects(State.InteractObjects.Values));
+                ICollection<IFieldObject<InteractObject>> balloons = State.InteractObjects.Values.Where(x => x.Value.Type == InteractObjectType.AdBalloon).ToList();
+                if (balloons.Count > 0)
+                {
+                    foreach (IFieldObject<InteractObject> balloon in balloons)
+                    {
+                        sender.Send(InteractObjectPacket.AddAdBallons(balloon));
+                    }
+                }
+                ICollection<IFieldObject<InteractObject>> objects = State.InteractObjects.Values.Where(x => x.Value.Type != InteractObjectType.AdBalloon).ToList();
+                if (objects.Count > 0)
+                {
+                    sender.Send(InteractObjectPacket.AddInteractObjects(objects));
+                }
             }
             if (State.Cubes.Values.Count > 0)
             {
@@ -316,6 +329,21 @@ namespace MapleServer2.Servers.Game
                     session.Send(InteractObjectPacket.AddInteractObjects(objects));
                 });
             }
+        }
+
+        public void AddBalloon(IFieldObject<InteractObject> balloon)
+        {
+            State.AddBalloon(balloon);
+
+            Broadcast(session =>
+            {
+                session.Send(InteractObjectPacket.AddAdBallons(balloon));
+            });
+        }
+
+        public bool RemoveBalloon(IFieldObject<InteractObject> balloon)
+        {
+            return State.RemoveBalloon(balloon.Value.Name);
         }
 
         public void SendChat(Player player, string message, ChatType type)

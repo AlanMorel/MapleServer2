@@ -51,12 +51,14 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 22)]
         public ItemFunction FunctionData;
         [XmlElement(Order = 23)]
-        public string Tag;
+        public AdBalloonData AdBalloonData;
         [XmlElement(Order = 24)]
-        public int ShopID;
+        public string Tag;
         [XmlElement(Order = 25)]
-        public int Level;
+        public int ShopID;
         [XmlElement(Order = 26)]
+        public int Level;
+        [XmlElement(Order = 27)]
         public List<HairPresets> HairPresets = new List<HairPresets>();
         [XmlElement(Order = 28)]
         public int ColorIndex;
@@ -73,7 +75,8 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
-            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},Function:{FunctionData},Tag:{Tag},ShopID:{ShopID}";
+            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Content:{string.Join(",", Content)},Function:{FunctionData}," +
+            $"AdBalloonData:{AdBalloonData},Tag:{Tag},ShopID:{ShopID}";
 
         protected bool Equals(ItemMetadata other)
         {
@@ -299,6 +302,41 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+    }
+
+    [XmlType]
+    public class AdBalloonData
+    {
+        [XmlElement(Order = 1)]
+        public int InteractId;
+        [XmlElement(Order = 2)]
+        public string Model;
+        [XmlElement(Order = 3)]
+        public string Asset = "";
+        [XmlElement(Order = 4)]
+        public string NormalState;
+        [XmlElement(Order = 5)]
+        public string Reactable;
+        [XmlElement(Order = 6)]
+        public float Scale = 1;
+        [XmlElement(Order = 7)]
+        public int Duration;
+
+        public AdBalloonData() { }
+
+        protected bool Equals(AdBalloonData other)
+        {
+            return InteractId == other.InteractId &&
+                Model == other.Model &&
+                Asset == other.Asset &&
+                NormalState == other.NormalState &&
+                Reactable == other.Reactable &&
+                Scale == other.Scale &&
+                Duration == other.Duration;
+        }
+
+        public override string ToString() => $"AdBalloonData(InteractId:{InteractId}, Model:{Model}, Asset:{Asset}, " +
+            $"NormalState:{NormalState}, Reactable:{Reactable}, Scale:{Scale}, Duration:{Duration})";
     }
 
     [XmlType]

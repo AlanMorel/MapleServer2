@@ -72,21 +72,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AdBalloonWindow(Player player)
+        public static Packet AdBalloonWindow(IFieldObject<InteractObject> balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);
-            pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(player.CharacterId);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteUnicodeString(player.Name);
-            pWriter.WriteShort(player.Levels.Level);
-            pWriter.WriteInt(); // objectId?
-            pWriter.WriteUnicodeString(""); // title
-            pWriter.WriteUnicodeString(""); // message
-            pWriter.WriteBool(true); // house button enabled
-            pWriter.WriteLong(); // created timestamp
-            pWriter.WriteLong(); // expiration timestamp
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.AccountId);
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
+            pWriter.WriteShort(balloon.Value.Balloon.Owner.Levels.Level);
+            pWriter.WriteInt(balloon.ObjectId);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Title);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Description);
+            pWriter.WriteBool(balloon.Value.Balloon.PublicHouse);
+            pWriter.WriteLong(balloon.Value.Balloon.CreationTimestamp);
+            pWriter.WriteLong(balloon.Value.Balloon.ExpirationTimestamp);
             pWriter.WriteLong();
             return pWriter;
         }
@@ -95,7 +95,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonPlace);
-            pWriter.WriteInt(); // objectId ?
+            pWriter.WriteInt();
             return pWriter;
         }
     }

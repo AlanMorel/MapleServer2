@@ -13,6 +13,7 @@ namespace MapleServer2.Packets
         {
             Use = 0x05,
             AddInteractObject = 0x08,
+            AddAdBalloons = 0x09,
             Extra = 0x0D
         }
 
@@ -39,6 +40,28 @@ namespace MapleServer2.Packets
                 }
             }
 
+            return pWriter;
+        }
+
+        public static Packet AddAdBallons(IFieldObject<InteractObject> balloon)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+
+            pWriter.WriteEnum(InteractObjectMode.AddAdBalloons);
+            pWriter.WriteMapleString(balloon.Value.Name);
+            pWriter.WriteByte(1);
+            pWriter.WriteEnum(balloon.Value.Type);
+            pWriter.WriteInt(balloon.Value.Balloon.InteractId);
+            pWriter.Write(balloon.Coord);
+            pWriter.Write(balloon.Rotation);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Model);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Asset);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.NormalState);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Reactable);
+            pWriter.WriteFloat(balloon.Value.Balloon.Scale);
+            pWriter.WriteByte();
+            pWriter.WriteLong(balloon.Value.Balloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
             return pWriter;
         }
 
