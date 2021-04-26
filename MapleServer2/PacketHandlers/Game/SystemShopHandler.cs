@@ -19,19 +19,21 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum ShopMode : byte
         {
-            Close = 0x0,
-            Open = 0x1,
+            Arena = 0x03,
+            ViaItem = 0x0A
         }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte unk = packet.ReadByte(); // Looks like it's always 0x0A
             ShopMode mode = (ShopMode) packet.ReadByte();
 
             switch (mode)
             {
-                case ShopMode.Open:
-                    HandleOpen(session, packet);
+                case ShopMode.ViaItem:
+                    HandleViaItem(session, packet);
+                    break;
+                case ShopMode.Arena:
+                    HandleMapleArenaShop(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -39,8 +41,15 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpen(GameSession session, PacketReader packet)
+        private static void HandleViaItem(GameSession session, PacketReader packet)
         {
+            bool openShop = packet.ReadBool();
+
+            if (!openShop)
+            {
+                return;
+            }
+
             int itemId = packet.ReadInt();
 
             Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
@@ -55,6 +64,26 @@ namespace MapleServer2.PacketHandlers.Game
                 Console.WriteLine($"Unknown shop ID: {item.ShopID}");
                 return;
             }
+
+            session.Send(ShopPacket.Open(shop));
+            foreach (ShopItem shopItem in shop.Items)
+            {
+                session.Send(ShopPacket.LoadProducts(shopItem));
+            }
+            session.Send(ShopPacket.Reload());
+            session.Send(SystemShopPacket.Open());
+        }
+
+        private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
+        {
+            bool openShop = packet.ReadBool();
+
+            if (!openShop)
+            {
+                return;
+            }
+
+            ShopMetadata shop = ShopMetadataStorage.GetShop(168);
 
             session.Send(ShopPacket.Open(shop));
             foreach (ShopItem shopItem in shop.Items)
