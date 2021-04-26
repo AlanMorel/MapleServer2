@@ -16,7 +16,6 @@
 
     <ItemGroup>
       <Folder Include="Files\m2dFiles\" />
-      <Folder Include="Hash\" />
       <Folder Include="Properties\" />
     </ItemGroup>
 
