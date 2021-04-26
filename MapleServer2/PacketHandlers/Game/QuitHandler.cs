@@ -28,15 +28,18 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            QuitMode function = (QuitMode) packet.ReadByte();
+            QuitMode mode = (QuitMode) packet.ReadByte();
 
-            switch (function)
+            switch (mode)
             {
                 case QuitMode.ChangeCharacter:
                     HandleChangeCharacter(session);
                     break;
                 case QuitMode.Quit:
                     HandleQuit(session);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
