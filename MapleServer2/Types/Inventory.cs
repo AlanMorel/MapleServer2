@@ -63,9 +63,6 @@ namespace MapleServer2.Types
 
         public Inventory(Inventory inventory) : this()
         {
-            Equips = new Dictionary<ItemSlot, Item>();
-            Cosmetics = new Dictionary<ItemSlot, Item>();
-            Badges = new List<Item>();
             Id = inventory.Id;
             ExtraSize = inventory.ExtraSize;
             foreach (Item item in inventory.DB_Items)
