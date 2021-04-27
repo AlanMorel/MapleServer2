@@ -17,7 +17,7 @@ namespace MapleServer2.Types
     [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
     public struct NormalStat : ItemStat
     {
-        public ItemAttribute Id { get; private set; }
+        public ItemAttribute Id { get; set; }
         public int Flat { get; set; }
         public float Percent { get; set; }
 
@@ -60,7 +60,7 @@ namespace MapleServer2.Types
     [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
     public struct SpecialStat : ItemStat
     {
-        public SpecialItemAttribute Id { get; private set; }
+        public SpecialItemAttribute Id { get; set; }
         public float Percent { get; set; }
         public float Flat { get; set; }
 
@@ -113,6 +113,8 @@ namespace MapleServer2.Types
 
         public byte TotalSockets;
         public List<Gemstone> Gemstones;
+
+        public ItemStats() { }
 
         public ItemStats(Item item)
         {

@@ -36,6 +36,7 @@ namespace MapleServer2.Types
         public long Uid;
         public short Slot;
         public int Amount;
+        public bool IsEquipped;
 
         public long CreationTime;
         public long ExpiryTime;
@@ -60,18 +61,14 @@ namespace MapleServer2.Types
         public byte[] TransparencyBadgeBools = new byte[10];
 
         public Player Owner;
-
         public EquipColor Color;
-
-        public HairData HairD;
-
-        public HatData HatD;
-
-        public byte[] FaceDecorationD;
-
+        public HairData HairData;
+        public HatData HatData;
+        public byte[] FaceDecorationData;
         public MusicScore Score;
-
         public ItemStats Stats;
+
+        public Item() { }
 
         public Item(int id)
         {
@@ -99,6 +96,7 @@ namespace MapleServer2.Types
             AdBalloon = ItemMetadataStorage.GetBalloonData(id);
             Tag = ItemMetadataStorage.GetTag(id);
             ShopID = ItemMetadataStorage.GetShopID(id);
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
@@ -147,97 +145,10 @@ namespace MapleServer2.Types
             PetSkinBadgeId = other.PetSkinBadgeId;
             Owner = other.Owner;
             Color = other.Color;
-            HairD = other.HairD;
-            HatD = other.HatD;
+            HairData = other.HairData;
+            HatData = other.HatData;
             Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
-        }
-
-        public static Item Ear()
-        {
-            return new Item(10500001)
-            {
-                Uid = 2754959794416496488,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-            };
-        }
-
-        public static Item Hair()
-        {
-            return new Item(10200148)
-            {
-                Uid = 2867972925711604442,
-                CreationTime = 1565575851,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xCC, 0xF7),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)
-                    ),
-                    15, 2
-                ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-            };
-        }
-
-        public static Item Face()
-        {
-            return new Item(10300004)
-            {
-                Uid = 2754959794416496483,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB5, 0x24, 0x29),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02)
-                    ),
-                    0, 3
-                ),
-            };
-        }
-
-        public static Item FaceDecoration()
-        {
-            return new Item(10400000)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
-            };
-        }
-
-        public static Item TutorialBow(Player owner)
-        {
-            // bow 15100216
-            // [longsword]  Tairen Royal Longsword - 13200309
-            // [shield] Tairen Royal Shield - 14100279
-            // [greatsword] Tairen Royal Greatsword - 15000313
-            // [scepter] Tairen Royal Scepter - 13300308
-            // [codex] Tairen Royal Codex - 14000270
-            // [staff] Tairen Royal Staff - 15200312
-            // [cannon] Tairen Royal Cannon - 15300308
-            // [bow] Tairen Royal Bow - 15100305
-            // [dagger] Tairen Royal Knife - 13100314
-            // [star] Tairen Royal Star - 13400307
-            // [blade] Tairen Royal Blade - 15400294
-            // [knuckles] Tairen Royal Knuckles - 15500226
-            // [orb] Tairen Royal Spirit - 15600228
-            return new Item(15100216)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)
-                    ),
-                    10, 0x13
-                ),
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
         }
 
         public bool TrySplit(int amount, out Item splitItem)
@@ -254,120 +165,6 @@ namespace MapleServer2.Types
             splitItem.Slot = -1;
             splitItem.Uid = Environment.TickCount64;
             return true;
-        }
-
-        public static Item DefaultScepter(Player owner)
-        {
-            return new Item(13300308)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)),
-                    10, 0x13
-                ),
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
-        }
-
-        public static Item DefaultCodex(Player owner)
-        {
-            return new Item(14000270)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA)),
-                    10, 0x13
-                ),
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
-        }
-        // MALE ITEMS
-        public static Item HairMale()
-        {
-            return new Item(10200003)
-            {
-                Uid = 2867972925711604442,
-                CreationTime = 1565575851,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
-                    10, 4
-                ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-            };
-        }
-        public static Item EarMale()
-        {
-            return new Item(10500001)
-            {
-                Uid = 2754959794416496488,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-            };
-        }
-        public static Item FaceMale()
-        {
-            return new Item(10300051)
-            {
-                Uid = 2754959794416496483,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xF3, 0xF8),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02)),
-                    10, 0
-                ),
-            };
-        }
-        public static Item FaceDecorationMale()
-        {
-            return new Item(10400002)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
-            };
-        }
-        public static Item CloathMale()
-        {
-            return new Item(12200398)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
-                    10, 4
-                ),
-            };
-        }
-
-        public static Item ShoesMale()
-        {
-            return new Item(11700852)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(MixedColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8)),
-                    10, 4
-                ),
-            };
         }
 
         public static bool IsWeapon(ItemSlot slot)

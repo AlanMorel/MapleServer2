@@ -9,14 +9,24 @@ namespace MapleServer2.Types
 {
     public class BankInventory
     {
-        public Item[] Items;
+        public readonly long Id;
         private readonly int DEFAULT_SIZE = 36;
         public int ExtraSize;
 
-        public BankInventory()
+        public Item[] Items = new Item[36];
+        public List<Item> DB_Items { get; set; }
+
+        public BankInventory() { }
+
+        public BankInventory(BankInventory bankInventory)
         {
+            Id = bankInventory.Id;
+            ExtraSize = bankInventory.ExtraSize;
             Items = new Item[DEFAULT_SIZE + ExtraSize];
-            ExtraSize = 0;
+            for (int i = 0; i < bankInventory.DB_Items.Count; i++)
+            {
+                Items[i] = bankInventory.DB_Items[i];
+            }
         }
 
         public void Add(GameSession session, long uid, int amount, short slot)
@@ -116,7 +126,6 @@ namespace MapleServer2.Types
 
         public void LoadItems(GameSession session)
         {
-            Items = new Item[DEFAULT_SIZE + ExtraSize];
             session.Send(StorageInventory.LoadItems(Items));
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
@@ -33,11 +33,7 @@ namespace MapleServer2.PacketHandlers.Login
             session.Send(BannerListPacket.SetBanner());
             session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
-            List<Player> characters = new List<Player>();
-            foreach (long characterId in AccountStorage.ListCharacters(session.AccountId))
-            {
-                characters.Add(AccountStorage.GetCharacter(characterId));
-            }
+            List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
 
             session.Send(CharacterListPacket.SetMax(4, 6));
             session.Send(CharacterListPacket.StartList());

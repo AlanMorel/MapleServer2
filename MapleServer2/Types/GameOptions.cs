@@ -4,6 +4,7 @@ namespace MapleServer2.Types
 {
     public class GameOptions
     {
+        public readonly long Id;
         public Dictionary<int, KeyBind> KeyBinds { get; private set; }
         public List<Hotbar> Hotbars { get; private set; }
         public short ActiveHotbarId { get; private set; }

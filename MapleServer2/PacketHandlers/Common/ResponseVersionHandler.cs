@@ -1,7 +1,6 @@
 ﻿using System;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -18,9 +17,6 @@ namespace MapleServer2.PacketHandlers.Common
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            // Sync the account state TickCount
-            AccountStorage.TickCount = Environment.TickCount;
-
             HandleCommon(session, packet);
 
             session.Send(RequestPacket.Login());

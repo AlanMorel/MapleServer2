@@ -10,8 +10,14 @@ namespace MapleServer2.Types
 {
     public class Inventory
     {
+        public readonly long Id;
         // This contains ALL inventory Items regardless of tab
         public readonly Dictionary<long, Item> Items;
+        public Dictionary<ItemSlot, Item> Equips;
+        public Dictionary<ItemSlot, Item> Cosmetics;
+        public List<Item> Badges;
+
+        public List<Item> DB_Items { get; set; }
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] SlotMaps;
@@ -35,6 +41,9 @@ namespace MapleServer2.Types
 
         public Inventory()
         {
+            Equips = new Dictionary<ItemSlot, Item>();
+            Cosmetics = new Dictionary<ItemSlot, Item>();
+            Badges = new List<Item>();
             Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
             SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -49,6 +58,34 @@ namespace MapleServer2.Types
             foreach (Item item in loadItems)
             {
                 Add(item);
+            }
+        }
+
+        public Inventory(Inventory inventory) : this()
+        {
+            Id = inventory.Id;
+            ExtraSize = inventory.ExtraSize;
+            foreach (Item item in inventory.DB_Items)
+            {
+                if (item.IsEquipped)
+                {
+                    if (item.InventoryTab == InventoryTab.Outfit)
+                    {
+                        Cosmetics.Add(item.ItemSlot, item);
+                    }
+                    else if (item.InventoryTab == InventoryTab.Badge)
+                    {
+                        Badges.Add(item);
+                    }
+                    else
+                    {
+                        Equips.Add(item.ItemSlot, item);
+                    }
+                }
+                else
+                {
+                    Add(item);
+                }
             }
         }
 

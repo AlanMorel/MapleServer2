@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -11,14 +12,19 @@ namespace MapleServer2.Types
     {
         public long Id { get; set; }
         public string Name { get; private set; }
+
+        public Player Player;
+
         public List<int> Order { get; private set; }
         public Dictionary<int, SkillMetadata> SkillJob { get; private set; }
-        public Dictionary<int, int> SkillLevels { get; private set; }  // TODO: fill using database
+        public Dictionary<int, int> SkillLevels { get; private set; }
+
+        public SkillTab() { }
 
         public SkillTab(Job job)
         {
-            Id = 0x000032DF995949B9; // temporary hard coded id
-            Name = "Build";
+            Id = GuidGenerator.Long();
+            Name = "";
             Order = SkillTreeOrdered.GetListOrdered(job);
             SkillJob = AddOnDictionary(job);
             SkillLevels = SkillJob.ToDictionary(x => x.Key, x => (int) x.Value.Learned);
@@ -52,5 +58,11 @@ namespace MapleServer2.Types
         public static List<SkillMetadata> GetJobFeatureSkills(Job job) => SkillMetadataStorage.GetJobSkills(job);
 
         public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", SkillJob)})";
+
+        public void GenerateSkills(Job job)
+        {
+            Order = SkillTreeOrdered.GetListOrdered(job);
+            SkillJob = AddOnDictionary(job);
+        }
     }
 }

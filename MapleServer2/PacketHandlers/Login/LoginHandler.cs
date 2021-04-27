@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -34,17 +36,23 @@ namespace MapleServer2.PacketHandlers.Login
         {
             byte mode = packet.ReadByte();
             string username = packet.ReadUnicodeString();
-            string pass = packet.ReadUnicodeString();
+            string password = packet.ReadUnicodeString();
 
-            Logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
 
-            // TODO: From this user/pass lookup we should be able to find the accountId
-            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass))
+            Account account = DatabaseManager.GetAccount(username, password);
+
+            // Auto add new accounts
+            if (account == default)
             {
-                // send error / account credentials not found
+                account = new Account(GuidGenerator.Long(), username, password);
+                if (!DatabaseManager.Insert(account))
+                {
+                    throw new ArgumentException("Could not create account");
+                }
             }
 
-            session.AccountId = AccountStorage.DEFAULT_ACCOUNT_ID;
+            Logger.Debug($"Logging in with account ID: {account.Id}");
+            session.AccountId = account.Id;
 
             switch (mode)
             {
@@ -58,11 +66,7 @@ namespace MapleServer2.PacketHandlers.Login
                     session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;
                 case 2:
-                    List<Player> characters = new List<Player>();
-                    foreach (long characterId in AccountStorage.ListCharacters(session.AccountId))
-                    {
-                        characters.Add(AccountStorage.GetCharacter(characterId));
-                    }
+                    List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
 
                     Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));

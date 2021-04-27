@@ -1,5 +1,5 @@
-﻿using MaplePacketLib2.Tools;
-using MapleServer2.Data;
+﻿using System;
+using MaplePacketLib2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets.Helpers
@@ -11,7 +11,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte(mail.Type); // Mail type
             pWriter.WriteInt(mail.Uid); // Mail uid
             pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.CharacterId); // Receiver character id
+            pWriter.WriteLong(mail.PlayerId); // Receiver character id
             pWriter.WriteInt(0);
             pWriter.WriteUnicodeString(mail.SenderName); // Sender name
             pWriter.WriteUnicodeString(mail.Title); // Title
@@ -59,9 +59,9 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteZero(21);
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + AccountStorage.TickCount : 0); // Read timestamp
+            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0); // Read timestamp
             pWriter.WriteLong(mail.SentTimestamp + 864000000); // Time left = sentTime + 10000 days
-            pWriter.WriteLong(mail.SentTimestamp + AccountStorage.TickCount); // Sent timestamp
+            pWriter.WriteLong(mail.SentTimestamp + Environment.TickCount); // Sent timestamp
             pWriter.WriteShort(0);
 
             return pWriter;
@@ -72,7 +72,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte(mail.Type); // Mail type
             pWriter.WriteInt(mail.Uid); // Mail uid
             pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.CharacterId); // Sender character id used for reply
+            pWriter.WriteLong(mail.PlayerId); // Sender character id used for reply
             pWriter.WriteUnicodeString(mail.SenderName); // Sender name
             pWriter.WriteUnicodeString(mail.Title); // Title
             pWriter.WriteUnicodeString(mail.Body); // Body
@@ -85,9 +85,9 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
             pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + AccountStorage.TickCount : 0); // Read timestamp
+            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0); // Read timestamp
             pWriter.WriteLong(mail.SentTimestamp + 2592000); // Time left = sentTime + 30 days
-            pWriter.WriteLong(mail.SentTimestamp + AccountStorage.TickCount); // Sent timestamp
+            pWriter.WriteLong(mail.SentTimestamp + Environment.TickCount); // Sent timestamp
             pWriter.WriteShort(0);
 
             return pWriter;

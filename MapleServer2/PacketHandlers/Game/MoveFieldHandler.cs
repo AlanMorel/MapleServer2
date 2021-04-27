@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -89,6 +90,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 session.Player.SafeBlock = session.Player.Coord;
+                DatabaseManager.UpdateCharacter(session.Player);
                 session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
@@ -112,6 +114,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.MapId = mapId;
             session.Player.Rotation = dstPortal.Rotation.ToFloat();
             session.Player.Coord = dstPortal.Coord.ToFloat();
+            DatabaseManager.UpdateCharacter(session.Player);
             session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
         }
     }

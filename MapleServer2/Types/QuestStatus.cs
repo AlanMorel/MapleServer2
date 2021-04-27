@@ -5,6 +5,8 @@ namespace MapleServer2.Types
 {
     public class QuestStatus
     {
+        public readonly long Uid;
+        public Player Player;
         public QuestBasic Basic { get; set; }
         public bool Started { get; set; }
         public bool Completed { get; set; }

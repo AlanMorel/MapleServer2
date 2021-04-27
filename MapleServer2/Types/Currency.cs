@@ -9,6 +9,8 @@ namespace MapleServer2.Types
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
 
+        public Currency() { }
+
         public Currency(Player player, CurrencyType type, long input)
         {
             Player = player;
