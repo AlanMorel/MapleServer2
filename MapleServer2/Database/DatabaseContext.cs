@@ -59,8 +59,7 @@ namespace MapleServer2.Database
                 entity.Property(e => e.PartyId);
                 entity.Property(e => e.ClubId);
                 entity.Property(e => e.GuildId);
-                entity.Property(e => e.GuildName).HasMaxLength(25).HasDefaultValue("");
-                entity.Property(e => e.GuildContribution);
+                entity.Property(e => e.GuildMemberId);
                 entity.Property(e => e.ReturnMapId);
 
                 entity.Property(e => e.Titles).HasConversion(
@@ -110,6 +109,10 @@ namespace MapleServer2.Database
                 entity.Property(e => e.GroupChatId).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new int[3] : JsonConvert.DeserializeObject<int[]>(i));
+
+                entity.Property(e => e.GuildApplications).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildApplication>() : JsonConvert.DeserializeObject<List<GuildApplication>>(i));
 
                 entity.HasMany(e => e.SkillTabs).WithOne(x => x.Player);
                 entity.HasOne(e => e.GameOptions);
