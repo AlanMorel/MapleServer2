@@ -84,6 +84,16 @@ namespace MapleServer2.Types
             InteractObjects[interactObject.Value.Uuid] = interactObject;
         }
 
+        public void AddBalloon(IFieldObject<InteractObject> balloon)
+        {
+            InteractObjects[balloon.Value.Name] = balloon;
+        }
+
+        public bool RemoveBalloon(string name)
+        {
+            return InteractObjects.Remove(name, out _);
+        }
+
         public void AddGuide(IFieldObject<GuideObject> guide)
         {
             Guide[guide.ObjectId] = guide;

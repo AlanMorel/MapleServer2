@@ -418,6 +418,29 @@ namespace GameDataParser.Parsers
                     metadata.FunctionData.Id = int.Parse(parameters[0]);
                     metadata.FunctionData.Rarity = byte.Parse(parameters[1]);
                 }
+                else if (contentType == "InstallBillBoard")
+                {
+                    AdBalloonData balloon = new AdBalloonData();
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    balloon.InteractId = int.Parse(functionParameters.Attributes["interactID"].Value);
+                    balloon.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    balloon.Model = functionParameters.Attributes["model"].Value;
+                    if (functionParameters.Attributes["asset"] != null)
+                    {
+                        balloon.Asset = functionParameters.Attributes["asset"].Value;
+                    }
+                    balloon.NormalState = functionParameters.Attributes["normal"].Value;
+                    balloon.Reactable = functionParameters.Attributes["reactable"].Value;
+                    if (functionParameters.Attributes["scale"] != null)
+                    {
+                        balloon.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
+                    }
+                    metadata.AdBalloonData = balloon;
+                }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod")
                 {
                     metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);

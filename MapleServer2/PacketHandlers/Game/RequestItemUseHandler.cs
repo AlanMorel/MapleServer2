@@ -80,6 +80,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case "PetExtraction": // Pet skin scroll
                     HandlePetExtraction(session, packet, item);
                     break;
+                case "InstallBillBoard": // ad balloons
+                    HandleInstallBillBoard(session, packet, item);
+                    break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
                     break;
@@ -344,6 +347,26 @@ namespace MapleServer2.PacketHandlers.Game
                 InventoryController.Consume(session, item.Uid, 1);
                 session.Player.Warp(spawn, fieldID);
             }
+        }
+
+        public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
+        {
+            string[] parameters = packet.ReadUnicodeString().Split("'");
+            string title = parameters[0];
+            string description = parameters[1];
+            bool publicHouse = parameters[2].Equals("1");
+
+            int balloonUid = GuidGenerator.Int();
+            string uuid = "AdBalloon_" + balloonUid.ToString();
+            InteractObject balloon = new InteractObject(uuid, uuid, Maple2Storage.Enums.InteractObjectType.AdBalloon);
+            balloon.Balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
+            IFieldObject<InteractObject> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
+            fieldBalloon.Coord = session.FieldPlayer.Coord;
+            fieldBalloon.Rotation = session.FieldPlayer.Rotation;
+            session.FieldManager.AddBalloon(fieldBalloon);
+
+            session.Send(PlayerHostPacket.AdBalloonPlace());
+            InventoryController.Consume(session, item.Uid, 1);
         }
     }
 }
