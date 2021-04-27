@@ -15,6 +15,7 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
+            command = command.Substring(1, command.Length - 1);
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
@@ -75,6 +76,12 @@ namespace MapleServer2.Tools
                 case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
                     break;
+                case "setguildexp":
+                    ProcessGuildExp(session, args[1]);
+                    break;
+                case "setguildfunds":
+                    ProcessGuildFunds(session, args[1]);
+                    break;
                 case "notice":
                     if (args.Length <= 1)
                     {
@@ -85,6 +92,29 @@ namespace MapleServer2.Tools
             }
         }
 
+        private static void ProcessGuildExp(GameSession session, string command)
+        {
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null)
+            {
+                return;
+            }
+            guild.Exp = int.Parse(command);
+            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
+            GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
+            session.Send(NoticePacket.Notice("Guild is now level " + data.Level.ToString()));
+        }
+
+        private static void ProcessGuildFunds(GameSession session, string command)
+        {
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null)
+            {
+                return;
+            }
+            guild.Funds = int.Parse(command);
+            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
+        }
         private static void ProcessQuestCommand(GameSession session, string command)
         {
             if (command == "")

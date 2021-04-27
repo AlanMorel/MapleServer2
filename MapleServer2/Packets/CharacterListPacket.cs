@@ -163,7 +163,15 @@ namespace MapleServer2.Packets
             }
 
             pWriter.WriteLong(player.GuildId);
-            pWriter.WriteUnicodeString(player.GuildName);
+            if (player.GuildId != 0)
+            {
+                string guildName = GameServer.GuildManager.GetGuildById(player.GuildId).Name;
+                pWriter.WriteUnicodeString(guildName);
+            }
+            else
+            {
+                pWriter.WriteUnicodeString("");
+            }
             pWriter.WriteUnicodeString(player.Motto);
 
             pWriter.WriteUnicodeString(player.ProfileUrl);

@@ -86,6 +86,7 @@ namespace MapleServer2.Types
         public long ActiveSkillTabId { get; set; }
 
         public SkillCast SkillCast = new SkillCast();
+        public List<Status> Buffs = new List<Status>();
 
         public List<SkillTab> SkillTabs;
         public StatDistribution StatPointDistribution;
@@ -110,8 +111,8 @@ namespace MapleServer2.Types
 
         // TODO: Rework to use Class Guild
         public long GuildId;
-        public string GuildName;
-        public int GuildContribution;
+        public long GuildMemberId;
+        public List<GuildApplication> GuildApplications = new List<GuildApplication>();
 
         public Dictionary<int, Fishing> FishAlbum = new Dictionary<int, Fishing>();
         public Item FishingRod; // Possibly temp solution?
