@@ -86,7 +86,6 @@ namespace MapleServer2.Types
         public long ActiveSkillTabId { get; set; }
 
         public SkillCast SkillCast = new SkillCast();
-        public List<Status> Buffs = new List<Status>();
 
         public List<SkillTab> SkillTabs;
         public StatDistribution StatPointDistribution;
