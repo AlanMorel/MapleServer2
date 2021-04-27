@@ -260,6 +260,7 @@ namespace MapleServer2.Database
 
                 entity.Ignore(e => e.Content);
                 entity.Ignore(e => e.Function);
+                entity.Ignore(e => e.AdBalloon);
             });
 
             modelBuilder.Entity<Mailbox>(entity =>
