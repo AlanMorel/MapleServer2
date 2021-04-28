@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MaplePacketLib2.Tools;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
     public class GuildMember
     {
-        public long Id { get; }
+        public long CharacterId { get; }
         public Player Player { get; set; }
         public string Motto = "";
         public byte Rank { get; set; } // by index of guild ranks
@@ -19,9 +15,11 @@ namespace MapleServer2.Types
         public long AttendanceTimestamp { get; set; }
         public long JoinTimestamp { get; set; }
 
+        public GuildMember() { }
+
         public GuildMember(Player player)
         {
-            Id = GuidGenerator.Long();
+            CharacterId = player.CharacterId;
             Player = player;
             Rank = 5;
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;

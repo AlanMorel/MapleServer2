@@ -51,7 +51,7 @@ namespace MapleServer2.Database
                 .Where(p => p.AccountId == accountId)
                 .Include(p => p.Levels)
                 .Include(p => p.SkillTabs)
-                // .Include(p => p.Guild)
+                .Include(p => p.Guild)
                 // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
                 .Include(p => p.Mailbox).ThenInclude(p => p.Mails)
@@ -94,7 +94,7 @@ namespace MapleServer2.Database
                 player = context.Characters
                 .Include(p => p.Levels)
                 .Include(p => p.SkillTabs)
-                // .Include(p => p.Guild)
+                .Include(p => p.Guild)
                 // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
                 .Include(p => p.Mailbox).ThenInclude(p => p.Mails)
@@ -187,6 +187,15 @@ namespace MapleServer2.Database
                     context.Entry(item).State = EntityState.Modified;
                 }
 
+                return SaveChanges(context);
+            }
+        }
+
+        public static bool CreateGuild(Guild guild)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Guilds.Add(guild);
                 return SaveChanges(context);
             }
         }

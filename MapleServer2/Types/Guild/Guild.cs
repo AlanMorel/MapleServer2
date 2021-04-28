@@ -12,7 +12,6 @@ namespace MapleServer2.Types
 {
     public class Guild
     {
-        // TODO: Add ranks, rank names, Member contribution
         public long Id { get; }
         public string Name { get; set; }
         public long CreationTimestamp { get; set; }
@@ -23,27 +22,31 @@ namespace MapleServer2.Types
         public List<GuildBuff> Buffs = new List<GuildBuff>();
         public List<GuildService> Services = new List<GuildService>();
         public List<Item> GiftBank = new List<Item>();
+        public List<GuildApplication> Applications = new List<GuildApplication>();
         public int Funds { get; set; }
         public int Exp { get; set; }
         public bool Searchable { get; set; }
-        public string Notice = "";
-        public string Emblem = "";
+        public string Notice;
+        public string Emblem;
         public int FocusAttributes;
         public int HouseRank;
         public int HouseTheme;
-        public List<GuildApplication> Applications = new List<GuildApplication>();
+
+        public Guild() { }
 
         public Guild(string name, Player player)
         {
-            GuildMember leader = new GuildMember(player);
+      //      GuildMember leader = new GuildMember(player);
             GuildPropertyMetadata property = GuildPropertyMetadataStorage.GetMetadata(0);
 
             Id = GuidGenerator.Long();
             Name = name;
             Capacity = (byte) property.Capacity;
             Leader = player;
-            Members.Add(leader);
+   //         Members.Add(leader);
             Exp = 0;
+            Emblem = "";
+            Notice = "";
             Funds = 0;
             Searchable = true;
             HouseRank = 1;
@@ -59,16 +62,16 @@ namespace MapleServer2.Types
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             AddGuildBuffs();
 
-            player.GuildId = Id;
-            player.GuildMemberId = leader.Id;
-            leader.Rank = 0;
+      //      player.Guild = this;
+     //       player.GuildMember = leader;
+    //        leader.Rank = 0;
         }
 
         public void AddMember(Player player)
         {
             GuildMember member = new GuildMember(player);
-            player.GuildId = Id;
-            player.GuildMemberId = member.Id;
+            player.Guild = this;
+            player.GuildMember = member;
             Members.Add(member);
         }
 
@@ -77,8 +80,8 @@ namespace MapleServer2.Types
             GuildMember member = Members.First(x => x.Player == player);
 
             Members.Remove(member);
-            player.GuildId = 0;
-            player.GuildMemberId = 0;
+            player.Guild = null;
+            player.GuildMember = null;
         }
 
         public void AssignNewLeader(Player oldLeader, Player newLeader)

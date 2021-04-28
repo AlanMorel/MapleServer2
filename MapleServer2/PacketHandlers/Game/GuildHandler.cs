@@ -5,6 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -178,7 +179,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string guildName = packet.ReadUnicodeString();
 
-            if (session.Player.GuildId != 0)
+            if (session.Player.Guild != null)
             {
                 return;
             }
@@ -189,20 +190,40 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+
+            Guild newGuild;
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Guild result = context.Guilds.FirstOrDefault(p => p.Name.ToLower() == guildName.ToLower());
+
+                if (result != null)
+                {
+                    session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
+                    return;
+                }
+
+                newGuild = new(guildName, session.Player);
+            }
+
+            GameServer.GuildManager.AddGuild(newGuild);
+
+            if (!DatabaseManager.CreateGuild(newGuild))
+            {
+                throw new ArgumentException("Could not create guild");
+            }
+
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
             session.Send(GuildPacket.Create(guildName));
 
             string inviter = ""; // nobody because nobody invited the guild leader
 
-            Guild newGuild = new(guildName, session.Player);
-            GameServer.GuildManager.AddGuild(newGuild);
             GuildMember member = newGuild.Members.FirstOrDefault(x => x.Player == session.Player);
             session.Send(GuildPacket.UpdateGuild(newGuild));
             session.Send(GuildPacket.MemberBroadcastJoinNotice(member, inviter, false));
             session.Send(GuildPacket.MemberJoin(session.Player));
 
             // Remove any applications
-            foreach(GuildApplication application in session.Player.GuildApplications)
+            foreach (GuildApplication application in session.Player.GuildApplications)
             {
                 Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
                 application.Remove(session.Player, guild);
@@ -253,7 +274,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.UnableToSendInvite));
             }
 
-            if (playerInvited.GuildId != 0)
+            if (playerInvited.Guild == null)
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.CharacterIsAlreadyInAGuild));
                 return;
@@ -310,7 +331,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLeave(GameSession session)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -370,7 +391,7 @@ namespace MapleServer2.PacketHandlers.Game
             string memberName = packet.ReadUnicodeString();
             byte rank = packet.ReadByte();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null || session.Player != guild.Leader)
             {
                 return;
@@ -391,7 +412,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string message = packet.ReadUnicodeString();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -409,7 +430,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleCheckIn(GameSession session)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -473,7 +494,7 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadByte();
             string notice = packet.ReadUnicodeString();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -589,7 +610,7 @@ namespace MapleServer2.PacketHandlers.Game
             long guildApplicationId = packet.ReadLong();
             byte response = packet.ReadByte();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -676,7 +697,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int buffId = packet.ReadInt();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -713,7 +734,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int buffId = packet.ReadInt();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -745,7 +766,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int themeId = packet.ReadInt();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null || guild.Leader != session.Player)
             {
                 return;
@@ -775,7 +796,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int themeId = packet.ReadInt();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null || guild.Leader != session.Player)
             {
                 return;
@@ -801,7 +822,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleEnterHouse(GameSession session)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -821,7 +842,7 @@ namespace MapleServer2.PacketHandlers.Game
             int donateQuantity = packet.ReadInt();
             int donationAmount = donateQuantity * 10000;
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -861,7 +882,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int serviceId = packet.ReadInt();
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -108,7 +106,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteByte(0x3);
                 pWriter.WriteByte(member.Rank);
-                pWriter.WriteLong(member.Id);
+                pWriter.WriteLong(member.CharacterId);
                 WriteGuildMember(pWriter, member.Player);
                 pWriter.WriteUnicodeString(member.Motto);
                 pWriter.WriteLong(member.JoinTimestamp);
@@ -296,7 +294,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(displayNotice);
             pWriter.WriteByte(0x3);
             pWriter.WriteByte(member.Rank);
-            pWriter.WriteLong(member.Id);
+            pWriter.WriteLong(member.CharacterId);
             WriteGuildMember(pWriter, member.Player);
             pWriter.WriteShort(); // unk, filler?
             pWriter.WriteLong(); // timestamp

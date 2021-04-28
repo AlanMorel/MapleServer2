@@ -15,7 +15,7 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
-            command = command.Substring(1, command.Length - 1);
+            command = command[1..];
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
@@ -94,25 +94,36 @@ namespace MapleServer2.Tools
 
         private static void ProcessGuildExp(GameSession session, string command)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
             }
-            guild.Exp = int.Parse(command);
+
+            if (!int.TryParse(command, out int guildExp))
+            {
+                return;
+            }
+
+            guild.Exp = guildExp;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
             GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
-            session.Send(NoticePacket.Notice("Guild is now level " + data.Level.ToString()));
         }
 
         private static void ProcessGuildFunds(GameSession session, string command)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
             }
-            guild.Funds = int.Parse(command);
+
+            if (!int.TryParse(command, out int guildFunds))
+            {
+                return;
+            }
+
+            guild.Funds = guildFunds;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
         }
         private static void ProcessQuestCommand(GameSession session, string command)

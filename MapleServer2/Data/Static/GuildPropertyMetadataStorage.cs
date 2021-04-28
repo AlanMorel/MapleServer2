@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Maple2Storage.Types.Metadata;
@@ -24,7 +23,7 @@ namespace MapleServer2.Data.Static
 
         public static GuildPropertyMetadata GetMetadata(int guildExp)
         {
-            GuildPropertyMetadata metadata = new GuildPropertyMetadata();
+            GuildPropertyMetadata metadata;
             foreach (GuildPropertyMetadata property in properties.Values)
             {
                 if (guildExp < property.AccumExp)

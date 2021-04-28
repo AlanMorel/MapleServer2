@@ -29,11 +29,10 @@ namespace MapleServer2.Data.Static
         public static List<int> GetBuffList()
         {
             List<int> buffIds = new List<int>();
-            foreach(GuildBuffMetadata buffmetadata in buffs.Values)
+            foreach (GuildBuffMetadata buffmetadata in buffs.Values)
             {
                 buffIds.Add(buffmetadata.BuffId);
             }
-
             return buffIds;
         }
 

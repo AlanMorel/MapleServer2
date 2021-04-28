@@ -108,7 +108,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleGuildAlert(GameSession session, string message, ChatType type)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;
@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleGuildChat(GameSession session, string message, ChatType type)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
             {
                 return;

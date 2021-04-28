@@ -29,7 +29,7 @@ namespace GameDataParser.Parsers
                     GuildContributionMetadata metadata = new GuildContributionMetadata();
                     metadata.Type = contribution.Attributes["type"].Value;
                     metadata.Value = int.Parse(contribution.Attributes["value"].Value);
-                    
+
                     guildContribution.Add(metadata);
                 }
             }

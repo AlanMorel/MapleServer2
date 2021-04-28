@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MaplePacketLib2.Tools;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
 namespace MapleServer2.Types
@@ -14,6 +10,7 @@ namespace MapleServer2.Types
         public long CharacterId { get; set; }
         public long CreationTimestamp { get; }
 
+        public GuildApplication() { }
         public GuildApplication(long player, long guild)
         {
             Id = GuidGenerator.Long();

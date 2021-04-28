@@ -48,12 +48,13 @@ namespace MapleServer2.PacketHandlers.Common
 
             session.Send(LoginPacket.LoginRequired(accountId));
 
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
-            if(guild != null)
+            /*
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+            if (guild != null)
             {
                 session.Send(GuildPacket.UpdateGuild(guild));
                 session.Send(GuildPacket.MemberJoin(player));
-            }
+            }*/
             session.Send(BuddyPacket.LoadList(player));
             session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 

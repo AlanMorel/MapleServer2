@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -162,14 +163,14 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(trophyCount);
             }
 
-            pWriter.WriteLong(player.GuildId);
-            if (player.GuildId != 0)
+            if (player.Guild != null)
             {
-                string guildName = GameServer.GuildManager.GetGuildById(player.GuildId).Name;
-                pWriter.WriteUnicodeString(guildName);
+                pWriter.WriteLong(player.Guild.Id);
+                pWriter.WriteUnicodeString(player.Guild.Name);
             }
             else
             {
+                pWriter.WriteLong();
                 pWriter.WriteUnicodeString("");
             }
             pWriter.WriteUnicodeString(player.Motto);
