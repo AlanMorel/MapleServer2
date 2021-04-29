@@ -51,7 +51,7 @@ namespace MapleServer2.Database
                 .Where(p => p.AccountId == accountId)
                 .Include(p => p.Levels)
                 .Include(p => p.SkillTabs)
-                .Include(p => p.Guild)
+                // .Include(p => p.Guild)
                 // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
                 .Include(p => p.Mailbox).ThenInclude(p => p.Mails)
@@ -132,6 +132,8 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
+                context.Entry(player.Guild).State = EntityState.Modified;
+                context.Entry(player.GuildMember).State = EntityState.Modified;
                 SaveChanges(context);
             }
         }
@@ -197,6 +199,49 @@ namespace MapleServer2.Database
             {
                 context.Guilds.Add(guild);
                 return SaveChanges(context);
+            }
+        }
+
+        public static Guild GetGuild(long guildId)
+        {
+            Guild guild;
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                guild = context.Guilds
+                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
+                .Include(p => p.Leader)
+                .FirstOrDefault(p => p.Id == guildId);
+                if (guild == null)
+                {
+                    return null;
+                }
+            }
+            return guild;
+        }
+
+            public static void UpdateGuild(Guild guild)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(guild).State = EntityState.Modified;
+                context.Entry(guild.Members).State = EntityState.Modified;
+            }
+        }
+
+        public static bool CreateGuildMember(GuildMember member)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.GuildMembers.Add(member);
+                return SaveChanges(context);
+            }
+        }
+
+        public static void UpdateGuildMember(GuildMember guildMember)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(guildMember).State = EntityState.Modified;
             }
         }
 

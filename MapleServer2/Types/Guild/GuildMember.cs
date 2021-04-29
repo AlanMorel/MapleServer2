@@ -1,13 +1,14 @@
 ﻿using System;
+using MapleServer2.Database;
 using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
     public class GuildMember
     {
-        public long CharacterId { get; }
+        public long Id;
         public Player Player { get; set; }
-        public string Motto = "";
+        public string Motto;
         public byte Rank { get; set; } // by index of guild ranks
         public int DailyContribution { get; set; }
         public int ContributionTotal { get; set; }
@@ -19,10 +20,18 @@ namespace MapleServer2.Types
 
         public GuildMember(Player player)
         {
-            CharacterId = player.CharacterId;
-            Player = player;
+            Id = player.CharacterId;
             Rank = 5;
+            Motto = "";
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        }
+
+        public void AddGuildMember(Player player)
+        {
+            Player = player;
+            DatabaseManager.UpdateGuildMember(this);
+            player.GuildMember = this;
+            DatabaseManager.UpdateCharacter(player);
         }
 
         public void AddContribution(int contribution)

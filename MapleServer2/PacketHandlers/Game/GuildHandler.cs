@@ -201,16 +201,16 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                     return;
                 }
-
-                newGuild = new(guildName, session.Player);
+                newGuild = new(guildName);
             }
-
-            GameServer.GuildManager.AddGuild(newGuild);
 
             if (!DatabaseManager.CreateGuild(newGuild))
             {
                 throw new ArgumentException("Could not create guild");
             }
+
+            GameServer.GuildManager.AddGuild(newGuild);
+            newGuild.AddLeader(session.Player);
 
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
             session.Send(GuildPacket.Create(guildName));
@@ -910,7 +910,6 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            guild.LevelService(serviceId, currentLevel);
             guild.ModifyFunds(session, propertyMetadata, -serviceMetadata.UpgradeCost);
             guild.BroadcastPacketGuild(GuildPacket.UpgradeService(session.Player, serviceId, serviceMetadata.Level));
         }

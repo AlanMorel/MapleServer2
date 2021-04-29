@@ -26,6 +26,8 @@ namespace MapleServer2.Database
         public DbSet<QuestStatus> Quests { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Guild> Guilds { get; set; }
+        public DbSet<GuildMember> GuildMembers { get; set; }
+        public DbSet<GuildApplication> GuildApplications { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
 
@@ -59,6 +61,7 @@ namespace MapleServer2.Database
                 entity.Property(e => e.PartyId);
                 entity.Property(e => e.ClubId);
                 entity.HasOne(e => e.Guild);
+                entity.HasOne(e => e.GuildMember);
                 entity.Property(e => e.ReturnMapId);
 
                 entity.Property(e => e.Titles).HasConversion(
@@ -144,20 +147,29 @@ namespace MapleServer2.Database
             modelBuilder.Entity<Guild>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(25);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(12);
                 entity.Property(e => e.CreationTimestamp);
-           //     entity.HasOne(e => e.Leader);
+                entity.HasOne(e => e.Leader);
                 entity.Property(e => e.Capacity);
-           //     entity.HasMany(e => e.Members);
-                entity.HasMany(e => e.Ranks);
-                entity.HasMany(e => e.Buffs);
-                entity.HasMany(e => e.Services);
+                entity.HasMany(e => e.Members);
+                entity.Property(e => e.Ranks).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new GuildRank[6] : JsonConvert.DeserializeObject<GuildRank[]>(i));
+
+                entity.Property(e => e.Buffs).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildBuff>() : JsonConvert.DeserializeObject<List<GuildBuff>> (i));
+
+                entity.Property(e => e.Services).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildService>() : JsonConvert.DeserializeObject<List<GuildService>>(i));
+
                 entity.HasMany(e => e.GiftBank);
                 entity.HasMany(e => e.Applications);
                 entity.Property(e => e.Funds);
                 entity.Property(e => e.Exp);
                 entity.Property(e => e.Searchable);
-                entity.Property(e => e.Notice).HasDefaultValue("").HasMaxLength(50);
+                entity.Property(e => e.Notice).HasDefaultValue("").HasMaxLength(300);
                 entity.Property(e => e.Emblem).HasDefaultValue("").HasMaxLength(50);
                 entity.Property(e => e.FocusAttributes);
                 entity.Property(e => e.HouseRank);
@@ -166,7 +178,7 @@ namespace MapleServer2.Database
 
             modelBuilder.Entity<GuildMember>(entity =>
             {
-                entity.HasKey(e => e.CharacterId);
+                entity.HasKey(e => e.Id);
                 entity.HasOne(e => e.Player);
                 entity.Property(e => e.Motto).HasDefaultValue("").HasMaxLength(50);
                 entity.Property(e => e.Rank);
@@ -175,25 +187,6 @@ namespace MapleServer2.Database
                 entity.Property(e => e.DailyDonationCount);
                 entity.Property(e => e.AttendanceTimestamp);
                 entity.Property(e => e.JoinTimestamp);
-            });
-
-            modelBuilder.Entity<GuildRank>(entity =>
-            {
-                entity.HasKey(e => e.Name);
-                entity.Property(e => e.Rights);
-            });
-
-            modelBuilder.Entity<GuildBuff>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Level);
-                entity.Property(e => e.StartTimestamp);
-            });
-
-            modelBuilder.Entity<GuildService>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Level);
             });
 
             modelBuilder.Entity<GuildApplication>(entity =>

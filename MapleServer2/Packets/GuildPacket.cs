@@ -106,7 +106,7 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteByte(0x3);
                 pWriter.WriteByte(member.Rank);
-                pWriter.WriteLong(member.CharacterId);
+                pWriter.WriteLong(member.Player.CharacterId);
                 WriteGuildMember(pWriter, member.Player);
                 pWriter.WriteUnicodeString(member.Motto);
                 pWriter.WriteLong(member.JoinTimestamp);
@@ -122,8 +122,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(); // 00 = online, 01 = offline
             }
 
-            pWriter.WriteByte((byte) guild.Ranks.Count);
-            for (int i = 0; i < guild.Ranks.Count; i++)
+            pWriter.WriteByte((byte) guild.Ranks.Length);
+            for (int i = 0; i < guild.Ranks.Length; i++)
             {
                 pWriter.WriteByte((byte) i);
                 pWriter.WriteUnicodeString(guild.Ranks[i].Name);
@@ -294,7 +294,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(displayNotice);
             pWriter.WriteByte(0x3);
             pWriter.WriteByte(member.Rank);
-            pWriter.WriteLong(member.CharacterId);
+            pWriter.WriteLong(member.Player.CharacterId);
             WriteGuildMember(pWriter, member.Player);
             pWriter.WriteShort(); // unk, filler?
             pWriter.WriteLong(); // timestamp

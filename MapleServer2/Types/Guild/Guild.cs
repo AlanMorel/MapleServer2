@@ -4,6 +4,7 @@ using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -18,7 +19,7 @@ namespace MapleServer2.Types
         public Player Leader { get; set; }
         public byte Capacity { get; set; }
         public List<GuildMember> Members = new List<GuildMember>();
-        public List<GuildRank> Ranks;
+        public GuildRank[] Ranks;
         public List<GuildBuff> Buffs = new List<GuildBuff>();
         public List<GuildService> Services = new List<GuildService>();
         public List<Item> GiftBank = new List<Item>();
@@ -34,37 +35,45 @@ namespace MapleServer2.Types
 
         public Guild() { }
 
-        public Guild(string name, Player player)
+        public Guild(string name)
         {
-      //      GuildMember leader = new GuildMember(player);
             GuildPropertyMetadata property = GuildPropertyMetadataStorage.GetMetadata(0);
 
             Id = GuidGenerator.Long();
             Name = name;
             Capacity = (byte) property.Capacity;
-            Leader = player;
-   //         Members.Add(leader);
             Exp = 0;
+            Funds = 0;
             Emblem = "";
             Notice = "";
-            Funds = 0;
             Searchable = true;
             HouseRank = 1;
             HouseTheme = 1;
-            Ranks = new List<GuildRank>() {
+            Ranks = new GuildRank[6] {
                 new GuildRank("Master", 4095),
                 new GuildRank("Jr. Master"),
                 new GuildRank("Member 1"),
                 new GuildRank("Member 2"),
                 new GuildRank("New Member 1"),
-                new GuildRank("New Member 2")
-            };
+                new GuildRank("New Member 2") };
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             AddGuildBuffs();
+        }
 
-      //      player.Guild = this;
-     //       player.GuildMember = leader;
-    //        leader.Rank = 0;
+        public void AddLeader(Player player)
+        {
+            GuildMember leader = new GuildMember(player);
+            DatabaseManager.CreateGuildMember(leader);
+            player.Guild = this;
+            leader.AddGuildMember(player);
+            Members.Add(leader);
+            player.GuildMember = leader;
+            leader.Rank = 0;
+            Leader = player;
+
+            DatabaseManager.UpdateGuildMember(leader);
+            DatabaseManager.UpdateGuild(this);
+            DatabaseManager.UpdateCharacter(player);
         }
 
         public void AddMember(Player player)
@@ -124,18 +133,6 @@ namespace MapleServer2.Types
             Exp += expGain;
             BroadcastPacketGuild(GuildPacket.UpdateGuildExp(Exp));
             session.Send(GuildPacket.UpdateGuildStatsNotice(expGain, 0));
-        }
-
-        public void LevelService(int serviceId, int currentLevel)
-        {
-            GuildService service = Services.FirstOrDefault(x => x.Id == serviceId);
-            if (service == null)
-            {
-                GuildService newService = new GuildService(serviceId, currentLevel + 1);
-                Services.Add(newService);
-                return;
-            }
-            service.Level++;
         }
 
         private void AddGuildBuffs()
