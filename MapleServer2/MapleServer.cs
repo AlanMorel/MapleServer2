@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
+using MapleServer2.Config;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
@@ -34,6 +35,9 @@ namespace MapleServer2
             DotEnv.Load(dotenv);
 
             InitDatabase();
+
+            string config = Path.Combine(root, "config.ini");
+            ConfigHandler.Instance.Init(config);
 
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();

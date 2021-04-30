@@ -60,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Login
             packet.ReadShort(); // 01 00
             Logger.Info($"Logging in to game with char id: {charId}");
 
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, Configuration.Current.Server.GamePort);
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, ConfigHandler.Instance.GetInteger("Server", "GamePort"));
             AuthData authData = new AuthData
             {
                 TokenA = session.GetToken(),

@@ -22,7 +22,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            Start((ushort) Configuration.Current.Server.GamePort);
+            Start((ushort) ConfigHandler.Instance.GetInteger("Server", "GamePort"));
         }
     }
 }

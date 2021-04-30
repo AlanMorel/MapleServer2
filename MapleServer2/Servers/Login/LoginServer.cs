@@ -14,7 +14,7 @@ namespace MapleServer2.Servers.Login
 
         public void Start()
         {
-            base.Start((ushort) Configuration.Current.Server.LoginPort);
+            base.Start((ushort) ConfigHandler.Instance.GetInteger("Server", "LoginPort"));
         }
     }
 }

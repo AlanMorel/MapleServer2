@@ -23,10 +23,10 @@ namespace MapleServer2.PacketHandlers.Login
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Any, Configuration.Current.Server.LoginPort));
+            builder.Add(new IPEndPoint(IPAddress.Any, ConfigHandler.Instance.GetInteger("Server", "LoginPort")));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = Configuration.Current.Server.Name;
+            ServerName = ConfigHandler.Instance.GetValue("Server", "Name");
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
