@@ -1,6 +1,5 @@
 ﻿using System;
 using MapleServer2.Database;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -24,12 +23,12 @@ namespace MapleServer2.Types
             Rank = 5;
             Motto = "";
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+            DatabaseManager.CreateGuildMember(this);
         }
 
         public void AddGuildMember(Player player)
         {
             Player = player;
-            DatabaseManager.UpdateGuildMember(this);
             player.GuildMember = this;
             DatabaseManager.UpdateCharacter(player);
         }
@@ -38,6 +37,7 @@ namespace MapleServer2.Types
         {
             ContributionTotal += contribution;
             DailyContribution += contribution;
+            DatabaseManager.Update(this);
         }
     }
 }

@@ -158,7 +158,7 @@ namespace MapleServer2.Database
 
                 entity.Property(e => e.Buffs).HasConversion(
                     i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new List<GuildBuff>() : JsonConvert.DeserializeObject<List<GuildBuff>> (i));
+                    i => i == null ? new List<GuildBuff>() : JsonConvert.DeserializeObject<List<GuildBuff>>(i));
 
                 entity.Property(e => e.Services).HasConversion(
                     i => JsonConvert.SerializeObject(i),

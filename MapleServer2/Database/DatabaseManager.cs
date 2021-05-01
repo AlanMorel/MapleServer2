@@ -219,28 +219,12 @@ namespace MapleServer2.Database
             return guild;
         }
 
-        public static void UpdateGuild(Guild guild)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                context.Entry(guild).State = EntityState.Modified;
-            }
-        }
-
         public static bool CreateGuildMember(GuildMember member)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.GuildMembers.Add(member);
                 return SaveChanges(context);
-            }
-        }
-
-        public static void UpdateGuildMember(GuildMember guildMember)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                context.Entry(guildMember).State = EntityState.Modified;
             }
         }
 

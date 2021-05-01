@@ -57,13 +57,18 @@ namespace MapleServer2.Types
                 new GuildRank("New Member 1"),
                 new GuildRank("New Member 2") };
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-            AddGuildBuffs();
+
+            List<int> buffIds = GuildBuffMetadataStorage.GetBuffList();
+            foreach (int buffId in buffIds)
+            {
+                Buffs.Add(new GuildBuff(buffId));
+            }
         }
 
         public void AddLeader(Player player)
         {
             GuildMember leader = new GuildMember(player);
-            DatabaseManager.CreateGuildMember(leader);
+
             player.Guild = this;
             leader.AddGuildMember(player);
             Members.Add(leader);
@@ -71,26 +76,32 @@ namespace MapleServer2.Types
             leader.Rank = 0;
             Leader = player;
 
-            DatabaseManager.UpdateGuildMember(leader);
-            DatabaseManager.UpdateGuild(this);
+            DatabaseManager.Update(leader);
+            DatabaseManager.Update(this);
             DatabaseManager.UpdateCharacter(player);
         }
 
         public void AddMember(Player player)
         {
             GuildMember member = new GuildMember(player);
+
+            member.Player = player;
             player.Guild = this;
             player.GuildMember = member;
             Members.Add(member);
+
+            DatabaseManager.Update(member);
+            DatabaseManager.Update(this);
+            DatabaseManager.UpdateCharacter(player);
         }
 
         public void RemoveMember(Player player)
         {
             GuildMember member = Members.First(x => x.Player == player);
-
             Members.Remove(member);
-            player.Guild = null;
-            player.GuildMember = null;
+
+            DatabaseManager.Delete(member);
+            DatabaseManager.Update(this);
         }
 
         public void AssignNewLeader(Player oldLeader, Player newLeader)
@@ -101,6 +112,7 @@ namespace MapleServer2.Types
             Members.Insert(0, newLeadMember);
             Members.Remove(oldLeadMember);
             Members.Add(oldLeadMember);
+            DatabaseManager.Update(this);
         }
 
         public void ModifyFunds(GameSession session, GuildPropertyMetadata property, int funds)
@@ -126,6 +138,7 @@ namespace MapleServer2.Types
 
             BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(Funds));
             session.Send(GuildPacket.UpdateGuildStatsNotice(0, funds));
+            DatabaseManager.Update(this);
         }
 
         public void AddExp(GameSession session, int expGain)
@@ -133,15 +146,7 @@ namespace MapleServer2.Types
             Exp += expGain;
             BroadcastPacketGuild(GuildPacket.UpdateGuildExp(Exp));
             session.Send(GuildPacket.UpdateGuildStatsNotice(expGain, 0));
-        }
-
-        private void AddGuildBuffs()
-        {
-            List<int> buffIds = GuildBuffMetadataStorage.GetBuffList();
-            foreach (int buffId in buffIds)
-            {
-                Buffs.Add(new GuildBuff(buffId));
-            }
+            DatabaseManager.Update(this);
         }
 
         public void BroadcastPacketGuild(Packet packet, GameSession sender = null)

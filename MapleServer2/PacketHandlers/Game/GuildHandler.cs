@@ -256,6 +256,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player));
             guild.RemoveMember(session.Player);
             GameServer.GuildManager.RemoveGuild(guild);
+            DatabaseManager.Delete(guild);
         }
 
         private static void HandleInvite(GameSession session, PacketReader packet)
@@ -274,7 +275,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.UnableToSendInvite));
             }
 
-            if (playerInvited.Guild == null)
+            if (playerInvited.Guild != null)
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.CharacterIsAlreadyInAGuild));
                 return;

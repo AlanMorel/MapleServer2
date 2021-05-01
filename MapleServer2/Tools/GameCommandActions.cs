@@ -4,6 +4,7 @@ using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -108,6 +109,7 @@ namespace MapleServer2.Tools
             guild.Exp = guildExp;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
             GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
+            DatabaseManager.Update(guild);
         }
 
         private static void ProcessGuildFunds(GameSession session, string command)
@@ -125,6 +127,7 @@ namespace MapleServer2.Tools
 
             guild.Funds = guildFunds;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
+            DatabaseManager.Update(guild);
         }
         private static void ProcessQuestCommand(GameSession session, string command)
         {
