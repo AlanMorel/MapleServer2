@@ -48,7 +48,6 @@ namespace MapleServer2.PacketHandlers.Common
 
             session.Send(LoginPacket.LoginRequired(accountId));
 
-
             if (session.Player.Guild != null)
             {
                 Guild guild = DatabaseManager.GetGuild(session.Player.Guild.Id);

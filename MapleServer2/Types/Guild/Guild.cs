@@ -130,7 +130,6 @@ namespace MapleServer2.Types
                     Funds = property.FundMax;
                 }
             }
-
             else
             {
                 Funds += funds;
