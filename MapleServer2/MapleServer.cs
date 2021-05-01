@@ -24,7 +24,7 @@ namespace MapleServer2
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Load .env file
-            string root = Directory.GetCurrentDirectory();
+            string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../"));
             string dotenv = Path.Combine(root, ".env");
 
             if (!File.Exists(dotenv))
