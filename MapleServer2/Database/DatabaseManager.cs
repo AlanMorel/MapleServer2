@@ -256,6 +256,15 @@ namespace MapleServer2.Database
             }
         }
 
+        public static bool CreateGuildApplication(GuildApplication application)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.GuildApplications.Add(application);
+                return SaveChanges(context);
+            }
+        }
+
         private static bool SaveChanges(DatabaseContext context)
         {
             try

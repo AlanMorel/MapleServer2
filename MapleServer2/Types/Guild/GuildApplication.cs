@@ -1,4 +1,5 @@
 ﻿using System;
+using MapleServer2.Database;
 using MapleServer2.Tools;
 
 namespace MapleServer2.Types
@@ -17,18 +18,22 @@ namespace MapleServer2.Types
             CharacterId = player;
             GuildId = guild;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+            DatabaseManager.CreateGuildApplication(this);
         }
 
         public void Add(Player player, Guild guild)
         {
             player.GuildApplications.Add(this);
             guild.Applications.Add(this);
+            DatabaseManager.Update(guild);
         }
 
         public void Remove(Player player, Guild guild)
         {
             player.GuildApplications.Remove(this);
             guild.Applications.Remove(this);
+            DatabaseManager.Delete(this);
+            DatabaseManager.Update(guild);
         }
     }
 }
