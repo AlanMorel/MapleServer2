@@ -192,7 +192,7 @@ namespace MapleServer2.PacketHandlers.Game
 
 
             Guild newGuild;
-            if (!DatabaseManager.CheckGuildNameAvailbility(guildName))
+            if (!DatabaseManager.GuildExists(guildName))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                 return;

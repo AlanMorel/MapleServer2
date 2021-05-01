@@ -125,10 +125,7 @@ namespace MapleServer2.Types
                 }
                 Funds += funds;
 
-                if (Funds >= property.FundMax)
-                {
-                    Funds = property.FundMax;
-                }
+                Funds = Math.Min(property.FundMax, funds);
             }
             else
             {

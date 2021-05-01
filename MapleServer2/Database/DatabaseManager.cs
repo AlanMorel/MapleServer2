@@ -211,13 +211,13 @@ namespace MapleServer2.Database
             return guilds;
         }
 
-        public static bool CheckGuildNameAvailbility(string guildName)
+        public static bool GuildExists(string guildName)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
                 Guild result = context.Guilds.FirstOrDefault(p => p.Name.ToLower() == guildName.ToLower());
 
-                return result != null;
+                return result == null;
             }
         }
 
