@@ -217,7 +217,7 @@ namespace MapleServer2.Database
             {
                 Guild result = context.Guilds.FirstOrDefault(p => p.Name.ToLower() == guildName.ToLower());
 
-                return result == null;
+                return result != null;
             }
         }
 
