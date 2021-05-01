@@ -27,13 +27,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            List<Guild> guilds = new List<Guild>();
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                guilds = context.Guilds
-                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
-                .Include(p => p.Leader).ToList();
-            }
+            List<Guild> guilds = DatabaseManager.GetGuilds();
             foreach (Guild guild in guilds)
             {
                 GuildManager.AddGuild(guild);

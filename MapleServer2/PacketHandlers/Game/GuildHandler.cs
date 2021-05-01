@@ -192,17 +192,12 @@ namespace MapleServer2.PacketHandlers.Game
 
 
             Guild newGuild;
-            using (DatabaseContext context = new DatabaseContext())
+            if (!DatabaseManager.CheckGuildNameAvailbility(guildName))
             {
-                Guild result = context.Guilds.FirstOrDefault(p => p.Name.ToLower() == guildName.ToLower());
-
-                if (result != null)
-                {
-                    session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
-                    return;
-                }
-                newGuild = new(guildName);
+                session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
+                return;
             }
+            newGuild = new(guildName);
 
             if (!DatabaseManager.CreateGuild(newGuild))
             {
@@ -320,11 +315,16 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            guild.AddMember(session.Player);
+            GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
+            if (member == null)
+            {
+                return;
+            }
+
             inviter.Session.Send(GuildPacket.InviteNotification(inviteeName, response));
             session.Send(GuildPacket.InviteResponseConfirm(inviter, session.Player, guild, response));
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
-            guild.AddMember(session.Player);
-            GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
             guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, inviterName, true));
             guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player), session);
             session.Send(GuildPacket.UpdateGuild(guild));

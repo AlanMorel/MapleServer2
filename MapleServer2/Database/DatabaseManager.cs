@@ -132,8 +132,14 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
-                context.Entry(player.Guild).State = EntityState.Modified;
-                context.Entry(player.GuildMember).State = EntityState.Modified;
+                if (player.Guild != null)
+                {
+                    context.Entry(player.Guild).State = EntityState.Modified;
+                }
+                if (player.GuildMember != null)
+                {
+                    context.Entry(player.GuildMember).State = EntityState.Modified;
+                }
                 SaveChanges(context);
             }
         }
@@ -190,6 +196,28 @@ namespace MapleServer2.Database
                 }
 
                 return SaveChanges(context);
+            }
+        }
+
+        public static List<Guild> GetGuilds()
+        {
+            List<Guild> guilds = new List<Guild>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                guilds = context.Guilds
+                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
+                .Include(p => p.Leader).ToList();
+            }
+            return guilds;
+        }
+
+        public static bool CheckGuildNameAvailbility(string guildName)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Guild result = context.Guilds.FirstOrDefault(p => p.Name.ToLower() == guildName.ToLower());
+
+                return result != null;
             }
         }
 
