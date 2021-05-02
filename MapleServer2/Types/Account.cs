@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -12,12 +13,14 @@ namespace MapleServer2.Types
 
         public virtual ICollection<Player> Players { get; set; }
 
-        public Account(long id, string username, string password)
+        public Account() { }
+
+        public Account(string username, string password)
         {
-            Id = id;
             Username = username;
             Password = password;
             CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+            Id = DatabaseManager.CreateAccount(this);
         }
     }
 }

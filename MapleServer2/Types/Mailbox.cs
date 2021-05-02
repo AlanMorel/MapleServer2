@@ -5,11 +5,14 @@ namespace MapleServer2.Types
 {
     public class Mailbox
     {
-        public readonly long Id;
-        public readonly Player Player;
         public List<Mail> Mails { get; private set; } = new List<Mail>();
 
         public Mailbox() { }
+
+        public Mailbox(List<Mail> mails)
+        {
+            Mails = mails;
+        }
 
         public void AddOrUpdate(Mail mail)
         {

@@ -114,6 +114,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Equip new item
             item.IsEquipped = true;
+            item.ItemSlot = equipSlot;
             equippedInventory[equipSlot] = item;
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
 

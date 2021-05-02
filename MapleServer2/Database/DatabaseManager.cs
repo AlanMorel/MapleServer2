@@ -35,6 +35,16 @@ namespace MapleServer2.Database
             }
         }
 
+        public static long CreateAccount(Account account)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Accounts.Add(account);
+                SaveChanges(context);
+                return account.Id;
+            }
+        }
+
         public static Account GetAccount(string username, string password)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -42,6 +52,15 @@ namespace MapleServer2.Database
                 return context.Accounts.FirstOrDefault(a => a.Username == username && a.Password == password);
             }
         }
+
+        public static bool AccountExists(string username)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Accounts.FirstOrDefault(a => a.Username == username) != null;
+            }
+        }
+
         public static List<Player> GetAccountCharacters(long accountId)
         {
             List<Player> characters;
@@ -54,7 +73,6 @@ namespace MapleServer2.Database
                 // .Include(p => p.Guild)
                 // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
-                .Include(p => p.Mailbox).ThenInclude(p => p.Mails)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
@@ -73,22 +91,20 @@ namespace MapleServer2.Database
             return characters;
         }
 
-        public static bool CreateCharacter(Player player)
+        public static long CreateCharacter(Player player)
         {
-            player.BankInventory.DB_Items = player.BankInventory.Items.Where(x => x != null).ToList();
-            player.Inventory.DB_Items = player.Inventory.Items.Values.Where(x => x != null).ToList();
-            player.Inventory.DB_Items.AddRange(player.Inventory.Equips.Values.Where(x => x != null).ToList());
-            player.Inventory.DB_Items.AddRange(player.Inventory.Cosmetics.Values.Where(x => x != null).ToList());
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Characters.Add(player);
-                return SaveChanges(context);
+                SaveChanges(context);
+                return player.CharacterId;
             }
         }
 
         public static Player GetCharacter(long characterId)
         {
             Player player;
+            List<Mail> mails = new List<Mail>();
             using (DatabaseContext context = new DatabaseContext())
             {
                 player = context.Characters
@@ -97,10 +113,10 @@ namespace MapleServer2.Database
                 // .Include(p => p.Guild)
                 // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
-                .Include(p => p.Mailbox).ThenInclude(p => p.Mails)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
                 .Include(p => p.QuestList)
+                .Include(p => p.Trophies)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
                 .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
                 .FirstOrDefault(p => p.CharacterId == characterId);
@@ -108,12 +124,19 @@ namespace MapleServer2.Database
                 {
                     return null;
                 }
+                List<Mail> dbMails = context.Mails.Where(m => m.PlayerId == player.CharacterId).ToList();
+                mails.AddRange(dbMails);
             }
 
             Levels levels = player.Levels;
             Wallet wallet = player.Wallet;
+            foreach (Trophy trophy in player.Trophies)
+            {
+                player.TrophyData[trophy.Id] = trophy;
+            }
             player.BankInventory = new BankInventory(player.BankInventory);
             player.Inventory = new Inventory(player.Inventory);
+            player.Mailbox = new Mailbox(mails);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
             player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
             player.Wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
@@ -125,6 +148,28 @@ namespace MapleServer2.Database
 
         public static void UpdateCharacter(Player player)
         {
+            player.TrophyCount = new int[3];
+            if (player.Trophies != null)
+            {
+                List<List<long>> combat = player.Trophies.Where(x => x.Type == "combat").Select(x => x.Timestamps).ToList();
+                foreach (List<long> item in combat.Where(x => x.Count != 0))
+                {
+                    player.TrophyCount[0] += item.Count;
+                }
+
+                List<List<long>> adventure = player.Trophies.Where(x => x.Type == "adventure").Select(x => x.Timestamps).ToList();
+                foreach (List<long> item in adventure.Where(x => x.Count != 0))
+                {
+                    player.TrophyCount[1] += item.Count;
+                }
+
+                List<List<long>> living = player.Trophies.Where(x => x.Type == "living").Select(x => x.Timestamps).ToList();
+                foreach (List<long> item in living.Where(x => x.Count != 0))
+                {
+                    player.TrophyCount[2] += item.Count;
+                }
+            }
+
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Entry(player).State = EntityState.Modified;
@@ -132,6 +177,8 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
+                UpdateTrophies(player);
+                UpdateItems(player);
                 SaveChanges(context);
             }
         }
@@ -141,32 +188,54 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 Player character = context.Characters.Find(player.CharacterId);
-                List<Item> items = context.Items.Where(x => x.Owner.CharacterId == player.CharacterId).ToList();
-                List<Buddy> buddies = context.Buddies.Where(x => x.Player.AccountId == player.CharacterId).ToList();
+                List<Item> items = context.Items.Where(x => x.BankInventory.Id == player.BankInventory.Id || x.Inventory.Id == player.Inventory.Id).ToList();
+                List<Buddy> buddies = context.Buddies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
                 List<QuestStatus> quests = context.Quests.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
                 List<SkillTab> skilltabs = context.SkillTabs.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
                 List<Mail> mails = context.Mails.Where(x => x.PlayerId == player.CharacterId).ToList();
-                List<Inventory> inventories = context.Inventories.Where(x => x.Id == player.Inventory.Id).ToList();
+                Inventory inventory = context.Inventories.First(x => x.Id == player.Inventory.Id);
                 BankInventory bankInventory = context.BankInventories.First(x => x.Id == player.BankInventory.Id);
                 Wallet wallet = context.Wallets.First(x => x.Id == player.Wallet.Id);
                 Levels level = context.Levels.First(x => x.Id == player.Levels.Id);
                 GameOptions gameOptions = context.GameOptions.First(x => x.Id == player.GameOptions.Id);
-                Mailbox mailBox = context.MailBoxes.First(x => x.Id == player.Mailbox.Id);
+
+                if (player.Trophies.Count != 0)
+                {
+                    List<Trophy> trophies = context.Trophies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
+                    trophies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
+                }
 
                 items.ForEach(x => context.Entry(x).State = EntityState.Deleted);
                 buddies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
                 quests.ForEach(x => context.Entry(x).State = EntityState.Deleted);
                 skilltabs.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                inventories.ForEach(x => context.Entry(x).State = EntityState.Deleted);
                 mails.ForEach(x => context.Entry(x).State = EntityState.Deleted);
+                context.Entry(inventory).State = EntityState.Deleted;
                 context.Entry(wallet).State = EntityState.Deleted;
                 context.Entry(bankInventory).State = EntityState.Deleted;
                 context.Entry(level).State = EntityState.Deleted;
                 context.Entry(gameOptions).State = EntityState.Deleted;
-                context.Entry(mailBox).State = EntityState.Deleted;
                 context.Entry(character).State = EntityState.Deleted;
 
                 return SaveChanges(context);
+            }
+        }
+
+        public static bool NameExists(string name)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Characters.FirstOrDefault(x => x.Name.ToLower() == name.ToLower()) != null;
+            }
+        }
+
+        public static long AddItem(Item item)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Items.Add(item);
+                SaveChanges(context);
+                return item.Uid;
             }
         }
 
@@ -178,15 +247,74 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateMultipleItems(List<Item> items)
+        public static bool UpdateItems(Player player)
+        {
+            Inventory inventory = player.Inventory;
+            inventory.DB_Items = inventory.Items.Values.Where(x => x != null).ToList();
+            inventory.DB_Items.AddRange(inventory.Equips.Values.Where(x => x != null).ToList());
+            inventory.DB_Items.AddRange(inventory.Cosmetics.Values.Where(x => x != null).ToList());
+
+            BankInventory bankInventory = player.BankInventory;
+            bankInventory.DB_Items = bankInventory.Items.Where(x => x != null).ToList();
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Item item in inventory.DB_Items)
+                {
+                    Item dbItem = context.Items.Include(x => x.Inventory).Include(x => x.BankInventory).FirstOrDefault(x => x.Uid == item.Uid);
+                    if (dbItem == null)
+                    {
+                        item.Inventory = inventory;
+                        context.Entry(item).State = EntityState.Added;
+                        continue;
+                    }
+                    item.BankInventory = null;
+                    dbItem.BankInventory = null;
+                    context.Entry(dbItem).CurrentValues.SetValues(item);
+                }
+
+                foreach (Item item in bankInventory.DB_Items)
+                {
+                    Item dbItem = context.Items.Include(x => x.Inventory).Include(x => x.BankInventory).FirstOrDefault(x => x.Uid == item.Uid);
+                    if (dbItem == null)
+                    {
+                        item.BankInventory = bankInventory;
+                        context.Entry(item).State = EntityState.Added;
+                        continue;
+                    }
+                    item.Inventory = null;
+                    dbItem.Inventory = null;
+                    context.Entry(dbItem).CurrentValues.SetValues(item);
+                }
+                return SaveChanges(context);
+            }
+        }
+
+        public static long AddTrophy(Trophy trophy)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                foreach (Item item in items)
-                {
-                    context.Entry(item).State = EntityState.Modified;
-                }
+                context.Entry(trophy).State = EntityState.Added;
+                SaveChanges(context);
+                return trophy.Uid;
+            }
+        }
 
+        public static bool UpdateTrophies(Player player)
+        {
+            player.Trophies = player.TrophyData.Values.ToList();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Trophy trophy in player.Trophies)
+                {
+                    Trophy dbTrophy = context.Trophies.Find(trophy.Uid);
+                    if (dbTrophy == null)
+                    {
+                        context.Entry(trophy).State = EntityState.Added;
+                        continue;
+                    }
+                    context.Entry(dbTrophy).CurrentValues.SetValues(trophy);
+                }
                 return SaveChanges(context);
             }
         }

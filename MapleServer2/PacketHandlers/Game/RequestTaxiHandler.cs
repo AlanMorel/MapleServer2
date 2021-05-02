@@ -27,7 +27,7 @@ namespace MapleServer2.PacketHandlers.Game
             RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
 
             int mapId = 0;
-            long mesoPrice = 60000;
+            long mesoPrice = 30000;
             long meretPrice = 15;
 
             if (mode != RequestTaxiMode.DiscoverTaxi)
@@ -41,24 +41,13 @@ namespace MapleServer2.PacketHandlers.Game
                     mesoPrice = 5000; //For now make all car taxis cost 5k, as we don't know the formula to calculate it yet.
                     goto case RequestTaxiMode.RotorsMeso;
                 case RequestTaxiMode.RotorsMeso:
-                    if (session.Player.Wallet.Meso.Modify(-mesoPrice))
-                    {
-                        HandleTeleport(session, mapId);
-                    }
-                    else
-                    {
-                        // TODO: Reject packets
-                    }
+                    HandleRotorMeso(session, mapId, mesoPrice);
                     break;
                 case RequestTaxiMode.RotorsMeret:
-                    if (session.Player.Wallet.RemoveMerets(meretPrice))
-                    {
-                        HandleTeleport(session, mapId);
-                    }
+                    HandleRotorMeret(session, mapId, meretPrice);
                     break;
                 case RequestTaxiMode.DiscoverTaxi:
-                    //TODO: Save somewhere and load somewhere? Perhaps on login.
-                    session.Send(TaxiPacket.DiscoverTaxi(session.Player.MapId));
+                    HandleDiscoverTaxi(session, mapId);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -66,12 +55,38 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
+        private static void HandleRotorMeso(GameSession session, int mapId, long mesoPrice)
+        {
+            if (!session.Player.Wallet.Meso.Modify(-mesoPrice))
+            {
+                return;
+            }
+
+            HandleTeleport(session, mapId);
+        }
+
+        private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
+        {
+            if (!session.Player.Wallet.RemoveMerets(meretPrice))
+            {
+                return;
+            }
+
+            HandleTeleport(session, mapId);
+        }
+
+        private static void HandleDiscoverTaxi(GameSession session, int mapId)
+        {
+            session.Player.UnlockedTaxis.Add(mapId);
+            session.Send(TaxiPacket.DiscoverTaxi(mapId));
+        }
+
         private static void HandleTeleport(GameSession session, int mapId)
         {
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
             if (spawn != null)
             {
-                session.Player.Warp(spawn, mapId);
+                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId);
             }
         }
     }

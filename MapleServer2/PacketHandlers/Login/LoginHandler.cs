@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -38,17 +39,20 @@ namespace MapleServer2.PacketHandlers.Login
             string username = packet.ReadUnicodeString();
             string password = packet.ReadUnicodeString();
 
+            // Creates md5 hash of password
+            using (MD5 hash = MD5.Create())
+            {
+                password = string.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(password)).Select(x => x.ToString("x2")));
+            }
 
+            // TODO: Check if username exists then check if password is correct
+            // TODO: Packet for wrong password
             Account account = DatabaseManager.GetAccount(username, password);
 
             // Auto add new accounts
             if (account == default)
             {
-                account = new Account(GuidGenerator.Long(), username, password);
-                if (!DatabaseManager.Insert(account))
-                {
-                    throw new ArgumentException("Could not create account");
-                }
+                account = new Account(username, password);
             }
 
             Logger.Debug($"Logging in with account ID: {account.Id}");

@@ -7,6 +7,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -137,7 +138,13 @@ namespace MapleServer2.PacketHandlers.Game
             int beautyItemId = packet.ReadInt();
             EquipColor equipColor = packet.Read<EquipColor>();
 
-            Item beautyItem = new Item(beautyItemId) { Color = equipColor, IsTemplate = false };
+            Item beautyItem = new Item(beautyItemId)
+            {
+                Color = equipColor,
+                IsTemplate = false,
+                IsEquipped = true,
+                Owner = session.Player
+            };
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetCosmeticShopByItemId(beautyItem.Id);
 
             if (useVoucher)
@@ -239,24 +246,26 @@ namespace MapleServer2.PacketHandlers.Game
             int indexColor = random.Next(palette.DefaultColors.Count);
             MixedColor color = palette.DefaultColors[indexColor];
 
-            Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
-
             Item newHair = new Item(chosenHair.ItemId)
             {
                 Color = EquipColor.Argb(color, indexColor, palette.PaletteId),
                 HairData = new HairData((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
-                IsTemplate = false
+                IsTemplate = false,
+                IsEquipped = true,
+                Owner = session.Player
             };
+            Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
             //Remove old hair
-            if (session.Player.Inventory.Equips.Remove(ItemSlot.HR, out Item previousHair))
+            if (cosmetics.Remove(ItemSlot.HR, out Item previousHair))
             {
                 previousHair.Slot = -1;
                 session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
+                DatabaseManager.Delete(previousHair);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, previousHair));
             }
 
-            equippedInventory[ItemSlot.HR] = newHair;
+            cosmetics[ItemSlot.HR] = newHair;
 
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, newHair, ItemSlot.HR));
             session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
@@ -268,16 +277,16 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (selection == 0) // player chose previous hair
             {
-                Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
-
+                Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
                 //Remove current hair
-                if (session.Player.Inventory.Equips.Remove(ItemSlot.HR, out Item newHair))
+                if (cosmetics.Remove(ItemSlot.HR, out Item newHair))
                 {
                     newHair.Slot = -1;
+                    DatabaseManager.Delete(newHair);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, newHair));
                 }
 
-                equippedInventory[ItemSlot.HR] = session.Player.HairInventory.RandomHair; // apply the previous hair
+                cosmetics[ItemSlot.HR] = session.Player.HairInventory.RandomHair; // apply the previous hair
 
                 session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, session.Player.HairInventory.RandomHair, ItemSlot.HR));
 
@@ -298,7 +307,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long hairUid = packet.ReadLong();
 
-            Item hair = session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.Uid == hairUid).Value;
+            Item hair = session.Player.Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == hairUid).Value;
             if (hair == null || hair.ItemSlot != ItemSlot.HR)
             {
                 return;
@@ -376,15 +385,14 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (session.Player.Inventory.Equips.Remove(hair.ItemSlot, out Item removeItem))
+            Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
+            if (cosmetics.Remove(hair.ItemSlot, out Item removeItem))
             {
                 removeItem.Slot = -1;
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
             }
 
-            Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
-
-            equippedInventory[removeItem.ItemSlot] = hair;
+            cosmetics[removeItem.ItemSlot] = hair;
 
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, hair, hair.ItemSlot));
             session.Send(BeautyPacket.ChangetoSavedHair());
@@ -440,16 +448,16 @@ namespace MapleServer2.PacketHandlers.Game
         private static void ModifyBeauty(GameSession session, PacketReader packet, Item beautyItem)
         {
             ItemSlot itemSlot = ItemMetadataStorage.GetSlot(beautyItem.Id);
+            Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
             // remove current item
-            if (session.Player.Inventory.Equips.Remove(itemSlot, out Item removeItem))
+            if (cosmetics.Remove(itemSlot, out Item removeItem))
             {
                 removeItem.Slot = -1;
+                DatabaseManager.Delete(removeItem);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
             }
             // equip new item
-
-            Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(InventoryTab.Gear);
 
             switch (itemSlot)
             {
@@ -463,13 +471,13 @@ namespace MapleServer2.PacketHandlers.Game
 
                     beautyItem.HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation);
 
-                    equippedInventory[itemSlot] = beautyItem;
+                    cosmetics[itemSlot] = beautyItem;
 
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
                     break;
                 case ItemSlot.FA:
 
-                    equippedInventory[itemSlot] = beautyItem;
+                    cosmetics[itemSlot] = beautyItem;
 
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
                     break;
@@ -478,7 +486,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                     beautyItem.FaceDecorationData = faceDecorationPosition;
 
-                    equippedInventory[itemSlot] = beautyItem;
+                    cosmetics[itemSlot] = beautyItem;
 
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
                     break;
@@ -617,6 +625,10 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case ShopCurrencyType.Item:
                     Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == requiredItemId).Value;
+                    if (itemCost == null)
+                    {
+                        return false;
+                    }
                     if (itemCost.Amount < tokenCost)
                     {
                         return false;
