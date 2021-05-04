@@ -23,18 +23,15 @@ namespace MapleServer2.Data.Static
 
         public static GuildPropertyMetadata GetMetadata(int guildExp)
         {
-            GuildPropertyMetadata metadata;
             foreach (GuildPropertyMetadata property in properties.Values)
             {
                 if (guildExp < property.AccumExp)
                 {
-                    metadata = property;
-                    return metadata;
+                    return property;
                 }
             }
             // otherwise guild is max level
-            metadata = properties.Values.Last();
-            return metadata;
+            return properties.Values.Last();
         }
     }
 }
