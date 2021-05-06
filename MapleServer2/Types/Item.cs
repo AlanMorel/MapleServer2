@@ -76,13 +76,14 @@ namespace MapleServer2.Types
         public Item(int id)
         {
             Id = id;
-            GetMetadataValues(id);
+            SetMetadataValues(id);
             Level = ItemMetadataStorage.GetLevel(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
             Rarity = ItemMetadataStorage.GetRarity(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             Color = ItemMetadataStorage.GetEquipColor(id);
             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+            RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
@@ -176,7 +177,7 @@ namespace MapleServer2.Types
             return itemId >= 60000001 && itemId < 61000000;
         }
 
-        public void GetMetadataValues(int id)
+        public void SetMetadataValues(int id)
         {
             InventoryTab = ItemMetadataStorage.GetTab(id);
             GemSlot = ItemMetadataStorage.GetGem(id);
@@ -187,7 +188,6 @@ namespace MapleServer2.Types
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             IsCustomScore = ItemMetadataStorage.GetIsCustomScore(id);
             Gender = ItemMetadataStorage.GetGender(id);
-            RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
             FileName = ItemMetadataStorage.GetFileName(id);
             SkillId = ItemMetadataStorage.GetSkillID(id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);

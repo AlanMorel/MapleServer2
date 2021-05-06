@@ -67,7 +67,7 @@ namespace MapleServer2.Types
             ExtraSize = inventory.ExtraSize;
             foreach (Item item in inventory.DB_Items)
             {
-                item.GetMetadataValues(item.Id);
+                item.SetMetadataValues(item.Id);
                 if (item.IsEquipped)
                 {
                     if (item.InventoryTab == InventoryTab.Outfit)
