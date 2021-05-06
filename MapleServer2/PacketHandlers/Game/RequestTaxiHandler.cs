@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Collections.Generic;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -47,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleRotorMeret(session, mapId, meretPrice);
                     break;
                 case RequestTaxiMode.DiscoverTaxi:
-                    HandleDiscoverTaxi(session, mapId);
+                    HandleDiscoverTaxi(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -75,9 +76,14 @@ namespace MapleServer2.PacketHandlers.Game
             HandleTeleport(session, mapId);
         }
 
-        private static void HandleDiscoverTaxi(GameSession session, int mapId)
+        private static void HandleDiscoverTaxi(GameSession session)
         {
-            session.Player.UnlockedTaxis.Add(mapId);
+            List<int> unlockedTaxis = session.Player.UnlockedTaxis;
+            int mapId = session.Player.MapId;
+            if (!unlockedTaxis.Contains(mapId))
+            {
+                unlockedTaxis.Add(mapId);
+            }
             session.Send(TaxiPacket.DiscoverTaxi(mapId));
         }
 
