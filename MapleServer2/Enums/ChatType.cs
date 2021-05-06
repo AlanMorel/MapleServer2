@@ -17,7 +17,7 @@
         ItemEnchant = 15,
         Super = 16,
         NoticeAlert3 = 17,
-        GuildNotice = 18,
+        GuildAlert = 18,
         Unknown = 19, // Guild chat color without [Guild] prefix
         Club = 20,
     }
