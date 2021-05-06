@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
@@ -39,20 +36,16 @@ namespace MapleServer2.PacketHandlers.Login
             string username = packet.ReadUnicodeString();
             string password = packet.ReadUnicodeString();
 
-            // Creates md5 hash of password
-            using (MD5 hash = MD5.Create())
-            {
-                password = string.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(password)).Select(x => x.ToString("x2")));
-            }
+            // Hash the password with BCrypt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // TODO: Check if username exists then check if password is correct
-            // TODO: Packet for wrong password
-            Account account = DatabaseManager.GetAccount(username, password);
+            // TODO: Change authenticate to return bool and add packet for wrong password
+            Account account = DatabaseManager.Authenticate(username, password);
 
             // Auto add new accounts
             if (account == default)
             {
-                account = new Account(username, password);
+                account = new Account(username, passwordHash);
             }
 
             Logger.Debug($"Logging in with account ID: {account.Id}");

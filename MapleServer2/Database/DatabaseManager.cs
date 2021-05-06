@@ -49,8 +49,24 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.Accounts.FirstOrDefault(a => a.Username == username && a.Password == password);
+                return context.Accounts.FirstOrDefault(a => a.Username == username && a.PasswordHash == password);
             }
+        }
+
+        public static Account Authenticate(string username, string password)
+        {
+            Account account;
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                account = context.Accounts.SingleOrDefault(x => x.Username == username);
+            }
+
+            if (account == null || !BCrypt.Net.BCrypt.Verify(password, account.PasswordHash))
+            {
+                return null;
+            }
+
+            return account;
         }
 
         public static bool AccountExists(string username)

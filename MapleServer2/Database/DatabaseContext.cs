@@ -46,7 +46,7 @@ namespace MapleServer2.Database
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(25);
-                entity.Property(e => e.Password).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
             });
 
             modelBuilder.Entity<Player>(entity =>
