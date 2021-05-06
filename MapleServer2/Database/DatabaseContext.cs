@@ -25,7 +25,9 @@ namespace MapleServer2.Database
         public DbSet<QuestStatus> Quests { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Trophy> Trophies { get; set; }
-        // public DbSet<Guild> Guilds { get; set; }
+        public DbSet<Guild> Guilds { get; set; }
+        public DbSet<GuildMember> GuildMembers { get; set; }
+        public DbSet<GuildApplication> GuildApplications { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
 
@@ -58,9 +60,8 @@ namespace MapleServer2.Database
                 entity.Property(e => e.HomeName).HasDefaultValue("").HasMaxLength(25);
                 entity.Property(e => e.PartyId);
                 entity.Property(e => e.ClubId);
-                entity.Property(e => e.GuildId);
-                entity.Property(e => e.GuildName).HasMaxLength(25).HasDefaultValue("");
-                entity.Property(e => e.GuildContribution);
+                entity.HasOne(e => e.Guild);
+                entity.HasOne(e => e.GuildMember);
                 entity.Property(e => e.ReturnMapId);
 
                 entity.Property(e => e.Titles).HasConversion(
@@ -111,6 +112,10 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new int[3] : JsonConvert.DeserializeObject<int[]>(i));
 
+                entity.Property(e => e.GuildApplications).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildApplication>() : JsonConvert.DeserializeObject<List<GuildApplication>>(i));
+
                 entity.HasMany(e => e.SkillTabs).WithOne(x => x.Player);
                 entity.HasOne(e => e.GameOptions);
                 entity.HasOne(e => e.Inventory);
@@ -147,13 +152,58 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.Player);
             });
 
-            // modelBuilder.Entity<Guild>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.Property(e => e.Name).IsRequired().HasMaxLength(25);
-            //     entity.HasOne(e => e.Leader);
-            //     entity.HasMany(e => e.Members).WithOne(p => p.Guild);
-            // });
+            modelBuilder.Entity<Guild>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(12);
+                entity.Property(e => e.CreationTimestamp);
+                entity.HasOne(e => e.Leader);
+                entity.Property(e => e.Capacity);
+                entity.HasMany(e => e.Members);
+                entity.Property(e => e.Ranks).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new GuildRank[6] : JsonConvert.DeserializeObject<GuildRank[]>(i));
+
+                entity.Property(e => e.Buffs).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildBuff>() : JsonConvert.DeserializeObject<List<GuildBuff>>(i));
+
+                entity.Property(e => e.Services).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<GuildService>() : JsonConvert.DeserializeObject<List<GuildService>>(i));
+
+                entity.HasMany(e => e.GiftBank);
+                entity.HasMany(e => e.Applications);
+                entity.Property(e => e.Funds);
+                entity.Property(e => e.Exp);
+                entity.Property(e => e.Searchable);
+                entity.Property(e => e.Notice).HasDefaultValue("").HasMaxLength(300);
+                entity.Property(e => e.Emblem).HasDefaultValue("").HasMaxLength(50);
+                entity.Property(e => e.FocusAttributes);
+                entity.Property(e => e.HouseRank);
+                entity.Property(e => e.HouseTheme);
+            });
+
+            modelBuilder.Entity<GuildMember>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Player);
+                entity.Property(e => e.Motto).HasDefaultValue("").HasMaxLength(50);
+                entity.Property(e => e.Rank);
+                entity.Property(e => e.DailyContribution);
+                entity.Property(e => e.ContributionTotal);
+                entity.Property(e => e.DailyDonationCount);
+                entity.Property(e => e.AttendanceTimestamp);
+                entity.Property(e => e.JoinTimestamp);
+            });
+
+            modelBuilder.Entity<GuildApplication>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.GuildId);
+                entity.Property(e => e.CharacterId);
+                entity.Property(e => e.CreationTimestamp);
+            });
 
             // modelBuilder.Entity<Home>(entity =>
             // {

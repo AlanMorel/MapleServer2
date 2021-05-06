@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
@@ -24,8 +25,7 @@ namespace MapleServer2
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Load .env file
-            string root = Directory.GetCurrentDirectory();
-            string dotenv = Path.Combine(root, ".env");
+            string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
 
             if (!File.Exists(dotenv))
             {
