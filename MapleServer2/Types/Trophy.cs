@@ -12,7 +12,7 @@ namespace MapleServer2.Types
 {
     public class Trophy
     {
-        public long Uid { get; set; }
+        public long Uid { get; private set; }
         public int Id { get; private set; }
         public int NextGrade { get; private set; }
         public int MaxGrade { get; private set; }
