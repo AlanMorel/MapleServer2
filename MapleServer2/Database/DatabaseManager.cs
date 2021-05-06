@@ -70,8 +70,6 @@ namespace MapleServer2.Database
                 .Where(p => p.AccountId == accountId)
                 .Include(p => p.Levels)
                 .Include(p => p.SkillTabs)
-                // .Include(p => p.Guild)
-                // .Include(p => p.Home)
                 .Include(p => p.GameOptions)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
