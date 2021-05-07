@@ -105,6 +105,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleStopImprovise(GameSession session)
         {
+            if (session.Player.Instrument == null)
+            {
+                return;
+            }
+
             session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.FieldPlayer));
             session.FieldManager.RemoveInstrument(session.Player.Instrument);
             session.Player.Instrument = null;
