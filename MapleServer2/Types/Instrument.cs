@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using Maple2Storage.Types.Metadata;
-using MapleServer2.Data.Static;
-using MapleServer2.Enums;
-using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
-
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class Instrument
     {
