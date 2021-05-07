@@ -92,7 +92,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
             session.Player.Instrument.Coord = session.FieldPlayer.Coord;
-            session.FieldManager.Addinstrument(session.Player.Instrument);
+            session.FieldManager.AddInstrument(session.Player.Instrument);
             session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.Player.Instrument));
         }
 
@@ -147,7 +147,7 @@ namespace MapleServer2.PacketHandlers.Game
             score.PlayCount -= 1;
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
             session.Player.Instrument.Coord = session.FieldPlayer.Coord;
-            session.FieldManager.Addinstrument(session.Player.Instrument);
+            session.FieldManager.AddInstrument(session.Player.Instrument);
             session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
@@ -240,7 +240,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
-                member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument);
+                member.Session.FieldManager.AddInstrument(member.Session.Player.Instrument);
                 session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
                 member.Instrument.Value.Score.PlayCount -= 1;
                 member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));

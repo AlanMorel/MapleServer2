@@ -321,7 +321,7 @@ namespace MapleServer2.Servers.Game
             return State.RemoveCube(cube.ObjectId);
         }
 
-        public void Addinstrument(IFieldObject<Instrument> instrument)
+        public void AddInstrument(IFieldObject<Instrument> instrument)
         {
             State.AddInstrument(instrument);
         }
