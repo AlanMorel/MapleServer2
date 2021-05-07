@@ -131,7 +131,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
             session.Player.Instrument.Coord = session.FieldPlayer.Coord;
             session.FieldManager.Addinstrument(session.Player.Instrument, session);
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
@@ -214,7 +213,6 @@ namespace MapleServer2.PacketHandlers.Game
                         {
                             member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
                             member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument, member.Session);
-                            member.Session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(member.Session.Player.Instrument));
                             member.Instrument.Value.Score.PlayCount -= 1;
                             member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
                             member.Instrument.Value.Ensemble = false;

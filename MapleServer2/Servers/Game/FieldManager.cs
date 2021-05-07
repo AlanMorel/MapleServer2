@@ -317,6 +317,7 @@ namespace MapleServer2.Servers.Game
         public void Addinstrument(IFieldObject<Instrument> instrument, GameSession session)
         {
             State.AddInstrument(instrument);
+            BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
         }
 
         public bool RemoveInstrument(IFieldObject<Instrument> instrument)
