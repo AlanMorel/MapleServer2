@@ -46,6 +46,7 @@ namespace MapleServer2.Types
         public IFieldObject<Mount> Mount;
         public IFieldObject<Pet> Pet;
         public IFieldObject<GuideObject> Guide;
+        public IFieldObject<Instrument> Instrument;
 
         public long VIPExpiration { get; set; }
         public int SuperChat;

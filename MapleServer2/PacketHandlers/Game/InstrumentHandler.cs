@@ -22,6 +22,8 @@ namespace MapleServer2.PacketHandlers.Game
             StopImprovise = 0x2,
             PlayScore = 0x3,
             StopScore = 0x4,
+            StartEnsemble = 0x5,
+            LeaveEnsemble = 0x6,
             Compose = 0x8,
             Fireworks = 0xE,
             AudienceEmote = 0xF,
@@ -46,7 +48,13 @@ namespace MapleServer2.PacketHandlers.Game
                     HandlePlayScore(session, packet);
                     break;
                 case InstrumentMode.StopScore:
-                    HandleStopScore(session/*, packet*/);
+                    HandleStopScore(session);
+                    break;
+                case InstrumentMode.StartEnsemble:
+                    HandleStartEnsemble(session, packet);
+                    break;
+                case InstrumentMode.LeaveEnsemble:
+                    HandleLeaveEnsemble(session);
                     break;
                 case InstrumentMode.Compose:
                     HandleCompose(session, packet);
@@ -55,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleFireworks(session);
                     break;
                 case InstrumentMode.AudienceEmote:
-                    HandleAudienceEmote(/*session,*/ packet);
+                    HandleAudienceEmote(packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -101,9 +109,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Item instrument = session.Player.Inventory.Items[instrumentItemUid];
+            Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
 
-            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrument.Function.Id);
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
             Item score = session.Player.Inventory.Items[scoreItemUid];
@@ -113,16 +121,24 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            score.PlayCount -= 1;
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            {
+                InstrumentTick = session.ServerTick,
+                Score = score
+            };
 
-            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session, score, instrumentCategory.GMId, instrumentCategory.PercussionId));
+            score.PlayCount -= 1;
+            session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
+            session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+            session.FieldManager.Addinstrument(session.Player.Instrument, session);
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
-        private static void HandleStopScore(GameSession session/*, PacketReader packet*/)
+        private static void HandleStopScore(GameSession session)
         {
-            session.Send(InstrumentPacket.StopScore(session.FieldPlayer));
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.FieldPlayer));
+            session.FieldManager.RemoveInstrument(session.Player.Instrument);
+            session.Player.Instrument = null;
         }
 
         private static void HandleCompose(GameSession session, PacketReader packet)
@@ -150,12 +166,77 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(InstrumentPacket.Compose(item));
         }
 
+        private static void HandleStartEnsemble(GameSession session, PacketReader packet)
+        {
+            long instrumentItemUid = packet.ReadLong();
+            long scoreItemUid = packet.ReadLong();
+
+            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            if (party == null)
+            {
+                return;
+            }
+
+            if (!session.Player.Inventory.Items.ContainsKey(scoreItemUid) || !session.Player.Inventory.Items.ContainsKey(instrumentItemUid))
+            {
+                return;
+            }
+
+            Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
+
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
+            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
+
+            Item score = session.Player.Inventory.Items[scoreItemUid];
+
+            if (score.PlayCount <= 0)
+            {
+                return;
+            }
+
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            {
+                Score = score,
+                Ensemble = true
+            };
+
+            session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
+            session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+
+            if (session.Player == party.Leader)
+            {
+                int instrumentTick = session.ServerTick;
+                foreach (Player member in party.Members)
+                {
+                    if (member.Instrument != null)
+                    {
+                        if (member.Instrument.Value.Ensemble)
+                        {
+                            member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
+                            member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument, member.Session);
+                            member.Session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(member.Session.Player.Instrument));
+                            member.Instrument.Value.Score.PlayCount -= 1;
+                            member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
+                            member.Instrument.Value.Ensemble = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void HandleLeaveEnsemble(GameSession session)
+        {
+            session.FieldManager.RemoveInstrument(session.Player.Instrument);
+            session.Player.Instrument = null;
+            session.Send(InstrumentPacket.LeaveEnsemble());
+        }
+
         private static void HandleFireworks(GameSession session)
         {
             session.Send(InstrumentPacket.Fireworks(session.FieldPlayer.ObjectId));
         }
 
-        private static void HandleAudienceEmote(/*GameSession session,*/PacketReader packet)
+        private static void HandleAudienceEmote(PacketReader packet)
         {
             int skillId = packet.ReadInt();
         }

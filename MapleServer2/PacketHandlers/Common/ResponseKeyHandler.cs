@@ -44,7 +44,6 @@ namespace MapleServer2.PacketHandlers.Common
             session.InitPlayer(player);
 
             //session.Send(0x27, 0x01); // Meret market related...?
-            session.Send(BuddyPacket.Initialize());
 
             session.Send(LoginPacket.LoginRequired(accountId));
 
@@ -54,6 +53,7 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(GuildPacket.UpdateGuild(guild));
                 session.Send(GuildPacket.MemberJoin(player));
             }
+            session.Send(BuddyPacket.Initialize());
             session.Send(BuddyPacket.LoadList(player));
             session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
@@ -152,8 +152,11 @@ namespace MapleServer2.PacketHandlers.Common
             // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
             // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
+            // Server is supposed to request SetSessionServerTick packet but it is not.
+            // As a temporary fix, we're sending the packet to set it
+            session.Send(TimeSyncPacket.SetSessionServerTick(0));
             //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
-            //session.Send(ServerEnterPacket.Confirm());
+            session.Send(ServerEnterPacket.Confirm());
 
             //session.Send(0xF0, 0x00, 0x1F, 0x78, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x00, 0x00);
             //session.Send(0x28, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00);

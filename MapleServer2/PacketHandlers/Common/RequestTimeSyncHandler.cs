@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Common
         {
             int key = packet.ReadInt();
 
-            session.Send(TimeSyncPacket.Response(key));
+            session.Send(TimeSyncPacket.SetSessionServerTick(key));
         }
     }
 }

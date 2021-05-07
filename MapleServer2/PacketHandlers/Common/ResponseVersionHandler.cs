@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Common
             // No idea what this is, but server sends it when logging into game server
             PacketWriter pWriter = PacketWriter.Of(SendOp.UNKNOWN_SYNC);
             pWriter.WriteByte();
-            pWriter.WriteInt(Environment.TickCount);
+            pWriter.WriteInt(session.ClientTick);
 
             session.Send(pWriter);
             session.Send(RequestPacket.Key());
