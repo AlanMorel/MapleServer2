@@ -152,7 +152,7 @@ namespace MapleServer2.PacketHandlers.Common
             // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
             // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
-            // Server is supposed to request SetSessionServerTick packet but it is not.
+            // Client is supposed to request SetSessionServerTick packet but it is not.
             // As a temporary fix, we're sending the packet to set it
             session.Send(TimeSyncPacket.SetSessionServerTick(0));
             //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
