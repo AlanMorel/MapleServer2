@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -30,12 +29,6 @@ namespace MapleServer2.Data.Static
         public static BeautyMetadata GetShopById(int shopId)
         {
             return shops.GetValueOrDefault(shopId);
-        }
-
-        public static BeautyMetadata GetCosmeticShopByItemId(int itemId)
-        {
-            List<BeautyMetadata> shopList = shops.Values.ToList();
-            return shopList.FirstOrDefault(x => x.Items.Exists(z => z.ItemId == itemId) && x.BeautyCategory == BeautyCategory.Standard);
         }
 
         public static List<BeautyItem> GetItems(int shopId)
