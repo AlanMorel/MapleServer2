@@ -8,6 +8,7 @@
         public Item Score;
         public int InstrumentTick;
         public int PlayerObjectId;
+        public bool Improvise;
         public bool Ensemble;
 
         public Instrument(int gmId, int percussionId, bool isCustomScore, int playerObjectId)

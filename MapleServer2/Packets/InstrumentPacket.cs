@@ -21,15 +21,15 @@ namespace MapleServer2.Packets
             Fireworks = 0xE,
         }
 
-        public static Packet StartImprovise(IFieldObject<Player> player, int gmId, int percussionId)
+        public static Packet StartImprovise(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StartImprovise);
-            pWriter.WriteInt(); // playId?
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.Write(player.Coord);
-            pWriter.WriteInt(gmId);
-            pWriter.WriteInt(percussionId);
+            pWriter.WriteInt(instrument.ObjectId);
+            pWriter.WriteInt(instrument.Value.PlayerObjectId);
+            pWriter.Write(instrument.Coord);
+            pWriter.WriteInt(instrument.Value.GmId);
+            pWriter.WriteInt(instrument.Value.PercussionId);
             return pWriter;
         }
 
@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayNote);
-            pWriter.WriteInt(); // playId?
+            pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(note);
             return pWriter;
@@ -47,7 +47,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StopImprovise);
-            pWriter.WriteInt(); // playId?
+            pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             return pWriter;
         }

@@ -82,9 +82,18 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item item = session.Player.Inventory.Items[itemUid];
 
-            InsturmentInfoMetadata instrument = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
-            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrument.Category);
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer, instrumentCategory.GMId, instrumentCategory.PercussionId));
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
+            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
+
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
+            {
+                Improvise = true
+            };
+
+            session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
+            session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+            session.FieldManager.Addinstrument(session.Player.Instrument);
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.Player.Instrument));
         }
 
         private static void HandlePlayNote(GameSession session, PacketReader packet)
@@ -97,6 +106,8 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleStopImprovise(GameSession session)
         {
             session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.FieldPlayer));
+            session.FieldManager.RemoveInstrument(session.Player.Instrument);
+            session.Player.Instrument = null;
         }
 
         private static void HandlePlayScore(GameSession session, PacketReader packet)
@@ -124,18 +135,21 @@ namespace MapleServer2.PacketHandlers.Game
             Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 InstrumentTick = session.ServerTick,
-                Score = score
+                Score = score,
+                Improvise = false
             };
 
             score.PlayCount -= 1;
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
             session.Player.Instrument.Coord = session.FieldPlayer.Coord;
-            session.FieldManager.Addinstrument(session.Player.Instrument, session);
+            session.FieldManager.Addinstrument(session.Player.Instrument);
+            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
             session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
         }
 
         private static void HandleStopScore(GameSession session)
         {
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player.Instrument));
             session.FieldManager.RemoveInstrument(session.Player.Instrument);
             session.Player.Instrument = null;
         }
@@ -196,7 +210,8 @@ namespace MapleServer2.PacketHandlers.Game
             Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 Score = score,
-                Ensemble = true
+                Ensemble = true,
+                Improvise = false
             };
 
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
@@ -212,7 +227,8 @@ namespace MapleServer2.PacketHandlers.Game
                         if (member.Instrument.Value.Ensemble)
                         {
                             member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
-                            member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument, member.Session);
+                            member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument);
+                            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
                             member.Instrument.Value.Score.PlayCount -= 1;
                             member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
                             member.Instrument.Value.Ensemble = false;
@@ -224,6 +240,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLeaveEnsemble(GameSession session)
         {
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player.Instrument));
             session.FieldManager.RemoveInstrument(session.Player.Instrument);
             session.Player.Instrument = null;
             session.Send(InstrumentPacket.LeaveEnsemble());

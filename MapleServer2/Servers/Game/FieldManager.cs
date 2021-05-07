@@ -228,7 +228,14 @@ namespace MapleServer2.Servers.Game
 
             foreach (IFieldObject<Instrument> instrument in State.Instruments.Values)
             {
-                sender.Send(InstrumentPacket.PlayScore(instrument));
+                if (instrument.Value.Improvise)
+                {
+                    sender.Send(InstrumentPacket.StartImprovise(instrument));
+                }
+                else
+                {
+                    sender.Send(InstrumentPacket.PlayScore(instrument));
+                }
             }
 
             State.AddPlayer(player);
@@ -314,15 +321,13 @@ namespace MapleServer2.Servers.Game
             return State.RemoveCube(cube.ObjectId);
         }
 
-        public void Addinstrument(IFieldObject<Instrument> instrument, GameSession session)
+        public void Addinstrument(IFieldObject<Instrument> instrument)
         {
             State.AddInstrument(instrument);
-            BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
         }
 
         public bool RemoveInstrument(IFieldObject<Instrument> instrument)
         {
-            BroadcastPacket(InstrumentPacket.StopScore(instrument));
             return State.RemoveInstrument(instrument.ObjectId);
         }
 
