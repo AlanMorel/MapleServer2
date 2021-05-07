@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             InsturmentInfoMetadata instrument = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrument.Category);
-            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer, instrumentCategory.GMId));
+            session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.FieldPlayer, instrumentCategory.GMId, instrumentCategory.PercussionId));
         }
 
         private static void HandlePlayNote(GameSession session, PacketReader packet)

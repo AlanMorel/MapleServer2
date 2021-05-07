@@ -21,7 +21,7 @@ namespace MapleServer2.Packets
             Fireworks = 0xE,
         }
 
-        public static Packet StartImprovise(IFieldObject<Player> player, byte gmId)
+        public static Packet StartImprovise(IFieldObject<Player> player, int gmId, int percussionId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StartImprovise);
@@ -29,7 +29,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.Write(player.Coord);
             pWriter.WriteInt(gmId);
-            pWriter.WriteInt(0);
+            pWriter.WriteInt(percussionId);
             return pWriter;
         }
 
