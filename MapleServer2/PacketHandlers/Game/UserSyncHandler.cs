@@ -22,10 +22,8 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             byte function = packet.ReadByte(); // Unknown what this is for
-            int serverTick = packet.ReadInt(); // ServerTicks
-            int clientTick = packet.ReadInt(); // ClientTicks
-            session.ServerTick = serverTick;
-            session.ClientTick = clientTick;
+            session.ServerTick = packet.ReadInt();
+            session.ClientTick = packet.ReadInt();
 
             byte segments = packet.ReadByte();
             if (segments < 1)

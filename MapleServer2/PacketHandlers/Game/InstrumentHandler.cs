@@ -200,10 +200,6 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
-
-            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
-            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
             Item score = session.Player.Inventory.Items[scoreItemUid];
 
@@ -212,6 +208,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
+            InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
+            InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
             Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 Score = score,
@@ -222,24 +221,30 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
             session.Player.Instrument.Coord = session.FieldPlayer.Coord;
 
-            if (session.Player == party.Leader)
+            if (session.Player != party.Leader)
             {
-                int instrumentTick = session.ServerTick;
-                foreach (Player member in party.Members)
+                return;
+            }
+
+            int instrumentTick = session.ServerTick;
+            foreach (Player member in party.Members)
+            {
+                if (member.Instrument == null)
                 {
-                    if (member.Instrument != null)
-                    {
-                        if (member.Instrument.Value.Ensemble)
-                        {
-                            member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
-                            member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument);
-                            session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
-                            member.Instrument.Value.Score.PlayCount -= 1;
-                            member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
-                            member.Instrument.Value.Ensemble = false;
-                        }
-                    }
+                    continue;
                 }
+
+                if (!member.Instrument.Value.Ensemble)
+                {
+                    continue;
+                }
+
+                member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
+                member.Session.FieldManager.Addinstrument(member.Session.Player.Instrument);
+                session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
+                member.Instrument.Value.Score.PlayCount -= 1;
+                member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
+                member.Instrument.Value.Ensemble = false;
             }
         }
 
