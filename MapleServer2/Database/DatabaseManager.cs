@@ -45,11 +45,11 @@ namespace MapleServer2.Database
             }
         }
 
-        public static Account GetAccount(string username, string password)
+        public static Account GetAccount(string username, string passwordHash)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.Accounts.FirstOrDefault(a => a.Username == username && a.PasswordHash == password);
+                return context.Accounts.FirstOrDefault(a => a.Username == username && a.PasswordHash == passwordHash);
             }
         }
 
