@@ -18,7 +18,6 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
         public readonly ConcurrentDictionary<int, IFieldObject<Instrument>> Instruments;
 
-
         public FieldState()
         {
             Items = new ConcurrentDictionary<int, IFieldObject<Item>>();
