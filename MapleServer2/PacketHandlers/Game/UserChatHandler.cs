@@ -23,11 +23,8 @@ namespace MapleServer2.PacketHandlers.Game
             string recipient = packet.ReadUnicodeString();
             long clubId = packet.ReadLong();
 
-            if (message.Substring(0, 1).Equals("/"))
-            {
-                GameCommandActions.Process(session, message);
-                return;
-            }
+
+            GameCommandActions.Process(session, message);
 
             switch (type)
             {
@@ -40,8 +37,8 @@ namespace MapleServer2.PacketHandlers.Game
                 case ChatType.World:
                     HandleWorldChat(session, message, type);
                     break;
-                case ChatType.GuildAlert:
-                    HandleGuildAlert(session, message, type);
+                case ChatType.GuildNotice:
+                    HandleGuildNoticeChat(session, message, type);
                     break;
                 case ChatType.Guild:
                     HandleGuildChat(session, message, type);
@@ -106,31 +103,19 @@ namespace MapleServer2.PacketHandlers.Game
             MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
         }
 
-        private static void HandleGuildAlert(GameSession session, string message, ChatType type)
+        private static void HandleGuildNoticeChat(GameSession session, string message, ChatType type)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
+            if (guild == null || session.Player != guild.Leader) // TODO: change this to allow jr leaders to be able to use guild notices
             {
                 return;
             }
-
-            GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-            if (member == null)
-            {
-                return;
-            }
-
-            if (!((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanGuildAlert))
-            {
-                return;
-            }
-
             guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
         }
 
         private static void HandleGuildChat(GameSession session, string message, ChatType type)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.GuildId);
             if (guild == null)
             {
                 return;

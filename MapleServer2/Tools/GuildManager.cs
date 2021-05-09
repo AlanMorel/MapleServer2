@@ -25,13 +25,7 @@ namespace MapleServer2.Tools
 
         public List<Guild> GetGuildList()
         {
-            return GuildList.Values.Where(x => x.Searchable).ToList();
-        }
-
-        public List<Guild> GetGuildListByName(string name)
-        {
-            List<Guild> allGuilds = GetGuildList();
-            return allGuilds.Where(x => x.Name.Contains(name)).ToList();
+            return GuildList.Cast<Guild>().Where(guild => guild.Searchable = true).ToList();
         }
 
         public Guild GetGuildById(long id)

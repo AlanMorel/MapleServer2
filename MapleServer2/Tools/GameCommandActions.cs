@@ -4,7 +4,6 @@ using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -16,7 +15,6 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
-            command = command[1..];
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
@@ -77,12 +75,6 @@ namespace MapleServer2.Tools
                 case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
                     break;
-                case "setguildexp":
-                    ProcessGuildExp(session, args[1]);
-                    break;
-                case "setguildfunds":
-                    ProcessGuildFunds(session, args[1]);
-                    break;
                 case "notice":
                     if (args.Length <= 1)
                     {
@@ -93,42 +85,6 @@ namespace MapleServer2.Tools
             }
         }
 
-        private static void ProcessGuildExp(GameSession session, string command)
-        {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
-            {
-                return;
-            }
-
-            if (!int.TryParse(command, out int guildExp))
-            {
-                return;
-            }
-
-            guild.Exp = guildExp;
-            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
-            GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
-            DatabaseManager.Update(guild);
-        }
-
-        private static void ProcessGuildFunds(GameSession session, string command)
-        {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
-            {
-                return;
-            }
-
-            if (!int.TryParse(command, out int guildFunds))
-            {
-                return;
-            }
-
-            guild.Funds = guildFunds;
-            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
-            DatabaseManager.Update(guild);
-        }
         private static void ProcessQuestCommand(GameSession session, string command)
         {
             if (command == "")

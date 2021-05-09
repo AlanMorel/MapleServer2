@@ -109,9 +109,9 @@ namespace MapleServer2.Types
         public int[] GroupChatId;
 
         // TODO: Rework to use Class Guild
-        public Guild Guild;
-        public GuildMember GuildMember;
-        public List<GuildApplication> GuildApplications = new List<GuildApplication>();
+        public long GuildId;
+        public string GuildName;
+        public int GuildContribution;
 
         public Dictionary<int, Fishing> FishAlbum = new Dictionary<int, Fishing>();
         public Item FishingRod; // Possibly temp solution?
@@ -175,6 +175,7 @@ namespace MapleServer2.Types
             Mailbox = new Mailbox();
             BuddyList = new List<Buddy>();
             QuestList = new List<QuestStatus>();
+            GuildName = "";
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
             ReturnCoord = CoordF.From(-900, -900, 3000);
