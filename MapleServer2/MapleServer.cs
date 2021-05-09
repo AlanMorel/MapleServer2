@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
+using MapleServer2.Config;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Network;
@@ -26,6 +27,7 @@ namespace MapleServer2
 
             // Load .env file
             string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+            string config = Path.Combine(Paths.SOLUTION_DIR, "config.ini");
 
             if (!File.Exists(dotenv))
             {
@@ -34,6 +36,8 @@ namespace MapleServer2
             DotEnv.Load(dotenv);
 
             InitDatabase();
+
+            ConfigHandler.Load(config, ";");
 
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();

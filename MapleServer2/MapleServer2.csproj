@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="6.1.0" />
+      <PackageReference Include="ini-parser" Version="2.5.2" />
       <PackageReference Include="Maple2.Trigger" Version="1.1.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />

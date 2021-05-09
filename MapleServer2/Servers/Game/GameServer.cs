@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using Autofac;
+using MapleServer2.Config;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game
 {
     public class GameServer : Server<GameSession>
     {
-        public const int PORT = 21001;
         public static readonly PlayerStorage Storage = new();
         public static readonly PartyManager PartyManager = new();
         public static readonly ClubManager ClubManager = new();
@@ -32,7 +31,7 @@ namespace MapleServer2.Servers.Game
             {
                 GuildManager.AddGuild(guild);
             }
-            Start(PORT);
+            Start(Convert.ToUInt16(ConfigHandler.Data["Server"]["GamePort"]));
         }
     }
 }
