@@ -1,8 +1,6 @@
-﻿using System;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -17,20 +15,21 @@ namespace MapleServer2.Packets
             StopImprovise = 0x2,
             PlayScore = 0x3,
             StopScore = 0x4,
+            LeaveEnsemble = 0x6,
             Compose = 0x8,
             UpdateScoreUses = 0x9,
             Fireworks = 0xE,
         }
 
-        public static Packet StartImprovise(IFieldObject<Player> player, byte gmId)
+        public static Packet StartImprovise(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StartImprovise);
-            pWriter.WriteInt(); // playId?
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.Write(player.Coord);
-            pWriter.WriteInt(gmId);
-            pWriter.WriteInt(0);
+            pWriter.WriteInt(instrument.ObjectId);
+            pWriter.WriteInt(instrument.Value.PlayerObjectId);
+            pWriter.Write(instrument.Coord);
+            pWriter.WriteInt(instrument.Value.GmId);
+            pWriter.WriteInt(instrument.Value.PercussionId);
             return pWriter;
         }
 
@@ -38,7 +37,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayNote);
-            pWriter.WriteInt(); // playId?
+            pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(note);
             return pWriter;
@@ -48,41 +47,48 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StopImprovise);
-            pWriter.WriteInt(); // playId?
+            pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             return pWriter;
         }
 
-        public static Packet PlayScore(GameSession session, Item score, byte gmId, byte percussionId)
+        public static Packet PlayScore(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.PlayScore);
-            pWriter.WriteBool(score.IsCustomScore);
-            pWriter.WriteInt(session.FieldPlayer.ObjectId + (session.ClientTick - Environment.TickCount)); // This needs to be objectid + player tick count on map?
-            pWriter.WriteInt(session.FieldPlayer.ObjectId);
-            pWriter.Write(session.Player.Coord);
-            pWriter.WriteInt(session.ClientTick);
-            pWriter.WriteInt(gmId);
-            pWriter.WriteInt(percussionId);
-            pWriter.WriteByte();
+            pWriter.WriteBool(instrument.Value.IsCustomScore);
+            pWriter.WriteInt(instrument.ObjectId);
+            pWriter.WriteInt(instrument.Value.PlayerObjectId);
+            pWriter.Write(instrument.Coord);
+            pWriter.WriteInt(instrument.Value.InstrumentTick);
+            pWriter.WriteInt(instrument.Value.GmId);
+            pWriter.WriteInt(instrument.Value.PercussionId);
+            pWriter.WriteByte(1);
 
-            if (score.IsCustomScore)
+            if (instrument.Value.IsCustomScore)
             {
-                pWriter.WriteMapleString(score.Score.Notes);
+                pWriter.WriteMapleString(instrument.Value.Score.Score.Notes);
             }
             else
             {
-                pWriter.WriteUnicodeString(score.FileName);
+                pWriter.WriteUnicodeString(instrument.Value.Score.FileName);
             }
             return pWriter;
         }
 
-        public static Packet StopScore(IFieldObject<Player> player)
+        public static Packet StopScore(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
             pWriter.WriteEnum(InstrumentPacketMode.StopScore);
-            pWriter.WriteInt(player.ObjectId + 0x10); // playId ?
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(instrument.ObjectId);
+            pWriter.WriteInt(instrument.Value.PlayerObjectId);
+            return pWriter;
+        }
+
+        public static Packet LeaveEnsemble()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
+            pWriter.WriteEnum(InstrumentPacketMode.LeaveEnsemble);
             return pWriter;
         }
 

@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Autofac;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game

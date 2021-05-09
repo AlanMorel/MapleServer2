@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
     // perhaps setting some initial state?
     public static class TimeSyncPacket
     {
-        public static Packet Response(int key)
+        public static Packet SetSessionServerTick(int key)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
             pWriter.WriteByte(0x00); // Response

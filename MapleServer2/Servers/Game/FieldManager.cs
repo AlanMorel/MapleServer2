@@ -226,6 +226,18 @@ namespace MapleServer2.Servers.Game
                 sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new SkillCast(70000018, 1, 0, 1)));
             }
 
+            foreach (IFieldObject<Instrument> instrument in State.Instruments.Values)
+            {
+                if (instrument.Value.Improvise)
+                {
+                    sender.Send(InstrumentPacket.StartImprovise(instrument));
+                }
+                else
+                {
+                    sender.Send(InstrumentPacket.PlayScore(instrument));
+                }
+            }
+
             State.AddPlayer(player);
 
             if (!State.HealingSpots.IsEmpty)
@@ -307,6 +319,16 @@ namespace MapleServer2.Servers.Game
         public bool RemoveCube(IFieldObject<Cube> cube)
         {
             return State.RemoveCube(cube.ObjectId);
+        }
+
+        public void AddInstrument(IFieldObject<Instrument> instrument)
+        {
+            State.AddInstrument(instrument);
+        }
+
+        public bool RemoveInstrument(IFieldObject<Instrument> instrument)
+        {
+            return State.RemoveInstrument(instrument.ObjectId);
         }
 
         public void AddPortal(IFieldObject<Portal> portal)
