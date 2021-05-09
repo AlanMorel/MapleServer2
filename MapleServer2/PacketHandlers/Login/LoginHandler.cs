@@ -27,10 +27,10 @@ namespace MapleServer2.PacketHandlers.Login
         public LoginHandler(ILogger<LoginHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Loopback, ConfigHandler.Instance.GetInteger("Server", "LoginPort")));
+            builder.Add(new IPEndPoint(IPAddress.Loopback, Convert.ToUInt16(ConfigHandler.Data["Server"]["LoginPort"])));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = ConfigHandler.Instance.GetValue("Server", "Name");
+            ServerName = ConfigHandler.Data["Server"]["Name"];
         }
 
         public override void Handle(LoginSession session, PacketReader packet)

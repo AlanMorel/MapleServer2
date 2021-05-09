@@ -6,6 +6,7 @@ using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
 using MapleServer2.Config;
+using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
@@ -25,8 +26,7 @@ namespace MapleServer2
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Load .env file
-            string root = Directory.GetCurrentDirectory();
-            string dotenv = Path.Combine(root, ".env");
+            string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
 
             if (!File.Exists(dotenv))
             {
@@ -36,8 +36,8 @@ namespace MapleServer2
 
             InitDatabase();
 
-            string config = Path.Combine(root, "config.ini");
-            ConfigHandler.Instance.Init(config);
+            string config = Path.Combine(Paths.SOLUTION_DIR, "config.ini");
+            ConfigHandler.Load(config, ";");
 
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();

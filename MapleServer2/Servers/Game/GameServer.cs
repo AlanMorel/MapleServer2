@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using MapleServer2.Config;
 using MapleServer2.Network;
 using MapleServer2.Tools;
@@ -22,7 +23,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            Start((ushort) ConfigHandler.Instance.GetInteger("Server", "GamePort"));
+            Start(Convert.ToUInt16(ConfigHandler.Data["Server"]["GamePort"]));
         }
     }
 }

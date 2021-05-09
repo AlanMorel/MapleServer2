@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using MapleServer2.Config;
 using MapleServer2.Network;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ namespace MapleServer2.Servers.Login
 
         public void Start()
         {
-            base.Start((ushort) ConfigHandler.Instance.GetInteger("Server", "LoginPort"));
+            base.Start(Convert.ToUInt16(ConfigHandler.Data["Server"]["LoginPort"]));
         }
     }
 }
