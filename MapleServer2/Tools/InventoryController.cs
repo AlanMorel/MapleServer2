@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Maple2Storage.Types;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -49,26 +51,43 @@ namespace MapleServer2.Tools
                 {
                     session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
                 }
+                return;
             }
-            else
+
+            if (item.Amount == 1)
             {
-                for (int i = 0; i < item.Amount; i++)
+                if (!session.Player.Inventory.Add(item))
                 {
-                    Item newItem = new Item(item)
-                    {
-                        Amount = 1,
-                        Slot = (short) (session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot),
-                        Uid = GuidGenerator.Long()
-                    };
-                    if (!session.Player.Inventory.Add(newItem))
-                    {
-                        continue;
-                    }
-                    session.Send(ItemInventoryPacket.Add(newItem));
-                    if (isNew)
-                    {
-                        session.Send(ItemInventoryPacket.MarkItemNew(newItem, newItem.Amount));
-                    }
+                    return;
+                }
+
+                session.Send(ItemInventoryPacket.Add(item));
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
+                }
+                return;
+            }
+
+            for (int i = 0; i < item.Amount; i++)
+            {
+                Item newItem = new Item(item)
+                {
+                    Amount = 1,
+                    Slot = (short) (session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot),
+                    Uid = 0
+                };
+                newItem.Uid = DatabaseManager.AddItem(newItem);
+
+                if (!session.Player.Inventory.Add(newItem))
+                {
+                    continue;
+                }
+
+                session.Send(ItemInventoryPacket.Add(item));
+                if (isNew)
+                {
+                    session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
                 }
             }
         }
@@ -129,10 +148,12 @@ namespace MapleServer2.Tools
                 else if (remaining > 0) // Updates item
                 {
                     session.Send(ItemInventoryPacket.Update(uid, remaining));
+                    DatabaseManager.Update(session.Player.Inventory.Items.Values.First(x => x.Uid == uid));
                 }
                 else // Removes item
                 {
                     session.Send(ItemInventoryPacket.Remove(uid));
+                    DatabaseManager.Delete(droppedItem);
                 }
                 session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
             }
@@ -143,6 +164,7 @@ namespace MapleServer2.Tools
                     return; // Removal from inventory failed
                 }
                 session.Send(ItemInventoryPacket.Remove(uid));
+                DatabaseManager.Delete(droppedItem);
 
                 // Allow dropping bound items for now
                 session.FieldManager.AddItem(session, droppedItem);
@@ -160,8 +182,10 @@ namespace MapleServer2.Tools
         // Loads a Inventory Tab
         public static void LoadInventoryTab(GameSession session, InventoryTab tab)
         {
+            Inventory inventory = session.Player.Inventory;
             session.Send(ItemInventoryPacket.ResetTab(tab));
-            session.Send(ItemInventoryPacket.LoadTab(tab, session.Player.Inventory.ExtraSize[tab]));
+            session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));
+            session.Send(ItemInventoryPacket.LoadItem(inventory.Items.Values.Where(x => x.InventoryTab == tab).ToList()));
         }
 
         // Moves Item to destination slot

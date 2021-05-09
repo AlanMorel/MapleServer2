@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
@@ -12,7 +11,6 @@ using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -82,7 +80,7 @@ namespace MapleServer2.PacketHandlers.Login
             string name = packet.ReadUnicodeString();
             SkinColor skinColor = packet.Read<SkinColor>();
             packet.Skip(2);
-            Dictionary<ItemSlot, Item> equips = new Dictionary<ItemSlot, Item>();
+            Dictionary<ItemSlot, Item> cosmetics = new Dictionary<ItemSlot, Item>();
 
             Logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {job}");
 
@@ -108,7 +106,7 @@ namespace MapleServer2.PacketHandlers.Login
                         CoordF frontPositionCoord = packet.Read<CoordF>();
                         CoordF frontPositionRotation = packet.Read<CoordF>();
 
-                        equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
@@ -117,7 +115,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -126,7 +124,7 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             FaceDecorationData = faceDecoration,
@@ -135,7 +133,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -143,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -151,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -160,7 +158,7 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -172,32 +170,19 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            Player newCharacter;
-            using (DatabaseContext context = new DatabaseContext())
+            if (DatabaseManager.NameExists(name))
             {
-                Player result = context.Characters.FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
-
-                if (result != null)
-                {
-                    session.Send(ResponseCharCreatePacket.NameTaken());
-                    return;
-                }
-
-                newCharacter = new Player(session.AccountId, GuidGenerator.Long(), name, gender, job)
-                {
-                    SkinColor = skinColor,
-                };
-                foreach (Item item in equips.Values)
-                {
-                    item.Owner = newCharacter;
-                }
-                newCharacter.Inventory.Equips = equips;
+                session.Send(ResponseCharCreatePacket.NameTaken());
+                return;
             }
 
-            if (!DatabaseManager.CreateCharacter(newCharacter))
+            Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
+            foreach (Item item in cosmetics.Values)
             {
-                throw new ArgumentException("Could not create character");
+                item.Owner = newCharacter;
             }
+            newCharacter.Inventory.Cosmetics = cosmetics;
+            DatabaseManager.UpdateCharacter(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
             session.Send(CharacterListPacket.SetMax(4, 6));

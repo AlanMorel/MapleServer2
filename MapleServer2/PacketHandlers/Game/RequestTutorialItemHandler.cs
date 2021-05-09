@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -32,23 +32,37 @@ namespace MapleServer2.PacketHandlers.Game
             // [knuckles] Pugilist knuckles - 15500514
             // [orb] Guidance training orb - 15600514
 
-            int[] itemIds = new int[] { 15100216, 15200223, 13200220, 14100190, 15000224, 13300219, 14000181, 15300199, 13100225, 13400218, 15400274, 15500514, 15600514 };
-            foreach (int id in itemIds)
+            Job job = session.Player.Job;
+            if (job == Job.Striker)
             {
-                ItemMetadata metadata = ItemMetadataStorage.GetMetadata(id);
-
-                if (!metadata.RecommendJobs.Contains((int) session.Player.Job))
+                InventoryController.Add(session, new Item(15500514), true);
+            }
+            else if (job == Job.Runeblade)
+            {
+                InventoryController.Add(session, new Item(15400274), true);
+            }
+            else if (job == Job.SoulBinder)
+            {
+                InventoryController.Add(session, new Item(15600514), true);
+            }
+            else
+            {
+                int[] itemIds = new int[] { 15100216, 15200223, 13200220, 14100190, 15000224, 13300219, 14000181, 15300199, 13100225, 13400218 };
+                foreach (int id in itemIds)
                 {
-                    continue;
-                }
+                    List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
 
-                Item item = new Item(id);
-                if (session.Player.Job == Job.Thief || session.Player.Job == Job.Assassin)
-                {
-                    item.Amount = 2;
-                }
+                    if (!recommendJobs.Contains(job))
+                    {
+                        continue;
+                    }
 
-                InventoryController.Add(session, item, true);
+                    InventoryController.Add(session, new Item(id), true);
+                    if (job == Job.Thief || job == Job.Assassin)
+                    {
+                        InventoryController.Add(session, new Item(id), true);
+                    }
+                }
             }
         }
     }

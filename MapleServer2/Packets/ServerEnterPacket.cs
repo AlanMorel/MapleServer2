@@ -37,20 +37,23 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.WriteByte();
             // REQUIRED OR CRASH
-            // Unlocked Hidden Maps (Not on WorldMap)
-            List<int> unlockedHiddenMaps = new List<int> { 52000065 };
-            pWriter.WriteShort((short) unlockedHiddenMaps.Count);
-            foreach (int mapId in unlockedHiddenMaps)
-            {
-                pWriter.WriteInt(mapId);
-            }
-            // Unlocked Maps (On WorldMap)
-            List<int> unlockedMaps = new List<int> { 2000062 };
+
+            // Unlocked Maps (World Map)
+            List<int> unlockedMaps = session.Player.UnlockedMaps;
             pWriter.WriteShort((short) unlockedMaps.Count);
             foreach (int mapId in unlockedMaps)
             {
                 pWriter.WriteInt(mapId);
             }
+
+            // Unlocked Taxis
+            List<int> unlockedTaxis = session.Player.UnlockedTaxis;
+            pWriter.WriteShort((short) unlockedTaxis.Count);
+            foreach (int mapId in unlockedTaxis)
+            {
+                pWriter.WriteInt(mapId);
+            }
+
             pWriter.WriteLong();
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("http://nxcache.nexon.net/maplestory2/maplenews/index.html");
