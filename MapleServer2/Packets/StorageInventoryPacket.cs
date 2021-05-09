@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    public static class StorageInventory
+    public static class StorageInventoryPacket
     {
         private enum ItemStorageMode : byte
         {
@@ -21,15 +21,15 @@ namespace MapleServer2.Packets
             Expand = 0x0D,
         }
 
-        public static Packet Add(Item item, short slot)
+        public static Packet Add(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
             pWriter.WriteEnum(ItemStorageMode.Add);
             pWriter.WriteLong();
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
-            pWriter.WriteShort(slot);
-            pWriter.WriteInt();
+            pWriter.WriteShort(item.Slot);
+            pWriter.WriteInt(item.Rarity);
             pWriter.WriteItem(item);
 
             return pWriter;
@@ -123,8 +123,8 @@ namespace MapleServer2.Packets
                 }
                 pWriter.WriteInt(items[i].Id);
                 pWriter.WriteLong(items[i].Uid);
-                pWriter.WriteShort(i);
-                pWriter.WriteInt();
+                pWriter.WriteShort(items[i].Slot);
+                pWriter.WriteInt(items[i].Rarity);
                 pWriter.WriteItem(items[i]);
             }
 

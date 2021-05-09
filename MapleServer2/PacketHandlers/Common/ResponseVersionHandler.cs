@@ -1,5 +1,4 @@
-﻿using System;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -29,7 +28,7 @@ namespace MapleServer2.PacketHandlers.Common
             // No idea what this is, but server sends it when logging into game server
             PacketWriter pWriter = PacketWriter.Of(SendOp.UNKNOWN_SYNC);
             pWriter.WriteByte();
-            pWriter.WriteInt(Environment.TickCount);
+            pWriter.WriteInt(session.ClientTick);
 
             session.Send(pWriter);
             session.Send(RequestPacket.Key());

@@ -77,6 +77,10 @@ namespace MapleServer2.Packets
             pWriter.WriteShort((short) items.Count);
             foreach (Item item in items)
             {
+                pWriter.WriteInt(item.Id);
+                pWriter.WriteLong(item.Uid);
+                pWriter.WriteShort(item.Slot);
+                pWriter.WriteInt(item.Rarity);
                 pWriter.WriteItem(item);
             }
 

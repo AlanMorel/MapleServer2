@@ -90,6 +90,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int stickerId = packet.ReadInt();
 
+            if (session.Player.FavoriteStickers.Contains(stickerId))
+            {
+                return;
+            }
             session.Player.FavoriteStickers.Add(stickerId);
             session.Send(ChatStickerPacket.Favorite(stickerId));
         }
@@ -98,6 +102,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int stickerId = packet.ReadInt();
 
+            if (!session.Player.FavoriteStickers.Contains(stickerId))
+            {
+                return;
+            }
             session.Player.FavoriteStickers.Remove(stickerId);
             session.Send(ChatStickerPacket.Unfavorite(stickerId));
         }

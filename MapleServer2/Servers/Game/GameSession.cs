@@ -15,7 +15,7 @@ namespace MapleServer2.Servers.Game
     {
         protected override SessionType Type => SessionType.Game;
 
-        public int ServerTick { get; private set; }
+        public int ServerTick;
         public int ClientTick;
 
         public IFieldObject<Player> FieldPlayer { get; private set; }

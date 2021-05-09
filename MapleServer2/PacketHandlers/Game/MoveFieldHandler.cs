@@ -44,6 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Player.Rotation = session.FieldPlayer.Rotation;
                     session.Player.Coord = session.Player.ReturnCoord;
                     session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
+                    DatabaseManager.UpdateCharacter(session.Player);
                     session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
                     return;
                 }
@@ -64,34 +65,29 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                // TODO: There needs to be a more centralized way to set coordinates...
-                session.Player.MapId = srcPortal.Target;
-                session.Player.Rotation = dstPortal.Rotation.ToFloat();
-                session.Player.Coord = dstPortal.Coord.ToFloat();
+                CoordF coord = dstPortal.Coord.ToFloat();
 
                 if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
                 {
                     if (dstPortal.Rotation.Z == Direction.SOUTH_EAST)
                     {
-                        session.Player.Coord.Y -= Block.BLOCK_SIZE;
+                        coord.Y -= Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == Direction.NORTH_EAST)
                     {
-                        session.Player.Coord.X += Block.BLOCK_SIZE;
+                        coord.X += Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == Direction.NORTH_WEST)
                     {
-                        session.Player.Coord.Y += Block.BLOCK_SIZE;
+                        coord.Y += Block.BLOCK_SIZE;
                     }
                     else if (dstPortal.Rotation.Z == Direction.SOUTH_WEST)
                     {
-                        session.Player.Coord.X -= Block.BLOCK_SIZE;
+                        coord.X -= Block.BLOCK_SIZE;
                     }
                 }
 
-                session.Player.SafeBlock = session.Player.Coord;
-                DatabaseManager.UpdateCharacter(session.Player);
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Player.Warp(coord, dstPortal.Rotation.ToFloat(), srcPortal.Target);
             }
         }
 
