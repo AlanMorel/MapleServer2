@@ -27,6 +27,7 @@ namespace MapleServer2
 
             // Load .env file
             string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+            string config = Path.Combine(Paths.SOLUTION_DIR, "config.ini");
 
             if (!File.Exists(dotenv))
             {
@@ -36,7 +37,6 @@ namespace MapleServer2
 
             InitDatabase();
 
-            string config = Path.Combine(Paths.SOLUTION_DIR, "config.ini");
             ConfigHandler.Load(config, ";");
 
             // No DI here because MapleServer is static

@@ -15,7 +15,7 @@ namespace MapleServer2.Servers.Login
 
         public void Start()
         {
-            base.Start(Convert.ToUInt16(ConfigHandler.Data["Server"]["LoginPort"]));
+            base.Start((ushort) Convert.ToInt16(ConfigHandler.Data["Server"]["LoginPort"]));
         }
     }
 }

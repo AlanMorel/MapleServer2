@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autofac;
 using MapleServer2.Config;
+using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game
@@ -23,7 +26,12 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            Start(Convert.ToUInt16(ConfigHandler.Data["Server"]["GamePort"]));
+            List<Guild> guilds = DatabaseManager.GetGuilds();
+            foreach (Guild guild in guilds)
+            {
+                GuildManager.AddGuild(guild);
+            }
+            Start((ushort) Convert.ToInt16(ConfigHandler.Data["Server"]["GamePort"]));
         }
     }
 }

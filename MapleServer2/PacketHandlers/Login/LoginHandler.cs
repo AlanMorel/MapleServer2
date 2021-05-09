@@ -27,7 +27,7 @@ namespace MapleServer2.PacketHandlers.Login
         public LoginHandler(ILogger<LoginHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Loopback, Convert.ToUInt16(ConfigHandler.Data["Server"]["LoginPort"])));
+            builder.Add(new IPEndPoint(IPAddress.Loopback, Convert.ToInt16(ConfigHandler.Data["Server"]["LoginPort"])));
 
             ServerIPs = builder.ToImmutable();
             ServerName = ConfigHandler.Data["Server"]["Name"];
