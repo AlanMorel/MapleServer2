@@ -18,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
         {
-            LoginEndpoint = new IPEndPoint(IPAddress.Loopback, Convert.ToInt16(ConfigHandler.Data["Server"]["LoginServer"]));
+            LoginEndpoint = new IPEndPoint(IPAddress.Loopback, Convert.ToInt16(ConfigHandler.Data["Server"]["LoginPort"]));
         }
 
         private enum QuitMode : byte
