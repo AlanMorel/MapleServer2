@@ -17,7 +17,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             List<QuestStatus> questList = session.Player.QuestList;
             foreach (QuestStatus quest in questList.Where(x => x.Basic.QuestType == QuestType.Exploration && x.Condition != null))
             {
-                QuestCondition condition = quest.Condition.Where(x => x.Type == type)
+                Condition condition = quest.Condition.Where(x => x.Type == type)
                     .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(code));
                 if (condition == null)
                 {
@@ -50,7 +50,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             List<QuestStatus> questList = session.Player.QuestList;
             foreach (QuestStatus quest in questList.Where(x => x.Condition != null))
             {
-                QuestCondition condition = quest.Condition.Where(x => x.Type == type).FirstOrDefault(x => x.Codes != null && x.Codes.Length != 0 && x.Codes.Contains(code));
+                Condition condition = quest.Condition.Where(x => x.Type == type).FirstOrDefault(x => x.Codes != null && x.Codes.Length != 0 && x.Codes.Contains(code));
                 if (condition == null)
                 {
                     continue;
@@ -75,7 +75,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 {
                     continue;
                 }
-                session.Player.QuestList.Add(new QuestStatus(quest));
+                session.Player.QuestList.Add(new QuestStatus(session.Player, quest));
             }
 
             session.Send(QuestPacket.SendQuests(session.Player.QuestList));

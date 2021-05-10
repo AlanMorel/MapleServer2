@@ -190,19 +190,12 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-
-            Guild newGuild;
             if (DatabaseManager.GuildExists(guildName))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                 return;
             }
-            newGuild = new(guildName);
-
-            if (!DatabaseManager.CreateGuild(newGuild))
-            {
-                throw new ArgumentException("Could not create guild");
-            }
+            Guild newGuild = new Guild(guildName);
 
             GameServer.GuildManager.AddGuild(newGuild);
             newGuild.AddLeader(session.Player);
@@ -223,6 +216,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
                 application.Remove(session.Player, guild);
             }
+            DatabaseManager.UpdateCharacter(session.Player);
         }
 
         private static void HandleDisband(GameSession session)

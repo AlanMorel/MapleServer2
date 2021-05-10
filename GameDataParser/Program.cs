@@ -51,7 +51,6 @@ namespace GameDataParser
                 new MasteryParser(resources),
                 new NpcParser(resources),
                 new ChatStickerParser(resources),
-                new ShopParser(),
                 new ItemExchangeScrollParser(resources),
                 new MasteryFactorParser(resources),
                 new PremiumClubPackageParser(resources),

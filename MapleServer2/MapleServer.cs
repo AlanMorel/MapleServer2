@@ -93,6 +93,8 @@ namespace MapleServer2
                 if (context.Database.EnsureCreated())
                 {
                     Console.WriteLine("Creating database.");
+                    Console.WriteLine("Seeding shops");
+                    ShopsSeeding.Seed();
                     return;
                 }
                 Console.WriteLine("Database already exists.");

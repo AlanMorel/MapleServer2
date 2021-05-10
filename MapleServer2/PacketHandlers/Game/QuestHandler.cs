@@ -107,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     continue;
                 }
-                session.Player.QuestList.Add(new QuestStatus(kvp.Value));
+                session.Player.QuestList.Add(new QuestStatus(session.Player, kvp.Value));
             }
         }
 
@@ -149,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                QuestStatus questStatus = new QuestStatus(metadata)
+                QuestStatus questStatus = new QuestStatus(session.Player, metadata)
                 {
                     Started = true,
                     StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds()

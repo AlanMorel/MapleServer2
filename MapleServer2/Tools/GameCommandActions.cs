@@ -171,7 +171,7 @@ namespace MapleServer2.Tools
             IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
             foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
             {
-                session.Player.QuestList.Add(new QuestStatus(kvp.Value));
+                session.Player.QuestList.Add(new QuestStatus(session.Player, kvp.Value));
             }
         }
 

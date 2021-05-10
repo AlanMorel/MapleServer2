@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
@@ -87,20 +85,16 @@ namespace MapleServer2.PacketHandlers.Common
                 InventoryController.LoadInventoryTab(session, tab);
             }
 
-            List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
-            questList.Add(QuestMetadataStorage.GetMetadata(60100000)); // Manually adding "the caravan" for testing purposes
+            session.Send(QuestPacket.StartList());
+            session.Send(QuestPacket.Packet1F());
+            session.Send(QuestPacket.Packet20());
 
-            foreach (QuestMetadata quest in questList)
-            {
-                session.Player.QuestList.Add(new QuestStatus(quest));
-            }
-
-            IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet, same way kms do
-
+            IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet
             foreach (List<QuestStatus> item in packetCount)
             {
                 session.Send(QuestPacket.SendQuests(item));
             }
+            session.Send(QuestPacket.EndList());
 
             session.Send(TrophyPacket.WriteTableStart());
             List<Trophy> trophyList = new List<Trophy>(session.Player.TrophyData.Values);
