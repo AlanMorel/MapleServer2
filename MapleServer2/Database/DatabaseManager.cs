@@ -185,17 +185,11 @@ namespace MapleServer2.Database
 
             using (DatabaseContext context = new DatabaseContext())
             {
-                Player dbPlayer = context.Characters.Find(player.CharacterId);
-                Wallet dbWallet = context.Wallets.Find(player.Wallet.Id);
-                Levels dbLevels = context.Levels.Find(player.Levels.Id);
-                BankInventory dbBankInventory = context.BankInventories.Find(player.BankInventory.Id);
-                Inventory dbInventory = context.Inventories.Find(player.Inventory.Id);
-
-                context.Entry(dbPlayer).CurrentValues.SetValues(player);
-                context.Entry(dbWallet).CurrentValues.SetValues(player.Wallet);
-                context.Entry(dbLevels).CurrentValues.SetValues(player.Levels);
-                context.Entry(dbBankInventory).CurrentValues.SetValues(player.BankInventory);
-                context.Entry(dbInventory).CurrentValues.SetValues(player.Inventory);
+                context.Entry(player).State = EntityState.Modified;
+                context.Entry(player.Wallet).State = EntityState.Modified;
+                context.Entry(player.Levels).State = EntityState.Modified;
+                context.Entry(player.BankInventory).State = EntityState.Modified;
+                context.Entry(player.Inventory).State = EntityState.Modified;
 
                 if (player.GuildMember != null)
                 {
