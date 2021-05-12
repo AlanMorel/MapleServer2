@@ -267,7 +267,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateItems(Player player)
+        public static void UpdateItems(Player player)
         {
             Inventory inventory = player.Inventory;
             inventory.DB_Items = inventory.Items.Values.Where(x => x != null).ToList();
@@ -306,7 +306,7 @@ namespace MapleServer2.Database
                     dbItem.Inventory = null;
                     context.Entry(dbItem).CurrentValues.SetValues(item);
                 }
-                return SaveChanges(context);
+                SaveChanges(context);
             }
         }
 
@@ -320,7 +320,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateTrophies(Player player)
+        public static void UpdateTrophies(Player player)
         {
             player.Trophies = player.TrophyData.Values.ToList();
             using (DatabaseContext context = new DatabaseContext())
@@ -335,7 +335,7 @@ namespace MapleServer2.Database
                     }
                     context.Entry(dbTrophy).CurrentValues.SetValues(trophy);
                 }
-                return SaveChanges(context);
+                SaveChanges(context);
             }
         }
 
@@ -454,7 +454,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateQuests(Player player)
+        public static void UpdateQuests(Player player)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -468,7 +468,7 @@ namespace MapleServer2.Database
                     }
                     context.Entry(dbQuest).CurrentValues.SetValues(quest);
                 }
-                return SaveChanges(context);
+                SaveChanges(context);
             }
         }
 
