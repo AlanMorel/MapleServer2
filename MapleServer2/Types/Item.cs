@@ -77,6 +77,7 @@ namespace MapleServer2.Types
         {
             Id = id;
             SetMetadataValues(id);
+            IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             Level = ItemMetadataStorage.GetLevel(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
             Rarity = ItemMetadataStorage.GetRarity(id);
@@ -185,7 +186,6 @@ namespace MapleServer2.Types
             EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
             IsDress = ItemMetadataStorage.GetIsDress(id);
-            IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             IsCustomScore = ItemMetadataStorage.GetIsCustomScore(id);
             Gender = ItemMetadataStorage.GetGender(id);
             FileName = ItemMetadataStorage.GetFileName(id);
