@@ -74,7 +74,6 @@ namespace MapleServer2.Tools
                 Item newItem = new Item(item)
                 {
                     Amount = 1,
-                    Slot = (short) (session.Player.Inventory.SlotTaken(item, item.Slot) ? -1 : item.Slot),
                     Uid = 0
                 };
                 newItem.Uid = DatabaseManager.AddItem(newItem);
@@ -84,10 +83,10 @@ namespace MapleServer2.Tools
                     continue;
                 }
 
-                session.Send(ItemInventoryPacket.Add(item));
+                session.Send(ItemInventoryPacket.Add(newItem));
                 if (isNew)
                 {
-                    session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
+                    session.Send(ItemInventoryPacket.MarkItemNew(newItem, newItem.Amount));
                 }
             }
         }
