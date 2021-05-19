@@ -7,7 +7,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -39,7 +38,6 @@ namespace MapleServer2.Types
         {
             GuildPropertyMetadata property = GuildPropertyMetadataStorage.GetMetadata(0);
 
-            Id = GuidGenerator.Long();
             Name = name;
             Capacity = (byte) property.Capacity;
             Exp = 0;
@@ -63,6 +61,7 @@ namespace MapleServer2.Types
             {
                 Buffs.Add(new GuildBuff(buffId));
             }
+            Id = DatabaseManager.CreateGuild(this);
         }
 
         public void AddLeader(Player player)
@@ -77,7 +76,7 @@ namespace MapleServer2.Types
             Leader = player;
 
             DatabaseManager.Update(leader);
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
             DatabaseManager.UpdateCharacter(player);
         }
 
@@ -91,7 +90,7 @@ namespace MapleServer2.Types
             Members.Add(member);
 
             DatabaseManager.Update(member);
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
             DatabaseManager.UpdateCharacter(player);
         }
 
@@ -101,7 +100,8 @@ namespace MapleServer2.Types
             Members.Remove(member);
 
             DatabaseManager.Delete(member);
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
+            DatabaseManager.UpdateCharacter(player);
         }
 
         public void AssignNewLeader(Player oldLeader, Player newLeader)
@@ -112,7 +112,7 @@ namespace MapleServer2.Types
             Members.Insert(0, newLeadMember);
             Members.Remove(oldLeadMember);
             Members.Add(oldLeadMember);
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
         }
 
         public void ModifyFunds(GameSession session, GuildPropertyMetadata property, int funds)
@@ -134,7 +134,7 @@ namespace MapleServer2.Types
 
             BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(Funds));
             session.Send(GuildPacket.UpdateGuildStatsNotice(0, funds));
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
         }
 
         public void AddExp(GameSession session, int expGain)
@@ -142,7 +142,7 @@ namespace MapleServer2.Types
             Exp += expGain;
             BroadcastPacketGuild(GuildPacket.UpdateGuildExp(Exp));
             session.Send(GuildPacket.UpdateGuildStatsNotice(expGain, 0));
-            DatabaseManager.Update(this);
+            DatabaseManager.UpdateGuild(this);
         }
 
         public void BroadcastPacketGuild(Packet packet, GameSession sender = null)

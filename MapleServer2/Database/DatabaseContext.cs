@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
+using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +28,15 @@ namespace MapleServer2.Database
         public DbSet<Guild> Guilds { get; set; }
         public DbSet<GuildMember> GuildMembers { get; set; }
         public DbSet<GuildApplication> GuildApplications { get; set; }
+        public DbSet<Shop> Shops { get; set; }
+        public DbSet<ShopItem> ShopItems { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            // optionsBuilder.LogTo(Console.WriteLine);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -362,13 +365,14 @@ namespace MapleServer2.Database
             modelBuilder.Entity<QuestStatus>(entity =>
             {
                 entity.HasKey(e => e.Uid);
-                entity.Property(e => e.Basic).HasConversion(
-                    i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new QuestBasic() : JsonConvert.DeserializeObject<QuestBasic>(i));
-
+                entity.Property(e => e.Id);
                 entity.Property(e => e.Condition).HasConversion(
                     i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new List<QuestCondition>() : JsonConvert.DeserializeObject<List<QuestCondition>>(i));
+                    i => i == null ? new List<Condition>() : JsonConvert.DeserializeObject<List<Condition>>(i));
+                entity.Property(e => e.Started);
+                entity.Property(e => e.Completed);
+                entity.Property(e => e.StartTimestamp);
+                entity.Property(e => e.CompleteTimestamp);
 
                 entity.Ignore(x => x.Basic);
                 entity.Ignore(x => x.StartNpcId);
@@ -425,6 +429,48 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Timestamps).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<long>() : JsonConvert.DeserializeObject<List<long>>(i));
+            });
+
+            modelBuilder.Entity<Shop>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+                entity.Property(e => e.Id);
+                entity.Property(e => e.TemplateId);
+                entity.Property(e => e.Category);
+                entity.Property(e => e.Name).HasMaxLength(25);
+                entity.Property(e => e.ShopType);
+                entity.Property(e => e.RestrictSales);
+                entity.Property(e => e.CanRestock);
+                entity.Property(e => e.NextRestock);
+                entity.Property(e => e.AllowBuyback);
+                entity.HasMany(e => e.Items);
+            });
+
+            modelBuilder.Entity<ShopItem>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+                entity.Property(e => e.ItemId);
+                entity.Property(e => e.TokenType);
+                entity.Property(e => e.RequiredItemId);
+                entity.Property(e => e.Price);
+                entity.Property(e => e.SalePrice);
+                entity.Property(e => e.ItemRank);
+                entity.Property(e => e.StockCount);
+                entity.Property(e => e.StockPurchased);
+                entity.Property(e => e.GuildTrophy);
+                entity.Property(e => e.Category).HasMaxLength(25);
+                entity.Property(e => e.RequiredAchievementId);
+                entity.Property(e => e.RequiredAchievementGrade);
+                entity.Property(e => e.RequiredChampionshipGrade);
+                entity.Property(e => e.RequiredChampionshipJoinCount);
+                entity.Property(e => e.RequiredGuildMerchantType);
+                entity.Property(e => e.RequiredGuildMerchantLevel);
+                entity.Property(e => e.Quantity);
+                entity.Property(e => e.Flag);
+                entity.Property(e => e.TemplateName).HasMaxLength(25);
+                entity.Property(e => e.RequiredQuestAlliance);
+                entity.Property(e => e.RequiredFameGrade);
+                entity.Property(e => e.AutoPreviewEquip);
             });
         }
     }

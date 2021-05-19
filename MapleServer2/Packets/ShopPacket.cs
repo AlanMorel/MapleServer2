@@ -1,8 +1,8 @@
 ﻿using System;
 using Maple2Storage.Enums;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
@@ -19,7 +19,7 @@ namespace MapleServer2.Packets
             Reload = 0x6
         }
 
-        public static Packet Open(ShopMetadata shop)
+        public static Packet Open(Shop shop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.Open);
@@ -100,7 +100,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.LoadProducts);
             pWriter.WriteByte(1);
-            pWriter.WriteInt(product.UniqueId);
+            pWriter.WriteInt(product.Uid);
             pWriter.WriteInt(product.ItemId);
             pWriter.WriteEnum(product.TokenType);
             pWriter.WriteInt(product.RequiredItemId);

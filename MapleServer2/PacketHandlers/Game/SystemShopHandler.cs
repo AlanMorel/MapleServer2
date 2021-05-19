@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -58,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            ShopMetadata shop = ShopMetadataStorage.GetShop(item.ShopID);
+            Shop shop = DatabaseManager.GetShop(item.ShopID);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {item.ShopID}");
@@ -83,7 +83,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            ShopMetadata shop = ShopMetadataStorage.GetShop(168);
+            Shop shop = DatabaseManager.GetShop(168);
 
             session.Send(ShopPacket.Open(shop));
             foreach (ShopItem shopItem in shop.Items)

@@ -25,7 +25,10 @@ namespace MapleServer2.Types
             Items = new Item[DEFAULT_SIZE + ExtraSize];
             for (int i = 0; i < bankInventory.DB_Items.Count; i++)
             {
-                Items[i] = bankInventory.DB_Items[i];
+                Item item = bankInventory.DB_Items[i];
+
+                item.SetMetadataValues(item.Id);
+                Items[i] = item;
             }
         }
 

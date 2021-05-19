@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
 
@@ -85,13 +86,7 @@ namespace MapleServer2.Database
                 characters = context.Characters
                 .Where(p => p.AccountId == accountId)
                 .Include(p => p.Levels)
-                .Include(p => p.SkillTabs)
-                .Include(p => p.GameOptions)
-                .Include(p => p.Wallet)
-                .Include(p => p.BuddyList)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
-                .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
-                .Include(p => p.QuestList)
                 .ToList();
             }
 
@@ -148,6 +143,10 @@ namespace MapleServer2.Database
             {
                 player.TrophyData[trophy.Id] = trophy;
             }
+            foreach (QuestStatus item in player.QuestList)
+            {
+                item.SetMetadataValues(item.Id);
+            }
             player.BankInventory = new BankInventory(player.BankInventory);
             player.Inventory = new Inventory(player.Inventory);
             player.Mailbox = new Mailbox(mails);
@@ -191,14 +190,13 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
-                if (player.Guild != null)
-                {
-                    context.Entry(player.Guild).State = EntityState.Modified;
-                }
+
                 if (player.GuildMember != null)
                 {
-                    context.Entry(player.GuildMember).State = EntityState.Modified;
+                    GuildMember dbGuildMember = context.GuildMembers.Find(player.CharacterId);
+                    context.Entry(dbGuildMember).CurrentValues.SetValues(player.GuildMember);
                 }
+                UpdateQuests(player);
                 UpdateTrophies(player);
                 UpdateItems(player);
                 SaveChanges(context);
@@ -269,7 +267,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateItems(Player player)
+        public static void UpdateItems(Player player)
         {
             Inventory inventory = player.Inventory;
             inventory.DB_Items = inventory.Items.Values.Where(x => x != null).ToList();
@@ -308,7 +306,7 @@ namespace MapleServer2.Database
                     dbItem.Inventory = null;
                     context.Entry(dbItem).CurrentValues.SetValues(item);
                 }
-                return SaveChanges(context);
+                SaveChanges(context);
             }
         }
 
@@ -322,7 +320,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool UpdateTrophies(Player player)
+        public static void UpdateTrophies(Player player)
         {
             player.Trophies = player.TrophyData.Values.ToList();
             using (DatabaseContext context = new DatabaseContext())
@@ -337,7 +335,7 @@ namespace MapleServer2.Database
                     }
                     context.Entry(dbTrophy).CurrentValues.SetValues(trophy);
                 }
-                return SaveChanges(context);
+                SaveChanges(context);
             }
         }
 
@@ -363,21 +361,21 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool CreateGuild(Guild guild)
+        public static long CreateGuild(Guild guild)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Guilds.Add(guild);
-                return SaveChanges(context);
+                SaveChanges(context);
+                return guild.Id;
             }
         }
 
         public static Guild GetGuild(long guildId)
         {
-            Guild guild;
             using (DatabaseContext context = new DatabaseContext())
             {
-                guild = context.Guilds
+                Guild guild = context.Guilds
                 .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
                 .Include(p => p.Leader)
                 .FirstOrDefault(p => p.Id == guildId);
@@ -385,8 +383,19 @@ namespace MapleServer2.Database
                 {
                     return null;
                 }
+
+                return guild;
             }
-            return guild;
+        }
+
+        public static bool UpdateGuild(Guild guild)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Guild dbGuild = context.Guilds.Find(guild.Id);
+                context.Entry(dbGuild).CurrentValues.SetValues(guild);
+                return SaveChanges(context);
+            }
         }
 
         public static bool CreateGuildMember(GuildMember member)
@@ -404,6 +413,62 @@ namespace MapleServer2.Database
             {
                 context.GuildApplications.Add(application);
                 return SaveChanges(context);
+            }
+        }
+
+        public static void InsertShops(List<Shop> shops)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Shop shop in shops)
+                {
+                    context.Shops.Add(shop);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static Shop GetShop(int id)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Shops.Include(x => x.Items).FirstOrDefault(x => x.Id == id);
+            }
+        }
+
+        public static ShopItem GetShopItem(long uid)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.ShopItems.FirstOrDefault(x => x.Uid == uid);
+            }
+        }
+
+        public static long AddQuest(QuestStatus questStatus)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(questStatus).State = EntityState.Added;
+                SaveChanges(context);
+                return questStatus.Uid;
+            }
+        }
+
+        public static void UpdateQuests(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (QuestStatus quest in player.QuestList)
+                {
+                    QuestStatus dbQuest = context.Quests.Find(quest.Uid);
+                    if (dbQuest == null)
+                    {
+                        context.Entry(quest).State = EntityState.Added;
+                        continue;
+                    }
+                    context.Entry(dbQuest).CurrentValues.SetValues(quest);
+                }
+                SaveChanges(context);
             }
         }
 
