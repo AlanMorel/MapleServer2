@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
@@ -27,12 +28,27 @@ namespace GameDataParser.Parsers
                 {
                     RecipeMetadata newRecipe = new RecipeMetadata();
                     newRecipe.Id = string.IsNullOrEmpty(recipe.Attributes["id"]?.Value) ? 0 : int.Parse(recipe.Attributes["id"].Value);
-                    newRecipe.MasteryType = recipe.Attributes["masteryType"].Value;
+                    if (!string.IsNullOrEmpty(recipe.Attributes["masteryType"].Value))
+                    {
+                        newRecipe.MasteryType = short.Parse(recipe.Attributes["masteryType"].Value);
+                    }
                     newRecipe.ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1;
-                    newRecipe.RequireMastery = recipe.Attributes["requireMastery"].Value;
-                    newRecipe.RequireMeso = recipe.Attributes["requireMeso"].Value;
-                    newRecipe.RequireQuest = recipe.Attributes["requireQuest"].Value;
-                    newRecipe.RewardExp = recipe.Attributes["rewardExp"].Value;
+                    if (!string.IsNullOrEmpty(recipe.Attributes["requireMastery"].Value))
+                    {
+                        newRecipe.RequireMastery = long.Parse(recipe.Attributes["requireMastery"].Value);
+                    }
+                    if (!string.IsNullOrEmpty(recipe.Attributes["requireMeso"].Value))
+                    {
+                        newRecipe.RequireMeso = long.Parse(recipe.Attributes["requireMeso"].Value);
+                    }
+                    if (!string.IsNullOrEmpty(recipe.Attributes["requireQuest"].Value))
+                    {
+                        newRecipe.RequireQuest.AddRange(Array.ConvertAll(recipe.Attributes["requireQuest"].Value.Split(","), int.Parse));
+                    }
+                    if (!string.IsNullOrEmpty(recipe.Attributes["rewardExp"].Value))
+                    {
+                        newRecipe.RewardExp = long.Parse(recipe.Attributes["rewardExp"].Value);
+                    }
                     newRecipe.RewardMastery = string.IsNullOrEmpty(recipe.Attributes["rewardMastery"]?.Value) ? 0 : long.Parse(recipe.Attributes["rewardMastery"].Value);
                     newRecipe.GatheringTime = recipe.Attributes["gatheringTime"].Value;
                     newRecipe.HighPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["highPropLimitCount"]?.Value) ? 0 : int.Parse(recipe.Attributes["highPropLimitCount"].Value);
@@ -48,7 +64,6 @@ namespace GameDataParser.Parsers
                     newRecipe.RewardItem3 = recipe.Attributes["rewardItem3"].Value;
                     newRecipe.RewardItem4 = recipe.Attributes["rewardItem4"].Value;
                     newRecipe.RewardItem5 = recipe.Attributes["rewardItem5"].Value;
-                    newRecipe.Feature = recipe.Attributes["feature"].Value;
                     recipeList.Add(newRecipe);
                 }
             }

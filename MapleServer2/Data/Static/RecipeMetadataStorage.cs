@@ -82,21 +82,6 @@ namespace MapleServer2.Data.Static
 
             return result;
         }
-
-        public static long GetMesosRequired(this RecipeMetadata recipe)
-        {
-            if (string.IsNullOrEmpty(recipe.RequireMeso))
-            {
-                return 0;
-            }
-
-            return long.Parse(recipe.RequireMeso);
-        }
-
-        public static bool HasExpReward(this RecipeMetadata recipe)
-        {
-            return !recipe.ExceptRewardExp;
-        }
     }
 
     public class RecipeItem
