@@ -62,6 +62,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+
             MapInteractObject mapObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
             int numDrop = 0;
 

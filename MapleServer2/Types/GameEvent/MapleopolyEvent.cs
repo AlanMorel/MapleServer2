@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MapleServer2.Database;
-
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class MapleopolyEvent // Mapleopoly
     {

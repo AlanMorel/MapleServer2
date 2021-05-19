@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
-using Maple2Storage.Enums;
-
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class Mapleopoly
     {
