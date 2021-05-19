@@ -12,6 +12,7 @@
         PopupAndFastText = 0x44,
         MintAndPopup = 0x50,
         PopupAndKick = 0x80,
-        PopupMintAndKick = 0x90
+        PopupMintAndKick = 0x90,
+        RedBanner = 0x400,
     }
 }

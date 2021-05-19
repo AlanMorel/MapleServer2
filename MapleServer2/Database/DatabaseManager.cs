@@ -436,7 +436,7 @@ namespace MapleServer2.Database
             }
         }
 
-        public static ShopItem GetShopItem(long uid)
+        public static ShopItem GetShopItem(int uid)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -470,6 +470,92 @@ namespace MapleServer2.Database
                 }
                 SaveChanges(context);
             }
+        }
+
+        public static void InsertMapleopoly(List<MapleopolyTile> tiles)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (MapleopolyTile tile in tiles)
+                {
+                    context.MapleopolyTiles.Add(tile);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<MapleopolyTile> GetMapleopolyTiles()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.MapleopolyTiles.OrderBy(x => x.TilePosition).ToList();
+            }
+        }
+
+        public static MapleopolyTile GetsingleMapleopolyTile(int tilePosition)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.MapleopolyTiles.FirstOrDefault(x => x.TilePosition == tilePosition);
+            }
+        }
+
+        public static void InsertGameEvents(List<GameEvent> gameEvents)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (GameEvent gameEvent in gameEvents)
+                {
+                    context.Events.Add(gameEvent);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<GameEvent> GetGameEvents()
+        {
+            List<GameEvent> gameEvents = new List<GameEvent>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                gameEvents = context.Events.Where(x => x.Active == true)
+                    .Include(x => x.Mapleopoly)
+                    .Include(x => x.StringBoard).ToList();
+            }
+            return gameEvents;
+        }
+
+        public static void InsertStringBoards(List<StringBoardEvent> stringBoards)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (StringBoardEvent stringBoard in stringBoards)
+                {
+                    context.Event_StringBoards.Add(stringBoard);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static void InsertMapleopolyEvent(List<MapleopolyEvent> mapleopolyEvents)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (MapleopolyEvent item in mapleopolyEvents)
+                {
+                    context.Event_Mapleopoly.Add(item);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<MapleopolyEvent> GetMapleopolyEvent()
+        {
+            List<MapleopolyEvent> mapleopolyEvents = new List<MapleopolyEvent>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                mapleopolyEvents = context.Event_Mapleopoly.ToList();
+            }
+            return mapleopolyEvents;
         }
 
         private static bool SaveChanges(DatabaseContext context)

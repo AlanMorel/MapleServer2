@@ -6,6 +6,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -61,7 +62,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-
             MapInteractObject mapObject = MapEntityStorage.GetInteractObject(session.Player.MapId).FirstOrDefault(x => x.Uuid == uuid);
             int numDrop = 0;
 
@@ -72,12 +72,10 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case InteractObjectType.Gathering:
                     RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(mapObject.RecipeId);
-                    long requireMastery = int.Parse(recipe.RequireMastery);
-                    Enums.MasteryType type = (Enums.MasteryType) int.Parse(recipe.MasteryType);
 
-                    session.Player.Levels.GainMasteryExp(type, 0);
-                    long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == type).CurrentExp;
-                    if (currentMastery < requireMastery)
+                    session.Player.Levels.GainMasteryExp((MasteryType) recipe.MasteryType, 0);
+                    long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp;
+                    if (currentMastery < recipe.RequireMastery)
                     {
                         return;
                     }
@@ -111,12 +109,14 @@ namespace MapleServer2.PacketHandlers.Game
                     if (numDrop > 0)
                     {
                         session.Player.IncrementGatheringCount(mapObject.RecipeId, numDrop);
-                        session.Player.Levels.GainMasteryExp(type, recipe.RewardMastery);
+                        session.Player.Levels.GainMasteryExp((MasteryType) recipe.MasteryType, recipe.RewardMastery);
                     }
                     break;
                 case InteractObjectType.AdBalloon:
                     session.Send(PlayerHostPacket.AdBalloonWindow(interactObject));
                     return;
+                default:
+                    break;
             }
             session.Send(InteractObjectPacket.UseObject(mapObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
             session.Send(InteractObjectPacket.Extra(mapObject));

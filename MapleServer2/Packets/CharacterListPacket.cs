@@ -188,12 +188,12 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString("club name");
                 }
             }
-            pWriter.WriteByte(); // groups?
-            for (int i = 0; i < 12; i++)
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            foreach (MasteryExp mastery in player.Levels.MasteryExp)
             {
-                pWriter.WriteInt(); // ???
+                pWriter.WriteInt((int) mastery.CurrentExp);
             }
-
 
             // Some function call on CCharacterList property
             pWriter.WriteUnicodeString("");

@@ -154,6 +154,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleStopScore(GameSession session)
         {
+            int masteryExpGain = (session.ServerTick - session.Player.Instrument.Value.InstrumentTick) / 1000;
+            session.Player.Levels.GainMasteryExp(Enums.MasteryType.Performance, masteryExpGain);
             session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player.Instrument));
             session.FieldManager.RemoveInstrument(session.Player.Instrument);
             session.Player.Instrument = null;

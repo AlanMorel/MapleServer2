@@ -3,7 +3,7 @@
     public enum MasteryType : byte
     {
         Fishing = 0x01,
-        Unknown = 0x02,
+        Performance = 0x02,
         Mining = 0x03,
         Foraging = 0x04,
         Ranching = 0x05,
@@ -11,7 +11,7 @@
         Smithing = 0x07,
         Handicraft = 0x08,
         Alchemy = 0x09,
-        Cooking = 0x10,
-        PetTaming = 0x11
+        Cooking = 0x0A,
+        PetTaming = 0x0B
     }
 }

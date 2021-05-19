@@ -26,6 +26,15 @@ namespace MapleServer2.PacketHandlers.Game
             CraftItem = 0x02
         }
 
+        private enum MasteryNotice : byte
+        {
+            NotEnoughMastery = 0x01,
+            NotEnoughMesos = 0x02,
+            RequiredQuestIsNotCompleted = 0x03,
+            NotEnoughItems = 0x04,
+            InsufficientLevel = 0x07
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             MasteryMode mode = (MasteryMode) packet.ReadByte();
@@ -64,7 +73,7 @@ namespace MapleServer2.PacketHandlers.Game
             InventoryController.Add(session, rewardBox, true);
 
             // mark reward box as claimed
-            session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, 1, (int) rewardBoxItemId));
+            session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, rewardBox));
         }
 
         private void HandleCraftItem(GameSession session, PacketReader packet)
@@ -79,19 +88,39 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            // does the play have enough mesos for this recipe?
-            if (!session.Player.Wallet.Meso.Modify(-recipe.GetMesosRequired()))
+            if (recipe.RequireMastery > 0)
             {
-                // send notice to player saying they haven't got enough mesos
-                session.SendNotice("You don't have enough mesos.");
+                if (session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp < recipe.RequireMastery)
+                {
+                    session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMastery));
+                    return;
+                }
+            }
+
+            if (recipe.RequireQuest.Count > 0)
+            {
+                foreach (int questId in recipe.RequireQuest)
+                {
+                    QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+                    if (quest == null || !quest.Completed)
+                    {
+                        session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
+                        return;
+                    }
+                }
+            }
+
+            // does the play have enough mesos for this recipe?
+            if (!session.Player.Wallet.Meso.Modify(-recipe.RequireMeso))
+            {
+                session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMesos));
                 return;
             }
 
             // does the player have all the required ingredients for this recipe?
             if (!PlayerHasAllIngredients(session, recipe))
             {
-                // send notice to player saying they haven't got enough materials
-                session.SendNotice("You've run out of materials.");
+                session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughItems));
                 return;
             }
 
@@ -136,14 +165,14 @@ namespace MapleServer2.PacketHandlers.Game
                     Amount = result.ElementAt(i).Amount
                 };
                 InventoryController.Add(session, rewardItem, true);
+                session.Send(MasteryPacket.GetCraftedItem((MasteryType) (recipe.MasteryType), rewardItem));
             }
 
             // add mastery exp
-            session.Player.Levels.GainMasteryExp(Enum.Parse<MasteryType>(recipe.MasteryType, true),
-                recipe.RewardMastery);
+            session.Player.Levels.GainMasteryExp((MasteryType) recipe.MasteryType, recipe.RewardMastery);
 
             // add player exp
-            if (recipe.HasExpReward())
+            if (recipe.ExceptRewardExp)
             {
                 // TODO: add metadata for common exp tables to be able to look up exp amount for masteries etc.
             }
@@ -157,7 +186,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return false;
             }
 
-            return mesoBalance >= recipe.GetMesosRequired();
+            return mesoBalance >= recipe.RequireMeso;
         }
 
         private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)
