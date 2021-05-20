@@ -27,6 +27,5 @@ namespace MapleServer2.Types
         UGCMapContractSale,
         UGCMapExtensionSale,
         DungeonBonusReward
-
     }
 }

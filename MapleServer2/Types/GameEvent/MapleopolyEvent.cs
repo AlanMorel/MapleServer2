@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Types
 {
-    public class MapleopolyEvent // Mapleopoly
+    public class MapleopolyEvent
     {
         public int Id { get; set; }
         public int TripAmount { get; set; }

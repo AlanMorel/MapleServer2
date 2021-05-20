@@ -135,8 +135,8 @@ namespace MapleServer2.PacketHandlers.Game
                 default:
                     Console.WriteLine("Unsupported tile");
                     break;
-
             }
+
             ProcessTrip(session); // Check if player passed Start
             session.Send(MapleopolyPacket.ProcessTile(session.Player.Mapleopoly, currentTile));
         }

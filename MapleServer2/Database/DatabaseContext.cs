@@ -6,6 +6,8 @@ using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 
 namespace MapleServer2.Database
@@ -515,6 +517,22 @@ namespace MapleServer2.Database
                 entity.Property(e => e.ItemRarity);
                 entity.Property(e => e.ItemAmount);
             });
+        }
+
+        public static bool Exists()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return ((RelationalDatabaseCreator) context.Database.GetService<IDatabaseCreator>()).Exists();
+            }
+        }
+
+        public static void CreateDatabase()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Database.EnsureCreated();
+            }
         }
     }
 }
