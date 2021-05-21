@@ -32,9 +32,15 @@ namespace GameDataParser.Crypto.Common
         public int CompareTo(PackFileEntry entry)
         {
             if (Index == entry.Index)
+            {
                 return 0;
+            }
+
             if (Index > entry.Index)
+            {
                 return 1;
+            }
+
             return -1;
         }
 
@@ -62,7 +68,9 @@ namespace GameDataParser.Crypto.Common
                 foreach (char c in entry)
                 {
                     if (c == ',')
+                    {
                         ++properties;
+                    }
                 }
 
                 string index, name;

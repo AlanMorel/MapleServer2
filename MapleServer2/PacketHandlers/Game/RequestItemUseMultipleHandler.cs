@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -39,17 +40,12 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            short opened = 0; // Amount of opened boxes
-            List<Item> items = new List<Item>(session.Player.Inventory.Items.Values); // Make copy of items in-case new item is added
+            int opened = 0;
+            Dictionary<long, Item> items = new Dictionary<long, Item>(session.Player.Inventory.Items.Where(x => x.Value.Id == boxId)); // Make copy of items in-case new item is added
 
-            foreach (Item item in items)
+            foreach (KeyValuePair<long, Item> kvp in items)
             {
-                // Continue over non-matching item ids
-                if (item.Id != boxId)
-                {
-                    continue;
-                }
-
+                Item item = kvp.Value;
                 // Do nothing if box has no data stored
                 if (item.Content.Count <= 0)
                 {
@@ -60,22 +56,13 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     bool breakOut = false; // Needed to remove box before adding item to prevent item duping
 
-                    // Remove box if there is only 1 left
                     if (item.Amount <= 1)
                     {
-                        InventoryController.Remove(session, item.Uid, out Item removed);
-                        opened++;
-
                         breakOut = true; // Break out of the amount loop because this stack of boxes is empty, look for next stack
                     }
-                    else
-                    {
-                        // Update box amount if there is more than 1
-                        item.Amount -= 1;
-                        InventoryController.Update(session, item.Uid, item.Amount);
 
-                        opened++;
-                    }
+                    opened++;
+                    InventoryController.Consume(session, item.Uid, 1);
 
                     // Handle selection box
                     if (boxType == BoxType.SELECT)

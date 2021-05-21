@@ -7,10 +7,11 @@ namespace MapleServer2.Packets
     {
         public static Packet DiscoverTaxi(int mapId)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TAXI)
-                .WriteInt(1)
-                .WriteInt(mapId)
-                .WriteByte(1);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TAXI);
+            pWriter.WriteInt(1);
+            pWriter.WriteInt(mapId);
+            pWriter.WriteByte(1);
+
             return pWriter;
         }
     }

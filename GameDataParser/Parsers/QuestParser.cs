@@ -2,6 +2,7 @@
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -40,19 +41,19 @@ namespace GameDataParser.Parsers
                         if (node.Name == "basic")
                         {
                             metadata.Basic.ChapterID = string.IsNullOrEmpty(node.Attributes["chapterID"]?.Value) ? 0 : int.Parse(node.Attributes["chapterID"].Value);
-                            metadata.Basic.QuestID = string.IsNullOrEmpty(node.Attributes["questID"]?.Value) ? 0 : int.Parse(node.Attributes["questID"].Value);
-                            metadata.Basic.QuestType = string.IsNullOrEmpty(node.Attributes["questType"]?.Value) ? 0 : byte.Parse(node.Attributes["questType"].Value);
-                            metadata.Basic.Account = string.IsNullOrEmpty(node.Attributes["account"]?.Value) ? 0 : byte.Parse(node.Attributes["account"].Value);
+                            metadata.Basic.Id = string.IsNullOrEmpty(node.Attributes["questID"]?.Value) ? 0 : int.Parse(node.Attributes["questID"].Value);
+                            metadata.Basic.QuestType = (QuestType) (string.IsNullOrEmpty(node.Attributes["questType"]?.Value) ? 0 : byte.Parse(node.Attributes["questType"].Value));
+                            metadata.Basic.Account = (byte) (string.IsNullOrEmpty(node.Attributes["account"]?.Value) ? 0 : byte.Parse(node.Attributes["account"].Value));
                             metadata.Basic.StandardLevel = string.IsNullOrEmpty(node.Attributes["standardLevel"]?.Value) ? 0 : int.Parse(node.Attributes["standardLevel"].Value);
-                            metadata.Basic.AutoStart = string.IsNullOrEmpty(node.Attributes["autoStart"]?.Value) ? 0 : byte.Parse(node.Attributes["autoStart"].Value);
-                            metadata.Basic.DisableGiveup = string.IsNullOrEmpty(node.Attributes["disableGiveup"]?.Value) ? 0 : byte.Parse(node.Attributes["disableGiveup"].Value);
+                            metadata.Basic.AutoStart = (byte) (string.IsNullOrEmpty(node.Attributes["autoStart"]?.Value) ? 0 : byte.Parse(node.Attributes["autoStart"].Value));
+                            metadata.Basic.DisableGiveup = (byte) (string.IsNullOrEmpty(node.Attributes["disableGiveup"]?.Value) ? 0 : byte.Parse(node.Attributes["disableGiveup"].Value));
                             metadata.Basic.ExceptChapterClear = string.IsNullOrEmpty(node.Attributes["exceptChapterClear"]?.Value) ? 0 : int.Parse(node.Attributes["exceptChapterClear"].Value);
-                            metadata.Basic.Repeatable = string.IsNullOrEmpty(node.Attributes["repeatable"]?.Value) ? 0 : byte.Parse(node.Attributes["repeatable"].Value);
+                            metadata.Basic.Repeatable = (byte) (string.IsNullOrEmpty(node.Attributes["repeatable"]?.Value) ? 0 : byte.Parse(node.Attributes["repeatable"].Value));
                             metadata.Basic.UsePeriod = node.Attributes["usePeriod"].Value;
                             metadata.Basic.EventTag = node.Attributes["eventTag"].Value;
-                            metadata.Basic.Locking = string.IsNullOrEmpty(node.Attributes["locking"]?.Value) ? 0 : byte.Parse(node.Attributes["locking"].Value);
+                            metadata.Basic.Locking = (byte) (string.IsNullOrEmpty(node.Attributes["locking"]?.Value) ? 0 : byte.Parse(node.Attributes["locking"].Value));
                             metadata.Basic.TabIndex = string.IsNullOrEmpty(node.Attributes["tabIndex"]?.Value) ? 0 : int.Parse(node.Attributes["tabIndex"].Value);
-                            metadata.Basic.ForceRegistGuide = string.IsNullOrEmpty(node.Attributes["forceRegistGuide"]?.Value) ? 0 : byte.Parse(node.Attributes["forceRegistGuide"].Value);
+                            metadata.Basic.ForceRegistGuide = (byte) (string.IsNullOrEmpty(node.Attributes["forceRegistGuide"]?.Value) ? 0 : byte.Parse(node.Attributes["forceRegistGuide"].Value));
                             metadata.Basic.UseNavigation = !(node.Attributes["useNavi"].Value == "FALSE");
                         }
                         else if (node.Name == "notify")
@@ -63,8 +64,8 @@ namespace GameDataParser.Parsers
                         }
                         else if (node.Name == "require")
                         {
-                            metadata.Require.Level = string.IsNullOrEmpty(node.Attributes["level"]?.Value) ? 0 : short.Parse(node.Attributes["level"].Value);
-                            metadata.Require.MaxLevel = string.IsNullOrEmpty(node.Attributes["maxLevel"]?.Value) ? 0 : short.Parse(node.Attributes["maxLevel"].Value);
+                            metadata.Require.Level = (short) (string.IsNullOrEmpty(node.Attributes["level"]?.Value) ? 0 : short.Parse(node.Attributes["level"].Value));
+                            metadata.Require.MaxLevel = (short) (string.IsNullOrEmpty(node.Attributes["maxLevel"]?.Value) ? 0 : short.Parse(node.Attributes["maxLevel"].Value));
 
                             if (!string.IsNullOrEmpty(node.Attributes["job"]?.Value))
                             {
@@ -136,10 +137,20 @@ namespace GameDataParser.Parsers
 
                             foreach (XmlNode reward in node.ChildNodes)
                             {
-                                int itemid = string.IsNullOrEmpty(reward.Attributes["code"]?.Value) ? 0 : int.Parse(reward.Attributes["code"].Value);
-                                byte rank = string.IsNullOrEmpty(reward.Attributes["rank"]?.Value) ? 0 : byte.Parse(reward.Attributes["rank"].Value);
+                                if (!reward.Name.Contains("global") && metadata.Basic.QuestType != QuestType.Navigator)
+                                {
+                                    continue;
+                                }
+                                int itemId = string.IsNullOrEmpty(reward.Attributes["code"]?.Value) ? 0 : int.Parse(reward.Attributes["code"].Value);
+                                if (itemId == 0)
+                                {
+                                    continue;
+                                }
+
+                                byte rank = (byte) (string.IsNullOrEmpty(reward.Attributes["rank"]?.Value) ? 0 : byte.Parse(reward.Attributes["rank"].Value));
                                 int count = string.IsNullOrEmpty(reward.Attributes["count"]?.Value) ? 0 : int.Parse(reward.Attributes["count"].Value);
-                                QuestRewardItem item = new QuestRewardItem(itemid, rank, count);
+
+                                QuestRewardItem item = new QuestRewardItem(itemId, rank, count);
                                 metadata.RewardItem.Add(item);
                             }
                         }
@@ -158,19 +169,19 @@ namespace GameDataParser.Parsers
                         {
                             metadata.Guide.Type = node.Attributes["guideType"].Value;
                             metadata.Guide.Icon = node.Attributes["guideIcon"].Value;
-                            metadata.Guide.MinLevel = string.IsNullOrEmpty(node.Attributes["guideMinLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMinLevel"].Value);
-                            metadata.Guide.MaxLevel = string.IsNullOrEmpty(node.Attributes["guideMaxLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMaxLevel"].Value);
+                            metadata.Guide.MinLevel = (short) (string.IsNullOrEmpty(node.Attributes["guideMinLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMinLevel"].Value));
+                            metadata.Guide.MaxLevel = (short) (string.IsNullOrEmpty(node.Attributes["guideMaxLevel"]?.Value) ? 0 : byte.Parse(node.Attributes["guideMaxLevel"].Value));
                             metadata.Guide.Group = node.Attributes["guideGroup"]?.Value;
                         }
                         else if (node.Name == "gotoNpc")
                         {
-                            metadata.Npc.Enable = string.IsNullOrEmpty(node.Attributes["enable"]?.Value) ? 0 : byte.Parse(node.Attributes["enable"].Value);
+                            metadata.Npc.Enable = (byte) (string.IsNullOrEmpty(node.Attributes["enable"]?.Value) ? 0 : byte.Parse(node.Attributes["enable"].Value));
                             metadata.Npc.GoToField = string.IsNullOrEmpty(node.Attributes["gotoField"]?.Value) ? 0 : int.Parse(node.Attributes["gotoField"].Value);
                             metadata.Npc.GoToPortal = string.IsNullOrEmpty(node.Attributes["gotoPortal"]?.Value) ? 0 : int.Parse(node.Attributes["gotoPortal"].Value);
                         }
                         else if (node.Name == "gotoDungeon")
                         {
-                            metadata.Dungeon.State = string.IsNullOrEmpty(node.Attributes["state"]?.Value) ? 0 : byte.Parse(node.Attributes["state"].Value);
+                            metadata.Dungeon.State = (byte) (string.IsNullOrEmpty(node.Attributes["state"]?.Value) ? 0 : byte.Parse(node.Attributes["state"].Value));
                             metadata.Dungeon.GoToDungeon = string.IsNullOrEmpty(node.Attributes["gotoDungeon"]?.Value) ? 0 : int.Parse(node.Attributes["gotoDungeon"].Value);
                             metadata.Dungeon.GoToInstanceID = string.IsNullOrEmpty(node.Attributes["gotoInstanceID"]?.Value) ? 0 : int.Parse(node.Attributes["gotoInstanceID"].Value);
                         }
@@ -197,15 +208,15 @@ namespace GameDataParser.Parsers
                         else if (node.Name == "condition")
                         {
                             string type = node.Attributes["type"].Value;
-                            string code = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? "" : node.Attributes["code"].Value;
+                            string[] codes = node.Attributes["code"]?.Value.Split(",");
                             int value = string.IsNullOrEmpty(node.Attributes["value"]?.Value) ? 0 : int.Parse(node.Attributes["value"].Value);
-                            List<string> temp = null;
+                            List<string> targets = null;
                             if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
                             {
-                                temp = new List<string>(node.Attributes["target"].Value.Split(","));
+                                targets = new List<string>(node.Attributes["target"].Value.Split(","));
 
                             }
-                            metadata.Condition.Add(new QuestCondition(type, code, value, temp));
+                            metadata.Condition.Add(new QuestCondition(type, codes, value, targets));
                         }
                         else if (node.Name == "navi")
                         {

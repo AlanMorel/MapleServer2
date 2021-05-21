@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -17,46 +18,71 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 4)]
         public readonly List<MapPlayerSpawn> PlayerSpawns;
         [XmlElement(Order = 5)]
-        public readonly List<MapObject> Objects;
+        public readonly List<MapMobSpawn> MobSpawns;
         [XmlElement(Order = 6)]
-        public CoordS BoundingBox0;
+        public readonly List<MapObject> Objects;
         [XmlElement(Order = 7)]
+        public CoordS BoundingBox0;
+        [XmlElement(Order = 8)]
         public CoordS BoundingBox1;
+        [XmlElement(Order = 9)]
+        public readonly List<MapInteractObject> InteractObjects;
+        [XmlElement(Order = 10)]
+        public readonly List<MapInteractMesh> InteractMeshes;
+        [XmlElement(Order = 11)]
+        public List<CoordS> HealingSpot;
 
         // Required for deserialization
         public MapEntityMetadata()
         {
             PlayerSpawns = new List<MapPlayerSpawn>();
+            MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
+            InteractObjects = new List<MapInteractObject>();
+            InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public MapEntityMetadata(int mapId)
         {
             MapId = mapId;
             PlayerSpawns = new List<MapPlayerSpawn>();
+            MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
+            InteractObjects = new List<MapInteractObject>();
+            InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public override string ToString() =>
-            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
+            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
 
         protected bool Equals(MapEntityMetadata other)
         {
-            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
+            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && MobSpawns.SequenceEqual(other.MobSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((MapEntityMetadata) obj);
         }
 
@@ -104,11 +130,20 @@ namespace Maple2Storage.Types.Metadata
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((MapObject) obj);
         }
 
@@ -134,36 +169,61 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly CoordS Coord;
+        public string ModelName;
         [XmlElement(Order = 3)]
+        public string InstanceName;
+        [XmlElement(Order = 4)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 5)]
         public readonly CoordS Rotation;
+        [XmlElement(Order = 6)]
+        public string PatrolDataUuid = "00000000-0000-0000-0000-000000000000";
+        [XmlElement(Order = 7)]
+        public bool IsSpawnOnFieldCreate = false;
+        [XmlElement(Order = 8)]
+        public bool IsDayDie = false;
+        [XmlElement(Order = 9)]
+        public bool IsNightDie = false;
+
 
         // Required for deserialization
         public MapNpc() { }
 
-        public MapNpc(int id, CoordS coord, CoordS rotation)
+        public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation)
         {
             Id = id;
+            ModelName = modelName;
+            InstanceName = instanceName;
             Coord = coord;
             Rotation = rotation;
         }
 
         public override string ToString() =>
-            $"MapNpc(Id:{Id},Rotation:{Rotation},Coord:{Coord})";
+            $"MapNpc(Id:{Id},ModelName:{ModelName},Rotation:{Rotation},Coord:{Coord})";
 
         protected bool Equals(MapNpc other)
         {
+            // TODO: Check instance name instead.
             return Id == other.Id && Coord.Equals(other.Coord) && Rotation.Equals(other.Rotation);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((MapNpc) obj);
         }
 
@@ -181,6 +241,7 @@ namespace Maple2Storage.Types.Metadata
         {
             return !Equals(left, right);
         }
+        // TODO: Add other methods which idenntify the Type of NPC (always, event, etc)
     }
 
     [XmlType]
@@ -189,46 +250,63 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly MapPortalFlag Flags;
+        public readonly string Name;
         [XmlElement(Order = 3)]
-        public readonly int Target;
+        public readonly MapPortalFlag Flags;
         [XmlElement(Order = 4)]
-        public readonly CoordS Coord;
+        public readonly int Target;
         [XmlElement(Order = 5)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 6)]
         public readonly CoordS Rotation;
+        [XmlElement(Order = 7)]
+        public readonly int TargetPortalId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
+        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId)
         {
             Id = id;
+            Name = name;
             Flags = flags;
             Target = target;
             Coord = coord;
             Rotation = rotation;
+            TargetPortalId = targetPortalId;
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord})";
+            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId})";
 
         protected bool Equals(MapPortal other)
         {
             return Id == other.Id
+                   && Name == other.Name
                    && Flags == other.Flags
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
-                   && Rotation.Equals(other.Rotation);
+                   && Rotation.Equals(other.Rotation)
+                   && TargetPortalId == other.TargetPortalId;
         }
 
         public override bool Equals(object obj)
         {
             if (obj is null)
+            {
                 return false;
+            }
+
             if (ReferenceEquals(this, obj))
+            {
                 return true;
+            }
+
             if (obj.GetType() != GetType())
+            {
                 return false;
+            }
+
             return Equals((MapPortal) obj);
         }
 
@@ -267,6 +345,112 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
+    }
+
+    [XmlType]
+    public class MapMobSpawn
+    {
+        [XmlElement(Order = 1)]
+        public readonly int Id;
+        [XmlElement(Order = 2)]
+        public readonly CoordS Coord;
+        [XmlElement(Order = 3)]
+        public readonly int NpcCount;
+        [XmlElement(Order = 4)]
+        public readonly List<int> NpcList;
+        [XmlElement(Order = 5)]
+        public readonly int SpawnRadius;
+        [XmlElement(Order = 6)]
+        public readonly SpawnMetadata SpawnData;
+
+        public MapMobSpawn() { }
+
+        public MapMobSpawn(int id, CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
+        {
+            Id = id;
+            Coord = coord;
+            NpcCount = npcCount;
+            NpcList = npcList;
+            SpawnRadius = spawnRadius;
+            SpawnData = spawnMetadata;
+        }
+
+        public override string ToString() =>
+            $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
+    }
+
+    [XmlType]
+    public class SpawnMetadata
+    {
+        [XmlElement(Order = 1)]
+        public readonly int Difficulty;
+        [XmlElement(Order = 2)]
+        public readonly int MinDifficulty;
+        [XmlElement(Order = 3)]
+        public readonly string[] Tags;
+        [XmlElement(Order = 4)]
+        public readonly int SpawnTime;
+        [XmlElement(Order = 5)]
+        public readonly int Population;
+        [XmlElement(Order = 6)]
+        public readonly bool IsPetSpawn;
+
+        public SpawnMetadata() { }
+
+        public SpawnMetadata(string[] tags, int population, int spawnTime, int difficulty, int minDifficulty = 1, bool isPetSpawn = false)
+        {
+            Tags = tags;
+            Population = population;
+            SpawnTime = spawnTime;
+            Difficulty = difficulty;
+            MinDifficulty = minDifficulty;
+            IsPetSpawn = isPetSpawn;
+        }
+    }
+
+    [XmlType]
+    public class MapInteractObject
+    {
+        [XmlElement(Order = 1)]
+        public readonly string Uuid;
+        [XmlElement(Order = 2)]
+        public readonly string Name;
+        [XmlElement(Order = 3)]
+        public readonly InteractObjectType Type;
+        [XmlElement(Order = 4)]
+        public readonly int InteractId;
+        [XmlElement(Order = 5)]
+        public readonly int RecipeId;
+
+        public MapInteractObject() { }
+        public MapInteractObject(string uuid, string name, InteractObjectType type, int interactId, int recipeId = 0)
+        {
+            Uuid = uuid;
+            Name = name;
+            Type = type;
+            InteractId = interactId;
+            RecipeId = recipeId;
+        }
+        public override string ToString() =>
+            $"MapInteractObject(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
+    }
+
+    [XmlType]
+    public class MapInteractMesh
+    {
+        [XmlElement(Order = 1)]
+        public readonly string Uuid;
+        [XmlElement(Order = 2)]
+        public readonly string Name;
+
+        public MapInteractMesh() { }
+        public MapInteractMesh(string uuid, string name)
+        {
+            Uuid = uuid;
+            Name = name;
+        }
+        public override string ToString() =>
+            $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
     }
 
     [Flags]

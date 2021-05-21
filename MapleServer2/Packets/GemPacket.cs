@@ -34,7 +34,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(item.Rarity);
-            pWriter.WriteByte((byte) (session.Player.Badges.Count - 1));
+            pWriter.WriteByte((byte) (session.Player.Inventory.Badges.Count - 1));
             ItemPacketHelper.WriteItem(pWriter, item);
 
             return pWriter;

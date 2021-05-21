@@ -12,7 +12,10 @@ namespace MapleServer2.Extensions
         {
             if (length <= 4)
             {
-                return pWriter.WriteInt(length).Write(data);
+                pWriter.WriteInt(length);
+                pWriter.Write(data);
+
+                return pWriter;
             }
 
             // We will write the deflated buffer size here later.
@@ -49,10 +52,12 @@ namespace MapleServer2.Extensions
 
         private static PacketWriter WriteIntBigEndian(this PacketWriter pWriter, int value)
         {
-            return pWriter.WriteByte((byte) (value >> 24))
-                .WriteByte((byte) (value >> 16))
-                .WriteByte((byte) (value >> 8))
-                .WriteByte((byte) (value));
+            pWriter.WriteByte((byte) (value >> 24));
+            pWriter.WriteByte((byte) (value >> 16));
+            pWriter.WriteByte((byte) (value >> 8));
+            pWriter.WriteByte((byte) (value));
+
+            return pWriter;
         }
     }
 }

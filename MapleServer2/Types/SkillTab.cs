@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -11,41 +12,41 @@ namespace MapleServer2.Types
     {
         public long Id { get; set; }
         public string Name { get; private set; }
+
+        public Player Player;
+
         public List<int> Order { get; private set; }
-        public List<SkillMetadata> Skills { get; private set; }
-        public Dictionary<int, SkillMetadata> SkillJob { get; set; }
+        public Dictionary<int, SkillMetadata> SkillJob { get; private set; }
+        public Dictionary<int, int> SkillLevels { get; private set; }
+
+        public SkillTab() { }
 
         public SkillTab(Job job)
         {
-            Id = 0x000032DF995949B9; // temporary hard coded id
-            Name = "Build";
-            Skills = SkillMetadataStorage.GetJobSkills(job);
+            Id = GuidGenerator.Long();
+            Name = "";
             Order = SkillTreeOrdered.GetListOrdered(job);
-            SkillJob = AddOnDictionary();
+            SkillJob = AddOnDictionary(job);
+            SkillLevels = SkillJob.ToDictionary(x => x.Key, x => (int) x.Value.Learned);
         }
 
-        public Dictionary<int, SkillMetadata> AddOnDictionary()
+        public static Dictionary<int, SkillMetadata> AddOnDictionary(Job job)
         {
             Dictionary<int, SkillMetadata> skillJob = new Dictionary<int, SkillMetadata>();
 
-            foreach (SkillMetadata skill in Skills)
+            foreach (SkillMetadata skill in SkillMetadataStorage.GetJobSkills(job))
             {
                 skillJob[skill.SkillId] = skill;
             }
             return skillJob;
         }
 
-        public void AddOrUpdate(int id, short level, byte learned)
+        public void AddOrUpdate(int id, short level, bool isLearned)
         {
-            SkillJob[id].Learned = learned;
-            SkillJob[id].SkillLevels.Find(x => x.Level != 0).Level = level;
-            if (SkillJob[id].SubSkills.Length != 0)
+            SkillLevels[id] = isLearned ? level : 0;
+            foreach (int sub in SkillJob[id].SubSkills)
             {
-                foreach (int sub in SkillJob[id].SubSkills.Select(x => x))
-                {
-                    SkillJob[sub].Learned = learned;
-                    SkillJob[sub].SkillLevels.Find(x => x.Level != 0).Level = level;
-                }
+                SkillLevels[sub] = isLearned ? level : 0;
             }
         }
 
@@ -54,11 +55,14 @@ namespace MapleServer2.Types
             Name = name;
         }
 
-        public static List<SkillMetadata> GetJobFeatureSkills(Job job)
-        {
-            return SkillMetadataStorage.GetJobSkills(job);
-        }
+        public static List<SkillMetadata> GetJobFeatureSkills(Job job) => SkillMetadataStorage.GetJobSkills(job);
 
         public override string ToString() => $"SkillTab(Id:{Id},Name:{Name},Skills:{string.Join(",", SkillJob)})";
+
+        public void GenerateSkills(Job job)
+        {
+            Order = SkillTreeOrdered.GetListOrdered(job);
+            SkillJob = AddOnDictionary(job);
+        }
     }
 }

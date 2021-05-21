@@ -10,21 +10,25 @@ namespace MapleServer2.Packets
     {
         public static Packet EquipItem(IFieldObject<Player> player, Item item, ItemSlot equipSlot)
         {
-            return PacketWriter.Of(SendOp.ITEM_PUT_ON)
-                .WriteInt(player.ObjectId)
-                .WriteInt(item.Id)
-                .WriteLong(item.Uid)
-                .WriteUnicodeString(equipSlot.ToString())
-                .WriteInt(item.Rarity)
-                .WriteByte()
-                .WriteItem(item);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_ON);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(item.Id);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteUnicodeString(equipSlot.ToString());
+            pWriter.WriteInt(item.Rarity);
+            pWriter.WriteByte();
+            pWriter.WriteItem(item);
+
+            return pWriter;
         }
 
         public static Packet UnequipItem(IFieldObject<Player> player, Item item)
         {
-            return PacketWriter.Of(SendOp.ITEM_PUT_OFF)
-                .WriteInt(player.ObjectId)
-                .WriteLong(item.Uid);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_OFF);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteLong(item.Uid);
+
+            return pWriter;
         }
     }
 }

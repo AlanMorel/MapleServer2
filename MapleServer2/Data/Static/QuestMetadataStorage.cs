@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -16,7 +17,7 @@ namespace MapleServer2.Data.Static
             List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
             foreach (QuestMetadata item in items)
             {
-                map[item.Basic.QuestID] = item;
+                map[item.Basic.Id] = item;
             }
         }
         public static QuestMetadata GetMetadata(int questId)
@@ -35,10 +36,11 @@ namespace MapleServer2.Data.Static
 
             foreach (KeyValuePair<int, QuestMetadata> item in map)
             {
-                // Only getting navigator quests to not annoy everyone with quests popping up every restart
-                if (level >= item.Value.Require.Level && item.Value.Require.RequiredQuests.Count == 0 && item.Key > 70000000 && item.Key < 70100000)
+                QuestMetadata questMetadata = item.Value;
+                if (level >= questMetadata.Require.Level && questMetadata.Require.RequiredQuests.Count == 0
+                    && (questMetadata.Basic.QuestType == QuestType.Epic || questMetadata.Basic.QuestType == QuestType.World))
                 {
-                    list.Add(item.Value);
+                    list.Add(questMetadata);
                 }
             }
 

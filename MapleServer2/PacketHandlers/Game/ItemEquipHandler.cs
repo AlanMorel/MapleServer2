@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -18,16 +19,22 @@ namespace MapleServer2.PacketHandlers.Game
 
         public ItemEquipHandler(ILogger<ItemEquipHandler> logger) : base(logger) { }
 
+        private enum ItemEquipMode : byte
+        {
+            Equip = 0,
+            Unequip = 1
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte function = packet.ReadByte();
+            ItemEquipMode function = (ItemEquipMode) packet.ReadByte();
 
             switch (function)
             {
-                case 0:
+                case ItemEquipMode.Equip:
                     HandleEquipItem(session, packet);
                     break;
-                case 1:
+                case ItemEquipMode.Unequip:
                     HandleUnequipItem(session, packet);
                     break;
             }
@@ -58,8 +65,14 @@ namespace MapleServer2.PacketHandlers.Game
             if (equippedInventory.Remove(equipSlot, out Item prevItem))
             {
                 prevItem.Slot = item.Slot;
+                prevItem.IsEquipped = false;
                 InventoryController.Add(session, prevItem, false);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
+
+                if (prevItem.InventoryTab == InventoryTab.Gear)
+                {
+                    DecreaseStats(session, prevItem);
+                }
             }
 
             // Handle unequipping pants when equipping dresses
@@ -73,6 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         prevItem2.Slot = item.Slot;
                     }
+                    prevItem2.IsEquipped = false;
                     InventoryController.Add(session, prevItem2, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                 }
@@ -90,6 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
                         if (equippedInventory.Remove(prevItemSlot, out Item prevItem2))
                         {
                             prevItem2.Slot = item.Slot;
+                            prevItem2.IsEquipped = false;
                             InventoryController.Add(session, prevItem2, false);
                             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                         }
@@ -98,25 +113,15 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Equip new item
+            item.IsEquipped = true;
+            item.ItemSlot = equipSlot;
             equippedInventory[equipSlot] = item;
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
 
+            // Add stats if gear
             if (item.InventoryTab == InventoryTab.Gear)
             {
-                // TODO - Increase stats based on the item stats itself
-                session.Player.Stats.CritRate.Max += 12;
-                session.Player.Stats.CritRate.Total += 12;
-
-                session.Player.Stats.MinAtk.Max += 15;
-                session.Player.Stats.MinAtk.Total += 15;
-
-                session.Player.Stats.MaxAtk.Max += 17;
-                session.Player.Stats.MaxAtk.Total += 17;
-
-                session.Player.Stats.MagAtk.Max += 15;
-                session.Player.Stats.MagAtk.Total += 15;
-
-                session.Send(StatPacket.SetStats(session.FieldPlayer));
+                IncreaseStats(session, item);
             }
         }
 
@@ -124,42 +129,77 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long itemUid = packet.ReadLong();
 
-            bool unequipped = false;
-
             // Unequip gear
-            foreach ((ItemSlot slot, Item item) in session.Player.Equips)
+            KeyValuePair<ItemSlot, Item> kvpEquips = session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
+            if (kvpEquips.Value != null)
             {
-                if (itemUid != item.Uid)
-                    continue;
-                if (session.Player.Equips.Remove(slot, out Item unequipItem))
+                if (session.Player.Inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
                 {
-                    unequipped = true;
-
                     unequipItem.Slot = -1;
+                    unequipItem.IsEquipped = false;
                     InventoryController.Add(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
-                    break;
-                }
-            }
 
-            if (unequipped)
-            {
+                    DecreaseStats(session, unequipItem);
+                }
+
                 return;
             }
 
-            // Unequip cosmetic
-            foreach ((ItemSlot slot, Item item) in session.Player.Cosmetics)
+            // Unequip cosmetics
+            KeyValuePair<ItemSlot, Item> kvpCosmetics = session.Player.Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
+            if (kvpCosmetics.Value != null)
             {
-                if (itemUid != item.Uid)
-                    continue;
-                if (session.Player.Cosmetics.Remove(slot, out Item unequipItem))
+                if (session.Player.Inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
+                    unequipItem.IsEquipped = false;
                     InventoryController.Add(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
-                    break;
                 }
             }
+        }
+
+        private static void DecreaseStats(GameSession session, Item item)
+        {
+            if (item.Stats.BasicStats.Count != 0)
+            {
+                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
+                {
+                    session.Player.Stats.DecreaseMax((PlayerStatId) stat.Id, stat.Flat);
+                }
+            }
+
+            if (item.Stats.BonusStats.Count != 0)
+            {
+                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
+                {
+                    session.Player.Stats.DecreaseMax((PlayerStatId) stat.Id, stat.Flat);
+                }
+            }
+
+            session.Send(StatPacket.SetStats(session.FieldPlayer));
+        }
+
+        private static void IncreaseStats(GameSession session, Item item)
+        {
+            if (item.Stats.BasicStats.Count != 0)
+            {
+                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
+                {
+                    session.Player.Stats.IncreaseMax((PlayerStatId) stat.Id, stat.Flat);
+                }
+            }
+
+            if (item.Stats.BonusStats.Count != 0)
+            {
+                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
+                {
+                    session.Player.Stats.IncreaseMax((PlayerStatId) stat.Id, stat.Flat);
+                }
+            }
+
+            session.Send(StatPacket.SetStats(session.FieldPlayer));
         }
     }
 }

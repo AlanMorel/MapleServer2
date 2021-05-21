@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -13,8 +14,11 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapNpc>> npcs = new Dictionary<int, List<MapNpc>>();
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
+        private static readonly Dictionary<int, List<MapMobSpawn>> mobSpawns = new Dictionary<int, List<MapMobSpawn>>();
         private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
+        private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
+        private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
 
         static MapEntityStorage()
         {
@@ -25,8 +29,11 @@ namespace MapleServer2.Data.Static
                 npcs.Add(entity.MapId, entity.Npcs);
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
+                mobSpawns.Add(entity.MapId, entity.MobSpawns);
+                interactObject.Add(entity.MapId, entity.InteractObjects);
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
+                healthSpot.Add(entity.MapId, entity.HealingSpot);
             }
         }
 
@@ -45,9 +52,19 @@ namespace MapleServer2.Data.Static
             return playerSpawns.GetValueOrDefault(mapId);
         }
 
+        public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId)
+        {
+            return mobSpawns.GetValueOrDefault(mapId);
+        }
+
         public static IEnumerable<MapObject> GetObjects(int mapId)
         {
             return objects.GetValueOrDefault(mapId);
+        }
+
+        public static IEnumerable<MapInteractObject> GetInteractObject(int mapId)
+        {
+            return interactObject.GetValueOrDefault(mapId);
         }
 
         public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
@@ -71,6 +88,22 @@ namespace MapleServer2.Data.Static
         public static CoordS[] GetBoundingBox(int mapId)
         {
             return boundingBox.GetValueOrDefault(mapId);
+        }
+
+        public static bool HasSafePortal(int mapId)
+        {
+            List<MapPortal> items = portals.GetValueOrDefault(mapId).Where(x => x.TargetPortalId != 0).ToList();
+            return items.Count != 0;
+        }
+
+        public static bool HasHealingSpot(int mapId)
+        {
+            return healthSpot.GetValueOrDefault(mapId).Count != 0;
+        }
+
+        public static List<CoordS> GetHealingSpot(int mapId)
+        {
+            return healthSpot.GetValueOrDefault(mapId);
         }
     }
 }

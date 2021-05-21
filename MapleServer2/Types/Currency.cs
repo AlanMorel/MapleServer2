@@ -1,4 +1,4 @@
-﻿using MapleServer2.Enums;
+﻿using Maple2Storage.Enums;
 using MapleServer2.Packets;
 
 namespace MapleServer2.Types
@@ -8,6 +8,8 @@ namespace MapleServer2.Types
         private readonly Player Player;
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
+
+        public Currency() { }
 
         public Currency(Player player, CurrencyType type, long input)
         {
@@ -55,7 +57,8 @@ namespace MapleServer2.Types
                 case CurrencyType.HaviFruit:
                     Player.Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
-                case CurrencyType.MesoToken:
+                case CurrencyType.Bank:
+                    Player.Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
                     break;

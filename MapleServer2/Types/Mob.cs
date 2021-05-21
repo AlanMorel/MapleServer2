@@ -1,24 +1,35 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
 {
-    public class Mob
+    public class Mob : NpcMetadata
     {
-        public readonly int Id;
-        public short Rotation; // In degrees * 10
-        public CoordS Speed;
-        public byte Animation;
-        public PlayerStats Stats;
+        public bool IsDead { get; set; }
+        public short ZRotation; // In degrees * 10
+        public IFieldObject<MobSpawn> OriginSpawn;
 
         public Mob(int id)
         {
-            Id = id;
-            Animation = 255;
-            Stats = new PlayerStats()
+            NpcMetadata mob = NpcMetadataStorage.GetNpcMetadata(id);
+            if (mob != null)
             {
-                Hp = new PlayerStat(10, 0, 10),
-                CurrentHp = new PlayerStat(0, 10, 0),
-            };
+                Id = mob.Id;
+                Animation = 255;
+                Stats = mob.Stats;
+                Friendly = mob.Friendly;
+            }
+        }
+
+        public Mob(int id, IFieldObject<MobSpawn> originSpawn) : this(id)
+        {
+            OriginSpawn = originSpawn;
+        }
+
+        public void UpdateStats(double damage)
+        {
+            Stats.Hp.Total -= (long) damage;
+            IsDead = Stats.Hp.Total <= 0;
         }
     }
 }

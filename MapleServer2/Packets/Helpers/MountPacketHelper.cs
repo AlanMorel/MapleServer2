@@ -11,19 +11,19 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte((byte) mount.Value.Type);
 
             // Base class constructor (RideOnAction)
-            pWriter.WriteInt(mount.Value.Id)
-                .WriteInt(mount.ObjectId);
+            pWriter.WriteInt(mount.Value.Id);
+            pWriter.WriteInt(mount.ObjectId);
 
             switch (mount.Value.Type)
             {
                 case RideType.UseItem:
-                    pWriter.WriteInt(mount.Value.Id)
-                        .WriteLong(mount.Value.Uid)
-                        .WriteUgc(); // For template mounts
+                    pWriter.WriteInt(mount.Value.Id);
+                    pWriter.WriteLong(mount.Value.Uid);
+                    pWriter.WriteUgc(); // For template mounts
                     break;
                 case RideType.AdditionalEffect:
-                    pWriter.WriteInt()
-                        .WriteShort();
+                    pWriter.WriteInt();
+                    pWriter.WriteShort();
                     break;
             }
 

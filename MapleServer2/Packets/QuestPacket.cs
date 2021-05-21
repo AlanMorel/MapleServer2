@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -10,35 +10,26 @@ namespace MapleServer2.Packets
     {
         private enum QuestType : byte
         {
+            Dialog = 0x01,
             AcceptQuest = 0x02,
             CompleteExplorationGoal = 0x03,
             CompleteQuest = 0x04,
-            SendQuests = 0x16 // send the status of every quest
+            StartList = 0x15,
+            SendQuests = 0x16, // send the status of every quest
+            EndList = 0x17,
+            FameMissions = 0x1F, // not sure
+            FameMissions2 = 0x20, // not sure
         }
 
-        // Client has some sort of caching for this packet resulting subsequent packets to not change anything
-        // TODO: Find an way to overwrite the cache in the client.
-        public static Packet SendQuests(List<QuestMetadata> questList)
+        public static Packet SendDialogQuest(int objectId, List<QuestStatus> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.SendQuests);
+            pWriter.WriteEnum(QuestType.Dialog);
+            pWriter.WriteInt(objectId);
             pWriter.WriteInt(questList.Count);
-
-            foreach (QuestMetadata item in questList)
+            foreach (QuestStatus quest in questList)
             {
-                pWriter.WriteInt(item.Basic.QuestID);
-                pWriter.WriteInt(0); // 0 and 0 to set to not started, 1 and 0 to started not completed, use 2 and 1 to set to completed
-                pWriter.WriteInt(0);
-                pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // Timestamp of receiving the quest
-                pWriter.WriteLong(); // Timestamp of completion
-                pWriter.WriteByte(item.Basic.AutoStart); // unsure need more testing
-                pWriter.WriteInt(item.Condition.Count);
-
-                for (int j = 0; j < item.Condition.Count; j++)
-                {
-                    // if or switch check for condition types, for now just 0
-                    pWriter.WriteInt(0);
-                }
+                pWriter.WriteInt(quest.Basic.Id);
             }
 
             return pWriter;
@@ -56,40 +47,103 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CompleteQuest(int questId)
+        public static Packet UpdateCondition(int questId, int conditionIndex, int value)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
+            pWriter.WriteInt(questId);
+            pWriter.WriteInt(conditionIndex);
+            pWriter.WriteInt(value);
+
+            return pWriter;
+        }
+
+        // Animation: Animates the quest helper
+        public static Packet CompleteQuest(int questId, bool animation)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
             pWriter.WriteEnum(QuestType.CompleteQuest);
             pWriter.WriteInt(questId);
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(animation ? 1 : 0);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             return pWriter;
         }
 
-        public static Packet SendQuestDialog(int objectId, List<QuestMetadata> questList)
+        public static Packet StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteByte(0x1);
-            pWriter.WriteInt(objectId);
-            pWriter.WriteInt(questList.Count);
-            foreach (QuestMetadata quest in questList)
-            {
-                pWriter.WriteInt(quest.Basic.QuestID);
+            pWriter.WriteEnum(QuestType.StartList);
+            pWriter.WriteLong(); // unknown, sometimes it has an value
 
+            return pWriter;
+        }
+
+        public static Packet SendQuests(List<QuestStatus> questList)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.SendQuests);
+
+            pWriter.WriteInt(questList.Count);
+            foreach (QuestStatus quest in questList)
+            {
+                pWriter.WriteInt(quest.Basic.Id);
+
+                if (quest.Completed)
+                {
+                    pWriter.WriteInt(2);
+                    pWriter.WriteInt(1);
+                }
+                else if (quest.Started)
+                {
+                    pWriter.WriteInt(1);
+                    pWriter.WriteInt(0);
+                }
+                else
+                {
+                    pWriter.WriteInt(0);
+                    pWriter.WriteInt(0);
+                }
+
+                pWriter.WriteLong(quest.StartTimestamp);
+                pWriter.WriteLong(quest.CompleteTimestamp);
+                pWriter.WriteByte(quest.Basic.AutoStart); // unsure need more testing
+                pWriter.WriteInt(quest.Condition.Count);
+
+                for (int j = 0; j < quest.Condition.Count; j++)
+                {
+                    pWriter.WriteInt(quest.Condition[j].Current);
+                }
             }
 
             return pWriter;
-
         }
 
-        public static Packet CompleteExplorationGoal(int questId)
+        public static Packet EndList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
-            pWriter.WriteInt(questId);
-            pWriter.WriteInt(1);
-            pWriter.WriteInt(1);
+            pWriter.WriteEnum(QuestType.EndList);
+            pWriter.WriteInt();
+
+            return pWriter;
+        }
+
+        public static Packet Packet1F()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.FameMissions);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+
+            return pWriter;
+        }
+
+        public static Packet Packet20()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.FameMissions2);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
 
             return pWriter;
         }

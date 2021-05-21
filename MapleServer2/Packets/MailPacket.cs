@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -80,7 +80,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(2); // Mode for read
             pWriter.WriteInt(id); // Mail uid
             pWriter.WriteInt(0);
-            pWriter.WriteLong(timestamp + AccountStorage.TickCount); // Read timestamp
+            pWriter.WriteLong(timestamp + Environment.TickCount); // Read timestamp
 
             return pWriter;
         }
@@ -94,7 +94,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(id); // Mail uid
             pWriter.WriteInt(0);
             pWriter.WriteShort(1); // Successfully collected? 01 00
-            pWriter.WriteLong(timestamp + AccountStorage.TickCount); // Collect timestamp
+            pWriter.WriteLong(timestamp + Environment.TickCount); // Collect timestamp
 
             return pWriter;
         }
@@ -107,7 +107,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(11); // Mode for collect
             pWriter.WriteInt(id); // Mail uid
             pWriter.WriteInt(0);
-            pWriter.WriteLong(timestamp + AccountStorage.TickCount); // Collect timestamp
+            pWriter.WriteLong(timestamp + Environment.TickCount); // Collect timestamp
 
             return pWriter;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -10,26 +11,40 @@ namespace MapleServer2.Packets
     {
         private enum PartyPacketMode : byte
         {
+            Notice = 0x0,
             Join = 0x2,
             Leave = 0x3,
             Kick = 0x4,
+            LoginNotice = 0x5,
+            LogoutNotice = 0x6,
             Disband = 0x7,
             SetLeader = 0x8,
             Create = 0x9,
             Invite = 0xB,
             UpdatePlayer = 0xD,
             UpdateHitpoints = 0x13,
+            PartyHelp = 0x19,
             MatchParty = 0x1A,
+            DungeonFindParty = 0x1E,
+            JoinRequest = 0x2C,
             StartReadyCheck = 0x2F,
             ReadyCheck = 0x30,
             EndReadyCheck = 0x31
         }
 
+        public static Packet Notice(Player player, PartyNotice notice)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Notice);
+            pWriter.WriteEnum(notice);
+            pWriter.WriteUnicodeString(player.Name);
+            return pWriter;
+        }
+
         public static Packet Join(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.Join);
-
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Join);
             CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteInt();
             JobPacket.WriteSkills(pWriter, player);
@@ -39,166 +54,201 @@ namespace MapleServer2.Packets
 
         public static Packet Leave(Player player, byte self)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.Leave)
-                .WriteLong(player.CharacterId)
-                .WriteByte(self); //0 = Other leaving, 1 = Self leaving
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Leave);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteByte(self); //0 = Other leaving, 1 = Self leaving
             return pWriter;
         }
 
         public static Packet Kick(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.Kick)
-                .WriteLong(player.CharacterId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Kick);
+            pWriter.WriteLong(player.CharacterId);
             return pWriter;
         }
 
-        //Generates the header code for Create
-        public static void CreatePartyHeader(Player player, PacketWriter pWriter, short members)
-        {
-            pWriter.WriteEnum(PartyPacketMode.Create)
-                .WriteByte()
-                .WriteInt()
-                .WriteLong(player.CharacterId)
-                .WriteShort(members); //# of Party member. but it's scuffed atm
-        }
-
-        public static Packet Create(Player leader)
+        public static Packet Create(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Create);
+            pWriter.WriteByte(1);
+            pWriter.WriteInt(party.Id);
+            pWriter.WriteLong(party.Leader.CharacterId);
+            pWriter.WriteByte((byte) party.Members.Count);
 
-            CreatePartyHeader(leader, pWriter, 1);
+            foreach (Player member in party.Members)
+            {
+                pWriter.WriteByte(0);
+                CharacterListPacket.WriteCharacter(member, pWriter);
+                pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
+                pWriter.WriteInt(); // dungeonID
+                pWriter.WriteByte(); // dungeon clear count
+            }
 
-            CharacterListPacket.WriteCharacter(leader, pWriter);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            return pWriter;
+        }
+
+        public static Packet LoginNotice(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.LoginNotice);
+            CharacterListPacket.WriteCharacter(player, pWriter);
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteShort();
             pWriter.WriteByte();
-            JobPacket.WriteSkills(pWriter, leader);
-            pWriter.WriteLong();
             return pWriter;
         }
 
-        public static Packet CreateExisting(Player leader, List<Player> members)
+        public static Packet LogoutNotice(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
-
-            CreatePartyHeader(leader, pWriter, (short) members.Count);
-
-            foreach (Player member in members)
-            {
-                CharacterListPacket.WriteCharacter(member, pWriter);
-                pWriter.WriteLong();
-                pWriter.WriteInt();
-                pWriter.WriteShort();
-                pWriter.WriteByte();
-                JobPacket.WriteSkills(pWriter, member);
-            }
-
-            pWriter.WriteLong();
+            pWriter.WriteEnum(PartyPacketMode.LogoutNotice);
+            pWriter.WriteLong(player.CharacterId);
             return pWriter;
         }
 
         public static Packet Disband()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.Disband);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Disband);
             return pWriter;
         }
 
         public static Packet SetLeader(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.SetLeader)
-                .WriteLong(player.CharacterId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.SetLeader);
+            pWriter.WriteLong(player.CharacterId);
             return pWriter;
         }
 
-        public static Packet SendInvite(Player sender)
+        public static Packet SendInvite(Player sender, Party party)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.Invite)
-                .WriteUnicodeString(sender.Name)
-                .WriteShort() //Unk
-                .WriteByte() //Unk
-                .WriteByte(); //Unk
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.Invite);
+            pWriter.WriteUnicodeString(sender.Name);
+            pWriter.WriteInt(party.Id);
             return pWriter;
         }
 
         public static Packet UpdatePlayer(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.UpdatePlayer)
-                .WriteLong(player.CharacterId);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.UpdatePlayer);
+            pWriter.WriteLong(player.CharacterId);
 
             CharacterListPacket.WriteCharacter(player, pWriter);
-            pWriter.WriteInt();
-            JobPacket.WriteSkills(pWriter, player);
-            pWriter.WriteLong();
+            pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
+            pWriter.WriteInt(); // dungeonID
+            pWriter.WriteByte(); // dungeon clear count
             return pWriter;
         }
 
         public static Packet UpdateHitpoints(Player player)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.UpdateHitpoints)
-                .WriteLong(player.CharacterId)
-                .WriteLong(player.AccountId)
-                .WriteInt(player.Stats.Hp.Total)
-                .WriteInt(player.Stats.CurrentHp.Min)
-                .WriteShort();
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.UpdateHitpoints);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteLong(player.AccountId);
+            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
+            pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
+            pWriter.WriteShort();
             return pWriter;
         }
 
-        public static Packet MatchParty(Party party)
+        public static Packet PartyHelp(int dungeonId)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.MatchParty);
-            if (party == null)
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.PartyHelp);
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(dungeonId);
+            return pWriter;
+        }
+
+        public static Packet MatchParty(Party party, bool createListing)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.MatchParty);
+            pWriter.WriteBool(createListing);
+            if (createListing)
             {
-                pWriter.WriteByte();
+                pWriter.WriteLong(party.PartyFinderId);
+                pWriter.WriteInt(party.Id);
+                pWriter.WriteInt();
+                pWriter.WriteInt();
+                pWriter.WriteUnicodeString(party.Name);
+                pWriter.WriteBool(party.Approval);
+                pWriter.WriteInt(party.Members.Count);
+                pWriter.WriteInt(party.RecruitMemberCount);
+                pWriter.WriteLong(party.Leader.AccountId);
+                pWriter.WriteLong(party.Leader.CharacterId);
+                pWriter.WriteUnicodeString(party.Leader.Name);
+                pWriter.WriteLong(party.CreationTimestamp);
             }
             else
             {
-                MatchPartyPacket.WritePartyInformation(pWriter, party);
+                pWriter.WriteByte(0);
             }
 
+            return pWriter;
+        }
+
+        public static Packet DungeonFindParty()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.DungeonFindParty);
+            pWriter.WriteInt(); // dungeon queue Id
+            return pWriter;
+        }
+
+        public static Packet JoinRequest(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.JoinRequest);
+            pWriter.WriteUnicodeString(player.Name);
             return pWriter;
         }
 
         public static Packet StartReadyCheck(Player leader, List<Player> members, int count)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.StartReadyCheck)
-                .WriteByte(2) //unk
-                .WriteInt(count)
-                .WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount)
-                .WriteInt(members.Count);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.StartReadyCheck);
+            pWriter.WriteByte(2); //unk
+            pWriter.WriteInt(count);
+            pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount);
+            pWriter.WriteInt(members.Count);
             foreach (Player partyMember in members)
             {
                 pWriter.WriteLong(partyMember.CharacterId);
             }
 
-            pWriter.WriteInt(1) //unk
-                .WriteLong(leader.CharacterId)
-                .WriteInt(); //unk
+            pWriter.WriteInt(1); //unk
+            pWriter.WriteLong(leader.CharacterId);
+            pWriter.WriteInt(); //unk
             return pWriter;
         }
 
         public static Packet ReadyCheck(Player player, byte accept)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.ReadyCheck)
-                .WriteLong(player.CharacterId)
-                .WriteByte(accept);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.ReadyCheck);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteByte(accept);
             return pWriter;
         }
 
         public static Packet EndReadyCheck()
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY)
-                .WriteEnum(PartyPacketMode.EndReadyCheck);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.EndReadyCheck);
             return pWriter;
         }
     }

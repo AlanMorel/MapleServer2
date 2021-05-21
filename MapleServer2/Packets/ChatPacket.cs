@@ -9,15 +9,15 @@ namespace MapleServer2.Packets
     {
         public static Packet Send(Player player, string message, ChatType type)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT)
-                .WriteLong(player.AccountId)
-                .WriteLong(player.CharacterId)
-                .WriteUnicodeString(player.Name)
-                .WriteByte()
-                .WriteUnicodeString(message)
-                .WriteInt((int) type)
-                .WriteByte()
-                .WriteInt(); // Channel
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
+            pWriter.WriteLong(player.AccountId);
+            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte(0);
+            pWriter.WriteUnicodeString(message);
+            pWriter.WriteInt((int) type);
+            pWriter.WriteByte();
+            pWriter.WriteInt(); // Channel
 
             switch (type)
             {
@@ -25,15 +25,32 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString("???");
                     break;
                 case ChatType.Super:
-                    pWriter.WriteInt(20800017); // item id?
+                    pWriter.WriteInt(player.SuperChat);
                     break;
-                case ChatType.UnknownPurple:
-                    pWriter.WriteLong(); // char id?
+                case ChatType.Club:
+                    pWriter.WriteLong(); // clubId
                     break;
             }
 
-            return pWriter.WriteByte();
+            pWriter.WriteByte();
+            return pWriter;
         }
+
+        public static Packet Error(Player player, SystemNotice error, ChatType type)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString(player.Name);
+            pWriter.WriteByte(1);
+            pWriter.WriteInt((int) error);
+            pWriter.WriteInt((int) type);
+            pWriter.WriteByte();
+            pWriter.WriteInt(); // Channel
+            pWriter.WriteByte();
+            return pWriter;
+        }
+
     }
 }
 // SendUserChatItem

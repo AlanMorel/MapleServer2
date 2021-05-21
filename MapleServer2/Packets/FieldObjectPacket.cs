@@ -11,6 +11,7 @@ namespace MapleServer2.Packets
         private enum ProxyGameObjMode : byte
         {
             LoadPlayer = 0x03,
+            RemovePlayer = 0x04,
             UpdateEntity = 0x05,
             LoadNpc = 0x6,
         }
@@ -21,26 +22,36 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.LoadPlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
-            pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteLong(player.AccountId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteUnicodeString(player.Motto);
             pWriter.WriteByte();
             pWriter.Write(fieldPlayer.Coord);
             pWriter.WriteShort(player.Levels.Level);
-            pWriter.WriteEnum(player.Job); // short
-            pWriter.WriteEnum(player.JobCode);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
+            pWriter.WriteShort((short) player.Job);
+            pWriter.WriteShort((short) player.JobCode);
+            pWriter.WriteShort();
+            pWriter.WriteInt(player.MapId);
+            pWriter.WriteLong(1); // unk
             pWriter.WriteUnicodeString(player.HomeName);
             pWriter.WriteInt();
             pWriter.WriteShort();
-            foreach (int trophyCount in player.Trophy)
+            foreach (int trophyCount in player.TrophyCount)
             {
                 pWriter.WriteInt(trophyCount);
             }
+
+            return pWriter;
+        }
+
+        public static Packet RemovePlayer(IFieldObject<Player> fieldPlayer)
+        {
+            Player player = fieldPlayer.Value;
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
+            pWriter.WriteEnum(ProxyGameObjMode.RemovePlayer);
+            pWriter.WriteInt(fieldPlayer.ObjectId);
 
             return pWriter;
         }
@@ -67,8 +78,8 @@ namespace MapleServer2.Packets
             }
             if (flag.HasFlag(FieldObjectUpdate.Type4))
             {
-                pWriter.WriteShort()
-                    .WriteInt();
+                pWriter.WriteShort();
+                pWriter.WriteInt();
             }
             if (flag.HasFlag(FieldObjectUpdate.Type5))
             {
@@ -105,7 +116,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.WriteByte();
-            pWriter.WriteInt(200);
+            pWriter.WriteInt(200); // also 99 for boss
             pWriter.Write(mob.Coord);
             return pWriter;
         }
@@ -116,7 +127,7 @@ namespace MapleServer2.Packets
             npcBuffer.WriteInt(npc.ObjectId);
             npcBuffer.WriteByte();
             npcBuffer.Write(npc.Coord.ToShort());
-            npcBuffer.WriteShort(npc.Value.Rotation);
+            npcBuffer.WriteShort(npc.Value.ZRotation);
             npcBuffer.Write(npc.Value.Speed); // XYZ Speed
             npcBuffer.WriteShort(100); // Unknown
             npcBuffer.WriteByte(1); // Flag ?
@@ -137,9 +148,10 @@ namespace MapleServer2.Packets
             npcBuffer.WriteInt(mob.ObjectId);
             npcBuffer.WriteByte();
             npcBuffer.Write(mob.Coord.ToShort());
-            npcBuffer.WriteShort(mob.Value.Rotation);
+            npcBuffer.WriteShort(mob.Value.ZRotation);
             npcBuffer.Write(mob.Value.Speed); // XYZ Speed
             npcBuffer.WriteShort(100); // Unknown
+            //npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
             npcBuffer.WriteByte(1); // Flag ?
             npcBuffer.WriteShort(mob.Value.Animation);
             npcBuffer.WriteShort(1); // counter (increments every packet)

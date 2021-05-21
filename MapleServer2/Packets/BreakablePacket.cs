@@ -7,13 +7,14 @@ namespace MapleServer2.Packets
     {
         public static Packet Break(string objectHash, byte flag)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.BREAKABLE)
-                .WriteByte(1)
-                .WriteMapleString(objectHash)
-                .WriteByte(flag)
-                .WriteInt()
-                .WriteInt() //Unk, trigger id maybe
-                .WriteByte();
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BREAKABLE);
+            pWriter.WriteByte(1);
+            pWriter.WriteMapleString(objectHash);
+            pWriter.WriteByte(flag);
+            pWriter.WriteInt();
+            pWriter.WriteInt(); //Unk, trigger id maybe
+            pWriter.WriteByte();
+
             return pWriter;
         }
     }

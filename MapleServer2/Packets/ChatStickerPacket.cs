@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -14,22 +13,25 @@ namespace MapleServer2.Packets
             ExpiredStickerNotification = 0x1,
             AddSticker = 0x2,
             UseSticker = 0x3,
+            GroupChatSticker = 0x4,
             Favorite = 0x5,
             Unfavorite = 0x6,
         }
 
         public static Packet LoadChatSticker(Player player)
         {
-            List<short> stickerSetIds = player.Stickers;
-
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteEnum(ChatStickerMode.LoadChatSticker);
-            pWriter.WriteShort();
-            pWriter.WriteShort((short) stickerSetIds.Count);
-            foreach (int sticker in stickerSetIds)
+            pWriter.WriteShort((short) player.FavoriteStickers.Count);
+            foreach (int favorite in player.FavoriteStickers)
             {
-                pWriter.WriteInt(sticker);
-                pWriter.WriteLong(9223372036854775807); //expiration timestamp
+                pWriter.WriteInt(favorite);
+            }
+            pWriter.WriteShort((short) player.ChatSticker.Count);
+            foreach (ChatSticker stickerGroup in player.ChatSticker)
+            {
+                pWriter.WriteInt(stickerGroup.GroupId);
+                pWriter.WriteLong(stickerGroup.Expiration);
             }
             return pWriter;
         }
@@ -43,7 +45,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddSticker(int itemId, int stickerGroupId, long expiration)
+        public static Packet AddSticker(int itemId, int stickerGroupId, long expiration = 9223372036854775807)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
             pWriter.WriteEnum(ChatStickerMode.AddSticker);
@@ -61,6 +63,15 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(stickerId);
             pWriter.WriteUnicodeString(script);
             pWriter.WriteByte();
+            return pWriter;
+        }
+
+        public static Packet GroupChatSticker(int stickerId, string groupChatName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHAT_STICKER);
+            pWriter.WriteEnum(ChatStickerMode.GroupChatSticker);
+            pWriter.WriteInt(stickerId);
+            pWriter.WriteUnicodeString(groupChatName);
             return pWriter;
         }
 

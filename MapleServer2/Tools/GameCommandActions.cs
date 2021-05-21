@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -14,9 +16,19 @@ namespace MapleServer2.Tools
     {
         public static void Process(GameSession session, string command)
         {
+            command = command[1..];
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "completequest":
+                    ProcessQuestCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
+                case "status":
+                    ProcessStatusCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
+                case "sethandicraft":
+                    session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    break;
                 case "setprestigelevel":
                     session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
                     break;
@@ -60,10 +72,16 @@ namespace MapleServer2.Tools
                     ProcessMapCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "coord":
-                    session.SendNotice(session.FieldPlayer.Coord.ToString());
+                    ProcessCoordCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "battleoff":
                     session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+                    break;
+                case "setguildexp":
+                    ProcessGuildExp(session, args[1]);
+                    break;
+                case "setguildfunds":
+                    ProcessGuildFunds(session, args[1]);
                     break;
                 case "notice":
                     if (args.Length <= 1)
@@ -72,6 +90,115 @@ namespace MapleServer2.Tools
                     }
                     MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
                     break;
+            }
+        }
+
+        private static void ProcessGuildExp(GameSession session, string command)
+        {
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+            if (guild == null)
+            {
+                return;
+            }
+
+            if (!int.TryParse(command, out int guildExp))
+            {
+                return;
+            }
+
+            guild.Exp = guildExp;
+            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
+            GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
+            DatabaseManager.Update(guild);
+        }
+
+        private static void ProcessGuildFunds(GameSession session, string command)
+        {
+            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+            if (guild == null)
+            {
+                return;
+            }
+
+            if (!int.TryParse(command, out int guildFunds))
+            {
+                return;
+            }
+
+            guild.Funds = guildFunds;
+            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
+            DatabaseManager.Update(guild);
+        }
+        private static void ProcessQuestCommand(GameSession session, string command)
+        {
+            if (command == "")
+            {
+                session.SendNotice("Type a quest id.");
+                return;
+            }
+            if (!int.TryParse(command, out int questId))
+            {
+                return;
+            }
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
+            {
+                return;
+            }
+
+            questStatus.Completed = true;
+            questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            session.Player.Levels.GainExp(questStatus.Reward.Exp);
+            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+
+            foreach (QuestRewardItem reward in questStatus.RewardItems)
+            {
+                Item newItem = new Item(reward.Code)
+                {
+                    Amount = reward.Count,
+                    Rarity = reward.Rank
+                };
+                if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
+                {
+                    InventoryController.Add(session, newItem, true);
+                }
+            }
+
+            session.Send(QuestPacket.CompleteQuest(questId, true));
+
+            // Add next quest
+            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+            {
+                session.Player.QuestList.Add(new QuestStatus(session.Player, kvp.Value));
+            }
+        }
+
+        private static void ProcessCoordCommand(GameSession session, string command)
+        {
+            if (command == "")
+            {
+                session.SendNotice(session.FieldPlayer.Coord.ToString());
+            }
+            else
+            {
+                string[] coords = command.Replace(" ", "").Split(",");
+                if (!float.TryParse(coords[0], out float x))
+                {
+                    return;
+                }
+                if (!float.TryParse(coords[1], out float y))
+                {
+                    return;
+                }
+                if (!float.TryParse(coords[2], out float z))
+                {
+                    return;
+                }
+
+                session.Player.Coord = CoordF.From(x, y, z);
+                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
             }
         }
 
@@ -89,39 +216,21 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            // Add some bonus attributes to equips and pets
-            ItemStats stats = new ItemStats();
-            if (ItemMetadataStorage.GetTab(itemId) == InventoryTab.Gear
-                    || ItemMetadataStorage.GetTab(itemId) == InventoryTab.Pets)
-            {
-                Random rng = new Random();
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-                stats.BonusAttributes.Add(ItemStat.Of((ItemAttribute) rng.Next(35), 0.01f));
-            }
+            _ = int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity);
+            _ = int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount);
 
             Item item = new Item(itemId)
             {
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                Stats = stats,
-                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0
+                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
+                Rarity = rarity,
+                Amount = amount
             };
-            if (int.TryParse(config.GetValueOrDefault("rarity", "5"), out int rarity))
-            {
-                item.Rarity = rarity;
-            }
-            if (int.TryParse(config.GetValueOrDefault("amount", "1"), out int amount))
-            {
-                item.Amount = amount;
-            }
+            item.Stats = new ItemStats(item);
 
             // Simulate looting item
             InventoryController.Add(session, item, true);
-            /*if (session.Player.Inventory.Add(item))
-            {
-                session.Send(ItemInventoryPacket.Add(item));
-                session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount));
-            }*/
         }
 
         // Example: "map -> return current map id"
@@ -174,7 +283,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                npc.Rotation = rotation;
+                npc.ZRotation = rotation;
             }
 
             IFieldObject<Npc> fieldNpc = session.FieldManager.RequestFieldObject(npc);
@@ -193,7 +302,7 @@ namespace MapleServer2.Tools
         private static void ProcessMobCommand(GameSession session, string command)
         {
             Dictionary<string, string> config = command.ToMap();
-            if (!int.TryParse(config.GetValueOrDefault("id", "11003146"), out int mobId))
+            if (!int.TryParse(config.GetValueOrDefault("id", "21000001"), out int mobId))
             {
                 return;
             }
@@ -204,7 +313,7 @@ namespace MapleServer2.Tools
             }
             if (short.TryParse(config.GetValueOrDefault("dir", "2700"), out short rotation))
             {
-                mob.Rotation = rotation;
+                mob.ZRotation = rotation;
             }
 
             IFieldObject<Mob> fieldMob = session.FieldManager.RequestFieldObject(mob);
@@ -218,6 +327,18 @@ namespace MapleServer2.Tools
             }
 
             session.FieldManager.AddMob(fieldMob);
+        }
+
+        // Example: "status id:10400081"
+        private static void ProcessStatusCommand(GameSession session, string command)
+        {
+            Dictionary<string, string> config = command.ToMap();
+            if (!int.TryParse(config.GetValueOrDefault("id", "10400081"), out int statusId))
+            {
+                return;
+            }
+            Status status = new Status(statusId, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, 1, 1);
+            session.Send(BuffPacket.SendBuff(0, status));
         }
 
         private static Dictionary<string, string> ToMap(this string command)

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using MapleServer2.Types;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
@@ -32,22 +31,29 @@ namespace MapleServer2.PacketHandlers.Common
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            Player player = AccountStorage.GetCharacter(authData.CharacterId);
+            Player player = DatabaseManager.GetCharacter(authData.CharacterId);
+            if (player == default)
+            {
+                throw new ArgumentException("Character not found!");
+            }
+
             player.Session = session;
 
             session.InitPlayer(player);
 
             //session.Send(0x27, 0x01); // Meret market related...?
 
-            session.Send(PacketWriter.Of(SendOp.LOGIN_REQUIRED)
-                .WriteByte(0x17)
-                .Write(accountId)
-                .WriteInt().WriteByte().WriteLong()
-                .WriteInt(1).WriteInt().WriteInt().WriteLong()
-            );
+            session.Send(LoginPacket.LoginRequired(accountId));
 
-            session.Send(BuddyListPacket.StartList());
-            session.Send(BuddyListPacket.EndList());
+            if (session.Player.Guild != null)
+            {
+                Guild guild = DatabaseManager.GetGuild(session.Player.Guild.Id);
+                session.Send(GuildPacket.UpdateGuild(guild));
+                session.Send(GuildPacket.MemberJoin(player));
+            }
+            session.Send(BuddyPacket.Initialize());
+            session.Send(BuddyPacket.LoadList(player));
+            session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
             // Meret market
             //session.Send("6E 00 0B 00 00 00 00 00 00 00 00 00 00 00 00".ToByteArray());
@@ -59,15 +65,17 @@ namespace MapleServer2.PacketHandlers.Common
             TimeSyncPacket.SetInitial1();
             TimeSyncPacket.SetInitial2();
             TimeSyncPacket.Request();
-            // SendStat 0x2F (How to send here without ObjectId?, Seems fine to send after entering field)
+            session.Send(StatPacket.SetStats(session.FieldPlayer));
+            // TODO: Grab Hp/Spirit/Stam from last login
+            player.Stats.InitializePools(player.Stats[PlayerStatId.Hp].Max, player.Stats[PlayerStatId.Spirit].Max, player.Stats[PlayerStatId.Stamina].Max);
 
             session.SyncTicks();
-            session.Send(PacketWriter.Of(SendOp.DYNAMIC_CHANNEL).WriteByte(0x00)
-                .WriteShort(10).WriteShort(9).WriteShort(9).WriteShort(9)
-                .WriteShort(9).WriteShort(10).WriteShort(10).WriteShort(10));
+            session.Send(DynamicChannelPacket.DynamicChannel());
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
-            session.Send(PacketWriter.Of(SendOp.SYNC_NUMBER).WriteByte());
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_NUMBER);
+            pWriter.WriteByte();
+            session.Send(pWriter);
             // 0x112, Prestige f(0x00, 0x07)
             session.Send(PrestigePacket.Prestige(session.Player));
 
@@ -77,27 +85,29 @@ namespace MapleServer2.PacketHandlers.Common
                 InventoryController.LoadInventoryTab(session, tab);
             }
 
-            List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level); // TODO: This logic needs to be refactored when DB is implemented
-            IEnumerable<List<QuestMetadata>> packetCount = SplitList(questList, 200); // Split the quest list in 200 quests per packet, same way kms do
+            session.Send(QuestPacket.StartList());
+            session.Send(QuestPacket.Packet1F());
+            session.Send(QuestPacket.Packet20());
 
-            foreach (List<QuestMetadata> item in packetCount)
+            IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet
+            foreach (List<QuestStatus> item in packetCount)
             {
                 session.Send(QuestPacket.SendQuests(item));
             }
+            session.Send(QuestPacket.EndList());
 
-            // send achievement table
-            session.Send(AchievePacket.WriteTableStart());
-            List<Achieve> achieveList = new List<Achieve>(session.Player.Achieves.Values);
-            IEnumerable<List<Achieve>> achievePackets = SplitList(achieveList, 60); // Split the achieve list to 60 achieves per packet
+            session.Send(TrophyPacket.WriteTableStart());
+            List<Trophy> trophyList = new List<Trophy>(session.Player.TrophyData.Values);
+            IEnumerable<List<Trophy>> trophyListPackets = SplitList(trophyList, 60);
 
-            foreach (List<Achieve> achieve in achievePackets)
+            foreach (List<Trophy> trophy in trophyListPackets)
             {
-                session.Send(AchievePacket.WriteTableContent(achieve));
+                session.Send(TrophyPacket.WriteTableContent(trophy));
             }
 
-            session.Send(MarketInventoryPacket.Count(0)); // Typically sent after buddylist
-            session.Send(MarketInventoryPacket.StartList());
-            session.Send(MarketInventoryPacket.EndList());
+            session.Send(WarehouseInventoryPacket.Count()); // Typically sent after buddylist
+            session.Send(WarehouseInventoryPacket.StartList());
+            session.Send(WarehouseInventoryPacket.EndList());
             session.Send(FurnishingInventoryPacket.StartList());
             session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
@@ -110,7 +120,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(UserEnvPacket.Send12());
 
             // SendMeretMarket f(0xC9)
-            session.Send(FishingPacket.LoadLog());
+            session.Send(FishingPacket.LoadAlbum(player));
             // SendPvp f(0x16,0x17), ResponsePet f(0x07), 0xF6
             // CharacterAbility
             // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -136,8 +146,11 @@ namespace MapleServer2.PacketHandlers.Common
             // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
             // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
+            // Client is supposed to request SetSessionServerTick packet but it is not.
+            // As a temporary fix, we're sending the packet to set it
+            session.Send(TimeSyncPacket.SetSessionServerTick(0));
             //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
-            //session.Send(ServerEnterPacket.Confirm());
+            session.Send(ServerEnterPacket.Confirm());
 
             //session.Send(0xF0, 0x00, 0x1F, 0x78, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x00, 0x00);
             //session.Send(0x28, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00);

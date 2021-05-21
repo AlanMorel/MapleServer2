@@ -1,7 +1,13 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -53,7 +59,22 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int benefitId = packet.ReadInt();
             session.Send(PremiumClubPacket.ClaimItem(benefitId));
-            // TODO grab data from \table\vipbenefititemtable.xml for item ID, quantity, rank
+
+            if (!PremiumClubDailyBenefitMetadataStorage.IsValid(benefitId))
+            {
+                return;
+            }
+
+            PremiumClubDailyBenefitMetadata benefit = PremiumClubDailyBenefitMetadataStorage.GetMetadata(benefitId);
+
+            Item benefitRewardItem = new(benefit.ItemId)
+            {
+                Rarity = benefit.ItemRarity,
+                Amount = benefit.ItemAmount,
+            };
+
+            InventoryController.Add(session, benefitRewardItem, true);
+
             // TODO only claim once a day
         }
 
@@ -64,12 +85,53 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandlePurchaseMembership(GameSession session, PacketReader packet)
         {
-            int packageId = packet.ReadInt();
-            session.Send(PremiumClubPacket.PurchaseMembership(packageId));
-            // TODO grab data from \table\vipgoodstable.xml for pricing, buff duration, and bonus items
-            long expiration = 2592847227; // temporarilyy plugging in expiration time
-            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, expiration));
-            session.Player.IsVIP = true;
+            int vipId = packet.ReadInt();
+
+            if (!PremiumClubPackageMetadataStorage.IsValid(vipId))
+            {
+                return;
+            }
+
+            PremiumClubPackageMetadata vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
+
+            if (!session.Player.Wallet.RemoveMerets(vipPackage.Price))
+            {
+                return;
+            }
+
+            session.Send(PremiumClubPacket.PurchaseMembership(vipId));
+
+            foreach (BonusItem item in vipPackage.BonusItem)
+            {
+                Item bonusItem = new(item.Id)
+                {
+                    Rarity = item.Rarity,
+                    Amount = item.Amount
+                };
+                InventoryController.Add(session, bonusItem, true);
+            }
+
+            int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
+
+            ActivatePremium(session, vipTime);
+        }
+
+        public static void ActivatePremium(GameSession session, long vipTime)
+        {
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
+
+            if (!session.Player.IsVip())
+            {
+                session.Player.VIPExpiration = expiration;
+                session.Send(NoticePacket.Notice(SystemNotice.PremiumActivated, NoticeType.ChatAndFastText));
+            }
+            else
+            {
+                session.Player.VIPExpiration += vipTime;
+                session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
+            }
+
+            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
         }
     }
 }

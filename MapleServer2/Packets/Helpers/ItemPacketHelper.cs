@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
@@ -9,34 +10,40 @@ namespace MapleServer2.Packets.Helpers
     {
         public static PacketWriter WriteItem(this PacketWriter pWriter, Item item)
         {
-            pWriter.WriteInt(item.Amount)
-                .WriteInt()
-                .WriteInt(-1)
-                .WriteLong(item.CreationTime)
-                .WriteLong(item.ExpiryTime)
-                .WriteLong()
-                .WriteInt(item.TimesAttributesChanged)
-                .WriteInt(item.PlayCount)
-                .WriteBool(item.IsLocked)
-                .WriteLong(item.UnlockTime)
-                .WriteShort(item.RemainingGlamorForges)
-                .WriteByte()
-                .WriteInt();
+            pWriter.WriteInt(item.Amount);
+            pWriter.WriteInt();
+            pWriter.WriteInt(-1);
+            pWriter.WriteLong(item.CreationTime);
+            pWriter.WriteLong(item.ExpiryTime);
+            pWriter.WriteLong();
+            pWriter.WriteInt(item.TimesAttributesChanged);
+            pWriter.WriteInt(item.PlayCount);
+            pWriter.WriteBool(item.IsLocked);
+            pWriter.WriteLong(item.UnlockTime);
+            pWriter.WriteShort(item.RemainingGlamorForges);
+            pWriter.WriteByte();
+            pWriter.WriteInt(item.GachaDismantleId);
 
             // Write Appearance 
             pWriter.WriteAppearance(item);
 
             // Write Stats 0x0582B10
-            pWriter.WriteStats(item.Stats)
-                .WriteInt(item.Enchants)
-                .WriteInt(item.EnchantExp)
-                .WriteBool(true) // Enchant based peachy charges, otherwise always require 10 charges
-                .WriteLong()
-                .WriteInt()
-                .WriteInt()
-                .WriteBool(item.CanRepackage)
-                .WriteInt(item.Charges)
-                .WriteStatDiff(/*item.Stats, item.Stats*/);
+            pWriter.WriteStats(item.Stats);
+            pWriter.WriteInt(item.Enchants);
+            pWriter.WriteInt(item.EnchantExp);
+            pWriter.WriteBool(true); // Enchant based peachy charges, otherwise always require 10 charges
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteBool(item.CanRepackage);
+            pWriter.WriteInt(item.Charges);
+            pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
+
+
+            if (item.IsCustomScore)
+            {
+                pWriter.WriteMusicScore(item);
+            }
 
             if (item.IsTemplate)
             {
@@ -55,6 +62,15 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteBool(true);
                 pWriter.WriteByte((byte) item.GemSlot);
                 pWriter.WriteUnicodeString(item.Id.ToString());
+                switch (item.GemSlot)
+                {
+                    case GemSlot.PET:
+                        pWriter.WriteInt(item.PetSkinBadgeId);
+                        break;
+                    case GemSlot.TRANS:
+                        pWriter.Write(item.TransparencyBadgeBools);
+                        break;
+                }
             }
 
             // Item Transfer Data 0x058AD00
@@ -92,63 +108,85 @@ namespace MapleServer2.Packets.Helpers
 
         private static PacketWriter WriteAppearance(this PacketWriter pWriter, Item item)
         {
-            pWriter.Write<EquipColor>(item.Color);
-            pWriter.WriteInt(item.AppearanceFlag);
+            pWriter.Write(item.Color);
             // Positioning Data
             switch (item.ItemSlot)
             {
                 case ItemSlot.CP:
-                    for (int i = 0; i < 13; i++)
-                    {
-                        pWriter.Write(0);
-                    }
+                    pWriter.Write(item.HatData);
                     break;
                 case ItemSlot.HR:
-                    //pWriter.Write<HairData>(item.HairD);
-                    pWriter.Write(item.HairD.BackLength);
-                    pWriter.Write(item.HairD.BackPositionArray);
-                    pWriter.Write(item.HairD.FrontLength);
-                    pWriter.Write(item.HairD.FrontPositionArray);
+                    pWriter.Write(item.HairData.BackLength);
+                    pWriter.Write(item.HairData.BackPositionCoord);
+                    pWriter.Write(item.HairData.BackPositionRotation);
+                    pWriter.Write(item.HairData.FrontLength);
+                    pWriter.Write(item.HairData.FrontPositionCoord);
+                    pWriter.Write(item.HairData.FrontPositionRotation);
                     break;
                 case ItemSlot.FD:
-                    pWriter.Write(item.FaceDecorationD);
+                    pWriter.Write(item.FaceDecorationData);
                     break;
             }
 
             return pWriter;
         }
 
-        // 9 Blocks of stats, Only handling Basic and Bonus attributes for now
+        // 9 Blocks of stats, still missing some stats
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<ItemStat> basicAttributes = stats.BasicAttributes;
-            pWriter.WriteShort((short) basicAttributes.Count);
-            foreach (ItemStat stat in basicAttributes)
+            List<ItemStat> basicStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) basicStats.Count);
+            foreach (NormalStat stat in basicStats)
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort().WriteInt(); // SpecialAttributes
-
-            // Another basic attributes block
-            pWriter.WriteShort().WriteShort().WriteInt();
-
-            List<ItemStat> bonusAttributes = stats.BonusAttributes;
-            pWriter.WriteShort((short) bonusAttributes.Count);
-            foreach (ItemStat stat in bonusAttributes)
+            List<ItemStat> specialBasicStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) specialBasicStats.Count);
+            foreach (SpecialStat stat in specialBasicStats)
             {
                 pWriter.Write(stat);
             }
-            pWriter.WriteShort().WriteInt(); // SpecialAttributes
+            pWriter.WriteInt();
 
+            // Another basic stats block
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
 
-            // Ignore other attributes
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
-            pWriter.WriteShort().WriteShort().WriteInt();
+            List<ItemStat> bonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) bonusStats.Count);
+            foreach (NormalStat stat in bonusStats)
+            {
+                pWriter.Write(stat);
+            }
+            List<ItemStat> specialBonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) specialBonusStats.Count);
+            foreach (SpecialStat stat in specialBonusStats)
+            {
+                pWriter.Write(stat);
+            }
+            pWriter.WriteInt();
+
+            // Ignore other stats
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
+            pWriter.WriteShort();
+            pWriter.WriteShort();
+            pWriter.WriteInt();
 
             return pWriter;
         }
@@ -156,25 +194,25 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStatDiff(this PacketWriter pWriter/*, ItemStats old, ItemStats new*/)
         {
             // TODO: Find stat diffs (low priority)
-            List<ItemStat> generalStatDiff = new List<ItemStat>();
+            List<NormalStat> generalStatDiff = new List<NormalStat>();
             pWriter.WriteByte((byte) generalStatDiff.Count);
-            foreach (ItemStat stat in generalStatDiff)
+            foreach (NormalStat stat in generalStatDiff)
             {
                 pWriter.Write(stat);
             }
 
             pWriter.WriteInt(); // ???
 
-            List<ItemStat> statDiff = new List<ItemStat>();
+            List<NormalStat> statDiff = new List<NormalStat>();
             pWriter.WriteInt(statDiff.Count);
-            foreach (ItemStat stat in statDiff)
+            foreach (NormalStat stat in statDiff)
             {
                 pWriter.Write(stat);
             }
 
-            List<SpecialItemStat> bonusStatDiff = new List<SpecialItemStat>();
+            List<SpecialStat> bonusStatDiff = new List<SpecialStat>();
             pWriter.WriteInt(bonusStatDiff.Count);
-            foreach (SpecialItemStat stat in bonusStatDiff)
+            foreach (SpecialStat stat in bonusStatDiff)
             {
                 pWriter.Write(stat);
             }
@@ -185,25 +223,29 @@ namespace MapleServer2.Packets.Helpers
         // Writes UGC template data
         private static PacketWriter WriteTemplate(this PacketWriter pWriter)
         {
-            return pWriter.WriteUgc()
-                .WriteLong()
-                .WriteInt()
-                .WriteInt()
-                .WriteInt()
-                .WriteLong()
-                .WriteInt()
-                .WriteLong()
-                .WriteLong()
-                .WriteUnicodeString("");
+            pWriter.WriteUgc();
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString("");
+
+            return pWriter;
         }
 
         private static PacketWriter WritePet(this PacketWriter pWriter)
         {
-            return pWriter.WriteUnicodeString("") // Name
-                .WriteLong() // Exp
-                .WriteInt()
-                .WriteInt(1) // Level
-                .WriteByte();
+            pWriter.WriteUnicodeString(""); // Name
+            pWriter.WriteLong(); // Exp
+            pWriter.WriteInt();
+            pWriter.WriteInt(1);// Level
+            pWriter.WriteByte();
+
+            return pWriter;
         }
 
         private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
@@ -224,18 +266,32 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteBool(gem.OwnerId != 0);
                 if (gem.OwnerId != 0)
                 {
-                    pWriter.WriteLong(gem.OwnerId)
-                        .WriteUnicodeString(gem.OwnerName);
+                    pWriter.WriteLong(gem.OwnerId);
+                    pWriter.WriteUnicodeString(gem.OwnerName);
                 }
 
                 pWriter.WriteBool(gem.Unknown != 0);
                 if (gem.Unknown != 0)
                 {
-                    pWriter.WriteByte()
-                        .WriteLong(gem.Unknown);
+                    pWriter.WriteByte();
+                    pWriter.WriteLong(gem.Unknown);
                 }
             }
 
+            return pWriter;
+        }
+
+        private static PacketWriter WriteMusicScore(this PacketWriter pWriter, Item item)
+        {
+            pWriter.WriteInt(item.Score.Length);
+            pWriter.WriteInt(item.Score.Type);
+            pWriter.WriteUnicodeString(item.Score.Title);
+            pWriter.WriteUnicodeString(item.Score.Composer);
+            pWriter.WriteInt(4); // seems like it's always 4. 1 in KMS2. 
+            pWriter.WriteLong(item.Score.ComposerCharacterId);
+            pWriter.WriteBool(item.Score.Locked);
+            pWriter.WriteLong();
+            pWriter.WriteLong();
             return pWriter;
         }
     }

@@ -2,6 +2,8 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -38,9 +40,25 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLearnEmote(GameSession session, PacketReader packet)
         {
-            long emoteItemUid = packet.ReadLong();
-            // TODO grab emoteId from emoteItemUid
-            session.Send(EmotePacket.LearnEmote());
+            long itemUid = packet.ReadLong();
+
+            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            {
+                return;
+            }
+
+            Item item = session.Player.Inventory.Items[itemUid];
+
+            if (session.Player.Emotes.Contains(item.SkillId))
+            {
+                return;
+            }
+
+            session.Player.Emotes.Add(item.SkillId);
+
+            session.Send(EmotePacket.LearnEmote(item.SkillId));
+
+            InventoryController.Consume(session, item.Uid, 1);
         }
 
         private static void HandleUseEmote(PacketReader packet)
