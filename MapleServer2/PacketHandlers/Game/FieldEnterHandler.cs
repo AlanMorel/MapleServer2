@@ -1,5 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -23,10 +25,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.EnterField(session.Player.MapId);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-            foreach (MasteryExp mastery in session.Player.Levels.MasteryExp)
-            {
-                session.Send(MasteryPacket.SetExp(mastery.Type, mastery.CurrentExp));
-            }
             if (session.Player.IsVip())
             {
                 session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
@@ -52,7 +50,8 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
             }
 
-            session.Send(GameEventPacket.Load());
+            List<GameEvent> gameEvents = DatabaseManager.GetGameEvents();
+            session.Send(GameEventPacket.Load(gameEvents));
         }
     }
 }

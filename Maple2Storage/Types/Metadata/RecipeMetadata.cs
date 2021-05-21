@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types.Metadata
@@ -9,17 +10,17 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
-        public string MasteryType;
+        public short MasteryType;
         [XmlElement(Order = 3)]
         public bool ExceptRewardExp;
         [XmlElement(Order = 4)]
-        public string RequireMastery;
+        public long RequireMastery;
         [XmlElement(Order = 5)]
-        public string RequireMeso;
+        public long RequireMeso;
         [XmlElement(Order = 6)]
-        public string RequireQuest;
+        public List<int> RequireQuest = new List<int>();
         [XmlElement(Order = 7)]
-        public string RewardExp;
+        public long RewardExp;
         [XmlElement(Order = 8)]
         public long RewardMastery;
         [XmlElement(Order = 9)]
@@ -50,8 +51,6 @@ namespace Maple2Storage.Types.Metadata
         public string RewardItem4;
         [XmlElement(Order = 22)]
         public string RewardItem5;
-        [XmlElement(Order = 23)]
-        public string Feature;
 
         // Required for deserialization
         public RecipeMetadata()

@@ -56,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Login
                 case 1:
                     PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
                     pWriter.WriteLong();
-                    pWriter.WriteUnicodeString("");
+                    pWriter.WriteUnicodeString(account.Username);
 
                     session.Send(pWriter);
                     session.Send(BannerListPacket.SetBanner());

@@ -6,6 +6,8 @@ using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 
 namespace MapleServer2.Database
@@ -30,6 +32,10 @@ namespace MapleServer2.Database
         public DbSet<GuildApplication> GuildApplications { get; set; }
         public DbSet<Shop> Shops { get; set; }
         public DbSet<ShopItem> ShopItems { get; set; }
+        public DbSet<MapleopolyTile> MapleopolyTiles { get; set; }
+        public DbSet<GameEvent> Events { get; set; }
+        public DbSet<StringBoardEvent> Event_StringBoards { get; set; }
+        public DbSet<MapleopolyEvent> Event_Mapleopoly { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
 
@@ -114,6 +120,10 @@ namespace MapleServer2.Database
                 entity.Property(e => e.GroupChatId).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new int[3] : JsonConvert.DeserializeObject<int[]>(i));
+
+                entity.Property(e => e.Mapleopoly).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new Mapleopoly() : JsonConvert.DeserializeObject<Mapleopoly>(i));
 
                 entity.Property(e => e.GuildApplications).HasConversion(
                     i => JsonConvert.SerializeObject(i),
@@ -472,7 +482,57 @@ namespace MapleServer2.Database
                 entity.Property(e => e.RequiredFameGrade);
                 entity.Property(e => e.AutoPreviewEquip);
             });
+
+            modelBuilder.Entity<MapleopolyTile>(entity =>
+            {
+                entity.HasKey(e => e.TilePosition);
+                entity.Property(e => e.Type);
+                entity.Property(e => e.TileParameter);
+                entity.Property(e => e.ItemId);
+                entity.Property(e => e.ItemRarity);
+                entity.Property(e => e.ItemAmount);
+            });
+
+            modelBuilder.Entity<GameEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Type);
+                entity.Property(e => e.Active);
+                entity.HasMany(e => e.StringBoard);
+                entity.HasMany(e => e.Mapleopoly);
+            });
+
+            modelBuilder.Entity<StringBoardEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.StringId);
+                entity.Property(e => e.String);
+            });
+
+            modelBuilder.Entity<MapleopolyEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TripAmount);
+                entity.Property(e => e.ItemId);
+                entity.Property(e => e.ItemRarity);
+                entity.Property(e => e.ItemAmount);
+            });
+        }
+
+        public static bool Exists()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return ((RelationalDatabaseCreator) context.Database.GetService<IDatabaseCreator>()).Exists();
+            }
+        }
+
+        public static void CreateDatabase()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Database.EnsureCreated();
+            }
         }
     }
 }
-

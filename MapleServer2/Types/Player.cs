@@ -86,6 +86,8 @@ namespace MapleServer2.Types
         public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
         public string HomeName;
 
+        public Mapleopoly Mapleopoly = new Mapleopoly();
+
         public int MaxSkillTabs { get; set; }
         public long ActiveSkillTabId { get; set; }
 
@@ -159,7 +161,18 @@ namespace MapleServer2.Types
             GameOptions = new GameOptions();
             Wallet = new Wallet(this, meso: 0, meret: 0, gameMeret: 0, eventMeret: 0, valorToken: 0, treva: 0, rue: 0,
                                 haviFruit: 0, mesoToken: 0, bank: 0);
-            Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>());
+            Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
+            { new MasteryExp(MasteryType.Fishing, 0, 0),
+            new MasteryExp(MasteryType.Performance, 0, 0),
+            new MasteryExp(MasteryType.Mining, 0, 0),
+            new MasteryExp(MasteryType.Foraging, 0, 0),
+            new MasteryExp(MasteryType.Ranching, 0, 0),
+            new MasteryExp(MasteryType.Farming, 0, 0),
+            new MasteryExp(MasteryType.Smithing, 0, 0),
+            new MasteryExp(MasteryType.Handicraft, 0, 0),
+            new MasteryExp(MasteryType.Alchemy, 0, 0),
+            new MasteryExp(MasteryType.Cooking, 0, 0),
+            new MasteryExp(MasteryType.PetTaming, 0, 0)});
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             MapId = 52000065;
             Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)

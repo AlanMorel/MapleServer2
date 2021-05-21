@@ -87,18 +87,25 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
-            using (DatabaseContext context = new DatabaseContext())
+            if (DatabaseContext.Exists())
             {
-                // Creates the database if not exists
-                if (context.Database.EnsureCreated())
-                {
-                    Console.WriteLine("Creating database.");
-                    Console.WriteLine("Seeding shops");
-                    ShopsSeeding.Seed();
-                    return;
-                }
                 Console.WriteLine("Database already exists.");
+                return;
             }
+
+            Console.WriteLine("Creating database.");
+            DatabaseContext.CreateDatabase();
+
+            Console.WriteLine("Seeding shops.");
+            ShopsSeeding.Seed();
+
+            Console.WriteLine("Seeding Mapleopoly");
+            MapleopolySeeding.Seed();
+
+            Console.WriteLine("Seeding events");
+            GameEventSeeding.Seed();
+
+            Console.WriteLine("Database created.");
         }
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
