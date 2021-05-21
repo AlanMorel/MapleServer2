@@ -137,7 +137,7 @@ namespace GameDataParser.Parsers
 
                             foreach (XmlNode reward in node.ChildNodes)
                             {
-                                if (!reward.Name.Contains("global") && metadata.Basic.QuestType != QuestType.Exploration)
+                                if (!reward.Name.Contains("global") && metadata.Basic.QuestType != QuestType.Navigator)
                                 {
                                     continue;
                                 }
