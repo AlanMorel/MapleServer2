@@ -125,7 +125,6 @@ namespace MapleServer2.Database
                 .Include(p => p.GameOptions)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
-                .Include(p => p.QuestList)
                 .Include(p => p.Trophies)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
                 .Include(p => p.BankInventory).ThenInclude(p => p.DB_Items)
@@ -134,8 +133,9 @@ namespace MapleServer2.Database
                 {
                     return null;
                 }
-                List<Mail> dbMails = context.Mails.Where(m => m.PlayerId == player.CharacterId).ToList();
-                mails.AddRange(dbMails);
+                mails = context.Mails.Where(m => m.PlayerId == characterId).ToList();
+
+                player.QuestList = context.Quests.Where(x => x.Player.CharacterId == characterId).ToList();
             }
 
             Levels levels = player.Levels;
