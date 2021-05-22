@@ -53,7 +53,6 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(CardReverseGamePacketMode.Notice);
             pWriter.WriteByte(0x0);
             return pWriter;
-
         }
     }
 }
