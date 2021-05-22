@@ -144,7 +144,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            Console.WriteLine(marketItems[0].ItemId);
             session.Send(MeretMarketPacket.Promos(marketItems));
         }
 
