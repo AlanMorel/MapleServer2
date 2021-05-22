@@ -5,7 +5,6 @@ using MapleServer2.Database.Types;
 
 namespace MapleServer2.Packets
 {
-
     public static class CardReverseGamePacket
     {
         private enum CardReverseGamePacketMode : byte

@@ -86,8 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            int shopId = 161;
-            OpenSystemShop(session, shopId);
+            OpenSystemShop(session, 161);
         }
 
         private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
@@ -99,8 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            int shopId = 168;
-            OpenSystemShop(session, shopId);
+            OpenSystemShop(session, 168);
         }
 
         private static void OpenSystemShop(GameSession session, int shopId)

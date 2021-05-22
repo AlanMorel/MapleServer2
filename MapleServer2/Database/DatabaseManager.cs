@@ -459,15 +459,13 @@ namespace MapleServer2.Database
 
         public static List<MeretMarketItem> GetMeretMarketItemsByCategory(MeretMarketCategory category)
         {
-            List<MeretMarketItem> items = new List<MeretMarketItem>();
             using (DatabaseContext context = new DatabaseContext())
             {
-                items = context.MeretMarketItems.Where(x => x.Category == category)
+                return context.MeretMarketItems.Where(x => x.Category == category)
                     .Include(x => x.AdditionalQuantities)
                     .Include(x => x.Banner)
                     .ToList();
             }
-            return items;
         }
 
         public static MeretMarketItem GetMeretMarketItem(int id)
@@ -480,12 +478,10 @@ namespace MapleServer2.Database
 
         public static List<Banner> GetBanners()
         {
-            List<Banner> banners = new List<Banner>();
             using (DatabaseContext context = new DatabaseContext())
             {
-                banners = context.Banners.ToList();
+                return context.Banners.ToList();
             }
-            return banners;
         }
 
         public static long AddQuest(QuestStatus questStatus)
@@ -630,12 +626,10 @@ namespace MapleServer2.Database
 
         public static List<CardReverseGame> GetCardReverseGame()
         {
-            List<CardReverseGame> cards = new List<CardReverseGame>();
             using (DatabaseContext context = new DatabaseContext())
             {
-                cards = context.CardReverseGame.ToList();
+                return context.CardReverseGame.ToList();
             }
-            return cards;
         }
 
         private static bool SaveChanges(DatabaseContext context)
