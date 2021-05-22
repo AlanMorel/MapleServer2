@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Types
+﻿namespace MapleServer2.Database.Types
 {
     public class StringBoardEvent
     {

@@ -60,7 +60,6 @@ namespace GameDataParser
                 new BeautyParser(),
                 new ColorPaletteParser(resources),
                 new GachaParser(resources),
-                new MeretMarketParser(),
                 new ItemExtractionParser(resources),
                 new FishParser(resources),
                 new FishingSpotParser(resources),

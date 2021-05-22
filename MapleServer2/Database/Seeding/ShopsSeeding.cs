@@ -17,7 +17,6 @@ namespace MapleServer2.Database
              */
             Shop rumi = new Shop()
             {
-                TemplateId = 11000079,
                 Id = 103,
                 Category = 3,
                 Name = "shop",
@@ -203,7 +202,6 @@ namespace MapleServer2.Database
              */
             Shop lazy = new Shop()
             {
-                TemplateId = 11003465,
                 Id = 152,
                 Category = 17,
                 Name = "habishop",
@@ -223,7 +221,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 4000,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -235,7 +233,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -247,7 +245,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -259,7 +257,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -271,7 +269,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -283,7 +281,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -295,7 +293,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -307,7 +305,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -319,7 +317,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -331,7 +329,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -343,7 +341,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -355,7 +353,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -367,7 +365,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -379,7 +377,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -391,7 +389,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -403,7 +401,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -415,7 +413,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -427,7 +425,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -439,7 +437,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -451,7 +449,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiEquip",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -463,7 +461,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiSkin",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -475,7 +473,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "HabiMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -487,7 +485,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "HabiSkin",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     }
                 }
             };
@@ -500,7 +498,6 @@ namespace MapleServer2.Database
              */
             Shop redstarshop = new Shop()
             {
-                TemplateId = 11001272,
                 Id = 154,
                 Category = 19,
                 Name = "redstarshop",
@@ -520,7 +517,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -532,7 +529,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -544,7 +541,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -556,7 +553,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -568,7 +565,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -580,7 +577,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -592,7 +589,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -604,7 +601,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -616,7 +613,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 10,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -628,7 +625,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 10,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -640,7 +637,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 10,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -652,7 +649,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 10,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -664,7 +661,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -676,7 +673,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -688,7 +685,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -700,7 +697,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -712,7 +709,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -724,7 +721,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -736,7 +733,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -748,7 +745,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -760,7 +757,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     }
                 }
             };
@@ -773,7 +770,6 @@ namespace MapleServer2.Database
              */
             Shop bluestarshop = new Shop()
             {
-                TemplateId = 11001270,
                 Id = 153,
                 Category = 19,
                 Name = "bluestarshop",
@@ -793,7 +789,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -805,7 +801,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinMount",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -817,7 +813,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -829,7 +825,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -841,7 +837,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -853,7 +849,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -865,7 +861,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -877,7 +873,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 100,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -889,7 +885,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinEtc",
                         Quantity = 100,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -901,7 +897,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -913,7 +909,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -925,7 +921,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -937,7 +933,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -949,7 +945,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -961,7 +957,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -973,7 +969,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -985,7 +981,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -997,7 +993,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1009,7 +1005,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "CoinConstruct",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     }
                 }
             };
@@ -1022,7 +1018,6 @@ namespace MapleServer2.Database
              */
             Shop eventshop = new Shop()
             {
-                TemplateId = 11001003,
                 Id = 254,
                 Category = 3,
                 Name = "eventshop",
@@ -1041,18 +1036,163 @@ namespace MapleServer2.Database
              */
             Shop lushop = new Shop()
             {
-                TemplateId = 11004454,
                 Id = 151,
-                Category = 3,
+                Category = 16,
                 Name = "lushop",
                 RestrictSales = false,
                 CanRestock = false,
                 NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 AllowBuyback = true,
                 Items = new List<ShopItem>()
+                {
+                    new ShopItem
+                    {
+                        ItemId = 12100074,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 200,
+                        ItemRank = 3,
+                        Category = "LuMoneyAromor",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11850105,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 200,
+                        ItemRank = 3,
+                        Category = "LuMoneyAromor",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000598,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 50,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000553,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 5,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000554,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 8,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000559,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 8,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000567,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 40,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000570,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 40,
+                        ItemRank = 1,
+                        Category = "LuEtc",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11300194,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 190,
+                        ItemRank = 1,
+                        Category = "LuMoneySkin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 12200079,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 250,
+                        ItemRank = 1,
+                        Category = "LuMoneySkin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 70200032,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 16,
+                        ItemRank = 1,
+                        Category = "LuMoneyBadge",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 70200033,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 25,
+                        ItemRank = 1,
+                        Category = "LuMoneyBadge",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 70200034,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 16,
+                        ItemRank = 1,
+                        Category = "LuMoneyBadge",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 70200035,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 25,
+                        ItemRank = 1,
+                        Category = "LuMoneyBadge",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600035,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 445,
+                        ItemRank = 4,
+                        Category = "LuMoneyMount",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20300228,
+                        TokenType = ShopCurrencyType.Rue,
+                        Price = 4,
+                        ItemRank = 4,
+                        Category = "LuMoneyBox",
+                        Quantity = 1,
+                    },
+                }
             };
 
-            // shops.Add(lushop);
+            shops.Add(lushop);
 
             /*
              * Shop Name: Beros (Battle Sim Operator)
@@ -1060,18 +1200,89 @@ namespace MapleServer2.Database
              */
             Shop beros = new Shop()
             {
-                TemplateId = 11000122,
                 Id = 177,
-                Category = 3,
+                Category = 30,
                 Name = "chaosashop",
                 RestrictSales = false,
                 CanRestock = false,
                 NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 AllowBuyback = true,
                 Items = new List<ShopItem>()
+                {
+                    new ShopItem
+                    {
+                        ItemId = 11300713,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "SKIN",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11400609,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "SKIN",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11500524,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "SKIN",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11600636,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "SKIN",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11700669,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "SKIN",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20300652,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 1,
+                        ItemRank = 4,
+                        Category = "ETC",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600153,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 30000601,
+                        Price = 100,
+                        ItemRank = 4,
+                        Category = "Ride",
+                        Quantity = 1,
+                    },
+                }
             };
 
-            // shops.Add(beros);
+            shops.Add(beros);
 
             /*
              * Shop Name: Borka (Shadow Supply Shop)
@@ -1079,7 +1290,6 @@ namespace MapleServer2.Database
              */
             Shop borka = new Shop()
             {
-                TemplateId = 11000748,
                 Id = 135,
                 Category = 3,
                 Name = "karmashop",
@@ -1099,7 +1309,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "FUN",
                         Quantity = 25,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1111,7 +1321,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1123,7 +1333,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1135,7 +1345,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1147,7 +1357,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1159,7 +1369,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1171,7 +1381,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1183,7 +1393,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1195,7 +1405,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1207,7 +1417,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1219,7 +1429,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1231,7 +1441,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1243,7 +1453,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "FUN",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1255,7 +1465,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1267,7 +1477,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "PS",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     }
                 }
             };
@@ -1280,18 +1490,37 @@ namespace MapleServer2.Database
              */
             Shop hibeck = new Shop()
             {
-                TemplateId = 11000750,
-                Id = 136,
-                Category = 3,
+                Id = 138,
+                Category = 6,
                 Name = "karmaequip",
                 RestrictSales = false,
                 CanRestock = false,
                 NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 AllowBuyback = true,
                 Items = new List<ShopItem>()
+                {
+                    new ShopItem
+                    {
+                        ItemId = 11300252,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 2500,
+                        ItemRank = 1,
+                        Category = "ShadowSkin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 12200096,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 3000,
+                        ItemRank = 1,
+                        Category = "ShadowSkin",
+                        Quantity = 1,
+                    },
+                }
             };
 
-            // shops.Add(hibeck);
+            shops.Add(hibeck);
 
             /*
              * Shop Name: Matz (Shadow Mount Shop)
@@ -1299,18 +1528,72 @@ namespace MapleServer2.Database
              */
             Shop matz = new Shop()
             {
-                TemplateId = 11000122,
                 Id = 142,
-                Category = 3,
+                Category = 12,
                 Name = "karmaride",
                 RestrictSales = false,
                 CanRestock = false,
                 NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 AllowBuyback = true,
                 Items = new List<ShopItem>()
+                {
+                    new ShopItem
+                    {
+                        ItemId = 50600021,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 850,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23200014,
+                        RequiredAchievementGrade = 2,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600032,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 1700,
+                        ItemRank = 4,
+                        RequiredAchievementId = 23200014,
+                        RequiredAchievementGrade = 4,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600016,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 850,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23200013,
+                        RequiredAchievementGrade = 5,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600030,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 1700,
+                        ItemRank = 4,
+                        RequiredAchievementId = 23200013,
+                        RequiredAchievementGrade = 8,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600217,
+                        TokenType = ShopCurrencyType.Treva,
+                        Price = 50000,
+                        ItemRank = 4,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                }
             };
 
-            // shops.Add(matz);
+            shops.Add(matz);
 
             /*
              * Shop Name: Rainbow Arc (Guild Token Shop)
@@ -1318,7 +1601,6 @@ namespace MapleServer2.Database
              */
             Shop rainbowArc = new Shop()
             {
-                TemplateId = 11003463,
                 Id = 168,
                 Category = 28,
                 Name = "guildtokenetc",
@@ -1338,7 +1620,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "PVPRide",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1350,7 +1632,7 @@ namespace MapleServer2.Database
                         RequiredItemId = 0,
                         Category = "PVPAcc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1362,7 +1644,7 @@ namespace MapleServer2.Database
                         ItemRank = 4,
                         Category = "PVPAcc",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                 }
             };
@@ -1375,18 +1657,241 @@ namespace MapleServer2.Database
              */
             Shop spartan = new Shop()
             {
-                TemplateId = 11003560,
                 Id = 196,
-                Category = 6,
+                Category = 3,
                 Name = "dungeonhelp",
                 RestrictSales = false,
-                CanRestock = false,
+                CanRestock = true,
                 NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 AllowBuyback = true,
-                Items = new List<ShopItem>() { }
+                Items = new List<ShopItem>()
+                {
+                    new ShopItem
+                    {
+                        ItemId = 11301058,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11400905,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 90,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11500809,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 90,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11600982,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 60,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11701053,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 60,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11301053,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 100,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11400901,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 90,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11500805,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 90,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11600976,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 60,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11701047,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 60,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 70300041,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 30,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 60000015,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 200,
+                        ItemRank = 1,
+                        Category = "Pet",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 60000047,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 200,
+                        ItemRank = 1,
+                        Category = "Pet",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600183,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 300,
+                        ItemRank = 1,
+                        Category = "Ride",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600220,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 300,
+                        ItemRank = 1,
+                        Category = "Ride",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000310,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 5,
+                        StockCount = 1,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000590,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 12,
+                        ItemRank = 1,
+                        Category = "CouponNScroll",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20301105,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 10,
+                        ItemRank = 1,
+                        Category = "CouponNScroll",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20301106,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 7,
+                        StockCount = 3,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20302776,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 3,
+                        ItemRank = 1,
+                        Category = "CouponNScroll",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20302777,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 20,
+                        ItemRank = 1,
+                        Category = "CouponNScroll",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20300078,
+                        TokenType = ShopCurrencyType.Item,
+                        RequiredItemId = 20301082,
+                        Price = 5,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                    },
+                }
             };
 
-            // shops.Add(spartan);
+            shops.Add(spartan);
 
             /*
              * Shop Name: Stefan (Music Shop)
@@ -1394,7 +1899,6 @@ namespace MapleServer2.Database
              */
             Shop stefan = new Shop()
             {
-                TemplateId = 11001320,
                 Id = 160,
                 Category = 20,
                 Name = "musicshop",
@@ -1414,7 +1918,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Skin",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1426,7 +1930,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Skin",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1438,7 +1942,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1450,7 +1954,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1462,7 +1966,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1474,7 +1978,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1486,7 +1990,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1498,7 +2002,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1510,7 +2014,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1522,7 +2026,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Instrument",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1534,7 +2038,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1546,7 +2050,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1558,7 +2062,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1570,7 +2074,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1582,7 +2086,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1594,7 +2098,7 @@ namespace MapleServer2.Database
                         ItemRank = 2,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1606,7 +2110,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1618,7 +2122,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1630,7 +2134,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1642,7 +2146,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1654,7 +2158,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1666,7 +2170,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1678,7 +2182,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1690,7 +2194,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1702,7 +2206,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1714,7 +2218,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1726,7 +2230,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1738,7 +2242,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1750,7 +2254,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1762,7 +2266,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1774,7 +2278,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1786,7 +2290,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1798,7 +2302,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1810,7 +2314,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1822,7 +2326,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1834,7 +2338,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1846,7 +2350,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1858,7 +2362,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1870,7 +2374,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1882,7 +2386,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1894,7 +2398,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1906,7 +2410,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1918,7 +2422,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1930,7 +2434,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1942,7 +2446,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1954,7 +2458,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     },
                     new ShopItem
                     {
@@ -1966,7 +2470,7 @@ namespace MapleServer2.Database
                         ItemRank = 1,
                         Category = "Score",
                         Quantity = 1,
-                        Flag = ShopItemFlag.New
+                        Flag = ShopItemFlag.None
                     }
                 }
             };
@@ -1975,7 +2479,6 @@ namespace MapleServer2.Database
 
             Shop holidaycapsule2019 = new Shop()
             {
-                TemplateId = 11001321,
                 Id = 104201,
                 Category = 104201,
                 Name = "shopetc",
@@ -2005,7 +2508,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsule1 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101001,
                 Category = 101001,
                 Name = "shopetc",
@@ -2611,7 +3113,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsule2 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101002,
                 Category = 101002,
                 Name = "shopetc",
@@ -3229,7 +3730,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsule3 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101003,
                 Category = 101003,
                 Name = "shopetc",
@@ -3847,7 +4347,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries1 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101004,
                 Category = 101004,
                 Name = "shopetc",
@@ -4441,7 +4940,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries2 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101005,
                 Category = 101005,
                 Name = "shopetc",
@@ -5059,7 +5557,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries3 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101006,
                 Category = 101006,
                 Name = "shopetc",
@@ -5678,7 +6175,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries4 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101007,
                 Category = 101007,
                 Name = "shopetc",
@@ -6297,7 +6793,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries5 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101008,
                 Category = 101008,
                 Name = "shopetc",
@@ -6916,7 +7411,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries6 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101009,
                 Category = 101009,
                 Name = "shopetc",
@@ -7535,7 +8029,6 @@ namespace MapleServer2.Database
 
             Shop duckycapsuleseries7 = new Shop()
             {
-                TemplateId = 0,
                 Id = 101010,
                 Category = 101010,
                 Name = "shopetc",
@@ -8154,7 +8647,6 @@ namespace MapleServer2.Database
 
             Shop slimevarietycapsule1 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102001,
                 Category = 102001,
                 Name = "shopetc",
@@ -8401,7 +8893,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries1 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102002,
                 Category = 102001,
                 Name = "shopetc",
@@ -8649,7 +9140,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries2 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102003,
                 Category = 102001,
                 Name = "shopetc",
@@ -8897,7 +9387,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries3 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102004,
                 Category = 102001,
                 Name = "shopetc",
@@ -9145,7 +9634,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries4 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102005,
                 Category = 102001,
                 Name = "shopetc",
@@ -9393,7 +9881,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries5 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102006,
                 Category = 102001,
                 Name = "shopetc",
@@ -9641,7 +10128,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries6 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102007,
                 Category = 102001,
                 Name = "shopetc",
@@ -9889,7 +10375,6 @@ namespace MapleServer2.Database
 
             Shop slimecapsuleseries7 = new Shop()
             {
-                TemplateId = 0,
                 Id = 102008,
                 Category = 102001,
                 Name = "shopetc",
@@ -10137,7 +10622,6 @@ namespace MapleServer2.Database
 
             Shop holyidaycapsule = new Shop()
             {
-                TemplateId = 0,
                 Id = 104201,
                 Category = 104201,
                 Name = "shopetc",
@@ -10659,7 +11143,6 @@ namespace MapleServer2.Database
 
             Shop valentinescapsule = new Shop()
             {
-                TemplateId = 0,
                 Id = 104202,
                 Category = 104202,
                 Name = "shopetc",
@@ -11154,6 +11637,845 @@ namespace MapleServer2.Database
             };
 
             shops.Add(valentinescapsule);
+
+
+            Shop pesca = new Shop()
+            {
+                Id = 161,
+                Category = 22,
+                Name = "shopetc",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 20000265,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000276,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2500,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000307,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 10000,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000308,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 20000,
+                        RequiredAchievementId = 23100136,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000309,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 50000,
+                        RequiredAchievementId = 23100137,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000310,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 100000,
+                        RequiredAchievementId = 23100138,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 32000001,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5000,
+                        ItemRank = 1,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 32000005,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 100000,
+                        RequiredAchievementId = 23100136,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 2,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 32000008,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 300000,
+                        RequiredAchievementId = 23100137,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 3,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 32000011,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 500000,
+                        RequiredAchievementId = 23100138,
+                        RequiredAchievementGrade = 1,
+                        ItemRank = 4,
+                        Category = "Fish",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11400383,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1500000,
+                        RequiredAchievementId = 23100154,
+                        RequiredAchievementGrade = 3,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11500311,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1500000,
+                        RequiredAchievementId = 23100154,
+                        RequiredAchievementGrade = 3,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11700411,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000000,
+                        RequiredAchievementId = 23100154,
+                        RequiredAchievementGrade = 3,
+                        ItemRank = 1,
+                        Category = "Skin",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 40100039,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000,
+                        ItemRank = 1,
+                        Category = "FishEtc",
+                        Quantity = 1,
+                    },
+                }
+            };
+
+            shops.Add(pesca);
+
+            Shop chacha = new Shop()
+            {
+                Id = 963,
+                Category = 920,
+                Name = "shopetc",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 11300036,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1500000,
+                        ItemRank = 1,
+                        RequiredAchievementId = 22200194,
+                        RequiredAchievementGrade = 3,
+                        Category = "Skin",
+                        Quantity = 1,
+                    }
+                }
+            };
+
+            shops.Add(chacha);
+
+            Shop maya = new Shop()
+            {
+                Id = 105,
+                Category = 3,
+                Name = "shop",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 63000000,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 40400020,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 3,
+                        Category = "Flight",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 40100039,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "SKC",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20301053,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20301054,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20301057,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 50000,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000022,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 750,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000023,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2480,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000024,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4280,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000028,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 210,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000029,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 980,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000030,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2360,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000031,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4160,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000032,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5180,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000033,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5670,
+                        SalePrice = 0,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                        Flag = ShopItemFlag.None
+                    }
+                }
+            };
+
+            shops.Add(maya);
+
+            Shop margaret = new Shop()
+            {
+                Id = 123,
+                Category = 7,
+                Name = "shopetc",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 30000234,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2800,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000235,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 3500,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000236,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1500,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000237,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1500,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000238,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 3600,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000239,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 3000,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000041,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 850,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000042,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 600,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000085,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1100,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000084,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 700,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000086,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 500,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000243,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4000,
+                        ItemRank = 1,
+                        Category = "Food",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000148,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2400,
+                        ItemRank = 1,
+                        Category = "Jewel",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000147,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1200,
+                        ItemRank = 1,
+                        Category = "Jewel",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000149,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 10000,
+                        ItemRank = 1,
+                        Category = "Diamond",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 30000272,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000,
+                        ItemRank = 1,
+                        Category = "ETC",
+                        Quantity = 1,
+                    },
+
+                }
+            };
+
+            shops.Add(margaret);
+
+            Shop ropey = new Shop()
+            {
+                Id = 148,
+                Category = 5,
+                Name = "equip",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 11900061,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 22100002,
+                        RequiredAchievementGrade = 8,
+                        Category = "PD",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11900062,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23100009,
+                        RequiredAchievementGrade = 2,
+                        Category = "PD",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11900063,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23100002,
+                        RequiredAchievementGrade = 6,
+                        Category = "PD",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 11900064,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 1000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23100008,
+                        RequiredAchievementGrade = 6,
+                        Category = "PD",
+                        Quantity = 1,
+                    },
+                }
+            };
+
+            shops.Add(ropey);
+
+            Shop beest = new Shop()
+            {
+                Id = 121,
+                Category = 8,
+                Name = "ride",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 50600012,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 22200004,
+                        RequiredAchievementGrade = 4,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600010,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23400004,
+                        RequiredAchievementGrade = 3,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600002,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4000000,
+                        ItemRank = 3,
+                        RequiredAchievementId = 23400002,
+                        RequiredAchievementGrade = 3,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600046,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 10000000,
+                        ItemRank = 4,
+                        RequiredAchievementId = 21100019,
+                        RequiredAchievementGrade = 5,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600047,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 10000000,
+                        ItemRank = 4,
+                        GuildTrophy = 20000,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600048,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 10000000,
+                        ItemRank = 4,
+                        GuildTrophy = 50000,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600033,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 12500000,
+                        ItemRank = 4,
+                        RequiredAchievementId = 23200001,
+                        RequiredAchievementGrade = 8,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                }
+            };
+
+            shops.Add(beest);
+
+            Shop emily = new Shop()
+            {
+                Id = 116,
+                Category = 3,
+                Name = "shop",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 20000022,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 750,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000023,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2480,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000024,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4280,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000028,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 210,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000029,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 980,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000030,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 2360,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000031,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 4160,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000032,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5180,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000033,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5670,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000025,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5820,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000026,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 7380,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 20000027,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 8960,
+                        ItemRank = 1,
+                        Category = "PS",
+                        Quantity = 1,
+                    }
+                }
+            };
+
+            shops.Add(emily);
+
+            Shop eric = new Shop()
+            {
+                Id = 130,
+                Category = 8,
+                Name = "ride",
+                RestrictSales = false,
+                CanRestock = false,
+                NextRestock = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                AllowBuyback = true,
+                Items = new List<ShopItem>
+                {
+                    new ShopItem
+                    {
+                        ItemId = 50600015,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 55000,
+                        ItemRank = 1,
+                        Category = "Mide",
+                        Quantity = 1,
+                    },
+                    new ShopItem
+                    {
+                        ItemId = 50600005,
+                        TokenType = ShopCurrencyType.Meso,
+                        Price = 5000000,
+                        ItemRank = 3,
+                        Category = "Mide",
+                        Quantity = 1
+                    }
+                }
+            };
+
+            shops.Add(eric);
 
             DatabaseManager.InsertShops(shops);
         }

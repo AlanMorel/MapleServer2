@@ -4,6 +4,7 @@ using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
@@ -30,7 +31,8 @@ namespace MapleServer2.PacketHandlers.Login
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            session.Send(BannerListPacket.SetBanner());
+            List<Banner> banners = DatabaseManager.GetBanners();
+            session.Send(BannerListPacket.SetBanner(banners));
             session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
             List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);

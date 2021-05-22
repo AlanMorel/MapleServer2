@@ -20,6 +20,7 @@ namespace MapleServer2.PacketHandlers.Game
         private enum ShopMode : byte
         {
             Arena = 0x03,
+            Fishing = 0x04,
             ViaItem = 0x0A
         }
 
@@ -31,6 +32,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 case ShopMode.ViaItem:
                     HandleViaItem(session, packet);
+                    break;
+                case ShopMode.Fishing:
+                    HandleFishingShop(session, packet);
                     break;
                 case ShopMode.Arena:
                     HandleMapleArenaShop(session, packet);
@@ -73,6 +77,18 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ShopPacket.Reload());
             session.Send(SystemShopPacket.Open());
         }
+        private static void HandleFishingShop(GameSession session, PacketReader packet)
+        {
+            bool openShop = packet.ReadBool();
+
+            if (!openShop)
+            {
+                return;
+            }
+
+            int shopId = 161;
+            OpenSystemShop(session, shopId);
+        }
 
         private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
         {
@@ -83,7 +99,13 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Shop shop = DatabaseManager.GetShop(168);
+            int shopId = 168;
+            OpenSystemShop(session, shopId);
+        }
+
+        private static void OpenSystemShop(GameSession session, int shopId)
+        {
+            Shop shop = DatabaseManager.GetShop(shopId);
 
             session.Send(ShopPacket.Open(shop));
             foreach (ShopItem shopItem in shop.Items)

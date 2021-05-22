@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Types;
 using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
@@ -444,6 +445,49 @@ namespace MapleServer2.Database
             }
         }
 
+        public static void InsertMeretMarketItems(List<MeretMarketItem> items)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (MeretMarketItem item in items)
+                {
+                    context.MeretMarketItems.Add(item);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<MeretMarketItem> GetMeretMarketItemsByCategory(MeretMarketCategory category)
+        {
+            List<MeretMarketItem> items = new List<MeretMarketItem>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                items = context.MeretMarketItems.Where(x => x.Category == category)
+                    .Include(x => x.AdditionalQuantities)
+                    .Include(x => x.Banner)
+                    .ToList();
+            }
+            return items;
+        }
+
+        public static MeretMarketItem GetMeretMarketItem(int id)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.MeretMarketItems.FirstOrDefault(x => x.MarketId == id);
+            }
+        }
+
+        public static List<Banner> GetBanners()
+        {
+            List<Banner> banners = new List<Banner>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                banners = context.Banners.ToList();
+            }
+            return banners;
+        }
+
         public static long AddQuest(QuestStatus questStatus)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -519,9 +563,23 @@ namespace MapleServer2.Database
             {
                 gameEvents = context.Events.Where(x => x.Active == true)
                     .Include(x => x.Mapleopoly)
-                    .Include(x => x.StringBoard).ToList();
+                    .Include(x => x.StringBoard)
+                    .Include(x => x.UGCMapContractSale)
+                    .Include(x => x.UGCMapExtensionSale)
+                    .ToList();
             }
             return gameEvents;
+        }
+
+        public static GameEvent GetSingleGameEvent(GameEventType type)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Events
+                    .Include(x => x.UGCMapContractSale)
+                    .Include(x => x.UGCMapExtensionSale)
+                    .FirstOrDefault(x => x.Type == type && x.Active == true);
+            }
         }
 
         public static void InsertStringBoards(List<StringBoardEvent> stringBoards)
@@ -556,6 +614,28 @@ namespace MapleServer2.Database
                 mapleopolyEvents = context.Event_Mapleopoly.ToList();
             }
             return mapleopolyEvents;
+        }
+
+        public static void InsertCardReverseGame(List<CardReverseGame> cards)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (CardReverseGame card in cards)
+                {
+                    context.CardReverseGame.Add(card);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<CardReverseGame> GetCardReverseGame()
+        {
+            List<CardReverseGame> cards = new List<CardReverseGame>();
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                cards = context.CardReverseGame.ToList();
+            }
+            return cards;
         }
 
         private static bool SaveChanges(DatabaseContext context)
