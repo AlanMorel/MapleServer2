@@ -159,6 +159,7 @@ namespace MapleServer2.Types
             Gender = gender;
             Job = job;
             GameOptions = new GameOptions();
+            GameOptions.Initialize();
             Wallet = new Wallet(this, meso: 0, meret: 0, gameMeret: 0, eventMeret: 0, valorToken: 0, treva: 0, rue: 0,
                                 haviFruit: 0, mesoToken: 0, bank: 0);
             Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()

@@ -9,15 +9,19 @@ namespace MapleServer2.Types
         public List<Hotbar> Hotbars { get; private set; }
         public short ActiveHotbarId { get; private set; }
 
-        public GameOptions()
+        public GameOptions() { }
+
+        public void Initialize()
         {
             KeyBinds = new Dictionary<int, KeyBind>();
             Hotbars = new List<Hotbar>();
 
             // Have 3 hotbars available
-            for (int hotbar = 0; hotbar < 3; hotbar++)
+            for (int i = 0; i < 3; i++)
             {
-                Hotbars.Add(new Hotbar());
+                Hotbar hotbar = new Hotbar();
+                hotbar.Initialize();
+                Hotbars.Add(hotbar);
             }
         }
 

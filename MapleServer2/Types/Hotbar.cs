@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Linq;
 
 namespace MapleServer2.Types
 {
     public class Hotbar
     {
+        public readonly long Id;
         public const int MAX_SLOTS = 25;
         public QuickSlot[] Slots { get; private set; }
 
-        public Hotbar()
+        public Hotbar() { }
+
+        public void Initialize()
         {
             Slots = new QuickSlot[MAX_SLOTS];
 
@@ -15,6 +19,25 @@ namespace MapleServer2.Types
             {
                 Slots[i] = new QuickSlot();
             }
+        }
+
+        public bool AddToFirstSlot(QuickSlot quickSlot)
+        {
+            if (Slots.Contains(quickSlot))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < MAX_SLOTS; i++)
+            {
+                if (Slots[i].ItemId != 0 || Slots[i].SkillId != 0)
+                {
+                    continue;
+                }
+                Slots[i] = quickSlot;
+                return true;
+            }
+            return false;
         }
 
         public void MoveQuickSlot(int targetSlotIndex, QuickSlot quickSlot)

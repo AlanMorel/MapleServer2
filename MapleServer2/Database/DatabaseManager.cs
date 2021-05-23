@@ -121,7 +121,7 @@ namespace MapleServer2.Database
                 .Include(p => p.SkillTabs)
                 .Include(p => p.Guild)
                 // .Include(p => p.Home)
-                .Include(p => p.GameOptions)
+                .Include(p => p.GameOptions).ThenInclude(p => p.Hotbars)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
                 .Include(p => p.Trophies)
@@ -190,16 +190,31 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
+                context.Entry(player.GameOptions).State = EntityState.Modified;
 
                 if (player.GuildMember != null)
                 {
                     GuildMember dbGuildMember = context.GuildMembers.Find(player.CharacterId);
                     context.Entry(dbGuildMember).CurrentValues.SetValues(player.GuildMember);
                 }
+                UpdateHotbars(player);
                 UpdateQuests(player);
                 UpdateTrophies(player);
                 UpdateItems(player);
                 SaveChanges(context);
+            }
+        }
+
+        private static void UpdateHotbars(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Hotbar hotbar in player.GameOptions.Hotbars)
+                {
+                    Hotbar dbHotbar = context.Hotbars.Find(hotbar.Id);
+                    context.Entry(dbHotbar).CurrentValues.SetValues(hotbar);
+                }
+                context.SaveChanges();
             }
         }
 
