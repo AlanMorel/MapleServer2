@@ -6,7 +6,7 @@ namespace MapleServer2.Types
     public class Hotbar
     {
         public readonly long Id;
-        public const int MAX_SLOTS = 25;
+        public const int MAX_SLOTS = 22;
         public QuickSlot[] Slots { get; private set; }
 
         public Hotbar() { }
