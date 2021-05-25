@@ -19,6 +19,7 @@ namespace MapleServer2.Database
         public DbSet<Levels> Levels { get; set; }
         public DbSet<SkillTab> SkillTabs { get; set; }
         public DbSet<GameOptions> GameOptions { get; set; }
+        public DbSet<Hotbar> Hotbars { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<BankInventory> BankInventories { get; set; }
         public DbSet<Item> Items { get; set; }
@@ -248,9 +249,16 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new Dictionary<int, KeyBind>() : JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(i));
 
-                entity.Property(e => e.Hotbars).HasConversion(
+                entity.HasMany(e => e.Hotbars);
+            });
+
+            modelBuilder.Entity<Hotbar>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Slots).HasConversion(
                     i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new List<Hotbar>() : JsonConvert.DeserializeObject<List<Hotbar>>(i));
+                    i => i == null ? new QuickSlot[25] : JsonConvert.DeserializeObject<QuickSlot[]>(i));
             });
 
             modelBuilder.Entity<Inventory>(entity =>
