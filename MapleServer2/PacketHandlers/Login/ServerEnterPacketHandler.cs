@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
@@ -22,10 +23,12 @@ namespace MapleServer2.PacketHandlers.Login
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
+            string ipAddress = Environment.GetEnvironmentVariable("IP");
+            int port = int.Parse(Environment.GetEnvironmentVariable("LoginPort"));
+            builder.Add(new IPEndPoint(IPAddress.Parse(ipAddress), port));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = "Paperwood";
+            ServerName = Environment.GetEnvironmentVariable("Name");
         }
 
         public override void Handle(LoginSession session, PacketReader packet)

@@ -9,7 +9,7 @@ namespace MapleServer2.Tools
         {
             foreach (string line in File.ReadAllLines(filePath))
             {
-                string[] parts = line.Split(':', StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = line.Split('=', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
                 if (parts.Length != 2)
                 {

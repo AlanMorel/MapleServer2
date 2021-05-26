@@ -1,11 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Servers.Login;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -17,7 +17,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
         {
-            LoginEndpoint = new IPEndPoint(IPAddress.Loopback, LoginServer.PORT);
+            string ipAddress = Environment.GetEnvironmentVariable("IP");
+            int port = int.Parse(Environment.GetEnvironmentVariable("LoginPort"));
+            LoginEndpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
         }
 
         private enum QuitMode : byte
