@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MapleServer2.Types
+namespace MapleServer2.Database.Types
 {
     public class GameEvent
     {
@@ -9,6 +9,8 @@ namespace MapleServer2.Types
         public GameEventType Type;
         public List<MapleopolyEvent> Mapleopoly;
         public List<StringBoardEvent> StringBoard;
+        public UGCMapContractSaleEvent UGCMapContractSale;
+        public UGCMapExtensionSaleEvent UGCMapExtensionSale;
 
         public GameEvent() { }
     }

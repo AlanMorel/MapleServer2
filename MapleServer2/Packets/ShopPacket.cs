@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.Open);
-            pWriter.WriteInt(shop.TemplateId);
+            pWriter.WriteInt(shop.Uid);
             pWriter.WriteInt(shop.Id);
             pWriter.WriteLong(shop.NextRestock);
             pWriter.WriteInt();
