@@ -18,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
         public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
         {
             string ipAddress = Environment.GetEnvironmentVariable("IP");
-            int port = int.Parse(Environment.GetEnvironmentVariable("LoginPort"));
+            int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
             LoginEndpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
         }
 

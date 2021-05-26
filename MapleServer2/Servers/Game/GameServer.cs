@@ -31,7 +31,7 @@ namespace MapleServer2.Servers.Game
                 GuildManager.AddGuild(guild);
             }
 
-            ushort port = ushort.Parse(Environment.GetEnvironmentVariable("GamePort"));
+            ushort port = ushort.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
             Start(port);
         }
     }

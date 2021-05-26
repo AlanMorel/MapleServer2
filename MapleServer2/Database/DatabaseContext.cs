@@ -43,12 +43,12 @@ namespace MapleServer2.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string server = Environment.GetEnvironmentVariable("DB_IP");
-            string port = Environment.GetEnvironmentVariable("DB_Port");
-            string database = Environment.GetEnvironmentVariable("DB_Database");
-            string user = Environment.GetEnvironmentVariable("DB_User");
-            string password = Environment.GetEnvironmentVariable("DB_Password");
+            string port = Environment.GetEnvironmentVariable("DB_PORT");
+            string name = Environment.GetEnvironmentVariable("DB_NAME");
+            string user = Environment.GetEnvironmentVariable("DB_USER");
+            string password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-            optionsBuilder.UseMySQL($"server={server};port={port};database={database};user={user};password={password}");
+            optionsBuilder.UseMySQL($"server={server};port={port};database={name};user={user};password={password}");
             // optionsBuilder.LogTo(Console.WriteLine);
         }
 

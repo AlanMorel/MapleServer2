@@ -58,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Login
             Logger.Info($"Logging in to game with char id: {charId}");
 
             string ipAddress = Environment.GetEnvironmentVariable("IP");
-            int port = int.Parse(Environment.GetEnvironmentVariable("GamePort"));
+            int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             AuthData authData = new AuthData
             {

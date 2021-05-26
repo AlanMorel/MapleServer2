@@ -14,7 +14,7 @@ namespace MapleServer2.Servers.Login
 
         public void Start()
         {
-            ushort port = ushort.Parse(Environment.GetEnvironmentVariable("LoginPort"));
+            ushort port = ushort.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
             Start(port);
         }
     }

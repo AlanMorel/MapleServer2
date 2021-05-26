@@ -26,11 +26,11 @@ namespace MapleServer2.PacketHandlers.Login
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             string ipAddress = Environment.GetEnvironmentVariable("IP");
-            int port = int.Parse(Environment.GetEnvironmentVariable("LoginPort"));
+            int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
             builder.Add(new IPEndPoint(IPAddress.Parse(ipAddress), port));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = Environment.GetEnvironmentVariable("Name");
+            ServerName = Environment.GetEnvironmentVariable("NAME");
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
