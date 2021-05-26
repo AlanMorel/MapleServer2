@@ -78,6 +78,10 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
 
+                entity.Property(e => e.PrestigeRewardsClaimed).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
+
                 entity.Property(e => e.Stats).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new PlayerStats() : JsonConvert.DeserializeObject<PlayerStats>(i));
