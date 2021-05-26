@@ -97,6 +97,10 @@ namespace MapleServer2.PacketHandlers.Game
             else
             {
                 ScriptMetadata scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npc.Value.Id);
+                if (!scriptMetadata.Options.Exists(x => x.Type == ScriptType.Script))
+                {
+                    return;
+                }
                 int firstScript = scriptMetadata.Options.First(x => x.Type == ScriptType.Script).Id;
                 session.Player.NpcTalk.ScriptId = firstScript;
 
