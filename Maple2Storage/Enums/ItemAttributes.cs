@@ -160,7 +160,7 @@
         IncreaseTotalDamageIf1NearbyEnemy = 119, // Increases damage if there is an enemy within 5m
         IncreaseTotalDamageIf3NearbyEnemies = 120, // Increases damage if there is at least 3 enemies within 5m
         IncreaseTotalDamageIf80Spirit = 121, // Increase damage if you have 80 or more spirit
-        IncreaseTotalDamageIfFullStamine = 122,
+        IncreaseTotalDamageIfFullStamina = 122,
         IncreaseTotalDamageIfHerbEffectActive = 123, // Increase damage if you have a herb-like effect active
         IncreaseTotalDamageToWorldBoss = 124,
         Effect95000026 = 125,
