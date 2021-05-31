@@ -11,6 +11,7 @@ namespace MapleServer2.Database.Types
         public List<StringBoardEvent> StringBoard;
         public UGCMapContractSaleEvent UGCMapContractSale;
         public UGCMapExtensionSaleEvent UGCMapExtensionSale;
+        public FieldPopupEvent FieldPopupEvent;
 
         public GameEvent() { }
     }
@@ -28,6 +29,7 @@ namespace MapleServer2.Database.Types
         HotTime,
         UGCMapContractSale,
         UGCMapExtensionSale,
-        DungeonBonusReward
+        DungeonBonusReward,
+        EventFieldPopup
     }
 }

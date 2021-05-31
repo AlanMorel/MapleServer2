@@ -174,55 +174,149 @@ namespace GameDataParser.Parsers
                             metadata.SpecialStats[SpecialItemAttribute.Heal] = ParseSpecialValues(SpecialItemAttribute.Heal, node, true);
                             break;
                         case "conditionReduceRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DebuffDurationReduce] = ParseSpecialValues(SpecialItemAttribute.DebuffDurationReduce, node, true);
+                            break;
                         case "receivedhealincreaseRate":
+                            metadata.SpecialStats[SpecialItemAttribute.AllyRecovery] = ParseSpecialValues(SpecialItemAttribute.AllyRecovery, node, true);
+                            break;
                         case "improve_massive_ox_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.OXQuizExp] = ParseSpecialValues(SpecialItemAttribute.OXQuizExp, node, true);
+                            break;
                         case "improve_massive_trapmaster_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.TrapMasterExp] = ParseSpecialValues(SpecialItemAttribute.TrapMasterExp, node, true);
+                            break;
                         case "improve_massive_finalsurvival_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.SoleSurvivorExp] = ParseSpecialValues(SpecialItemAttribute.SoleSurvivorExp, node, true);
+                            break;
                         case "improve_massive_crazyrunner_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.CrazyRunnerExp] = ParseSpecialValues(SpecialItemAttribute.CrazyRunnerExp, node, true);
+                            break;
                         case "improve_massive_escape_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.LudiEscapeExp] = ParseSpecialValues(SpecialItemAttribute.LudiEscapeExp, node, true);
+                            break;
                         case "improve_massive_springbeach_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.SpringBeachExp] = ParseSpecialValues(SpecialItemAttribute.SpringBeachExp, node, true);
+                            break;
                         case "improve_massive_dancedance_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DanceDanceExp] = ParseSpecialValues(SpecialItemAttribute.DanceDanceExp, node, true);
+                            break;
                         case "improve_massive_ox_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.OXMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.OXMovementSpeed, node, false);
+                            break;
                         case "improve_massive_trapmaster_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.TrapMasterMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.TrapMasterMovementSpeed, node, false);
+                            break;
                         case "improve_massive_finalsurvival_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.SoleSurvivorMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.SoleSurvivorMovementSpeed, node, false);
+                            break;
                         case "improve_massive_crazyrunner_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.CrazyRunnerMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.CrazyRunnerMovementSpeed, node, false);
+                            break;
                         case "improve_massive_escape_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.LudiEscapeMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.LudiEscapeMovementSpeed, node, false);
+                            break;
                         case "improve_massive_springbeach_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.SpringBeachMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.SpringBeachMovementSpeed, node, false);
+                            break;
                         case "improve_massive_dancedance_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.DanceDanceStopMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.DanceDanceStopMovementSpeed, node, false);
+                            break;
                         case "npc_hit_reward_sp_ballRate":
+                            metadata.SpecialStats[SpecialItemAttribute.GenerateSpiritOrbs] = ParseSpecialValues(SpecialItemAttribute.GenerateSpiritOrbs, node, true);
+                            break;
                         case "npc_hit_reward_ep_ballRate":
+                            metadata.SpecialStats[SpecialItemAttribute.GenerateStaminaOrbs] = ParseSpecialValues(SpecialItemAttribute.GenerateStaminaOrbs, node, true);
+                            break;
                         case "improve_honor_tokenRate":
+                            metadata.SpecialStats[SpecialItemAttribute.ValorTokens] = ParseSpecialValues(SpecialItemAttribute.ValorTokens, node, true);
+                            break;
                         case "improve_pvp_expRate":
+                            metadata.SpecialStats[SpecialItemAttribute.PvPExp] = ParseSpecialValues(SpecialItemAttribute.PvPExp, node, true);
+                            break;
                         case "improve_darkstream_damageRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DarkDescentDamageBonus] = ParseSpecialValues(SpecialItemAttribute.DarkDescentDamageBonus, node, true);
+                            break;
                         case "reduce_darkstream_recive_damageRate":
-                        case "improve_darkstream_evpValue":
+                            metadata.SpecialStats[SpecialItemAttribute.DarkDescentDamageReduce] = ParseSpecialValues(SpecialItemAttribute.DarkDescentDamageReduce, node, true);
+                            break;
                         case "fishing_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleFishingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleFishingMastery, node, true);
+                            break;
                         case "playinstrument_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoublePerformanceMastery] = ParseSpecialValues(SpecialItemAttribute.DoublePerformanceMastery, node, true);
+                            break;
                         case "complete_fieldmission_mspValue":
+                            metadata.SpecialStats[SpecialItemAttribute.ExploredAreasMovementSpeed] = ParseSpecialValues(SpecialItemAttribute.ExploredAreasMovementSpeed, node, false);
+                            break;
                         case "improve_glide_vertical_velocityRate":
+                            metadata.SpecialStats[SpecialItemAttribute.AirMountAscentSpeed] = ParseSpecialValues(SpecialItemAttribute.AirMountAscentSpeed, node, true);
+                            break;
+                        case "seg_fishingrewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.FishingExp] = ParseSpecialValues(SpecialItemAttribute.FishingExp, node, true);
+                            break;
+                        case "seg_playinstrumentrewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.PerformanceExp] = ParseSpecialValues(SpecialItemAttribute.PerformanceExp, node, true);
+                            break;
+                        case "mining_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleMiningProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleMiningProduction, node, true);
+                            break;
+                        case "breeding_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleRanchingProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleRanchingProduction, node, true);
+                            break;
+                        case "gathering_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleForagingProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleForagingProduction, node, true);
+                            break;
+                        case "farming_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleFarmingProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleFarmingProduction, node, true);
+                            break;
+                        case "blacksmithing_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleSmithingProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleSmithingProduction, node, true);
+                            break;
+                        case "engraving_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleHandicraftProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleHandicraftProduction, node, true);
+                            break;
+                        case "alchemist_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleAlchemyProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleAlchemyProduction, node, true);
+                            break;
+                        case "cooking_double_rewardRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleCookingProduction] = ParseSpecialValues(SpecialItemAttribute.DoubleCookingProduction, node, true);
+                            break;
+                        case "mining_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleMiningMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleMiningMastery, node, true);
+                            break;
+                        case "breeding_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleRanchingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleRanchingMastery, node, true);
+                            break;
+                        case "gathering_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleForagingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleForagingMastery, node, true);
+                            break;
+                        case "farming_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleFarmingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleFarmingMastery, node, true);
+                            break;
+                        case "blacksmithing_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleSmithingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleSmithingMastery, node, true);
+                            break;
+                        case "engraving_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleHandicraftMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleHandicraftMastery, node, true);
+                            break;
+                        case "alchemist_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleAlchemyMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleAlchemyMastery, node, true);
+                            break;
+                        case "cooking_double_masteryRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DoubleCookingMastery] = ParseSpecialValues(SpecialItemAttribute.DoubleCookingMastery, node, true);
+                            break;
+                        case "smdRate":
+                            metadata.SpecialStats[SpecialItemAttribute.MesoBonus] = ParseSpecialValues(SpecialItemAttribute.MesoBonus, node, true);
+                            break;
+                        case "npckilldropitemincrateRate":
+                            metadata.SpecialStats[SpecialItemAttribute.DropRate] = ParseSpecialValues(SpecialItemAttribute.DropRate, node, true);
+                            break;
+                        case "improve_darkstream_evpValue":
+                            metadata.SpecialStats[SpecialItemAttribute.DarkDescentEvasion] = ParseSpecialValues(SpecialItemAttribute.DarkDescentEvasion, node, false);
+                            break;
                         case "additionaleffect_95000018Value":
                         case "additionaleffect_95000012Value":
                         case "additionaleffect_95000014Value":
-                        case "seg_fishingrewardRate":
-                        case "seg_playinstrumentrewardRate":
-                        case "mining_double_rewardRate":
-                        case "breeding_double_rewardRate":
-                        case "gathering_double_rewardRate":
-                        case "farming_double_rewardRate":
-                        case "blacksmithing_double_rewardRate":
-                        case "engraving_double_rewardRate":
-                        case "alchemist_double_rewardRate":
-                        case "cooking_double_rewardRate":
-                        case "mining_double_masteryRate":
-                        case "breeding_double_masteryRate":
-                        case "gathering_double_masteryRate":
-                        case "farming_double_masteryRate":
-                        case "blacksmithing_double_masteryRate":
-                        case "engraving_double_masteryRate":
-                        case "alchemist_double_masteryRate":
-                        case "cooking_double_masteryRate":
-                        case "smdRate":
-                        case "npckilldropitemincrateRate":
                             continue;
                     }
 
@@ -258,7 +352,7 @@ namespace GameDataParser.Parsers
             for (int i = 2; i <= 17; i++)
             {
                 float value = float.Parse(node.Attributes[$"idx{i}"].Value);
-                values.Add(new ParserSpecialStat(attribute, isPercent ? value : 0, !isPercent ? value : 0));
+                values.Add(new ParserSpecialStat(attribute, isPercent ? value : 0, (int) (!isPercent ? value : 0)));
             }
             return values;
         }

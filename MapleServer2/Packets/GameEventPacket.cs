@@ -42,6 +42,9 @@ namespace MapleServer2.Packets
                     case GameEventType.UGCMapExtensionSale:
                         pWriter.WriteInt(gameEvent.UGCMapExtensionSale.DiscountAmount);
                         break;
+                    case GameEventType.EventFieldPopup:
+                        pWriter.WriteInt(gameEvent.FieldPopupEvent.MapId);
+                        break;
                 }
             }
             return pWriter;

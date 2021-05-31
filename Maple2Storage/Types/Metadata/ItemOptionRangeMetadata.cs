@@ -58,11 +58,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public float Percent;
         [XmlElement(Order = 3)]
-        public float Flat;
+        public int Flat;
 
         public ParserSpecialStat() { }
 
-        public ParserSpecialStat(SpecialItemAttribute id, float percent, float flat)
+        public ParserSpecialStat(SpecialItemAttribute id, float percent, int flat)
         {
             Id = id;
             Percent = percent;
