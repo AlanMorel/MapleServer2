@@ -18,6 +18,8 @@ namespace MapleServer2.Types
         public int Flat;
         public float Percent;
 
+        public NormalStat() { }
+
         public NormalStat(ItemAttribute attribute, int flat, float percent)
         {
             ItemAttribute = attribute;
@@ -38,6 +40,8 @@ namespace MapleServer2.Types
         public SpecialItemAttribute ItemAttribute;
         public int Flat;
         public float Percent;
+
+        public SpecialStat() { }
 
         public SpecialStat(SpecialItemAttribute attribute, int flat, float percent)
         {

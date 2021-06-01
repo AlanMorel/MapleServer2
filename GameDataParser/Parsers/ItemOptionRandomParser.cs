@@ -593,7 +593,6 @@ namespace GameDataParser.Parsers
                             case "sgi_target":
                                 break;
                             default:
-                                System.Console.WriteLine(item.Name);
                                 break;
                         }
                     }

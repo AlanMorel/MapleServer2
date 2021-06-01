@@ -349,8 +349,8 @@ namespace MapleServer2.Database
                    i => i == null ? new MusicScore() : JsonConvert.DeserializeObject<MusicScore>(i));
 
                 entity.Property(e => e.Stats).HasConversion(
-                    i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new ItemStats() : JsonConvert.DeserializeObject<ItemStats>(i));
+                    i => JsonConvert.SerializeObject(i, settings),
+                    i => i == null ? new ItemStats() : JsonConvert.DeserializeObject<ItemStats>(i, settings));
 
                 entity.Ignore(e => e.InventoryTab);
                 entity.Ignore(e => e.GemSlot);

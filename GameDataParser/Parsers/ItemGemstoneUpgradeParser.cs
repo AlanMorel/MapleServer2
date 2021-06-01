@@ -36,30 +36,14 @@ namespace GameDataParser.Parsers
                         metadata.NextItemId = string.IsNullOrEmpty(key.Attributes["NextItemID"]?.Value) ? 0 : int.Parse(key.Attributes["NextItemID"].Value);
                     }
 
-                    if (key.Attributes["IngredientItemID1"] != null)
+                    for (int i = 1; i < 5; i++)
                     {
-                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID1"].Value, @"[a-zA-Z]+").Value);
-                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount1"].Value));
+                        if (key.Attributes["IngredientItemID" + i.ToString()] != null)
+                        {
+                            metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID" + i.ToString()].Value, @"[a-zA-Z]+").Value);
+                            metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount" + i.ToString()].Value));
+                        }
                     }
-
-                    if (key.Attributes["IngredientItemID2"] != null)
-                    {
-                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID2"].Value, @"[a-zA-Z]+").Value);
-                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount2"].Value));
-                    }
-
-                    if (key.Attributes["IngredientItemID3"] != null)
-                    {
-                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID3"].Value, @"[a-zA-Z]+").Value);
-                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount3"].Value));
-                    }
-
-                    if (key.Attributes["IngredientItemID4"] != null)
-                    {
-                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID4"].Value, @"[a-zA-Z]+").Value);
-                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount4"].Value));
-                    }
-
                     gems.Add(metadata);
                 }
             }
