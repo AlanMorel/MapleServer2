@@ -352,7 +352,7 @@ namespace GameDataParser.Parsers
             for (int i = 2; i <= 17; i++)
             {
                 float value = float.Parse(node.Attributes[$"idx{i}"].Value);
-                values.Add(new ParserSpecialStat(attribute, isPercent ? value : 0, (int) (!isPercent ? value : 0)));
+                values.Add(new ParserSpecialStat(attribute, isPercent ? value : 0, !isPercent ? value : 0));
             }
             return values;
         }

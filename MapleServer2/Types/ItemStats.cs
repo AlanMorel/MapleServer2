@@ -38,12 +38,12 @@ namespace MapleServer2.Types
     public class SpecialStat : ItemStat
     {
         public SpecialItemAttribute ItemAttribute;
-        public int Flat;
+        public float Flat;
         public float Percent;
 
         public SpecialStat() { }
 
-        public SpecialStat(SpecialItemAttribute attribute, int flat, float percent)
+        public SpecialStat(SpecialItemAttribute attribute, float flat, float percent)
         {
             ItemAttribute = attribute;
             Flat = flat;
@@ -190,7 +190,7 @@ namespace MapleServer2.Types
                 }
 
                 int index = specialStats.FindIndex(x => x.ItemAttribute == stat.Id);
-                int summedFlat = normalStat.Flat + stat.Flat;
+                float summedFlat = normalStat.Flat + stat.Flat;
                 float summedPercent = normalStat.Percent + stat.Percent;
 
                 specialStats[index] = new SpecialStat(stat.Id, summedFlat, summedPercent);

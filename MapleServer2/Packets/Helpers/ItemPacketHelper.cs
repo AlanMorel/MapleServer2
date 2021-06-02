@@ -150,7 +150,7 @@ namespace MapleServer2.Packets.Helpers
             {
                 pWriter.WriteShort((short) stat.ItemAttribute);
                 pWriter.WriteFloat(stat.Percent);
-                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Flat);
             }
             pWriter.WriteInt();
 
@@ -173,7 +173,7 @@ namespace MapleServer2.Packets.Helpers
             {
                 pWriter.WriteShort((short) stat.ItemAttribute);
                 pWriter.WriteFloat(stat.Percent);
-                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Flat);
             }
             pWriter.WriteInt();
 
@@ -229,7 +229,7 @@ namespace MapleServer2.Packets.Helpers
             {
                 pWriter.WriteShort((short) stat.ItemAttribute);
                 pWriter.WriteFloat(stat.Percent);
-                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Flat);
             }
 
             return pWriter;
