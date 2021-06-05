@@ -13,13 +13,13 @@ namespace MapleServer2.Packets
             Remove = 0x1
         }
 
-        public static Packet Send(IFieldObject<Player> player, CoordS effectCoord, SkillCast skill)
+        public static Packet Send(int sourceObjectId, CoordS effectCoord, SkillCast skill)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
             byte tileCount = 1; // TODO: add amount of tiles affected to SkillCast?
             pWriter.WriteEnum(RegionSkillMode.Add);
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(sourceObjectId);
+            pWriter.WriteInt(sourceObjectId);
             pWriter.WriteInt();
             if (tileCount != 0)
             {

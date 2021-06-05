@@ -45,7 +45,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateAchieve()
+        public static Packet UpdateTrophy()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             // seems unchanged before and after gaining trophy

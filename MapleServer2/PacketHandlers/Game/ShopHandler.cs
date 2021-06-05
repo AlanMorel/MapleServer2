@@ -6,6 +6,8 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -57,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
 
-            ShopMetadata shop = ShopMetadataStorage.GetShop(metadata.ShopId);
+            Shop shop = DatabaseManager.GetShop(metadata.ShopId);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {metadata.ShopId}");
@@ -65,7 +67,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(ShopPacket.Open(shop));
-            session.Send(ShopPacket.LoadProducts(shop.Items));
+            foreach (ShopItem shopItem in shop.Items)
+            {
+                session.Send(ShopPacket.LoadProducts(shopItem));
+            }
             session.Send(ShopPacket.Reload());
             session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
         }
@@ -99,7 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
             int itemUid = packet.ReadInt();
             int quantity = packet.ReadInt();
 
-            ShopItem shopItem = ShopMetadataStorage.GetItem(itemUid);
+            ShopItem shopItem = DatabaseManager.GetShopItem(itemUid);
 
             switch (shopItem.TokenType)
             {
@@ -123,6 +128,14 @@ namespace MapleServer2.PacketHandlers.Game
                 case ShopCurrencyType.EventMeret:
                     session.Player.Wallet.RemoveMerets(shopItem.Price * quantity);
                     break;
+                case ShopCurrencyType.Item:
+                    Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == shopItem.RequiredItemId).Value;
+                    if (itemCost.Amount < shopItem.Price)
+                    {
+                        return;
+                    }
+                    InventoryController.Consume(session, itemCost.Uid, shopItem.Price);
+                    break;
                 default:
                     session.SendNotice($"Unknown currency: {shopItem.TokenType}");
                     return;
@@ -131,7 +144,8 @@ namespace MapleServer2.PacketHandlers.Game
             // add item to inventory
             Item item = new(shopItem.ItemId)
             {
-                Amount = quantity * shopItem.Quantity
+                Amount = quantity * shopItem.Quantity,
+                Rarity = shopItem.ItemRank
             };
             InventoryController.Add(session, item, true);
 
@@ -152,9 +166,19 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            ShopMetadata shop = ShopMetadataStorage.GetShop(item.ShopID);
+            Shop shop = DatabaseManager.GetShop(item.ShopID);
+            if (shop == null)
+            {
+                Console.WriteLine($"Unknown shop ID: {item.ShopID}");
+                return;
+            }
+
             session.Send(ShopPacket.Open(shop));
-            session.Send(ShopPacket.LoadProducts(shop.Items));
+            foreach (ShopItem shopItem in shop.Items)
+            {
+                session.Send(ShopPacket.LoadProducts(shopItem));
+            }
+            session.Send(ShopPacket.Reload());
         }
     }
 }

@@ -13,11 +13,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            int serverTicks = packet.ReadInt();
-            if (serverTicks == session.ServerTick)
-            {
-                session.ClientTick = packet.ReadInt();
-            }
+            session.ClientTick = packet.ReadInt();
+            session.ServerTick = packet.ReadInt();
         }
     }
 }

@@ -271,6 +271,12 @@ namespace GameDataParser.Parsers
                     }
                 }
 
+
+                // Color data
+                XmlNode customize = item.SelectSingleNode("customize");
+                metadata.ColorIndex = int.Parse(customize.Attributes["defaultColorIndex"].Value);
+                metadata.ColorPalette = int.Parse(customize.Attributes["colorPalette"].Value);
+
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");
                 bool gemResult = Enum.TryParse<GemSlot>(gem.Attributes["system"].Value, out metadata.Gem);
@@ -312,7 +318,7 @@ namespace GameDataParser.Parsers
                 // Item boxes
                 XmlNode function = item.SelectSingleNode("function");
                 string contentType = function.Attributes["name"].Value;
-                metadata.FunctionName = contentType;
+                metadata.FunctionData.Name = contentType;
                 if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
                 {
                     // selection boxes are SelectItemBox and 1,boxid
@@ -343,7 +349,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionId = byte.Parse(functionParameters.Attributes["id"].Value);
+                    metadata.FunctionData.Id = byte.Parse(functionParameters.Attributes["id"].Value);
 
                     int durationSec = 0;
 
@@ -351,7 +357,7 @@ namespace GameDataParser.Parsers
                     {
                         durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
                     }
-                    metadata.FunctionDuration = durationSec;
+                    metadata.FunctionData.Duration = durationSec;
                 }
                 else if (contentType == "OpenMassive")
                 {
@@ -362,9 +368,9 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionFieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
-                    metadata.FunctionCapacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
+                    metadata.FunctionData.FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
+                    metadata.FunctionData.Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
                 }
                 else if (contentType == "LevelPotion")
                 {
@@ -373,7 +379,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionTargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                    metadata.FunctionData.TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
                 }
                 else if (contentType == "VIPCoupon")
                 {
@@ -382,7 +388,7 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["period"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["period"].Value);
                 }
                 else if (contentType == "HongBao")
                 {
@@ -391,19 +397,53 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionId = int.Parse(functionParameters.Attributes["itemId"].Value);
-                    metadata.FunctionCount = short.Parse(functionParameters.Attributes["totalCount"].Value);
-                    metadata.FunctionTotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
-                    metadata.FunctionDuration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    metadata.FunctionData.Id = int.Parse(functionParameters.Attributes["itemId"].Value);
+                    metadata.FunctionData.Count = short.Parse(functionParameters.Attributes["totalCount"].Value);
+                    metadata.FunctionData.TotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
+                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
                 }
                 else if (contentType == "SuperWorldChat")
                 {
                     string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                    metadata.FunctionId = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
+                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
                 }
-                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook")
+                else if (contentType == "OpenGachaBox")
                 {
-                    metadata.FunctionId = int.Parse(function.Attributes["parameter"].Value);
+                    string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                    metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
+                }
+                else if (contentType == "OpenCoupleEffectBox")
+                {
+                    string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                    metadata.FunctionData.Id = int.Parse(parameters[0]);
+                    metadata.FunctionData.Rarity = byte.Parse(parameters[1]);
+                }
+                else if (contentType == "InstallBillBoard")
+                {
+                    AdBalloonData balloon = new AdBalloonData();
+                    string rawParameter = function.Attributes["parameter"].Value;
+                    string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+                    XmlDocument xmlParameter = new XmlDocument();
+                    xmlParameter.LoadXml(decodedParameter);
+                    XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                    balloon.InteractId = int.Parse(functionParameters.Attributes["interactID"].Value);
+                    balloon.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    balloon.Model = functionParameters.Attributes["model"].Value;
+                    if (functionParameters.Attributes["asset"] != null)
+                    {
+                        balloon.Asset = functionParameters.Attributes["asset"].Value;
+                    }
+                    balloon.NormalState = functionParameters.Attributes["normal"].Value;
+                    balloon.Reactable = functionParameters.Attributes["reactable"].Value;
+                    if (functionParameters.Attributes["scale"] != null)
+                    {
+                        balloon.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
+                    }
+                    metadata.AdBalloonData = balloon;
+                }
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod")
+                {
+                    metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
                 }
 
                 // Music score charges
@@ -411,6 +451,7 @@ namespace GameDataParser.Parsers
                 int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
                 metadata.PlayCount = playCount;
                 string fileName = musicScore.Attributes["fileName"].Value;
+                metadata.IsCustomScore = bool.Parse(musicScore.Attributes["isCustomNote"].Value);
                 metadata.FileName = fileName;
 
                 // Shop ID from currency items
@@ -428,6 +469,9 @@ namespace GameDataParser.Parsers
                 bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
                 metadata.EnableBreak = enableBreak;
 
+                int level = int.Parse(limit.Attributes["levelLimit"].Value);
+                metadata.Level = level;
+
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
                 {
                     List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));
@@ -436,6 +480,8 @@ namespace GameDataParser.Parsers
                         metadata.RecommendJobs.Add(int.Parse(recommendJob));
                     }
                 }
+
+                metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 // Item breaking ingredients
                 if (rewards.ContainsKey(itemId))

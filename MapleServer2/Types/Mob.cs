@@ -8,6 +8,7 @@ namespace MapleServer2.Types
     {
         public bool IsDead { get; set; }
         public short ZRotation; // In degrees * 10
+        public IFieldObject<MobSpawn> OriginSpawn;
 
         public Mob(int id)
         {
@@ -19,6 +20,11 @@ namespace MapleServer2.Types
                 Stats = mob.Stats;
                 Friendly = mob.Friendly;
             }
+        }
+
+        public Mob(int id, IFieldObject<MobSpawn> originSpawn) : this(id)
+        {
+            OriginSpawn = originSpawn;
         }
 
         public void UpdateStats(double damage)

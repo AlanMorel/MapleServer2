@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -26,12 +26,13 @@ namespace MapleServer2.PacketHandlers.Game
             session.EnterField(session.Player.MapId);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-            foreach (MasteryExp mastery in session.Player.Levels.MasteryExp)
+            if (session.Player.IsVip())
             {
-                session.Send(MasteryPacket.SetExp(mastery.Type, mastery.CurrentExp));
+                session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
             }
             session.Send(EmotePacket.LoadEmotes(session.Player));
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
             // Normally skill layout would be loaded from a database
             QuickSlot arrowStream = QuickSlot.From(10500001);
@@ -50,72 +51,8 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
             }
 
-            // Add catalysts for testing
-
-            Item item = new Item(40100001)
-            {
-                Amount = 99999
-            };
-            Item item2 = new Item(40100001)
-            {
-                Amount = 90000
-            };
-
-            InventoryController.Add(session, item, true);
-            InventoryController.Add(session, item2, true);
-
-            //Add mail for testing
-            //System mail without any item
-            Mail sysMail = new Mail
-            (
-                101,
-                session.Player.CharacterId,
-                "50000002",
-                "",
-                "",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                null
-            );
-
-            // System mail with an item
-            List<Item> items = new List<Item>
-            {
-                new Item(40100001) // 20302228
-                {
-                    CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Owner = session.Player,
-                    Amount = 10000
-                }
-            };
-            Mail sysItemMail = new Mail
-            (
-                101,
-                session.Player.CharacterId,
-                "53000042",
-                "",
-                "",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                items
-            );
-
-            // Regular mail
-            Mail regMail = new Mail
-            (
-                1,
-                session.Player.CharacterId,
-                session.Player.Name,
-                "Test Title",
-                "Test Body",
-                0,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                null
-            );
-
-            session.Player.Mailbox.AddOrUpdate(sysItemMail);
-            session.Player.Mailbox.AddOrUpdate(sysMail);
-            session.Player.Mailbox.AddOrUpdate(regMail);
+            List<GameEvent> gameEvents = DatabaseManager.GetGameEvents();
+            session.Send(GameEventPacket.Load(gameEvents));
         }
     }
 }

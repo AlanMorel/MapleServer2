@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Autofac;
 using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
@@ -14,12 +17,23 @@ namespace MapleServer2
 {
     public static class MapleServer
     {
-
         private static GameServer gameServer;
+
         public static void Main(string[] args)
         {
             // Force Globalization to en-US because we use periods instead of commas for decimals
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
+
+            // Load .env file
+            string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+
+            if (!File.Exists(dotenv))
+            {
+                throw new ArgumentException(".env file not found!");
+            }
+            DotEnv.Load(dotenv);
+
+            InitDatabase();
 
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
@@ -69,6 +83,35 @@ namespace MapleServer2
                         break;
                 }
             }
+        }
+
+        private static void InitDatabase()
+        {
+            if (DatabaseContext.Exists())
+            {
+                Console.WriteLine("Database already exists.");
+                return;
+            }
+
+            Console.WriteLine("Creating database...");
+            DatabaseContext.CreateDatabase();
+
+            Console.WriteLine("Seeding shops...");
+            ShopsSeeding.Seed();
+
+            Console.WriteLine("Seeding Meret Market...");
+            MeretMarketItemSeeding.Seed();
+
+            Console.WriteLine("Seeding Mapleopoly...");
+            MapleopolySeeding.Seed();
+
+            Console.WriteLine("Seeding events...");
+            GameEventSeeding.Seed();
+
+            Console.WriteLine("Seeding card reverse game...");
+            CardReverseGameSeeding.Seed();
+
+            Console.WriteLine("Database created.");
         }
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)

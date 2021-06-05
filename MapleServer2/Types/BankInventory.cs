@@ -9,14 +9,27 @@ namespace MapleServer2.Types
 {
     public class BankInventory
     {
-        public Item[] Items;
+        public readonly long Id;
         private readonly int DEFAULT_SIZE = 36;
         public int ExtraSize;
 
-        public BankInventory()
+        public Item[] Items = new Item[36];
+        public List<Item> DB_Items { get; set; }
+
+        public BankInventory() { }
+
+        public BankInventory(BankInventory bankInventory)
         {
+            Id = bankInventory.Id;
+            ExtraSize = bankInventory.ExtraSize;
             Items = new Item[DEFAULT_SIZE + ExtraSize];
-            ExtraSize = 0;
+            for (int i = 0; i < bankInventory.DB_Items.Count; i++)
+            {
+                Item item = bankInventory.DB_Items[i];
+
+                item.SetMetadataValues(item.Id);
+                Items[i] = item;
+            }
         }
 
         public void Add(GameSession session, long uid, int amount, short slot)
@@ -39,8 +52,9 @@ namespace MapleServer2.Types
             {
                 if (Items[slot] == null)
                 {
+                    item.Slot = slot;
                     Items[slot] = item;
-                    session.Send(StorageInventory.Add(item, slot));
+                    session.Send(StorageInventoryPacket.Add(item));
                     return;
                 }
                 else
@@ -57,8 +71,9 @@ namespace MapleServer2.Types
                     {
                         continue;
                     }
+                    item.Slot = slot;
                     Items[slot] = item;
-                    session.Send(StorageInventory.Add(item, slot));
+                    session.Send(StorageInventoryPacket.Add(item));
                     return;
                 }
             }
@@ -77,14 +92,15 @@ namespace MapleServer2.Types
             if (amount >= outItem.Amount)
             {
                 Items[outItemIndex] = null;
-                session.Send(StorageInventory.Remove(uid));
+                session.Send(StorageInventoryPacket.Remove(uid));
                 return true;
             }
 
             if (outItem.TrySplit(amount, out Item splitItem))
             {
                 outItem.Amount -= amount;
-                session.Send(StorageInventory.Add(outItem, slot));
+                outItem.Slot = slot;
+                session.Send(StorageInventoryPacket.Add(outItem));
                 outItem = splitItem;
                 return true;
             }
@@ -111,13 +127,12 @@ namespace MapleServer2.Types
                 Items[dstSlot] = Items.FirstOrDefault(x => x != null && x.Uid == dstUid);
                 Items[oldSlot] = null;
             }
-            session.Send(StorageInventory.Move(srcUid, srcSlot, dstUid, dstSlot));
+            session.Send(StorageInventoryPacket.Move(srcUid, srcSlot, dstUid, dstSlot));
         }
 
         public void LoadItems(GameSession session)
         {
-            Items = new Item[DEFAULT_SIZE + ExtraSize];
-            session.Send(StorageInventory.LoadItems(Items));
+            session.Send(StorageInventoryPacket.LoadItems(Items));
         }
 
         public void Sort(GameSession session)
@@ -129,7 +144,7 @@ namespace MapleServer2.Types
             {
                 Items[i] = tempItems[i];
             }
-            session.Send(StorageInventory.Sort(Items));
+            session.Send(StorageInventoryPacket.Sort(Items));
         }
 
         public void Expand(GameSession session)
@@ -141,17 +156,17 @@ namespace MapleServer2.Types
                 return;
             }
             ExtraSize += expansionAmount;
-            session.Send(StorageInventory.Expand(ExtraSize));
-            session.Send(StorageInventory.ExpandAnim());
+            session.Send(StorageInventoryPacket.Expand(ExtraSize));
+            session.Send(StorageInventoryPacket.ExpandAnim());
             UpdateInventorySize();
         }
 
         public void LoadBank(GameSession session)
         {
-            session.Send(StorageInventory.Update());
-            session.Send(StorageInventory.Expand(ExtraSize));
-            session.Send(StorageInventory.ExpandAnim());
-            session.Send(StorageInventory.UpdateMesos(session.Player.Wallet.Bank.Amount));
+            session.Send(StorageInventoryPacket.Update());
+            session.Send(StorageInventoryPacket.Expand(ExtraSize));
+            session.Send(StorageInventoryPacket.ExpandAnim());
+            session.Send(StorageInventoryPacket.UpdateMesos(session.Player.Wallet.Bank.Amount));
             LoadItems(session);
         }
 

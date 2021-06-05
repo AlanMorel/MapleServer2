@@ -63,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item item = session.Player.Inventory.Items[itemUid];
 
-            ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.FunctionId);
+            ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
 
             if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
             {

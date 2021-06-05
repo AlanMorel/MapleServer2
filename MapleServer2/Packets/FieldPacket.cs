@@ -47,8 +47,15 @@ namespace MapleServer2.Packets
             // Stats
             StatPacket.WriteFieldStats(pWriter, player.Stats);
 
-            pWriter.WriteByte();
-            pWriter.WriteByte();
+            pWriter.WriteByte(); // battle stance bool
+            if (player.Guide != null)
+            {
+                pWriter.WriteByte(player.Guide.Value.Type);
+            }
+            else
+            {
+                pWriter.WriteByte();
+            }
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong();
@@ -99,12 +106,12 @@ namespace MapleServer2.Packets
             if (true)
             {
                 PacketWriter appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte) (player.Equips.Count + player.Cosmetics.Count)); // num equips
-                foreach ((ItemSlot slot, Item equip) in player.Equips)
+                appearanceBuffer.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count)); // num equips
+                foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
                 {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
-                foreach ((ItemSlot slot, Item equip) in player.Cosmetics)
+                foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
                 {
                     CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
                 }
@@ -136,7 +143,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(); // Another timestamp
                 pWriter.WriteInt(int.MaxValue);
                 pWriter.WriteByte();
-                pWriter.WriteInt();
+                pWriter.WriteInt(); // MushkingRoyale taileffect kill count
                 pWriter.WriteInt();
                 pWriter.WriteShort();
             }
@@ -286,30 +293,14 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
+            pWriter.Write(mob.Rotation);
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsMob(pWriter, mob);
 
-            pWriter.WriteByte();
-            int count = 0;
-            pWriter.WriteInt(count); // branch
-            for (int i = 0; i < count; i++)
-            {
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteShort();
-                pWriter.WriteInt();
-                pWriter.WriteByte();
-                pWriter.WriteLong();
-            }
             pWriter.WriteLong();
-            pWriter.WriteByte();
-            pWriter.WriteInt(1);
+            pWriter.WriteInt();
+            pWriter.WriteInt(0x0E); // NPC level
             pWriter.WriteInt();
             pWriter.WriteByte();
 
@@ -340,10 +331,10 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(portal.Value.IsMinimapVisible);
             pWriter.WriteLong();
             pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteInt(portal.Value.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
-            pWriter.WriteBool(false);
+            pWriter.WriteBool(portal.Value.IsPassEnabled);
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");

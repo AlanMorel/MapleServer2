@@ -40,7 +40,8 @@ namespace MapleServer2.Types
 
             foreach (KeyValuePair<long, Item> item in items)
             {
-                if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType || !item.Value.EnableBreak)
+                if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType
+                || !item.Value.EnableBreak || Slots.Any(x => x != null && x.Item1 == item.Key))
                 {
                     continue;
                 }

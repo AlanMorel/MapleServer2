@@ -26,11 +26,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public CoordS BoundingBox1;
         [XmlElement(Order = 9)]
-        public readonly List<MapInteractActor> InteractActors;
+        public readonly List<MapInteractObject> InteractObjects;
         [XmlElement(Order = 10)]
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 11)]
-        public CoordS HealingSpot;
+        public List<CoordS> HealingSpot;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -40,8 +40,9 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractActors = new List<MapInteractActor>();
+            InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -52,8 +53,9 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractActors = new List<MapInteractActor>();
+            InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
+            HealingSpot = new List<CoordS>();
         }
 
         public override string ToString() =>
@@ -257,11 +259,13 @@ namespace Maple2Storage.Types.Metadata
         public readonly CoordS Coord;
         [XmlElement(Order = 6)]
         public readonly CoordS Rotation;
+        [XmlElement(Order = 7)]
+        public readonly int TargetPortalId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation)
+        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId)
         {
             Id = id;
             Name = name;
@@ -269,10 +273,11 @@ namespace Maple2Storage.Types.Metadata
             Target = target;
             Coord = coord;
             Rotation = rotation;
+            TargetPortalId = targetPortalId;
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord})";
+            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId})";
 
         protected bool Equals(MapPortal other)
         {
@@ -281,7 +286,8 @@ namespace Maple2Storage.Types.Metadata
                    && Flags == other.Flags
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
-                   && Rotation.Equals(other.Rotation);
+                   && Rotation.Equals(other.Rotation)
+                   && TargetPortalId == other.TargetPortalId;
         }
 
         public override bool Equals(object obj)
@@ -345,20 +351,23 @@ namespace Maple2Storage.Types.Metadata
     public class MapMobSpawn
     {
         [XmlElement(Order = 1)]
-        public readonly CoordS Coord;
+        public readonly int Id;
         [XmlElement(Order = 2)]
-        public readonly int NpcCount;
+        public readonly CoordS Coord;
         [XmlElement(Order = 3)]
-        public readonly List<int> NpcList;
+        public readonly int NpcCount;
         [XmlElement(Order = 4)]
-        public readonly int SpawnRadius;
+        public readonly List<int> NpcList;
         [XmlElement(Order = 5)]
+        public readonly int SpawnRadius;
+        [XmlElement(Order = 6)]
         public readonly SpawnMetadata SpawnData;
 
         public MapMobSpawn() { }
 
-        public MapMobSpawn(CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
+        public MapMobSpawn(int id, CoordS coord, int npcCount, List<int> npcList, int spawnRadius, SpawnMetadata spawnMetadata = null)
         {
+            Id = id;
             Coord = coord;
             NpcCount = npcCount;
             NpcList = npcList;
@@ -367,7 +376,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapMobSpawn(Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
+            $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
     }
 
     [XmlType]
@@ -400,21 +409,21 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class MapInteractActor
+    public class MapInteractObject
     {
         [XmlElement(Order = 1)]
         public readonly string Uuid;
         [XmlElement(Order = 2)]
         public readonly string Name;
         [XmlElement(Order = 3)]
-        public readonly InteractActorType Type;
+        public readonly InteractObjectType Type;
         [XmlElement(Order = 4)]
         public readonly int InteractId;
         [XmlElement(Order = 5)]
         public readonly int RecipeId;
 
-        public MapInteractActor() { }
-        public MapInteractActor(string uuid, string name, InteractActorType type, int interactId, int recipeId = 0)
+        public MapInteractObject() { }
+        public MapInteractObject(string uuid, string name, InteractObjectType type, int interactId, int recipeId = 0)
         {
             Uuid = uuid;
             Name = name;
@@ -423,7 +432,7 @@ namespace Maple2Storage.Types.Metadata
             RecipeId = recipeId;
         }
         public override string ToString() =>
-            $"MapInteractActor(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
+            $"MapInteractObject(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
     }
 
     [XmlType]

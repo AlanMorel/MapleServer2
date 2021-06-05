@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -54,7 +55,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleLoadBank(session);
                     break;
                 case ItemStorageMode.Close:
-                    HandleClose();
+                    HandleClose(session.Player);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -125,7 +126,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleSort(GameSession session)
         {
-            session.Send(StorageInventory.Update());
+            session.Send(StorageInventoryPacket.Update());
             session.Player.BankInventory.Sort(session);
         }
 
@@ -134,9 +135,9 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.BankInventory.LoadBank(session);
         }
 
-        private static void HandleClose()
+        private static void HandleClose(Player player)
         {
-            // save to db?
+            DatabaseManager.UpdateCharacter(player);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GameDataParser.Parsers
         protected override List<MapMetadata> Parse()
         {
             // Iterate over preset Cubes to later reference while iterating over exported maps
-            List<string> mapCubes = new List<string>();
+            Dictionary<string, string> mapCubes = new Dictionary<string, string>();
             foreach (PackFileEntry entry in Resources.ExportedFiles)
             {
                 if (!entry.Name.StartsWith("flat/presets/presets cube/"))
@@ -30,7 +30,7 @@ namespace GameDataParser.Parsers
                 {
                     continue;
                 }
-                if (mapCubes.Contains(objStr))
+                if (mapCubes.ContainsKey(objStr))
                 {
                     continue;
                 }
@@ -39,7 +39,22 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlElement root = document.DocumentElement;
                 string cubeName = root.Attributes["name"].Value.ToLower();
-                mapCubes.Add(cubeName);
+                XmlNode propertyAttribute = root.SelectSingleNode("property[@name='MapAttribute']");
+                string mapAttribute = propertyAttribute.FirstChild.Attributes["value"].Value;
+                mapCubes.Add(cubeName, mapAttribute);
+            }
+
+            // Parse map names
+            Dictionary<int, string> mapNames = new Dictionary<int, string>();
+            foreach (PackFileEntry entry in Resources.XmlFiles.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
+            {
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["name"].Value;
+                    mapNames[id] = name;
+                }
             }
 
             // Parse every block for each map
@@ -63,11 +78,12 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
-                List<CoordS> blockList = new List<CoordS>();
+                List<MapBlock> blocks = new List<MapBlock>();
                 foreach (XmlNode node in mapEntities)
                 {
+                    MapBlock mapBlock = new MapBlock();
                     string modelName = node.Attributes["modelName"].Value.ToLower();
-                    if (!mapCubes.Contains(modelName))
+                    if (!mapCubes.ContainsKey(modelName))
                     {
                         continue;
                     }
@@ -80,15 +96,37 @@ namespace GameDataParser.Parsers
                     string id = node.Attributes["id"].Value.ToLower();
                     XmlNode blockCoord = node.SelectSingleNode("property[@name='Position']");
                     CoordS coordS = CoordS.Parse(blockCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0");
-                    blockList.Add(coordS);
+                    mapBlock.Coord = coordS;
+
+                    XmlNode blockType = node.SelectSingleNode("property[@name='CubeType']");
+                    if (blockType != null)
+                    {
+                        mapBlock.Type = blockType?.FirstChild.Attributes["value"].Value;
+                    }
+
+                    XmlNode saleable = node.SelectSingleNode("property[@name='CubeSalableGroup']");
+                    if (saleable != null)
+                    {
+                        mapBlock.SaleableGroup = int.Parse(saleable?.FirstChild.Attributes["value"].Value);
+                    }
+
+                    if (mapCubes.ContainsKey(modelName))
+                    {
+                        mapBlock.Attribute = mapCubes[modelName];
+                    }
+
+                    metadata.Blocks.Add(mapBlock);
                 }
 
-                if (blockList.Count == 0)
+                if (metadata.Blocks.Count == 0)
                 {
                     continue;
                 }
 
-                metadata.Blocks.AddRange(blockList);
+                if (mapNames.ContainsKey(metadata.Id))
+                {
+                    metadata.Name = mapNames[metadata.Id];
+                }
                 mapsList.Add(metadata);
             }
             return mapsList;

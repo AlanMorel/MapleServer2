@@ -37,7 +37,7 @@ namespace Maple2Storage.Types
         [XmlElement(Order = 15)]
         public NpcStat<int> MoveSpd;
         [XmlElement(Order = 16)]
-        public NpcStat<int> Attack;
+        public NpcStat<int> Accuracy;
         [XmlElement(Order = 17)]
         public NpcStat<int> Evasion;
         [XmlElement(Order = 18)]

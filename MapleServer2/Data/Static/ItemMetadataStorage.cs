@@ -80,6 +80,17 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).IsTemplate;
         }
 
+        public static bool GetIsCustomScore(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsCustomScore;
+
+        }
+
+        public static byte GetGender(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Gender;
+        }
+
         public static int GetPlayCount(int itemId)
         {
             return map.GetValueOrDefault(itemId).PlayCount;
@@ -140,44 +151,14 @@ namespace MapleServer2.Data.Static
             return pricePoints.ElementAt(rand);
         }
 
-        public static string GetFunctionName(int itemId)
+        public static ItemFunction GetFunction(int itemId)
         {
-            return map.GetValueOrDefault(itemId).FunctionName;
+            return map.GetValueOrDefault(itemId).FunctionData;
         }
 
-        public static int GetFunctionId(int itemId)
+        public static AdBalloonData GetBalloonData(int itemId)
         {
-            return map.GetValueOrDefault(itemId).FunctionId;
-        }
-
-        public static int GetFunctionDuration(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionDuration;
-        }
-
-        public static int GetFunctionFieldId(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionFieldId;
-        }
-
-        public static byte GetFunctionCapacity(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionCapacity;
-        }
-
-        public static byte GetFunctionTargetLevel(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionTargetLevel;
-        }
-
-        public static short GetFunctionCount(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionCount;
-        }
-
-        public static byte GetFunctionTotalUser(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).FunctionTotalUser;
+            return map.GetValueOrDefault(itemId).AdBalloonData;
         }
 
         public static string GetTag(int itemId)
@@ -185,9 +166,38 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Tag;
         }
 
+        public static EquipColor GetEquipColor(int itemId)
+        {
+            int colorPalette = map.GetValueOrDefault(itemId).ColorPalette;
+            int colorIndex = map.GetValueOrDefault(itemId).ColorIndex;
+
+            if (colorPalette == 0) // item has no color
+            {
+                return EquipColor.Custom(MixedColor.Custom(Color.Argb(0, 0, 0, 0), Color.Argb(0, 0, 0, 0), Color.Argb(0, 0, 0, 0)), colorIndex, colorPalette);
+            }
+
+            ColorPaletteMetadata palette = ColorPaletteMetadataStorage.GetMetadata(colorPalette);
+
+            if (colorPalette > 0 && colorIndex == -1) // random color from color palette
+            {
+                Random random = new Random();
+
+                int index = random.Next(palette.DefaultColors.Count);
+
+                return EquipColor.Argb(palette.DefaultColors[index], colorIndex, colorPalette);
+            }
+
+            return EquipColor.Argb(palette.DefaultColors[colorIndex], colorIndex, colorPalette);
+        }
+
         public static List<ItemBreakReward> GetBreakRewards(int itemId)
         {
             return map.GetValueOrDefault(itemId).BreakRewards;
+        }
+
+        public static int GetLevel(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Level;
         }
     }
 }

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
     public class Item
     {
+        public int Level { get; set; }
         public InventoryTab InventoryTab { get; private set; }
-        public ItemSlot ItemSlot { get; private set; }
+        public ItemSlot ItemSlot { get; set; }
         public GemSlot GemSlot { get; private set; }
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
@@ -19,19 +20,15 @@ namespace MapleServer2.Types
         public bool IsTwoHand { get; private set; }
         public bool IsDress { get; private set; }
         public bool IsTemplate { get; set; }
+        public bool IsCustomScore { get; set; }
         public int PlayCount { get; set; }
+        public byte Gender { get; private set; }
         public string FileName { get; set; }
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public List<ItemContent> Content { get; private set; }
-        public string FunctionName { get; set; }
-        public int FunctionId { get; set; }
-        public int FunctionDuration { get; set; }
-        public int FunctionFieldId { get; set; }
-        public byte FunctionCapacity { get; set; }
-        public byte FunctionTargetLevel { get; set; }
-        public short FunctionCount { get; set; }
-        public byte FunctionTotalUser { get; set; }
+        public ItemFunction Function { get; set; }
+        public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
 
@@ -39,6 +36,7 @@ namespace MapleServer2.Types
         public long Uid;
         public short Slot;
         public int Amount;
+        public bool IsEquipped;
 
         public long CreationTime;
         public long ExpiryTime;
@@ -47,6 +45,7 @@ namespace MapleServer2.Types
         public bool IsLocked;
         public long UnlockTime;
         public short RemainingGlamorForges;
+        public int GachaDismantleId;
         public int Enchants;
         // EnchantExp (10000 = 100%) for Peachy
         public int EnchantExp;
@@ -58,56 +57,48 @@ namespace MapleServer2.Types
         // For friendship badges
         public long PairedCharacterId;
         public string PairedCharacterName;
+        public int PetSkinBadgeId;
+        public byte[] TransparencyBadgeBools;
 
         public Player Owner;
-
         public EquipColor Color;
-
-        public HairData HairD;
-
-        public byte[] FaceDecorationD;
-        public byte AppearanceFlag;
-
+        public HairData HairData;
+        public HatData HatData;
+        public byte[] FaceDecorationData;
+        public MusicScore Score;
         public ItemStats Stats;
+
+        public Inventory Inventory;
+        public BankInventory BankInventory;
+
+        public Item() { }
 
         public Item(int id)
         {
             Id = id;
-            Uid = GuidGenerator.Long();
-            InventoryTab = ItemMetadataStorage.GetTab(id);
-            ItemSlot = ItemMetadataStorage.GetSlot(id);
-            GemSlot = ItemMetadataStorage.GetGem(id);
-            Rarity = ItemMetadataStorage.GetRarity(id);
-            StackLimit = ItemMetadataStorage.GetStackLimit(id);
-            EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
-            IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
-            IsDress = ItemMetadataStorage.GetIsDress(id);
+            SetMetadataValues(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
+            Level = ItemMetadataStorage.GetLevel(id);
+            ItemSlot = ItemMetadataStorage.GetSlot(id);
+            Rarity = ItemMetadataStorage.GetRarity(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
-            FileName = ItemMetadataStorage.GetFileName(id);
-            SkillId = ItemMetadataStorage.GetSkillID(id);
-            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
-            Content = ItemMetadataStorage.GetContent(id);
-            FunctionName = ItemMetadataStorage.GetFunctionName(id);
-            FunctionId = ItemMetadataStorage.GetFunctionId(id);
-            FunctionDuration = ItemMetadataStorage.GetFunctionDuration(id);
-            FunctionFieldId = ItemMetadataStorage.GetFunctionFieldId(id);
-            FunctionCapacity = ItemMetadataStorage.GetFunctionCapacity(id);
-            FunctionTargetLevel = ItemMetadataStorage.GetFunctionTargetLevel(id);
-            FunctionCount = ItemMetadataStorage.GetFunctionCount(id);
-            FunctionTotalUser = ItemMetadataStorage.GetFunctionTotalUser(id);
-            Tag = ItemMetadataStorage.GetTag(id);
-            ShopID = ItemMetadataStorage.GetShopID(id);
+            Color = ItemMetadataStorage.GetEquipColor(id);
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+            RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
             Slot = -1;
             Amount = 1;
-            Stats = new ItemStats(id, Rarity);
+            Score = new MusicScore();
+            Stats = new ItemStats(id, Rarity, Level, IsTwoHand);
             CanRepackage = true; // If false, item becomes untradable
+            Uid = DatabaseManager.AddItem(this);
         }
 
         // Make a copy of item
         public Item(Item other)
         {
             Id = other.Id;
+            Level = other.Level;
+            Gender = other.Gender;
             InventoryTab = other.InventoryTab;
             ItemSlot = other.ItemSlot;
             GemSlot = other.GemSlot;
@@ -117,17 +108,12 @@ namespace MapleServer2.Types
             IsTwoHand = other.IsTwoHand;
             IsDress = other.IsDress;
             IsTemplate = other.IsTemplate;
+            IsCustomScore = other.IsCustomScore;
             PlayCount = other.PlayCount;
             FileName = other.FileName;
             Content = other.Content;
-            FunctionName = other.FunctionName;
-            FunctionId = other.FunctionId;
-            FunctionDuration = other.FunctionDuration;
-            FunctionFieldId = other.FunctionFieldId;
-            FunctionCapacity = other.FunctionCapacity;
-            FunctionTargetLevel = other.FunctionTargetLevel;
-            FunctionCount = other.FunctionCount;
-            FunctionTotalUser = other.FunctionTotalUser;
+            Function = other.Function;
+            AdBalloon = other.AdBalloon;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
@@ -137,6 +123,7 @@ namespace MapleServer2.Types
             IsLocked = other.IsLocked;
             UnlockTime = other.UnlockTime;
             RemainingGlamorForges = other.RemainingGlamorForges;
+            GachaDismantleId = other.GachaDismantleId;
             Enchants = other.Enchants;
             EnchantExp = other.EnchantExp;
             CanRepackage = other.CanRepackage;
@@ -145,98 +132,14 @@ namespace MapleServer2.Types
             RemainingTrades = other.RemainingTrades;
             PairedCharacterId = other.PairedCharacterId;
             PairedCharacterName = other.PairedCharacterName;
+            PetSkinBadgeId = other.PetSkinBadgeId;
+            RecommendJobs = other.RecommendJobs;
             Owner = other.Owner;
             Color = other.Color;
-            HairD = other.HairD;
-            AppearanceFlag = other.AppearanceFlag;
+            HairData = other.HairData;
+            HatData = other.HatData;
+            Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
-        }
-
-        public static Item Ear()
-        {
-            return new Item(10500001)
-            {
-                Uid = 2754959794416496488,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-            };
-        }
-
-        public static Item Hair()
-        {
-            return new Item(10200148)
-            {
-                Uid = 2867972925711604442,
-                CreationTime = 1565575851,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xCC, 0xF7),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    15
-                ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-                AppearanceFlag = 2,
-            };
-        }
-
-        public static Item Face()
-        {
-            return new Item(10300004)
-            {
-                Uid = 2754959794416496483,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB5, 0x24, 0x29),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02),
-                    0
-                ),
-                AppearanceFlag = 3,
-            };
-        }
-
-        public static Item FaceDecoration()
-        {
-            return new Item(10400000)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
-            };
-        }
-
-        public static Item TutorialBow(Player owner)
-        {
-            // bow 15100216
-            // [longsword]  Tairen Royal Longsword - 13200309
-            // [shield] Tairen Royal Shield - 14100279
-            // [greatsword] Tairen Royal Greatsword - 15000313
-            // [scepter] Tairen Royal Scepter - 13300308
-            // [codex] Tairen Royal Codex - 14000270
-            // [staff] Tairen Royal Staff - 15200312
-            // [cannon] Tairen Royal Cannon - 15300308
-            // [bow] Tairen Royal Bow - 15100305
-            // [dagger] Tairen Royal Knife - 13100314
-            // [star] Tairen Royal Star - 13400307
-            // [blade] Tairen Royal Blade - 15400294
-            // [knuckles] Tairen Royal Knuckles - 15500226
-            // [orb] Tairen Royal Spirit - 15600228
-            return new Item(15100216)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
-                ),
-                AppearanceFlag = 0x5,
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
         }
 
         public bool TrySplit(int amount, out Item splitItem)
@@ -251,126 +154,8 @@ namespace MapleServer2.Types
             Amount -= amount;
             splitItem.Amount = amount;
             splitItem.Slot = -1;
-            splitItem.Uid = Environment.TickCount64;
+            splitItem.Uid = DatabaseManager.AddItem(this);
             return true;
-        }
-
-        public static Item DefaultScepter(Player owner)
-        {
-            return new Item(13300308)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
-                ),
-                AppearanceFlag = 0x5,
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
-        }
-
-        public static Item DefaultCodex(Player owner)
-        {
-            return new Item(14000270)
-            {
-                Uid = 3430503306390578751, // Make sure its unique! If the UID is equipped, it will say "Equipped" on the item in your inventory
-                Rarity = 1,
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                Owner = owner,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xBC, 0xBC, 0xB3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xC3, 0xDA, 0x3D),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xB0, 0xB4, 0xBA),
-                    0x13
-                ),
-                AppearanceFlag = 0x5,
-                TransferFlag = TransferFlag.Binds | TransferFlag.Splitable,
-            };
-        }
-        // MALE ITEMS
-        public static Item HairMale()
-        {
-            return new Item(10200003)
-            {
-                Uid = 2867972925711604442,
-                CreationTime = 1565575851,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
-                ),
-                HairD = new HairData(0.3f, 0.3f, new CoordF(), new CoordF(), new CoordF(), new CoordF()),
-                AppearanceFlag = 2,
-            };
-        }
-        public static Item EarMale()
-        {
-            return new Item(10500001)
-            {
-                Uid = 2754959794416496488,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-            };
-        }
-        public static Item FaceMale()
-        {
-            return new Item(10300051)
-            {
-                Uid = 2754959794416496483,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x7E, 0xF3, 0xF8),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0xF7, 0xE3, 0xE3),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x14, 0x07, 0x02),
-                    0
-                ),
-                AppearanceFlag = 3,
-            };
-        }
-        public static Item FaceDecorationMale()
-        {
-            return new Item(10400002)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = new EquipColor(),
-                FaceDecorationD = new byte[16],
-            };
-        }
-        public static Item CloathMale()
-        {
-            return new Item(12200398)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
-                ),
-            };
-        }
-
-        public static Item ShoesMale()
-        {
-            return new Item(11700852)
-            {
-                Uid = 2754959794416496484,
-                CreationTime = 1558494660,
-                Color = EquipColor.Custom(
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x69, 0xB5),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x4C, 0x85, 0xDB),
-                    Maple2Storage.Types.Color.Argb(0xFF, 0x48, 0x5E, 0xA8),
-                    4
-                ),
-            };
         }
 
         public static bool IsWeapon(ItemSlot slot)
@@ -391,6 +176,26 @@ namespace MapleServer2.Types
         public static bool IsPet(int itemId)
         {
             return itemId >= 60000001 && itemId < 61000000;
+        }
+
+        public void SetMetadataValues(int id)
+        {
+            InventoryTab = ItemMetadataStorage.GetTab(id);
+            GemSlot = ItemMetadataStorage.GetGem(id);
+            StackLimit = ItemMetadataStorage.GetStackLimit(id);
+            EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
+            IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
+            IsDress = ItemMetadataStorage.GetIsDress(id);
+            IsCustomScore = ItemMetadataStorage.GetIsCustomScore(id);
+            Gender = ItemMetadataStorage.GetGender(id);
+            FileName = ItemMetadataStorage.GetFileName(id);
+            SkillId = ItemMetadataStorage.GetSkillID(id);
+            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+            Content = ItemMetadataStorage.GetContent(id);
+            Function = ItemMetadataStorage.GetFunction(id);
+            AdBalloon = ItemMetadataStorage.GetBalloonData(id);
+            Tag = ItemMetadataStorage.GetTag(id);
+            ShopID = ItemMetadataStorage.GetShopID(id);
         }
     }
 }

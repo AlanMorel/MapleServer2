@@ -9,6 +9,8 @@ namespace MapleServer2.Types
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
 
+        public Currency() { }
+
         public Currency(Player player, CurrencyType type, long input)
         {
             Player = player;
@@ -56,7 +58,7 @@ namespace MapleServer2.Types
                     Player.Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
                 case CurrencyType.Bank:
-                    Player.Session.Send(StorageInventory.UpdateMesos(Amount));
+                    Player.Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
                     break;

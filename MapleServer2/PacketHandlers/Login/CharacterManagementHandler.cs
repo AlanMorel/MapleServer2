@@ -5,6 +5,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -33,12 +34,22 @@ namespace MapleServer2.PacketHandlers.Login
                     HandleCreate(session, packet);
                     break;
                 case 2: // Delete
-                    long deleteCharId = packet.ReadLong();
-                    Logger.Info($"Deleting {deleteCharId}");
+                    HandleDelete(session, packet);
                     break;
                 default:
                     throw new ArgumentException($"Invalid Char select mode {mode}");
             }
+        }
+
+        private void HandleDelete(LoginSession session, PacketReader packet)
+        {
+            long deleteCharId = packet.ReadLong();
+            if (!DatabaseManager.DeleteCharacter(DatabaseManager.GetCharacter(deleteCharId)))
+            {
+                throw new ArgumentException("Could not delete character");
+            }
+            session.Send(CharacterListPacket.DeleteCharacter(deleteCharId));
+            Logger.Info($"Deleting {deleteCharId}");
         }
 
         public void HandleSelect(LoginSession session, PacketReader packet)
@@ -65,14 +76,11 @@ namespace MapleServer2.PacketHandlers.Login
         public void HandleCreate(LoginSession session, PacketReader packet)
         {
             byte gender = packet.ReadByte();
-            //packet.ReadShort(); // const?
-            // var jobCode = (Job)packet.ReadShort();
             Job job = (Job) packet.ReadShort();
             string name = packet.ReadUnicodeString();
             SkinColor skinColor = packet.Read<SkinColor>();
-            //packet.ReadShort(); // const?
             packet.Skip(2);
-            Dictionary<ItemSlot, Item> equips = new Dictionary<ItemSlot, Item>();
+            Dictionary<ItemSlot, Item> cosmetics = new Dictionary<ItemSlot, Item>();
 
             Logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {job}");
 
@@ -86,7 +94,6 @@ namespace MapleServer2.PacketHandlers.Login
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
                 EquipColor equipColor = packet.Read<EquipColor>();
-                int colorIndex = packet.ReadInt();
 
                 switch (type)
                 {
@@ -99,92 +106,83 @@ namespace MapleServer2.PacketHandlers.Login
                         CoordF frontPositionCoord = packet.Read<CoordF>();
                         CoordF frontPositionRotation = packet.Read<CoordF>();
 
-                        equips.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
-                            HairD = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
+                            HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        equips.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        equips.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
-                            FaceDecorationD = faceDecoration,
+                            FaceDecorationData = faceDecoration,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        equips.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        equips.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        equips.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                     case ItemSlot.ER: // Ear
                         // Assign ER
-                        equips.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
+                        cosmetics.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
                         {
-                            CreationTime = 1565575851,
                             Color = equipColor,
                             IsTemplate = false,
+                            IsEquipped = true
                         });
                         break;
                 }
-                Logger.Info($" > {type} - id: {id}, color: {equipColor}, colorIndex: {colorIndex}");
+                Logger.Info($" > {type} - id: {id}, color: {equipColor}");
             }
             packet.ReadInt(); // const? (4)
 
-            // Check if name is in use (currently just on local account)
-            bool taken = false;
-
-            foreach (Player character in AccountStorage.Characters.Values)
-            {
-                if (character.Name.ToLower().Equals(name.ToLower()))
-                {
-                    taken = true;
-                }
-            }
-
-            if (taken)
+            if (DatabaseManager.NameExists(name))
             {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
             }
 
-            // Create new player object
-            Player newCharacter = Player.NewCharacter(gender, job, name, skinColor, equips);
-
-            // Add player object to account storage
-            AccountStorage.AddCharacter(newCharacter);
+            Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
+            foreach (Item item in cosmetics.Values)
+            {
+                item.Owner = newCharacter;
+            }
+            newCharacter.Inventory.Cosmetics = cosmetics;
+            DatabaseManager.UpdateCharacter(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
             session.Send(CharacterListPacket.SetMax(4, 6));

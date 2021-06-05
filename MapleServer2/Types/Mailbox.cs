@@ -5,36 +5,38 @@ namespace MapleServer2.Types
 {
     public class Mailbox
     {
-        public List<Mail> Box { get; private set; }
+        public List<Mail> Mails { get; private set; } = new List<Mail>();
 
-        public Mailbox()
+        public Mailbox() { }
+
+        public Mailbox(List<Mail> mails)
         {
-            Box = new List<Mail>();
+            Mails = mails;
         }
 
         public void AddOrUpdate(Mail mail)
         {
-            int index = Box.FindIndex(x => x.Uid == mail.Uid);
+            int index = Mails.FindIndex(x => x.Uid == mail.Uid);
 
             if (index > -1)
             {
-                Box[index] = mail;
+                Mails[index] = mail;
             }
             else
             {
-                Box.Insert(0, mail); // Adds to front of mailbox
+                Mails.Insert(0, mail); // Adds to front of mailbox
             }
         }
 
         public long Read(int id)
         {
             long timestamp = 0;
-            int index = Box.FindIndex(x => x.Uid == id);
+            int index = Mails.FindIndex(x => x.Uid == id);
 
             if (index > -1)
             {
-                Box[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                timestamp = Box[index].ReadTimestamp;
+                Mails[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                timestamp = Mails[index].ReadTimestamp;
             }
 
             return timestamp;
@@ -43,12 +45,12 @@ namespace MapleServer2.Types
         public List<Item> Collect(int id)
         {
             List<Item> items = null;
-            int index = Box.FindIndex(x => x.Uid == id);
+            int index = Mails.FindIndex(x => x.Uid == id);
 
             if (index > -1)
             {
-                items = Box[index].Items;
-                Box[index].Collect(null);
+                items = Mails[index].Items;
+                Mails[index].Collect(null);
             }
 
             return items;
@@ -58,7 +60,7 @@ namespace MapleServer2.Types
         public int GetUnreadCount()
         {
             int unread = 0;
-            foreach (Mail mail in Box)
+            foreach (Mail mail in Mails)
             {
                 if (mail.ReadTimestamp == 0)
                 {
@@ -73,20 +75,20 @@ namespace MapleServer2.Types
         {
             long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            foreach (Mail mail in Box)
+            foreach (Mail mail in Mails)
             {
                 if (mail.Type == 1)
                 {
                     if (currentTime >= mail.SentTimestamp + 2592000) // 2592000 = 30 days
                     {
-                        Box.Remove(mail);
+                        Mails.Remove(mail);
                     }
                 }
                 else if (mail.Type == 101)
                 {
                     if (currentTime >= mail.SentTimestamp + 864000000) // 864000000 = 10000 days
                     {
-                        Box.Remove(mail);
+                        Mails.Remove(mail);
                     }
                 }
             }

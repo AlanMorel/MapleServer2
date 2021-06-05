@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -53,9 +52,9 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte();                // Unknown (0x00/0x01)
             pWriter.WriteEnum(StatsMode.SendStats);
-            foreach (DictionaryEntry entry in player.Value.Stats.Data)
+            foreach (KeyValuePair<PlayerStatId, PlayerStat> entry in player.Value.Stats.Data)
             {
-                pWriter.WriteStat((PlayerStatId) entry.Key, (PlayerStat) entry.Value);
+                pWriter.WriteStat(entry.Key, entry.Value);
             }
 
             return pWriter;

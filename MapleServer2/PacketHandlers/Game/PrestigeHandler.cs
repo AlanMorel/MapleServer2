@@ -56,6 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Player.StatPointDistribution.AddTotalStatPoints(reward.Value);
             }
+            session.Player.PrestigeRewardsClaimed.Add(rank);
         }
     }
 }

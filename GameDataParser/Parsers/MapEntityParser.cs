@@ -163,13 +163,23 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-                        metadata.HealingSpot = healingCoord;
+                        metadata.HealingSpot.Add(healingCoord);
                     }
                     else if (modelName == "MS2Telescope")
                     {
                         string uuid = node.Attributes["id"].Value;
                         int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
-                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
+                        metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Binoculars, interactId));
+                    }
+                    else if (modelName == "MS2InteractMesh")
+                    {
+                        if (node.SelectSingleNode("property[@name='interactID']") != null)
+                        {
+                            string uuid = node.Attributes["id"].Value;
+                            int interactId = string.IsNullOrEmpty(node.SelectSingleNode("property[@name='interactID']").Value) ? 0 :
+                                int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
+                            metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Extractor, interactId));
+                        }
                     }
                     else if (modelName.Contains("hub") || modelName.Contains("vein"))
                     {
@@ -181,7 +191,7 @@ namespace GameDataParser.Parsers
                             interactId = int.Parse(mapObjects[modelName]["interactID"]);
                         }
                         int recipeId = interactRecipeMap[interactId];
-                        metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Gathering, interactId, recipeId));
+                        metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Gathering, interactId, recipeId));
                     }
                     else if (modelName == "SpawnPointPC")  // Player Spawn point on map
                     {
@@ -195,14 +205,14 @@ namespace GameDataParser.Parsers
                     }
                     else if (modelName.StartsWith("MS2RegionSpawn"))  // Mob Spawn point on map
                     {
-                        XmlNode mobCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode spawnPointID = node.SelectSingleNode("property[@name='SpawnPointID']");
+                        XmlNode mobCoord = node.SelectSingleNode("property[@name='Position']");
                         XmlNode npcCount = node.SelectSingleNode("property[@name='NpcCount']");
                         XmlNode npcList = node.SelectSingleNode("property[@name='NpcList']");
                         XmlNode spawnRadius = node.SelectSingleNode("property[@name='SpawnRadius']");
 
-                        string mobPositionValue = mobCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string mobSpawnPointID = spawnPointID?.FirstChild.Attributes["value"]?.Value ?? mapObjects[modelName]["SpawnPointID"];
+                        string mobPositionValue = mobCoord?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         SpawnMetadata mobSpawnData = (spawnTagMap.ContainsKey(mapId) && spawnTagMap[mapId].ContainsKey(mobSpawnPointID)) ? spawnTagMap[mapId][mobSpawnPointID] : null;  // Do we need this spawn data (?)
                         int mobNpcCount = mobSpawnData?.Population ?? 6;
                         List<int> mobNpcList = new List<int>();
@@ -220,12 +230,13 @@ namespace GameDataParser.Parsers
                         }
                         int mobSpawnRadius = int.Parse(spawnRadius?.FirstChild.Attributes["value"]?.Value ?? "150");
 
-                        metadata.MobSpawns.Add(new MapMobSpawn(CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
+                        metadata.MobSpawns.Add(new MapMobSpawn(int.Parse(mobSpawnPointID), CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
                     }
-                    else if (modelName == "Portal_entrance" || modelName == "Portal_cube")
+                    else if (modelName == "Portal_entrance" || modelName == "Portal_cube" || modelName.Contains("Portal_memberance"))
                     {
                         XmlNode portalIdNode = node.SelectSingleNode("property[@name='PortalID']");
-                        XmlNode targetNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
+                        XmlNode targetFieldNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
+                        XmlNode targetIdNode = node.SelectSingleNode("property[@name='TargetPortalID']");
                         if (portalIdNode == null)
                         {
                             continue;
@@ -251,11 +262,16 @@ namespace GameDataParser.Parsers
                         }
 
                         int target = 0;
-                        if (targetNode != null)
+                        if (targetFieldNode != null)
                         {
-                            target = int.Parse(targetNode.FirstChild.Attributes["value"].Value ?? "0");
+                            target = int.Parse(targetFieldNode.FirstChild.Attributes["value"].Value ?? "0");
                         }
                         int portalId = int.Parse(portalIdNode?.FirstChild.Attributes["value"].Value);
+                        int targetPortalId = 0;
+                        if (targetIdNode != null)
+                        {
+                            targetPortalId = int.Parse(targetIdNode?.FirstChild.Attributes["value"].Value);
+                        }
                         string positionValue = coordNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
@@ -265,7 +281,7 @@ namespace GameDataParser.Parsers
 
                         CoordS position = CoordS.Parse(positionValue);
                         CoordS rotation = CoordS.Parse(rotationValue);
-                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation));
+                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation, targetPortalId));
                     }
                     else if (modelName == "SpawnPointNPC" && !name.StartsWith("SpawnPointNPC"))
                     {
@@ -280,6 +296,18 @@ namespace GameDataParser.Parsers
                         string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
                         thisNpc.IsSpawnOnFieldCreate = true;
+                        metadata.Npcs.Add(thisNpc);
+                    }
+                    else if (modelName == "EventSpawnPointNPC")
+                    {
+                        string npcId = node.SelectSingleNode("property[@name='NpcList']")?.FirstChild?.Attributes["index"].Value ?? "0";
+                        if (npcId == "0")
+                        {
+                            continue;
+                        }
+                        string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
+                        MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));
                         metadata.Npcs.Add(thisNpc);
                     }
                     // Parse the rest of the objects in the xblock if they have a flat component.
@@ -317,7 +345,7 @@ namespace GameDataParser.Parsers
                             else if (modelData.ContainsKey("mixinMS2InteractActor"))
                             {
                                 string uuid = node.Attributes["id"].Value.ToLower();
-                                metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Unknown, 0));
+                                metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Unknown, 0));
                             }
                             else if (modelData.ContainsKey("mixinMS2InteractDisplay"))
                             {
@@ -331,13 +359,13 @@ namespace GameDataParser.Parsers
                                 if (name.Contains("funct_extract_"))
                                 {
                                     string uuid = node.Attributes["id"].Value.ToLower();
-                                    metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Extractor, 0));
+                                    metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Extractor, 0));
                                 }
                                 else if (name.Contains("funct_telescope_"))
                                 {
                                     string uuid = node.Attributes["id"].Value;
                                     int interactId = int.Parse(node.SelectSingleNode("property[@name='interactID']")?.FirstChild.Attributes["value"]?.Value);
-                                    metadata.InteractActors.Add(new MapInteractActor(uuid, name, InteractActorType.Binoculars, interactId));
+                                    metadata.InteractObjects.Add(new MapInteractObject(uuid, name, InteractObjectType.Binoculars, interactId));
                                 }
                             }
                         }
@@ -345,6 +373,11 @@ namespace GameDataParser.Parsers
                         {
                             // These can be full natural spawns, or only spawnable as a reaction to a quest, or something else as well.
                             string npcId = Regex.Match(modelName, @"^(\d{8})_").Groups[1].Value;
+                            string indexNpcId = node.SelectSingleNode("property[@name='NpcList']")?.FirstChild.Attributes["index"].Value ?? "0";
+                            if (indexNpcId != "0")
+                            {
+                                npcId = indexNpcId;
+                            }
                             string npcPositionValue = node.SelectSingleNode("property[@name='Position']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                             string npcRotationValue = node.SelectSingleNode("property[@name='Rotation']")?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                             MapNpc thisNpc = new MapNpc(int.Parse(npcId), modelName, name, CoordS.Parse(npcPositionValue), CoordS.Parse(npcRotationValue));

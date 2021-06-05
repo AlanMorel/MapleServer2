@@ -48,11 +48,15 @@ namespace GameDataParser.Parsers
                             byte[] tertiaryBytes = BitConverter.GetBytes(tertiary);
                             Array.Reverse(tertiaryBytes);
 
-                            EquipColor newColor = EquipColor.Custom(
-                    Color.Argb(primaryBytes[0], primaryBytes[1], primaryBytes[2], primaryBytes[3]),
-                    Color.Argb(secondaryBytes[0], secondaryBytes[1], secondaryBytes[2], secondaryBytes[3]),
-                    Color.Argb(tertiaryBytes[0], tertiaryBytes[1], tertiaryBytes[2], tertiaryBytes[3]),
-                    index);
+                            int paletteColor = Convert.ToInt32(colorNode.Attributes["palette"].Value, 16);
+                            byte[] paletteBytes = BitConverter.GetBytes(paletteColor);
+                            Array.Reverse(paletteBytes);
+
+                            MixedColor newColor = MixedColor.Custom(
+                                Color.FromBytes(primaryBytes),
+                                Color.FromBytes(secondaryBytes),
+                                Color.FromBytes(tertiaryBytes)
+                                );
                             metadata.DefaultColors.Add(newColor);
                         }
                     }

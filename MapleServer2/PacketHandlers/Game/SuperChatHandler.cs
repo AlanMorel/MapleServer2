@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
@@ -43,16 +42,14 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int item = packet.ReadInt();
 
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
-            Item superChatItem = playerInventoryItems.FirstOrDefault(x => x.Id == item);
+            Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == item);
             if (superChatItem == null)
             {
                 return;
             }
 
-            session.Player.SuperChat = superChatItem.FunctionId;
-            session.Send(SuperChatPacket.Select(session.FieldPlayer, superChatItem.FunctionId));
+            session.Player.SuperChat = superChatItem.Function.Id;
+            session.Send(SuperChatPacket.Select(session.FieldPlayer, superChatItem.Id));
         }
 
         private static void HandleDeselect(GameSession session)

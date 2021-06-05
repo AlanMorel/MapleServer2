@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -37,42 +38,80 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
+                if (!MapEntityStorage.HasSafePortal(srcMapId)) // map is instance only
+                {
+                    session.Player.MapId = session.Player.ReturnMapId;
+                    session.Player.Rotation = session.FieldPlayer.Rotation;
+                    session.Player.Coord = session.Player.ReturnCoord;
+                    session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
+                    DatabaseManager.UpdateCharacter(session.Player);
+                    session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                    return;
+                }
+
                 MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
                     .FirstOrDefault(portal => portal.Target == srcMapId);
                 if (dstPortal == default)
                 {
-                    Logger.Warning($"Unable to find return portal to map:{srcMapId} in map:{srcPortal.Target}");
+                    session.Player.ReturnCoord = session.FieldPlayer.Coord;
+                    session.Player.ReturnMapId = session.Player.MapId;
+                }
+
+                dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
+                .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId);
+                if (dstPortal == default)
+                {
+                    Logger.Warning($"Unable to find portal id:{srcPortal.TargetPortalId} in map:{srcPortal.Target}");
                     return;
                 }
 
-                // TODO: There needs to be a more centralized way to set coordinates...
-                session.Player.MapId = srcPortal.Target;
-                session.Player.Rotation = dstPortal.Rotation.ToFloat();
-                session.Player.Coord = dstPortal.Coord.ToFloat();
+                CoordF coord = dstPortal.Coord.ToFloat();
 
                 if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
                 {
-                    if (dstPortal.Rotation.Z == 0) // Facing SE
+                    if (dstPortal.Rotation.Z == Direction.SOUTH_EAST)
                     {
-                        session.Player.Coord.Y -= Block.BLOCK_SIZE;
+                        coord.Y -= Block.BLOCK_SIZE;
                     }
-                    else if (dstPortal.Rotation.Z == 90) // Facing NE
+                    else if (dstPortal.Rotation.Z == Direction.NORTH_EAST)
                     {
-                        session.Player.Coord.X += Block.BLOCK_SIZE;
+                        coord.X += Block.BLOCK_SIZE;
                     }
-                    else if (dstPortal.Rotation.Z == 180) // Facing NW
+                    else if (dstPortal.Rotation.Z == Direction.NORTH_WEST)
                     {
-                        session.Player.Coord.Y += Block.BLOCK_SIZE;
+                        coord.Y += Block.BLOCK_SIZE;
                     }
-                    else if (dstPortal.Rotation.Z == 270) // Facing SW
+                    else if (dstPortal.Rotation.Z == Direction.SOUTH_WEST)
                     {
-                        session.Player.Coord.X -= Block.BLOCK_SIZE;
+                        coord.X -= Block.BLOCK_SIZE;
                     }
                 }
 
-                session.Player.SafeBlock = session.Player.Coord;
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Player.Warp(coord, dstPortal.Rotation.ToFloat(), srcPortal.Target);
             }
+        }
+
+        public static void HandleInstanceMove(GameSession session, int mapId)
+        {
+            // TODO: Revise to include instancing
+
+            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
+            {
+                session.Player.ReturnCoord = session.FieldPlayer.Coord;
+                session.Player.ReturnMapId = session.Player.MapId;
+            }
+
+            MapPortal dstPortal = MapEntityStorage.GetPortals(mapId).First(x => x.Id == 1);
+            if (dstPortal == null)
+            {
+                return;
+            }
+
+            session.Player.MapId = mapId;
+            session.Player.Rotation = dstPortal.Rotation.ToFloat();
+            session.Player.Coord = dstPortal.Coord.ToFloat();
+            DatabaseManager.UpdateCharacter(session.Player);
+            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
         }
     }
 }

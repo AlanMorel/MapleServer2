@@ -3,7 +3,8 @@ using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
@@ -34,35 +35,38 @@ namespace MapleServer2.PacketHandlers.Login
         {
             byte mode = packet.ReadByte();
             string username = packet.ReadUnicodeString();
-            string pass = packet.ReadUnicodeString();
+            string password = packet.ReadUnicodeString();
 
-            Logger.Debug($"Logging in with username: '{username}' pass: '{pass}'");
+            // Hash the password with BCrypt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // TODO: From this user/pass lookup we should be able to find the accountId
-            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(pass))
+            // TODO: Change authenticate to return bool and add packet for wrong password
+            Account account = DatabaseManager.Authenticate(username, password);
+
+            // Auto add new accounts
+            if (account == default)
             {
-                // send error / account credentials not found
+                account = new Account(username, passwordHash);
             }
 
-            session.AccountId = AccountStorage.DEFAULT_ACCOUNT_ID;
+            Logger.Debug($"Logging in with account ID: {account.Id}");
+            session.AccountId = account.Id;
 
             switch (mode)
             {
                 case 1:
                     PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
                     pWriter.WriteLong();
-                    pWriter.WriteUnicodeString("");
+                    pWriter.WriteUnicodeString(account.Username);
 
                     session.Send(pWriter);
-                    session.Send(BannerListPacket.SetBanner());
+
+                    List<Banner> banners = DatabaseManager.GetBanners();
+                    session.Send(BannerListPacket.SetBanner(banners));
                     session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;
                 case 2:
-                    List<Player> characters = new List<Player>();
-                    foreach (long characterId in AccountStorage.ListCharacters(session.AccountId))
-                    {
-                        characters.Add(AccountStorage.GetCharacter(characterId));
-                    }
+                    List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
 
                     Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));

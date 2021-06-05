@@ -14,27 +14,56 @@ namespace MapleServer2.PacketHandlers.Game
 
         public KeyTableHandler(ILogger<KeyTableHandler> logger) : base(logger) { }
 
+        private enum KeyTableEnum : byte
+        {
+            SetKeyBind = 0x02,
+            MoveQuickSlot = 0x03,
+            AddToFirstSlot = 0x04,
+            RemoveQuickSlot = 0x05,
+            SetActiveHotbar = 0x08,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte requestType = packet.ReadByte();
+            KeyTableEnum requestType = (KeyTableEnum) packet.ReadByte();
 
             switch (requestType)
             {
-                case 2:
+                case KeyTableEnum.SetKeyBind:
                     SetKeyBinds(session, packet);
                     break;
-                case 3:
+                case KeyTableEnum.MoveQuickSlot:
                     MoveQuickSlot(session, packet);
                     break;
-                case 5:
+                case KeyTableEnum.AddToFirstSlot:
+                    AddToQuickSlot(session, packet);
+                    break;
+                case KeyTableEnum.RemoveQuickSlot:
                     RemoveQuickSlot(session, packet);
                     break;
-                case 8:
+                case KeyTableEnum.SetActiveHotbar:
                     SetActiveHotbar(session, packet);
                     break;
                 default:
                     Logger.Warning($"Unknown request type {requestType}");
                     break;
+            }
+        }
+
+        private void AddToQuickSlot(GameSession session, PacketReader packet)
+        {
+            short hotbarId = packet.ReadShort();
+            if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
+            {
+                Logger.Warning($"Invalid hotbar id {hotbarId}");
+                return;
+            }
+
+            QuickSlot quickSlot = packet.Read<QuickSlot>();
+            int targetSlot = packet.ReadInt();
+            if (targetHotbar.AddToFirstSlot(quickSlot))
+            {
+                session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
             }
         }
 

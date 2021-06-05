@@ -22,14 +22,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int unk, int questId = 0)
+        public static Packet ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
             pWriter.WriteByte(0x02);
             pWriter.WriteEnum(responseType);
             pWriter.WriteInt(questId);
             pWriter.WriteInt(scriptId);
-            pWriter.WriteInt(unk); // 1 when completed a quest and start an cutscene
+            pWriter.WriteInt(contentIndex); // used when there is multiple contents for the same script id
             pWriter.WriteEnum(dialogType);
 
             return pWriter;

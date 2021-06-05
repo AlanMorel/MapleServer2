@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -17,7 +18,8 @@ namespace MapleServer2.PacketHandlers.Game
         private enum RequestGemEquipmentMode : byte
         {
             EquipItem = 0x00,
-            UnequipItem = 0x01
+            UnequipItem = 0x01,
+            Transprency = 0x03
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -31,6 +33,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestGemEquipmentMode.UnequipItem:
                     HandleUnequipItem(session, packet);
+                    break;
+                case RequestGemEquipmentMode.Transprency:
+                    HandleTransparency(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -51,19 +56,22 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Unequip existing item in slot
-            int index = session.Player.Badges.FindIndex(i => i.GemSlot == item.GemSlot);
+            List<Item> badges = session.Player.Inventory.Badges;
+            int index = badges.FindIndex(i => i.GemSlot == item.GemSlot);
             if (index >= 0)
             {
                 // Add to inventory
-                InventoryController.Add(session, session.Player.Badges[index], false);
+                badges[index].IsEquipped = false;
+                InventoryController.Add(session, badges[index], false);
 
                 // Unequip
-                session.Player.Badges.RemoveAt(index);
+                badges.RemoveAt(index);
                 session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, (byte) item.GemSlot));
             }
 
             // Equip
-            session.Player.Badges.Add(item);
+            item.IsEquipped = true;
+            badges.Add(item);
             session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item));
         }
 
@@ -71,22 +79,36 @@ namespace MapleServer2.PacketHandlers.Game
         {
             byte index = packet.ReadByte();
 
-            if (session.Player.Badges.Count < index + 1)
+            List<Item> badges = session.Player.Inventory.Badges;
+            if (badges.Count < index + 1)
             {
                 return;
             }
 
-            Item item = session.Player.Badges[index];
+            Item item = badges[index];
 
             // Add to inventory
+            item.IsEquipped = false;
             InventoryController.Add(session, item, false);
 
             // Unequip
-            bool removed = session.Player.Badges.Remove(item);
+            bool removed = badges.Remove(item);
             if (removed)
             {
                 session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, (byte) item.GemSlot));
             }
+        }
+
+        private static void HandleTransparency(GameSession session, PacketReader packet)
+        {
+            byte slot = packet.ReadByte();
+            byte[] transparencyBools = packet.Read(10);
+
+            Item item = session.Player.Inventory.Badges[slot];
+
+            item.TransparencyBadgeBools = transparencyBools;
+
+            session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item));
         }
     }
 }
