@@ -248,33 +248,111 @@ namespace MapleServer2.Types
             return gearItem;
         }
 
+        public void RecoverHp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Hp];
+                if (stat.Current < stat.Max)
+                {
+                    Stats.Increase(PlayerStatId.Hp, Math.Min(amount, stat.Max - stat.Current));
+                    Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
+                }
+            }
+        }
+
         public void ConsumeHp(int amount)
         {
-            Stats.Decrease(PlayerStatId.Hp, amount);
+            if (amount <= 0)
+            {
+                return;
+            }
 
-            // TODO: merge regen updates with larger packets
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Hp];
+                Stats.Decrease(PlayerStatId.Hp, Math.Min(amount, stat.Current));
+            }
+
             if (HpRegenThread == null || HpRegenThread.IsCompleted)
             {
                 HpRegenThread = StartRegen(PlayerStatId.Hp, PlayerStatId.HpRegen, PlayerStatId.HpRegenTime);
             }
         }
 
+        public void RecoverSp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Spirit];
+                if (stat.Current < stat.Max)
+                {
+                    Stats.Increase(PlayerStatId.Spirit, Math.Min(amount, stat.Max - stat.Current));
+                    Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Spirit));
+                }
+            }
+        }
+
         public void ConsumeSp(int amount)
         {
-            Stats.Decrease(PlayerStatId.Spirit, amount);
+            if (amount <= 0)
+            {
+                return;
+            }
 
-            // TODO: merge regen updates with larger packets
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Spirit];
+                Stats.Decrease(PlayerStatId.Spirit, Math.Min(amount, stat.Current));
+            }
+
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
                 SpRegenThread = StartRegen(PlayerStatId.Spirit, PlayerStatId.SpRegen, PlayerStatId.SpRegenTime);
             }
         }
 
+        public void RecoverStamina(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Stamina];
+                if (stat.Current < stat.Max)
+                {
+                    Stats.Increase(PlayerStatId.Stamina, Math.Min(amount, stat.Max - stat.Current));
+                    Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Stamina));
+                }
+            }
+        }
+
         public void ConsumeStamina(int amount)
         {
-            Stats.Decrease(PlayerStatId.Stamina, amount);
+            if (amount <= 0)
+            {
+                return;
+            }
 
-            // TODO: merge regen updates with larger packets
+            lock (Stats)
+            {
+                PlayerStat stat = Stats[PlayerStatId.Stamina];
+                Stats.Decrease(PlayerStatId.Stamina, Math.Min(amount, stat.Current));
+            }
+
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
                 StaRegenThread = StartRegen(PlayerStatId.Stamina, PlayerStatId.StaRegen, PlayerStatId.StaRegenTime);
@@ -283,19 +361,26 @@ namespace MapleServer2.Types
 
         private Task StartRegen(PlayerStatId statId, PlayerStatId regenStatId, PlayerStatId timeStatId)
         {
+            // TODO: merge regen updates with larger packets
             return Task.Run(async () =>
             {
-                await Task.Delay(Stats[timeStatId].Current);
-
-                // TODO: Check if regen-enabled
-                while (Stats[statId].Current < Stats[statId].Max)
+                while (true)
                 {
+                    await Task.Delay(Stats[timeStatId].Current);
+
                     lock (Stats)
                     {
-                        Stats[statId] = AddStatRegen(statId, regenStatId);
-                        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        if (Stats[statId].Current < Stats[statId].Max)
+                        {
+                            // TODO: Check if regen-enabled
+                            Stats[statId] = AddStatRegen(statId, regenStatId);
+                            Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
-                    await Task.Delay(Stats[timeStatId].Current);
                 }
             });
         }
