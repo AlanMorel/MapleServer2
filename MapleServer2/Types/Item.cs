@@ -93,6 +93,11 @@ namespace MapleServer2.Types
             Uid = DatabaseManager.AddItem(this);
         }
 
+        public Item(int id, int amount) : this(id)
+        {
+            Amount = amount;
+        }
+
         // Make a copy of item
         public Item(Item other)
         {
