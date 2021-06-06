@@ -16,6 +16,43 @@ namespace GameDataParser.Parsers
 
         protected override List<NpcMetadata> Parse()
         {
+            // Parse EXP tables
+            Dictionary<int, ExpMetadata> levelExp = new Dictionary<int, ExpMetadata>();
+            foreach (PackFileEntry entry in Resources.XmlFiles)
+            {
+                if (!entry.Name.StartsWith("table/expbasetable"))
+                {
+                    continue;
+                }
+
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                {
+                    if (node.Name == "table")
+                    {
+                        if (int.Parse(node.Attributes["expTableID"].Value) != 1)
+                        {
+                            continue;
+                        }
+                        foreach (XmlNode tableNode in node.ChildNodes)
+                        {
+                            if (tableNode.Name == "base")
+                            {
+                                ExpMetadata expTable = new ExpMetadata();
+
+                                byte level = byte.Parse(tableNode.Attributes["level"].Value);
+                                if (level != 0)
+                                {
+                                    expTable.Level = level;
+                                    expTable.Experience = long.Parse(tableNode.Attributes["exp"].Value);
+                                    levelExp[level] = expTable;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             Dictionary<int, string> npcIdToName = new Dictionary<int, string> { };
             List<NpcMetadata> npcs = new List<NpcMetadata>();
 
@@ -43,6 +80,7 @@ namespace GameDataParser.Parsers
                 XmlNode npcBasicNode = document.SelectSingleNode("ms2/environment/basic") ?? document.SelectSingleNode("ms2/basic");
                 XmlNode npcStatsNode = document.SelectSingleNode("ms2/environment/stat") ?? document.SelectSingleNode("ms2/stat");
                 XmlNode npcSkillIdsNode = document.SelectSingleNode("ms2/environment/skill") ?? document.SelectSingleNode("ms2/skill");
+                XmlNode npcExpNode = document.SelectSingleNode("ms2/environment/exp") ?? document.SelectSingleNode("ms2/exp");
                 XmlNode npcAiInfoNode = document.SelectSingleNode("ms2/environment/aiInfo") ?? document.SelectSingleNode("ms2/aiInfo");
                 XmlNode npcDeadNode = document.SelectSingleNode("ms2/environment/dead") ?? document.SelectSingleNode("ms2/dead");
                 XmlNode npcDropItemNode = document.SelectSingleNode("ms2/environment/dropiteminfo") ?? document.SelectSingleNode("ms2/dropiteminfo");
@@ -86,6 +124,8 @@ namespace GameDataParser.Parsers
 
                 metadata.Stats = GetNpcStats(statsCollection);
                 metadata.SkillIds = string.IsNullOrEmpty(npcSkillIdsNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillIdsNode.Attributes["ids"].Value.Split(","), int.Parse);
+                int customExpValue = int.Parse(npcExpNode.Attributes["customExp"].Value);
+                metadata.Experience = (customExpValue > 0) ? customExpValue : (int) levelExp[metadata.Level].Experience;
                 metadata.AiInfo = npcAiInfoNode.Attributes["path"].Value;
                 metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
                 metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
