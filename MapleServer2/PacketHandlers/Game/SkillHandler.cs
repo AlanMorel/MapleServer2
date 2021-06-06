@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -12,6 +13,8 @@ namespace MapleServer2.PacketHandlers.Game
 {
     public class SkillHandler : GamePacketHandler
     {
+        static readonly Random rand = new Random();
+
         public override RecvOp OpCode => RecvOp.SKILL;
 
         public SkillHandler(ILogger<SkillHandler> logger) : base(logger) { }
@@ -71,7 +74,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Player.ConsumeSp(spiritCost);
                 session.Player.ConsumeStamina(staminaCost);
-                // TODO: Add SP recovery
                 session.FieldPlayer.Value.SkillCast = skillCast;
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
@@ -156,7 +158,7 @@ namespace MapleServer2.PacketHandlers.Game
                     // TODO: Add trophy, exp, meso and item drops
                     if (mobs[i].Value.IsDead)
                     {
-                        QuestHelper.UpdateQuest(session, mobs[i].Value.Id.ToString(), "npc");
+                        HandleMobKill(session, mobs[i]);
                     }
 
                     if (mobs[i].Value.Id == 29000128) // Temp fix for tutorial barrier
@@ -178,6 +180,46 @@ namespace MapleServer2.PacketHandlers.Game
             int unk2 = packet.ReadInt();
             CoordF coord = packet.Read<CoordF>();
             CoordF coord1 = packet.Read<CoordF>();
+        }
+
+        private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
+        {
+            // Drop Money
+            bool dropMeso = rand.Next(2) == 0;
+            if (dropMeso)
+            {
+                // TODO: Calculate meso drop rate
+                Item meso = new Item(90000001, rand.Next(2, 800));
+                session.FieldManager.AddResource(meso, mob, session.FieldPlayer);
+            }
+            // Drop Meret
+            bool dropMeret = rand.Next(40) == 0;
+            if (dropMeret)
+            {
+                Item meret = new Item(90000004, 20);
+                session.FieldManager.AddResource(meret, mob, session.FieldPlayer);
+            }
+            // Drop SP
+            bool dropSP = rand.Next(8) == 0;
+            if (dropSP)
+            {
+                Item spBall = new Item(90000009, 10);
+                session.FieldManager.AddResource(spBall, mob, session.FieldPlayer);
+            }
+            // Drop EP
+            bool dropEP = rand.Next(10) == 0;
+            if (dropEP)
+            {
+                Item epBall = new Item(90000010, 2);
+                session.FieldManager.AddResource(epBall, mob, session.FieldPlayer);
+            }
+            // Drop Items
+            // Send achieves (?)
+            // Gain Mob EXP
+            session.Player.Levels.GainExp(mob.Value.Experience);
+            // Send achieves (2)
+            // Quest Check
+            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc");
         }
     }
 }
