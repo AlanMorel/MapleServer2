@@ -210,7 +210,7 @@ namespace MapleServer2.PacketHandlers.Game
             bool dropEP = rand.Next(10) == 0;
             if (dropEP)
             {
-                Item epBall = new Item(90000010, 2);
+                Item epBall = new Item(90000010, 20);
                 session.FieldManager.AddResource(epBall, mob, session.FieldPlayer);
             }
             // Drop Items
