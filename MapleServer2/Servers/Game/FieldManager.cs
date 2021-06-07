@@ -288,7 +288,6 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveNpc(IFieldObject<Npc> fieldNpc)
         {
-            // TODO: Spawn mob based on timer
             if (!State.RemoveNpc(fieldNpc.ObjectId))
             {
                 return false;
@@ -313,12 +312,12 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
                 // TODO: Add spawn buff (ID: 0x055D4DAE)
+                //session.Send();
             });
         }
 
         public bool RemoveMob(IFieldObject<Mob> mob)
         {
-            // TODO: Spawn mob based on timer
             if (!State.RemoveMob(mob.ObjectId))
             {
                 return false;
@@ -429,16 +428,17 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            if (!State.RemoveItem(objectId, out Item foundItem))
+            Item itemResult;
+            if (!State.RemoveItem(objectId, out itemResult))
             {
-                item = foundItem;
+                item = itemResult;
                 return false;
             }
-            item = foundItem;
+            item = itemResult;
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.PickupItem(objectId, foundItem, session.FieldPlayer.ObjectId));
+                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
             });
             return true;
