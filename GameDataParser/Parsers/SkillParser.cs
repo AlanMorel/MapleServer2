@@ -22,11 +22,19 @@ namespace GameDataParser.Parsers
                 if (entry.Name.StartsWith("skill"))
                 {
                     XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                    XmlNode ui = document.SelectSingleNode("/ms2/basic/ui");
+                    XmlNode kinds = document.SelectSingleNode("/ms2/basic/kinds");
+                    XmlNode stateAttr = document.SelectSingleNode("/ms2/basic/stateAttr");
                     XmlNodeList levels = document.SelectNodes("/ms2/level");
 
-                    string skillId = Path.GetFileNameWithoutExtension(entry.Name);
-                    string skillType = document.SelectSingleNode("/ms2/basic/kinds").Attributes["type"].Value;
-                    bool skillRecovery = int.Parse(document.SelectSingleNode("/ms2/basic/kinds").Attributes["spRecoverySkill"]?.Value ?? "0") > 0;
+                    int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+                    string skillState = kinds.Attributes["state"]?.Value ?? "";
+                    byte skillAttackType = byte.Parse(ui.Attributes["attackType"]?.Value ?? "0");
+                    byte skillType = byte.Parse(kinds.Attributes["type"].Value);
+                    byte skillElement = byte.Parse(kinds.Attributes["element"].Value);
+                    byte skillSuperArmor = byte.Parse(stateAttr.Attributes["superArmor"].Value);
+                    bool skillRecovery = int.Parse(kinds.Attributes["spRecoverySkill"]?.Value ?? "0") == 1;
+                    bool skillBuff = int.Parse(kinds.Attributes["immediateActive"]?.Value ?? "0") == 1;
 
                     List<SkillLevel> skillLevels = new List<SkillLevel>();
                     foreach (XmlNode level in levels)
@@ -45,9 +53,8 @@ namespace GameDataParser.Parsers
                         SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
                         skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion));
                     }
-                    string skillState = document.SelectSingleNode("/ms2/basic/kinds").Attributes["state"]?.Value ?? "";
 
-                    skillList.Add(new SkillMetadata(int.Parse(skillId), skillLevels, skillState, byte.Parse(skillType), skillRecovery));
+                    skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillElement, skillSuperArmor, skillRecovery, skillBuff));
                 }
                 // Parsing SubSkills
                 else if (entry.Name.StartsWith("table/job"))
