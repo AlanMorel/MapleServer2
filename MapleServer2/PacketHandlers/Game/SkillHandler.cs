@@ -21,8 +21,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum SkillHandlerMode : byte
         {
-            FirstSent = 0x0,  // Start of a skill
-            Damage = 0x1,     // Damaging part of a skill. one is sent per hit
+            Cast = 0x0,     // Start of a skill
+            Damage = 0x1,   // Damaging part of a skill. one is sent per hit
             Mode3 = 0x3,
             Mode4 = 0x4
         }
@@ -39,8 +39,8 @@ namespace MapleServer2.PacketHandlers.Game
             SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
             switch (mode)
             {
-                case SkillHandlerMode.FirstSent:
-                    HandleFirstSent(session, packet);
+                case SkillHandlerMode.Cast:
+                    HandleCast(session, packet);
                     break;
                 case SkillHandlerMode.Damage:
                     HandleDamage(session, packet);
@@ -57,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleFirstSent(GameSession session, PacketReader packet)
+        private static void HandleCast(GameSession session, PacketReader packet)
         {
             long skillSN = packet.ReadLong();
             int unkValue = packet.ReadInt();
@@ -67,14 +67,9 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF coords = packet.Read<CoordF>();
             packet.ReadShort();
 
-            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
-            int spiritCost = skillCast.GetSpCost();
-            int staminaCost = skillCast.GetStaCost();
-            if (session.Player.Stats[PlayerStatId.Spirit].Current >= spiritCost && session.Player.Stats[PlayerStatId.Stamina].Current >= staminaCost)
+            SkillCast skillCast = session.Player.Cast(skillId, skillLevel, skillSN, unkValue);
+            if (skillCast != null)
             {
-                session.Player.ConsumeSp(spiritCost);
-                session.Player.ConsumeStamina(staminaCost);
-                session.FieldPlayer.Value.SkillCast = skillCast;
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
@@ -133,7 +128,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleAoeDamage(GameSession session, PacketReader packet)
         {
-            List<IFieldObject<Mob>> mobs = new List<IFieldObject<Mob>>();
+            List<(IFieldObject<Mob>, DamageHandler)> mobs = new List<(IFieldObject<Mob>, DamageHandler)>();
             long skillSN = packet.ReadLong();
             int unkValue = packet.ReadInt();
             int playerObjectId = packet.ReadInt();
@@ -144,32 +139,36 @@ namespace MapleServer2.PacketHandlers.Game
             byte count = packet.ReadByte();
             packet.ReadInt();
 
+            bool isCrit = DamageHandler.RollCrit(session.Player.Stats[PlayerStatId.CritRate].Current);
             for (int i = 0; i < count; i++)
             {
                 int entity = packet.ReadInt();
-                mobs.Add(session.FieldManager.State.Mobs.GetValueOrDefault(entity));
                 packet.ReadByte();
-                if (mobs[i] != null)
-                {
-                    mobs[i].Value.UpdateStats(session.FieldPlayer.Value.SkillCast.GetDamage());
-                    session.Send(StatPacket.UpdateMobStats(mobs[i]));
 
-                    // TODO: There needs to be a more centralized way to give rewards from killing mobs...
-                    // TODO: Add trophy, exp, meso and item drops
-                    if (mobs[i].Value.IsDead)
+                IFieldObject<Mob> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entity);
+                if (mob != null)
+                {
+                    DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.Value, mob.Value, isCrit);
+
+                    mob.Value.Damage(damage.Damage);
+                    session.Send(StatPacket.UpdateMobStats(mob));
+
+                    if (mob.Value.IsDead)
                     {
-                        HandleMobKill(session, mobs[i]);
+                        HandleMobKill(session, mob);
                     }
 
-                    if (mobs[i].Value.Id == 29000128) // Temp fix for tutorial barrier
+                    if (mob.Value.Id == 29000128) // Temp fix for tutorial barrier
                     {
                         session.Send("4F 00 03 E8 03 00 00 00 00 00 00 00 00 00 00 00 00 80 3F".ToByteArray());
                         session.Send("4F 00 03 D0 07 00 00 00 00 00 00 00 00 00 00 00 00 80 3F".ToByteArray());
                         session.Send("4F 00 08 01 04 01 00 00".ToByteArray());
                     }
+
+                    mobs.Add((mob, damage));
                 }
             }
-            session.Send(SkillDamagePacket.ApplyDamage(session.FieldPlayer, skillSN, unkValue, coords, mobs));
+            session.Send(SkillDamagePacket.ApplyDamage(skillSN, unkValue, coords, session.FieldPlayer, mobs));
         }
 
         private static void HandleTypeOfDamage2(PacketReader packet)
@@ -184,6 +183,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
         {
+            // TODO: Add trophy + item drops
             // Drop Money
             bool dropMeso = rand.Next(2) == 0;
             if (dropMeso)
@@ -200,10 +200,10 @@ namespace MapleServer2.PacketHandlers.Game
                 session.FieldManager.AddResource(meret, mob, session.FieldPlayer);
             }
             // Drop SP
-            bool dropSP = rand.Next(8) == 0;
+            bool dropSP = rand.Next(6) == 0;
             if (dropSP)
             {
-                Item spBall = new Item(90000009, 10);
+                Item spBall = new Item(90000009, 20);
                 session.FieldManager.AddResource(spBall, mob, session.FieldPlayer);
             }
             // Drop EP

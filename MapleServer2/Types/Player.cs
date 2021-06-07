@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
 using MapleServer2.Constants;
@@ -126,6 +127,7 @@ namespace MapleServer2.Types
         public Wallet Wallet { get; set; }
         public List<QuestStatus> QuestList;
 
+        private CancellationTokenSource CombatCTS;
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
@@ -246,6 +248,51 @@ namespace MapleServer2.Types
                 return cosmeticItem;
             }
             return gearItem;
+        }
+
+        public SkillCast Cast(int skillId, short skillLevel, long skillSN, int unkValue)
+        {
+            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
+            int spiritCost = skillCast.GetSpCost();
+            int staminaCost = skillCast.GetStaCost();
+            if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
+            {
+                ConsumeSp(spiritCost);
+                ConsumeStamina(staminaCost);
+                SkillCast = skillCast;
+
+                if (skillCast.IsBuff())
+                {
+                    // TODO: Add buff timer
+                }
+
+                // Refresh out-of-combat timer
+                if (CombatCTS != null)
+                {
+                    CombatCTS.Cancel();
+                }
+                CombatCTS = new CancellationTokenSource();
+                CombatCTS.Token.Register(() => CombatCTS.Dispose());
+                StartCombatEnd(CombatCTS);
+
+                return skillCast;
+            }
+            return null;
+        }
+
+        private Task StartCombatEnd(CancellationTokenSource ct)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+
+                if (!ct.Token.IsCancellationRequested)
+                {
+                    CombatCTS = null;
+                    ct.Dispose();
+                    Session.Send(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
+                }
+            }, ct.Token);
         }
 
         public void RecoverHp(int amount)

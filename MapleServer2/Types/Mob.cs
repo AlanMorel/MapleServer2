@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
@@ -28,7 +28,7 @@ namespace MapleServer2.Types
             OriginSpawn = originSpawn;
         }
 
-        public void UpdateStats(double damage)
+        public void Damage(double damage)
         {
             Stats.Hp.Total -= (long) damage;
             IsDead = Stats.Hp.Total <= 0;
