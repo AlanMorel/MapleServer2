@@ -9,7 +9,6 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
@@ -58,7 +57,9 @@ namespace MapleServer2.PacketHandlers.Login
             packet.ReadShort(); // 01 00
             Logger.Info($"Logging in to game with char id: {charId}");
 
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Loopback, GameServer.PORT);
+            string ipAddress = Environment.GetEnvironmentVariable("IP");
+            int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             AuthData authData = new AuthData
             {
                 TokenA = session.GetToken(),
