@@ -417,16 +417,14 @@ namespace MapleServer2.Types
 
                     lock (Stats)
                     {
-                        if (Stats[statId].Current < Stats[statId].Max)
-                        {
-                            // TODO: Check if regen-enabled
-                            Stats[statId] = AddStatRegen(statId, regenStatId);
-                            Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
-                        }
-                        else
+                        if (Stats[statId].Current >= Stats[statId].Max)
                         {
                             return;
                         }
+
+                        // TODO: Check if regen-enabled
+                        Stats[statId] = AddStatRegen(statId, regenStatId);
+                        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
                     }
                 }
             });
