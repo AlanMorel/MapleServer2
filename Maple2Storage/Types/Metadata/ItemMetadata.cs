@@ -64,6 +64,14 @@ namespace Maple2Storage.Types.Metadata
         public int ColorIndex;
         [XmlElement(Order = 29)]
         public int ColorPalette;
+        [XmlElement(Order = 30)]
+        public int OptionStatic;
+        [XmlElement(Order = 31)]
+        public int OptionRandom;
+        [XmlElement(Order = 32)]
+        public int OptionConstant;
+        [XmlElement(Order = 33)]
+        public int OptionLevelFactor;
 
         // Required for deserialization
         public ItemMetadata()

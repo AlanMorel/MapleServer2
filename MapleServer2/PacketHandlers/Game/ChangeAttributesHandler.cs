@@ -147,10 +147,11 @@ namespace MapleServer2.PacketHandlers.Game
                 if ((newItem.Stats.BonusStats[i].GetType() == typeof(NormalStat) && !isSpecialStat) || (newItem.Stats.BonusStats[i].GetType() == typeof(SpecialStat) && isSpecialStat))
                 {
                     // If this is the attribute being locked, continue
-                    if (newItem.Stats.BonusStats[i].GetId() == lockStatId)
+                    // TODO Fix this?
+                    /* if (newItem.Stats.BonusStats[i] == lockStatId)
                     {
                         continue;
-                    }
+                    }*/
                 }
 
                 newItem.Stats.BonusStats[i] = randomList[i];

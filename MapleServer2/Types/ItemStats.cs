@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -11,82 +10,51 @@ namespace MapleServer2.Types
 {
     public interface ItemStat
     {
-        short GetId();
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
-    public struct NormalStat : ItemStat
+    public class NormalStat : ItemStat
     {
-        public ItemAttribute Id { get; set; }
-        public int Flat { get; set; }
-        public float Percent { get; set; }
+        public ItemAttribute ItemAttribute;
+        public int Flat;
+        public float Percent;
 
-        public static NormalStat Of(ItemAttribute type, int flat)
+        public NormalStat() { }
+
+        public NormalStat(ItemAttribute attribute, int flat, float percent)
         {
-            return new NormalStat
-            {
-                Id = type,
-                Flat = flat,
-                Percent = 0,
-            };
+            ItemAttribute = attribute;
+            Flat = flat;
+            Percent = percent;
         }
 
-        public static NormalStat Of(ItemAttribute type, float percent)
+        public NormalStat(ParserStat stat)
         {
-            return new NormalStat
-            {
-                Id = type,
-                Flat = 0,
-                Percent = percent,
-            };
-        }
-
-        public static NormalStat Of(ParserStat stat)
-        {
-            return new NormalStat
-            {
-                Id = stat.Id,
-                Flat = stat.Flat,
-                Percent = stat.Percent,
-            };
-        }
-
-        short ItemStat.GetId()
-        {
-            return (short) Id;
+            ItemAttribute = stat.Id;
+            Flat = stat.Flat;
+            Percent = stat.Percent;
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 2, Size = 10)]
-    public struct SpecialStat : ItemStat
+    public class SpecialStat : ItemStat
     {
-        public SpecialItemAttribute Id { get; set; }
-        public float Percent { get; set; }
-        public float Flat { get; set; }
+        public SpecialItemAttribute ItemAttribute;
+        public float Flat;
+        public float Percent;
 
-        public static SpecialStat Of(SpecialItemAttribute type, float percent, float flat)
+        public SpecialStat() { }
+
+        public SpecialStat(SpecialItemAttribute attribute, float flat, float percent)
         {
-            return new SpecialStat
-            {
-                Id = type,
-                Percent = percent,
-                Flat = flat,
-            };
+            ItemAttribute = attribute;
+            Flat = flat;
+            Percent = percent;
         }
 
-        public static SpecialStat Of(ParserSpecialStat stat)
+        public SpecialStat(ParserSpecialStat stat)
         {
-            return new SpecialStat
-            {
-                Id = stat.Id,
-                Percent = stat.Percent,
-                Flat = stat.Flat,
-            };
-        }
-
-        short ItemStat.GetId()
-        {
-            return (short) Id;
+            ItemAttribute = stat.Id;
+            Flat = stat.Flat;
+            Percent = stat.Percent;
         }
     }
 
@@ -118,12 +86,12 @@ namespace MapleServer2.Types
 
         public ItemStats(Item item)
         {
-            CreateNewStats(item.Id, item.Rarity, item.Level, item.IsTwoHand);
+            CreateNewStats(item.Id, item.Rarity);
         }
 
-        public ItemStats(int itemId, int rarity, int level, bool isTwoHand)
+        public ItemStats(int itemId, int rarity)
         {
-            CreateNewStats(itemId, rarity, level, isTwoHand);
+            CreateNewStats(itemId, rarity);
         }
 
         public ItemStats(ItemStats other)
@@ -134,7 +102,7 @@ namespace MapleServer2.Types
             Gemstones = new List<Gemstone>(other.Gemstones);
         }
 
-        public void CreateNewStats(int itemId, int rarity, int level, bool isTwoHand)
+        public void CreateNewStats(int itemId, int rarity)
         {
             BasicStats = new List<ItemStat>();
             BonusStats = new List<ItemStat>();
@@ -144,109 +112,173 @@ namespace MapleServer2.Types
                 return;
             }
 
-            List<ItemStat> basicStats = GetBasicStats(itemId, rarity, level, isTwoHand);
-            if (basicStats != null)
+            GetConstantStats(itemId, rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
+            GetStaticStats(itemId, rarity, normalStats, specialStats);
+            GetBonusStats(itemId, rarity);
+        }
+
+        public static void GetConstantStats(int itemId, int rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
+        {
+            normalStats = new List<NormalStat>();
+            specialStats = new List<SpecialStat>();
+
+            // Get Constant Stats
+            int constantId = ItemMetadataStorage.GetOptionConstant(itemId);
+            ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, rarity);
+            if (basicOptions == null)
             {
-                foreach (ItemStat stat in basicStats)
-                {
-                    BasicStats.Add(stat);
-                }
+                return;
             }
 
-            List<ItemStat> bonusStats = GetBonusStats(itemId, rarity, level, isTwoHand);
-            if (bonusStats != null)
+            foreach (ParserStat stat in basicOptions.Stats)
             {
-                foreach (ItemStat stat in bonusStats)
-                {
-                    BonusStats.Add(stat);
-                }
+                normalStats.Add(new NormalStat(stat.Id, stat.Flat, stat.Percent));
+            }
+
+            foreach (ParserSpecialStat stat in basicOptions.SpecialStats)
+            {
+                specialStats.Add(new SpecialStat(stat.Id, stat.Flat, stat.Percent));
+            }
+
+            if (basicOptions.HiddenDefenseAdd > 0)
+            {
+                AddHiddenNormalStat(normalStats, ItemAttribute.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
+            }
+
+            if (basicOptions.HiddenWeaponAtkAdd > 0)
+            {
+                AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+                AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
             }
         }
 
-        // Get basic stats
-        public List<ItemStat> GetBasicStats(int itemId, int rarity, int level, bool isTwoHand)
+        public void GetStaticStats(int itemId, int rarity, List<NormalStat> normalStats, List<SpecialStat> specialStats)
         {
-            if (!ItemOptionsMetadataStorage.GetBasic(itemId, out List<ItemOption> basicList))
+            //Get Static Stats
+            int staticId = ItemMetadataStorage.GetOptionStatic(itemId);
+
+            ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, rarity);
+            if (staticOptions == null)
             {
-                return null;
-            }
-            ItemOption itemOptions = basicList.Find(options => options.Rarity == rarity);
-            if (itemOptions == null)
-            {
-                return null;
+                BasicStats.AddRange(normalStats);
+                BasicStats.AddRange(specialStats);
+                return;
             }
 
-            // Weapon and pet atk comes from each Item option and not from stat ranges
-            if (itemOptions.MaxWeaponAtk != 0)
+            foreach (ParserStat stat in staticOptions.Stats)
             {
-                BasicStats.Add(NormalStat.Of(ItemAttribute.MinWeaponAtk, itemOptions.MinWeaponAtk));
-                BasicStats.Add(NormalStat.Of(ItemAttribute.MaxWeaponAtk, itemOptions.MaxWeaponAtk));
-            }
-            if (itemOptions.PetAtk != 0)
-            {
-                BasicStats.Add(NormalStat.Of(ItemAttribute.PetBonusAtk, itemOptions.PetAtk));
+                NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
+                if (normalStat == null)
+                {
+                    normalStats.Add(new NormalStat(stat.Id, stat.Flat, stat.Percent));
+                    continue;
+                }
+                int index = normalStats.FindIndex(x => x.ItemAttribute == stat.Id);
+                int summedFlat = normalStat.Flat + stat.Flat;
+                float summedPercent = normalStat.Percent + stat.Percent;
+
+                normalStats[index] = new NormalStat(stat.Id, summedFlat, summedPercent);
             }
 
-            List<ItemStat> itemStats = RollStats(itemId, level, isTwoHand, itemOptions);
+            foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
+            {
+                SpecialStat normalStat = specialStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
+                if (normalStat == null)
+                {
+                    specialStats.Add(new SpecialStat(stat.Id, stat.Flat, stat.Percent));
+                    continue;
+                }
 
-            return itemStats;
+                int index = specialStats.FindIndex(x => x.ItemAttribute == stat.Id);
+                float summedFlat = normalStat.Flat + stat.Flat;
+                float summedPercent = normalStat.Percent + stat.Percent;
+
+                specialStats[index] = new SpecialStat(stat.Id, summedFlat, summedPercent);
+            }
+
+            if (staticOptions.HiddenDefenseAdd > 0)
+            {
+                AddHiddenNormalStat(normalStats, ItemAttribute.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
+            }
+
+            if (staticOptions.HiddenWeaponAtkAdd > 0)
+            {
+                AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+                AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            }
+
+            BasicStats.AddRange(normalStats);
+            BasicStats.AddRange(specialStats);
         }
 
-        // Get bonus stats
-        public static List<ItemStat> GetBonusStats(int itemId, int rarity, int level, bool isTwoHand)
+        private static void AddHiddenNormalStat(List<NormalStat> normalStats, ItemAttribute attribute, int value, float calibrationFactor)
         {
-            if (!ItemOptionsMetadataStorage.GetRandomBonus(itemId, out List<ItemOption> randomBonusList))
+            NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == attribute);
+            if (normalStat == null)
             {
-                return null;
+                return;
             }
+            int calibratedValue = (int) (value * calibrationFactor);
 
             Random random = new Random();
-            ItemOption itemOption = randomBonusList.FirstOrDefault(options => options.Rarity == rarity && options.Slots > 0);
-            if (itemOption == null)
-            {
-                return null;
-            }
-
-            List<ItemStat> itemStats = RollStats(itemId, level, isTwoHand, itemOption);
-
-            return itemStats.OrderBy(x => random.Next()).Take(itemOption.Slots).ToList();
+            int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
+            int summedFlat = normalStat.Flat + random.Next(value, calibratedValue);
+            normalStats[index] = new NormalStat(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
         }
 
-        // Get random values for each stat and check if item is two-handed
-        private static List<ItemStat> RollStats(int itemId, int level, bool isTwoHand, ItemOption itemOption)
+        public void GetBonusStats(int itemId, int rarity)
+        {
+            int randomId = ItemMetadataStorage.GetOptionRandom(itemId);
+            ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, rarity);
+            if (randomOptions == null)
+            {
+                return;
+            }
+
+            // get amount of slots
+            Random random = new Random();
+            int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
+
+            List<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
+            List<ItemStat> selectedStats = itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
+
+            BonusStats.AddRange(selectedStats);
+        }
+
+        public static List<ItemStat> RollStats(ItemOptionRandom randomOptions, int randomId, int itemId)
         {
             List<ItemStat> itemStats = new List<ItemStat>();
 
-            foreach (ItemAttribute attribute in itemOption.Stats)
+            foreach (ParserStat stat in randomOptions.Stats)
             {
-                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(itemId);
-                if (!dictionary.ContainsKey(attribute))
+                Dictionary<ItemAttribute, List<ParserStat>> rangeDictionary = GetRange(randomId);
+                if (!rangeDictionary.ContainsKey(stat.Id))
                 {
                     continue;
                 }
 
-                NormalStat normalStat = NormalStat.Of(dictionary[attribute][Roll(level)]);
-                if (isTwoHand)
+                NormalStat normalStat = new NormalStat(rangeDictionary[stat.Id][Roll(itemId)]);
+                if (randomOptions.MultiplyFactor > 0)
                 {
-                    normalStat.Flat *= 2;
-                    normalStat.Percent *= 2;
+                    normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                    normalStat.Percent *= randomOptions.MultiplyFactor;
                 }
                 itemStats.Add(normalStat);
             }
 
-            foreach (SpecialItemAttribute attribute in itemOption.SpecialStats)
+            foreach (ParserSpecialStat stat in randomOptions.SpecialStats)
             {
-                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(itemId);
-                if (!dictionary.ContainsKey(attribute))
+                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(randomId);
+                if (!rangeDictionary.ContainsKey(stat.Id))
                 {
                     continue;
                 }
 
-                SpecialStat specialStat = SpecialStat.Of(dictionary[attribute][Roll(level)]);
-                if (isTwoHand)
+                SpecialStat specialStat = new SpecialStat(rangeDictionary[stat.Id][Roll(itemId)]);
+                if (randomOptions.MultiplyFactor > 0)
                 {
-                    specialStat.Flat *= 2;
-                    specialStat.Percent *= 2;
+                    specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                    specialStat.Percent *= randomOptions.MultiplyFactor;
                 }
                 itemStats.Add(specialStat);
             }
@@ -258,56 +290,51 @@ namespace MapleServer2.Types
         public static List<ItemStat> RollBonusStatsWithStatLocked(Item item, short ignoreStat, bool isSpecialStat)
         {
             int id = item.Id;
-            int level = item.Level;
-            bool isTwoHand = item.IsTwoHand;
 
-            if (!ItemOptionsMetadataStorage.GetRandomBonus(id, out List<ItemOption> randomBonusList))
+            int randomId = ItemMetadataStorage.GetOptionRandom(id);
+            ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, item.Rarity);
+            if (randomOptions == null)
             {
                 return null;
             }
 
             Random random = new Random();
-            ItemOption itemOption = randomBonusList.FirstOrDefault(options => options.Rarity == item.Rarity && options.Slots > 0);
-            if (itemOption == null)
-            {
-                return null;
-            }
 
             List<ItemStat> itemStats = new List<ItemStat>();
 
-            List<ItemAttribute> attributes = isSpecialStat ? itemOption.Stats : itemOption.Stats.Where(x => (short) x != ignoreStat).ToList();
-            List<SpecialItemAttribute> specialAttributes = isSpecialStat ? itemOption.SpecialStats.Where(x => (short) x != ignoreStat).ToList() : itemOption.SpecialStats;
+            List<ParserStat> attributes = isSpecialStat ? randomOptions.Stats : randomOptions.Stats.Where(x => (short) x.Id != ignoreStat).ToList();
+            List<ParserSpecialStat> specialAttributes = isSpecialStat ? randomOptions.SpecialStats.Where(x => (short) x.Id != ignoreStat).ToList() : randomOptions.SpecialStats;
 
-            foreach (ItemAttribute attribute in attributes)
+            foreach (ParserStat attribute in attributes)
             {
-                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(id);
-                if (!dictionary.ContainsKey(attribute))
+                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(randomId);
+                if (!dictionary.ContainsKey(attribute.Id))
                 {
                     continue;
                 }
 
-                NormalStat normalStat = NormalStat.Of(dictionary[attribute][Roll(level)]);
-                if (isTwoHand)
+                NormalStat normalStat = new NormalStat(dictionary[attribute.Id][Roll(id)]);
+                if (randomOptions.MultiplyFactor > 0)
                 {
-                    normalStat.Flat *= 2;
-                    normalStat.Percent *= 2;
+                    normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                    normalStat.Percent *= randomOptions.MultiplyFactor;
                 }
                 itemStats.Add(normalStat);
             }
 
-            foreach (SpecialItemAttribute attribute in specialAttributes)
+            foreach (ParserSpecialStat attribute in specialAttributes)
             {
-                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(id);
-                if (!dictionary.ContainsKey(attribute))
+                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(randomId);
+                if (!dictionary.ContainsKey(attribute.Id))
                 {
                     continue;
                 }
 
-                SpecialStat specialStat = SpecialStat.Of(dictionary[attribute][Roll(level)]);
-                if (isTwoHand)
+                SpecialStat specialStat = new SpecialStat(dictionary[attribute.Id][Roll(id)]);
+                if (randomOptions.MultiplyFactor > 0)
                 {
-                    specialStat.Flat *= 2;
-                    specialStat.Percent *= 2;
+                    specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                    specialStat.Percent *= randomOptions.MultiplyFactor;
                 }
                 itemStats.Add(specialStat);
             }
@@ -322,34 +349,34 @@ namespace MapleServer2.Types
 
             foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
             {
-                if (!isSpecialStat && (short) stat.Id == ignoreStat)
+                if (!isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
                 {
                     newBonus.Add(stat);
                     continue;
                 }
 
                 Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(item.Id);
-                if (!dictionary.ContainsKey(stat.Id))
+                if (!dictionary.ContainsKey(stat.ItemAttribute))
                 {
                     continue;
                 }
-                newBonus.Add(NormalStat.Of(dictionary[stat.Id][Roll(item.Level)]));
+                newBonus.Add(new NormalStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
             }
 
             foreach (SpecialStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)))
             {
-                if (isSpecialStat && (short) stat.Id == ignoreStat)
+                if (isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
                 {
                     newBonus.Add(stat);
                     continue;
                 }
 
                 Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
-                if (!dictionary.ContainsKey(stat.Id))
+                if (!dictionary.ContainsKey(stat.ItemAttribute))
                 {
                     continue;
                 }
-                newBonus.Add(SpecialStat.Of(dictionary[stat.Id][Roll(item.Level)]));
+                newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
             }
 
             return newBonus;
@@ -399,10 +426,11 @@ namespace MapleServer2.Types
 
         // Returns index 0~7 for equip level 70-
         // Returns index 8~15 for equip level 70+
-        private static int Roll(int level)
+        private static int Roll(int itemId)
         {
+            int itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
             Random random = new Random();
-            if (level >= 70)
+            if (itemLevelFactor >= 70)
             {
                 return random.NextDouble() switch
                 {

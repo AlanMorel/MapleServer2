@@ -88,7 +88,7 @@ namespace MapleServer2.Types
             Slot = -1;
             Amount = 1;
             Score = new MusicScore();
-            Stats = new ItemStats(id, Rarity, Level, IsTwoHand);
+            Stats = new ItemStats(id, Rarity);
             CanRepackage = true; // If false, item becomes untradable
             Uid = DatabaseManager.AddItem(this);
         }
