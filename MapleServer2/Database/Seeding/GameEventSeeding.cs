@@ -88,6 +88,15 @@ namespace MapleServer2.Database
                     {
                         DiscountAmount = 9000
                     }
+                },
+                new GameEvent
+                {
+                    Type = GameEventType.EventFieldPopup,
+                    Active = true,
+                    FieldPopupEvent = new FieldPopupEvent
+                    {
+                        MapId = 63000049
+                    }
                 }
             };
 

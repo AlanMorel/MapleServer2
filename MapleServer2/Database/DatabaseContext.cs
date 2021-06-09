@@ -41,6 +41,7 @@ namespace MapleServer2.Database
         public DbSet<MapleopolyEvent> Event_Mapleopoly { get; set; }
         public DbSet<UGCMapContractSaleEvent> Event_UGCMapContractSale { get; set; }
         public DbSet<UGCMapExtensionSaleEvent> Event_UGCMapExtensionSale { get; set; }
+        public DbSet<FieldPopupEvent> Event_FieldPopup { get; set; }
         public DbSet<CardReverseGame> CardReverseGame { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
@@ -563,6 +564,7 @@ namespace MapleServer2.Database
                 entity.HasMany(e => e.Mapleopoly);
                 entity.HasOne(e => e.UGCMapContractSale);
                 entity.HasOne(e => e.UGCMapExtensionSale);
+                entity.HasOne(e => e.FieldPopupEvent);
             });
 
             modelBuilder.Entity<StringBoardEvent>(entity =>
@@ -593,6 +595,11 @@ namespace MapleServer2.Database
                 entity.Property(e => e.DiscountAmount);
             });
 
+            modelBuilder.Entity<FieldPopupEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.MapId);
+            });
             modelBuilder.Entity<CardReverseGame>(entity =>
             {
                 entity.HasKey(e => e.Id);

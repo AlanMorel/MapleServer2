@@ -577,6 +577,7 @@ namespace MapleServer2.Database
                     .Include(x => x.StringBoard)
                     .Include(x => x.UGCMapContractSale)
                     .Include(x => x.UGCMapExtensionSale)
+                    .Include(x => x.FieldPopupEvent)
                     .ToList();
             }
             return gameEvents;

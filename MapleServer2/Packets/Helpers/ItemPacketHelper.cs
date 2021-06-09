@@ -135,17 +135,22 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<ItemStat> basicStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
-            pWriter.WriteShort((short) basicStats.Count);
-            foreach (NormalStat stat in basicStats)
+            List<ItemStat> basicNormalStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) basicNormalStats.Count);
+            foreach (NormalStat stat in basicNormalStats)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Percent);
             }
-            List<ItemStat> specialBasicStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
-            pWriter.WriteShort((short) specialBasicStats.Count);
-            foreach (SpecialStat stat in specialBasicStats)
+
+            List<ItemStat> basicSpecialStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) basicSpecialStats.Count);
+            foreach (SpecialStat stat in basicSpecialStats)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteFloat(stat.Percent);
+                pWriter.WriteFloat(stat.Flat);
             }
             pWriter.WriteInt();
 
@@ -154,17 +159,21 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteShort();
             pWriter.WriteInt();
 
-            List<ItemStat> bonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
-            pWriter.WriteShort((short) bonusStats.Count);
-            foreach (NormalStat stat in bonusStats)
+            List<ItemStat> bonusNormalStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            pWriter.WriteShort((short) bonusNormalStats.Count);
+            foreach (NormalStat stat in bonusNormalStats)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Percent);
             }
-            List<ItemStat> specialBonusStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
-            pWriter.WriteShort((short) specialBonusStats.Count);
-            foreach (SpecialStat stat in specialBonusStats)
+            List<ItemStat> bonusSpecialStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            pWriter.WriteShort((short) bonusSpecialStats.Count);
+            foreach (SpecialStat stat in bonusSpecialStats)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteFloat(stat.Percent);
+                pWriter.WriteFloat(stat.Flat);
             }
             pWriter.WriteInt();
 
@@ -198,7 +207,9 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte((byte) generalStatDiff.Count);
             foreach (NormalStat stat in generalStatDiff)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Percent);
             }
 
             pWriter.WriteInt(); // ???
@@ -207,14 +218,18 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(statDiff.Count);
             foreach (NormalStat stat in statDiff)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteInt(stat.Flat);
+                pWriter.WriteFloat(stat.Percent);
             }
 
             List<SpecialStat> bonusStatDiff = new List<SpecialStat>();
             pWriter.WriteInt(bonusStatDiff.Count);
             foreach (SpecialStat stat in bonusStatDiff)
             {
-                pWriter.Write(stat);
+                pWriter.WriteShort((short) stat.ItemAttribute);
+                pWriter.WriteFloat(stat.Percent);
+                pWriter.WriteFloat(stat.Flat);
             }
 
             return pWriter;
