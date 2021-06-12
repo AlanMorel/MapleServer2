@@ -245,10 +245,10 @@ namespace MapleServer2.PacketHandlers.Game
                 UnlockTime = gemstone.UnlockTime,
             };
 
-            Player oWner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
-            if (oWner != null)
+            Player owner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
+            if (owner != null)
             {
-                newGem.Owner = oWner;
+                newGem.Owner = owner;
             }
 
             Gemstone upgradedGemstone = new Gemstone()
@@ -417,10 +417,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (gemstone.OwnerId != 0)
             {
-                Player oWner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
-                if (oWner != null)
+                Player owner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
+                if (owner != null)
                 {
-                    gemstoneItem.Owner = oWner;
+                    gemstoneItem.Owner = owner;
                 }
             }
 
