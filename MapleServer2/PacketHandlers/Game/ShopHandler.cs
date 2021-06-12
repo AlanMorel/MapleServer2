@@ -73,11 +73,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.Send(ShopPacket.Reload());
             session.Send(NpcTalkPacket.Respond(npcFieldObject, NpcType.Default, DialogType.None, 0));
+            session.Player.ShopId = shop.Id;
         }
 
         private static void HandleClose(GameSession session)
         {
             session.Send(ShopPacket.Close());
+            session.Player.ShopId = 0;
         }
 
         private static void HandleSell(GameSession session, PacketReader packet)

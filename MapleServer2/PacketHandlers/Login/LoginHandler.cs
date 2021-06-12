@@ -74,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Login
                     Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));
                     session.Send(UgcPacket.SetEndpoint("http://127.0.0.1/ws.asmx?wsdl", "http://127.0.0.1"));
-                    session.Send(CharacterListPacket.SetMax(4, 6));
+                    session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
                     session.Send(CharacterListPacket.StartList());
                     // Send each character data
                     session.Send(CharacterListPacket.AddEntries(characters));

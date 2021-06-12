@@ -194,6 +194,7 @@ namespace MapleServer2.PacketHandlers.Game
             MapPortal portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
             session.Send(NpcTalkPacket.Action(ActionType.Portal, "", "", portal.Id));
             NpcMetadata npcTarget = NpcMetadataStorage.GetNpc(session.Player.NpcTalk.Npc.Id);
+            session.Player.ShopId = npcTarget.ShopId;
 
             switch (npcTarget.ShopId)
             {

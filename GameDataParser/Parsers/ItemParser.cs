@@ -457,7 +457,7 @@ namespace GameDataParser.Parsers
                     }
                     metadata.AdBalloonData = balloon;
                 }
-                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod")
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty")
                 {
                     metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
                 }

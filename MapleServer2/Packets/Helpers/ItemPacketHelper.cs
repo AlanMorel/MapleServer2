@@ -79,7 +79,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteByte();
-            pWriter.WriteByte(); // 2nd flag, use to skip charbound
+            pWriter.WriteByte(1); // 2nd flag, use to skip charbound
 
             // CharBound means untradable, unsellable, bound to char (ignores TransferFlag, but not 2nd flag!!)
             bool isCharBound = item.Owner != null;
@@ -263,33 +263,36 @@ namespace MapleServer2.Packets.Helpers
             return pWriter;
         }
 
-        private static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
+        public static PacketWriter WriteSockets(this PacketWriter pWriter, ItemStats stats)
         {
-            pWriter.WriteByte();
-            pWriter.WriteByte(stats.TotalSockets);
-            for (int i = 0; i < stats.TotalSockets; i++)
+            pWriter.WriteByte((byte) stats.GemSockets.Count);
+            int unlockedCount = 0;
+            for (int i = 0; i < stats.GemSockets.Count; i++)
             {
-                if (i >= stats.Gemstones.Count)
+                if (stats.GemSockets[i].IsUnlocked)
                 {
-                    pWriter.WriteBool(false); // Locked
-                    continue;
+                    unlockedCount++;
                 }
-
-                pWriter.WriteBool(true); // Unlocked
-                Gemstone gem = stats.Gemstones[i];
-                pWriter.WriteInt(gem.Id);
-                pWriter.WriteBool(gem.OwnerId != 0);
-                if (gem.OwnerId != 0)
+            }
+            pWriter.WriteByte((byte) unlockedCount);
+            for (int i = 0; i < unlockedCount; i++)
+            {
+                pWriter.WriteBool(stats.GemSockets[i].Gemstone != null);
+                if (stats.GemSockets[i].Gemstone != null)
                 {
-                    pWriter.WriteLong(gem.OwnerId);
-                    pWriter.WriteUnicodeString(gem.OwnerName);
-                }
-
-                pWriter.WriteBool(gem.Unknown != 0);
-                if (gem.Unknown != 0)
-                {
-                    pWriter.WriteByte();
-                    pWriter.WriteLong(gem.Unknown);
+                    pWriter.WriteInt(stats.GemSockets[i].Gemstone.Id);
+                    pWriter.WriteBool(stats.GemSockets[i].Gemstone.OwnerId != 0);
+                    if (stats.GemSockets[i].Gemstone.OwnerId != 0)
+                    {
+                        pWriter.WriteLong(stats.GemSockets[i].Gemstone.OwnerId);
+                        pWriter.WriteUnicodeString(stats.GemSockets[i].Gemstone.OwnerName);
+                    }
+                    pWriter.WriteBool(stats.GemSockets[i].Gemstone.IsLocked);
+                    if (stats.GemSockets[i].Gemstone.IsLocked)
+                    {
+                        pWriter.WriteBool(stats.GemSockets[i].Gemstone.IsLocked);
+                        pWriter.WriteLong(stats.GemSockets[i].Gemstone.UnlockTime);
+                    }
                 }
             }
 

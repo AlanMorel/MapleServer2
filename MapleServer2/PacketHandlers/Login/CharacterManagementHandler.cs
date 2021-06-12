@@ -186,7 +186,8 @@ namespace MapleServer2.PacketHandlers.Login
             DatabaseManager.UpdateCharacter(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
-            session.Send(CharacterListPacket.SetMax(4, 6));
+            Account account = DatabaseManager.GetAccount(session.AccountId);
+            session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)
             session.Send(CharacterListPacket.AppendEntry(newCharacter));

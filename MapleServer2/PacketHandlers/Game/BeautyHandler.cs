@@ -35,7 +35,8 @@ namespace MapleServer2.PacketHandlers.Game
             SaveHair = 0x10,
             DeleteSavedHair = 0x12,
             ChangeToSavedHair = 0x15,
-            DyeItem = 0x16
+            DyeItem = 0x16,
+            BeautyVoucher = 0x17,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -76,6 +77,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case BeautyMode.DyeItem:
                     HandleDyeItem(session, packet);
+                    break;
+                case BeautyMode.BeautyVoucher:
+                    HandleBeautyVoucher(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -145,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Game
                 IsEquipped = true,
                 Owner = session.Player
             };
-            BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.NpcTalk.Npc.ShopId);
+            BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.ShopId);
 
             if (useVoucher)
             {
@@ -163,6 +167,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             ModifyBeauty(session, packet, beautyItem);
+            session.Player.ShopId = 0;
         }
 
         private static void HandleModifyExistingBeauty(GameSession session, PacketReader packet)
@@ -182,7 +187,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.NpcTalk.Npc.ShopId);
+            BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.ShopId);
 
             if (!HandleShopPay(session, beautyShop, useVoucher))
             {
@@ -191,6 +196,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             beautyItem.Color = equipColor;
             ModifyBeauty(session, packet, beautyItem);
+            session.Player.ShopId = 0;
         }
 
         private static void HandleModifySkin(GameSession session, PacketReader packet)
@@ -208,6 +214,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Player.SkinColor = skinColor;
             session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.FieldPlayer, skinColor));
+            session.Player.ShopId = 0;
         }
         private static void HandleRandomHair(GameSession session, PacketReader packet)
         {
@@ -269,6 +276,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, newHair, ItemSlot.HR));
             session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
+            session.Player.ShopId = 0;
         }
 
         private static void HandleChooseRandomHair(GameSession session, PacketReader packet)
@@ -442,7 +450,31 @@ namespace MapleServer2.PacketHandlers.Game
 
                 item.Color = equipColor[i];
                 session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, item));
+                session.Player.ShopId = 0;
             }
+        }
+
+        private static void HandleBeautyVoucher(GameSession session, PacketReader packet)
+        {
+            long itemUid = packet.ReadLong();
+
+            Item voucher = session.Player.Inventory.Items[itemUid];
+            if (voucher == null || voucher.Function.Name != "ItemChangeBeauty")
+            {
+                return;
+            }
+
+            BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(voucher.Function.Id);
+            if (beautyShop == null)
+            {
+                return;
+            }
+
+            List<BeautyItem> beautyItems = BeautyMetadataStorage.GetGenderItems(beautyShop.ShopId, session.Player.Gender);
+
+            session.Player.ShopId = beautyShop.ShopId;
+            session.Send(BeautyPacket.LoadBeautyShop(beautyShop, beautyItems));
+            InventoryController.Consume(session, voucher.Uid, 1);
         }
 
         private static void ModifyBeauty(GameSession session, PacketReader packet, Item beautyItem)

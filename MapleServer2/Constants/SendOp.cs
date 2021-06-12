@@ -166,6 +166,7 @@
         USER_ENV = 0x00AA,
         MANUFACTURER = 0x00AB,
         ENTER_UGC_MAP = 0x00AC,
+        COUPON_USE = 0x00AD,
         ITEM_USE = 0x00AE,
         CASH = 0x00AF,
         MY_INFO = 0x00B0,
