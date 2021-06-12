@@ -37,6 +37,5 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(itemUid);
             return pWriter;
         }
-
     }
 }

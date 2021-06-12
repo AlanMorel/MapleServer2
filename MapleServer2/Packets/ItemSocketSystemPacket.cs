@@ -44,7 +44,6 @@ namespace MapleServer2.Packets
             }
             pWriter.WriteByte();
             return pWriter;
-
         }
 
         public static Packet SelectGemUpgrade(long unkUid, byte slot, long equipUid)
@@ -135,7 +134,6 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(); // category?
             pWriter.WriteInt(noticeId);
             return pWriter;
-
         }
     }
 }
