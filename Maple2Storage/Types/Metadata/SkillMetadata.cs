@@ -21,32 +21,40 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 6)]
         public readonly string State;
         [XmlElement(Order = 7)]
-        public readonly byte Type;
+        public readonly byte DamageType;
         [XmlElement(Order = 8)]
+        public readonly byte Type;
+        [XmlElement(Order = 9)]
+        public readonly byte Element;
+        [XmlElement(Order = 10)]
+        public readonly byte SuperArmor;
+        [XmlElement(Order = 11)]
         public readonly bool IsSpRecovery;
+        [XmlElement(Order = 12)]
+        public readonly bool IsBuff;
 
         public SkillMetadata()
         {
             SkillLevels = new List<SkillLevel>();
         }
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte type, bool isSpRecovery)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
         {
             SkillId = id;
             SkillLevels = skillLevels;
             State = state;
+            DamageType = damageType;
             Type = type;
+            Element = element;
+            SuperArmor = superArmor;
             IsSpRecovery = isSpRecovery;
+            IsBuff = isBuff;
         }
 
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte type, bool isSpRecovery)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte damageType, byte type, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
+            : this(id, skillLevels, state, damageType, type, element, superArmor, isSpRecovery, isBuff)
         {
-            SkillId = id;
-            SkillLevels = skillLevels;
             SubSkills = subSkills;
             Job = job;
-            State = state;
-            Type = type;
-            IsSpRecovery = isSpRecovery;
         }
 
         public override int GetHashCode()

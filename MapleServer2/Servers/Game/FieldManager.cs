@@ -286,6 +286,21 @@ namespace MapleServer2.Servers.Game
             });
         }
 
+        public bool RemoveNpc(IFieldObject<Npc> fieldNpc)
+        {
+            if (!State.RemoveNpc(fieldNpc.ObjectId))
+            {
+                return false;
+            }
+
+            Broadcast(session =>
+            {
+                // TODO: Add field remove NPC packet
+                session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
+            });
+            return true;
+        }
+
         public void AddMob(IFieldObject<Mob> fieldMob)
         {
             State.AddMob(fieldMob);
@@ -297,7 +312,29 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
                 // TODO: Add spawn buff (ID: 0x055D4DAE)
+                //session.Send();
             });
+        }
+
+        public bool RemoveMob(IFieldObject<Mob> mob)
+        {
+            if (!State.RemoveMob(mob.ObjectId))
+            {
+                return false;
+            }
+
+            IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
+            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+            {
+                StartSpawnTimer(originSpawn);
+            }
+
+            Broadcast(session =>
+            {
+                session.Send(FieldPacket.RemoveMob(mob));
+                session.Send(FieldObjectPacket.RemoveMob(mob));
+            });
+            return true;
         }
 
         public void AddGuide(IFieldObject<GuideObject> fieldGuide)
@@ -391,37 +428,33 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            if (!State.RemoveItem(objectId, out item))
+            Item itemResult;
+            if (!State.RemoveItem(objectId, out itemResult))
             {
+                item = itemResult;
                 return false;
             }
+            item = itemResult;
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.PickupItem(objectId, session.FieldPlayer.ObjectId));
+                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
             });
             return true;
         }
 
-        public bool RemoveMob(IFieldObject<Mob> mob)
+        public void AddResource(Item item, IFieldObject<Mob> source, IFieldObject<Player> targetPlayer)
         {
-            if (!State.RemoveMob(mob.ObjectId))
-            {
-                return false;
-            }
+            FieldObject<Item> fieldItem = WrapObject(item);
+            fieldItem.Coord = source.Coord;
 
-            IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
-            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
-            {
-                StartSpawnTimer(originSpawn);
-            }
+            State.AddItem(fieldItem);
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.RemoveMob(mob));
+                session.Send(FieldPacket.AddItem(fieldItem, source, targetPlayer));
             });
-            return true;
         }
 
         //Broadcast a packet after the specified delay.

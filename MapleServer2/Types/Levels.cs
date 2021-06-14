@@ -51,10 +51,11 @@ namespace MapleServer2.Types
             }
 
             Level++;
-            // TODO: Gain max HP and heal to max hp
             Player.StatPointDistribution.AddTotalStatPoints(5);
-            Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
             Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+            // TODO: Gain max HP
+            Player.RecoverHp(Player.Stats[PlayerStatId.Hp].Max);
+            Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
 
             QuestHelper.GetNewQuests(Player.Session, Level);
             return true;
