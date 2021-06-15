@@ -40,8 +40,9 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleStatIncrement(GameSession session, PacketReader packet)
         {
             byte statTypeIndex = packet.ReadByte();
+
             session.Player.StatPointDistribution.AddPoint(statTypeIndex);   // Deprecate?
-            session.Player.Stats.IncreaseMax((PlayerStatId) statTypeIndex, 1);
+            session.Player.Stats.Allocate((PlayerStatId) statTypeIndex);
             session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
             session.Send(StatPacket.SetStats(session.FieldPlayer));
         }

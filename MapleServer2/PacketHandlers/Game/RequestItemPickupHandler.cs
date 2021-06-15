@@ -16,16 +16,43 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             int objectId = packet.ReadInt();
-            packet.ReadByte();
 
-            // TODO: This will be bugged when you have a full inventory, check inventory before looting
-            // Remove objectId from Field, make sure item still exists (multiple looters)
-            if (!session.FieldManager.RemoveItem(objectId, out Item item))
+            IFieldObject<Item> fieldItem;
+            bool foundItem = session.FieldManager.State.TryGetItem(objectId, out fieldItem);
+            if (foundItem)
+            {
+                switch (fieldItem.Value.Id)
+                {
+                    case 90000004:
+                    case 90000011:
+                    case 90000015:
+                    case 90000016:
+                    case 90000020:
+                        session.Player.Wallet.Meret.Modify(fieldItem.Value.Amount);
+                        break;
+                    case 90000008:
+                        session.Player.Levels.GainExp(fieldItem.Value.Amount);
+                        break;
+                    case 90000009:
+                        session.Player.RecoverSp(fieldItem.Value.Amount);
+                        break;
+                    case 90000010:
+                        session.Player.RecoverStamina(fieldItem.Value.Amount);
+                        break;
+                    default:
+                        // TODO: This will be bugged when you have a full inventory, check inventory before looting
+                        InventoryController.Add(session, fieldItem.Value, true);
+                        break;
+                }
+
+                session.FieldManager.RemoveItem(objectId, out Item item);
+            }
+
+            int countExtra = packet.ReadByte();
+            for (int i = 0; i < countExtra; i++)
             {
                 return;
             }
-
-            InventoryController.Add(session, item, true);
         }
     }
 }

@@ -13,10 +13,10 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
 
             // Writes only skills that are learned and for the job rank tab that is opened also doesn't write default passive skills
-            pWriter.WriteByte(0); // Mode (0 = open) (1 = save)
-            pWriter.WriteInt(1); // Possibly always 1
+            pWriter.WriteByte(0);   // Mode (0 = open) (1 = save)
+            pWriter.WriteInt(1);    // Possibly always 1
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
-            pWriter.WriteInt(1); // Repeat of last int and long
+            pWriter.WriteInt(1);    // Repeat of last int and long
             pWriter.WriteLong(character.SkillTabs[0].Id); // Same as previous identifier
             pWriter.WriteUnicodeString("Build 1"); // Page name
 
@@ -36,10 +36,10 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_BOOK_TREE);
 
-            pWriter.WriteByte(1); // Mode (0 = open) (1 = save)
+            pWriter.WriteByte(1);   // Mode (0 = open) (1 = save)
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
             pWriter.WriteLong(character.SkillTabs[0].Id); // Skill tab id
-            pWriter.WriteInt(2); // Set Client Mode (1 = assigned points, 2 = assigned no points)
+            pWriter.WriteInt(2);    // Set Client Mode (1 = unsaved points, 2 = no unsaved points)
 
             return pWriter;
         }

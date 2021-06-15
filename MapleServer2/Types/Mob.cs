@@ -17,6 +17,7 @@ namespace MapleServer2.Types
                 Id = mob.Id;
                 Animation = 255;
                 Stats = mob.Stats;
+                Experience = mob.Experience;
                 Friendly = mob.Friendly;
             }
         }
@@ -26,7 +27,7 @@ namespace MapleServer2.Types
             OriginSpawn = originSpawn;
         }
 
-        public void UpdateStats(double damage)
+        public void Damage(double damage)
         {
             Stats.Hp.Total -= (long) damage;
             IsDead = Stats.Hp.Total <= 0;

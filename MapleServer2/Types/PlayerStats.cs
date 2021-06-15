@@ -208,11 +208,40 @@ namespace MapleServer2.Types
             Data[statIndex] = new PlayerStat(stat.Max, stat.Min, stat.Current - amount);
         }
 
+        public void Allocate(PlayerStatId statIndex)
+        {
+            int gainAmount = 1;
+            switch (statIndex)
+            {
+                case PlayerStatId.Hp:
+                    gainAmount = 10;
+                    break;
+                case PlayerStatId.CritRate:
+                    gainAmount = 3;
+                    break;
+                default:
+                    break;
+            }
+            IncreaseMax(statIndex, gainAmount);
+        }
+
         public void ResetAllocations(StatDistribution statDist)
         {
             foreach (KeyValuePair<byte, int> entry in statDist.AllocatedStats)
             {
-                DecreaseMax((PlayerStatId) entry.Key, entry.Value);
+                int gainAmount = 1;
+                switch ((PlayerStatId) entry.Key)
+                {
+                    case PlayerStatId.Hp:
+                        gainAmount = 10;
+                        break;
+                    case PlayerStatId.CritRate:
+                        gainAmount = 3;
+                        break;
+                    default:
+                        break;
+                }
+                DecreaseMax((PlayerStatId) entry.Key, entry.Value * gainAmount);
             }
             statDist.ResetPoints();
         }
