@@ -27,9 +27,6 @@ namespace MapleServer2.Servers.Game
         private static readonly TriggerLoader TriggerLoader = new TriggerLoader();
 
         private int Counter = 10000000;
-        //probably not the best place for a rand variable. But creating a local variable every time is not good.
-        private static readonly Random Rand = new Random();
-
 
         public readonly int MapId;
         public readonly CoordS[] BoundingBox;
@@ -37,7 +34,7 @@ namespace MapleServer2.Servers.Game
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
 
-        private Task MapLoopTask;
+        private readonly Task MapLoopTask = StartMapLoop();
 
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -243,16 +240,6 @@ namespace MapleServer2.Servers.Game
             }
 
             State.AddPlayer(player);
-            /*
-            replace if(true) with a good/relevant condition to initiate the mapUpdatesTask
-            */
-            if (true)
-            {
-                if (MapLoopTask == null)
-                {
-                    MapLoopTask = StartMapLoop();
-                }
-            }
 
             // Broadcast new player to all players in map
             Broadcast(session =>
@@ -523,14 +510,11 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        //This is the MapLoop which periodically calls all functions within it
-        //implement all functionalities here, that need to be called periodically and are 
-        //relevant for a given map instance.
-        private Task StartMapLoop()
+        private static Task StartMapLoop()
         {
             return Task.Run(async () =>
             {
-                while (!State.Players.IsEmpty) // test whether this condition is useful, tadeucci said it might be useless.
+                while (!State.Players.IsEmpty)
                 {
                     HealingSpot();
                     MonsterMovement();
@@ -540,13 +524,14 @@ namespace MapleServer2.Servers.Game
         }
 
         private void MonsterMovement()
-
         {
+            Random Rand = new Random();
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
                 short x = (short) Rand.Next(-70, 70); //random x position, units are block units
 
                 mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
+
                 mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
 
                 mob.Value.ZRotation = (short) (x * 10); //looking direction of the monster
@@ -556,6 +541,7 @@ namespace MapleServer2.Servers.Game
                 mob.Value.Animation = (short) Rand.Next(20);
             }
         }
+
         private void HealingSpot()
         {
             foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
