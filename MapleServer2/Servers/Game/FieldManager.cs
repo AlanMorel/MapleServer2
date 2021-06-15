@@ -34,7 +34,7 @@ namespace MapleServer2.Servers.Game
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
 
-        private readonly Task MapLoopTask = StartMapLoop();
+        private Task MapLoopTask;
 
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -240,6 +240,11 @@ namespace MapleServer2.Servers.Game
             }
 
             State.AddPlayer(player);
+
+            if (MapLoopTask == null)
+            {
+                MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
+            }
 
             // Broadcast new player to all players in map
             Broadcast(session =>
@@ -510,7 +515,8 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        private static Task StartMapLoop()
+        
+        private Task StartMapLoop()
         {
             return Task.Run(async () =>
             {
