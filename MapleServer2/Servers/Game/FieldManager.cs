@@ -294,7 +294,7 @@ namespace MapleServer2.Servers.Game
             Broadcast(session =>
             {
                 // TODO: Add field remove NPC packet
-                session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
+               // session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
             });
             return true;
         }
@@ -330,7 +330,7 @@ namespace MapleServer2.Servers.Game
             Broadcast(session =>
             {
                 session.Send(FieldPacket.RemoveMob(mob));
-                session.Send(FieldObjectPacket.RemoveMob(mob));
+               // session.Send(FieldObjectPacket.RemoveMob(mob));
             });
             return true;
         }
@@ -515,7 +515,6 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        
         private Task StartMapLoop()
         {
             return Task.Run(async () =>
