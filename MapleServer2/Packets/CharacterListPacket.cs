@@ -73,11 +73,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetMax(int unlocked)
+        public static Packet SetMax(int unlocked, int total = 11)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAR_MAX_COUNT);
             pWriter.WriteInt(unlocked);
-            pWriter.WriteInt(11); // total slots
+            pWriter.WriteInt(total);
 
             return pWriter;
         }
