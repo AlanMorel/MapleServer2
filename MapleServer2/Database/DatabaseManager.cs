@@ -55,6 +55,14 @@ namespace MapleServer2.Database
             }
         }
 
+        public static Account GetAccount(long accountId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Accounts.FirstOrDefault(a => a.Id == accountId);
+            }
+        }
+
         public static Account Authenticate(string username, string password)
         {
             Account account;
@@ -99,6 +107,16 @@ namespace MapleServer2.Database
             }
 
             return characters;
+        }
+
+        public static bool UpdateAccount(Account account)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Account dbAccount = context.Accounts.Find(account.Id);
+                context.Entry(dbAccount).CurrentValues.SetValues(account);
+                return SaveChanges(context);
+            }
         }
 
         public static long CreateCharacter(Player player)
@@ -487,7 +505,9 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.MeretMarketItems.FirstOrDefault(x => x.MarketId == id);
+                return context.MeretMarketItems
+                    .Include(x => x.AdditionalQuantities)
+                    .FirstOrDefault(x => x.MarketId == id);
             }
         }
 
@@ -590,6 +610,7 @@ namespace MapleServer2.Database
                 return context.Events
                     .Include(x => x.UGCMapContractSale)
                     .Include(x => x.UGCMapExtensionSale)
+                    .Include(x => x.FieldPopupEvent)
                     .FirstOrDefault(x => x.Type == type && x.Active == true);
             }
         }

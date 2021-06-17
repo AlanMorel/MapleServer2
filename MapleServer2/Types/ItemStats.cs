@@ -60,53 +60,53 @@ namespace MapleServer2.Types
 
     public class Gemstone
     {
-        public readonly int Id;
+        public int Id;
+        public long OwnerId = 0;
+        public string OwnerName = "";
+        public bool IsLocked;
+        public long UnlockTime;
 
-        // Used if bound
-        public readonly long OwnerId = 0;
-        public readonly string OwnerName = "";
+        public Gemstone() { }
+    }
 
-        public readonly long Unknown = 0;
+    public class GemSocket
+    {
+        public bool IsUnlocked;
+        public Gemstone Gemstone;
 
-        public Gemstone(int id)
-        {
-            Id = id;
-        }
+        public GemSocket() { }
     }
 
     public class ItemStats
     {
         public List<ItemStat> BasicStats;
         public List<ItemStat> BonusStats;
-
-        public byte TotalSockets;
-        public List<Gemstone> Gemstones;
+        public List<GemSocket> GemSockets;
 
         public ItemStats() { }
 
         public ItemStats(Item item)
         {
-            CreateNewStats(item.Id, item.Rarity);
+            CreateNewStats(item.Id, item.Rarity, item.ItemSlot, item.Level);
         }
 
-        public ItemStats(int itemId, int rarity)
+        public ItemStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
         {
-            CreateNewStats(itemId, rarity);
+            CreateNewStats(itemId, rarity, itemSlot, itemLevel);
         }
 
         public ItemStats(ItemStats other)
         {
             BasicStats = new List<ItemStat>(other.BasicStats);
             BonusStats = new List<ItemStat>(other.BonusStats);
-            TotalSockets = other.TotalSockets;
-            Gemstones = new List<Gemstone>(other.Gemstones);
+            GemSockets = new List<GemSocket>();
         }
 
-        public void CreateNewStats(int itemId, int rarity)
+        public void CreateNewStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
         {
             BasicStats = new List<ItemStat>();
             BonusStats = new List<ItemStat>();
-            Gemstones = new List<Gemstone>();
+            GemSockets = new List<GemSocket>();
             if (rarity == 0)
             {
                 return;
@@ -115,6 +115,10 @@ namespace MapleServer2.Types
             GetConstantStats(itemId, rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
             GetStaticStats(itemId, rarity, normalStats, specialStats);
             GetBonusStats(itemId, rarity);
+            if (itemLevel >= 50 && rarity >= 3)
+            {
+                GetGemSockets(itemSlot, rarity);
+            }
         }
 
         public static void GetConstantStats(int itemId, int rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
@@ -455,6 +459,47 @@ namespace MapleServer2.Types
                 >= 0.985 and < 0.9975 => 6,
                 _ => 7,
             };
+        }
+
+        private void GetGemSockets(ItemSlot itemSlot, int rarity)
+        {
+            if (itemSlot != ItemSlot.EA &&
+                itemSlot != ItemSlot.RI &&
+                itemSlot != ItemSlot.PD)
+            {
+                return;
+            }
+
+            int rollAmount = 0;
+            if (rarity == 3)
+            {
+                rollAmount = 1;
+            }
+            else if (rarity > 3)
+            {
+                rollAmount = 3;
+            }
+
+            // add sockets
+            for (int i = 0; i < rollAmount; i++)
+            {
+                GemSocket socket = new GemSocket();
+                GemSockets.Add(socket);
+            }
+
+            // roll to unlock sockets
+            Random random = new Random();
+            for (int i = 0; i < GemSockets.Count; i++)
+            {
+                int successNumber = random.Next(0, 100);
+
+                // 5% success rate to unlock a gemsocket
+                if (successNumber < 95)
+                {
+                    break;
+                }
+                GemSockets[i].IsUnlocked = true;
+            }
         }
     }
 }

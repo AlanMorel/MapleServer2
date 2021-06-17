@@ -52,6 +52,7 @@ namespace MapleServer2.Types
 
         public long VIPExpiration { get; set; }
         public int SuperChat;
+        public int ShopId; // current shop player is interacting
 
         // Combat, Adventure, Lifestyle
         public int[] TrophyCount;

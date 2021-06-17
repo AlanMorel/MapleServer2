@@ -20,6 +20,9 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "commands":
+                    ProcessCommandList(session);
+                    break;
                 case "completequest":
                     ProcessQuestCommand(session, args.Length > 1 ? args[1] : "");
                     break;
@@ -91,6 +94,32 @@ namespace MapleServer2.Tools
                     MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
                     break;
             }
+        }
+
+        private static void ProcessCommandList(GameSession session)
+        {
+            string message = "Emulator Commands \n" +
+                "Complete Quest: /completequest <font color='#71a6f0'>questID</font> \n" +
+                "Activate Buff: /status id:<font color='#71a6f0'>buffID</font> \n" +
+                "Set Prestige Level: /setprestigelevel <font color='#71a6f0'>level</font> \n" +
+                "Set Level: /setlevel <font color='#71a6f0'>level</font> \n" +
+                "Gain Prestige Exp: /gainprestigeexp <font color='#71a6f0'>exp</font> \n" +
+                "Gain Exp: /gainexp <font color='#71a6f0'>level</font> \n" +
+                "Set Valor Amount: /setvalor <font color='#71a6f0'>amount</font> \n" +
+                "Set Treva Amount: /settreva <font color='#71a6f0'>amount</font> \n" +
+                "Set Havi Amount: /sethavi <font color='#71a6f0'>amount</font> \n" +
+                "Set Meso amount: /setmeso <font color='#71a6f0'>amount</font> \n" +
+                "Set Meret Amount: /setmeret <font color='#71a6f0'>amount</font> \n" +
+                "Set Guild Exp: /setguildexp <font color='#71a6f0'>amount</font> \n" +
+                "Set Guild Funds: /setguildfunds <font color='#71a6f0'>amount</font> \n" +
+                "Get Item: /item id:<font color='#71a6f0'>itemID</font> [amount:<font color='#71a6f0'>amount</font> rarity:<font color='#71a6f0'>raritytier</font>] \n" +
+                "Spawn Npc: /npc id:<font color='#71a6f0'>npcID</font> [ani:<font color='#71a6f0'>animationID</font> dir:<font color='#71a6f0'>directionvalue</font> coord:<font color='#71a6f0'>X,Y,Z Coords</font>] \n" +
+                "Spawn Mob: /mob id:<font color='#71a6f0'>mobID</font> [ani:<font color='#71a6f0'>animationID</font> dir:<font color='#71a6f0'>directionvalue</font> coord:<font color='#71a6f0'>X,Y,Z Coords</font>] \n" +
+                "Move to Map: /map id:<font color='#71a6f0'>mapID</font> \n" +
+                "Display Current Coords: /coord \n" +
+                "Turn off battle stance: /battleoff \n" +
+                "Display Notice Server Wide: /notice <font color='#71a6f0'>message</font> \n";
+            session.Send(NoticePacket.Notice(message, NoticeType.Chat));
         }
 
         private static void ProcessGuildExp(GameSession session, string command)

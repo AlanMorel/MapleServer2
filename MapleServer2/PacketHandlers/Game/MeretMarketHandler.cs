@@ -95,14 +95,17 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (childMarketItemId == 0)
             {
-
                 HandleMarketItemPay(session, marketItem, itemIndex, totalQuantity);
+                return;
             }
-            else
+
+            MeretMarketItem childItem = marketItem.AdditionalQuantities.FirstOrDefault(x => x.MarketId == childMarketItemId);
+            if (childItem == null)
             {
-                MeretMarketItem childItem = marketItem.AdditionalQuantities.FirstOrDefault(x => x.MarketId == childMarketItemId);
-                HandleMarketItemPay(session, childItem, itemIndex, totalQuantity);
+                return;
             }
+
+            HandleMarketItemPay(session, childItem, itemIndex, totalQuantity);
         }
 
         private static void HandleMarketItemPay(GameSession session, MeretMarketItem marketItem, int itemIndex, int totalQuantity)
