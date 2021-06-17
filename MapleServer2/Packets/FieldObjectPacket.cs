@@ -13,7 +13,10 @@ namespace MapleServer2.Packets
             LoadPlayer = 0x03,
             RemovePlayer = 0x04,
             UpdateEntity = 0x05,
-            LoadNpc = 0x6,
+            LoadNpc = 0x06,
+            RemoveNpc = 0x07,
+            Unk1 = 0x08,
+            Unk2 = 0x0B,
         }
 
         public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer)
@@ -171,6 +174,22 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(objectId);
             pWriter.WriteByte();
             pWriter.Write(coord);
+            return pWriter;
+        }
+
+        public static Packet RemoveNpc(IFieldObject<Npc> npc)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
+            pWriter.WriteEnum(ProxyGameObjMode.RemoveNpc);
+            pWriter.WriteInt(npc.ObjectId);
+            return pWriter;
+        }
+
+        public static Packet RemoveMob(IFieldObject<Mob> mob)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
+            pWriter.WriteEnum(ProxyGameObjMode.RemoveNpc);
+            pWriter.WriteInt(mob.ObjectId);
             return pWriter;
         }
     }
