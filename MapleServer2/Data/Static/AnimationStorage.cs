@@ -10,7 +10,6 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static
 {
-    // This is an in-memory storage to help with determining some metadata of items
     public static class AnimationStorage
     {
         private static readonly Dictionary<string, AnimationMetadata> Animations = new Dictionary<string, AnimationMetadata>();

@@ -12,7 +12,6 @@ namespace GameDataParser.Parsers
 
         protected override List<AnimationMetadata> Parse()
         {
-            // Iterate over preset objects to later reference while iterating over exported maps
             List<AnimationMetadata> animations = new List<AnimationMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
