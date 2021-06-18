@@ -32,19 +32,15 @@ namespace MapleServer2.Data.Static
 
         public static short GetSequenceIdBySequenceName(string actorId, string sequenceName)
         {
-            Dictionary<string, SequenceMetadata> sequences = new Dictionary<string, SequenceMetadata>();
-            foreach (SequenceMetadata sequence in GetSequencesByActorId(actorId))
+            List<SequenceMetadata> sequences = GetSequencesByActorId(actorId);
+            SequenceMetadata metadata = sequences.FirstOrDefault(s => s.SequenceName == sequenceName);
+
+            if (metadata != default)
             {
-                sequences.Add(sequence.SequenceName, sequence);
+                return metadata.SequenceId;
             }
-            if (sequences.ContainsKey(sequenceName))
-            {
-                return sequences.GetValueOrDefault(sequenceName).SequenceId;
-            }
-            else
-            {
-                return 0;
-            }
+
+            return 0;
         }
     }
 }
