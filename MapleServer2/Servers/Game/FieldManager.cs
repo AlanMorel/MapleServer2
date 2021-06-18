@@ -530,20 +530,18 @@ namespace MapleServer2.Servers.Game
 
         private void MonsterMovement()
         {
-            Random Rand = new Random();
+            Random rand = new Random();
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
-                short x = (short) Rand.Next(-70, 70); //random x position, units are block units
+                short x = (short) rand.Next(-150, 150); //random x position, units are block units
 
                 mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
-
                 mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
-
                 mob.Value.ZRotation = (short) (x * 10); //looking direction of the monster
-
-                //using random animation values, makes it look more lively for now
-                //will be replaced with correct animations on mob creation once animations have been handled. 
-                mob.Value.Animation = (short) Rand.Next(20);
+                //TODO:Calculate based on xml/npc probability (<prob>) the chance for sending either Walk,Bore or Run.
+                //MonsterMovement has to be adjusted to send Movement vectors based on these probabiltiies:
+                //Movement Vector of (0,0,0) with Idle animation.
+                //mob.Value.Animation = AnimationStorage.GetSequenceIdByName(mob.Model, "Walk_A");
             }
         }
 
