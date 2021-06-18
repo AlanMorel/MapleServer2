@@ -25,20 +25,26 @@ namespace MapleServer2.Data.Static
             }
         }
 
-        public static List<SequenceMetadata> GetAnimationsByActorId(string actorId)
+        public static List<SequenceMetadata> GetSequencesByActorId(string actorId)
         {
             return Animations.GetValueOrDefault(actorId.ToLower()).Sequence;
         }
 
-        public static short GetSequenceIdByName(string actorId, string sequenceName)
+        public static short GetSequenceIdBySequenceName(string actorId, string sequenceName)
         {
             Dictionary<string, SequenceMetadata> sequences = new Dictionary<string, SequenceMetadata>();
-            foreach (SequenceMetadata sequence in GetAnimationsByActorId(actorId))
+            foreach (SequenceMetadata sequence in GetSequencesByActorId(actorId))
             {
                 sequences.Add(sequence.SequenceName, sequence);
             }
-
-            return sequences.GetValueOrDefault(sequenceName).SequenceId;
+            if (sequences.ContainsKey(sequenceName))
+            {
+                return sequences.GetValueOrDefault(sequenceName).SequenceId;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

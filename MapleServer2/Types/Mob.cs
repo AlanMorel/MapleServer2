@@ -15,7 +15,7 @@ namespace MapleServer2.Types
             if (mob != null)
             {
                 Id = mob.Id;
-                Animation = AnimationStorage.GetSequenceIdByName(mob.Model, "Walk_A"); //Walking animation as default
+                Animation = AnimationStorage.GetSequenceIdBySequenceName(mob.Model, "Walk_A") ; //Walking animation as default
                 Stats = mob.Stats;
                 Experience = mob.Experience;
                 Friendly = mob.Friendly;

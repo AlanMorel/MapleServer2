@@ -541,7 +541,7 @@ namespace MapleServer2.Servers.Game
                 //TODO:Calculate based on xml/npc probability (<prob>) the chance for sending either Walk,Bore or Run.
                 //MonsterMovement has to be adjusted to send Movement vectors based on these probabiltiies:
                 //Movement Vector of (0,0,0) with Idle animation.
-                //mob.Value.Animation = AnimationStorage.GetSequenceIdByName(mob.Model, "Walk_A");
+                //mob.Value.Animation = AnimationStorage.GetSequenceIdBySequenceName(mob.Model, "Walk_A");
             }
         }
 
