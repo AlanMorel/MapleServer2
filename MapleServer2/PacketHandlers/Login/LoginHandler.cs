@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
@@ -24,10 +26,12 @@ namespace MapleServer2.PacketHandlers.Login
         public LoginHandler(ILogger<LoginHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Loopback, LoginServer.PORT));
+            string ipAddress = Environment.GetEnvironmentVariable("IP");
+            int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
+            builder.Add(new IPEndPoint(IPAddress.Parse(ipAddress), port));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = "Paperwood";
+            ServerName = Environment.GetEnvironmentVariable("NAME");
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
@@ -59,7 +63,9 @@ namespace MapleServer2.PacketHandlers.Login
                     pWriter.WriteUnicodeString(account.Username);
 
                     session.Send(pWriter);
-                    session.Send(BannerListPacket.SetBanner());
+
+                    List<Banner> banners = DatabaseManager.GetBanners();
+                    session.Send(BannerListPacket.SetBanner(banners));
                     session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;
                 case 2:
@@ -68,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Login
                     Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));
                     session.Send(UgcPacket.SetEndpoint("http://127.0.0.1/ws.asmx?wsdl", "http://127.0.0.1"));
-                    session.Send(CharacterListPacket.SetMax(4, 6));
+                    session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
                     session.Send(CharacterListPacket.StartList());
                     // Send each character data
                     session.Send(CharacterListPacket.AddEntries(characters));

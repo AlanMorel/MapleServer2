@@ -4,6 +4,8 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -88,8 +90,21 @@ namespace MapleServer2.PacketHandlers.Game
             //TODO: If player already owns a plot, reject
 
             UGCMapGroup land = UGCMapMetadataStorage.GetMetadata(session.Player.MapId, (byte) groupId);
+            if (land == null)
+            {
+                return;
+            }
 
-            if (!HandlePlotPayment(session, land.PriceItemCode, land.Price))
+            //Check if sale event is active
+            int price = land.Price;
+            GameEvent gameEvent = DatabaseManager.GetSingleGameEvent(GameEventType.UGCMapContractSale);
+            if (gameEvent != null)
+            {
+                int markdown = land.Price * ((gameEvent.UGCMapContractSale.DiscountAmount / 100) / 100);
+                price = land.Price - markdown;
+            }
+
+            if (!HandlePlotPayment(session, land.PriceItemCode, price))
             {
                 return;
             }

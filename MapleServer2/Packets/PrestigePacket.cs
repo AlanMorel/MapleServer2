@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -22,9 +23,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.Levels.PrestigeLevel); // PrestigeLevel
             pWriter.WriteLong(player.Levels.PrestigeExp); // Same Prestige Exp??
 
-            // Ranks: 2, 4, 6, 8, 10, 12, 20, 30, 40, 50, 60, 70, 80, 90
-            int[] rankRewardsClaimed = System.Array.Empty<int>();
-            pWriter.WriteInt(rankRewardsClaimed.Length);
+            List<int> rankRewardsClaimed = player.PrestigeRewardsClaimed;
+            pWriter.WriteInt(rankRewardsClaimed.Count);
             foreach (int rank in rankRewardsClaimed)
             {
                 pWriter.WriteInt(rank);

@@ -6,6 +6,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -82,6 +83,12 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case "InstallBillBoard": // ad balloons
                     HandleInstallBillBoard(session, packet, item);
+                    break;
+                case "ExpendCharacterSlot":
+                    HandleExpandCharacterSlot(session, item);
+                    break;
+                case "ItemChangeBeauty": // special beauty vouchers
+                    HandleBeautyVoucher(session, item);
                     break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
@@ -367,6 +374,31 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(PlayerHostPacket.AdBalloonPlace());
             InventoryController.Consume(session, item.Uid, 1);
+        }
+
+        public static void HandleExpandCharacterSlot(GameSession session, Item item)
+        {
+            Account account = DatabaseManager.GetAccount(session.Player.AccountId);
+            if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
+            {
+                session.Send(CouponUsePacket.MaxCharacterSlots());
+                return;
+            }
+
+            account.CharacterSlots++;
+            DatabaseManager.UpdateAccount(account);
+            session.Send(CouponUsePacket.CharacterSlotAdded());
+            InventoryController.Consume(session, item.Uid, 1);
+        }
+
+        public static void HandleBeautyVoucher(GameSession session, Item item)
+        {
+            if (item.Gender != session.Player.Gender)
+            {
+                return;
+            }
+
+            session.Send(CouponUsePacket.BeautyCoupon(session.FieldPlayer, item.Uid));
         }
     }
 }

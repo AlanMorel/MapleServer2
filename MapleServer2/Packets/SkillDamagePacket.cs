@@ -8,11 +8,10 @@ namespace MapleServer2.Packets
 {
     public static class SkillDamagePacket
     {
-        public static Packet ApplyDamage(IFieldObject<Player> player, long skillSN, int unkValue, CoordF coords, List<IFieldObject<Mob>> mobs)
+        public static Packet ApplyDamage(long skillSN, int unkValue, CoordF coords, IFieldObject<Player> player, List<(IFieldObject<Mob>, DamageHandler)> effects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
-            DamageHandler damage = DamageHandler.CalculateSkillDamage(skillCast);
 
             pWriter.WriteByte(1);
             pWriter.WriteLong(skillSN);
@@ -27,21 +26,15 @@ namespace MapleServer2.Packets
             pWriter.Write(coords.ToShort());
             pWriter.Write(CoordS.From(0, 0, 0)); // Position of the image effect of the skillUse, seems to be rotation (0, 0, rotation).
             // TODO: Check if is a player or mob
-            pWriter.WriteByte((byte) mobs.Count);
-            for (int i = 0; i < mobs.Count; i++)
+            pWriter.WriteByte((byte) effects.Count);
+            foreach ((IFieldObject<Mob> mob, DamageHandler damage) in effects)
             {
-                IFieldObject<Mob> mob = mobs[i];
-                if (mob == null)
+                pWriter.WriteInt(mob.ObjectId);
+                pWriter.WriteBool(damage.Damage > 0);
+                pWriter.WriteBool(damage.IsCrit);
+                if (damage.Damage != 0)
                 {
-                    // Invalid mob? Investigate.
-                    continue;
-                }
-                pWriter.WriteInt(mobs[i].ObjectId);
-                pWriter.WriteByte((byte) (damage.GetDamage() > 0 ? 1 : 0));
-                pWriter.WriteBool(damage.IsCritical());
-                if (damage.GetDamage() != 0)
-                {
-                    pWriter.WriteLong(-1 * (long) damage.GetDamage());
+                    pWriter.WriteLong(-1 * (long) damage.Damage);
                 }
             }
 

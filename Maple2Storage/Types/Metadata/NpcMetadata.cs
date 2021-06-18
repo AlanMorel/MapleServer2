@@ -34,7 +34,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 13)]
         public CoordS Coord;
         [XmlElement(Order = 14)]
-        public byte Animation;
+        public short Animation;
         [XmlElement(Order = 15)]
         public NpcMetadataBasic NpcMetadataBasic = new NpcMetadataBasic();
         [XmlElement(Order = 16)]

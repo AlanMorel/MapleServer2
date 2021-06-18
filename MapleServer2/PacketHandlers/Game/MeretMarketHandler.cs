@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -64,7 +64,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleOpenPremium(GameSession session, PacketReader packet)
         {
             MeretMarketCategory category = (MeretMarketCategory) packet.ReadInt();
-            List<MeretMarketMetadata> marketItems = MeretMarketMetadataStorage.GetCategoryItems(category);
+            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(category);
             if (marketItems == null)
             {
                 return;
@@ -87,7 +87,7 @@ namespace MapleServer2.PacketHandlers.Game
             string unk6 = packet.ReadUnicodeString();
             long price = packet.ReadLong();
 
-            MeretMarketMetadata marketItem = MeretMarketMetadataStorage.GetMetadata(marketItemId);
+            MeretMarketItem marketItem = DatabaseManager.GetMeretMarketItem(marketItemId);
             if (marketItem == null)
             {
                 return;
@@ -95,17 +95,20 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (childMarketItemId == 0)
             {
-
                 HandleMarketItemPay(session, marketItem, itemIndex, totalQuantity);
+                return;
             }
-            else
+
+            MeretMarketItem childItem = marketItem.AdditionalQuantities.FirstOrDefault(x => x.MarketId == childMarketItemId);
+            if (childItem == null)
             {
-                MeretMarketMetadata childItem = marketItem.AdditionalQuantities.FirstOrDefault(x => x.MarketItemId == childMarketItemId);
-                HandleMarketItemPay(session, childItem, itemIndex, totalQuantity);
+                return;
             }
+
+            HandleMarketItemPay(session, childItem, itemIndex, totalQuantity);
         }
 
-        private static void HandleMarketItemPay(GameSession session, MeretMarketMetadata marketItem, int itemIndex, int totalQuantity)
+        private static void HandleMarketItemPay(GameSession session, MeretMarketItem marketItem, int itemIndex, int totalQuantity)
         {
             switch (marketItem.TokenType)
             {
@@ -138,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleHome(GameSession session)
         {
-            List<MeretMarketMetadata> marketItems = MeretMarketMetadataStorage.GetCategoryItems(MeretMarketCategory.Promo);
+            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(MeretMarketCategory.Promo);
             if (marketItems == null)
             {
                 return;

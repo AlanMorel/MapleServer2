@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
+using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
@@ -22,20 +24,24 @@ namespace MapleServer2.PacketHandlers.Login
         public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            builder.Add(new IPEndPoint(IPAddress.Any, LoginServer.PORT));
+            string ipAddress = Environment.GetEnvironmentVariable("IP");
+            int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
+            builder.Add(new IPEndPoint(IPAddress.Parse(ipAddress), port));
 
             ServerIPs = builder.ToImmutable();
-            ServerName = "Paperwood";
+            ServerName = Environment.GetEnvironmentVariable("NAME");
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            session.Send(BannerListPacket.SetBanner());
+            List<Banner> banners = DatabaseManager.GetBanners();
+            session.Send(BannerListPacket.SetBanner(banners));
             session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
             List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
 
-            session.Send(CharacterListPacket.SetMax(4, 6));
+            Account account = DatabaseManager.GetAccount(session.AccountId);
+            session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
             session.Send(CharacterListPacket.StartList());
             // Send each character data
             session.Send(CharacterListPacket.AddEntries(characters));

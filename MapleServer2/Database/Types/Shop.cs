@@ -7,7 +7,6 @@ namespace MapleServer2.Database.Types
     {
         public int Uid { get; set; }
         public int Id { get; set; }
-        public int TemplateId { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
         public ShopType ShopType { get; set; }

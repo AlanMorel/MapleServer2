@@ -10,6 +10,8 @@ namespace MapleServer2.Types
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public long CreationTime { get; set; }
+        public long LastLoginTime { get; set; }
+        public int CharacterSlots { get; set; }
 
         public virtual ICollection<Player> Players { get; set; }
 
@@ -20,6 +22,8 @@ namespace MapleServer2.Types
             Username = username;
             PasswordHash = passwordHash;
             CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+            LastLoginTime = CreationTime;
+            CharacterSlots = 7;
             Id = DatabaseManager.CreateAccount(this);
         }
     }

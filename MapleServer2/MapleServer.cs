@@ -93,17 +93,23 @@ namespace MapleServer2
                 return;
             }
 
-            Console.WriteLine("Creating database.");
+            Console.WriteLine("Creating database...");
             DatabaseContext.CreateDatabase();
 
-            Console.WriteLine("Seeding shops.");
+            Console.WriteLine("Seeding shops...");
             ShopsSeeding.Seed();
 
-            Console.WriteLine("Seeding Mapleopoly");
+            Console.WriteLine("Seeding Meret Market...");
+            MeretMarketItemSeeding.Seed();
+
+            Console.WriteLine("Seeding Mapleopoly...");
             MapleopolySeeding.Seed();
 
-            Console.WriteLine("Seeding events");
+            Console.WriteLine("Seeding events...");
             GameEventSeeding.Seed();
+
+            Console.WriteLine("Seeding card reverse game...");
+            CardReverseGameSeeding.Seed();
 
             Console.WriteLine("Database created.");
         }

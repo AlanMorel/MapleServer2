@@ -73,7 +73,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetMax(int unlocked, int total)
+        public static Packet SetMax(int unlocked, int total = 11)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAR_MAX_COUNT);
             pWriter.WriteInt(unlocked);
@@ -242,7 +242,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteUnicodeString(slot.ToString());
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(item.Rarity);
             pWriter.WriteItem(item);
         }
 

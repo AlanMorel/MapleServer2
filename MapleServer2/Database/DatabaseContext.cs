@@ -19,6 +19,7 @@ namespace MapleServer2.Database
         public DbSet<Levels> Levels { get; set; }
         public DbSet<SkillTab> SkillTabs { get; set; }
         public DbSet<GameOptions> GameOptions { get; set; }
+        public DbSet<Hotbar> Hotbars { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<BankInventory> BankInventories { get; set; }
         public DbSet<Item> Items { get; set; }
@@ -32,16 +33,28 @@ namespace MapleServer2.Database
         public DbSet<GuildApplication> GuildApplications { get; set; }
         public DbSet<Shop> Shops { get; set; }
         public DbSet<ShopItem> ShopItems { get; set; }
+        public DbSet<MeretMarketItem> MeretMarketItems { get; set; }
+        public DbSet<Banner> Banners { get; set; }
         public DbSet<MapleopolyTile> MapleopolyTiles { get; set; }
         public DbSet<GameEvent> Events { get; set; }
         public DbSet<StringBoardEvent> Event_StringBoards { get; set; }
         public DbSet<MapleopolyEvent> Event_Mapleopoly { get; set; }
+        public DbSet<UGCMapContractSaleEvent> Event_UGCMapContractSale { get; set; }
+        public DbSet<UGCMapExtensionSaleEvent> Event_UGCMapExtensionSale { get; set; }
+        public DbSet<FieldPopupEvent> Event_FieldPopup { get; set; }
+        public DbSet<CardReverseGame> CardReverseGame { get; set; }
         // public DbSet<Home> Homes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            string server = Environment.GetEnvironmentVariable("DB_IP");
+            string port = Environment.GetEnvironmentVariable("DB_PORT");
+            string name = Environment.GetEnvironmentVariable("DB_NAME");
+            string user = Environment.GetEnvironmentVariable("DB_USER");
+            string password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+
+            optionsBuilder.UseMySQL($"server={server};port={port};database={name};user={user};password={password}");
             // optionsBuilder.LogTo(Console.WriteLine);
         }
 
@@ -74,6 +87,10 @@ namespace MapleServer2.Database
                 entity.Property(e => e.ReturnMapId);
 
                 entity.Property(e => e.Titles).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
+
+                entity.Property(e => e.PrestigeRewardsClaimed).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
 
@@ -248,9 +265,16 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new Dictionary<int, KeyBind>() : JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(i));
 
-                entity.Property(e => e.Hotbars).HasConversion(
+                entity.HasMany(e => e.Hotbars);
+            });
+
+            modelBuilder.Entity<Hotbar>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Slots).HasConversion(
                     i => JsonConvert.SerializeObject(i),
-                    i => i == null ? new List<Hotbar>() : JsonConvert.DeserializeObject<List<Hotbar>>(i));
+                    i => i == null ? new QuickSlot[25] : JsonConvert.DeserializeObject<QuickSlot[]>(i));
             });
 
             modelBuilder.Entity<Inventory>(entity =>
@@ -445,7 +469,6 @@ namespace MapleServer2.Database
             {
                 entity.HasKey(e => e.Uid);
                 entity.Property(e => e.Id);
-                entity.Property(e => e.TemplateId);
                 entity.Property(e => e.Category);
                 entity.Property(e => e.Name).HasMaxLength(25);
                 entity.Property(e => e.ShopType);
@@ -483,6 +506,51 @@ namespace MapleServer2.Database
                 entity.Property(e => e.AutoPreviewEquip);
             });
 
+            modelBuilder.Entity<MeretMarketItem>(entity =>
+            {
+                entity.HasKey(e => e.MarketId);
+                entity.Property(e => e.Category);
+                entity.Property(e => e.ItemName);
+                entity.Property(e => e.ItemId);
+                entity.Property(e => e.Rarity);
+                entity.Property(e => e.Quantity);
+                entity.Property(e => e.BonusQuantity);
+                entity.Property(e => e.Flag);
+                entity.Property(e => e.TokenType);
+                entity.Property(e => e.Price);
+                entity.Property(e => e.SalePrice);
+                entity.Property(e => e.Duration);
+                entity.Property(e => e.SellBeginTime);
+                entity.Property(e => e.SellEndTime);
+                entity.Property(e => e.JobRequirement);
+                entity.Property(e => e.MinLevelRequirement);
+                entity.Property(e => e.MaxLevelRequirement);
+                entity.Property(e => e.RequiredAchievementId);
+                entity.Property(e => e.RequiredAchievementGrade);
+                entity.Property(e => e.PCCafe);
+                entity.Property(e => e.RestockUnavailable);
+                entity.Property(e => e.ParentMarketId);
+                entity.HasOne(e => e.Banner);
+                entity.Property(e => e.PromoName);
+                entity.Property(e => e.PromoFlag);
+                entity.Property(e => e.ShowSaleTime);
+                entity.Property(e => e.PromoBannerBeginTime);
+                entity.Property(e => e.PromoBannerEndTime);
+                entity.HasMany(e => e.AdditionalQuantities);
+            });
+
+            modelBuilder.Entity<Banner>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name);
+                entity.Property(e => e.Type).HasConversion<string>();
+                entity.Property(e => e.SubType).HasConversion<string>();
+                entity.Property(e => e.Language);
+                entity.Property(e => e.ImageUrl);
+                entity.Property(e => e.BeginTime);
+                entity.Property(e => e.EndTime);
+            });
+
             modelBuilder.Entity<MapleopolyTile>(entity =>
             {
                 entity.HasKey(e => e.TilePosition);
@@ -496,10 +564,13 @@ namespace MapleServer2.Database
             modelBuilder.Entity<GameEvent>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Type);
+                entity.Property(e => e.Type).HasConversion<string>();
                 entity.Property(e => e.Active);
                 entity.HasMany(e => e.StringBoard);
                 entity.HasMany(e => e.Mapleopoly);
+                entity.HasOne(e => e.UGCMapContractSale);
+                entity.HasOne(e => e.UGCMapExtensionSale);
+                entity.HasOne(e => e.FieldPopupEvent);
             });
 
             modelBuilder.Entity<StringBoardEvent>(entity =>
@@ -513,6 +584,31 @@ namespace MapleServer2.Database
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.TripAmount);
+                entity.Property(e => e.ItemId);
+                entity.Property(e => e.ItemRarity);
+                entity.Property(e => e.ItemAmount);
+            });
+
+            modelBuilder.Entity<UGCMapContractSaleEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.DiscountAmount);
+            });
+
+            modelBuilder.Entity<UGCMapExtensionSaleEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.DiscountAmount);
+            });
+
+            modelBuilder.Entity<FieldPopupEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.MapId);
+            });
+            modelBuilder.Entity<CardReverseGame>(entity =>
+            {
+                entity.HasKey(e => e.Id);
                 entity.Property(e => e.ItemId);
                 entity.Property(e => e.ItemRarity);
                 entity.Property(e => e.ItemAmount);

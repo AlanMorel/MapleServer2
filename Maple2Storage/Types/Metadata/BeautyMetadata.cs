@@ -95,7 +95,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public byte Gender;
         [XmlElement(Order = 3)]
-        public ShopItemFlag Flag;
+        public ShopItemFlag Flag = ShopItemFlag.None;
         [XmlElement(Order = 4)]
         public short RequiredLevel;
         [XmlElement(Order = 5)]

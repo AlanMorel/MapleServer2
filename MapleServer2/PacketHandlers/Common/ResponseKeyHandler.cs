@@ -125,11 +125,12 @@ namespace MapleServer2.PacketHandlers.Common
             // CharacterAbility
             // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-            // Normally, options are only requested for a new character. Since we don't have a database, we'll always requests the users bindings
-            session.Send(KeyTablePacket.RequestDefault());
-            // TODO - Ask for mouse or kb controls on new character creation.
-            // Commented out since its annoying to click every time
-            //session.Send(KeyTablePacket.AskKeyboardOrMouse());
+            session.Send(KeyTablePacket.SendFullOptions(player.GameOptions));
+
+            if (player.MapId == 52000065) // tutorial map
+            {
+                session.Send(KeyTablePacket.AskKeyboardOrMouse());
+            }
 
             // Key bindings and skill slots would normally be loaded from a database
             // If the character is not a new character, this is what we would send

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
+using MapleServer2.Database.Types;
 
 namespace MapleServer2.Packets
 {
@@ -35,6 +35,15 @@ namespace MapleServer2.Packets
                             pWriter.WriteByte(mapleopolyEvent.ItemRarity);
                             pWriter.WriteInt(mapleopolyEvent.ItemAmount);
                         }
+                        break;
+                    case GameEventType.UGCMapContractSale:
+                        pWriter.WriteInt(gameEvent.UGCMapContractSale.DiscountAmount);
+                        break;
+                    case GameEventType.UGCMapExtensionSale:
+                        pWriter.WriteInt(gameEvent.UGCMapExtensionSale.DiscountAmount);
+                        break;
+                    case GameEventType.EventFieldPopup:
+                        pWriter.WriteInt(gameEvent.FieldPopupEvent.MapId);
                         break;
                 }
             }

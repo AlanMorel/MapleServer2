@@ -34,7 +34,8 @@ namespace MapleServer2.Servers.Game
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
 
-        private Task HealingSpotThread;
+        private Task MapLoopTask;
+
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
         public FieldManager(int mapId)
@@ -240,12 +241,9 @@ namespace MapleServer2.Servers.Game
 
             State.AddPlayer(player);
 
-            if (!State.HealingSpots.IsEmpty)
+            if (MapLoopTask == null)
             {
-                if (HealingSpotThread == null)
-                {
-                    HealingSpotThread = StartHealingSpot();
-                }
+                MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
             }
 
             // Broadcast new player to all players in map
@@ -286,6 +284,21 @@ namespace MapleServer2.Servers.Game
             });
         }
 
+        public bool RemoveNpc(IFieldObject<Npc> fieldNpc)
+        {
+            if (!State.RemoveNpc(fieldNpc.ObjectId))
+            {
+                return false;
+            }
+
+            Broadcast(session =>
+            {
+                // TODO: Add field remove NPC packet
+                session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
+            });
+            return true;
+        }
+
         public void AddMob(IFieldObject<Mob> fieldMob)
         {
             State.AddMob(fieldMob);
@@ -297,7 +310,29 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
                 // TODO: Add spawn buff (ID: 0x055D4DAE)
+                //session.Send();
             });
+        }
+
+        public bool RemoveMob(IFieldObject<Mob> mob)
+        {
+            if (!State.RemoveMob(mob.ObjectId))
+            {
+                return false;
+            }
+
+            IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
+            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
+            {
+                StartSpawnTimer(originSpawn);
+            }
+
+            Broadcast(session =>
+            {
+                session.Send(FieldPacket.RemoveMob(mob));
+                session.Send(FieldObjectPacket.RemoveMob(mob));
+            });
+            return true;
         }
 
         public void AddGuide(IFieldObject<GuideObject> fieldGuide)
@@ -391,37 +426,33 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            if (!State.RemoveItem(objectId, out item))
+            Item itemResult;
+            if (!State.RemoveItem(objectId, out itemResult))
             {
+                item = itemResult;
                 return false;
             }
+            item = itemResult;
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.PickupItem(objectId, session.FieldPlayer.ObjectId));
+                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
                 session.Send(FieldPacket.RemoveItem(objectId));
             });
             return true;
         }
 
-        public bool RemoveMob(IFieldObject<Mob> mob)
+        public void AddResource(Item item, IFieldObject<Mob> source, IFieldObject<Player> targetPlayer)
         {
-            if (!State.RemoveMob(mob.ObjectId))
-            {
-                return false;
-            }
+            FieldObject<Item> fieldItem = WrapObject(item);
+            fieldItem.Coord = source.Coord;
 
-            IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
-            if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
-            {
-                StartSpawnTimer(originSpawn);
-            }
+            State.AddItem(fieldItem);
 
             Broadcast(session =>
             {
-                session.Send(FieldPacket.RemoveMob(mob));
+                session.Send(FieldPacket.AddItem(fieldItem, source, targetPlayer));
             });
-            return true;
         }
 
         //Broadcast a packet after the specified delay.
@@ -484,34 +515,58 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        private Task StartHealingSpot()
+        private Task StartMapLoop()
         {
             return Task.Run(async () =>
             {
                 while (!State.Players.IsEmpty)
                 {
-                    foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
-                    {
-                        CoordS healingCoord = healingSpot.Value.Coord;
-                        foreach (IFieldObject<Player> player in State.Players.Values)
-                        {
-                            if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
-                            {
-                                int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
-                                Status status = new Status(new SkillCast(70000018, 1, 0, 1), owner: player.ObjectId, source: healingSpot.ObjectId, duration: 100, stacks: 1);
-
-                                player.Value.Session.Send(BuffPacket.SendBuff(0, status));
-                                BroadcastPacket(SkillDamagePacket.ApplyHeal(status, healAmount));
-
-                                player.Value.Session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
-                                player.Value.Session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
-                            }
-                        }
-                    }
-
+                    HealingSpot();
+                    MonsterMovement();
                     await Task.Delay(1000);
                 }
             });
+        }
+
+        private void MonsterMovement()
+        {
+            Random Rand = new Random();
+            foreach (IFieldObject<Mob> mob in State.Mobs.Values)
+            {
+                short x = (short) Rand.Next(-70, 70); //random x position, units are block units
+
+                mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
+
+                mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
+
+                mob.Value.ZRotation = (short) (x * 10); //looking direction of the monster
+
+                //using random animation values, makes it look more lively for now
+                //will be replaced with correct animations on mob creation once animations have been handled. 
+                mob.Value.Animation = (short) Rand.Next(20);
+            }
+        }
+
+        private void HealingSpot()
+        {
+            foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
+            {
+                CoordS healingCoord = healingSpot.Value.Coord;
+                foreach (IFieldObject<Player> player in State.Players.Values)
+                {
+                    if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
+                    {
+                        int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
+                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), owner: player.ObjectId, source: healingSpot.ObjectId, duration: 100, stacks: 1);
+
+                        player.Value.Session.Send(BuffPacket.SendBuff(0, status));
+                        BroadcastPacket(SkillDamagePacket.ApplyHeal(status, healAmount));
+
+                        player.Value.Session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
+                        player.Value.Session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                    }
+                }
+            }
         }
 
         private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)

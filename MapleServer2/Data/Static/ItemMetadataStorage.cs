@@ -166,6 +166,25 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Tag;
         }
 
+        public static int GetOptionStatic(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).OptionStatic;
+        }
+        public static int GetOptionRandom(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).OptionRandom;
+        }
+
+        public static int GetOptionConstant(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).OptionConstant;
+        }
+
+        public static int GetOptionLevelFactor(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).OptionLevelFactor;
+        }
+
         public static EquipColor GetEquipColor(int itemId)
         {
             int colorPalette = map.GetValueOrDefault(itemId).ColorPalette;

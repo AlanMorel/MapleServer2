@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Types;
 using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,14 @@ namespace MapleServer2.Database
             }
         }
 
+        public static Account GetAccount(long accountId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Accounts.FirstOrDefault(a => a.Id == accountId);
+            }
+        }
+
         public static Account Authenticate(string username, string password)
         {
             Account account;
@@ -100,6 +109,16 @@ namespace MapleServer2.Database
             return characters;
         }
 
+        public static bool UpdateAccount(Account account)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Account dbAccount = context.Accounts.Find(account.Id);
+                context.Entry(dbAccount).CurrentValues.SetValues(account);
+                return SaveChanges(context);
+            }
+        }
+
         public static long CreateCharacter(Player player)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -121,7 +140,7 @@ namespace MapleServer2.Database
                 .Include(p => p.SkillTabs)
                 .Include(p => p.Guild)
                 // .Include(p => p.Home)
-                .Include(p => p.GameOptions)
+                .Include(p => p.GameOptions).ThenInclude(p => p.Hotbars)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
                 .Include(p => p.Trophies)
@@ -190,16 +209,31 @@ namespace MapleServer2.Database
                 context.Entry(player.Levels).State = EntityState.Modified;
                 context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
+                context.Entry(player.GameOptions).State = EntityState.Modified;
 
                 if (player.GuildMember != null)
                 {
                     GuildMember dbGuildMember = context.GuildMembers.Find(player.CharacterId);
                     context.Entry(dbGuildMember).CurrentValues.SetValues(player.GuildMember);
                 }
+                UpdateHotbars(player);
                 UpdateQuests(player);
                 UpdateTrophies(player);
                 UpdateItems(player);
                 SaveChanges(context);
+            }
+        }
+
+        private static void UpdateHotbars(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Hotbar hotbar in player.GameOptions.Hotbars)
+                {
+                    Hotbar dbHotbar = context.Hotbars.Find(hotbar.Id);
+                    context.Entry(dbHotbar).CurrentValues.SetValues(hotbar);
+                }
+                context.SaveChanges();
             }
         }
 
@@ -444,6 +478,47 @@ namespace MapleServer2.Database
             }
         }
 
+        public static void InsertMeretMarketItems(List<MeretMarketItem> items)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (MeretMarketItem item in items)
+                {
+                    context.MeretMarketItems.Add(item);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<MeretMarketItem> GetMeretMarketItemsByCategory(MeretMarketCategory category)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.MeretMarketItems.Where(x => x.Category == category)
+                    .Include(x => x.AdditionalQuantities)
+                    .Include(x => x.Banner)
+                    .ToList();
+            }
+        }
+
+        public static MeretMarketItem GetMeretMarketItem(int id)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.MeretMarketItems
+                    .Include(x => x.AdditionalQuantities)
+                    .FirstOrDefault(x => x.MarketId == id);
+            }
+        }
+
+        public static List<Banner> GetBanners()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Banners.ToList();
+            }
+        }
+
         public static long AddQuest(QuestStatus questStatus)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -519,9 +594,25 @@ namespace MapleServer2.Database
             {
                 gameEvents = context.Events.Where(x => x.Active == true)
                     .Include(x => x.Mapleopoly)
-                    .Include(x => x.StringBoard).ToList();
+                    .Include(x => x.StringBoard)
+                    .Include(x => x.UGCMapContractSale)
+                    .Include(x => x.UGCMapExtensionSale)
+                    .Include(x => x.FieldPopupEvent)
+                    .ToList();
             }
             return gameEvents;
+        }
+
+        public static GameEvent GetSingleGameEvent(GameEventType type)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.Events
+                    .Include(x => x.UGCMapContractSale)
+                    .Include(x => x.UGCMapExtensionSale)
+                    .Include(x => x.FieldPopupEvent)
+                    .FirstOrDefault(x => x.Type == type && x.Active == true);
+            }
         }
 
         public static void InsertStringBoards(List<StringBoardEvent> stringBoards)
@@ -556,6 +647,26 @@ namespace MapleServer2.Database
                 mapleopolyEvents = context.Event_Mapleopoly.ToList();
             }
             return mapleopolyEvents;
+        }
+
+        public static void InsertCardReverseGame(List<CardReverseGame> cards)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (CardReverseGame card in cards)
+                {
+                    context.CardReverseGame.Add(card);
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static List<CardReverseGame> GetCardReverseGame()
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                return context.CardReverseGame.ToList();
+            }
         }
 
         private static bool SaveChanges(DatabaseContext context)

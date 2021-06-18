@@ -5,9 +5,9 @@ namespace MapleServer2.Types
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 16)]
     public struct QuickSlot
     {
-        public int SkillId { get; private set; }
-        public int ItemId { get; private set; }
-        public long ItemUid { get; private set; }
+        public int SkillId { get; set; }
+        public int ItemId { get; set; }
+        public long ItemUid { get; set; }
 
         public static QuickSlot From(int skillId, Item item)
         {

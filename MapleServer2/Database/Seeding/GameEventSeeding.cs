@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using MapleServer2.Types;
+using MapleServer2.Database.Types;
 
 namespace MapleServer2.Database
 {
@@ -69,6 +69,33 @@ namespace MapleServer2.Database
                             ItemRarity = 1,
                             ItemAmount = 1
                         },
+                    }
+                },
+                new GameEvent
+                {
+                    Type = GameEventType.UGCMapContractSale,
+                    Active = false,
+                    UGCMapContractSale = new UGCMapContractSaleEvent
+                    {
+                        DiscountAmount = 9000
+                    }
+                },
+                new GameEvent
+                {
+                    Type = GameEventType.UGCMapExtensionSale,
+                    Active = false,
+                    UGCMapExtensionSale = new UGCMapExtensionSaleEvent
+                    {
+                        DiscountAmount = 9000
+                    }
+                },
+                new GameEvent
+                {
+                    Type = GameEventType.EventFieldPopup,
+                    Active = true,
+                    FieldPopupEvent = new FieldPopupEvent
+                    {
+                        MapId = 63000049
                     }
                 }
             };
