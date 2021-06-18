@@ -51,7 +51,6 @@ namespace MapleServer2.PacketHandlers.Game
             int countExtra = packet.ReadByte();
             for (int i = 0; i < countExtra; i++)
             {
-                return;
             }
         }
     }

@@ -132,7 +132,6 @@ namespace MapleServer2.Types
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
-        private Task OnlineDurationThread;
         private TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
 

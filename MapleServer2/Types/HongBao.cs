@@ -36,7 +36,7 @@ namespace MapleServer2.Types
 
             giver.Session.Send(MeretsPacket.UpdateMerets(giver.Session, rewardAmount));
             giver.Wallet.EventMeret.Modify(rewardAmount);
-            Start(this);
+            Task task = Start(this);
         }
 
         public void AddReceiver(Player player)
