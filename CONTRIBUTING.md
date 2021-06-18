@@ -28,9 +28,30 @@ When creating pull requests abide the following:
 
 All contributions must follow the style defined in `.editorconfig`.
 
-**On Visual Studio** &mdash; `Ctrl+K` and `Ctrl+E` to automatically format the file.
+**On Visual Studio** &mdash; `Ctrl+K` and `Ctrl+E` to automatically format the file. Go to `Options > Text Editor > C# > Advanced` and enable full solution analysis and use `.editorconfig` compatibility mode.
 
-**On Visual Studio Code** &mdash; `Shift+Alt+F` to automatically format the file.
+**On Visual Studio Code** &mdash; `Shift+Alt+F` to automatically format the file. Edit your `settings.json` to include:
+```
+{
+    "omnisharp.useEditorFormattingSettings": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableRoslynAnalyzers": true,
+}
+```
+
+And in `~/.omnisharp`, create `omnisharp.json` and add:
+
+```
+{
+  "RoslynExtensionsOptions": {
+    "enableAnalyzersSupport": true
+  },
+  "FormattingOptions": {
+    "enableEditorConfigSupport": true
+  }
+}
+```
+
 
 ## Bug Reports and Suggestions
 
