@@ -533,7 +533,7 @@ namespace MapleServer2.Servers.Game
             Random rand = new Random();
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
-                short x = (short) rand.Next(-Block.BLOCK_SIZE, Block.BLOCK_SIZE); //random x position, units are block units
+                short x = (short) rand.Next(-Block.BLOCK_SIZE, Block.BLOCK_SIZE);
 
                 mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
                 mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
