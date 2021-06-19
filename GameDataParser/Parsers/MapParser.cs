@@ -75,6 +75,9 @@ namespace GameDataParser.Parsers
                 MapMetadata metadata = new MapMetadata();
                 metadata.Id = int.Parse(mapIdStr);
 
+                string xblockName = entry.Name[7..];
+                metadata.XBlockName = xblockName.Remove(xblockName.Length - 7, 7);
+
                 XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
