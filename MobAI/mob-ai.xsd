@@ -1,0 +1,63 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="ai">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="behavior" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="spawn" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="normal" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="aggro" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="enterAttackRange" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="enterProjectileRange" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="dead" type="behaviorType" maxOccurs="1" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Types -->
+    <xs:simpleType name="stateEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="spawn" />
+            <xs:enumeration value="normal" />
+            <xs:enumeration value="aggro" />
+            <xs:enumeration value="dead" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="behaviorType">
+        <xs:all>
+            <xs:element name="condition" type="conditionType" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+        <xs:attribute name="movement" type="movementEnum" />
+        <xs:attribute name="action" type="actionEnum" />
+    </xs:complexType>
+    <xs:complexType name="conditionType">
+        <xs:attribute name="state" type="stateEnum" />
+        <xs:attribute name="hpPercent" type="xs:int" />
+        <xs:attribute name="hp" type="xs:int" />
+        <xs:attribute name="sp" type="xs:int" />
+    </xs:complexType>
+
+    <xs:simpleType name="actionEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="jump" />
+            <xs:enumeration value="attack" />
+            <xs:enumeration value="buff" />
+            <xs:enumeration value="heal" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="movementEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="hold" />
+            <xs:enumeration value="patrol" />
+            <xs:enumeration value="lookAt" />
+            <xs:enumeration value="follow" />
+            <xs:enumeration value="strafe" />
+            <xs:enumeration value="run" />
+            <xs:enumeration value="dodge" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

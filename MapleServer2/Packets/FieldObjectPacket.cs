@@ -152,7 +152,7 @@ namespace MapleServer2.Packets
             npcBuffer.WriteByte();
             npcBuffer.Write(mob.Coord.ToShort());
             npcBuffer.WriteShort(mob.Value.ZRotation);
-            npcBuffer.Write(mob.Value.Speed); // XYZ Speed
+            npcBuffer.Write(mob.Value.Velocity.ToShort()); // Displacement
             npcBuffer.WriteShort(100); // Unknown
             //npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
             npcBuffer.WriteByte(1); // Flag ?

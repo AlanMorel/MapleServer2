@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="mob-ai.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<ai>
+    <behavior>
+        <spawn movement="hold" />
+        <normal movement="patrol" />
+        <aggro movement="follow" />
+        <enterAttackRange movement="hold" action="attack">
+            <condition state="aggro" />
+        </enterAttackRange>
+        <enterProjectileRange movement="hold">
+            <condition state="aggro" />
+        </enterProjectileRange>
+        <dead movement="hold" />
+    </behavior>
+</ai>
