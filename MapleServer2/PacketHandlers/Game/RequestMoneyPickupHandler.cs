@@ -20,8 +20,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 int objectId = packet.ReadInt();
 
-                IFieldObject<Item> fieldItem;
-                bool foundItem = session.FieldManager.State.TryGetItem(objectId, out fieldItem);
+                bool foundItem = session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem);
                 if (foundItem && fieldItem.Value.Id >= 90000001 && fieldItem.Value.Id <= 90000003)
                 {
                     session.Player.Wallet.Meso.Modify(fieldItem.Value.Amount);
