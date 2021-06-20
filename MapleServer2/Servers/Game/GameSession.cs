@@ -59,21 +59,21 @@ namespace MapleServer2.Servers.Game
         public void InitPlayer(Player player)
         {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
-            FieldManager = FieldManagerFactory.GetManager(player.MapId);
+            FieldManager = FieldManagerFactory.GetManager(player.MapId, instanceId: 0);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
         }
 
-        public void EnterField(int newMapId)
+        public void EnterField(Player player)
         {
             // If moving maps, need to get the FieldManager for new map
-            if (newMapId != FieldManager.MapId)
+            if (player.MapId != FieldManager.MapId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId);
+                FieldManagerFactory.Release(FieldManager.MapId, player.InstanceId);
 
                 // Initialize for new Map
-                FieldManager = FieldManagerFactory.GetManager(newMapId);
+                FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);
             }
 

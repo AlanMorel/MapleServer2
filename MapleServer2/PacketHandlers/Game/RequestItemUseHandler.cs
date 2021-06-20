@@ -352,7 +352,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (spawn != null)
             {
                 InventoryController.Consume(session, item.Uid, 1);
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), fieldID);
+                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), fieldID, 0);
             }
         }
 

@@ -38,6 +38,7 @@ namespace MapleServer2.Types
         // Mutable Values
         public Levels Levels { get; set; }
         public int MapId { get; set; }
+        public int InstanceId { get; set; }
         public int TitleId { get; set; }
         public short InsigniaId { get; set; }
         public List<int> Titles { get; set; }
@@ -209,9 +210,10 @@ namespace MapleServer2.Types
             CharacterId = DatabaseManager.CreateCharacter(this);
         }
 
-        public void Warp(CoordF coord, CoordF rotation, int mapId)
+        public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId)
         {
             MapId = mapId;
+            InstanceId = instanceId;
             Coord = coord;
             Rotation = rotation;
             SafeBlock = coord;

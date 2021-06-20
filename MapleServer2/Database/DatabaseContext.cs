@@ -171,6 +171,7 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.FishingRod);
                 entity.Ignore(e => e.GatheringCount);
                 entity.Ignore(e => e.Mailbox);
+                entity.Ignore(e => e.InstanceId);
             });
 
             modelBuilder.Entity<Levels>(entity =>
