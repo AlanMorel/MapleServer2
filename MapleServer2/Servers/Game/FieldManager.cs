@@ -532,7 +532,7 @@ namespace MapleServer2.Servers.Game
         {
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
-                mob.Coord += mob.Value.Velocity; // current position that is given to ControlMob Packet
+                mob.Coord += mob.Value.Velocity;    // Set current position (given to ControlMob Packet)
                 mob.Value.Act();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Enums;
 
 namespace MapleServer2.Types
 {
@@ -10,59 +11,54 @@ namespace MapleServer2.Types
 
         private static readonly Random rand = new Random();
 
-        public Dictionary<MobState, (MobAction, MobMovement, Condition[])> Rules;
+        public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
 
         public MobAI()
         {
-            Rules = new Dictionary<MobState, (MobAction, MobMovement, Condition[])>();
+            Rules = new Dictionary<NpcState, (NpcAction, MobMovement, Condition[])>();
         }
 
-        public MobAction GetAction(Mob mob)
+        public (string, NpcAction) GetAction(Mob mob)
         {
-            if (mob.State == MobState.Dead)
+            if (mob.State == NpcState.Dead)
             {
-                return MobAction.None;
+                return (null, NpcAction.None);
             }
 
-            (MobAction nextAction, _, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (MobAction.None, MobMovement.Hold, Array.Empty<Condition>()));
+            (NpcAction nextAction, _, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
 
             bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
             if (meetsConds)
             {
-                if (nextAction != MobAction.None)
+                if (nextAction != NpcAction.None)
                 {
-                    return nextAction;
+                    return (null, nextAction);
                 }
-                // else if (mob.Actions[mob.State].length > 0)
-                else
+                else if (mob.StateActions[mob.State].Length > 0)
                 {
-                    // TODO: Retrieve state's actions from mob metadata
-                    (MobAction, int)[] availableActs = { (MobAction.Idle, 3500), (MobAction.Bore, 3500), (MobAction.Walk, 3000) };
-
                     int roll = rand.Next(10000);
-                    // foreach ((MobAction action, int probability) in mob.Actions[mob.State])
-                    foreach ((MobAction action, int probability) in availableActs)
+                    foreach ((string name, NpcAction type, int probability) in mob.StateActions[mob.State])
                     {
                         if (roll < probability)
                         {
-                            return action;
+                            return (name, type);
                         }
 
                         roll -= probability;
                     }
                 }
             }
-            return mob.CurrentAction;
+            return (null, mob.CurrentAction);
         }
 
         public MobMovement GetMovementAction(Mob mob)
         {
-            if (mob.State == MobState.Dead)
+            if (mob.State == NpcState.Dead)
             {
                 return MobMovement.Hold;
             }
 
-            (_, MobMovement movementAction, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (MobAction.None, MobMovement.Hold, Array.Empty<Condition>()));
+            (_, MobMovement movementAction, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
 
             bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
             if (meetsConds)
@@ -72,7 +68,7 @@ namespace MapleServer2.Types
             return mob.CurrentMovement;
         }
 
-        public static Condition StateCond(MobState state)
+        public static Condition StateCond(NpcState state)
         {
             return new Condition((Mob mob) => mob.State == state);
         }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
+using Maple2Storage.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Tools
@@ -52,20 +53,20 @@ namespace MapleServer2.Tools
             MobAI ai = new MobAI();
             foreach (XmlNode node in behaviorsNode)
             {
-                MobAction newActionValue = GetMobAction(node.Attributes["action"]?.Value);
+                NpcAction newActionValue = GetMobAction(node.Attributes["action"]?.Value);
                 MobMovement movementValue = GetMobMovement(node.Attributes["movement"]?.Value);
 
                 if (node.Name == "spawn")
                 {
-                    ai.Rules.Add(MobState.Spawn, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
+                    ai.Rules.Add(NpcState.Spawn, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
                 }
                 else if (node.Name == "normal")
                 {
-                    ai.Rules.Add(MobState.Normal, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
+                    ai.Rules.Add(NpcState.Normal, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
                 }
                 else if (node.Name == "aggro")
                 {
-                    ai.Rules.Add(MobState.Aggro, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
+                    ai.Rules.Add(NpcState.Aggro, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
                 }
                 // TODO: Rest of the states
             }
@@ -74,23 +75,23 @@ namespace MapleServer2.Tools
             AiTable.Add(aiName, ai);
         }
 
-        private static MobState GetMobState(string stateId)
+        private static NpcState GetMobState(string stateId)
         {
             return stateId switch
             {
-                "spawn" => MobState.Spawn,
-                "normal" => MobState.Normal,
-                "aggro" => MobState.Aggro,
-                "dead" => MobState.Dead,
-                _ => MobState.Normal
+                "spawn" => NpcState.Spawn,
+                "normal" => NpcState.Normal,
+                "aggro" => NpcState.Aggro,
+                "dead" => NpcState.Dead,
+                _ => NpcState.Normal
             };
         }
 
-        private static MobAction GetMobAction(string actionId)
+        private static NpcAction GetMobAction(string actionId)
         {
             return actionId switch
             {
-                _ => MobAction.None
+                _ => NpcAction.None
             };
         }
 

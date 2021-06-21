@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
@@ -79,9 +80,12 @@ namespace GameDataParser.Parsers
                 XmlNode npcModelNode = document.SelectSingleNode("ms2/environment/model") ?? document.SelectSingleNode("ms2/model");
                 XmlNode npcBasicNode = document.SelectSingleNode("ms2/environment/basic") ?? document.SelectSingleNode("ms2/basic");
                 XmlNode npcStatsNode = document.SelectSingleNode("ms2/environment/stat") ?? document.SelectSingleNode("ms2/stat");
-                XmlNode npcSkillIdsNode = document.SelectSingleNode("ms2/environment/skill") ?? document.SelectSingleNode("ms2/skill");
+                XmlNode npcSpeedNode = document.SelectSingleNode("ms2/environment/speed") ?? document.SelectSingleNode("ms2/speed");
+                XmlNode npcDistanceNode = document.SelectSingleNode("ms2/environment/distance") ?? document.SelectSingleNode("ms2/distance");
+                XmlNode npcSkillNode = document.SelectSingleNode("ms2/environment/skill") ?? document.SelectSingleNode("ms2/skill");
                 XmlNode npcExpNode = document.SelectSingleNode("ms2/environment/exp") ?? document.SelectSingleNode("ms2/exp");
                 XmlNode npcAiInfoNode = document.SelectSingleNode("ms2/environment/aiInfo") ?? document.SelectSingleNode("ms2/aiInfo");
+                XmlNode npcNormalNode = document.SelectSingleNode("ms2/environment/normal") ?? document.SelectSingleNode("ms2/normal");
                 XmlNode npcDeadNode = document.SelectSingleNode("ms2/environment/dead") ?? document.SelectSingleNode("ms2/dead");
                 XmlNode npcDropItemNode = document.SelectSingleNode("ms2/environment/dropiteminfo") ?? document.SelectSingleNode("ms2/dropiteminfo");
                 XmlAttributeCollection statsCollection = npcStatsNode.Attributes;
@@ -123,10 +127,57 @@ namespace GameDataParser.Parsers
                 metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
 
                 metadata.Stats = GetNpcStats(statsCollection);
-                metadata.SkillIds = string.IsNullOrEmpty(npcSkillIdsNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillIdsNode.Attributes["ids"].Value.Split(","), int.Parse);
-                int customExpValue = int.Parse(npcExpNode.Attributes["customExp"].Value);
-                metadata.Experience = (customExpValue > 0) ? customExpValue : (int) levelExp[metadata.Level].Experience;
+                metadata.WalkSpeed = float.Parse(npcSpeedNode.Attributes["walk"]?.Value ?? "0");
+                metadata.RunSpeed = float.Parse(npcSpeedNode.Attributes["run"]?.Value ?? "0");
+
+                // Parse distance
+                // metadata.AttackRange = ;
+                // metadata.AggroRange = ;
+                // metadata.AggroRangeUp = ;
+                // metadata.AggroRangeDown = ;
+
+                // Parse skill
+                metadata.SkillIds = string.IsNullOrEmpty(npcSkillNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillNode.Attributes["ids"].Value.Split(","), int.Parse);
+                if (metadata.SkillIds.Length > 0)
+                {
+                    metadata.SkillLevels = string.IsNullOrEmpty(npcSkillNode.Attributes["levels"].Value) ? Array.Empty<byte>() : Array.ConvertAll(npcSkillNode.Attributes["levels"].Value.Split(","), byte.Parse);
+                    metadata.SkillPriorities = string.IsNullOrEmpty(npcSkillNode.Attributes["priorities"].Value) ? Array.Empty<byte>() : Array.ConvertAll(npcSkillNode.Attributes["priorities"].Value.Split(","), byte.Parse);
+                    metadata.SkillProbs = string.IsNullOrEmpty(npcSkillNode.Attributes["probs"].Value) ? Array.Empty<short>() : Array.ConvertAll(npcSkillNode.Attributes["probs"].Value.Split(","), short.Parse);
+                    metadata.SkillCooldown = short.Parse(npcSkillNode.Attributes["coolDown"].Value);
+                }
+
+                // Parse normal state
+                List<(string, NpcAction, short)> normalActions = new List<(string, NpcAction, short)>();
+                string[] normalActionIds = string.IsNullOrEmpty(npcNormalNode.Attributes["action"].Value) ? Array.Empty<string>() : npcNormalNode.Attributes["action"].Value.Split(",");
+                if (normalActionIds.Length > 0)
+                {
+                    short[] actionProbs = string.IsNullOrEmpty(npcNormalNode.Attributes["prob"].Value) ? Array.Empty<short>() : Array.ConvertAll(npcNormalNode.Attributes["prob"].Value.Split(","), short.Parse);
+                    for (int i = 0; i < normalActionIds.Length; i++)
+                    {
+                        normalActions.Add((normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
+                    }
+                    metadata.StateActions[NpcState.Normal] = normalActions.ToArray();
+                }
+                metadata.MoveRange = short.Parse(npcNormalNode.Attributes["movearea"]?.Value ?? "0");
+
+                // Parse dead state
+                List<(string, NpcAction, short)> deadActions = new List<(string, NpcAction, short)>();
+                string[] deadActionIds = string.IsNullOrEmpty(npcDeadNode.Attributes["defaultaction"].Value) ? Array.Empty<string>() : npcDeadNode.Attributes["defaultaction"].Value.Split(",");
+                if (deadActionIds.Length > 0)
+                {
+                    int equalProb = 10000 / deadActionIds.Length;
+                    int remainder = 10000 % (equalProb * deadActionIds.Length);
+                    deadActions.Add((deadActionIds[0], GetNpcAction(deadActionIds[0]), (short) (equalProb + remainder)));
+                    for (int i = 1; i < deadActionIds.Length; i++)
+                    {
+                        deadActions.Add((deadActionIds[i], GetNpcAction(deadActionIds[i]), (short) equalProb));
+                    }
+                    metadata.StateActions[NpcState.Dead] = deadActions.ToArray();
+                }
+
                 metadata.AiInfo = npcAiInfoNode.Attributes["path"].Value;
+                int customExpValue = int.Parse(npcExpNode.Attributes["customExp"].Value);
+                metadata.Experience = (customExpValue >= 0) ? customExpValue : (int) levelExp[metadata.Level].Experience;
                 metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
                 metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
                 metadata.GlobalDropBoxIds = string.IsNullOrEmpty(npcDropItemNode.Attributes["globalDropBoxId"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse);
@@ -177,6 +228,20 @@ namespace GameDataParser.Parsers
             npcStats.MountSpeed = new NpcStat<int>(int.Parse(collection["rmsp"].Value));
 
             return npcStats;
+        }
+
+        private static NpcAction GetNpcAction(string name)
+        {
+            string actionName = name.Split('_')[0];
+            return actionName switch
+            {
+                "Idle" => NpcAction.Idle,
+                "Bore" => NpcAction.Bore,
+                "Walk" => NpcAction.Walk,
+                "Run" => NpcAction.Run,
+                "Dead" => NpcAction.Dead,
+                _ => NpcAction.None
+            };
         }
     }
 }

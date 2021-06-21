@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
@@ -6,6 +7,7 @@ namespace MapleServer2.Types
     public class Npc : NpcMetadata
     {
         public short ZRotation; // In degrees * 10
+        public CoordF Velocity;
 
         public Npc(int id)
         {

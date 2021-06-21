@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -6,29 +8,7 @@ using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
-    public enum MobState
-    {
-        Spawn,
-        Normal,
-        Aggro,
-        Dead,
-        EnterAttackRange,
-        EnterProjectileRange,
-    }
-
-    public enum MobAction
-    {
-        None,
-        Idle,
-        Bore,
-        Walk,
-        Jump,
-        Attack,
-        Buff,
-        Heal,
-    }
-
-    public enum MobMovement
+    public enum MobMovement : byte
     {
         Hold,
         Patrol,
@@ -47,8 +27,8 @@ namespace MapleServer2.Types
         public bool IsDead { get; set; }
         public short ZRotation; // In degrees * 10
         public IFieldObject<MobSpawn> OriginSpawn;
-        public MobState State;
-        public MobAction CurrentAction;
+        public NpcState State;
+        public NpcAction CurrentAction;
         public MobMovement CurrentMovement;
         public IFieldObject<Player> Enemy;
         public CoordF Velocity;
@@ -62,11 +42,13 @@ namespace MapleServer2.Types
                 Id = mob.Id;
                 Model = mob.Model;
                 Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, "Idle_A");
+                StateActions = mob.StateActions;
+                MoveRange = mob.MoveRange;
                 Stats = mob.Stats;
                 Experience = mob.Experience;
                 Friendly = mob.Friendly;
                 AI = MobAIManager.GetAI(mob.AiInfo);
-                State = MobState.Normal;
+                State = NpcState.Normal;
             }
         }
 
@@ -82,25 +64,24 @@ namespace MapleServer2.Types
                 return;
             }
 
-            CurrentAction = AI.GetAction(this);
+            (string actionName, NpcAction actionType) = AI.GetAction(this);
+
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, actionName);
+            CurrentAction = actionType;
             CurrentMovement = AI.GetMovementAction(this);
 
-            // TODO: Get animations
             switch (CurrentAction)
             {
-                case MobAction.Idle:
-                    Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, "Idle_A");
+                case NpcAction.Idle:
                     Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
                     break;
-                case MobAction.Bore:
-                    Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, "Bore_A");
+                case NpcAction.Bore:
                     Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
                     break;
-                case MobAction.Walk:
-                    Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, "Walk_A");
+                case NpcAction.Walk:
                     Move(CurrentMovement);
                     break;
-                case MobAction.Jump:
+                case NpcAction.Jump:
                 default:
                     break;
             }
@@ -121,7 +102,7 @@ namespace MapleServer2.Types
             {
                 case MobMovement.Patrol:
                     // TODO: Grab move radius from metadata
-                    int moveDistance = rand.Next(0, Block.BLOCK_SIZE);
+                    int moveDistance = rand.Next(0, MoveRange);
                     short moveAngle = (short) rand.Next(-1800, 1800);
 
                     Velocity = CoordF.From(moveDistance, moveAngle);
@@ -151,9 +132,9 @@ namespace MapleServer2.Types
         public void Perish()
         {
             IsDead = true;
-            State = MobState.Dead;
-            // TODO: Retrieve death animation from MobMetadata <dead> tag
-            Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, "Dead_A");
+            State = NpcState.Dead;
+            int randAnim = rand.Next(StateActions[NpcState.Dead].Length);
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, StateActions[NpcState.Dead][randAnim].Item1);
         }
     }
 }
