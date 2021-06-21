@@ -68,17 +68,17 @@ namespace MapleServer2.Types
             return mob.CurrentMovement;
         }
 
-        public static Condition StateCond(NpcState state)
-        {
-            return new Condition((Mob mob) => mob.State == state);
-        }
-
-        public static Condition HpCond(int min, int max)
+        public static Condition HpPercentCond(int min = 0, int max = 100)
         {
             return new Condition((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
         }
 
-        public static Condition SpCond(int min, int max)
+        public static Condition HpCond(int min = 0, int max = int.MaxValue)
+        {
+            return new Condition((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+        }
+
+        public static Condition SpCond(int min = 0, int max = int.MaxValue)
         {
             return new Condition((Mob mob) => mob.Stats.Sp.Total >= min && mob.Stats.Sp.Total >= max);
         }

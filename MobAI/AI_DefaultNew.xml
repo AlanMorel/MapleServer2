@@ -4,13 +4,9 @@
     <behavior>
         <spawn movement="hold" />
         <normal movement="patrol" />
-        <aggro movement="follow" />
-        <enterAttackRange movement="hold" action="attack">
-            <condition state="aggro" />
-        </enterAttackRange>
-        <enterProjectileRange movement="hold">
-            <condition state="aggro" />
-        </enterProjectileRange>
+        <combat movement="follow" />
         <dead movement="hold" />
+        <enterAttackRange movement="hold" />
+        <enterProjectileRange movement="hold" />
     </behavior>
 </ai>

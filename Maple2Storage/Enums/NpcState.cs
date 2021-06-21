@@ -3,7 +3,7 @@
     public enum NpcState : byte
     {
         Normal,
-        Aggro,
+        Combat,
         Dead,
         Spawn,
         EnterAttackRange,

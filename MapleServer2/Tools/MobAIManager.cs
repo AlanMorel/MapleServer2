@@ -14,34 +14,36 @@ namespace MapleServer2.Tools
 
         public static void Load(string dirPath, string schemaPath = null)
         {
-            Console.WriteLine($"Loading AI...");
-            foreach (string filePath in Directory.GetFiles(dirPath))
+            Console.WriteLine("Loading AI...");
+            foreach (string filePath in Directory.GetFiles(dirPath, "*.xml", SearchOption.AllDirectories))
             {
-                if (!filePath.EndsWith(".xml"))
+                string filename = filePath.Split(@"MobAI\")[1];
+                XmlDocument document = new XmlDocument();
+                try
                 {
+                    document.Load(filePath);
+                    if (schemaPath != null)
+                    {
+                        document.Schemas.Add(null, schemaPath);
+                        document.Validate(null);
+                    }
+                }
+                catch (XmlException)
+                {
+                    Console.WriteLine($"Skipping {filename}");
+                    continue;
+                }
+                catch (XmlSchemaValidationException e)
+                {
+                    Console.WriteLine($"{filename} is invalid:");
+                    Console.WriteLine(e);
                     continue;
                 }
 
-                XmlDocument document = new XmlDocument();
-                document.Load(filePath);
-                if (schemaPath != null)
-                {
-                    document.Schemas.Add(null, schemaPath);
-                    try
-                    {
-                        document.Validate(null);
-                    }
-                    catch (XmlSchemaValidationException e)
-                    {
-                        Console.WriteLine($"{Path.GetFileName(document.BaseURI)} is invalid:");
-                        Console.WriteLine(e);
-                        continue;
-                    }
-                }
                 ParseAI(document);
-                Console.WriteLine($"Loaded {Path.GetFileName(document.BaseURI)}");
+                Console.WriteLine($"Loaded {filename}");
             }
-            Console.WriteLine($"Finished loading AI.");
+            Console.WriteLine("Finished loading AI.");
         }
 
         public static MobAI GetAI(string aiInfo)
@@ -56,25 +58,15 @@ namespace MapleServer2.Tools
             MobAI ai = new MobAI();
             foreach (XmlNode node in behaviorsNode)
             {
+                NpcState stateValue = GetMobState(node.Name);
                 NpcAction newActionValue = GetMobAction(node.Attributes["action"]?.Value);
                 MobMovement movementValue = GetMobMovement(node.Attributes["movement"]?.Value);
+                MobAI.Condition[] conditions = GetConditions(node);
 
-                if (node.Name == "spawn")
-                {
-                    ai.Rules.Add(NpcState.Spawn, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
-                }
-                else if (node.Name == "normal")
-                {
-                    ai.Rules.Add(NpcState.Normal, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
-                }
-                else if (node.Name == "aggro")
-                {
-                    ai.Rules.Add(NpcState.Aggro, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
-                }
-                // TODO: Rest of the states
+                ai.Rules.TryAdd(stateValue, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
             }
 
-            string aiName = Path.GetFileName(document.BaseURI);
+            string aiName = document.BaseURI.Split("MobAI/")[1];
             AiTable.Add(aiName, ai);
         }
 
@@ -84,7 +76,7 @@ namespace MapleServer2.Tools
             {
                 "spawn" => NpcState.Spawn,
                 "normal" => NpcState.Normal,
-                "aggro" => NpcState.Aggro,
+                "combat" => NpcState.Combat,
                 "dead" => NpcState.Dead,
                 _ => NpcState.Normal
             };
@@ -109,6 +101,12 @@ namespace MapleServer2.Tools
                 "dodge" => MobMovement.Dodge,
                 _ => MobMovement.Hold,
             };
+        }
+
+        private static MobAI.Condition[] GetConditions(XmlNode node)
+        {
+            // TODO: Parse actions' conditions
+            return Array.Empty<MobAI.Condition>();
         }
     }
 }
