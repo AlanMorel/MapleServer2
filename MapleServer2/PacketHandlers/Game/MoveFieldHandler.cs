@@ -102,7 +102,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            session.Player.Warp(coord, dstPortal.Rotation.ToFloat(), srcPortal.Target, 0);
+            session.Player.Warp(coord, dstPortal.Rotation.ToFloat(), srcPortal.Target);
         }
 
         private static void HandleLeaveInstance(GameSession session)

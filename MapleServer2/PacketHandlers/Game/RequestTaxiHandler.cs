@@ -92,7 +92,7 @@ namespace MapleServer2.PacketHandlers.Game
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
             if (spawn != null)
             {
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId, 0);
+                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId);
             }
         }
     }

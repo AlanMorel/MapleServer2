@@ -210,7 +210,7 @@ namespace MapleServer2.Types
             CharacterId = DatabaseManager.CreateCharacter(this);
         }
 
-        public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId)
+        public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId = 0)
         {
             MapId = mapId;
             InstanceId = instanceId;
