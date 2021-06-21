@@ -26,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
             int unk2 = packet.ReadInt();
             int unk3 = packet.ReadInt();
 
-            session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, someId, objectId, flag, session.Player, session.ClientTick));
+            session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, someId, objectId, flag, session.FieldPlayer, session.ServerTick));
         }
     }
 }
