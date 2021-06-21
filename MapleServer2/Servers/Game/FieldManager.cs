@@ -106,8 +106,8 @@ namespace MapleServer2.Servers.Game
             }
             AddInteractObject(actors);
 
-            string xBlockName = MapMetadataStorage.GetMetadata(mapId).XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+            string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
+            Triggers = TriggerLoader.GetTriggers(mapName).Select(initializer =>
             {
                 TriggerContext context = new TriggerContext(this, Logger);
                 TriggerState startState = initializer.Invoke(context);
@@ -155,6 +155,16 @@ namespace MapleServer2.Servers.Game
                 trigger.Next();
             }
             return updates;
+        }
+        private void SendUpdates()
+        {
+            foreach (Packet update in GetUpdates())
+            {
+                Broadcast(session =>
+                {
+                    session.Send(update);
+                });
+            }
         }
 
         public IFieldObject<T> RequestFieldObject<T>(T player)
@@ -426,7 +436,8 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            if (!State.RemoveItem(objectId, out Item itemResult))
+            Item itemResult;
+            if (!State.RemoveItem(objectId, out itemResult))
             {
                 item = itemResult;
                 return false;
@@ -522,6 +533,7 @@ namespace MapleServer2.Servers.Game
                 {
                     HealingSpot();
                     MonsterMovement();
+                    SendUpdates();
                     await Task.Delay(1000);
                 }
             });

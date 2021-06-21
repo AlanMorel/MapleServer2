@@ -15,6 +15,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum DungeonMode : byte
         {
+            EnterDungeonRoom = 0x02,
             AddRewards = 0x8,
             GetHelp = 0x10,
             Veteran = 0x11,
@@ -27,6 +28,9 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
+                case DungeonMode.EnterDungeonRoom:
+                    HandleEnterDungeonRoom(session, packet);
+                    break;
                 case DungeonMode.AddRewards:
                     HandleAddRewards(session, packet);
                     break;
@@ -43,6 +47,10 @@ namespace MapleServer2.PacketHandlers.Game
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
+        }
+        public static void HandleEnterDungeonRoom(GameSession session, PacketReader packet)
+        {
+            int dungeonId = packet.ReadInt();
         }
 
         private static void HandleAddRewards(GameSession session, PacketReader packet)
