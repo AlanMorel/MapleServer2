@@ -436,8 +436,7 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            Item itemResult;
-            if (!State.RemoveItem(objectId, out itemResult))
+            if (!State.RemoveItem(objectId, out Item itemResult))
             {
                 item = itemResult;
                 return false;
