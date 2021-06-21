@@ -17,8 +17,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int objectId = packet.ReadInt();
 
-            IFieldObject<Item> fieldItem;
-            bool foundItem = session.FieldManager.State.TryGetItem(objectId, out fieldItem);
+            bool foundItem = session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem);
             if (foundItem)
             {
                 switch (fieldItem.Value.Id)
