@@ -12,8 +12,9 @@ namespace MapleServer2.Tools
     {
         private static readonly Dictionary<string, MobAI> AiTable = new Dictionary<string, MobAI>();
 
-        public static void Load(string dirPath, string schemaPath = "")
+        public static void Load(string dirPath, string schemaPath = null)
         {
+            Console.WriteLine($"Loading AI...");
             foreach (string filePath in Directory.GetFiles(dirPath))
             {
                 if (!filePath.EndsWith(".xml"))
@@ -23,22 +24,24 @@ namespace MapleServer2.Tools
 
                 XmlDocument document = new XmlDocument();
                 document.Load(filePath);
-                if (schemaPath.Length > 0)
+                if (schemaPath != null)
                 {
                     document.Schemas.Add(null, schemaPath);
                     try
                     {
                         document.Validate(null);
                     }
-                    catch (XmlSchemaValidationException)
+                    catch (XmlSchemaValidationException e)
                     {
-                        // TODO: log invalid AI files
+                        Console.WriteLine($"{Path.GetFileName(document.BaseURI)} is invalid:");
+                        Console.WriteLine(e);
                         continue;
                     }
                 }
                 ParseAI(document);
-                // TODO: log parsed AI files
+                Console.WriteLine($"Loaded {Path.GetFileName(document.BaseURI)}");
             }
+            Console.WriteLine($"Finished loading AI.");
         }
 
         public static MobAI GetAI(string aiInfo)

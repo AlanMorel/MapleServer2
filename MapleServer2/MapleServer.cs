@@ -35,12 +35,12 @@ namespace MapleServer2
 
             InitDatabase();
 
-            // No DI here because MapleServer is static
-            Logger logger = LogManager.GetCurrentClassLogger();
-
             // Load Mob AI files
             string mobAiSchema = Path.Combine(Paths.MOB_AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.MOB_AI_DIR, mobAiSchema);
+
+            // No DI here because MapleServer is static
+            Logger logger = LogManager.GetCurrentClassLogger();
 
             logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
 
