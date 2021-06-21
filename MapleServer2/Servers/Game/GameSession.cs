@@ -25,9 +25,6 @@ namespace MapleServer2.Servers.Game
 
         private readonly ManagerFactory<FieldManager> FieldManagerFactory;
 
-        // TODO: Replace this with a scheduler.
-        private readonly CancellationTokenSource CancellationToken;
-
         public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
             FieldManagerFactory = fieldManagerFactory;

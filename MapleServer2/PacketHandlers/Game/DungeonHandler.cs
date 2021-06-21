@@ -48,6 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
         }
+
         public static void HandleEnterDungeonRoom(GameSession session, PacketReader packet)
         {
             int dungeonId = packet.ReadInt();

@@ -156,6 +156,7 @@ namespace MapleServer2.Servers.Game
             }
             return updates;
         }
+
         private void SendUpdates()
         {
             foreach (Packet update in GetUpdates())
