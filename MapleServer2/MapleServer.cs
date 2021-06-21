@@ -36,8 +36,8 @@ namespace MapleServer2
             InitDatabase();
 
             // Load Mob AI files
-            string mobAiSchema = Path.Combine(Paths.MOB_AI_DIR, "mob-ai.xsd");
-            MobAIManager.Load(Paths.MOB_AI_DIR, mobAiSchema);
+            string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
+            MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
             // No DI here because MapleServer is static
             Logger logger = LogManager.GetCurrentClassLogger();
