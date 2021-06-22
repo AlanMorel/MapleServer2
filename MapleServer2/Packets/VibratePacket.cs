@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class VibratePacket
     {
-        public static Packet Vibrate(string objectHash, long someId, int objectId, int flag, Player player, int clientTicks)
+        public static Packet Vibrate(string objectHash, long someId, int objectId, int flag, IFieldObject<Player> player, int clientTicks)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
             pWriter.WriteByte(1);
