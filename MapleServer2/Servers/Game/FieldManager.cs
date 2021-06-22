@@ -157,6 +157,17 @@ namespace MapleServer2.Servers.Game
             return updates;
         }
 
+        private void SendUpdates()
+        {
+            foreach (Packet update in GetUpdates())
+            {
+                Broadcast(session =>
+                {
+                    session.Send(update);
+                });
+            }
+        }
+
         public IFieldObject<T> RequestFieldObject<T>(T player)
         {
             return WrapObject(player);
@@ -522,6 +533,7 @@ namespace MapleServer2.Servers.Game
                 {
                     HealingSpot();
                     MonsterMovement();
+                    SendUpdates();
                     await Task.Delay(1000);
                 }
             });

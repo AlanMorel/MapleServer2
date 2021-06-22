@@ -23,14 +23,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Banner(byte state, int stringGuideId)
+        public static Packet Banner(byte state, int stringGuideId, int time)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
             pWriter.WriteEnum(TriggerPacketMode.Banner);
             pWriter.WriteByte(state); // 02 = on, 03 = off
             pWriter.WriteInt(stringGuideId);
             pWriter.WriteInt(stringGuideId);
-            pWriter.WriteInt();
+            pWriter.WriteInt(time); //display duration in ms
             return pWriter;
         }
 
