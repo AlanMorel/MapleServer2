@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleStartTwoPersonRide(session, packet);
                     break;
                 case RideMode.StopTwoPersonRide:
-                    HandleStopTwoPersonRide(session, packet);
+                    HandleStopTwoPersonRide(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -60,12 +60,9 @@ namespace MapleServer2.PacketHandlers.Game
             long mountUid = packet.ReadLong();
             // [46-0s] (UgcPacketHelper.Ugc()) but client doesn't set this data?
 
-            if (type == RideType.UseItem)
+            if (type == RideType.UseItem && !session.Player.Inventory.Items.ContainsKey(mountUid))
             {
-                if (!session.Player.Inventory.Items.ContainsKey(mountUid))
-                {
-                    return;
-                }
+                return;
             }
 
             IFieldObject<Mount> fieldMount =
@@ -110,36 +107,14 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int otherPlayerObjectId = packet.ReadInt();
 
-            if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldObject<Player> otherPlayer))
+            if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldObject<Player> otherPlayer) || otherPlayer.Value.Mount == null)
             {
                 return;
             }
 
-            if (otherPlayer.Value.Mount == null)
-            {
-                return;
-            }
-
-            bool isFriend = false;
-            if (BuddyManager.IsFriend(session.Player, otherPlayer.Value))
-            {
-                isFriend = true;
-            }
-
-            bool isGuildMember = false;
-            if (session.Player != null && otherPlayer.Value.Guild != null)
-            {
-                if (session.Player.Guild.Id == otherPlayer.Value.Guild.Id)
-                {
-                    isGuildMember = true;
-                }
-            }
-
-            bool isPartyMember = false;
-            if (session.Player.PartyId == otherPlayer.Value.PartyId)
-            {
-                isPartyMember = true;
-            }
+            bool isFriend = BuddyManager.IsFriend(session.Player, otherPlayer.Value);
+            bool isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
+            bool isPartyMember = session.Player.PartyId == otherPlayer.Value.PartyId;
 
             if (!isFriend &&
                 !isGuildMember &&
@@ -153,7 +128,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.FieldPlayer.ObjectId));
         }
 
-        private static void HandleStopTwoPersonRide(GameSession session, PacketReader packet)
+        private static void HandleStopTwoPersonRide(GameSession session)
         {
             IFieldObject<Player> otherPlayer = session.Player.Mount.Value.Players.FirstOrDefault(x => x.ObjectId != session.FieldPlayer.ObjectId);
             if (otherPlayer == null)
