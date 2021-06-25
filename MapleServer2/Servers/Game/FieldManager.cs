@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -532,27 +532,19 @@ namespace MapleServer2.Servers.Game
                 while (!State.Players.IsEmpty)
                 {
                     HealingSpot();
-                    MonsterMovement();
+                    UpdateMobs();
                     SendUpdates();
                     await Task.Delay(1000);
                 }
             });
         }
 
-        private void MonsterMovement()
+        private void UpdateMobs()
         {
-            Random rand = new Random();
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
-                short x = (short) rand.Next(-Block.BLOCK_SIZE, Block.BLOCK_SIZE);
-
-                mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
-                mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
-                mob.Value.ZRotation = (short) (x * 10); //looking direction of the monster
-                //TODO:Calculate based on xml/npc probability (<prob>) the chance for sending either Walk,Bore or Run.
-                //MonsterMovement has to be adjusted to send Movement vectors based on these probabiltiies:
-                //Movement Vector of (0,0,0) with Idle animation.
-                //mob.Value.Animation = AnimationStorage.GetSequenceIdBySequenceName(mob.Model, "Walk_A");
+                mob.Coord += mob.Value.Velocity;    // Set current position (given to ControlMob Packet)
+                mob.Value.Act();
             }
         }
 
