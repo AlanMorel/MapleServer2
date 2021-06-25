@@ -20,15 +20,15 @@ namespace MapleServer2.Tools
             {
                 if (!Managers.TryGetValue(key, out List<CacheItem> list))
                 {
-                    list = new List<CacheItem>() { new CacheItem(CreateInstance(key), instanceId) };
+                    list = new List<CacheItem>() { new CacheItem(CreateInstance(key, instanceId), instanceId) };
                     Managers[key] = list;
                 }
 
                 CacheItem manager = list.FirstOrDefault(x => x.InstanceId == instanceId);
                 if (manager == default)
                 {
-                    manager = new CacheItem(CreateInstance(key), instanceId);
-                    list.Add(manager);
+                    manager = new CacheItem(CreateInstance(key, instanceId), instanceId);
+                    Managers[key].Add(manager);
                 }
                 manager.Pin();
                 return manager.Value;
@@ -55,11 +55,11 @@ namespace MapleServer2.Tools
         }
 
         // This is really hacky but...
-        private static T CreateInstance(int key)
+        private static T CreateInstance(int key, int instanceId)
         {
             if (typeof(T) == typeof(FieldManager))
             {
-                return new FieldManager(key) as T;
+                return new FieldManager(key, instanceId) as T;
             }
             else
             {
