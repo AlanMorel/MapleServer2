@@ -271,13 +271,14 @@ namespace MapleServer2.Tools
             {
                 return;
             }
+            _ = int.TryParse(config.GetValueOrDefault("instance", "0"), out int instanceId);
             if (mapId == 0)
             {
                 session.SendNotice($"Current map id:{session.Player.MapId}");
                 return;
             }
 
-            if (session.Player.MapId == mapId)
+            if (session.Player.MapId == mapId && session.Player.InstanceId == instanceId)
             {
                 session.SendNotice("You are already on that map.");
                 return;
@@ -287,15 +288,12 @@ namespace MapleServer2.Tools
 
             if (spawn != null)
             {
-                session.Player.MapId = mapId;
-                session.Player.Coord = spawn.Coord.ToFloat();
-                session.Player.Rotation = spawn.Rotation.ToFloat();
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId, instanceId);
+                return;
             }
-            else
-            {
-                session.SendNotice("Could not find coordinates to spawn on that map.");
-            }
+
+            session.SendNotice("Could not find coordinates to spawn on that map.");
+            return;
         }
 
         private static void ProcessNpcCommand(GameSession session, string command)

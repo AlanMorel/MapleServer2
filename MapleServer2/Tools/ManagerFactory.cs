@@ -1,43 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Tools
 {
     public class ManagerFactory<T> where T : class
     {
-        private readonly Dictionary<int, CacheItem> Managers;
+        private readonly Dictionary<int, List<CacheItem>> Managers;
 
         public ManagerFactory()
         {
-            Managers = new Dictionary<int, CacheItem>();
+            Managers = new Dictionary<int, List<CacheItem>>();
         }
 
-        public T GetManager(int key)
+        public T GetManager(int key, int instanceId)
         {
             lock (Managers)
             {
-                if (!Managers.TryGetValue(key, out CacheItem item))
+                if (!Managers.TryGetValue(key, out List<CacheItem> list))
                 {
-                    item = new CacheItem(CreateInstance(key));
-                    Managers[key] = item;
+                    list = new List<CacheItem>() { new CacheItem(CreateInstance(key), instanceId) };
+                    Managers[key] = list;
                 }
 
-                item.Pin();
-                return item.Value;
+                CacheItem manager = list.FirstOrDefault(x => x.InstanceId == instanceId);
+                if (manager == default)
+                {
+                    manager = new CacheItem(CreateInstance(key), instanceId);
+                    list.Add(manager);
+                }
+                manager.Pin();
+                return manager.Value;
             }
         }
 
-        public bool Release(int key)
+        public bool Release(int key, int instanceId)
         {
             lock (Managers)
             {
-                if (!Managers.TryGetValue(key, out CacheItem manager) || manager.Release() > 0)
+                if (!Managers.TryGetValue(key, out List<CacheItem> manager))
                 {
                     return false;
                 }
 
-                return Managers.Remove(key);
+                CacheItem item = manager.FirstOrDefault(x => x.InstanceId == instanceId);
+                if (item == default || item.Release() > 0)
+                {
+                    return false;
+                }
+
+                return manager.Remove(item);
             }
         }
 
@@ -57,11 +70,13 @@ namespace MapleServer2.Tools
         private class CacheItem
         {
             public readonly T Value;
+            public readonly int InstanceId;
             private int Count;
 
-            public CacheItem(T value)
+            public CacheItem(T value, int instanceId)
             {
                 Value = value;
+                InstanceId = instanceId;
                 Count = 0;
             }
 
