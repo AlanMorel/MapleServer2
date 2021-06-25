@@ -42,7 +42,11 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
+            UpdatePlayer(session, syncStates);
+        }
 
+        public static void UpdatePlayer(GameSession session, SyncState[] syncStates)
+        {
             CoordF coord = syncStates[0].Coord.ToFloat();
             CoordF closestBlock = Block.ClosestBlock(coord);
             closestBlock.Z -= Block.BLOCK_SIZE; // Get block under player

@@ -36,6 +36,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet syncPacket = SyncStatePacket.RideSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
+            UserSyncHandler.UpdatePlayer(session, syncStates);
         }
     }
 }

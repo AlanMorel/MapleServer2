@@ -117,7 +117,6 @@ namespace MapleServer2.Types
 
         public int[] GroupChatId;
 
-        // TODO: Rework to use Class Guild
         public Guild Guild;
         public GuildMember GuildMember;
         public List<GuildApplication> GuildApplications = new List<GuildApplication>();
@@ -128,7 +127,7 @@ namespace MapleServer2.Types
         public Wallet Wallet { get; set; }
         public List<QuestStatus> QuestList;
 
-        private CancellationTokenSource CombatCTS;
+        public CancellationTokenSource CombatCTS;
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;

@@ -47,7 +47,7 @@ namespace MapleServer2.Packets
             // Stats
             StatPacket.WriteFieldStats(pWriter, player.Stats);
 
-            pWriter.WriteByte(); // battle stance bool
+            pWriter.WriteBool(player.CombatCTS != null);
             if (player.Guide != null)
             {
                 pWriter.WriteByte(player.Guide.Value.Type);

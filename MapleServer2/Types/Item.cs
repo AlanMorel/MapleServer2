@@ -187,6 +187,10 @@ namespace MapleServer2.Types
         {
             InventoryTab = ItemMetadataStorage.GetTab(id);
             GemSlot = ItemMetadataStorage.GetGem(id);
+            if (GemSlot == GemSlot.TRANS)
+            {
+                TransparencyBadgeBools = new byte[10];
+            }
             StackLimit = ItemMetadataStorage.GetStackLimit(id);
             EnableBreak = ItemMetadataStorage.GetEnableBreak(id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(id);
