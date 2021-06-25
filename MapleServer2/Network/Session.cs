@@ -214,7 +214,12 @@ namespace MapleServer2.Network
 
                     MapleStream.Write(RecvBuffer, 0, length);
                 }
-                catch (IOException ex)
+                catch (IOException)
+                {
+                    Disconnect();
+                    return;
+                }
+                catch (Exception ex)
                 {
                     Logger.Error("Exception reading from socket: ", ex);
                     return;
