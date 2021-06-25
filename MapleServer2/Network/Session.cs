@@ -231,6 +231,7 @@ namespace MapleServer2.Network
                     {
                         case RecvOp.USER_SYNC:
                         case RecvOp.KEY_TABLE:
+                        case RecvOp.RIDE_SYNC:
                         case RecvOp.GUIDE_OBJECT_SYNC:
                             break;
                         default:
@@ -275,6 +276,7 @@ namespace MapleServer2.Network
                 case SendOp.FIELD_ADD_NPC:
                 case SendOp.FIELD_PORTAL:
                 case SendOp.NPC_CONTROL:
+                case SendOp.RIDE_SYNC:
                 case SendOp.PROXY_GAME_OBJ:
                 case SendOp.FIELD_ADD_USER:
                 case SendOp.FIELD_ENTRANCE:

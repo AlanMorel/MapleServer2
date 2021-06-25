@@ -25,29 +25,9 @@ namespace MapleServer2.Servers.Game
 
         private readonly ManagerFactory<FieldManager> FieldManagerFactory;
 
-        // TODO: Replace this with a scheduler.
-        private readonly CancellationTokenSource CancellationToken;
-
         public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
             FieldManagerFactory = fieldManagerFactory;
-            CancellationToken = new CancellationTokenSource();
-
-            // Continuously sends field updates to client
-            new Thread(() =>
-            {
-                while (!CancellationToken.IsCancellationRequested)
-                {
-                    if (FieldManager != null)
-                    {
-                        foreach (Packet update in FieldManager.GetUpdates())
-                        {
-                            Send(update);
-                        }
-                    }
-                    Thread.Sleep(1000);
-                }
-            }).Start();
         }
 
         public void SendNotice(string message)
@@ -90,7 +70,6 @@ namespace MapleServer2.Servers.Game
         {
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-            CancellationToken.Cancel();
             // Should we Join the thread to wait for it to complete?
         }
     }

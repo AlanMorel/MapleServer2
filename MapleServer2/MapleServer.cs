@@ -66,6 +66,10 @@ namespace MapleServer2
                         loginServer.Stop();
                         return;
                     case "send":
+                        if (input.Length <= 1)
+                        {
+                            break;
+                        }
                         string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
