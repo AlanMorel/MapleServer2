@@ -34,10 +34,9 @@ namespace MapleServer2.Servers.Game
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
-
         private Task MapLoopTask;
-
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private int Count;
 
         public FieldManager(int mapId, int instanceId)
         {
@@ -613,6 +612,16 @@ namespace MapleServer2.Servers.Game
                     SpawnMobs(mobSpawn);
                 }
             });
+        }
+
+        public int Pin()
+        {
+            return ++Count;
+        }
+
+        public int Release()
+        {
+            return --Count;
         }
     }
 }

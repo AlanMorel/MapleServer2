@@ -20,10 +20,9 @@ namespace MapleServer2.Servers.Game
         public Player Player => FieldPlayer.Value;
 
         public FieldManager FieldManager { get; private set; }
+        private readonly FieldManagerFactory FieldManagerFactory;
 
-        private readonly ManagerFactory<FieldManager> FieldManagerFactory;
-
-        public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
+        public GameSession(FieldManagerFactory fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
             FieldManagerFactory = fieldManagerFactory;
         }

@@ -20,7 +20,7 @@ namespace MapleServer2.Servers.Game
                 .SingleInstance();
             builder.RegisterType<GameSession>()
                 .AsSelf();
-            builder.RegisterType<ManagerFactory<FieldManager>>()
+            builder.RegisterType<FieldManagerFactory>()
                 .AsSelf()
                 .SingleInstance();
 
