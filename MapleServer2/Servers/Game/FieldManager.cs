@@ -36,7 +36,7 @@ namespace MapleServer2.Servers.Game
         private readonly TriggerScript[] Triggers;
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private int Count;
+        private int PlayerCount;
 
         public FieldManager(int mapId, int instanceId)
         {
@@ -614,14 +614,14 @@ namespace MapleServer2.Servers.Game
             });
         }
 
-        public int Pin()
+        public int Increment()
         {
-            return ++Count;
+            return Interlocked.Increment(ref PlayerCount);
         }
 
-        public int Release()
+        public int Decrement()
         {
-            return --Count;
+            return Interlocked.Decrement(ref PlayerCount);
         }
     }
 }
