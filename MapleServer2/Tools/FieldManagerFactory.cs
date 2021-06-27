@@ -31,7 +31,6 @@ namespace MapleServer2.Tools
                 }
 
                 manager.Increment();
-
                 return manager;
             }
         }
