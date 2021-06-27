@@ -30,6 +30,8 @@ namespace MapleServer2.Tools
                     Managers[key].Add(manager);
                 }
 
+                manager.Increment();
+
                 return manager;
             }
         }
@@ -44,7 +46,7 @@ namespace MapleServer2.Tools
                 }
 
                 FieldManager fieldManager = managerList.FirstOrDefault(x => x.InstanceId == instanceId);
-                if (fieldManager == default)
+                if (fieldManager == default || fieldManager.Decrement() > 0)
                 {
                     return false;
                 }
