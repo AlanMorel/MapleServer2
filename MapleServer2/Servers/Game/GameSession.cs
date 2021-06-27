@@ -48,7 +48,7 @@ namespace MapleServer2.Servers.Game
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
 
-                lock (FieldManager)
+                lock (FieldManagerFactory)
                 {
                     if (FieldManager.Decrement() <= 0)
                     {
