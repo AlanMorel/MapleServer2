@@ -1,5 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -18,6 +20,7 @@ namespace MapleServer2.PacketHandlers.Game
             Close = 0x08,
             Save = 0x09,
             Reset = 0x0A,
+            Preset = 0x0B
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -25,14 +28,17 @@ namespace MapleServer2.PacketHandlers.Game
             JobMode mode = (JobMode) packet.ReadByte();
             switch (mode)
             {
-                case JobMode.Close: // Close Skill Tree
+                case JobMode.Close:
                     HandleCloseSkillTree(session);
                     break;
-                case JobMode.Save: // Save Skill Tree
+                case JobMode.Save:
                     HandleSaveSkillTree(session, packet);
                     break;
                 case JobMode.Reset:
                     HandleResetSkillTree(session, packet);
+                    break;
+                case JobMode.Preset:
+                    HandlePresetSkillTree(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -48,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleSaveSkillTree(GameSession session, PacketReader packet)
         {
             // Get skill tab to update
-            SkillTab skillTab = session.Player.SkillTabs[0]; // Get first skill tab only for now, uncertain of how to have multiple skill tabs
+            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
 
             // Read skills
             int count = packet.ReadInt(); // Number of skills
@@ -66,13 +72,34 @@ namespace MapleServer2.PacketHandlers.Game
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
+            DatabaseManager.UpdateSkillTabs(session.Player);
         }
 
         private static void HandleResetSkillTree(GameSession session, PacketReader packet)
         {
             int unknown = packet.ReadInt();
-            session.Player.SkillTabs[0] = new SkillTab(session.Player.Job);
+
+            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+            skillTab.ResetSkillTree(session.Player.Job);
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
+            DatabaseManager.UpdateSkillTabs(session.Player);
+        }
+
+        private static void HandlePresetSkillTree(GameSession session, PacketReader packet)
+        {
+            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+            int skillCount = packet.ReadInt();
+            for (int i = 0; i < skillCount; i++)
+            {
+                int skillId = packet.ReadInt();
+                short skillLevel = packet.ReadShort();
+                bool learned = packet.ReadBool();
+                skillTab.AddOrUpdate(skillId, skillLevel, learned);
+            }
+
+            session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
+            session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
+            DatabaseManager.UpdateSkillTabs(session.Player);
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MapleServer2.Database
 {
-    public class DatabaseManager
+    public static class DatabaseManager
     {
         public static bool Insert(dynamic entry)
         {
@@ -224,19 +224,6 @@ namespace MapleServer2.Database
             }
         }
 
-        private static void UpdateHotbars(Player player)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                foreach (Hotbar hotbar in player.GameOptions.Hotbars)
-                {
-                    Hotbar dbHotbar = context.Hotbars.Find(hotbar.Id);
-                    context.Entry(dbHotbar).CurrentValues.SetValues(hotbar);
-                }
-                context.SaveChanges();
-            }
-        }
-
         public static bool DeleteCharacter(Player player)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -280,6 +267,44 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 return context.Characters.FirstOrDefault(x => x.Name.ToLower() == name.ToLower()) != null;
+            }
+        }
+
+        private static void UpdateHotbars(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (Hotbar hotbar in player.GameOptions.Hotbars)
+                {
+                    Hotbar dbHotbar = context.Hotbars.Find(hotbar.Id);
+                    context.Entry(dbHotbar).CurrentValues.SetValues(hotbar);
+                }
+                context.SaveChanges();
+            }
+        }
+
+        public static long AddSkillTab(SkillTab skillTab)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Player dbPlayer = context.Characters.Find(skillTab.Player.CharacterId);
+                skillTab.Player = dbPlayer;
+                context.SkillTabs.Add(skillTab);
+                SaveChanges(context);
+                return skillTab.Uid;
+            }
+        }
+
+        public static bool UpdateSkillTabs(Player player)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                foreach (SkillTab skillTab in player.SkillTabs)
+                {
+                    SkillTab dbSkillTab = context.SkillTabs.Find(skillTab.Uid);
+                    context.Entry(dbSkillTab).CurrentValues.SetValues(skillTab);
+                }
+                return SaveChanges(context);
             }
         }
 
