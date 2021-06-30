@@ -64,7 +64,11 @@ namespace GameDataParser.Parsers
                         }
                         if (dungeonNode.Attributes["fieldIDs"] != null)
                         {
-                            metadata.FieldIds = Array.ConvertAll(dungeonNode.Attributes["fieldIDs"].Value.Split(","), int.Parse);
+                            int[] fieldIDsList = Array.ConvertAll(dungeonNode.Attributes["fieldIDs"].Value.Split(","), int.Parse);
+                            foreach (int fieldId in fieldIDsList)
+                            {
+                                metadata.FieldIds.Add(fieldId);
+                            }
                         }
                         if (dungeonNode.Attributes["maxUserCount"] != null)
                         {

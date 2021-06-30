@@ -62,6 +62,12 @@ namespace MapleServer2.PacketHandlers.Game
             bool groupEnter = packet.ReadBool();
             Player player = session.Player;
 
+            if (player.DungeonSessionId != -1)
+            {
+                session.SendNotice("Leave your current dungeon before opening another.");
+                return;
+            }
+
             int dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonLobbyId);
 
@@ -113,6 +119,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), dungeonLobbyId, dungeonSession.DungeonInstanceId);
 
         }
+
         public static void HandleConfirmEnterDungeonRoom(GameSession session, PacketReader packet)
         {
             //send session.player to dungeonlobby

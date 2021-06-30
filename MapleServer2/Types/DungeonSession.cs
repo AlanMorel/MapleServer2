@@ -20,18 +20,31 @@ namespace MapleServer2.Types
         public int SessionId { get; }
         public int DungeonId { get; }
         public int DungeonInstanceId { get; }
+        public List<int> DungeonMapIds { get; }
+        public int DungeonLobbyId { get; }
 
         public DungeonSession(int sessionId, int dungeonId, int dungeonInstanceId)
         {
             SessionId = sessionId;
             DungeonId = dungeonId;
             DungeonInstanceId = dungeonInstanceId;
+            DungeonMetadata dungeon = DungeonStorage.GetDungeonByDungeonId(dungeonId);
+            DungeonMapIds = dungeon.FieldIds;
+            DungeonLobbyId = dungeon.LobbyFieldId;
         }
 
         public void AddMember(Player player)
         {
             //possibly add players to DungeonSession
             //player.DungeonSessionId = SessionId;
+        }
+        public bool ContainsMap(int mapId)
+        {
+            if (DungeonMapIds.Contains(mapId) || DungeonLobbyId == mapId)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

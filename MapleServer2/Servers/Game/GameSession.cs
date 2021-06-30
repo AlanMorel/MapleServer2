@@ -47,7 +47,7 @@ namespace MapleServer2.Servers.Game
             if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId);
+                FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player);
 
                 // Initialize for new Map
                 FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);

@@ -1,5 +1,5 @@
 ﻿using System.Xml.Serialization;
-using System;
+using System.Collections.Generic;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -25,7 +25,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 9)]
         public int LobbyFieldId;
         [XmlElement(Order = 10)]
-        public int[] FieldIds = Array.Empty<int>();
+        public List<int> FieldIds = new List<int>();
         [XmlElement(Order = 11)]
         public byte MaxUserCount;
         [XmlElement(Order = 12)]
