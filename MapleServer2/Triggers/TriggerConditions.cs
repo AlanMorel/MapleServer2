@@ -16,6 +16,11 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
+            System.Console.WriteLine(Field.State.Players.Count);
+            if (Field.State.Players.Count == 1)
+            {
+                return false;
+            }
             return false;
         }
 

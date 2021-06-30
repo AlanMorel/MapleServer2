@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.Tools
 {
@@ -35,7 +36,7 @@ namespace MapleServer2.Tools
             }
         }
 
-        public bool Release(int key, int instanceId)
+        public bool Release(int key, int instanceId, Player player)
         {
             lock (Managers)
             {
@@ -49,6 +50,16 @@ namespace MapleServer2.Tools
                 {
                     return false;
                 }
+
+                if (player.DungeonSessionId != -1)
+                {
+                    player.DungeonSessionId = -1;
+                    GameServer.DungeonManager.RemoveDungeonSession(player.DungeonSessionId);
+                }
+
+                
+                    //controlled field manager
+               // if dungeonmap
 
                 return manager.Remove(item);
             }

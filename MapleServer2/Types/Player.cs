@@ -138,6 +138,9 @@ namespace MapleServer2.Types
         public List<int> UnlockedTaxis;
         public List<int> UnlockedMaps;
 
+        public List<string> GmFlags = new List<string>();
+        public int DungeonSessionId = -1;
+
         class TimeInfo
         {
             public long CharCreation;
@@ -211,6 +214,7 @@ namespace MapleServer2.Types
 
         public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId = 0)
         {
+            //set return coords here? and return instance;
             MapId = mapId;
             InstanceId = instanceId;
             Coord = coord;

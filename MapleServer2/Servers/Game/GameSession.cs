@@ -50,7 +50,7 @@ namespace MapleServer2.Servers.Game
             if (player.MapId != FieldManager.MapId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId, player.InstanceId);
+                FieldManagerFactory.Release(FieldManager.MapId, player.InstanceId, player); //player.dungeonSessionId, or pass player so can check for party
 
                 // Initialize for new Map
                 FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);

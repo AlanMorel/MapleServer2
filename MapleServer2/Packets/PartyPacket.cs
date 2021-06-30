@@ -22,6 +22,7 @@ namespace MapleServer2.Packets
             Create = 0x9,
             Invite = 0xB,
             UpdatePlayer = 0xD,
+            UpdateDungeonInfo = 0xE,
             UpdateHitpoints = 0x13,
             PartyHelp = 0x19,
             MatchParty = 0x1A,
@@ -87,8 +88,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(); // dungeon clear count
             }
 
-            pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteByte(1); // is in dungeon? if not update to is in dungeon when creating dungeon
+            pWriter.WriteInt(20014002); //dungeonid
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteByte();
@@ -152,6 +153,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet UpdateDungeonInfo(Player player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
+            pWriter.WriteEnum(PartyPacketMode.UpdateDungeonInfo);
+            pWriter.WriteLong(player.CharacterId);
+            //think i forgot one int here check for that again
+            pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
+            pWriter.WriteInt(); // dungeonID
+            pWriter.WriteByte(); // dungeon clear count
+            return pWriter;
+        }
+
         public static Packet UpdateHitpoints(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
@@ -164,11 +177,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PartyHelp(int dungeonId)
+        public static Packet PartyHelp(int dungeonId, byte enabled = 1)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.PartyHelp);
-            pWriter.WriteByte(0);
+            pWriter.WriteByte(enabled);
             pWriter.WriteInt(dungeonId);
             return pWriter;
         }

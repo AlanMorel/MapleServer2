@@ -34,6 +34,7 @@ namespace MapleServer2.Triggers
             }
 
             NextState = State.Execute();
+            //Console.WriteLine($"Executed state {State}");
         }
     }
 }
