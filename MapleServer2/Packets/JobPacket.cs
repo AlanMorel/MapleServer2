@@ -40,15 +40,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WriteSkills(this PacketWriter pWriter, Player character)
+        public static Packet WriteSkills(this PacketWriter pWriter, Player player)
         {
-            // Get first skill tab skills only for now, uncertain of how to have multiple skill tabs
-            Dictionary<int, SkillMetadata> skillData = character.SkillTabs[0].SkillJob;
-            Dictionary<int, int> skills = character.SkillTabs[0].SkillLevels;
+            SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
+            Dictionary<int, SkillMetadata> skillData = skillTab.SkillJob;
+            Dictionary<int, int> skills = skillTab.SkillLevels;
 
             // Ordered list of skill ids (must be sent in this order)
-            List<int> ids = character.SkillTabs[0].Order;
-            byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(character.Job));
+            List<int> ids = skillTab.Order;
+            byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(player.Job));
             int countId = ids[ids.Count - split]; // Split to last skill id
             pWriter.WriteByte((byte) (ids.Count - split)); // Skill count minus split
 

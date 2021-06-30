@@ -250,6 +250,8 @@ namespace MapleServer2.Database
 
             modelBuilder.Entity<SkillTab>(entity =>
             {
+                entity.HasKey(e => e.Uid);
+                entity.Property(e => e.TabId);
                 entity.Property(e => e.Name).HasDefaultValue("").HasMaxLength(25);
                 entity.Property(e => e.SkillLevels).HasConversion(
                     i => JsonConvert.SerializeObject(i),

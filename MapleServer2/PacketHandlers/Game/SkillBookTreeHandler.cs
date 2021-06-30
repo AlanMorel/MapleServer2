@@ -1,7 +1,10 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -16,6 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Open = 0x00,
             Save = 0x01,
+            Rename = 0x02,
             AddTab = 0x04,
         }
 
@@ -24,11 +28,14 @@ namespace MapleServer2.PacketHandlers.Game
             SkillBookMode mode = (SkillBookMode) packet.ReadByte();
             switch (mode)
             {
-                case SkillBookMode.Open: // Open skill tree
+                case SkillBookMode.Open:
                     HandleOpen(session);
                     break;
-                case SkillBookMode.Save: // Save skill tree
-                    HandleSave(session);
+                case SkillBookMode.Save:
+                    HandleSave(session, packet);
+                    break;
+                case SkillBookMode.Rename:
+                    HandleRename(session, packet);
                     break;
                 case SkillBookMode.AddTab:
                     HandleAddTab(session);
@@ -44,13 +51,62 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(SkillBookTreePacket.Open(session.Player));
         }
 
-        private static void HandleSave(GameSession session)
+        private static void HandleSave(GameSession session, PacketReader packet)
         {
-            session.Send(SkillBookTreePacket.Save(session.Player));
+            long activeTabId = packet.ReadLong();
+            long selectedTab = packet.ReadLong(); // if 0 player used activate tab
+            int unknown = packet.ReadInt();
+            int tabCount = packet.ReadInt();
+            for (int i = 0; i < tabCount; i++)
+            {
+                long tabId = packet.ReadLong();
+                string tabName = packet.ReadUnicodeString();
+
+                SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
+                if (skillTab == default)
+                {
+                    skillTab = new SkillTab(session.Player, session.Player.Job, tabId, tabName);
+                    session.Player.SkillTabs.Add(skillTab);
+                }
+                else
+                {
+                    skillTab = session.Player.SkillTabs[i];
+                    skillTab.TabId = tabId;
+                    skillTab.Name = tabName;
+                }
+
+                skillTab.ResetSkillTree(session.Player.Job);
+                int skillCount = packet.ReadInt();
+                for (int j = 0; j < skillCount; j++)
+                {
+                    int skillId = packet.ReadInt();
+                    int skillLevel = packet.ReadInt();
+                    skillTab.AddOrUpdate(skillId, (short) skillLevel, skillLevel > 0);
+                }
+            }
+
+            session.Player.ActiveSkillTabId = activeTabId;
+            session.Send(SkillBookTreePacket.Save(session.Player, selectedTab));
+            DatabaseManager.UpdateSkillTabs(session.Player);
+        }
+
+        private static void HandleRename(GameSession session, PacketReader packet)
+        {
+            long id = packet.ReadLong();
+            string newName = packet.ReadUnicodeString();
+
+            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == id);
+            skillTab.Name = newName;
+            session.Send(SkillBookTreePacket.Rename(id, newName));
         }
 
         private static void HandleAddTab(GameSession session)
         {
+            if (!session.Player.Wallet.RemoveMerets(990))
+            {
+                return;
+            }
+
             session.Send(SkillBookTreePacket.AddTab(session.Player));
         }
     }
