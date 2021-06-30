@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
-using MaplePacketLib2.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -22,10 +20,9 @@ namespace MapleServer2.Servers.Game
         public Player Player => FieldPlayer.Value;
 
         public FieldManager FieldManager { get; private set; }
+        private readonly FieldManagerFactory FieldManagerFactory;
 
-        private readonly ManagerFactory<FieldManager> FieldManagerFactory;
-
-        public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
+        public GameSession(FieldManagerFactory fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
             FieldManagerFactory = fieldManagerFactory;
         }
@@ -47,10 +44,10 @@ namespace MapleServer2.Servers.Game
         public void EnterField(Player player)
         {
             // If moving maps, need to get the FieldManager for new map
-            if (player.MapId != FieldManager.MapId)
+            if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId, player.InstanceId);
+                FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId);
 
                 // Initialize for new Map
                 FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
