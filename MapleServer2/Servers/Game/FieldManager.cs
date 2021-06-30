@@ -29,18 +29,19 @@ namespace MapleServer2.Servers.Game
         private int Counter = 10000000;
 
         public readonly int MapId;
+        public readonly int InstanceId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
-
         private Task MapLoopTask;
-
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private int PlayerCount;
 
-        public FieldManager(int mapId)
+        public FieldManager(int mapId, int instanceId)
         {
             MapId = mapId;
+            InstanceId = instanceId;
             BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
             // Load default npcs for map from config
             foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
@@ -603,6 +604,16 @@ namespace MapleServer2.Servers.Game
                     SpawnMobs(mobSpawn);
                 }
             });
+        }
+
+        public int Increment()
+        {
+            return Interlocked.Increment(ref PlayerCount);
+        }
+
+        public int Decrement()
+        {
+            return Interlocked.Decrement(ref PlayerCount);
         }
     }
 }
