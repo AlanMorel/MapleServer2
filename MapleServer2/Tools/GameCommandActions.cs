@@ -20,10 +20,6 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
-                case "pi":
-                    Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
-                    session.SendNotice($"dungeonsessionid:{party.DungeonSessionId}");
-                    break;
                 case "fi":
                     session.SendNotice($"map: {session.Player.MapId} instance:{session.Player.InstanceId}");
                     break;
@@ -114,24 +110,6 @@ namespace MapleServer2.Tools
                     MapleServer.BroadcastPacketAll(NoticePacket.Notice(args[1]));
                     break;
             }
-        }
-        private static void ProcessSomething(GameSession session, string command)
-        {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
-            {
-                return;
-            }
-
-            if (!int.TryParse(command, out int guildExp))
-            {
-                return;
-            }
-
-            guild.Exp = guildExp;
-            guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
-            GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
-            DatabaseManager.Update(guild);
         }
 
         private static void ProcessCommandList(GameSession session)

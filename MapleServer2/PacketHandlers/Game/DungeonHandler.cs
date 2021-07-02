@@ -6,6 +6,7 @@ using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Data.Static;
 using Maple2Storage.Types.Metadata;
+
 namespace MapleServer2.PacketHandlers.Game
 {
     public class DungeonHandler : GamePacketHandler

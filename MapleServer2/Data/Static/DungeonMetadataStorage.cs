@@ -24,18 +24,5 @@ namespace MapleServer2.Data.Static
         {
             return Dungeons.GetValueOrDefault(dungeonId);
         }
-
-        //public static short GetSequenceIdBySequenceName(string actorId, string sequenceName)
-        //{
-        //    List<SequenceMetadata> sequences = GetSequencesByActorId(actorId);
-        //    SequenceMetadata metadata = sequences.FirstOrDefault(s => s.SequenceName == sequenceName);
-
-        //    if (metadata != default)
-        //    {
-        //        return metadata.SequenceId;
-        //    }
-
-        //    return 0;
-        //}
     }
 }
