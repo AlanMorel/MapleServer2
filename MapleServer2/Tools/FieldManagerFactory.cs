@@ -52,14 +52,14 @@ namespace MapleServer2.Tools
                 }
 
                 //is only called if the leaving player is the last player on the map
-                // group or dungeon if
-                
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSession(player.DungeonSessionId);
+                //get the dungeonsession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
+                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstance(fieldManager.InstanceId);
                 if (GameServer.DungeonManager.DungeonUsesMap(dungeonSession, fieldManager, player))
                 {
                     return false;
                 }
 
+                player.Session.SendNotice($"Removed instance id:{fieldManager.InstanceId}");
                 return managerList.Remove(fieldManager);
             }
         }

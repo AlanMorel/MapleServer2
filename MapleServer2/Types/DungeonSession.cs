@@ -15,6 +15,11 @@ using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
+    public enum DungeonType
+    {
+        solo,
+        group
+    }
     public class DungeonSession
     {
         public int SessionId { get; }
@@ -23,8 +28,11 @@ namespace MapleServer2.Types
         public List<int> DungeonMapIds { get; }
         public int DungeonLobbyId { get; }
 
-        public DungeonSession(int sessionId, int dungeonId, int dungeonInstanceId)
+        public DungeonType DungeonType { get; }
+
+        public DungeonSession(int sessionId, int dungeonId, int dungeonInstanceId, DungeonType dungeonType)
         {
+            DungeonType = dungeonType;
             SessionId = sessionId;
             DungeonId = dungeonId;
             DungeonInstanceId = dungeonInstanceId;

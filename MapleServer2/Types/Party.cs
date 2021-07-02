@@ -88,6 +88,7 @@ namespace MapleServer2.Types
                 return;
             }
 
+            //remove dungeonsession, set partydungeonsessionid to -1
             BroadcastParty(session =>
             {
                 session.Player.PartyId = 0;

@@ -57,7 +57,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleEnterDungeonRoom(GameSession session, PacketReader packet)
         {
-            //if existing dungeonlobby, return
             int dungeonId = packet.ReadInt();
             bool groupEnter = packet.ReadBool();
             Player player = session.Player;
@@ -71,12 +70,10 @@ namespace MapleServer2.PacketHandlers.Game
             int dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonLobbyId);
 
-            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId);
+            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.group : DungeonType.solo);
+            session.SendNotice($"dungeon session created sessionID:{dungeonSession.SessionId} instanceId: {dungeonSession.DungeonInstanceId}");
 
-            //partyleader should not have the option to enteralone or enter with party, but have an if check until that is the case.
-            //if solo enter and dungeonsession != -1 complain that you gotta leave first before making a new dungeon
-            //set dungeonsesion to-1 leaving field, except when coords are dungeonsession.dungeonid.lobbyfieldid if solo
-            //for party dont reset until 1 is in lobby or all of party are offline, dungeonsession.checkresetcondition() ?
+            //Todo: Send packet that greys out enter alone / enter as party when already in a dungeon session.
             if (groupEnter)
             {
 
@@ -96,22 +93,11 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 //group takes dungeonsession of leader, because this packet is coming from leader.
                 party.DungeonSessionId = dungeonSession.SessionId;
-                party.BroadcastParty(session => session.SendNotice($"You are now member of dungeonsession {dungeonSession.SessionId}"));
-                //    party.BroadcastParty(session => session.Send(PartyPacket.UpdatePlayer(session.Player)));
-                //  party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
-                //       party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
-                //        party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount));
-
-                //if party dungeonsession -1 and remove dungeonsession from list , get new session, loop over every partymember and assign the same session as first person, on party join assign dungeon session
-                //or give dungeon session to party instead of player here, still set player to -1 in that case., dungesonesseionget parameter for party
-                //dungeonmanager check for existing session
-
-                //add warp to map, warp to coord
-
-                // session.Send(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount));
+                //party.BroadcastParty(session => session.Send(PartyPacket.UpdatePlayer(session.Player)));
+                //party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
+                //party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
+                //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount));
             }
-            //DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSession(player, dungeonId);
-
             if (!groupEnter)
             {
                 player.DungeonSessionId = dungeonSession.SessionId;
@@ -123,6 +109,7 @@ namespace MapleServer2.PacketHandlers.Game
         public static void HandleConfirmEnterDungeonRoom(GameSession session, PacketReader packet)
         {
             //send session.player to dungeonlobby
+            //find dungeonsession, then player.warp to correct instance id.
             System.Console.WriteLine($"Send to dungeon lobby {session.Player.PartyId}");
         }
         private static void HandleAddRewards(GameSession session, PacketReader packet)
