@@ -158,7 +158,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.UpdateDungeonInfo);
             pWriter.WriteLong(player.CharacterId);
-            //think i forgot one int here check for that again
+            pWriter.WriteInt(); //unknown: but value 100 was frequent
             pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
             pWriter.WriteInt(); // dungeonID
             pWriter.WriteByte(); // dungeon clear count
