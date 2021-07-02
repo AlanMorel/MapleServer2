@@ -42,9 +42,6 @@ namespace MapleServer2.Triggers
 
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)
         {
-           // IFieldObject<Portal> Portal = Field.AddPortal()
-            
-            System.Console.WriteLine("set portal called");
         }
 
         public void SetRandomMesh(int[] arg1, bool arg2, byte arg3, int arg4, int arg5)
