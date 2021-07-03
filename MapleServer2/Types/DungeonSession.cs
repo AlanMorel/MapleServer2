@@ -9,6 +9,7 @@ namespace MapleServer2.Types
         solo,
         group
     }
+
     public class DungeonSession
     {
         public int SessionId { get; }
