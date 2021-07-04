@@ -88,8 +88,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(); // dungeon clear count
             }
 
-            pWriter.WriteByte(1); // is in dungeon? if not update to is in dungeon when creating dungeon
-            pWriter.WriteInt(20014002); //dungeonid
+            pWriter.WriteByte(); // is in dungeon? if not update to is in dungeon when creating dungeon
+            pWriter.WriteInt(); //dungeonid for "enter dungeon"
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteByte();

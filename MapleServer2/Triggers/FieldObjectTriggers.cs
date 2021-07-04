@@ -1,4 +1,6 @@
-﻿using MapleServer2.Types;
+﻿using System.Linq;
+using MapleServer2.Packets;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
@@ -42,6 +44,14 @@ namespace MapleServer2.Triggers
 
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)
         {
+            System.Console.WriteLine("setportal called");
+            if (Field.State.Portals.Count <= 0)
+            {
+                return;
+            }
+            IFieldObject<Portal> portal = Field.State.Portals.Values.First<IFieldObject<Portal>>(p => p.Value.Id == portalId);
+            portal.Value.Update(visible, enabled, minimapVisible);
+            Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }
 
         public void SetRandomMesh(int[] arg1, bool arg2, byte arg3, int arg4, int arg5)

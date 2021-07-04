@@ -1,4 +1,6 @@
-﻿using Maple2.Trigger.Enum;
+﻿using System;
+using Maple2.Trigger.Enum;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Triggers
 {
@@ -16,7 +18,27 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
+            test.t();
+            System.Console.WriteLine("usercount was called");
+            Field.BroadcastPacket(NoticePacket.Notice($"check user count {Field.State.Players.Count}"));
+            //solo session
+            //min user count
+            if (Field.State.Players.Count > 0)
+            {
+                System.Console.WriteLine("usercount true");
+                return true;
+            }
             return false;
+
+        }
+        private static class test
+        {
+            private static int i = 0;
+            public static int t()
+            {
+                System.Console.WriteLine($" called {i}");
+                return i++;
+            }
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)
@@ -121,7 +143,10 @@ namespace MapleServer2.Triggers
 
         public bool WaitTick(int waitTick)
         {
-            return false;
+            NextTick += waitTick;
+            System.Console.WriteLine(DateTime.Now.ToString());
+            System.Console.WriteLine("waittick called");
+            return true;
         }
 
         public bool WeddingEntryInField(WeddingEntryType type)

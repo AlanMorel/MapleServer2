@@ -18,8 +18,9 @@ namespace MapleServer2.PacketHandlers.Game
         private enum DungeonMode : byte
         {
             ResetDungeon = 0x01,
-            EnterDungeonRoom = 0x02,
-            ConfirmEnterDungeonRoom = 0x03,
+            CreateDungeon = 0x02,
+            EnterDungeonButton = 0x03,
+            EnterDungeonPortal = 0x0A,
             AddRewards = 0x8,
             GetHelp = 0x10,
             Veteran = 0x11,
@@ -32,11 +33,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case DungeonMode.EnterDungeonRoom:
-                    HandleEnterDungeonRoom(session, packet);
+                case DungeonMode.EnterDungeonPortal:
+                    HandleEnterDungeonPortal(session, packet);
                     break;
-                case DungeonMode.ConfirmEnterDungeonRoom:
-                    HandleConfirmEnterDungeonRoom(session, packet);
+                case DungeonMode.CreateDungeon:
+                    HandleCreateDungeon(session, packet);
+                    break;
+                case DungeonMode.EnterDungeonButton:
+                    HandleEnterDungeonButton(session, packet);
                     break;
                 case DungeonMode.AddRewards:
                     HandleAddRewards(session, packet);
@@ -55,8 +59,13 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
         }
+        public static void HandleEnterDungeonPortal(GameSession session, PacketReader packet)
+        {
+            int instanceId = session.Player.InstanceId;
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstance(instanceId);
 
-        public static void HandleEnterDungeonRoom(GameSession session, PacketReader packet)
+        }
+        public static void HandleCreateDungeon(GameSession session, PacketReader packet)
         {
             int dungeonId = packet.ReadInt();
             bool groupEnter = packet.ReadBool();
@@ -75,10 +84,15 @@ namespace MapleServer2.PacketHandlers.Game
             session.SendNotice($"dungeon session created sessionID:{dungeonSession.SessionId} instanceId: {dungeonSession.DungeonInstanceId}");
 
             //Todo: Send packet that greys out enter alone / enter as party when already in a dungeon session.
-            if (groupEnter)
+            if (groupEnter) //group takes dungeonsession of leader, because this packet is coming from leader.
             {
 
                 Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                if (party.DungeonSessionId != -1)
+                {
+                    session.SendNotice("Need to reset dungeon before entering another instance");
+                    return;
+                }
                 foreach (Player member in party.Members)
                 {
                     if (member.DungeonSessionId != -1)
@@ -87,31 +101,33 @@ namespace MapleServer2.PacketHandlers.Game
                         return;
                     }
                 }
-                if (party.DungeonSessionId != -1)
-                {
-                    session.SendNotice("Need to reset dungeon before entering another instance");
-                    return;
-                }
-                //group takes dungeonsession of leader, because this packet is coming from leader.
                 party.DungeonSessionId = dungeonSession.SessionId;
                 //party.BroadcastParty(session => session.Send(PartyPacket.UpdatePlayer(session.Player)));
                 //party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
-                //party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
+                party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
                 //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount));
             }
-            if (!groupEnter)
+            else // solo join dungeon
             {
                 player.DungeonSessionId = dungeonSession.SessionId;
             }
             session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), dungeonLobbyId, dungeonSession.DungeonInstanceId);
+            System.Console.WriteLine("Portal created");
+            session.SendNotice("NPC created");
 
         }
 
-        public static void HandleConfirmEnterDungeonRoom(GameSession session, PacketReader packet)
+        public static void HandleEnterDungeonButton(GameSession session, PacketReader packet)
         {
-            //send session.player to dungeonlobby
-            //find dungeonsession, then player.warp to correct instance id.
-            System.Console.WriteLine($"Send to dungeon lobby {session.Player.PartyId}");
+            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSession(party.DungeonSessionId);
+            if (session.Player.InstanceId == dungeonSession.DungeonInstanceId)
+            {
+                session.SendNotice("You are already in the dungeon");
+                return;
+            }
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonSession.DungeonLobbyId);
+            session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), dungeonSession.DungeonLobbyId, dungeonSession.DungeonInstanceId);
         }
         private static void HandleAddRewards(GameSession session, PacketReader packet)
         {

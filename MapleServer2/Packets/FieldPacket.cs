@@ -400,7 +400,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteBool(portal.Value.IsMinimapVisible);
             pWriter.WriteLong();
-            pWriter.WriteByte();
+            pWriter.WriteByte(portal.Value.PortalType);
             pWriter.WriteInt(portal.Value.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
@@ -409,6 +409,19 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
 
+            return pWriter;
+        }
+
+        public static Packet UpdatePortal(IFieldObject<Portal> portal)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+            pWriter.WriteByte(0x02);
+            pWriter.WriteInt(portal.Value.Id);
+            pWriter.WriteBool(portal.Value.IsVisible);
+            pWriter.WriteBool(portal.Value.IsEnabled);
+            pWriter.WriteBool(portal.Value.IsMinimapVisible);
+            pWriter.WriteBool(false);
+            pWriter.WriteBool(false);
             return pWriter;
         }
     }

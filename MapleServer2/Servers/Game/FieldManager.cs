@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -93,6 +93,7 @@ namespace MapleServer2.Servers.Game
                     IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
+                    PortalType = portal.PortalType
                 });
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);
@@ -383,6 +384,7 @@ namespace MapleServer2.Servers.Game
             State.AddPortal(portal);
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
+
 
         public void AddInteractObject(ICollection<IFieldObject<InteractObject>> objects)
         {

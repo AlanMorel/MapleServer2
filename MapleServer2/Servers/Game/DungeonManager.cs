@@ -102,7 +102,7 @@ namespace MapleServer2.Servers.Game
                 if (dungeonSession.ContainsMap(fieldManager.MapId))  //map is a dungeon map
                 {
                     //check map the player will travel to: lobby to dungeon and dungeon to lobby
-                    if (dungeonSession.ContainsMap(player.MapId))
+                    if (dungeonSession.ContainsMap(player.MapId) && player.InstanceId == dungeonSession.DungeonInstanceId)
                     {
                         return true;
                     }
