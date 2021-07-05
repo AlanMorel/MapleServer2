@@ -7,6 +7,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -20,7 +21,9 @@ namespace MapleServer2.PacketHandlers.Game
         private enum RequestMoveFieldMode : byte
         {
             Move = 0x0,
-            LeaveInstance = 0x1
+            LeaveInstance = 0x1,
+            VisitHouse = 0x02,
+            ReturnMap = 0x03
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -35,13 +38,19 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestMoveFieldMode.LeaveInstance:
                     HandleLeaveInstance(session);
                     break;
+                case RequestMoveFieldMode.VisitHouse:
+                    HandleVisitHouse(session, packet);
+                    break;
+                case RequestMoveFieldMode.ReturnMap:
+                    HandleReturnMap(session);
+                    break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
 
-        public static void HandleMove(GameSession session, PacketReader packet)
+        private static void HandleMove(GameSession session, PacketReader packet)
         {
             int srcMapId = packet.ReadInt();
             if (srcMapId != session.FieldManager.MapId)
@@ -113,6 +122,39 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
             DatabaseManager.UpdateCharacter(session.Player);
             session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+        }
+
+        private static void HandleVisitHouse(GameSession session, PacketReader packet)
+        {
+            int returnMapId = packet.ReadInt();
+            packet.Skip(8);
+            long accountId = packet.ReadLong();
+
+            Player target = GameServer.Storage.GetPlayerByAccountId(accountId);
+            Home home = target.Account.Home;
+            if (target == null || home == null)
+            {
+                return;
+            }
+
+            // TODO: request password ?
+            session.Player.ReturnMapId = returnMapId;
+            session.Player.ReturnCoord = session.Player.SafeBlock;
+            session.Player.VisitingHomeId = home.Id;
+            session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
+
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(home.MapId);
+            session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), home.MapId, instanceId: home.Id);
+        }
+
+        private static void HandleReturnMap(GameSession session)
+        {
+            Player player = session.Player;
+            CoordF returnCoord = player.ReturnCoord;
+            returnCoord.Z += Block.BLOCK_SIZE;
+            player.Warp(returnCoord, player.Rotation, player.ReturnMapId);
+            player.ReturnMapId = 0;
+            player.VisitingHomeId = 0;
         }
 
         public static void HandleInstanceMove(GameSession session, int mapId)

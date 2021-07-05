@@ -70,6 +70,7 @@ namespace MapleServer2.Types
 
         public Inventory Inventory;
         public BankInventory BankInventory;
+        public Home Home;
 
         public Item() { }
 

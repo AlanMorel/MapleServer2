@@ -282,7 +282,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Player kickedPlayer = GameServer.Storage.GetPlayerById(charId);
+            Player kickedPlayer = GameServer.Storage.GetPlayerByCharacterId(charId);
             if (kickedPlayer == null)
             {
                 return;
@@ -302,7 +302,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Player kickedPlayer = GameServer.Storage.GetPlayerById(charId);
+            Player kickedPlayer = GameServer.Storage.GetPlayerByCharacterId(charId);
             if (kickedPlayer == null)
             {
                 return;

@@ -74,5 +74,11 @@ namespace MapleServer2.Data.Static
             }
             return 0;
         }
+
+        public static List<int> GetPlots(int mapId)
+        {
+            MapMetadata map = GetMetadata(mapId);
+            return map.Blocks.FindAll(x => x.SaleableGroup != 0).GroupBy(x => x.SaleableGroup).Select(x => x.Key).ToList();
+        }
     }
 }

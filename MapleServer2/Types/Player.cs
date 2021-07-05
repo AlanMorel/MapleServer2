@@ -20,7 +20,7 @@ namespace MapleServer2.Types
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
         public GameSession Session;
 
-        public readonly Account Account;
+        public Account Account;
         // Constant Values
         public long AccountId { get; private set; }
         public long CharacterId { get; set; }
@@ -38,7 +38,7 @@ namespace MapleServer2.Types
         // Mutable Values
         public Levels Levels { get; set; }
         public int MapId { get; set; }
-        public int InstanceId { get; set; }
+        public long InstanceId { get; set; }
         public int TitleId { get; set; }
         public short InsigniaId { get; set; }
         public List<int> Titles { get; set; }
@@ -82,13 +82,7 @@ namespace MapleServer2.Types
         public string ProfileUrl; // profile/e2/5a/2755104031905685000/637207943431921205.png
         public string Motto;
 
-        // TODO: Rework to use class Home
-        public int HomeMapId = 62000000;
-        public int PlotMapId;
-        public int HomePlotNumber;
-        public int ApartmentNumber;
-        public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
-        public string HomeName;
+        public long VisitingHomeId;
 
         public Mapleopoly Mapleopoly = new Mapleopoly();
 
@@ -180,12 +174,11 @@ namespace MapleServer2.Types
                 new MasteryExp(MasteryType.PetTaming)
             });
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            MapId = 52000065;
+            MapId = 2000062;
             Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
-            HomeName = "HomeName";
             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
             TitleId = 0;
             InsigniaId = 0;
@@ -212,7 +205,7 @@ namespace MapleServer2.Types
             ActiveSkillTabId = SkillTabs[0].TabId;
         }
 
-        public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId = 0)
+        public void Warp(CoordF coord, CoordF rotation, int mapId, long instanceId = 0)
         {
             MapId = mapId;
             InstanceId = instanceId;

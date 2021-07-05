@@ -12,8 +12,9 @@ namespace MapleServer2.Packets
             StartList = 0x1,
             Count = 0x2,
             Load = 0x3,
-            Add = 0x4,
-            UpdateQuantity = 0x5,
+            Remove = 0x4,
+            GainItemMessage = 0x5,
+            UpdateAmount = 0x7,
             EndList = 0x8,
         }
 
@@ -24,36 +25,49 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Load(Item item) // this packet is wrong. It needs a modified version of WriteItem
+        public static Packet Count(int amount)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.Count);
+            pWriter.WriteInt(amount);
+            return pWriter;
+        }
+
+        public static Packet Load(Item item, int counter)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
             pWriter.WriteEnum(WarehouseInventoryPacketMode.Load);
+            pWriter.WriteInt(item.Id);
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteByte(1); // unknown
+            pWriter.WriteInt(counter);
             pWriter.WriteItem(item);
             return pWriter;
         }
 
-        public static Packet Count()
+        public static Packet Remove(long itemUid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
-            pWriter.WriteEnum(WarehouseInventoryPacketMode.Count);
-            pWriter.WriteInt();
-            return pWriter;
-        }
-
-        public static Packet Add(long itemUid)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
-            pWriter.WriteEnum(WarehouseInventoryPacketMode.Add);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.Remove);
             pWriter.WriteLong(itemUid);
             return pWriter;
         }
 
-        public static Packet UpdateQuantity(Item item)
+        public static Packet GainItemMessage(Item item, int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
-            pWriter.WriteEnum(WarehouseInventoryPacketMode.UpdateQuantity);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.GainItemMessage);
             pWriter.WriteLong(item.Uid);
-            pWriter.WriteInt(item.Amount);
+            pWriter.WriteInt(amount);
+            return pWriter;
+        }
+
+        public static Packet UpdateAmount(long itemUid, int amount)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
+            pWriter.WriteEnum(WarehouseInventoryPacketMode.UpdateAmount);
+            pWriter.WriteLong(itemUid);
+            pWriter.WriteInt(amount);
             return pWriter;
         }
 

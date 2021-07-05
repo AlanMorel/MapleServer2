@@ -29,7 +29,7 @@ namespace MapleServer2.Servers.Game
         private int Counter = 10000000;
 
         public readonly int MapId;
-        public readonly int InstanceId;
+        public readonly long InstanceId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
@@ -38,7 +38,7 @@ namespace MapleServer2.Servers.Game
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
 
-        public FieldManager(int mapId, int instanceId)
+        public FieldManager(int mapId, long instanceId)
         {
             MapId = mapId;
             InstanceId = instanceId;
@@ -225,9 +225,21 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InteractObjectPacket.AddInteractObjects(objects));
                 }
             }
-            if (State.Cubes.Values.Count > 0)
+            if (State.Cubes.IsEmpty)
             {
-                sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
+                Home home = player.Value.Account.Home;
+                if (home != null)
+                {
+                    Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                    foreach (KeyValuePair<long, Cube> kvp in cubes)
+                    {
+                        Cube cube = kvp.Value;
+                        IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                        ugcCube.Coord = cube.CoordF;
+                        ugcCube.Rotation = cube.Rotation;
+                        State.AddCube(ugcCube);
+                    }
+                }
             }
             foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
             {
@@ -360,12 +372,13 @@ namespace MapleServer2.Servers.Game
         public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player, false));
         }
 
-        public bool RemoveCube(IFieldObject<Cube> cube)
+        public void RemoveCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
         {
-            return State.RemoveCube(cube.ObjectId);
+            State.RemoveCube(cube.ObjectId);
+            BroadcastPacket(ResponseCubePacket.RemoveCube(player, cube.Coord.ToByte()));
         }
 
         public void AddInstrument(IFieldObject<Instrument> instrument)

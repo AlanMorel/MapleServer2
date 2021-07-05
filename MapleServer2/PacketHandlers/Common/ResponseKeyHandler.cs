@@ -84,6 +84,24 @@ namespace MapleServer2.PacketHandlers.Common
             {
                 InventoryController.LoadInventoryTab(session, tab);
             }
+            Home home = player.Account.Home;
+            if (home != null)
+            {
+                session.Send(WarehouseInventoryPacket.StartList());
+                int counter = 0;
+                foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
+                {
+                    session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+                }
+                session.Send(WarehouseInventoryPacket.EndList());
+
+                session.Send(FurnishingInventoryPacket.StartList());
+                foreach (KeyValuePair<long, Cube> kvp in home.FurnishingInventory)
+                {
+                    session.Send(FurnishingInventoryPacket.Load(kvp.Value));
+                }
+                session.Send(FurnishingInventoryPacket.EndList());
+            }
 
             session.Send(QuestPacket.StartList());
             session.Send(QuestPacket.Packet1F());
@@ -105,11 +123,6 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(TrophyPacket.WriteTableContent(trophy));
             }
 
-            session.Send(WarehouseInventoryPacket.Count()); // Typically sent after buddylist
-            session.Send(WarehouseInventoryPacket.StartList());
-            session.Send(WarehouseInventoryPacket.EndList());
-            session.Send(FurnishingInventoryPacket.StartList());
-            session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
             session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());

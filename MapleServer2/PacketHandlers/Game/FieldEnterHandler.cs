@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -32,24 +31,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.Send(EmotePacket.LoadEmotes(session.Player));
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
+
+            session.Send(HomeCommandPacket.HomeCommand(session.Player));
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.ReturnMap(session.Player.ReturnMapId));
 
-            // Normally skill layout would be loaded from a database
-            QuickSlot arrowStream = QuickSlot.From(10500001);
-            QuickSlot arrowBarrage = QuickSlot.From(10500011);
-            QuickSlot eagleGlide = QuickSlot.From(10500151);
-            QuickSlot testSkill = QuickSlot.From(10500153);
-
-            if (session.Player.GameOptions.TryGetHotbar(0, out Hotbar mainHotbar))
-            {
-                /*
-                mainHotbar.MoveQuickSlot(4, arrowStream);
-                mainHotbar.MoveQuickSlot(5, arrowBarrage);
-                mainHotbar.MoveQuickSlot(6, eagleGlide);
-                mainHotbar.MoveQuickSlot(7, testSkill);
-                */
-                session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
-            }
+            session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
 
             List<GameEvent> gameEvents = DatabaseManager.GetGameEvents();
             session.Send(GameEventPacket.Load(gameEvents));

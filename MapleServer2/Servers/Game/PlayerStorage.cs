@@ -7,12 +7,14 @@ namespace MapleServer2.Servers.Game
 {
     public class PlayerStorage
     {
-        private readonly ConcurrentDictionary<long, Player> IdStorage;
+        private readonly ConcurrentDictionary<long, Player> CharacterId;
+        private readonly ConcurrentDictionary<long, Player> AccountId;
         private readonly ConcurrentDictionary<string, Player> NameStorage;
 
         public PlayerStorage()
         {
-            IdStorage = new ConcurrentDictionary<long, Player>();
+            CharacterId = new ConcurrentDictionary<long, Player>();
+            AccountId = new ConcurrentDictionary<long, Player>();
 
             StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
             NameStorage = new ConcurrentDictionary<string, Player>(ignoreCase);
@@ -20,13 +22,15 @@ namespace MapleServer2.Servers.Game
 
         public void AddPlayer(Player player)
         {
-            IdStorage[player.CharacterId] = player;
+            CharacterId[player.CharacterId] = player;
+            AccountId[player.AccountId] = player;
             NameStorage[player.Name] = player;
         }
 
         public void RemovePlayer(Player player)
         {
-            IdStorage.Remove(player.CharacterId, out _);
+            CharacterId.Remove(player.CharacterId, out _);
+            AccountId.Remove(player.AccountId, out _);
             NameStorage.Remove(player.Name, out _);
         }
 
@@ -35,9 +39,14 @@ namespace MapleServer2.Servers.Game
             return NameStorage.TryGetValue(name, out Player foundPlayer) ? foundPlayer : null;
         }
 
-        public Player GetPlayerById(long id)
+        public Player GetPlayerByCharacterId(long id)
         {
-            return IdStorage.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
+            return CharacterId.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
+        }
+
+        public Player GetPlayerByAccountId(long id)
+        {
+            return AccountId.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
         }
     }
 }
