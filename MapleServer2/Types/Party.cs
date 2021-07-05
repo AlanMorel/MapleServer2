@@ -88,7 +88,6 @@ namespace MapleServer2.Types
                 return;
             }
 
-            //TODO: Remove dungeonsession of PARTY on disband, set party.DungeonSessionId = -1;
             BroadcastParty(session =>
             {
                 session.Player.PartyId = 0;
