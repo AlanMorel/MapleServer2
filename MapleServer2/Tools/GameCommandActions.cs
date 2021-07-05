@@ -364,7 +364,7 @@ namespace MapleServer2.Tools
             {
                 return;
             }
-            Status status = new Status(statusId, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, 1, 1);
+            Status status = new Status(statusId, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, 6000, 1);
             session.Send(BuffPacket.SendBuff(0, status));
         }
 

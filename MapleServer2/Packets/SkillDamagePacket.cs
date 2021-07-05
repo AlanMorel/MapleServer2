@@ -8,12 +8,18 @@ namespace MapleServer2.Packets
 {
     public static class SkillDamagePacket
     {
+        private enum SkillDamageMode : byte
+        {
+            ApplyDamage = 0x1,
+            ApplyHeal = 0x4
+        }
+
         public static Packet ApplyDamage(long skillSN, int unkValue, CoordF coords, IFieldObject<Player> player, List<(IFieldObject<Mob>, DamageHandler)> effects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
 
-            pWriter.WriteByte(1);
+            pWriter.WriteEnum(SkillDamageMode.ApplyDamage);
             pWriter.WriteLong(skillSN);
             pWriter.WriteInt(unkValue);
             pWriter.WriteInt(player.ObjectId);
@@ -44,7 +50,7 @@ namespace MapleServer2.Packets
         public static Packet ApplyHeal(Status status, int healAmount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
-            pWriter.WriteByte(4);
+            pWriter.WriteEnum(SkillDamageMode.ApplyHeal);
             pWriter.WriteInt(status.Source);
             pWriter.WriteInt(status.Owner);
             pWriter.WriteInt(status.UniqueId);
