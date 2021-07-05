@@ -44,7 +44,6 @@ namespace MapleServer2.Triggers
 
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)
         {
-            System.Console.WriteLine("setportal called");
             if (Field.State.Portals.Count <= 0)
             {
                 return;

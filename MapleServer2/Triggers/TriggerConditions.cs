@@ -18,27 +18,8 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
-            test.t();
-            System.Console.WriteLine("usercount was called");
-            Field.BroadcastPacket(NoticePacket.Notice($"check user count {Field.State.Players.Count}"));
-            //solo session
-            //min user count
-            if (Field.State.Players.Count > 0)
-            {
-                System.Console.WriteLine("usercount true");
-                return true;
-            }
-            return false;
-
-        }
-        private static class test
-        {
-            private static int i = 0;
-            public static int t()
-            {
-                System.Console.WriteLine($" called {i}");
-                return i++;
-            }
+            //TODO: Implement checking dungeon lobby user count. The below is temporary.
+            return Field.State.Players.Count > 0;
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)
@@ -144,8 +125,6 @@ namespace MapleServer2.Triggers
         public bool WaitTick(int waitTick)
         {
             NextTick += waitTick;
-            System.Console.WriteLine(DateTime.Now.ToString());
-            System.Console.WriteLine("waittick called");
             return true;
         }
 
