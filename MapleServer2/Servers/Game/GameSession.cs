@@ -48,7 +48,6 @@ namespace MapleServer2.Servers.Game
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
                 FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player);
-
                 // Initialize for new Map
                 FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);
