@@ -300,16 +300,7 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-
-            if (spawn != null)
-            {
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId, instanceId);
-                return;
-            }
-
-            session.SendNotice("Could not find coordinates to spawn on that map.");
-            return;
+            session.Player.Warp(mapId: mapId, instanceId: instanceId);
         }
 
         private static void ProcessNpcCommand(GameSession session, string command)

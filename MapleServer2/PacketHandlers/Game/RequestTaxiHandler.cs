@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
@@ -89,11 +87,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleTeleport(GameSession session, int mapId)
         {
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-            if (spawn != null)
-            {
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId);
-            }
+            session.Player.Warp(mapId);
         }
     }
 }

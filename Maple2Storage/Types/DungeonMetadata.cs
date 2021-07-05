@@ -31,6 +31,4 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 12)]
         public byte LimitPlayerLevel;
     }
-
-
 }

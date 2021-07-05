@@ -6,8 +6,8 @@ namespace MapleServer2.Types
 {
     public enum DungeonType
     {
-        solo,
-        group
+        Solo,
+        Group
     }
 
     public class DungeonSession
@@ -31,17 +31,9 @@ namespace MapleServer2.Types
             DungeonLobbyId = dungeon.LobbyFieldId;
         }
 
-        public void AddMember(Player player)
-        {
-        }
-
         public bool ContainsMap(int mapId)
         {
-            if (DungeonMapIds.Contains(mapId) || DungeonLobbyId == mapId)
-            {
-                return true;
-            }
-            return false;
+            return DungeonMapIds.Contains(mapId) || DungeonLobbyId == mapId;
         }
     }
 }

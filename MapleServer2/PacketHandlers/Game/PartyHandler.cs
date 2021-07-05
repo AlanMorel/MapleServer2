@@ -322,7 +322,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleSummonParty(GameSession session, PacketReader packet)
         {
-            System.Console.WriteLine("implement summon party");
+            //TODO: implement Summon Party Button
             return;
         }
         private static void HandleStartReadyCheck(GameSession session)

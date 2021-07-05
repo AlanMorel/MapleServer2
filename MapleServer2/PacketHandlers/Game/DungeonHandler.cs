@@ -6,6 +6,7 @@ using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 using MapleServer2.Data.Static;
 using Maple2Storage.Types.Metadata;
+using System.Linq;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -62,7 +63,12 @@ namespace MapleServer2.PacketHandlers.Game
         public static void HandleEnterDungeonPortal(GameSession session, PacketReader packet)
         {
             int instanceId = session.Player.InstanceId;
-            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstance(instanceId);
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(instanceId);
+            if (dungeonSession == null)
+            {
+                return;
+            }
+            session.Player.Warp(mapId: dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId);
 
         }
         public static void HandleCreateDungeon(GameSession session, PacketReader packet)
@@ -80,13 +86,12 @@ namespace MapleServer2.PacketHandlers.Game
             int dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
             MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonLobbyId);
 
-            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.group : DungeonType.solo);
+            DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
             session.SendNotice($"dungeon session created sessionID:{dungeonSession.SessionId} instanceId: {dungeonSession.DungeonInstanceId}");
 
             //Todo: Send packet that greys out enter alone / enter as party when already in a dungeon session.
             if (groupEnter) //group takes dungeonsession of leader, because this packet is coming from leader.
             {
-
                 Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
                 if (party.DungeonSessionId != -1)
                 {
@@ -111,23 +116,25 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 player.DungeonSessionId = dungeonSession.SessionId;
             }
-            session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), dungeonLobbyId, dungeonSession.DungeonInstanceId);
-            System.Console.WriteLine("Portal created");
-            session.SendNotice("NPC created");
+            session.Player.Warp(mapId: dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+            //TODO: here: spawn doctor npc.
 
         }
 
         public static void HandleEnterDungeonButton(GameSession session, PacketReader packet)
         {
             Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
-            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSession(party.DungeonSessionId);
-            if (session.Player.InstanceId == dungeonSession.DungeonInstanceId)
+            DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(party.DungeonSessionId);
+            if (dungeonSession == null) //Can be removed when enter dungeon button is removed on dungeonsession deletion.
             {
-                session.SendNotice("You are already in the dungeon");
                 return;
             }
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonSession.DungeonLobbyId);
-            session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), dungeonSession.DungeonLobbyId, dungeonSession.DungeonInstanceId);
+            if (dungeonSession.ContainsMap(session.Player.MapId))
+            {
+                session.SendNotice("You are already in a dungeon");
+                return;
+            }
+            session.Player.Warp(mapId: dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
         }
         private static void HandleAddRewards(GameSession session, PacketReader packet)
         {

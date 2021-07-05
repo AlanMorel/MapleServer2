@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Maple2Storage.Types.Metadata;
-using MapleServer2.Data.Static;
 using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game
@@ -31,16 +28,7 @@ namespace MapleServer2.Servers.Game
                 return mapInstanceId;
             }
             return MapInstanceId++;
-
         }
-
-        //int mapInstanceId = RecyclableMapInstanceIds[mapId].First();
-        //RecyclableMapInstanceIds[mapId].Remove(mapInstanceId);
-        //        if (RecyclableMapInstanceIds[mapId].Count == 0)
-        //        {
-        //            RecyclableMapInstanceIds.Remove(mapId);
-        //        }
-        //        return mapInstanceId;
 
         public DungeonSession CreateDungeonSession(int dungeonId, DungeonType dungeonType)
         {
@@ -75,25 +63,18 @@ namespace MapleServer2.Servers.Game
             return SessionId++;
         }
 
-        public DungeonSession GetDungeonSession(int dungeonSessionId)
+        public DungeonSession GetDungeonSessionBySessionId(int dungeonSessionId)
         {
-            //set dungeon of session id to x on swich dungeon
-            //if dungeonsession exists but id != dungeonid call dungeonid change
-            //update dungeonid or handle it somewhere else
-            if (!DungeonSessionList.ContainsKey(dungeonSessionId))
-            {
-                return null;
-            }
-            return DungeonSessionList[dungeonSessionId];
+            return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
         }
 
-        public DungeonSession GetDungeonSessionByInstance(int instanceId)
+        public DungeonSession GetDungeonSessionByInstanceId(int instanceId)
         {
-            //TODO: if no dungeonsession is found, return null
+
             return DungeonSessionList.FirstOrDefault(session => session.Value.DungeonInstanceId == instanceId).Value;
         }
 
-        public bool DungeonUsesMap(DungeonSession dungeonSession, FieldManager fieldManager, Player player)
+        public bool IsDungeonUsingFieldInstance(DungeonSession dungeonSession, FieldManager fieldManager, Player player) //alternatively this could be: IsFieldInstanceUsed in FieldManagerFactory
         {
             //fieldmanager is the map the player is coming from/that is to be released
             if (dungeonSession != null) //is not null after entering dungeon via directory
@@ -109,7 +90,7 @@ namespace MapleServer2.Servers.Game
                     else //travel destination is not a dungeon map
                     {
                         RemoveDungeonSession(dungeonSession.SessionId); //leaving lobby or dungeonmap means dungeon session is finished, deletes session.
-                        if (dungeonSession.DungeonType == DungeonType.group && player.PartyId != 0)
+                        if (dungeonSession.DungeonType == DungeonType.Group && player.PartyId != 0)
                         {
                             Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
                             party.DungeonSessionId = -1;
@@ -126,7 +107,7 @@ namespace MapleServer2.Servers.Game
                     return false;
                 }
             }
-            return false; //no dungeonsession = the map is unused by dungeon.
+            return false; //no dungeonsession = the map is unused by dungeon, 
         }
     }
 }

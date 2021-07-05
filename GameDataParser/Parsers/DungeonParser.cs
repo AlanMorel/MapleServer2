@@ -5,7 +5,6 @@ using GameDataParser.Files;
 using Maple2Storage.Types.Metadata;
 using System;
 
-
 namespace GameDataParser.Parsers
 {
     public class DungeonParser : Exporter<List<DungeonMetadata>>

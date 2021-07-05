@@ -385,7 +385,6 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-
         public void AddInteractObject(ICollection<IFieldObject<InteractObject>> objects)
         {
             foreach (IFieldObject<InteractObject> interactObject in objects)
