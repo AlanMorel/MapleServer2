@@ -89,10 +89,11 @@ namespace MapleServer2.PacketHandlers.Game
             DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
             session.SendNotice($"dungeon session created sessionID:{dungeonSession.SessionId} instanceId: {dungeonSession.DungeonInstanceId}");
 
-            //Todo: Send packet that greys out enter alone / enter as party when already in a dungeon session.
-            if (groupEnter) //group takes dungeonsession of leader, because this packet is coming from leader.
+            //TODO: Send packet that greys out enter alone / enter as party when already in a dungeon session (sendRoomDungeon packet/s).
+            Party party = null;
+            if (groupEnter) //the session belongs to the party leader
             {
-                Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
                 if (party.DungeonSessionId != -1)
                 {
                     session.SendNotice("Need to reset dungeon before entering another instance");
@@ -107,18 +108,17 @@ namespace MapleServer2.PacketHandlers.Game
                     }
                 }
                 party.DungeonSessionId = dungeonSession.SessionId;
-                //party.BroadcastParty(session => session.Send(PartyPacket.UpdatePlayer(session.Player)));
-                //party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
                 party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
-                //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount));
+                //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
             }
             else // solo join dungeon
             {
                 player.DungeonSessionId = dungeonSession.SessionId;
             }
             session.Player.Warp(mapId: dungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
-            //TODO: here: spawn doctor npc.
-
+            //TODO: things after map is created here: spawn doctor npc.
+            //This packet sets the banner in the dungeon that displays the dungeonname and the playersize it was created for.
+            //party.BroadcastPacketParty(DungeonWaitPacket.Show(dungeonId, DungeonStorage.GetDungeonByDungeonId(dungeonId).MaxUserCount)); 
         }
 
         public static void HandleEnterDungeonButton(GameSession session, PacketReader packet)

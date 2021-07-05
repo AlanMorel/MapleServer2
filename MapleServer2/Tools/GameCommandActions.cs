@@ -34,12 +34,12 @@ namespace MapleServer2.Tools
                     if (player.GmFlags.Contains("oneshot"))
                     {
                         player.GmFlags.Remove("oneshot");
-                        session.SendNotice("oneshot mode enabled");
+                        session.SendNotice("oneshot mode disabled");
                     }
                     else
                     {
                         session.Player.GmFlags.Add("oneshot");
-                        session.SendNotice("oneshot mode disabled");
+                        session.SendNotice("oneshot mode enabled");
                     }
                     break;
                 case "status":
