@@ -17,7 +17,7 @@ namespace MapleServer2.Triggers
         public bool CheckDungeonLobbyUserCount()
         {
             //TODO: Implement checking dungeon lobby user count. The below is temporary.
-            return Field.State.Players.IsEmpty;
+            return !Field.State.Players.IsEmpty;
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)
