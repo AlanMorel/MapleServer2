@@ -25,7 +25,7 @@ namespace MapleServer2.Types
             Owner = owner;
             Source = source;
             Level = skillCast.SkillLevel;
-            Stacks = stacks >= 1 ? stacks : 1;
+            Stacks = Math.Max(1, stacks);
             SkillCast = skillCast;
             Start = Environment.TickCount;
             End = Start + duration;
@@ -38,7 +38,7 @@ namespace MapleServer2.Types
             Owner = owner;
             Source = source;
             Level = level;
-            Stacks = stacks >= 1 ? stacks : 1;
+            Stacks = Math.Max(1, stacks);
             Start = Environment.TickCount;
             End = Start + duration;
         }
