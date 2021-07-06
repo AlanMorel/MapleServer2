@@ -20,9 +20,6 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
-                case "fi":
-                    session.SendNotice($"map: {session.Player.MapId} instance:{session.Player.InstanceId}");
-                    break;
                 case "commands":
                     ProcessCommandList(session);
                     break;
@@ -290,7 +287,7 @@ namespace MapleServer2.Tools
             _ = int.TryParse(config.GetValueOrDefault("instance", "0"), out int instanceId);
             if (mapId == 0)
             {
-                session.SendNotice($"Current map id:{session.Player.MapId}");
+                session.SendNotice($"Current map id:{session.Player.MapId} instance: {session.Player.InstanceId}");
                 return;
             }
 
