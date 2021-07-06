@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Maple2.Trigger;
+﻿using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {

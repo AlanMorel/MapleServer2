@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleFinderJoin(session, packet);
                     break;
                 case PartyMode.SummonParty:
-                    HandleSummonParty(session, packet);
+                    HandleSummonParty();
                     break;
                 case PartyMode.VoteKick:
                     HandleVoteKick(session, packet);
@@ -320,7 +320,7 @@ namespace MapleServer2.PacketHandlers.Game
             //TODO: Keep a counter of vote kicks for a player?
         }
 
-        public static void HandleSummonParty(GameSession session, PacketReader packet)
+        public static void HandleSummonParty()
         {
             //TODO: implement Summon Party Button
             return;

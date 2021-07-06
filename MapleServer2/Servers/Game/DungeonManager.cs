@@ -8,8 +8,8 @@ namespace MapleServer2.Servers.Game
     {
         public readonly Dictionary<int, DungeonSession> DungeonSessionList;
         private int SessionId = 0;
-        private List<int> RecyclableSessionIds;
-        private List<int> RecyclableMapInstanceIds;
+        private readonly List<int> RecyclableSessionIds;
+        private readonly List<int> RecyclableMapInstanceIds;
         private int MapInstanceId = 0;
 
         public DungeonManager()

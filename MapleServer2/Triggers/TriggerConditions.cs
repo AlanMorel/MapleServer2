@@ -1,6 +1,4 @@
-﻿using System;
-using Maple2.Trigger.Enum;
-using MapleServer2.Packets;
+﻿using Maple2.Trigger.Enum;
 
 namespace MapleServer2.Triggers
 {
@@ -19,7 +17,7 @@ namespace MapleServer2.Triggers
         public bool CheckDungeonLobbyUserCount()
         {
             //TODO: Implement checking dungeon lobby user count. The below is temporary.
-            return Field.State.Players.Count > 0;
+            return Field.State.Players.IsEmpty;
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)

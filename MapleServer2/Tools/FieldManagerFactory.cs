@@ -59,7 +59,6 @@ namespace MapleServer2.Tools
                     return false;
                 }
 
-                player.Session.SendNotice($"Removed instance id:{fieldManager.InstanceId}");
                 return managerList.Remove(fieldManager);
             }
         }
