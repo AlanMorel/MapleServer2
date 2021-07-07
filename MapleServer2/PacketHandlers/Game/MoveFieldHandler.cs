@@ -85,7 +85,6 @@ namespace MapleServer2.PacketHandlers.Game
                     System.Console.WriteLine($"unknown portal type id: {srcPortal.PortalType}");
                     break;
             }
-            session.SendNotice($"type:{srcPortal.PortalType} target: {srcPortal.Target}, {srcPortal.TargetPortalId}");
 
             if (srcPortal.Target == 0)
             {
