@@ -87,25 +87,33 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.SendNotice($"type:{srcPortal.PortalType} target: {srcPortal.Target}, {srcPortal.TargetPortalId}");
 
-            //if (!MapEntityStorage.HasSafePortal(srcMapId) || srcPortal.Target <= 0) // map is instance only: srcmap does have a portal with target != 0
-            //{
-            //    HandleLeaveInstance(session);
-            //    return;
-            //}
-
             if (srcPortal.Target == 0)
             {
                 return;
             }
+
+            if (!MapEntityStorage.HasSafePortal(srcMapId)) // map is instance only
+            {
+                HandleLeaveInstance(session);
+                return;
+            }
+
             MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
-                .FirstOrDefault(portal => portal.Target == srcMapId && portal.Id == srcPortal.TargetPortalId);
+                .FirstOrDefault(portal => portal.Target == srcMapId);
             if (dstPortal == default)
             {
                 session.Player.ReturnCoord = session.FieldPlayer.Coord;
                 session.Player.ReturnMapId = session.Player.MapId;
+            }
+
+            dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
+            .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId);
+            if (dstPortal == default)
+            {
                 System.Console.WriteLine($"Unable to find portal id:{srcPortal.TargetPortalId} in map:{srcPortal.Target}");
                 return;
             }
+
 
             CoordF coord = dstPortal.Coord.ToFloat();
 
