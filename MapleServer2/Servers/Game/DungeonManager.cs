@@ -77,37 +77,40 @@ namespace MapleServer2.Servers.Game
         public bool IsDungeonUsingFieldInstance(DungeonSession dungeonSession, FieldManager fieldManager, Player player) //alternatively this could be: IsFieldInstanceUsed in FieldManagerFactory
         {
             //fieldmanager is the map the player is coming from/that is to be released
-            if (dungeonSession != null) //is not null after entering dungeon via directory
+            if (dungeonSession == null) //is not null after entering dungeon via directory
             {
-                //check map that is left: fieldmanager.mapId is the to be released map
-                if (dungeonSession.ContainsMap(fieldManager.MapId))  //map is a dungeon map
+                return false; //no dungeonsession = the map is unused by dungeon, 
+            }
+            //fieldManager.MapId: left map that is to be destroyed
+            //player.MapId: travel destination of the player
+            //check map that is left: 
+            if (dungeonSession.IsDungeonMap(fieldManager.MapId))  //left map is a dungeon map
+            {
+                //check map the player will travel to: lobby to dungeon and dungeon to lobby
+                if (dungeonSession.IsDungeonMap(player.MapId) && player.InstanceId == dungeonSession.DungeonInstanceId)
                 {
-                    //check map the player will travel to: lobby to dungeon and dungeon to lobby
-                    if (dungeonSession.ContainsMap(player.MapId) && player.InstanceId == dungeonSession.DungeonInstanceId)
-                    {
-                        return true;
-                    }
-                    else //travel destination is not a dungeon map
-                    {
-                        RemoveDungeonSession(dungeonSession.SessionId); //leaving lobby or dungeonmap means dungeon session is finished, deletes session.
-                        if (dungeonSession.DungeonType == DungeonType.Group && player.PartyId != 0)
-                        {
-                            Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
-                            party.DungeonSessionId = -1;
-                        }
-                        else
-                        {
-                            player.DungeonSessionId = -1;
-                        }
-                        return false;
-                    }
+                    return true;
                 }
-                else //left map is not dungeon map e.g. tria
+                else //travel destination is not a dungeon map
                 {
+                    RemoveDungeonSession(dungeonSession.SessionId); //if last player leaves lobby or dungeonmap -> dungeon session is finished -> delete dungeonSession.
+                    //reset dungeonSessionId
+                    if (dungeonSession.DungeonType == DungeonType.Group && player.PartyId != 0)
+                    {
+                        Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
+                        party.DungeonSessionId = -1;
+                    }
+                    else
+                    {
+                        player.DungeonSessionId = -1;
+                    }
                     return false;
                 }
             }
-            return false; //no dungeonsession = the map is unused by dungeon, 
+            else //left map is not dungeon map e.g. tria
+            {
+                return false;
+            }
         }
     }
 }

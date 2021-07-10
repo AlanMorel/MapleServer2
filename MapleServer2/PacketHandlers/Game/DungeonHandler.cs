@@ -60,6 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
         }
+
         public static void HandleEnterDungeonPortal(GameSession session)
         {
             int instanceId = session.Player.InstanceId;
@@ -71,6 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Warp(mapId: dungeonSession.DungeonMapIds.First(), instanceId: dungeonSession.DungeonInstanceId);
 
         }
+
         public static void HandleCreateDungeon(GameSession session, PacketReader packet)
         {
             int dungeonId = packet.ReadInt();

@@ -31,7 +31,7 @@ namespace MapleServer2.Types
             DungeonLobbyId = dungeon.LobbyFieldId;
         }
 
-        public bool ContainsMap(int mapId)
+        public bool IsDungeonMap(int mapId)
         {
             return DungeonMapIds.Contains(mapId) || DungeonLobbyId == mapId;
         }

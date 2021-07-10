@@ -85,6 +85,7 @@ namespace MapleServer2.PacketHandlers.Game
                     System.Console.WriteLine($"unknown portal type id: {srcPortal.PortalType}");
                     break;
             }
+            session.SendNotice($"type:{srcPortal.PortalType} target: {srcPortal.Target}, {srcPortal.TargetPortalId}");
 
             if (srcPortal.Target == 0)
             {
@@ -112,7 +113,6 @@ namespace MapleServer2.PacketHandlers.Game
                 System.Console.WriteLine($"Unable to find portal id:{srcPortal.TargetPortalId} in map:{srcPortal.Target}");
                 return;
             }
-
 
             CoordF coord = dstPortal.Coord.ToFloat();
 
