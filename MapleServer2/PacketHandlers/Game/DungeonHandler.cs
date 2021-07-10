@@ -94,7 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
             //the session belongs to the party leader
             if (groupEnter)
             {
-                Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
                 if (party.DungeonSessionId != -1)
                 {
                     session.SendNotice("Need to reset dungeon before entering another instance");

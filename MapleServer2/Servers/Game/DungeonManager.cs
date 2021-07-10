@@ -76,17 +76,20 @@ namespace MapleServer2.Servers.Game
 
         public bool IsDungeonUsingFieldInstance(DungeonSession dungeonSession, FieldManager fieldManager, Player player) //alternatively this could be: IsFieldInstanceUsed in FieldManagerFactory
         {
-            //fieldmanager is the map the player is coming from/that is to be released
             if (dungeonSession == null) //is not null after entering dungeon via directory
             {
-                return false; //no dungeonsession = the map is unused by dungeon, 
+                return false; //no dungeonsession -> the map is unused by dungeon
             }
             //fieldManager.MapId: left map that is to be destroyed
             //player.MapId: travel destination of the player
             //check map that is left: 
-            if (dungeonSession.IsDungeonMap(fieldManager.MapId))  //left map is a dungeon map
+            if (!dungeonSession.IsDungeonMap(fieldManager.MapId)) //left map is not dungeon map e.g. tria
             {
-                //check map the player will travel to: lobby to dungeon and dungeon to lobby
+                return false;
+            }
+            else //left map is a dungeon map
+            {
+                //travel destination is a dungeon map: lobby to dungeon or dungeon to lobby
                 if (dungeonSession.IsDungeonMap(player.MapId) && player.InstanceId == dungeonSession.DungeonInstanceId)
                 {
                     return true;
@@ -106,10 +109,6 @@ namespace MapleServer2.Servers.Game
                     }
                     return false;
                 }
-            }
-            else //left map is not dungeon map e.g. tria
-            {
-                return false;
             }
         }
     }

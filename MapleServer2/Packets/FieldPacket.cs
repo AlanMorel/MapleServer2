@@ -2,7 +2,6 @@
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
@@ -11,6 +10,12 @@ namespace MapleServer2.Packets
 {
     public static class FieldPacket
     {
+        public enum PortalType : byte
+        {
+            AddPortal = 0x00,
+            UpdatePortal = 0x02
+        }
+
         public static Packet RequestEnter(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
@@ -388,7 +393,7 @@ namespace MapleServer2.Packets
         public static Packet AddPortal(IFieldObject<Portal> portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteByte((byte) PortalType.AddPortal);
+            pWriter.WriteEnum(PortalType.AddPortal);
             pWriter.WriteInt(portal.Value.Id);
             pWriter.WriteBool(portal.Value.IsVisible);
             pWriter.WriteBool(portal.Value.IsEnabled);
@@ -416,7 +421,7 @@ namespace MapleServer2.Packets
         public static Packet UpdatePortal(IFieldObject<Portal> portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteByte((byte) PortalType.UpdatePortal);
+            pWriter.WriteEnum(PortalType.UpdatePortal);
             pWriter.WriteInt(portal.Value.Id);
             pWriter.WriteBool(portal.Value.IsVisible);
             pWriter.WriteBool(portal.Value.IsEnabled);
