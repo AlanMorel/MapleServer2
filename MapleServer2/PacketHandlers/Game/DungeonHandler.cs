@@ -91,7 +91,8 @@ namespace MapleServer2.PacketHandlers.Game
             DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
 
             //TODO: Send packet that greys out enter alone / enter as party when already in a dungeon session (sendRoomDungeon packet/s).
-            if (groupEnter) //the session belongs to the party leader
+            //the session belongs to the party leader
+            if (groupEnter)
             {
                 Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
                 if (party.DungeonSessionId != -1)
@@ -129,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            if (dungeonSession.ContainsMap(session.Player.MapId))
+            if (dungeonSession.IsDungeonMap(session.Player.MapId))
             {
                 session.SendNotice("You are already in a dungeon");
                 return;
