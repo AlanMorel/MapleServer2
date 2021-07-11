@@ -331,7 +331,6 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Rotation).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new CoordF() : JsonConvert.DeserializeObject<CoordF>(i));
-
             });
 
             modelBuilder.Entity<Item>(entity =>

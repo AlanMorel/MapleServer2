@@ -227,6 +227,7 @@ namespace MapleServer2.Servers.Game
             }
             if (State.Cubes.IsEmpty)
             {
+                // TODO: rework, this won't work for plots and others houses
                 Home home = player.Value.Account.Home;
                 if (home != null)
                 {

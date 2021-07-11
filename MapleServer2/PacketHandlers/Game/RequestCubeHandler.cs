@@ -356,7 +356,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(WarehouseInventoryPacket.Load(item, warehouseItems.Values.Count));
                 session.Send(WarehouseInventoryPacket.GainItemMessage(item, 1));
                 session.Send(WarehouseInventoryPacket.Count(warehouseItems.Values.Count + 1));
-                session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, item, newFieldCube, sendOnlyObjectId: true));
+                session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, newFieldCube, sendOnlyObjectId: true));
                 session.Send(WarehouseInventoryPacket.Remove(item.Uid));
             }
             else
@@ -397,7 +397,7 @@ namespace MapleServer2.PacketHandlers.Game
                 oldItem.Amount++;
                 session.Send(WarehouseInventoryPacket.UpdateAmount(oldItem.Uid, oldItem.Amount));
             }
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, oldItem, newFieldCube, sendOnlyObjectId: false));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, newFieldCube, sendOnlyObjectId: false));
             session.FieldManager.AddCube(newFieldCube, session.FieldPlayer);
             session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
         }
@@ -447,7 +447,6 @@ namespace MapleServer2.PacketHandlers.Game
             string password = packet.ReadUnicodeString();
 
             session.Player.Account.Home.Password = password;
-
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangePassword());
             session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
         }
@@ -461,13 +460,12 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleModifySize(GameSession session, RequestCubeMode mode)
         {
-            // TODO: can't increase with size 4
             Home home = session.Player.Account.Home;
-            if (home.Size + 1 > 25 || home.Height + 1 > 15)
+            if ((mode == RequestCubeMode.IncreaseSize || mode == RequestCubeMode.IncreaseHeight) && (home.Size + 1 > 25 || home.Height + 1 > 15))
             {
                 return;
             }
-            if (home.Size - 1 < 4 || home.Height - 1 < 3)
+            if ((mode == RequestCubeMode.DecreaseSize || mode == RequestCubeMode.DecreaseHeight) && (home.Size - 1 < 4 || home.Height - 1 < 3))
             {
                 return;
             }

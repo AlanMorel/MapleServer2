@@ -28,7 +28,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(FurnishingInventoryPacketMode.Load);
             pWriter.WriteInt(cube.Item.Id);
             pWriter.WriteLong(cube.Uid);
-            pWriter.WriteLong(); // expire timestamp for ugc items?
+            pWriter.WriteLong(); // expire timestamp for ugc items
             pWriter.WriteByte();
 
             return pWriter;

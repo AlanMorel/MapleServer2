@@ -128,7 +128,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ReplaceCube(IFieldObject<Player> player, Item item, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
+        public static Packet ReplaceCube(IFieldObject<Player> player, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.ReplaceCube);
@@ -143,13 +143,14 @@ namespace MapleServer2.Packets
             pWriter.Write(newCube.Coord.ToByte());
             pWriter.WriteByte();
             pWriter.WriteInt(newCube.Value.Item.Id);
-            pWriter.WriteLong(item.Uid);
+            pWriter.WriteLong(newCube.Value.Item.Uid);
             pWriter.WriteLong(newCube.Value.Uid);
             pWriter.WriteLong();
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteFloat(newCube.Rotation.Z);
             pWriter.WriteInt();
+
             return pWriter;
         }
 

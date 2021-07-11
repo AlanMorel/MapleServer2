@@ -75,11 +75,11 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
             pWriter.WriteEnum(SendCubesMode.Expiration);
-            pWriter.WriteInt(homes.Count); // count
+            pWriter.WriteInt(homes.Count);
             foreach (Home home in homes)
             {
                 pWriter.WriteInt(home.PlotNumber);
-                pWriter.WriteInt(home.ApartmentNumber); // app number
+                pWriter.WriteInt(home.ApartmentNumber);
                 pWriter.WriteByte(1); // always 1?
                 pWriter.WriteLong(home.Expiration);
             }

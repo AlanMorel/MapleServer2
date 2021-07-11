@@ -68,6 +68,8 @@ namespace MapleServer2.Database
                 {
                     account.Home.WarehouseItems.ForEach(cube => account.Home.WarehouseInventory.Add(cube.Uid, cube));
                     account.Home.FurnishingCubes.ForEach(cube => account.Home.FurnishingInventory.Add(cube.Uid, cube));
+                    account.Home.WarehouseItems = null;
+                    account.Home.FurnishingCubes = null;
                 }
                 return account;
             }
@@ -375,7 +377,7 @@ namespace MapleServer2.Database
             {
                 foreach (Item item in inventory.DB_Items)
                 {
-                    Item dbItem = context.Items.FirstOrDefault(x => x.Uid == item.Uid);
+                    Item dbItem = context.Items.Find(item.Uid);
                     if (dbItem == null)
                     {
                         item.Inventory = inventory;
@@ -389,7 +391,7 @@ namespace MapleServer2.Database
 
                 foreach (Item item in bankInventory.DB_Items)
                 {
-                    Item dbItem = context.Items.FirstOrDefault(x => x.Uid == item.Uid);
+                    Item dbItem = context.Items.Find(item.Uid);
                     if (dbItem == null)
                     {
                         item.BankInventory = bankInventory;
@@ -400,7 +402,6 @@ namespace MapleServer2.Database
                     dbItem.Inventory = null;
                     context.Entry(dbItem).CurrentValues.SetValues(item);
                 }
-
                 SaveChanges(context);
             }
         }
@@ -751,6 +752,8 @@ namespace MapleServer2.Database
 
                 home.WarehouseItems.ForEach(cube => home.WarehouseInventory.Add(cube.Uid, cube));
                 home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+                home.WarehouseItems = null;
+                home.FurnishingCubes = null;
 
                 return home;
             }
@@ -762,13 +765,12 @@ namespace MapleServer2.Database
             {
                 List<Home> homes = context.Homes
                 .Include(x => x.FurnishingCubes).ThenInclude(x => x.Item)
-                .Include(x => x.WarehouseItems)
                 .Where(x => x.PlotId == mapId).ToList();
 
                 foreach (Home home in homes)
                 {
-                    home.WarehouseItems.ForEach(cube => home.WarehouseInventory.Add(cube.Uid, cube));
                     home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+                    home.FurnishingCubes = null;
                 }
                 return homes;
             }
