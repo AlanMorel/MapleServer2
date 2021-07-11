@@ -13,12 +13,13 @@ namespace MapleServer2.Types
         public short Level { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
+        public int Duration { get; set; }
 
         public SkillCast SkillCast { get; set; }
 
         public Status() { }
 
-        public Status(SkillCast skillCast, int owner, int source, int duration, int stacks)
+        public Status(SkillCast skillCast, int owner, int source, int stacks)
         {
             SkillId = skillCast.SkillId;
             UniqueId = GuidGenerator.Int();
@@ -28,7 +29,8 @@ namespace MapleServer2.Types
             Stacks = Math.Max(1, stacks);
             SkillCast = skillCast;
             Start = Environment.TickCount;
-            End = Start + duration;
+            Duration = skillCast.DurationTick();
+            End = Start + Duration;
         }
 
         public Status(int id, int owner, int source, short level, int duration, int stacks)
@@ -41,6 +43,7 @@ namespace MapleServer2.Types
             Stacks = Math.Max(1, stacks);
             Start = Environment.TickCount;
             End = Start + duration;
+            Duration = duration;
         }
 
         public void Overlap(Status other)
@@ -51,6 +54,7 @@ namespace MapleServer2.Types
             End = other.End;
             Level = other.Level;
             Stacks = other.Stacks;
+            Duration = other.Duration;
         }
 
         public void AddStacks(int value) => Stacks += value;

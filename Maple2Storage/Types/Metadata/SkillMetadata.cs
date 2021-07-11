@@ -25,33 +25,36 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public readonly byte Type;
         [XmlElement(Order = 9)]
-        public readonly byte Element;
+        public readonly byte SubType;
         [XmlElement(Order = 10)]
-        public readonly byte SuperArmor;
+        public readonly byte Element;
         [XmlElement(Order = 11)]
-        public readonly bool IsSpRecovery;
+        public readonly byte SuperArmor;
         [XmlElement(Order = 12)]
+        public readonly bool IsSpRecovery;
+        [XmlElement(Order = 13)]
         public readonly bool IsBuff;
 
         public SkillMetadata()
         {
             SkillLevels = new List<SkillLevel>();
         }
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte subType, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
         {
             SkillId = id;
             SkillLevels = skillLevels;
             State = state;
             DamageType = damageType;
             Type = type;
+            SubType = subType;
             Element = element;
             SuperArmor = superArmor;
             IsSpRecovery = isSpRecovery;
             IsBuff = isBuff;
         }
 
-        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte damageType, byte type, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
-            : this(id, skillLevels, state, damageType, type, element, superArmor, isSpRecovery, isBuff)
+        public SkillMetadata(int id, List<SkillLevel> skillLevels, int[] subSkills, int job, string state, byte damageType, byte type, byte subType, byte element, byte superArmor, bool isSpRecovery, bool isBuff)
+            : this(id, skillLevels, state, damageType, type, subType, element, superArmor, isSpRecovery, isBuff)
         {
             SubSkills = subSkills;
             Job = job;
@@ -81,6 +84,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly string Feature = "";
         [XmlElement(Order = 6)]
         public readonly SkillMotion SkillMotions;
+        [XmlElement(Order = 7)]
+        public SkillAdditionalData SkillAdditionalData;
 
         // Required for deserialization
         public SkillLevel() { }
@@ -93,6 +98,7 @@ namespace Maple2Storage.Types.Metadata
             DamageRate = damageRate;
             Feature = feature;
             SkillMotions = skillMotions;
+            SkillAdditionalData = new SkillAdditionalData();
         }
 
         public override int GetHashCode()
@@ -130,5 +136,21 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() => $"SequenceName:{SequenceName},MotionEffect:{MotionEffect}";
 
+    }
+
+    [XmlType] // TODO: More to implement, like skill sequences, stats power up, additional MotionEffects...
+    public class SkillAdditionalData
+    {
+        [XmlElement(Order = 1)]
+        public int Duration;
+
+        public SkillAdditionalData() { }
+
+        public SkillAdditionalData(int duration)
+        {
+            Duration = duration;
+        }
+
+        public override string ToString() => $"DurationTick: {Duration}";
     }
 }

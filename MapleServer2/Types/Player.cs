@@ -135,6 +135,7 @@ namespace MapleServer2.Types
         private TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
 
+        public List<Status> StatusContainer = new List<Status>();
         public List<int> UnlockedTaxis;
         public List<int> UnlockedMaps;
 
@@ -265,9 +266,13 @@ namespace MapleServer2.Types
                 ConsumeStamina(staminaCost);
                 SkillCast = skillCast;
 
-                if (skillCast.IsBuff())
+                // TODO: Since the method skillCast.IsBuff is not correct implemented, this is true for now for testing purposes.
+                // This will have to check many Buff types and subtypes to consider the skill a buff or debuff.
+                if (true)
                 {
-                    // TODO: Add buff timer
+                    Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
+                    Session.SendNotice(skillCast.SkillId.ToString());
+                    StatusHandler(status);
                 }
 
                 // Refresh out-of-combat timer
@@ -282,6 +287,23 @@ namespace MapleServer2.Types
                 return skillCast;
             }
             return null;
+        }
+
+        private void StatusHandler(Status status)
+        {
+            StatusContainer.Add(status);
+            Session.Send(BuffPacket.SendBuff(0, status));
+            RemoveStatusTask(status);
+        }
+
+        private Task RemoveStatusTask(Status status)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(status.Duration);
+                StatusContainer.Remove(status);
+                Session.Send(BuffPacket.SendBuff(1, status));
+            });
         }
 
         private Task StartCombatEnd(CancellationTokenSource ct)
