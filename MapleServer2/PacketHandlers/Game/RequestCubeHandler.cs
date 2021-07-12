@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            UGCMapGroup land = UGCMapMetadataStorage.GetMetadata(player.MapId, (byte) groupId);
+            UGCMapGroup land = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) groupId);
             if (land == null)
             {
                 return;
@@ -189,14 +189,31 @@ namespace MapleServer2.PacketHandlers.Game
             long itemUid = packet.ReadLong();
             byte padding2 = packet.ReadByte();
             CoordF rotation = packet.Read<CoordF>();
-            CoordF coordF = coord.ToFloat();
 
-            int plotNumber = MapMetadataStorage.GetPlotNumber(session.Player.MapId, coord);
-            if (plotNumber < 0)
+            CoordF coordF = coord.ToFloat();
+            Player player = session.Player;
+
+            int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
+            if (plotNumber <= 0)
             {
+                session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
                 return;
             }
 
+            UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+            bool mapIsHouse = player.MapId == (int) Map.PrivateResidence;
+            byte height = mapIsHouse ? player.Account.Home.Height : plot.HeightLimit;
+            if (IsCoordOutsideHeightLimit(coord.ToShort(), player, height))
+            {
+                session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
+                return;
+            }
+
+            if (mapIsHouse && IsCoordOutsideHomeLimit(coord.ToShort(), player))
+            {
+                session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
+                return;
+            }
             // TODO: Check if player has rights to this plot
 
             FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(itemId);
@@ -206,8 +223,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             IFieldObject<Cube> fieldCube;
-            Dictionary<long, Item> warehouseItems = session.Player.Account.Home.WarehouseInventory;
-            Dictionary<long, Cube> furnishingInventory = session.Player.Account.Home.FurnishingInventory;
+            Dictionary<long, Item> warehouseItems = player.Account.Home.WarehouseInventory;
+            Dictionary<long, Cube> furnishingInventory = player.Account.Home.FurnishingInventory;
             if (itemUid == 0 || !warehouseItems.ContainsKey(itemUid))
             {
                 if (!PurchaseFurnishingItem(session, shopMetadata))
@@ -580,6 +597,48 @@ namespace MapleServer2.PacketHandlers.Game
                     session.SendNotice($"Unknown item currency: {priceItemCode}");
                     return false;
             }
+        }
+
+        private static bool IsCoordOutsideHeightLimit(CoordS coordS, Player player, byte height)
+        {
+            MapMetadata metadata = MapMetadataStorage.GetMetadata(player.MapId);
+            for (int i = 0; i <= height; i++) // checking blocks in the same Z axis
+            {
+                MapBlock block = metadata.Blocks.FirstOrDefault(x => x.Coord == coordS);
+                if (block == null)
+                {
+                    coordS.Z -= Block.BLOCK_SIZE;
+                    continue;
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsCoordOutsideHomeLimit(CoordS cubeCoord, Player player)
+        {
+            byte size = (byte) (player.Account.Home.Size - 1);
+            byte height = player.Account.Home.Height;
+            short side = (short) (-1 * Block.BLOCK_SIZE * size);
+            short z = (short) (Block.BLOCK_SIZE * height);
+
+            CoordS coordMin = CoordS.From(0, 0, 0);
+            CoordS coordMax = CoordS.From(side, side, z);
+
+            if (cubeCoord.Z > coordMax.Z || cubeCoord.Z < coordMin.Z)
+            {
+                return true;
+            }
+            else if (cubeCoord.Y < coordMax.Y || cubeCoord.Y > coordMin.Y)
+            {
+                return true;
+            }
+            else if (cubeCoord.X < coordMax.X || cubeCoord.X > coordMin.X)
+            {
+                return true;
+            }
+            return false;
+
         }
     }
 }

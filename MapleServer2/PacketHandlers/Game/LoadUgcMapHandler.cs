@@ -24,7 +24,7 @@ namespace MapleServer2.PacketHandlers.Game
             Random random = new Random();
 
             bool isHouse = session.Player.MapId == (int) Map.PrivateResidence;
-            List<int> plots = MapMetadataStorage.GetPlots(session.Player.MapId);
+            List<byte> plots = UGCMapMetadataStorage.GetMetadata(session.Player.MapId).Groups.Select(x => x.Id).ToList();
             List<Home> homes;
             if (isHouse)
             {

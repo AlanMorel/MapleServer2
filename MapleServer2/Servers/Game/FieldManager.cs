@@ -373,7 +373,7 @@ namespace MapleServer2.Servers.Game
         public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player, false));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player, sendOnlyObjectId: false));
         }
 
         public void RemoveCube(IFieldObject<Cube> cube, IFieldObject<Player> player)

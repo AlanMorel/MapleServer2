@@ -55,7 +55,6 @@ namespace MapleServer2.Data.Static
         public static int GetPlotNumber(int mapId, CoordB coord)
         {
             CoordS coordS = coord.ToShort();
-            List<MapBlock> blocks = new List<MapBlock>();
             MapMetadata mapD = GetMetadata(mapId);
             for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
             {
@@ -73,12 +72,6 @@ namespace MapleServer2.Data.Static
                 coordS.Z -= Block.BLOCK_SIZE;
             }
             return 0;
-        }
-
-        public static List<int> GetPlots(int mapId)
-        {
-            MapMetadata map = GetMetadata(mapId);
-            return map.Blocks.Where(x => x.SaleableGroup != 0).GroupBy(x => x.SaleableGroup).Select(x => x.Key).ToList();
         }
     }
 }

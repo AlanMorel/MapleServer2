@@ -41,7 +41,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadAvailablePlots(List<Home> homes, List<int> plotNumbers)
+        public static Packet LoadAvailablePlots(List<Home> homes, List<byte> plotNumbers)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
             pWriter.WriteEnum(SendCubesMode.AvailablePlots);

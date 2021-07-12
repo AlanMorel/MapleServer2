@@ -101,6 +101,17 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet CantPlaceHere(IFieldObject<Player> player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
+            pWriter.WriteByte(44);
+            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(player.ObjectId);
+
+            return pWriter;
+        }
+
         public static Packet RemoveCube(IFieldObject<Player> player, CoordB coord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
