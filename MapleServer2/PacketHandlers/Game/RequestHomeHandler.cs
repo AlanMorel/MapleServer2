@@ -39,19 +39,18 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int houseTemplate = packet.ReadInt();
             Player player = session.Player;
-            Home home = player.Account.Home;
-            if (home == null)
+            if (player.Account.Home == null)
             {
-                home = new Home(player.Account, player.Name);
+                player.Account.Home = new Home(player.Account, player.Name);
             }
 
             player.ReturnMapId = player.MapId;
             player.ReturnCoord = player.SafeBlock;
-            player.VisitingHomeId = home.Id;
+            player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(home.MapId);
-            player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), home.MapId, instanceId: home.Id);
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(player.Account.Home.MapId);
+            player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), player.Account.Home.MapId, instanceId: player.Account.Home.Id);
         }
     }
 }
