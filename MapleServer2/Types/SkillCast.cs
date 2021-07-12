@@ -57,5 +57,7 @@ namespace MapleServer2.Types
         public bool IsSpRecovery() => SkillMetadataStorage.GetSkill(SkillId).IsSpRecovery;
 
         public bool IsBuff() => SkillMetadataStorage.GetSkill(SkillId).IsBuff;
+
+        public int DurationTick() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.Duration;
     }
 }
