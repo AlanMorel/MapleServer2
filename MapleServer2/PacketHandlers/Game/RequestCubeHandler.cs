@@ -35,6 +35,7 @@ namespace MapleServer2.PacketHandlers.Game
             Drop = 0x12,
             HomeName = 0x15,
             HomePassword = 0x18,
+            NominateHouse = 0x19,
             HomeDescription = 0x1D,
             EnablePermission = 0x2A,
             SetPermission = 0x2B,
@@ -60,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleBuyPlot(session, packet);
                     break;
                 case RequestCubeMode.ForfeitPlot:
-                    HandleForfeitPlot();
+                    HandleForfeitPlot(session);
                     break;
                 case RequestCubeMode.HandleAddFurnishing:
                     HandleAddFurnishing(session, packet);
@@ -85,6 +86,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestCubeMode.HomePassword:
                     HandleHomePassword(session, packet);
+                    break;
+                case RequestCubeMode.NominateHouse:
+                    HandleNominateHouse(session);
                     break;
                 case RequestCubeMode.HomeDescription:
                     HandleHomeDescription(session, packet);
@@ -169,16 +173,35 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             DatabaseManager.Update(player.Account.Home);
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(player));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(player.Account.Home.PlotNumber, 0, player.Account.Home.Expiration));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePlotFurnishing(player));
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player), session);
             session.Send(ResponseCubePacket.CompletePurchase());
         }
 
-        private static void HandleForfeitPlot()
+        private static void HandleForfeitPlot(GameSession session)
         {
-            // TODO
+            Player player = session.Player;
+            if (player.Account.Home == null || player.Account.Home.PlotId == 0)
+            {
+                return;
+            }
+            int plotId = player.Account.Home.PlotId;
+            int plotNumber = player.Account.Home.PlotNumber;
+            int apartmentNumber = player.Account.Home.ApartmentNumber;
+            long expiration = player.Account.Home.Expiration;
+
+            player.Account.Home.PlotId = 0;
+            player.Account.Home.PlotNumber = 0;
+            player.Account.Home.ApartmentNumber = 0;
+            player.Account.Home.Expiration = 32503561200; // year 2999
+
+            session.Send(ResponseCubePacket.ForfeitPlot(plotId, plotNumber, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            session.Send(ResponseCubePacket.RemovePlot(plotNumber, apartmentNumber));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.RemovePlot2(plotId, plotNumber));
+            // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
         }
 
         private static void HandleAddFurnishing(GameSession session, PacketReader packet)
@@ -468,6 +491,25 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
         }
 
+        private static void HandleNominateHouse(GameSession session)
+        {
+            long homeId = session.Player.VisitingHomeId;
+            Home home = DatabaseManager.GetHome(homeId);
+
+            home.ArchitectScoreCurrent++;
+            home.ArchitectScoreTotal++;
+            DatabaseManager.UpdateHome(home);
+
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdateArchitectScore(home.ArchitectScoreCurrent, home.ArchitectScoreTotal));
+            IFieldObject<Player> owner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.Account.Home.Id == homeId);
+            if (owner != default)
+            {
+                owner.Value.Session.Send(HomeCommandPacket.UpdateArchitectScore(owner.ObjectId, home.ArchitectScoreCurrent, home.ArchitectScoreTotal));
+            }
+            // TODO: add expiration to db
+            session.Send(ResponseCubePacket.ArchitectScoreExpiration(session.Player.AccountId, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+        }
+
         private static void HandleHomeDescription(GameSession session, PacketReader packet)
         {
             string description = packet.ReadUnicodeString();
@@ -504,10 +546,11 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
 
-            byte homeSize = (byte) (home.Size - 1);
-            int x = -1 * Block.BLOCK_SIZE * homeSize;
-            CoordF coord = CoordF.From(x, x, 151);
-            session.Send(UserMoveByPortalPacket.Move(session, coord, CoordF.From(0, 0, 0)));
+            if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
+            {
+                int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+                session.Send(UserMoveByPortalPacket.Move(session, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            }
         }
 
         private static void HandleEnablePermission(GameSession session, PacketReader packet)
@@ -625,6 +668,9 @@ namespace MapleServer2.PacketHandlers.Game
             CoordS coordMin = CoordS.From(0, 0, 0);
             CoordS coordMax = CoordS.From(side, side, z);
 
+            CoordB coordMinB = CoordB.From(0, 0, 0);
+            CoordB coordMaxB = CoordB.From((sbyte) size, (sbyte) size, (sbyte) height);
+            // continue this
             if (cubeCoord.Z > coordMax.Z || cubeCoord.Z < coordMin.Z)
             {
                 return true;

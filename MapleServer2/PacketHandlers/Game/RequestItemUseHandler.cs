@@ -386,7 +386,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             account.CharacterSlots++;
-            DatabaseManager.UpdateAccount(account);
+            DatabaseManager.Update(account);
             session.Send(CouponUsePacket.CharacterSlotAdded());
             InventoryController.Consume(session, item.Uid, 1);
         }

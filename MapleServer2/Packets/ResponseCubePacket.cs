@@ -16,6 +16,8 @@ namespace MapleServer2.Packets
             EnablePlotFurnishing = 0x2,
             LoadPurchasedLand = 0x3,
             CompletePurchase = 0x4,
+            ForfeitPlot = 0x5,
+            ForfeitPlot2 = 0x7,
             PlaceFurnishing = 0xA,
             RemoveCube = 0xC,
             RotateCube = 0xE,
@@ -26,6 +28,8 @@ namespace MapleServer2.Packets
             HomeName = 0x15,
             PurchasePlot = 0x16,
             ChangePassword = 0x18,
+            ArchitectScoreExpiration = 0x19,
+            UpdateArchitectScore = 0x1C,
             HomeDescription = 0x1D,
             ReturnMap = 0x22,
             IncreaseSize = 0x25,
@@ -69,6 +73,30 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.CompletePurchase);
+            return pWriter;
+        }
+
+        public static Packet RemovePlot(int plotNumber, int apartmentNumber)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.ForfeitPlot);
+            pWriter.WriteByte();
+            pWriter.WriteInt(plotNumber);
+            pWriter.WriteInt(apartmentNumber);
+            pWriter.WriteByte();
+
+            return pWriter;
+        }
+
+        public static Packet RemovePlot2(int plotId, int plotNumber)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.ForfeitPlot2);
+            pWriter.WriteByte(72); // unkwon
+            pWriter.WriteShort();
+            pWriter.WriteInt(plotId);
+            pWriter.WriteInt(plotNumber);
+
             return pWriter;
         }
 
@@ -220,14 +248,27 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PurchasePlot(Player player)
+        public static Packet PurchasePlot(int plotNumber, int apartmentNumber, long expiration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.PurchasePlot);
-            pWriter.WriteInt(player.Account.Home.PlotNumber);
-            pWriter.WriteInt(player.Account.Home.ApartmentNumber);
+            pWriter.WriteInt(plotNumber);
+            pWriter.WriteInt(apartmentNumber);
             pWriter.WriteByte(1);
-            pWriter.WriteLong(player.Account.Home.Expiration);
+            pWriter.WriteLong(expiration);
+
+            return pWriter;
+        }
+
+        public static Packet ForfeitPlot(int plotNumber, int apartmentNumber, long expiration)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.PurchasePlot);
+            pWriter.WriteInt(plotNumber);
+            pWriter.WriteInt(apartmentNumber);
+            pWriter.WriteByte(4);
+            pWriter.WriteLong(expiration);
+
             return pWriter;
         }
 
@@ -236,6 +277,27 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.ChangePassword);
             pWriter.WriteByte();
+
+            return pWriter;
+        }
+
+        public static Packet ArchitectScoreExpiration(long accountId, long now)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.ArchitectScoreExpiration);
+            pWriter.WriteByte();
+            pWriter.WriteLong(accountId);
+            pWriter.WriteLong(now);
+
+            return pWriter;
+        }
+
+        public static Packet UpdateArchitectScore(int current, int total)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.UpdateArchitectScore);
+            pWriter.WriteInt(current);
+            pWriter.WriteInt(total);
 
             return pWriter;
         }

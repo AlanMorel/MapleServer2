@@ -17,20 +17,20 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteLong(home.AccountId);
                 pWriter.WriteUnicodeString(home.Name);
-                pWriter.WriteUnicodeString(home.Description); // description
+                pWriter.WriteUnicodeString(home.Description);
                 pWriter.WriteByte();
-                pWriter.WriteInt(); //archiect score
-                pWriter.WriteInt(); //total score
+                pWriter.WriteInt(home.ArchitectScoreCurrent);
+                pWriter.WriteInt(home.ArchitectScoreTotal);
                 pWriter.WriteInt();
                 pWriter.WriteInt();
                 pWriter.WriteByte();
-                pWriter.WriteByte(home.Size); // house size
-                pWriter.WriteByte(home.Height); // height
-                pWriter.WriteByte(home.Background); //background option
-                pWriter.WriteByte(home.Lighting); //lighthing option
-                pWriter.WriteByte(home.Camera); //camera option
+                pWriter.WriteByte(home.Size);
+                pWriter.WriteByte(home.Height);
+                pWriter.WriteByte(home.Background);
+                pWriter.WriteByte(home.Lighting);
+                pWriter.WriteByte(home.Camera);
                 pWriter.WriteByte(9);
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < 9; i++) // permissions
                 {
                     if (home.Permissions.ContainsKey((HomePermission) i))
                     {

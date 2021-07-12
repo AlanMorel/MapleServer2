@@ -18,6 +18,8 @@ namespace MapleServer2.Types
         public string Description { get; set; }
         public byte Size { get; set; }
         public byte Height { get; set; }
+        public int ArchitectScoreCurrent { get; set; }
+        public int ArchitectScoreTotal { get; set; }
 
         // Interior Settings
         public byte Lighting { get; set; }

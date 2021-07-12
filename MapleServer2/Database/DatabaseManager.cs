@@ -121,36 +121,6 @@ namespace MapleServer2.Database
             return characters;
         }
 
-        public static bool UpdateAccount(Account account)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                Home home = account.Home;
-
-                context.Entry(account).State = EntityState.Modified;
-                if (home != null)
-                {
-                    context.Entry(home).State = EntityState.Modified;
-
-                    home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
-                    foreach (Item item in home.WarehouseItems)
-                    {
-                        context.Entry(item).State = EntityState.Modified;
-                    }
-
-                    home.FurnishingCubes = home.FurnishingInventory.Values.Where(x => x != null).ToList();
-                    foreach (Cube cube in home.FurnishingCubes)
-                    {
-                        cube.Home = home;
-                        context.Entry(cube).State = EntityState.Modified;
-                    }
-                }
-
-                context.SaveChanges();
-                return true;
-            }
-        }
-
         public static long CreateCharacter(Player player)
         {
             using (DatabaseContext context = new DatabaseContext())
@@ -250,7 +220,7 @@ namespace MapleServer2.Database
                 }
                 if (player.Account != null)
                 {
-                    UpdateAccount(player.Account);
+                    context.Entry(player.Account).State = EntityState.Modified;
                 }
                 UpdateHotbars(player);
                 UpdateQuests(player);
@@ -773,6 +743,28 @@ namespace MapleServer2.Database
                     home.FurnishingCubes = null;
                 }
                 return homes;
+            }
+        }
+
+        public static void UpdateHome(Home home)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(home).State = EntityState.Modified;
+
+                home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
+                foreach (Item item in home.WarehouseItems)
+                {
+                    context.Entry(item).State = EntityState.Modified;
+                }
+
+                home.FurnishingCubes = home.FurnishingInventory.Values.Where(x => x != null).ToList();
+                foreach (Cube cube in home.FurnishingCubes)
+                {
+                    cube.Home = home;
+                    context.Entry(cube).State = EntityState.Modified;
+                }
+                SaveChanges(context);
             }
         }
 
