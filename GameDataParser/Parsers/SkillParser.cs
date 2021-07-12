@@ -119,22 +119,23 @@ namespace GameDataParser.Parsers
             // Parsing Additional Data
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
-                if (entry.Name.StartsWith("additionaleffect"))
+                if (!entry.Name.StartsWith("additionaleffect"))
                 {
-                    XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
-                    XmlNodeList levels = document.SelectNodes("/ms2/level");
+                    continue;
+                }
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList levels = document.SelectNodes("/ms2/level");
 
-                    int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
-                    if (skillList.Select(x => x.SkillId).Contains(skillId))
+                int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+                if (skillList.Select(x => x.SkillId).Contains(skillId))
+                {
+                    foreach (XmlNode level in levels)
                     {
-                        foreach (XmlNode level in levels)
+                        int duration = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["durationTick"]?.Value ?? "0");
+                        int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
+                        if (skillList.Find(x => x.SkillId == skillId).SkillLevels.Select(x => x.Level).Contains(currentLevel))
                         {
-                            int duration = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["durationTick"]?.Value ?? "0");
-                            int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
-                            if (skillList.Find(x => x.SkillId == skillId).SkillLevels.Select(x => x.Level).Contains(currentLevel))
-                            {
-                                skillList.Find(x => x.SkillId == skillId).SkillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = new SkillAdditionalData(duration);
-                            }
+                            skillList.Find(x => x.SkillId == skillId).SkillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = new SkillAdditionalData(duration);
                         }
                     }
                 }
