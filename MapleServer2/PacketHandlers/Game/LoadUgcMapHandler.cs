@@ -34,7 +34,7 @@ namespace MapleServer2.PacketHandlers.Game
                     homes = new List<Home>() { home };
 
                     session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHouse, home: home));
-                    List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item.Id == 50400190 || x.Item.Id == 50400158).ToList();
+                    List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item.Id == 50400190).ToList();
 
                     CoordF coord;
                     CoordF rotation;
