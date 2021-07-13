@@ -47,7 +47,13 @@ namespace MapleServer2.Servers.Game
             if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player);
+
+                if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
+                {
+                    //If instance is destroyed, reset dungeonSession
+                    GameServer.DungeonManager.ResetDungeonSession(player, FieldManager.InstanceId);
+                }
+
                 // Initialize for new Map
                 FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);

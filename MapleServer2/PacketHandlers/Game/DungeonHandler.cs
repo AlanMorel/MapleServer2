@@ -130,13 +130,14 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            if (dungeonSession.IsDungeonMap(session.Player.MapId))
+            if (dungeonSession.IsDungeonSessionMap(session.Player.MapId))
             {
                 session.SendNotice("You are already in a dungeon");
                 return;
             }
             session.Player.Warp(mapId: dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
         }
+
         private static void HandleAddRewards(GameSession session, PacketReader packet)
         {
             int dungeonId = packet.ReadInt();

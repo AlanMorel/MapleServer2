@@ -53,8 +53,7 @@ namespace MapleServer2.Tools
 
                 //is only called if the leaving player is the last player on the map
                 //get the dungeonsession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(fieldManager.InstanceId);
-                if (dungeonSession != null && GameServer.DungeonManager.IsDungeonUsingFieldInstance(dungeonSession, fieldManager, player))
+                if (GameServer.DungeonManager.IsDungeonUsingFieldInstance(fieldManager, player))
                 {
                     return false;
                 }
