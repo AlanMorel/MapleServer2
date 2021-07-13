@@ -51,7 +51,13 @@ namespace MapleServer2.Servers.Game
                 if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
                 {
                     //If instance is destroyed, reset dungeonSession
-                    GameServer.DungeonManager.ResetDungeonSession(player, FieldManager.InstanceId);
+                    DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
+                    //check if the destroyed map was a dungeon map
+                    if (dungeonSession != null && FieldManager.InstanceId == dungeonSession.DungeonInstanceId
+                        && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
+                    {
+                        GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+                    }
                 }
 
                 // Initialize for new Map
