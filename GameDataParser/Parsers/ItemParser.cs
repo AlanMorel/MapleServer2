@@ -485,6 +485,10 @@ namespace GameDataParser.Parsers
                 bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
                 metadata.EnableBreak = enableBreak;
 
+                XmlNode install = item.SelectSingleNode("install");
+                bool cubeProp = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
+                metadata.IsCubeProp = cubeProp;
+
                 int level = int.Parse(limit.Attributes["levelLimit"].Value);
                 metadata.Level = level;
 

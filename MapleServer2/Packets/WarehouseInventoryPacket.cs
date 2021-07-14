@@ -22,6 +22,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
             pWriter.WriteEnum(WarehouseInventoryPacketMode.StartList);
+
             return pWriter;
         }
 
@@ -30,6 +31,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
             pWriter.WriteEnum(WarehouseInventoryPacketMode.Count);
             pWriter.WriteInt(amount);
+
             return pWriter;
         }
 
@@ -42,6 +44,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1); // unknown
             pWriter.WriteInt(counter);
             pWriter.WriteItem(item);
+
             return pWriter;
         }
 
@@ -50,6 +53,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
             pWriter.WriteEnum(WarehouseInventoryPacketMode.Remove);
             pWriter.WriteLong(itemUid);
+
             return pWriter;
         }
 
@@ -59,6 +63,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(WarehouseInventoryPacketMode.GainItemMessage);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(amount);
+
             return pWriter;
         }
 
@@ -68,6 +73,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(WarehouseInventoryPacketMode.UpdateAmount);
             pWriter.WriteLong(itemUid);
             pWriter.WriteInt(amount);
+
             return pWriter;
         }
 
@@ -75,6 +81,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WAREHOUSE_INVENTORY);
             pWriter.WriteEnum(WarehouseInventoryPacketMode.EndList);
+
             return pWriter;
         }
     }

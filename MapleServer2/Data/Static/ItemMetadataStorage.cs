@@ -218,5 +218,10 @@ namespace MapleServer2.Data.Static
         {
             return map.GetValueOrDefault(itemId).Level;
         }
+
+        public static bool GetCubeProp(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsCubeProp;
+        }
     }
 }

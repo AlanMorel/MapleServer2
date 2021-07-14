@@ -235,13 +235,31 @@ namespace MapleServer2.Servers.Game
                     if (home != null)
                     {
                         Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                        foreach (Cube cube in cubes.Values)
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
                         {
                             IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
                             ugcCube.Coord = cube.CoordF;
                             ugcCube.Rotation = cube.Rotation;
                             State.AddCube(ugcCube);
                         }
+
+                        // for (int x = 0; x < home.Size; x++)
+                        // {
+                        //     float coordX = -1 * (x * Block.BLOCK_SIZE);
+                        //     for (int y = 0; y < home.Size; y++)
+                        //     {
+                        //         float coordY = -1 * (y * Block.BLOCK_SIZE);
+                        //         Cube defaultCube = new Cube();
+                        //         IFieldObject<Cube> ugcCube = RequestFieldObject(defaultCube);
+                        //         ugcCube.Coord = CoordF.From(coordX, coordY, 0);
+                        //         ugcCube.Rotation = CoordF.From(0, 0, 0);
+                        //         if (State.Cubes.Any(x => x.Value.Coord == ugcCube.Coord))
+                        //         {
+                        //             continue;
+                        //         }
+                        //         State.AddCube(ugcCube);
+                        //     }
+                        // }
                     }
                 }
                 else
@@ -250,7 +268,7 @@ namespace MapleServer2.Servers.Game
                     foreach (Home home in homes)
                     {
                         Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                        foreach (Cube cube in cubes.Values)
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
                         {
                             IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
                             ugcCube.Coord = cube.CoordF;

@@ -72,6 +72,8 @@ namespace Maple2Storage.Types.Metadata
         public int OptionConstant;
         [XmlElement(Order = 33)]
         public int OptionLevelFactor;
+        [XmlElement(Order = 34)]
+        public bool IsCubeProp;
 
         // Required for deserialization
         public ItemMetadata()

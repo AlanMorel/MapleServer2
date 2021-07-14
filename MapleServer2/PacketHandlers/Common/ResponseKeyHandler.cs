@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -97,9 +98,9 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(WarehouseInventoryPacket.EndList());
 
                 session.Send(FurnishingInventoryPacket.StartList());
-                foreach (KeyValuePair<long, Cube> kvp in home.FurnishingInventory)
+                foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
                 {
-                    session.Send(FurnishingInventoryPacket.Load(kvp.Value));
+                    session.Send(FurnishingInventoryPacket.Load(cube));
                 }
                 session.Send(FurnishingInventoryPacket.EndList());
             }

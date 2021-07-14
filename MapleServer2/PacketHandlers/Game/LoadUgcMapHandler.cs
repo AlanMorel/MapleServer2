@@ -38,7 +38,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome, home));
 
-                List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item.Id == 50400190).ToList();
+                List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == 50400190).ToList();
                 CoordF coord;
                 CoordF rotation;
                 if (portals.Count > 0)
@@ -67,7 +67,7 @@ namespace MapleServer2.PacketHandlers.Game
             List<Cube> cubes = new List<Cube>();
             homes.ForEach(h =>
             {
-                cubes.AddRange(h.FurnishingInventory.Values.ToList());
+                cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0).ToList());
             });
 
             session.Send(SendCubesPacket.LoadPlots(homes, session.Player.MapId));

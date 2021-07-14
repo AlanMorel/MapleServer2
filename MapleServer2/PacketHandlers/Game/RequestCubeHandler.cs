@@ -134,7 +134,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleBuyPlot(GameSession session, PacketReader packet)
         {
             int groupId = packet.ReadInt();
-            int housingTemplate = packet.ReadInt();
+            int homeTemplate = packet.ReadInt();
             Player player = session.Player;
 
             if (player.Account.Home != null && player.Account.Home.PlotId != 0)
@@ -165,7 +165,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account, player.Name)
+                player.Account.Home = new Home(player.Account, player.Name, homeTemplate)
                 {
                     PlotId = player.MapId,
                     PlotNumber = land.Id,
@@ -233,6 +233,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF coordF = coord.ToFloat();
             Player player = session.Player;
 
+            bool isCubeProp = ItemMetadataStorage.GetCubeProp(itemId);
             int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
             if (plotNumber <= 0)
             {
@@ -247,7 +248,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
             int size = playerInPrivateResidence ? home.Size : plot.Area / 2;
-            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || IsCoordOutsideSizeLimit(coord, size))
+            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (playerInPrivateResidence && IsCoordOutsideSizeLimit(coord, size)))
             {
                 session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
                 return;
@@ -259,9 +260,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (true)
+            if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
             {
-
+                return;
             }
 
             IFieldObject<Cube> fieldCube;
@@ -321,21 +322,22 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
-            if (cube == default)
+            if (cube == default || cube.Value.Item == null)
             {
                 return;
             }
 
-            bool mapIsHouse = player.MapId == (int) Map.PrivateResidence;
+            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
 
-            Home home = mapIsHouse ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
 
             furnishingInventory.Remove(cube.Value.Uid);
+            session.Send(FurnishingInventoryPacket.Remove(cube.Value));
+
             DatabaseManager.Delete(cube.Value);
 
-            session.Send(FurnishingInventoryPacket.Remove(cube.Value));
             Item item = warehouseItems.Values.FirstOrDefault(x => x.Id == cube.Value.Item.Id);
             if (item == default)
             {
@@ -387,20 +389,38 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
-            if (plotNumber < 0)
+            if (plotNumber <= 0)
+            {
+                session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
+                return;
+            }
+
+            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
+            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
             {
                 return;
             }
 
-            // TODO: check if player can edit plot
+            bool isCubeProp = ItemMetadataStorage.GetCubeProp(replacementItemId);
+            UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+
+            byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
+            CoordB groundHeight = GetGroundCoord(coord, player.MapId, height);
+            if (groundHeight == default || (!isCubeProp && coord.Z == groundHeight.Z))
+            {
+                return;
+            }
+
             FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(replacementItemId);
             if (shopMetadata == null || !shopMetadata.Buyable)
             {
                 return;
             }
 
+            // Not checking if oldFieldCube is null on groud height because of default blocks.
             IFieldObject<Cube> oldFieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
-            if (oldFieldCube == default)
+            if (oldFieldCube == default && coord.Z != groundHeight.Z)
             {
                 return;
             }
@@ -408,12 +428,9 @@ namespace MapleServer2.PacketHandlers.Game
             IFieldObject<Cube> newFieldCube;
             Item item;
 
-            bool mapIsHouse = player.MapId == (int) Map.PrivateResidence;
-
-            Home home = mapIsHouse ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
-            if (!warehouseItems.ContainsKey(replacementItemUid))
+            if (!warehouseItems.ContainsKey(replacementItemUid) || warehouseItems[replacementItemUid].Amount <= 0)
             {
                 if (!PurchaseFurnishingItem(session, shopMetadata))
                 {
@@ -441,38 +458,44 @@ namespace MapleServer2.PacketHandlers.Game
                 newFieldCube.Coord = coord.ToFloat();
                 newFieldCube.Rotation = rotation;
 
-                if (item.Amount - 1 > 0)
+                warehouseItems[replacementItemUid].Amount--;
+                if (item.Amount > 0)
                 {
-                    item.Amount--;
                     session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
                 }
                 else
                 {
-                    warehouseItems.Remove(replacementItemUid);
                     session.Send(WarehouseInventoryPacket.Remove(item.Uid));
                 }
             }
+
             furnishingInventory.Add(newFieldCube.Value.Uid, newFieldCube.Value);
-            furnishingInventory.Remove(oldFieldCube.Value.Uid);
-            DatabaseManager.Delete(oldFieldCube.Value);
+            if (oldFieldCube != null)
+            {
+                furnishingInventory.Remove(oldFieldCube.Value.Uid);
+                DatabaseManager.Delete(oldFieldCube.Value);
+                session.Send(FurnishingInventoryPacket.Remove(oldFieldCube.Value));
+                session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
+            }
 
             session.Send(FurnishingInventoryPacket.Load(newFieldCube.Value));
-            session.Send(FurnishingInventoryPacket.Remove(oldFieldCube.Value));
-            Item oldItem = warehouseItems.Values.FirstOrDefault(x => x.Id == oldFieldCube.Value.Item.Id);
-            if (oldItem == default)
+            if (oldFieldCube?.Value.Item != null)
             {
-                oldItem = oldFieldCube.Value.Item;
-                warehouseItems[oldItem.Uid] = oldItem;
-                session.Send(WarehouseInventoryPacket.Load(oldItem, warehouseItems.Values.Count));
-            }
-            else
-            {
-                oldItem.Amount++;
-                session.Send(WarehouseInventoryPacket.UpdateAmount(oldItem.Uid, oldItem.Amount));
+                Item oldItem = warehouseItems.Values.FirstOrDefault(x => x.Id == oldFieldCube.Value.Item.Id);
+                if (oldItem == default)
+                {
+                    oldItem = oldFieldCube.Value.Item;
+                    warehouseItems[oldItem.Uid] = oldItem;
+                    session.Send(WarehouseInventoryPacket.Load(oldItem, warehouseItems.Values.Count));
+                }
+                else
+                {
+                    oldItem.Amount++;
+                    session.Send(WarehouseInventoryPacket.UpdateAmount(oldItem.Uid, oldItem.Amount));
+                }
             }
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer, newFieldCube, sendOnlyObjectId: false));
             session.FieldManager.AddCube(newFieldCube, session.FieldPlayer);
-            session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
         }
 
         private static void HandlePickup(GameSession session, PacketReader packet)
@@ -741,15 +764,22 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int size = (homeSize - 1) * -1;
 
-            if (cubeCoord.Y < size || cubeCoord.Y > 0)
+            return cubeCoord.Y < size || cubeCoord.Y > 0 || cubeCoord.X < size || cubeCoord.X > 0;
+        }
+
+        private static CoordB GetGroundCoord(CoordB coord, int mapId, byte height)
+        {
+            List<MapBlock> blocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
+            for (int i = 0; i <= height; i++)
             {
-                return true;
+                MapBlock blockExists = blocks.FirstOrDefault(x => x.Coord == coord.ToShort());
+                if (blockExists != default)
+                {
+                    return blockExists.Coord.ToByte();
+                }
+                coord -= CoordB.From(coord.X, coord.Y, (sbyte) (coord.Z - 1));
             }
-            else if (cubeCoord.X < size || cubeCoord.X > 0)
-            {
-                return true;
-            }
-            return false;
+            return default;
         }
     }
 }

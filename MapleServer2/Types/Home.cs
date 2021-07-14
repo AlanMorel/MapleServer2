@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Maple2Storage.Types;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -39,7 +40,7 @@ namespace MapleServer2.Types
 
         public Home() { }
 
-        public Home(Account account, string houseName)
+        public Home(Account account, string houseName, int homeTemplate)
         {
             AccountId = account.Id;
             Name = houseName;
@@ -53,8 +54,26 @@ namespace MapleServer2.Types
             Height = 5;
             Password = "******";
             Permissions = new Dictionary<HomePermission, byte>();
+            // GenerateTemplate(this, homeTemplate);
 
             Id = DatabaseManager.CreateHouse(this);
+        }
+
+        private static void GenerateTemplate(Home home, int homeTemplate)
+        {
+            if (homeTemplate == 0)
+            {
+                for (int x = 0; x < home.Size; x++)
+                {
+                    float coordX = -1 * (x * Block.BLOCK_SIZE);
+                    for (int y = 0; y < home.Size; y++)
+                    {
+                        float coordY = -1 * (y * Block.BLOCK_SIZE);
+                        Cube defaultCube = new Cube(new Item(), 1, CoordF.From(coordX, coordY, 0), CoordF.From(0, 0, 0));
+                        home.FurnishingInventory[defaultCube.Uid] = defaultCube;
+                    }
+                }
+            }
         }
     }
 }

@@ -38,11 +38,11 @@ namespace MapleServer2.PacketHandlers.Game
         // The same mode also handles creation of new homes.
         private static void HandleMoveToHome(GameSession session, PacketReader packet)
         {
-            int houseTemplate = packet.ReadInt();
+            int homeTemplate = packet.ReadInt();
             Player player = session.Player;
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account, player.Name);
+                player.Account.Home = new Home(player.Account, player.Name, homeTemplate);
                 GameServer.HomeManager.AddHome(player.Account.Home);
             }
 

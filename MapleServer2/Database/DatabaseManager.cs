@@ -696,6 +696,19 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Entry(home).State = EntityState.Added;
+
+                home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
+                foreach (Item item in home.WarehouseItems)
+                {
+                    context.Entry(item).State = EntityState.Modified;
+                }
+
+                home.FurnishingCubes = home.FurnishingInventory.Values.Where(x => x != null).ToList();
+                foreach (Cube cube in home.FurnishingCubes)
+                {
+                    cube.Home = home;
+                    context.Entry(cube).State = EntityState.Modified;
+                }
                 SaveChanges(context);
                 return home.Id;
             }
@@ -712,7 +725,11 @@ namespace MapleServer2.Database
 
                 if (home != null)
                 {
-                    home.WarehouseItems.ForEach(cube => home.WarehouseInventory.Add(cube.Uid, cube));
+                    home.WarehouseItems.ForEach(item =>
+                    {
+                        item.SetMetadataValues(item.Id);
+                        home.WarehouseInventory.Add(item.Uid, item);
+                    });
                     home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
                     home.WarehouseItems = null;
                     home.FurnishingCubes = null;
