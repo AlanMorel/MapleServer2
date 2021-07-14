@@ -298,7 +298,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
             if (otherPlayer == null)
             {
-                session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, NoticeType.Popup));
+                session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, type: NoticeType.Popup));
                 return;
             }
 

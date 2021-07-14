@@ -30,6 +30,7 @@ namespace MapleServer2.Types
         public bool IsPrivate => !Password.Equals("******");
         public string Password { get; set; }
         public Dictionary<HomePermission, byte> Permissions { get; set; }
+        public List<long> BuildingPermissions = new List<long>();
 
         public readonly Dictionary<long, Item> WarehouseInventory = new Dictionary<long, Item>();
         public List<Item> WarehouseItems { get; set; }

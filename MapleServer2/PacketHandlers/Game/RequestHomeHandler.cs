@@ -17,6 +17,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum RequestHomeMode : byte
         {
+            InviteToHome = 0x01,
             MoveToHome = 0x03
         }
 
@@ -42,10 +43,14 @@ namespace MapleServer2.PacketHandlers.Game
             if (player.Account.Home == null)
             {
                 player.Account.Home = new Home(player.Account, player.Name);
+                GameServer.HomeManager.AddHome(player.Account.Home);
             }
 
-            player.ReturnMapId = player.MapId;
-            player.ReturnCoord = player.SafeBlock;
+            if (player.MapId != (int) Map.PrivateResidence)
+            {
+                player.ReturnMapId = player.MapId;
+                player.ReturnCoord = player.SafeBlock;
+            }
             player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 

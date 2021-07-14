@@ -84,9 +84,10 @@ namespace MapleServer2.PacketHandlers.Common
             {
                 InventoryController.LoadInventoryTab(session, tab);
             }
-            Home home = player.Account.Home;
-            if (home != null)
+
+            if (player.Account.Home != null)
             {
+                Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
                 session.Send(WarehouseInventoryPacket.StartList());
                 int counter = 0;
                 foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)

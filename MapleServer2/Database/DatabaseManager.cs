@@ -59,19 +59,9 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                Account account = context.Accounts
-                .Include(p => p.Home).ThenInclude(p => p.WarehouseItems)
-                .Include(p => p.Home).ThenInclude(p => p.FurnishingCubes).ThenInclude(p => p.Item)
+                return context.Accounts
+                .Include(p => p.Home)
                 .FirstOrDefault(a => a.Id == accountId);
-
-                if (account.Home != null)
-                {
-                    account.Home.WarehouseItems.ForEach(cube => account.Home.WarehouseInventory.Add(cube.Uid, cube));
-                    account.Home.FurnishingCubes.ForEach(cube => account.Home.FurnishingInventory.Add(cube.Uid, cube));
-                    account.Home.WarehouseItems = null;
-                    account.Home.FurnishingCubes = null;
-                }
-                return account;
             }
         }
 
@@ -720,10 +710,13 @@ namespace MapleServer2.Database
                 .Include(x => x.WarehouseItems)
                 .FirstOrDefault(x => x.Id == id);
 
-                home.WarehouseItems.ForEach(cube => home.WarehouseInventory.Add(cube.Uid, cube));
-                home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
-                home.WarehouseItems = null;
-                home.FurnishingCubes = null;
+                if (home != null)
+                {
+                    home.WarehouseItems.ForEach(cube => home.WarehouseInventory.Add(cube.Uid, cube));
+                    home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+                    home.WarehouseItems = null;
+                    home.FurnishingCubes = null;
+                }
 
                 return home;
             }

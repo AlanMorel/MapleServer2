@@ -9,6 +9,7 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -225,23 +226,41 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InteractObjectPacket.AddInteractObjects(objects));
                 }
             }
+
             if (State.Cubes.IsEmpty)
             {
-                // TODO: rework, this won't work for plots and others houses
-                Home home = player.Value.Account.Home;
-                if (home != null)
+                if (MapId == (int) Map.PrivateResidence)
                 {
-                    Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                    foreach (KeyValuePair<long, Cube> kvp in cubes)
+                    Home home = GameServer.HomeManager.GetHome(player.Value.VisitingHomeId);
+                    if (home != null)
                     {
-                        Cube cube = kvp.Value;
-                        IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                        ugcCube.Coord = cube.CoordF;
-                        ugcCube.Rotation = cube.Rotation;
-                        State.AddCube(ugcCube);
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values)
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
+                    }
+                }
+                else
+                {
+                    List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
+                    foreach (Home home in homes)
+                    {
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values)
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
                     }
                 }
             }
+
             foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
             {
                 sender.Send(GuideObjectPacket.Add(guide));

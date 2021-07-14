@@ -5,7 +5,6 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -23,53 +22,55 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Random random = new Random();
 
-            bool isHouse = session.Player.MapId == (int) Map.PrivateResidence;
+            bool isHome = session.Player.MapId == (int) Map.PrivateResidence;
             List<byte> plots = UGCMapMetadataStorage.GetMetadata(session.Player.MapId).Groups.Select(x => x.Id).ToList();
             List<Home> homes;
-            if (isHouse)
+            if (isHome)
             {
-                Home home = DatabaseManager.GetHome(session.Player.VisitingHomeId);
-                if (home != null)
-                {
-                    homes = new List<Home>() { home };
-
-                    session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHouse, home: home));
-                    List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item.Id == 50400190).ToList();
-
-                    CoordF coord;
-                    CoordF rotation;
-                    if (portals.Count > 0)
-                    {
-                        Cube portal = portals.OrderBy(x => random.Next()).Take(1).First();
-                        rotation = portal.Rotation;
-                        coord = portal.CoordF;
-                    }
-                    else
-                    {
-                        byte homeSize = (byte) (home.Size - 1);
-                        int x = -1 * Block.BLOCK_SIZE * homeSize;
-                        coord = CoordF.From(x, x, 151);
-                        rotation = CoordF.From(0, 0, 0);
-                    }
-                    session.Player.Coord = coord;
-                    session.Player.Rotation = rotation;
-                    session.Player.InstanceId = session.Player.VisitingHomeId;
-                }
-                else
+                Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+                if (home == null)
                 {
                     session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(false));
                     return;
                 }
+
+                homes = new List<Home>() { home };
+
+                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome, home));
+
+                List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item.Id == 50400190).ToList();
+                CoordF coord;
+                CoordF rotation;
+                if (portals.Count > 0)
+                {
+                    Cube portal = portals.OrderBy(x => random.Next()).Take(1).First();
+                    rotation = portal.Rotation;
+                    coord = portal.CoordF;
+                }
+                else
+                {
+                    byte homeSize = (byte) (home.Size - 1);
+                    int x = -1 * Block.BLOCK_SIZE * homeSize;
+                    coord = CoordF.From(x, x, 151);
+                    rotation = CoordF.From(0, 0, 0);
+                }
+                session.Player.Coord = coord;
+                session.Player.Rotation = rotation;
+                session.Player.InstanceId = session.Player.VisitingHomeId;
             }
             else
             {
-                homes = DatabaseManager.GetHomesOnMap(session.Player.MapId);
-                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHouse));
+                homes = GameServer.HomeManager.GetPlots(session.Player.MapId);
+                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome));
             }
 
-            session.Send(SendCubesPacket.LoadPlots(homes, session.Player.MapId));
             List<Cube> cubes = new List<Cube>();
-            homes.ForEach(h => cubes.AddRange(h.FurnishingInventory.Values.ToList()));
+            homes.ForEach(h =>
+            {
+                cubes.AddRange(h.FurnishingInventory.Values.ToList());
+            });
+
+            session.Send(SendCubesPacket.LoadPlots(homes, session.Player.MapId));
             session.Send(SendCubesPacket.LoadCubes(cubes));
             session.Send(SendCubesPacket.LoadAvailablePlots(homes, plots));
             session.Send(SendCubesPacket.Expiration(homes.Where(x => x.PlotNumber != 0).ToList()));

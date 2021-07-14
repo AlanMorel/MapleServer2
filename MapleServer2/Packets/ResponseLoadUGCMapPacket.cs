@@ -7,13 +7,13 @@ namespace MapleServer2.Packets
 {
     public class ResponseLoadUGCMapPacket
     {
-        public static Packet LoadUGCMap(bool isHouse, Home home = null)
+        public static Packet LoadUGCMap(bool isHome, Home home = null)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
             pWriter.WriteLong();
-            pWriter.WriteBool(isHouse);
+            pWriter.WriteBool(isHome);
 
-            if (isHouse)
+            if (isHome)
             {
                 pWriter.WriteLong(home.AccountId);
                 pWriter.WriteUnicodeString(home.Name);

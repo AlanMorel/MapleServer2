@@ -42,6 +42,8 @@ namespace MapleServer2.Packets
             ChangeBackground = 0x33,
             ChangeLighting = 0x34,
             ChangeCamera = 0x36,
+            GiveBuildingPermission = 0x39,
+            RemoveBuildingPermission = 0x3A,
         }
 
         public static Packet LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid)
@@ -245,6 +247,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.Account.Home.PlotNumber);
             pWriter.WriteInt(player.Account.Home.ApartmentNumber);
             pWriter.WriteUnicodeString(player.Account.Home.Name);
+
             return pWriter;
         }
 
@@ -407,6 +410,27 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ResponseCubePacketMode.ChangeCamera);
             pWriter.WriteByte();
             pWriter.WriteByte(camera);
+
+            return pWriter;
+        }
+
+        public static Packet GiveBuildingPermission(long accountId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.GiveBuildingPermission);
+            pWriter.WriteByte();
+            pWriter.WriteLong(accountId);
+
+            return pWriter;
+        }
+
+        public static Packet RemoveBuildingPermission(long accountId, string characterName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.RemoveBuildingPermission);
+            pWriter.WriteByte();
+            pWriter.WriteLong(accountId);
+            pWriter.WriteUnicodeString(characterName);
 
             return pWriter;
         }

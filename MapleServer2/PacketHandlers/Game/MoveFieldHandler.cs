@@ -132,9 +132,18 @@ namespace MapleServer2.PacketHandlers.Game
             string password = packet.ReadUnicodeString();
 
             Player target = GameServer.Storage.GetPlayerByAccountId(accountId);
+            Player player = session.Player;
+
             Home home = target.Account.Home;
             if (target == null || home == null)
             {
+                session.SendNotice("This player does not have a home!");
+                return;
+            }
+
+            if (player.VisitingHomeId == home.Id)
+            {
+                session.SendNotice($"You are already at {target.Name}'s home!");
                 return;
             }
 
@@ -151,23 +160,18 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(EnterUGCMapPacket.WrongPassword(accountId));
                     return;
                 }
-
-                MoveToHome(session, target, home);
-                return;
             }
 
-            MoveToHome(session, target, home);
-
-            static void MoveToHome(GameSession session, Player target, Home home)
+            if (player.MapId != (int) Map.PrivateResidence)
             {
-                session.Player.ReturnMapId = session.Player.MapId;
-                session.Player.ReturnCoord = session.Player.SafeBlock;
-                session.Player.VisitingHomeId = home.Id;
-                session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
-
-                MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(home.MapId);
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), home.MapId, instanceId: home.Id);
+                player.ReturnMapId = player.MapId;
+                player.ReturnCoord = player.SafeBlock;
             }
+            player.VisitingHomeId = home.Id;
+            session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
+
+            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(home.MapId);
+            player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), home.MapId, instanceId: home.Id);
         }
 
         private static void HandleReturnMap(GameSession session)
