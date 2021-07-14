@@ -242,24 +242,6 @@ namespace MapleServer2.Servers.Game
                             ugcCube.Rotation = cube.Rotation;
                             State.AddCube(ugcCube);
                         }
-
-                        // for (int x = 0; x < home.Size; x++)
-                        // {
-                        //     float coordX = -1 * (x * Block.BLOCK_SIZE);
-                        //     for (int y = 0; y < home.Size; y++)
-                        //     {
-                        //         float coordY = -1 * (y * Block.BLOCK_SIZE);
-                        //         Cube defaultCube = new Cube();
-                        //         IFieldObject<Cube> ugcCube = RequestFieldObject(defaultCube);
-                        //         ugcCube.Coord = CoordF.From(coordX, coordY, 0);
-                        //         ugcCube.Rotation = CoordF.From(0, 0, 0);
-                        //         if (State.Cubes.Any(x => x.Value.Coord == ugcCube.Coord))
-                        //         {
-                        //             continue;
-                        //         }
-                        //         State.AddCube(ugcCube);
-                        //     }
-                        // }
                     }
                 }
                 else

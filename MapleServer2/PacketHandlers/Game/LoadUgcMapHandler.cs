@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     byte homeSize = (byte) (home.Size - 1);
                     int x = -1 * Block.BLOCK_SIZE * homeSize;
-                    coord = CoordF.From(x, x, 151);
+                    coord = CoordF.From(x, x, 300);
                     rotation = CoordF.From(0, 0, 0);
                 }
                 session.Player.Coord = coord;

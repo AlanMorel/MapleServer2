@@ -63,16 +63,7 @@ namespace MapleServer2.Types
         {
             if (homeTemplate == 0)
             {
-                for (int x = 0; x < home.Size; x++)
-                {
-                    float coordX = -1 * (x * Block.BLOCK_SIZE);
-                    for (int y = 0; y < home.Size; y++)
-                    {
-                        float coordY = -1 * (y * Block.BLOCK_SIZE);
-                        Cube defaultCube = new Cube(new Item(), 1, CoordF.From(coordX, coordY, 0), CoordF.From(0, 0, 0));
-                        home.FurnishingInventory[defaultCube.Uid] = defaultCube;
-                    }
-                }
+
             }
         }
     }

@@ -330,26 +330,7 @@ namespace MapleServer2.PacketHandlers.Game
             bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
 
             Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
-            Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
-            Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
-
-            furnishingInventory.Remove(cube.Value.Uid);
-            session.Send(FurnishingInventoryPacket.Remove(cube.Value));
-
-            DatabaseManager.Delete(cube.Value);
-
-            Item item = warehouseItems.Values.FirstOrDefault(x => x.Id == cube.Value.Item.Id);
-            if (item == default)
-            {
-                warehouseItems[cube.Value.Item.Uid] = cube.Value.Item;
-                session.Send(WarehouseInventoryPacket.Load(cube.Value.Item, warehouseItems.Values.Count));
-            }
-            else
-            {
-                item.Amount++;
-                session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
-            }
-            session.FieldManager.RemoveCube(cube, session.FieldPlayer);
+            RemoveCube(session, cube, home);
         }
 
         private static void HandleRotateCube(GameSession session, PacketReader packet)
@@ -407,7 +388,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
             CoordB groundHeight = GetGroundCoord(coord, player.MapId, height);
-            if (groundHeight == default || (!isCubeProp && coord.Z == groundHeight.Z))
+            if (groundHeight == default || !isCubeProp && coord.Z == groundHeight.Z)
             {
                 return;
             }
@@ -418,7 +399,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            // Not checking if oldFieldCube is null on groud height because of default blocks.
+            // Not checking if oldFieldCube is null on ground height because of default blocks.
             IFieldObject<Cube> oldFieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
             if (oldFieldCube == default && coord.Z != groundHeight.Z)
             {
@@ -594,7 +575,36 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            // TODO: Remove the correct blocks if size is decreasing
+            if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
+            {
+                int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
+                for (int i = 0; i < home.Size; i++)
+                {
+                    for (int j = 0; j <= home.Height; j++)
+                    {
+                        CoordF coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
+                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                        if (cube != default)
+                        {
+                            RemoveCube(session, cube, home);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < home.Size; i++)
+                {
+                    for (int j = 0; j <= home.Height; j++)
+                    {
+                        CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
+                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                        if (cube != default)
+                        {
+                            RemoveCube(session, cube, home);
+                        }
+                    }
+                }
+            }
+
             switch (mode)
             {
                 case RequestCubeMode.IncreaseSize:
@@ -777,9 +787,33 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     return blockExists.Coord.ToByte();
                 }
-                coord -= CoordB.From(coord.X, coord.Y, (sbyte) (coord.Z - 1));
+                coord -= CoordB.From(0, 0, 1);
             }
             return default;
+        }
+
+        private static void RemoveCube(GameSession session, IFieldObject<Cube> cube, Home home)
+        {
+            Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
+            Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+
+            furnishingInventory.Remove(cube.Value.Uid);
+            session.Send(FurnishingInventoryPacket.Remove(cube.Value));
+
+            DatabaseManager.Delete(cube.Value);
+
+            Item item = warehouseItems.Values.FirstOrDefault(x => x.Id == cube.Value.Item.Id);
+            if (item == default)
+            {
+                warehouseItems[cube.Value.Item.Uid] = cube.Value.Item;
+                session.Send(WarehouseInventoryPacket.Load(cube.Value.Item, warehouseItems.Values.Count));
+            }
+            else
+            {
+                item.Amount++;
+                session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
+            }
+            session.FieldManager.RemoveCube(cube, session.FieldPlayer);
         }
     }
 }
