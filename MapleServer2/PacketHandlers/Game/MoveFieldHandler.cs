@@ -203,8 +203,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = home.Id;
             session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
 
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(home.MapId);
-            player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), home.MapId, instanceId: home.Id);
+            player.Warp(home.MapId, instanceId: home.Id);
         }
 
         private static void HandleReturnMap(GameSession session)
@@ -212,7 +211,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
             CoordF returnCoord = player.ReturnCoord;
             returnCoord.Z += Block.BLOCK_SIZE;
-            player.Warp(returnCoord, player.Rotation, player.ReturnMapId);
+            player.Warp(player.ReturnMapId, returnCoord, player.Rotation);
             player.ReturnMapId = 0;
             player.VisitingHomeId = 0;
         }

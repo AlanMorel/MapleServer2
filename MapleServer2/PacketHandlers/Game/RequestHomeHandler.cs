@@ -1,7 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -54,8 +52,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(player.Account.Home.MapId);
-            player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), player.Account.Home.MapId, instanceId: player.Account.Home.Id);
+            player.Warp(player.Account.Home.MapId, instanceId: player.Account.Home.Id);
         }
     }
 }
