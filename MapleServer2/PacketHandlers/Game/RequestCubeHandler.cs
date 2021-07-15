@@ -321,15 +321,19 @@ namespace MapleServer2.PacketHandlers.Game
             CoordB coord = packet.Read<CoordB>();
             Player player = session.Player;
 
+            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
+            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
+            {
+                return;
+            }
+
             IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
             if (cube == default || cube.Value.Item == null)
             {
                 return;
             }
 
-            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
-
-            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             RemoveCube(session, cube, home);
         }
 
@@ -338,7 +342,13 @@ namespace MapleServer2.PacketHandlers.Game
             CoordB coord = packet.Read<CoordB>();
             Player player = session.Player;
 
-            // TODO: check if player can edit plot
+            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
+            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
+            {
+                return;
+            }
+
             IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
             if (cube == default)
             {
@@ -346,10 +356,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             cube.Rotation -= CoordF.From(0, 0, 90);
-
-            bool mapIsHouse = player.MapId == (int) Map.PrivateResidence;
-
-            Home home = mapIsHouse ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             home.FurnishingInventory[cube.Value.Uid].Rotation = cube.Rotation;
 
             session.Send(ResponseCubePacket.RotateCube(session.FieldPlayer, cube));
@@ -575,35 +581,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
-            {
-                int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
-                for (int i = 0; i < home.Size; i++)
-                {
-                    for (int j = 0; j <= home.Height; j++)
-                    {
-                        CoordF coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
-                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
-                        if (cube != default)
-                        {
-                            RemoveCube(session, cube, home);
-                        }
-                    }
-                }
-
-                for (int i = 0; i < home.Size; i++)
-                {
-                    for (int j = 0; j <= home.Height; j++)
-                    {
-                        CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
-                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
-                        if (cube != default)
-                        {
-                            RemoveCube(session, cube, home);
-                        }
-                    }
-                }
-            }
+            RemoveBlocks(session, mode, home);
 
             switch (mode)
             {
@@ -790,6 +768,55 @@ namespace MapleServer2.PacketHandlers.Game
                 coord -= CoordB.From(0, 0, 1);
             }
             return default;
+        }
+
+        private static void RemoveBlocks(GameSession session, RequestCubeMode mode, Home home)
+        {
+            if (mode == RequestCubeMode.DecreaseSize)
+            {
+                int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
+                for (int i = 0; i < home.Size; i++)
+                {
+                    for (int j = 0; j <= home.Height; j++)
+                    {
+                        CoordF coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
+                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                        if (cube != default)
+                        {
+                            RemoveCube(session, cube, home);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < home.Size; i++)
+                {
+                    for (int j = 0; j <= home.Height; j++)
+                    {
+                        CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
+                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                        if (cube != default)
+                        {
+                            RemoveCube(session, cube, home);
+                        }
+                    }
+                }
+            }
+
+            if (mode == RequestCubeMode.DecreaseHeight)
+            {
+                for (int i = 0; i < home.Size; i++)
+                {
+                    for (int j = 0; j < home.Size; j++)
+                    {
+                        CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE * -1, home.Height * Block.BLOCK_SIZE);
+                        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                        if (cube != default)
+                        {
+                            RemoveCube(session, cube, home);
+                        }
+                    }
+                }
+            }
         }
 
         private static void RemoveCube(GameSession session, IFieldObject<Cube> cube, Home home)

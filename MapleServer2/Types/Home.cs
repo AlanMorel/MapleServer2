@@ -50,11 +50,9 @@ namespace MapleServer2.Types
             PlotNumber = 0;
             ApartmentNumber = 0;
             Expiration = 32503561200; // Year 2999
-            Size = 10;
-            Height = 5;
             Password = "******";
             Permissions = new Dictionary<HomePermission, byte>();
-            // GenerateTemplate(this, homeTemplate);
+            GenerateTemplate(this, homeTemplate);
 
             Id = DatabaseManager.CreateHouse(this);
         }
@@ -63,8 +61,55 @@ namespace MapleServer2.Types
         {
             if (homeTemplate == 0)
             {
-
+                home.Size = 4;
+                home.Height = 5;
+                HomeTemplates.WoodlandPath().ForEach(x => home.FurnishingInventory.Add(x.Uid, x));
             }
+        }
+    }
+
+    public static class HomeTemplates
+    {
+        public static List<Cube> WoodlandPath()
+        {
+            return new List<Cube>
+            {
+                new Cube(new Item(50100045), 1, CoordF.From(-300, -450, 0), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100079), 1, CoordF.From(-150, -450, 0), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100079), 1, CoordF.From(0, -450, 0), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100079), 1, CoordF.From(-450, -150, 0), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100079), 1, CoordF.From(-450, 0, 0), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100079), 1, CoordF.From(-300, 0, 0), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100079), 1, CoordF.From(-150, 0, 0), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100079), 1, CoordF.From(0, -150, 0), CoordF.From(0, 0, 0)),
+                new Cube(new Item(50100079), 1, CoordF.From(0, -300, 0), CoordF.From(0, 0, 0)),
+                new Cube(new Item(50100079), 1, CoordF.From(-150, -300, 0), CoordF.From(0, 0, 270)),
+                new Cube(new Item(50200524), 1, CoordF.From(-450, 0, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50200524), 1, CoordF.From(-300, 0, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100247), 1, CoordF.From(-150, 0, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100247), 1, CoordF.From(0, 0, 150), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100000), 1, CoordF.From(-150, -300, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50200004), 1, CoordF.From(-300, -450, 150), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50200378), 1, CoordF.From(-450, -150, 300), CoordF.From(0, 0, 270)),
+                new Cube(new Item(50200373), 1, CoordF.From(-300, -150, 300), CoordF.From(0, 0, 270)),
+                new Cube(new Item(50200368), 1, CoordF.From(-150, 0, 450), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100290), 1, CoordF.From(-450, -300, 0), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100290), 1, CoordF.From(-150, -450, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100289), 1, CoordF.From(0, -450, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100289), 1, CoordF.From(-150, -150, 150), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50100289), 1, CoordF.From(-450, -150, 150), CoordF.From(0, 0, 270)),
+                new Cube(new Item(50100290), 1, CoordF.From(-300, -150, 150), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100290), 1, CoordF.From(-150, 0, 300), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100289), 1, CoordF.From(0, 0, 300), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100289), 1, CoordF.From(-450, -450, 0), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50200591), 1, CoordF.From(-150, -450, 300), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50200592), 1, CoordF.From(0, -450, 300), CoordF.From(0, 0, 90)),
+                new Cube(new Item(50400109), 1, CoordF.From(0, 0, 450), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100006), 1, CoordF.From(0, -300, 150), CoordF.From(0, 0, 0)),
+                new Cube(new Item(50100006), 1, CoordF.From(-300, -300, 0), CoordF.From(0, 0, 270)),
+                new Cube(new Item(50100000), 1, CoordF.From(0, -150, 300), CoordF.From(0, 0, 180)),
+                new Cube(new Item(50100006), 1, CoordF.From(0, -150, 150), CoordF.From(0, 0, 180))
+            };
         }
     }
 }
