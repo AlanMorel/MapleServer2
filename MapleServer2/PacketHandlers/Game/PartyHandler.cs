@@ -21,6 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
             Kick = 0x4,
             SetLeader = 0x11,
             FinderJoin = 0x17,
+            SummonParty = 0x1D,
             VoteKick = 0x2D,
             ReadyCheck = 0x2E,
             FindDungeonParty = 0x21,
@@ -51,6 +52,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case PartyMode.FinderJoin:
                     HandleFinderJoin(session, packet);
+                    break;
+                case PartyMode.SummonParty:
+                    HandleSummonParty();
                     break;
                 case PartyMode.VoteKick:
                     HandleVoteKick(session, packet);
@@ -316,6 +320,11 @@ namespace MapleServer2.PacketHandlers.Game
             //TODO: Keep a counter of vote kicks for a player?
         }
 
+        public static void HandleSummonParty()
+        {
+            //TODO: implement Summon Party Button
+            return;
+        }
         private static void HandleStartReadyCheck(GameSession session)
         {
             Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);

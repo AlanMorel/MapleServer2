@@ -28,6 +28,8 @@ namespace GameDataParser.Parsers
              * }
              */
             Dictionary<string, Dictionary<string, string>> mapObjects = new Dictionary<string, Dictionary<string, string>>();
+            List<string> portalNames = new List<string> { "MS2RoomEnterPortal", "MS2RoomLeavePortal", "MS2TriggerPortal", "Portal_Type_A", "Portal_BossGate",
+                        "Portal_BossGate_02", "Portal_cube", "Portal_entrance", "Portal_memberance_A", "Portal_shadowWorld", "Portal_UGC", "Portal_UGCspawn", "Portal_underworld", "Eff_portal_test_A_"};
 
             foreach (PackFileEntry entry in Resources.ExportedFiles
                 .Where(entry => Regex.Match(entry.Name, @"^flat/presets/presets (common|object|npc)/").Success)
@@ -232,7 +234,7 @@ namespace GameDataParser.Parsers
 
                         metadata.MobSpawns.Add(new MapMobSpawn(int.Parse(mobSpawnPointID), CoordS.Parse(mobPositionValue), mobNpcCount, mobNpcList, mobSpawnRadius, mobSpawnData));
                     }
-                    else if (modelName == "Portal_entrance" || modelName == "Portal_cube" || modelName.Contains("Portal_memberance"))
+                    else if (portalNames.Contains(modelName))
                     {
                         XmlNode portalIdNode = node.SelectSingleNode("property[@name='PortalID']");
                         XmlNode targetFieldNode = node.SelectSingleNode("property[@name='TargetFieldSN']");
@@ -242,6 +244,7 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
+                        XmlNode portalTypeNode = node.SelectSingleNode("property[@name='PortalType']");
                         XmlNode visibleNode = node.SelectSingleNode("property[@name='IsVisible']");
                         XmlNode enabledNode = node.SelectSingleNode("property[@name='PortalEnable']");
                         XmlNode minimapVisibleNode = node.SelectSingleNode("property[@name='MinimapIconVisible']");
@@ -272,6 +275,11 @@ namespace GameDataParser.Parsers
                         {
                             targetPortalId = int.Parse(targetIdNode?.FirstChild.Attributes["value"].Value);
                         }
+                        byte portalType = 0;
+                        if (portalTypeNode != null)
+                        {
+                            portalType = byte.Parse(portalTypeNode?.FirstChild.Attributes["value"].Value);
+                        }
                         string positionValue = coordNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
                         string rotationValue = rotationNode?.FirstChild.Attributes["value"].Value ?? "0, 0, 0";
 
@@ -281,7 +289,7 @@ namespace GameDataParser.Parsers
 
                         CoordS position = CoordS.Parse(positionValue);
                         CoordS rotation = CoordS.Parse(rotationValue);
-                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation, targetPortalId));
+                        metadata.Portals.Add(new MapPortal(portalId, modelName, flags, target, position, rotation, targetPortalId, portalType));
                     }
                     else if (modelName == "SpawnPointNPC" && !name.StartsWith("SpawnPointNPC"))
                     {

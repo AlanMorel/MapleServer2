@@ -26,6 +26,14 @@ namespace MapleServer2.PacketHandlers.Game
             ReturnMap = 0x03
         }
 
+        private enum PortalTypes
+        {
+            Field = 0,
+            DungeonReturnToLobby = 1,
+            DungeonEnter = 9,
+            LeaveDungeon = 13
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             RequestMoveFieldMode mode = (RequestMoveFieldMode) packet.ReadByte();
@@ -64,6 +72,30 @@ namespace MapleServer2.PacketHandlers.Game
             if (srcPortal == default)
             {
                 System.Console.WriteLine($"Unable to find portal:{portalId} in map:{srcMapId}");
+                return;
+            }
+            switch ((PortalTypes) srcPortal.PortalType)
+            {
+                case PortalTypes.Field:
+                    break;
+                case PortalTypes.DungeonReturnToLobby:
+                    DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(session.Player.InstanceId);
+                    if (dungeonSession == null)
+                    {
+                        return;
+                    }
+                    session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
+                    return;
+                case PortalTypes.LeaveDungeon:
+                    HandleLeaveInstance(session);
+                    return;
+                default:
+                    System.Console.WriteLine($"unknown portal type id: {srcPortal.PortalType}");
+                    break;
+            }
+
+            if (srcPortal.Target == 0)
+            {
                 return;
             }
 
@@ -111,7 +143,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            session.Player.Warp(coord, dstPortal.Rotation.ToFloat(), srcPortal.Target);
+            session.Player.Warp(srcPortal.Target, coord, dstPortal.Rotation.ToFloat());
         }
 
         private static void HandleLeaveInstance(GameSession session)
@@ -120,6 +152,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Rotation = session.FieldPlayer.Rotation;
             session.Player.Coord = session.Player.ReturnCoord;
             session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
+            session.Player.InstanceId = session.Player.InstanceId;   //return back to dungeon instance id or if not dungeon back to normal
             DatabaseManager.UpdateCharacter(session.Player);
             session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
         }

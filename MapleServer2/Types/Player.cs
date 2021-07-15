@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -129,8 +130,12 @@ namespace MapleServer2.Types
         private TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
 
+        public List<Status> StatusContainer = new List<Status>();
         public List<int> UnlockedTaxis;
         public List<int> UnlockedMaps;
+
+        public List<string> GmFlags = new List<string>();
+        public int DungeonSessionId = -1;
 
         class TimeInfo
         {
@@ -205,13 +210,34 @@ namespace MapleServer2.Types
             ActiveSkillTabId = SkillTabs[0].TabId;
         }
 
-        public void Warp(CoordF coord, CoordF rotation, int mapId, long instanceId = 0)
+        public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
+            if (coord == default || rotation == default)
+            {
+                MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+                if (spawn == null)
+                {
+                    Session.SendNotice($"Could not find a spawn for map {mapId}");
+                    return;
+                }
+                if (coord == default)
+                {
+                    Coord = spawn.Coord.ToFloat();
+                    SafeBlock = spawn.Coord.ToFloat();
+                }
+                if (rotation == default)
+                {
+                    Rotation = spawn.Rotation.ToFloat();
+                }
+            }
+            else
+            {
+                Coord = coord;
+                Rotation = rotation;
+                SafeBlock = coord;
+            }
             MapId = mapId;
             InstanceId = instanceId;
-            Coord = coord;
-            Rotation = rotation;
-            SafeBlock = coord;
 
             if (!UnlockedMaps.Contains(MapId))
             {
@@ -258,9 +284,13 @@ namespace MapleServer2.Types
                 ConsumeStamina(staminaCost);
                 SkillCast = skillCast;
 
-                if (skillCast.IsBuff())
+                // TODO: Since the method skillCast.IsBuff is not correct implemented, this is true for now for testing purposes.
+                // This will have to check many Buff types and subtypes to consider the skill a buff or debuff.
+                if (true)
                 {
-                    // TODO: Add buff timer
+                    Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
+                    Session.SendNotice(skillCast.SkillId.ToString());
+                    StatusHandler(status);
                 }
 
                 // Refresh out-of-combat timer
@@ -275,6 +305,23 @@ namespace MapleServer2.Types
                 return skillCast;
             }
             return null;
+        }
+
+        private void StatusHandler(Status status)
+        {
+            StatusContainer.Add(status);
+            Session.Send(BuffPacket.SendBuff(0, status));
+            RemoveStatusTask(status);
+        }
+
+        private Task RemoveStatusTask(Status status)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(status.Duration);
+                StatusContainer.Remove(status);
+                Session.Send(BuffPacket.SendBuff(1, status));
+            });
         }
 
         private Task StartCombatEnd(CancellationTokenSource ct)

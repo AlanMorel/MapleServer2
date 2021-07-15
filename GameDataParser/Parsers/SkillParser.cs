@@ -31,6 +31,7 @@ namespace GameDataParser.Parsers
                     string skillState = kinds.Attributes["state"]?.Value ?? "";
                     byte skillAttackType = byte.Parse(ui.Attributes["attackType"]?.Value ?? "0");
                     byte skillType = byte.Parse(kinds.Attributes["type"].Value);
+                    byte skillSubType = byte.Parse(kinds.Attributes["subType"]?.Value ?? "0");
                     byte skillElement = byte.Parse(kinds.Attributes["element"].Value);
                     byte skillSuperArmor = byte.Parse(stateAttr.Attributes["superArmor"].Value);
                     bool skillRecovery = int.Parse(kinds.Attributes["spRecoverySkill"]?.Value ?? "0") == 1;
@@ -54,7 +55,7 @@ namespace GameDataParser.Parsers
                         skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion));
                     }
 
-                    skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillElement, skillSuperArmor, skillRecovery, skillBuff));
+                    skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery, skillBuff));
                 }
                 // Parsing SubSkills
                 else if (entry.Name.StartsWith("table/job"))
@@ -111,6 +112,30 @@ namespace GameDataParser.Parsers
                                     int[] sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
                                 }
                             }
+                        }
+                    }
+                }
+            }
+            // Parsing Additional Data
+            foreach (PackFileEntry entry in Resources.XmlFiles)
+            {
+                if (!entry.Name.StartsWith("additionaleffect"))
+                {
+                    continue;
+                }
+                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlNodeList levels = document.SelectNodes("/ms2/level");
+
+                int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+                if (skillList.Select(x => x.SkillId).Contains(skillId))
+                {
+                    foreach (XmlNode level in levels)
+                    {
+                        int duration = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["durationTick"]?.Value ?? "0");
+                        int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
+                        if (skillList.Find(x => x.SkillId == skillId).SkillLevels.Select(x => x.Level).Contains(currentLevel))
+                        {
+                            skillList.Find(x => x.SkillId == skillId).SkillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = new SkillAdditionalData(duration);
                         }
                     }
                 }

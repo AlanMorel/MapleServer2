@@ -348,12 +348,8 @@ namespace MapleServer2.PacketHandlers.Game
         public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
         {
             int fieldID = int.Parse(packet.ReadUnicodeString());
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(fieldID);
-            if (spawn != null)
-            {
-                InventoryController.Consume(session, item.Uid, 1);
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), fieldID);
-            }
+            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Warp(fieldID);
         }
 
         public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)

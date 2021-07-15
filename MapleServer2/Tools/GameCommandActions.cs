@@ -26,6 +26,19 @@ namespace MapleServer2.Tools
                 case "completequest":
                     ProcessQuestCommand(session, args.Length > 1 ? args[1] : "");
                     break;
+                case "oneshot":
+                    Player player = session.Player;
+                    if (player.GmFlags.Contains("oneshot"))
+                    {
+                        player.GmFlags.Remove("oneshot");
+                        session.SendNotice("oneshot mode disabled");
+                    }
+                    else
+                    {
+                        session.Player.GmFlags.Add("oneshot");
+                        session.SendNotice("oneshot mode enabled");
+                    }
+                    break;
                 case "status":
                     ProcessStatusCommand(session, args.Length > 1 ? args[1] : "");
                     break;
@@ -274,7 +287,7 @@ namespace MapleServer2.Tools
             _ = int.TryParse(config.GetValueOrDefault("instance", "0"), out int instanceId);
             if (mapId == 0)
             {
-                session.SendNotice($"Current map id:{session.Player.MapId}");
+                session.SendNotice($"Current map id:{session.Player.MapId} instance: {session.Player.InstanceId}");
                 return;
             }
 
@@ -284,16 +297,7 @@ namespace MapleServer2.Tools
                 return;
             }
 
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-
-            if (spawn != null)
-            {
-                session.Player.Warp(spawn.Coord.ToFloat(), spawn.Rotation.ToFloat(), mapId, instanceId);
-                return;
-            }
-
-            session.SendNotice("Could not find coordinates to spawn on that map.");
-            return;
+            session.Player.Warp(mapId: mapId, instanceId: instanceId);
         }
 
         private static void ProcessNpcCommand(GameSession session, string command)
@@ -364,8 +368,7 @@ namespace MapleServer2.Tools
             {
                 return;
             }
-            Status status = new Status(statusId, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, 1, 1);
-            session.Send(BuffPacket.SendBuff(0, status));
+            session.FieldPlayer.Value.Cast(statusId, 1, GuidGenerator.Long(), GuidGenerator.Int());
         }
 
         private static Dictionary<string, string> ToMap(this string command)
