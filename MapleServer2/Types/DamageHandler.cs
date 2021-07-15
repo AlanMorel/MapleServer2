@@ -19,6 +19,10 @@ namespace MapleServer2.Types
 
         public static DamageHandler CalculateDamage(SkillCast skill, Player player, Mob mob, bool isCrit = false)
         {
+            if (player.GmFlags.Contains("oneshot"))
+            {
+                return new DamageHandler((double) mob.Stats.Hp.Total, true);
+            }
             // TODO: Calculate attack damage w/ stats
             double attackDamage = 300;
             double skillDamageRate = isCrit ? skill.GetCriticalDamage() : skill.GetDamageRate();

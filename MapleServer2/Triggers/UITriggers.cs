@@ -1,5 +1,6 @@
 ﻿using Maple2.Trigger;
 using Maple2.Trigger.Enum;
+using MapleServer2.Packets;
 
 namespace MapleServer2.Triggers
 {
@@ -63,6 +64,7 @@ namespace MapleServer2.Triggers
 
         public void ShowGuideSummary(int entityId, int textId, int duration)
         {
+            Field.BroadcastPacket(TriggerPacket.Banner(02, textId, duration));
         }
 
         public void SideNpcTalk(int npcId, string illust, int duration, string script, string voice, SideNpcTalkType type, string usm)

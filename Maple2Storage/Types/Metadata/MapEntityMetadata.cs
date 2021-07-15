@@ -261,11 +261,13 @@ namespace Maple2Storage.Types.Metadata
         public readonly CoordS Rotation;
         [XmlElement(Order = 7)]
         public readonly int TargetPortalId;
+        [XmlElement(Order = 8)]
+        public readonly byte PortalType;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId)
+        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType)
         {
             Id = id;
             Name = name;
@@ -274,10 +276,11 @@ namespace Maple2Storage.Types.Metadata
             Coord = coord;
             Rotation = rotation;
             TargetPortalId = targetPortalId;
+            PortalType = portalType;
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId})";
+            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType})";
 
         protected bool Equals(MapPortal other)
         {
@@ -287,7 +290,8 @@ namespace Maple2Storage.Types.Metadata
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
                    && Rotation.Equals(other.Rotation)
-                   && TargetPortalId == other.TargetPortalId;
+                   && TargetPortalId == other.TargetPortalId
+                   && PortalType == other.PortalType;
         }
 
         public override bool Equals(object obj)

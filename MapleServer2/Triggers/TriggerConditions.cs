@@ -16,7 +16,8 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
-            return false;
+            //TODO: Implement checking dungeon lobby user count. The below is temporary.
+            return !Field.State.Players.IsEmpty;
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)
@@ -121,7 +122,8 @@ namespace MapleServer2.Triggers
 
         public bool WaitTick(int waitTick)
         {
-            return false;
+            NextTick += waitTick;
+            return true;
         }
 
         public bool WeddingEntryInField(WeddingEntryType type)

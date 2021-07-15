@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -139,6 +140,9 @@ namespace MapleServer2.Types
         public List<int> UnlockedTaxis;
         public List<int> UnlockedMaps;
 
+        public List<string> GmFlags = new List<string>();
+        public int DungeonSessionId = -1;
+
         class TimeInfo
         {
             public long CharCreation;
@@ -213,13 +217,34 @@ namespace MapleServer2.Types
             ActiveSkillTabId = SkillTabs[0].TabId;
         }
 
-        public void Warp(CoordF coord, CoordF rotation, int mapId, int instanceId = 0)
+        public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, int instanceId = 0)
         {
+            if (coord == default || rotation == default)
+            {
+                MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+                if (spawn == null)
+                {
+                    Session.SendNotice($"Could not find a spawn for map {mapId}");
+                    return;
+                }
+                if (coord == default)
+                {
+                    Coord = spawn.Coord.ToFloat();
+                    SafeBlock = spawn.Coord.ToFloat();
+                }
+                if (rotation == default)
+                {
+                    Rotation = spawn.Rotation.ToFloat();
+                }
+            }
+            else
+            {
+                Coord = coord;
+                Rotation = rotation;
+                SafeBlock = coord;
+            }
             MapId = mapId;
             InstanceId = instanceId;
-            Coord = coord;
-            Rotation = rotation;
-            SafeBlock = coord;
 
             if (!UnlockedMaps.Contains(MapId))
             {
