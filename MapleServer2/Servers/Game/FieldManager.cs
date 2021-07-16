@@ -93,6 +93,7 @@ namespace MapleServer2.Servers.Game
                     IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
+                    PortalType = portal.PortalType
                 });
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);

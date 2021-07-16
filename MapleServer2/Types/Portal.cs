@@ -15,10 +15,18 @@ namespace MapleServer2.Types
         public string Host;
         public bool IsPassEnabled;
         public string Passcode;
+        public byte PortalType;
 
         public Portal(int id)
         {
             Id = id;
+        }
+
+        public void Update(bool visible, bool enabled, bool minimapVisible)
+        {
+            IsVisible = visible;
+            IsEnabled = enabled;
+            IsMinimapVisible = minimapVisible;
         }
     }
 }

@@ -10,6 +10,12 @@ namespace MapleServer2.Packets
 {
     public static class FieldPacket
     {
+        public enum PortalType : byte
+        {
+            AddPortal = 0x00,
+            UpdatePortal = 0x02
+        }
+
         public static Packet RequestEnter(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
@@ -387,7 +393,7 @@ namespace MapleServer2.Packets
         public static Packet AddPortal(IFieldObject<Portal> portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteByte(0x00);
+            pWriter.WriteEnum(PortalType.AddPortal);
             pWriter.WriteInt(portal.Value.Id);
             pWriter.WriteBool(portal.Value.IsVisible);
             pWriter.WriteBool(portal.Value.IsEnabled);
@@ -400,7 +406,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteBool(portal.Value.IsMinimapVisible);
             pWriter.WriteLong();
-            pWriter.WriteByte();
+            pWriter.WriteByte(portal.Value.PortalType);
             pWriter.WriteInt(portal.Value.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
@@ -409,6 +415,19 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
 
+            return pWriter;
+        }
+
+        public static Packet UpdatePortal(IFieldObject<Portal> portal)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+            pWriter.WriteEnum(PortalType.UpdatePortal);
+            pWriter.WriteInt(portal.Value.Id);
+            pWriter.WriteBool(portal.Value.IsVisible);
+            pWriter.WriteBool(portal.Value.IsEnabled);
+            pWriter.WriteBool(portal.Value.IsMinimapVisible);
+            pWriter.WriteBool(false);
+            pWriter.WriteBool(false);
             return pWriter;
         }
     }
