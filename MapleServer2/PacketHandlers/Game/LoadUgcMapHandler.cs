@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -23,7 +24,13 @@ namespace MapleServer2.PacketHandlers.Game
             Random random = new Random();
 
             bool isHome = session.Player.MapId == (int) Map.PrivateResidence;
-            List<byte> plots = UGCMapMetadataStorage.GetMetadata(session.Player.MapId).Groups.Select(x => x.Id).ToList();
+            UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
+            List<byte> plots = new List<byte>();
+            if (ugcMapMetadata != null)
+            {
+                plots = ugcMapMetadata.Groups.Select(x => x.Id).ToList();
+            }
+
             List<Home> homes;
             if (isHome)
             {

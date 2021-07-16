@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using System.Collections.Generic;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -29,6 +30,7 @@ namespace MapleServer2.Packets
             PurchasePlot = 0x16,
             ChangePassword = 0x18,
             ArchitectScoreExpiration = 0x19,
+            KickEveryone = 0x1A,
             UpdateArchitectScore = 0x1C,
             HomeDescription = 0x1D,
             ReturnMap = 0x22,
@@ -41,8 +43,10 @@ namespace MapleServer2.Packets
             DecreaseHeight = 0x2D,
             ChangeBackground = 0x33,
             ChangeLighting = 0x34,
+            GiveBuildingPermission = 0x35,
             ChangeCamera = 0x36,
-            GiveBuildingPermission = 0x39,
+            LoadWarehouseItems = 0x37,
+            AddBuildingPermission = 0x39,
             RemoveBuildingPermission = 0x3A,
         }
 
@@ -295,6 +299,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet KickEveryone()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.KickEveryone);
+
+            return pWriter;
+        }
+
         public static Packet UpdateArchitectScore(int current, int total)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
@@ -404,6 +416,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet UpdateBuildingPermissions(long targetAccountId, long ownerAccountId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.GiveBuildingPermission);
+            pWriter.WriteLong(targetAccountId);
+            pWriter.WriteLong(ownerAccountId);
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+
+            return pWriter;
+        }
+
         public static Packet ChangeCamera(byte camera)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
@@ -414,10 +438,25 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet GiveBuildingPermission(long accountId)
+        public static Packet SendWarehouseItems(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.GiveBuildingPermission);
+            pWriter.WriteEnum(ResponseCubePacketMode.LoadWarehouseItems);
+            pWriter.WriteShort(3); // code
+            pWriter.WriteInt(items.Count);
+            foreach (Item item in items)
+            {
+                pWriter.WriteInt(item.Id);
+                pWriter.WriteInt(item.Amount);
+            }
+
+            return pWriter;
+        }
+
+        public static Packet AddBuildingPermission(long accountId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.AddBuildingPermission);
             pWriter.WriteByte();
             pWriter.WriteLong(accountId);
 

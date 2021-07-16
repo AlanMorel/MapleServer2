@@ -24,6 +24,9 @@ namespace MapleServer2.PacketHandlers.Game
             RequestHomeMode mode = (RequestHomeMode) packet.ReadByte();
             switch (mode)
             {
+                case RequestHomeMode.InviteToHome:
+                    HandleInviteToHome(session, packet);
+                    break;
                 case RequestHomeMode.MoveToHome:
                     HandleMoveToHome(session, packet);
                     break;
@@ -31,6 +34,18 @@ namespace MapleServer2.PacketHandlers.Game
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
+        }
+
+        private static void HandleInviteToHome(GameSession session, PacketReader packet)
+        {
+            string characterName = packet.ReadUnicodeString();
+            Player target = GameServer.Storage.GetPlayerByName(characterName);
+            if (target == null)
+            {
+                return;
+            }
+
+            target.Session.Send(InviteToHomePacket.InviteToHome(session.Player));
         }
 
         // The same mode also handles creation of new homes.

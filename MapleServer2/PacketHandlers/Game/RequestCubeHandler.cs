@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -43,6 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
             DecreaseSize = 0x26,
             IncreaseHeight = 0x2C,
             DecreaseHeight = 0x2D,
+            KickEveryone = 0x31,
             ChangeBackground = 0x33,
             ChangeLighting = 0x34,
             ChangeCamera = 0x36,
@@ -100,6 +102,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestCubeMode.IncreaseHeight:
                 case RequestCubeMode.DecreaseHeight:
                     HandleModifySize(session, mode);
+                    break;
+                case RequestCubeMode.KickEveryone:
+                    HandleKickEveryone(session);
                     break;
                 case RequestCubeMode.ChangeLighting:
                 case RequestCubeMode.ChangeBackground:
@@ -393,9 +398,20 @@ namespace MapleServer2.PacketHandlers.Game
             UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
 
             byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
+            int size = playerInPrivateResidence ? home.Size : plot.Area / 2;
             CoordB groundHeight = GetGroundCoord(coord, player.MapId, height);
-            if (groundHeight == default || !isCubeProp && coord.Z == groundHeight.Z)
+            if (groundHeight == default)
             {
+                return;
+            }
+            if (!isCubeProp && coord.Z == groundHeight.Z)
+            {
+                return;
+            }
+
+            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (playerInPrivateResidence && IsCoordOutsideSizeLimit(coord, size)))
+            {
+                session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
                 return;
             }
 
@@ -606,6 +622,32 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
+        private static void HandleKickEveryone(GameSession session)
+        {
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            if (home.AccountId != session.Player.AccountId)
+            {
+                return;
+            }
+
+            List<IFieldObject<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
+            foreach (IFieldObject<Player> fieldPlayer in players)
+            {
+                fieldPlayer.Value.Session.Send(ResponseCubePacket.KickEveryone());
+            }
+            Task.Run(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+                players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
+
+                foreach (IFieldObject<Player> fieldPlayer in players)
+                {
+                    Player player = fieldPlayer.Value;
+                    player.Warp(player.ReturnMapId, player.ReturnCoord);
+                }
+            });
+        }
+
         private static void HandleEnablePermission(GameSession session, PacketReader packet)
         {
             HomePermission permission = (HomePermission) packet.ReadByte();
@@ -671,7 +713,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             home.BuildingPermissions.Add(target.AccountId);
 
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.GiveBuildingPermission(target.AccountId));
+            session.Send(ResponseCubePacket.AddBuildingPermission(target.AccountId));
+            target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(target.AccountId, session.Player.AccountId));
             target.Session.SendNotice("You have been granted furnishing rights."); // TODO: use the notice packet
         }
 
@@ -688,7 +731,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             home.BuildingPermissions.Remove(target.AccountId);
 
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveBuildingPermission(target.AccountId, target.Name));
+            session.Send(ResponseCubePacket.RemoveBuildingPermission(target.AccountId, target.Name));
+            target.Session.Send(ResponseCubePacket.UpdateBuildingPermissions(0, session.Player.AccountId));
             target.Session.SendNotice("Your furnishing right has been removed."); // TODO: use the notice packet
         }
 

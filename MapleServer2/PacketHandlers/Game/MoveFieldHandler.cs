@@ -148,13 +148,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLeaveInstance(GameSession session)
         {
-            session.Player.MapId = session.Player.ReturnMapId;
-            session.Player.Rotation = session.FieldPlayer.Rotation;
-            session.Player.Coord = session.Player.ReturnCoord;
-            session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
-            session.Player.InstanceId = session.Player.InstanceId;   //return back to dungeon instance id or if not dungeon back to normal
-            DatabaseManager.UpdateCharacter(session.Player);
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            Player player = session.Player;
+            player.Warp(player.ReturnMapId, player.ReturnCoord, player.Rotation, instanceId: 0);
         }
 
         private static void HandleVisitHouse(GameSession session, PacketReader packet)
