@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -31,6 +32,7 @@ namespace MapleServer2.Types
         public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
+        public ItemHousingCategory HousingCategory;
 
         public readonly int Id;
         public long Uid;

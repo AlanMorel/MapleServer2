@@ -36,7 +36,7 @@ namespace MapleServer2.Packets
             ReturnMap = 0x22,
             IncreaseSize = 0x25,
             DecreaseSize = 0x26,
-            Rewards = 0x27, // decoration score
+            Rewards = 0x27,
             EnablePermission = 0x2A,
             SetPermission = 0x2B,
             IncreaseHeight = 0x2C,
@@ -474,25 +474,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Mode27(Player player)
+        public static Packet DecorationScore(Home home)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
-            pWriter.WriteLong(player.AccountId);
-            pWriter.WriteLong(); // some date
-            pWriter.WriteLong(10);
-            pWriter.WriteLong();
-            pWriter.WriteInt(9);
-            pWriter.WriteInt(3);
-            pWriter.WriteInt(5);
-            pWriter.WriteInt(4);
-            pWriter.WriteInt(2);
-            pWriter.WriteInt(6);
-            pWriter.WriteInt(7);
-            pWriter.WriteInt(8);
-            pWriter.WriteInt(9);
-            pWriter.WriteInt(10);
-
+            pWriter.WriteLong(home?.AccountId ?? 0);
+            pWriter.WriteLong(); // timestamp
+            pWriter.WriteLong(home?.DecorationLevel ?? 1);
+            pWriter.WriteLong(home?.DecorationExp ?? 0);
+            pWriter.WriteInt(home.InteriorRewardsCollected.Count);
+            foreach (int rewardId in home.InteriorRewardsCollected)
+            {
+                pWriter.WriteInt(rewardId);
+            }
 
             return pWriter;
         }

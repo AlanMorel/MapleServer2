@@ -260,6 +260,10 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Permissions).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new Dictionary<HomePermission, byte>() : JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(i));
+
+                entity.Property(e => e.InteriorRewardsCollected).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
                 entity.HasMany(e => e.FurnishingCubes).WithOne(e => e.Home);
                 entity.HasMany(e => e.WarehouseItems).WithOne(e => e.Home);
             });

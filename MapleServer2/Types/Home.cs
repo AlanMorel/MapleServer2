@@ -21,6 +21,11 @@ namespace MapleServer2.Types
         public byte Height { get; set; }
         public int ArchitectScoreCurrent { get; set; }
         public int ArchitectScoreTotal { get; set; }
+        public long DecorationExp { get; set; }
+        public long DecorationLevel { get; set; }
+        public List<int> InteriorRewardsCollected { get; set; }
+
+        private readonly long[] DecorationExpTable = new long[] { 0, 100, 300, 1000, 2100, 5500, 7700, 9900, 13200, 16500 };
 
         // Interior Settings
         public byte Lighting { get; set; }
@@ -49,6 +54,8 @@ namespace MapleServer2.Types
             PlotId = 0;
             PlotNumber = 0;
             ApartmentNumber = 0;
+            DecorationLevel = 1;
+            InteriorRewardsCollected = new List<int>();
             Expiration = 32503561200; // Year 2999
             Password = "******";
             Permissions = new Dictionary<HomePermission, byte>();
@@ -82,6 +89,24 @@ namespace MapleServer2.Types
                 home.Size = 10;
                 home.Height = 5;
             }
+        }
+
+        public void GainExp(long exp)
+        {
+            if (exp <= 0)
+            {
+                return;
+            }
+            if (DecorationLevel > 9) // level 10 is max
+            {
+                return;
+            }
+            if (DecorationExp + exp >= DecorationExpTable[DecorationLevel])
+            {
+                exp -= DecorationExpTable[DecorationLevel];
+                DecorationLevel++;
+            }
+            DecorationExp += exp;
         }
     }
 

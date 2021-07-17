@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -12,6 +13,7 @@ using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
@@ -42,6 +44,8 @@ namespace MapleServer2.PacketHandlers.Game
             SetPermission = 0x2B,
             IncreaseSize = 0x25,
             DecreaseSize = 0x26,
+            DecorationReward = 0x28,
+            InteriorDesingReward = 0x29,
             IncreaseHeight = 0x2C,
             DecreaseHeight = 0x2D,
             KickEveryone = 0x31,
@@ -102,6 +106,12 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestCubeMode.IncreaseHeight:
                 case RequestCubeMode.DecreaseHeight:
                     HandleModifySize(session, mode);
+                    break;
+                case RequestCubeMode.DecorationReward:
+                    HandleDecorationReward(session);
+                    break;
+                case RequestCubeMode.InteriorDesingReward:
+                    HandleInteriorDesingReward(session, packet);
                     break;
                 case RequestCubeMode.KickEveryone:
                     HandleKickEveryone(session);
@@ -620,6 +630,116 @@ namespace MapleServer2.PacketHandlers.Game
                 int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
                 session.Send(UserMoveByPortalPacket.Move(session, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
             }
+        }
+
+        private static void HandleDecorationReward(GameSession session)
+        {
+            // Decoration score goals
+            Dictionary<ItemHousingCategory, int> goals = new Dictionary<ItemHousingCategory, int>() {
+                {ItemHousingCategory.Bed, 1}, {ItemHousingCategory.Table, 1}, {ItemHousingCategory.SofasChairs, 2},
+                {ItemHousingCategory.Storage, 1}, {ItemHousingCategory.WallDecoration, 1}, {ItemHousingCategory.WallTiles, 3},
+                {ItemHousingCategory.Bathroom, 1}, {ItemHousingCategory.Lighting, 1}, {ItemHousingCategory.Electronics, 1},
+                {ItemHousingCategory.Fences, 2}, {ItemHousingCategory.NaturalTerrain, 4},
+            };
+
+            Home home = session.Player.Account.Home;
+            if (home == null)
+            {
+                return;
+            }
+
+            List<Item> items = home.FurnishingInventory.Values.Select(x => x.Item).ToList();
+            items.ForEach(x => x.HousingCategory = ItemMetadataStorage.GetHousingCategory(x.Id));
+            Dictionary<ItemHousingCategory, int> current = items.GroupBy(x => x.HousingCategory).ToDictionary(x => x.Key, x => x.Count());
+            int decorationScore = 0;
+            foreach (ItemHousingCategory category in goals.Keys)
+            {
+                if (current[category] >= goals[category])
+                {
+                    switch (category)
+                    {
+                        case ItemHousingCategory.Bed:
+                        case ItemHousingCategory.SofasChairs:
+                        case ItemHousingCategory.WallDecoration:
+                        case ItemHousingCategory.WallTiles:
+                        case ItemHousingCategory.Bathroom:
+                        case ItemHousingCategory.Lighting:
+                        case ItemHousingCategory.Fences:
+                        case ItemHousingCategory.NaturalTerrain:
+                            decorationScore += 100;
+                            break;
+                        case ItemHousingCategory.Table:
+                        case ItemHousingCategory.Storage:
+                            decorationScore += 50;
+                            break;
+                        case ItemHousingCategory.Electronics:
+                            decorationScore += 200;
+                            break;
+                    }
+                }
+            }
+
+            List<int> rewardsIds = new List<int>() { 20300039, 20000071, 20301018 };
+            switch (decorationScore)
+            {
+                case < 300:
+                    rewardsIds.Add(20000028);
+                    break;
+                case >= 300 and < 500:
+                    rewardsIds.Add(20000029);
+                    break;
+                case >= 500 and < 1100:
+                    rewardsIds.Add(20300078);
+                    rewardsIds.Add(20000030);
+                    break;
+                default:
+                    rewardsIds.Add(20300078);
+                    rewardsIds.Add(20000031);
+                    rewardsIds.Add(20300040);
+                    InventoryController.Add(session, new Item(20300559), true);
+                    break;
+            }
+
+            home.GainExp(decorationScore);
+            InventoryController.Add(session, new Item(rewardsIds.OrderBy(x => new Random().Next()).First()), true);
+            session.Send(ResponseCubePacket.DecorationScore(home));
+        }
+
+        private static void HandleInteriorDesingReward(GameSession session, PacketReader packet)
+        {
+            int rewardId = packet.ReadInt();
+            Home home = session.Player.Account.Home;
+
+            if (rewardId <= 1 || rewardId >= 11 || home == null || home.InteriorRewardsCollected.Contains(rewardId))
+            {
+                return;
+            }
+
+            switch (rewardId)
+            {
+                case 2:
+                case 5:
+                    InventoryController.Add(session, new Item(20301019), true);
+                    break;
+                case 3:
+                    InventoryController.Add(session, new Item(20301020), true);
+                    break;
+                case 4:
+                case 8:
+                    InventoryController.Add(session, new Item(20301021), true);
+                    break;
+                case 6:
+                    InventoryController.Add(session, new Item(20301022), true);
+                    break;
+                case 7:
+                case 9:
+                    InventoryController.Add(session, new Item(20300552), true);
+                    break;
+                default:
+                    break;
+            }
+            home.InteriorRewardsCollected.Add(rewardId);
+            session.Send(ResponseCubePacket.DecorationScore(home));
         }
 
         private static void HandleKickEveryone(GameSession session)

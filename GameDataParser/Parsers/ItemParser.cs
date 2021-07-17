@@ -7,6 +7,7 @@ using System.Web;
 using System.Xml;
 using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
@@ -485,10 +486,6 @@ namespace GameDataParser.Parsers
                 bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
                 metadata.EnableBreak = enableBreak;
 
-                XmlNode install = item.SelectSingleNode("install");
-                bool cubeProp = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
-                metadata.IsCubeProp = cubeProp;
-
                 int level = int.Parse(limit.Attributes["levelLimit"].Value);
                 metadata.Level = level;
 
@@ -502,6 +499,27 @@ namespace GameDataParser.Parsers
                 }
 
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
+
+                XmlNode install = item.SelectSingleNode("install");
+                bool cubeProp = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
+                metadata.IsCubeProp = cubeProp;
+
+                XmlNode housing = item.SelectSingleNode("housing");
+                string value = housing.Attributes["categoryTag"].Value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    short category;
+                    if (value.Contains(","))
+                    {
+                        List<string> categories = new List<string>(value.Split(","));
+                        category = short.Parse(categories[0]);
+                    }
+                    else
+                    {
+                        category = short.Parse(value);
+                    }
+                    metadata.HousingCategory = (ItemHousingCategory) category;
+                }
 
                 // Item breaking ingredients
                 if (rewards.ContainsKey(itemId))

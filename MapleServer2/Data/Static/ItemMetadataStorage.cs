@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -222,6 +223,11 @@ namespace MapleServer2.Data.Static
         public static bool GetCubeProp(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsCubeProp;
+        }
+
+        public static ItemHousingCategory GetHousingCategory(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).HousingCategory;
         }
     }
 }

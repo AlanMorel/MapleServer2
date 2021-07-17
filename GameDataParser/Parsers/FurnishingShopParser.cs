@@ -15,7 +15,8 @@ namespace GameDataParser.Parsers
             List<FurnishingShopMetadata> furnishingShops = new List<FurnishingShopMetadata>();
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
-                if (!entry.Name.StartsWith("table/na/shop_ugcall"))
+                // files shop_maid and shop_ugcall
+                if (!entry.Name.StartsWith("table/na/shop_"))
                 {
                     continue;
                 }
