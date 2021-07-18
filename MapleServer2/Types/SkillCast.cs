@@ -56,17 +56,7 @@ namespace MapleServer2.Types
 
         public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).Stamina ?? 10;
 
-        public DamageTypeId GetSkillDamageType()
-        {
-            if (SkillMetadataStorage.GetSkill(SkillId) != null)
-            {
-                return (DamageTypeId) SkillMetadataStorage.GetSkill(SkillId).DamageType;
-            }
-            else
-            {
-                return DamageTypeId.None;
-            }
-        }
+        public DamageTypeId GetSkillDamageType() => (DamageTypeId) (GetSkillMetadata()?.DamageType ?? 0);
 
         public ElementId GetElement() => (ElementId) GetSkillMetadata().Element;
 
