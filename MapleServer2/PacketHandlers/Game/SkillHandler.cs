@@ -80,7 +80,7 @@ namespace MapleServer2.PacketHandlers.Game
                 // This is true for developed purposes.
                 if (true)
                 {
-                    Status status = new Status(skillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId , 1);
+                    Status status = new Status(skillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
                     StatusHandler.Handle(session, status);
                 }
             }
