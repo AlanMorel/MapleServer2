@@ -2,14 +2,14 @@
 {
     public enum HomePermission : byte
     {
-        Jumping = 0x00,
-        WallClimbing = 0x01,
-        SkillUse = 0x02,
-        MusicPerformances = 0x03,
-        PotionUse = 0x04,
-        GroundMounts = 0x05,
-        AirMounts = 0x06,
-        Unknown = 0x07,
-        Unknown2 = 0x08,
+        Jumping = 0,
+        WallClimbing = 1,
+        SkillUse = 2,
+        MusicPerformances = 3,
+        PotionUse = 4,
+        GroundMounts = 5,
+        AirMounts = 6,
+        Unknown = 7,
+        Unknown2 = 8,
     }
 }

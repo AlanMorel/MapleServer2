@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +68,6 @@ namespace MapleServer2.Tools
                       {
                           DatabaseManager.UpdateHome(kvp.Value);
                       }
-                      Console.WriteLine("Saved all homes");
                       await Task.Delay(1000 * 60); // 1 minute
                       //   await Task.Delay(1000 * 60 * 30); // 30 minutes
                   }

@@ -725,11 +725,7 @@ namespace MapleServer2.Database
 
                 if (home != null)
                 {
-                    home.WarehouseItems.ForEach(item =>
-                    {
-                        item.SetMetadataValues(item.Id);
-                        home.WarehouseInventory.Add(item.Uid, item);
-                    });
+                    home.WarehouseItems.ForEach(item => home.WarehouseInventory.Add(item.Uid, item));
                     home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
                     home.WarehouseItems = null;
                     home.FurnishingCubes = null;
@@ -765,6 +761,7 @@ namespace MapleServer2.Database
                 home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
                 foreach (Item item in home.WarehouseItems)
                 {
+                    item.Home = home;
                     context.Entry(item).State = EntityState.Modified;
                 }
 

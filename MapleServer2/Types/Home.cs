@@ -6,6 +6,9 @@ using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
+    // TODO: Implement decoration reward cooldown
+    // TODO: Implement architect expiration
+
     public class Home
     {
         public readonly long Id;
@@ -36,12 +39,13 @@ namespace MapleServer2.Types
         public bool IsPrivate => !Password.Equals("******");
         public string Password { get; set; }
         public Dictionary<HomePermission, byte> Permissions { get; set; }
-        public List<long> BuildingPermissions = new List<long>();
+        public List<long> BuildingPermissions = new List<long>(); // account ids
 
+        // Inventories
         public readonly Dictionary<long, Item> WarehouseInventory = new Dictionary<long, Item>();
-        public List<Item> WarehouseItems { get; set; }
+        public List<Item> WarehouseItems { get; set; } // DB ONLY
         public readonly Dictionary<long, Cube> FurnishingInventory = new Dictionary<long, Cube>();
-        public List<Cube> FurnishingCubes { get; set; }
+        public List<Cube> FurnishingCubes { get; set; } // DB ONLY
 
         public Home() { }
 

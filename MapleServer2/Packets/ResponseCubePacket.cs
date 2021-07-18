@@ -59,6 +59,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(itemUid);
             pWriter.WriteLong();
             pWriter.WriteByte();
+
             return pWriter;
         }
 
@@ -71,7 +72,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(player.Account.Home.ApartmentNumber);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(player.Account.Home.Expiration);
-            pWriter.WriteLong(player.CharacterId); // check this
+            pWriter.WriteLong(player.CharacterId);
+
             return pWriter;
         }
 
@@ -79,6 +81,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.CompletePurchase);
+
             return pWriter;
         }
 
@@ -156,6 +159,7 @@ namespace MapleServer2.Packets
             pWriter.Write(coord);
             pWriter.WriteByte();
             pWriter.WriteByte();
+
             return pWriter;
         }
 
@@ -442,7 +446,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.LoadWarehouseItems);
-            pWriter.WriteShort(3); // code
+            pWriter.WriteShort(3);
             pWriter.WriteInt(items.Count);
             foreach (Item item in items)
             {
@@ -479,7 +483,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
             pWriter.WriteLong(home?.AccountId ?? 0);
-            pWriter.WriteLong(); // timestamp
+            pWriter.WriteLong(); // timestamp of claiming reward
             pWriter.WriteLong(home?.DecorationLevel ?? 1);
             pWriter.WriteLong(home?.DecorationExp ?? 0);
             pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);

@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public class HomeCommandPacket
     {
-        private enum HomeCommandMode : byte // not sure about this names
+        private enum HomeCommandMode : byte
         {
             Load = 0x00,
             UpdateArchitectScore = 0x01

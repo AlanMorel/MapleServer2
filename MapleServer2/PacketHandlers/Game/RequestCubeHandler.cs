@@ -174,7 +174,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (!HandlePlotPayment(session, land.PriceItemCode, price))
             {
-                session.SendNotice("You don't enough mesos!");
+                session.SendNotice("You don't have enough mesos!");
                 return;
             }
 
@@ -195,9 +195,10 @@ namespace MapleServer2.PacketHandlers.Game
                 player.Account.Home.PlotNumber = land.Id;
                 player.Account.Home.Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (land.ContractDate * (24 * 60 * 60));
 
-                GameServer.HomeManager.GetHome(player.Account.Home.Id).PlotId = player.Account.Home.PlotId;
-                GameServer.HomeManager.GetHome(player.Account.Home.Id).PlotNumber = player.Account.Home.PlotNumber;
-                GameServer.HomeManager.GetHome(player.Account.Home.Id).Expiration = player.Account.Home.Expiration;
+                Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+                home.PlotId = player.Account.Home.PlotId;
+                home.PlotNumber = player.Account.Home.PlotNumber;
+                home.Expiration = player.Account.Home.Expiration;
             }
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(player.Account.Home.PlotNumber, 0, player.Account.Home.Expiration));
@@ -224,10 +225,11 @@ namespace MapleServer2.PacketHandlers.Game
             player.Account.Home.ApartmentNumber = 0;
             player.Account.Home.Expiration = 32503561200; // year 2999
 
-            GameServer.HomeManager.GetHome(player.Account.Home.Id).PlotId = 0;
-            GameServer.HomeManager.GetHome(player.Account.Home.Id).PlotNumber = 0;
-            GameServer.HomeManager.GetHome(player.Account.Home.Id).ApartmentNumber = 0;
-            GameServer.HomeManager.GetHome(player.Account.Home.Id).Expiration = 32503561200; // year 2999
+            Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            home.PlotId = 0;
+            home.PlotNumber = 0;
+            home.ApartmentNumber = 0;
+            home.Expiration = 32503561200; // year 2999
 
             session.Send(ResponseCubePacket.ForfeitPlot(plotId, plotNumber, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             session.Send(ResponseCubePacket.RemovePlot(plotNumber, apartmentNumber));
@@ -256,14 +258,14 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
+            bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
 
-            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
 
-            byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
-            int size = playerInPrivateResidence ? home.Size : plot.Area / 2;
-            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (playerInPrivateResidence && IsCoordOutsideSizeLimit(coord, size)))
+            byte height = mapIsHome ? home.Height : plot.HeightLimit;
+            int size = mapIsHome ? home.Size : plot.Area / 2;
+            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (mapIsHome && IsCoordOutsideSizeLimit(coord, size)))
             {
                 session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
                 return;
@@ -336,8 +338,8 @@ namespace MapleServer2.PacketHandlers.Game
             CoordB coord = packet.Read<CoordB>();
             Player player = session.Player;
 
-            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
-            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
+            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
             {
                 return;
@@ -357,8 +359,8 @@ namespace MapleServer2.PacketHandlers.Game
             CoordB coord = packet.Read<CoordB>();
             Player player = session.Player;
 
-            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
-            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
+            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
             {
                 return;
@@ -385,8 +387,7 @@ namespace MapleServer2.PacketHandlers.Game
             byte unk = packet.ReadByte();
             long unk2 = packet.ReadLong(); // maybe part of rotation?
             float zRotation = packet.ReadFloat();
-            CoordF rotation = new CoordF();
-            rotation.Z = zRotation;
+            CoordF rotation = CoordF.From(0, 0, zRotation);
 
             Player player = session.Player;
 
@@ -397,8 +398,8 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            bool playerInPrivateResidence = player.MapId == (int) Map.PrivateResidence;
-            Home home = playerInPrivateResidence ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
+            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
             if (session.Player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(session.Player.Account.Id))
             {
                 return;
@@ -407,8 +408,8 @@ namespace MapleServer2.PacketHandlers.Game
             bool isCubeProp = ItemMetadataStorage.GetCubeProp(replacementItemId);
             UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
 
-            byte height = playerInPrivateResidence ? home.Height : plot.HeightLimit;
-            int size = playerInPrivateResidence ? home.Size : plot.Area / 2;
+            byte height = mapIsHome ? home.Height : plot.HeightLimit;
+            int size = mapIsHome ? home.Size : plot.Area / 2;
             CoordB groundHeight = GetGroundCoord(coord, player.MapId, height);
             if (groundHeight == default)
             {
@@ -419,7 +420,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (playerInPrivateResidence && IsCoordOutsideSizeLimit(coord, size)))
+            if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || (mapIsHome && IsCoordOutsideSizeLimit(coord, size)))
             {
                 session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer));
                 return;
@@ -581,7 +582,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 owner.Value.Session.Send(HomeCommandPacket.UpdateArchitectScore(owner.ObjectId, home.ArchitectScoreCurrent, home.ArchitectScoreTotal));
             }
-            // TODO: add expiration to db
             session.Send(ResponseCubePacket.ArchitectScoreExpiration(session.Player.AccountId, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
 
@@ -625,6 +625,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
 
+            // move player to safe coord
             if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
             {
                 int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
@@ -651,9 +652,14 @@ namespace MapleServer2.PacketHandlers.Game
             List<Item> items = home.FurnishingInventory.Values.Select(x => x.Item).ToList();
             items.ForEach(x => x.HousingCategory = ItemMetadataStorage.GetHousingCategory(x.Id));
             Dictionary<ItemHousingCategory, int> current = items.GroupBy(x => x.HousingCategory).ToDictionary(x => x.Key, x => x.Count());
+
             int decorationScore = 0;
             foreach (ItemHousingCategory category in goals.Keys)
             {
+                if (!current.ContainsKey(category))
+                {
+                    continue;
+                }
                 if (current[category] >= goals[category])
                 {
                     switch (category)
@@ -679,7 +685,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            List<int> rewardsIds = new List<int>() { 20300039, 20000071, 20301018 };
+            List<int> rewardsIds = new List<int>() { 20300039, 20000071, 20301018 }; // Default rewards
             switch (decorationScore)
             {
                 case < 300:
@@ -707,8 +713,12 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleInteriorDesingReward(GameSession session, PacketReader packet)
         {
-            int rewardId = packet.ReadInt();
-            Home home = session.Player.Account.Home;
+            byte rewardId = packet.ReadByte();
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            if (home == null || home.AccountId != session.Player.Account.Home?.AccountId)
+            {
+                return;
+            }
 
             if (rewardId <= 1 || rewardId >= 11 || home == null || home.InteriorRewardsClaimed.Contains(rewardId))
             {

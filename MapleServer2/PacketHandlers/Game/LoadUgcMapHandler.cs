@@ -23,7 +23,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Random random = new Random();
 
-            bool isHome = session.Player.MapId == (int) Map.PrivateResidence;
+            bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
             UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
             List<byte> plots = new List<byte>();
             if (ugcMapMetadata != null)
@@ -32,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             List<Home> homes;
-            if (isHome)
+            if (mapIsHome)
             {
                 Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
                 if (home == null)
@@ -43,9 +43,9 @@ namespace MapleServer2.PacketHandlers.Game
 
                 homes = new List<Home>() { home };
 
-                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome, home));
+                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome, home));
 
-                // Set spawning coords for home
+                // Find spawning coords for home
                 List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == 50400190).ToList();
                 CoordF coord;
                 CoordF rotation;
@@ -53,22 +53,25 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     Cube portal = portals.OrderBy(x => new Random().Next()).Take(1).First();
                     coord = portal.CoordF;
+                    coord.Z += 1;
                     rotation = portal.Rotation;
+                    rotation.Z -= 90;
                 }
                 else
                 {
                     byte homeSize = (byte) (home.Size - 1);
                     int x = -1 * Block.BLOCK_SIZE * homeSize;
-                    coord = CoordF.From(x, x, 150);
+                    coord = CoordF.From(x, x, 151);
                     rotation = CoordF.From(0, 0, 0);
                 }
                 session.Player.Coord = coord;
+                session.Player.SafeBlock = coord;
                 session.Player.Rotation = rotation;
             }
             else
             {
                 homes = GameServer.HomeManager.GetPlots(session.Player.MapId);
-                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome));
+                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome));
             }
 
             List<Cube> cubes = new List<Cube>();

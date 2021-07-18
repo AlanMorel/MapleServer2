@@ -26,11 +26,7 @@ namespace MapleServer2.Data.Static
             return map.ContainsKey(mapId);
         }
 
-        public static UGCMapGroup GetGroupMetadata(int mapId, byte groupId)
-        {
-            UGCMapMetadata mapMetadata = map.GetValueOrDefault(mapId);
-            return mapMetadata.Groups.FirstOrDefault(x => x.Id == groupId);
-        }
+        public static UGCMapGroup GetGroupMetadata(int mapId, byte groupId) => GetMetadata(mapId).Groups.FirstOrDefault(x => x.Id == groupId);
 
         public static UGCMapMetadata GetMetadata(int mapId) => map.GetValueOrDefault(mapId);
 

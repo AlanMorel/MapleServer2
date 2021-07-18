@@ -33,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
 
             session.Send(HomeCommandPacket.LoadHome(session.Player));
-            session.Send(ResponseCubePacket.DecorationScore(session.FieldPlayer.Value.Account.Home));
+            session.Send(ResponseCubePacket.DecorationScore(session.Player.Account.Home));
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
             session.Send(ResponseCubePacket.ReturnMap(session.Player.ReturnMapId));
 

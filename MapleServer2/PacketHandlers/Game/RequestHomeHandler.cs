@@ -59,6 +59,22 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate);
                 GameServer.HomeManager.AddHome(player.Account.Home);
+
+                // Send inventories
+                session.Send(WarehouseInventoryPacket.StartList());
+                int counter = 0;
+                foreach (KeyValuePair<long, Item> kvp in player.Account.Home.WarehouseInventory)
+                {
+                    session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+                }
+                session.Send(WarehouseInventoryPacket.EndList());
+
+                session.Send(FurnishingInventoryPacket.StartList());
+                foreach (Cube cube in player.Account.Home.FurnishingInventory.Values.Where(x => x.Item != null))
+                {
+                    session.Send(FurnishingInventoryPacket.Load(cube));
+                }
+                session.Send(FurnishingInventoryPacket.EndList());
             }
 
             if (player.MapId != (int) Map.PrivateResidence)
@@ -69,25 +85,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
-            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
-
-            // Send inventories
-            session.Send(WarehouseInventoryPacket.StartList());
-            int counter = 0;
-            foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
-            {
-                session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
-            }
-            session.Send(WarehouseInventoryPacket.EndList());
-
-            session.Send(FurnishingInventoryPacket.StartList());
-            foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
-            {
-                session.Send(FurnishingInventoryPacket.Load(cube));
-            }
-            session.Send(FurnishingInventoryPacket.EndList());
-
-            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.Id);
+            player.Warp(player.Account.Home.MapId, player.Coord, player.Rotation, instanceId: player.Account.Home.Id);
         }
     }
 }
