@@ -238,6 +238,8 @@ namespace MapleServer2.Network
                         case RecvOp.KEY_TABLE:
                         case RecvOp.RIDE_SYNC:
                         case RecvOp.GUIDE_OBJECT_SYNC:
+                        case RecvOp.STATE:
+                        case RecvOp.STATE_FALL_DAMAGE:
                             break;
                         default:
                             string packetString = packet.ToString();

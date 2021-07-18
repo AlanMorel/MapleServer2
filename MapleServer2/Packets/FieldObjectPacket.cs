@@ -38,7 +38,7 @@ namespace MapleServer2.Packets
             pWriter.WriteShort();
             pWriter.WriteInt(player.MapId);
             pWriter.WriteLong(1); // unk
-            pWriter.WriteUnicodeString(player.HomeName);
+            pWriter.WriteUnicodeString(player.Account.Home?.Name ?? "");
             pWriter.WriteInt();
             pWriter.WriteShort();
             foreach (int trophyCount in player.TrophyCount)

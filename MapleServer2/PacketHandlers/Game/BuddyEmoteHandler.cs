@@ -59,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
             int buddyEmoteId = packet.ReadInt();
             long characterId = packet.ReadLong();
 
-            Player buddy = GameServer.Storage.GetPlayerById(characterId);
+            Player buddy = GameServer.Storage.GetPlayerByCharacterId(characterId);
             if (buddy == null)
             {
                 return;
@@ -72,7 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long senderCharacterId = packet.ReadLong();
 
-            Player buddy = GameServer.Storage.GetPlayerById(senderCharacterId);
+            Player buddy = GameServer.Storage.GetPlayerByCharacterId(senderCharacterId);
             if (buddy == null)
             {
                 return;
@@ -96,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF selfCoords = packet.Read<CoordF>();
             int rotation = packet.ReadInt();
 
-            Player buddy = GameServer.Storage.GetPlayerById(senderCharacterId);
+            Player buddy = GameServer.Storage.GetPlayerByCharacterId(senderCharacterId);
             if (buddy == null)
             {
                 return;
@@ -112,7 +112,7 @@ namespace MapleServer2.PacketHandlers.Game
             int buddyEmoteId = packet.ReadInt();
             long senderCharacterId = packet.ReadLong();
 
-            Player other = GameServer.Storage.GetPlayerById(senderCharacterId);
+            Player other = GameServer.Storage.GetPlayerByCharacterId(senderCharacterId);
             if (other == null)
             {
                 return;
@@ -126,7 +126,7 @@ namespace MapleServer2.PacketHandlers.Game
             int buddyEmoteId = packet.ReadInt();
             long target = packet.ReadLong();
 
-            Player buddy = GameServer.Storage.GetPlayerById(target);
+            Player buddy = GameServer.Storage.GetPlayerByCharacterId(target);
             if (buddy == null)
             {
                 return;

@@ -68,9 +68,8 @@ namespace MapleServer2.Servers.Game
             return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
         }
 
-        public DungeonSession GetDungeonSessionByInstanceId(int instanceId)
+        public DungeonSession GetDungeonSessionByInstanceId(long instanceId)
         {
-
             return DungeonSessionList.FirstOrDefault(session => session.Value.DungeonInstanceId == instanceId).Value;
         }
 
