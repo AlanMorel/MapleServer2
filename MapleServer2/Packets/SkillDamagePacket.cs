@@ -52,7 +52,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             pWriter.WriteEnum(SkillDamageMode.ApplyHeal);
             pWriter.WriteInt(status.Source);
-            pWriter.WriteInt(status.Owner);
+            pWriter.WriteInt(status.Target);
             pWriter.WriteInt(status.UniqueId);
             pWriter.WriteInt(healAmount);
             pWriter.WriteLong();

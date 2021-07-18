@@ -36,11 +36,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemoveRegionSkill()
+        public static Packet Remove(int sourceObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
             pWriter.WriteEnum(RegionSkillMode.Remove);
-            pWriter.WriteInt(); // Uid regionEffect
+            pWriter.WriteInt(sourceObjectId); // Uid regionEffect
             return pWriter;
         }
     }

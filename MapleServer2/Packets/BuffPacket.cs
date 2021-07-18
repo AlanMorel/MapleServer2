@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUFF);
             pWriter.WriteByte(mode);
-            pWriter.WriteInt(status.Owner);
+            pWriter.WriteInt(status.Target);
             pWriter.WriteInt(status.UniqueId);
             pWriter.WriteInt(status.Source);
             switch (mode)
@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
                     pWriter.WriteLong();
                     break;
                 case (byte) StatusMode.Update:
-                    pWriter.WriteInt(status.Owner);
+                    pWriter.WriteInt(status.Target);
                     pWriter.WriteInt(status.Start);
                     pWriter.WriteInt(status.End);
                     pWriter.WriteInt(status.SkillId);
