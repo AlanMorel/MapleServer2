@@ -24,8 +24,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Cast = 0x0,     // Start of a skill
             Damage = 0x1,   // Damaging part of a skill. one is sent per hit
+            Mode2 = 0x2,    // Cast continues skills
             Mode3 = 0x3,
-            Mode4 = 0x4
+            Mode4 = 0x4,
         }
 
         private enum DamagingMode : byte
@@ -73,6 +74,15 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
+
+                // TODO: Check if the skill is a buff to the player or to allies.
+                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+                // This is true for developed purposes.
+                if (true)
+                {
+                    Status status = new Status(skillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId , 1);
+                    StatusHandler.Handle(session, status);
+                }
             }
         }
 
@@ -88,7 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleAoeDamage(session, packet);
                     break;
                 case DamagingMode.TypeOfDamage2:
-                    HandleTypeOfDamage2(packet);
+                    HandleTypeOfDamage2(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -171,19 +181,51 @@ namespace MapleServer2.PacketHandlers.Game
                     }
 
                     mobs.Add((mob, damage));
+
+                    // TODO: Check if the skill is a debuff for an entity
+                    // This is true for developed purposes.
+                    if (true)
+                    {
+                        Status status = new Status(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
+                        StatusHandler.Handle(session, status);
+                    }
                 }
             }
-            session.Send(SkillDamagePacket.ApplyDamage(skillSN, unkValue, coords, session.FieldPlayer, mobs));
+            // TODO: Verify if its the player or an ally
+            if (session.FieldPlayer.Value.SkillCast.IsHeal())
+            {
+                Status status = new Status(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
+                StatusHandler.Handle(session, status);
+
+                // TODO: Heal based on stats
+                session.Send(SkillDamagePacket.ApplyHeal(status, 50));
+                session.FieldPlayer.Value.Stats.Increase(PlayerStatId.Hp, 50);
+                session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
+            }
+            else
+            {
+                session.Send(SkillDamagePacket.ApplyDamage(skillSN, unkValue, coords, session.FieldPlayer, mobs));
+            }
         }
 
-        private static void HandleTypeOfDamage2(PacketReader packet)
+        private static void HandleTypeOfDamage2(GameSession session, PacketReader packet)
         {
             long skillSN = packet.ReadLong();
             byte mode = packet.ReadByte();
-            int unk1 = packet.ReadInt();
-            int unk2 = packet.ReadInt();
+            int unknown = packet.ReadInt();
+            int unknown2 = packet.ReadInt();
             CoordF coord = packet.Read<CoordF>();
             CoordF coord1 = packet.Read<CoordF>();
+
+            // TODO: Verify rest of skills to proc correctly.
+            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() != null)
+            {
+                foreach (int skill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+                {
+                    SkillCast skillCast = session.Player.Cast(skill, 1, skillSN, unknown);
+                    RegionSkillHandler.Handle(session, unknown, coord, skillCast);
+                }
+            }
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)

@@ -1,4 +1,6 @@
-﻿using MapleServer2.Data.Static;
+﻿using System.Collections.Generic;
+using MapleServer2.Enums;
+using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
 {
@@ -42,22 +44,50 @@ namespace MapleServer2.Types
             UnkValue = unkValue;
         }
 
-        public double GetDamageRate() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(x => x.Level == SkillLevel).DamageRate;
+        public double GetDamageRate() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(x => x.Level == SkillLevel).DamageRate ?? 0.1f;
 
         public double GetCriticalDamage() => 2 * GetDamageRate();
 
-        public int GetSpCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Spirit;
+        public int GetSpCost() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(s => s.Level == SkillLevel).Spirit ?? 15;
 
-        public int GetStaCost() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).Stamina;
+        public int GetStaCost() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(s => s.Level == SkillLevel).Stamina ?? 10;
 
-        public DamageTypeId GetSkillDamageType() => (DamageTypeId) SkillMetadataStorage.GetSkill(SkillId).DamageType;
+        public DamageTypeId GetSkillDamageType()
+        {
+            if (SkillMetadataStorage.GetSkill(SkillId) != null)
+            {
+                return (DamageTypeId) SkillMetadataStorage.GetSkill(SkillId).DamageType;
+            }
+            else
+            {
+                return DamageTypeId.None;
+            }
+        }
 
         public ElementId GetElement() => (ElementId) SkillMetadataStorage.GetSkill(SkillId).Element;
 
         public bool IsSpRecovery() => SkillMetadataStorage.GetSkill(SkillId).IsSpRecovery;
 
-        public bool IsBuff() => SkillMetadataStorage.GetSkill(SkillId).IsBuff;
+        public int DurationTick() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.Duration ?? 5000;
 
-        public int DurationTick() => SkillMetadataStorage.GetSkill(SkillId).SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.Duration;
+        public int MaxStack() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.MaxStack ?? 1;
+
+        public IEnumerable<int> GetConditionSkill() => SkillMetadataStorage.GetSkill(SkillId)?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAttacks.ConditionSkillIds ?? null;
+
+        public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
+
+        private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
+        {
+            Maple2Storage.Types.Metadata.SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
+            if (skillData.Type == (int) type && skillData.SubType == (int) subType && skillData != null)
+            {
+                Maple2Storage.Types.Metadata.SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
+                if (skillAdditionalData.BuffType == (int) buffType && skillAdditionalData.BuffSubType == (int) buffSubType && skillAdditionalData != null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
