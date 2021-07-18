@@ -2,6 +2,7 @@
 using MapleServer2.Enums;
 using MapleServer2.Data.Static;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Extensions;
 
 namespace MapleServer2.Types
 {
@@ -90,16 +91,16 @@ namespace MapleServer2.Types
         public bool IsChainSkill()
         {
             SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
-            return skillData != null && skillData.Type == 0 && skillData.SubType == 0;
+            return skillData != null && skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
         }
 
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
         {
             SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
-            if (skillData.Type == (int) type && skillData.SubType == (int) subType && skillData != null)
+            if (skillData.Type == type.GetValue() && skillData.SubType == subType.GetValue() && skillData != null)
             {
                 SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
-                if (skillAdditionalData.BuffType == (int) buffType && skillAdditionalData.BuffSubType == (int) buffSubType && skillAdditionalData != null)
+                if (skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue() && skillAdditionalData != null)
                 {
                     return true;
                 }
