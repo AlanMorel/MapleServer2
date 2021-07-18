@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -132,7 +133,7 @@ namespace MapleServer2.Data.Static
                 return 0;
             }
 
-            int rand = new Random().Next(0, pricePoints.Count);
+            int rand = RandomProvider.Get().Next(0, pricePoints.Count);
 
             return pricePoints.ElementAt(rand);
         }
@@ -146,7 +147,7 @@ namespace MapleServer2.Data.Static
                 return 0;
             }
 
-            int rand = new Random().Next(0, pricePoints.Count);
+            int rand = RandomProvider.Get().Next(0, pricePoints.Count);
 
             return pricePoints.ElementAt(rand);
         }
@@ -199,7 +200,7 @@ namespace MapleServer2.Data.Static
 
             if (colorPalette > 0 && colorIndex == -1) // random color from color palette
             {
-                Random random = new Random();
+                Random random = RandomProvider.Get();
 
                 int index = random.Next(palette.DefaultColors.Count);
 

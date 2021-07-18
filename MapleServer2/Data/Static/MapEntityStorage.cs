@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -70,7 +70,7 @@ namespace MapleServer2.Data.Static
         public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
         {
             List<MapPlayerSpawn> list = playerSpawns.GetValueOrDefault(mapId);
-            return list?.Count > 0 ? list[new Random().Next(list.Count)] : null;
+            return list?.Count > 0 ? list[RandomProvider.Get().Next(list.Count)] : null;
         }
 
         public static bool HasPortals(int mapId)

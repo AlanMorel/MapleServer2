@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -35,7 +35,7 @@ namespace MapleServer2.Packets
         public static Packet MobSkillUse(IFieldObject<Mob> mob, int skillId, short skillLevel, byte part)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
-            pWriter.WriteInt(new Random().Next()); // Seems to be an incrementing number - unique id
+            pWriter.WriteInt(RandomProvider.Get().Next()); // Seems to be an incrementing number - unique id
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt();
             pWriter.WriteInt(mob.ObjectId);

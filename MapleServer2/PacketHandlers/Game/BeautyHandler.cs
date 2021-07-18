@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -230,7 +231,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Grab random hair
-            Random random = new Random();
+            Random random = RandomProvider.Get();
             int indexHair = random.Next(beautyItems.Count);
             BeautyItem chosenHair = beautyItems[indexHair];
 

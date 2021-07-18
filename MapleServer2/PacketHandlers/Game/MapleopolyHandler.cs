@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
@@ -86,7 +87,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Random rnd = new Random();
+            Random rnd = RandomProvider.Get();
 
             // roll two dice
             int roll1 = rnd.Next(1, 6);

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
@@ -73,8 +73,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             List<CardReverseGame> cards = DatabaseManager.GetCardReverseGame();
 
-            Random random = new Random();
-            int index = random.Next(cards.Count);
+            int index = RandomProvider.Get().Next(cards.Count);
 
             CardReverseGame card = cards[index];
             Item item = new Item(card.ItemId)

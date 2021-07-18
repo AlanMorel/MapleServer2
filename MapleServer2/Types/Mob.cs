@@ -1,5 +1,6 @@
 ﻿using System;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -20,9 +21,7 @@ namespace MapleServer2.Types
 
     public class Mob : NpcMetadata
     {
-        private static readonly Random rand = new Random();
-
-        private MobAI AI;
+        private readonly MobAI AI;
         public bool IsDead { get; set; }
         public short ZRotation; // In degrees * 10
         public IFieldObject<MobSpawn> OriginSpawn;
@@ -97,6 +96,7 @@ namespace MapleServer2.Types
 
         public void Move(MobMovement moveType)
         {
+            Random rand = RandomProvider.Get();
             switch (moveType)
             {
                 case MobMovement.Patrol:
@@ -132,7 +132,7 @@ namespace MapleServer2.Types
         {
             IsDead = true;
             State = NpcState.Dead;
-            int randAnim = rand.Next(StateActions[NpcState.Dead].Length);
+            int randAnim = RandomProvider.Get().Next(StateActions[NpcState.Dead].Length);
             Animation = AnimationStorage.GetSequenceIdBySequenceName(Model, StateActions[NpcState.Dead][randAnim].Item1);
         }
     }
