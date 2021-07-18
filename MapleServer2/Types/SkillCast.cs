@@ -77,6 +77,22 @@ namespace MapleServer2.Types
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
+        public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
+
+        public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);
+
+        public bool IsDebuffToEntity() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity);
+
+        public bool IsDebuffElement() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Element);
+
+        public bool IsBuffShield() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Shield);
+
+        public bool IsChainSkill()
+        {
+            SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
+            return skillData != null && skillData.Type == 0 && skillData.SubType == 0;
+        }
+
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
         {
             SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);

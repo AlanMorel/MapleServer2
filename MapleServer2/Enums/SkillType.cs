@@ -24,8 +24,9 @@
         None = 0,
         Owner = 1,
         Entity = 2,
-        Element = 4,
+        Element = 4, // Damage Per Second
         Shield = 6,
+        Unknown = 8,
         Recovery = 16,
         Unknown2 = 64,
         Unknown3 = 1024

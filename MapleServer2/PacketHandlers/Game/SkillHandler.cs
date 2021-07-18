@@ -74,15 +74,6 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Send(SkillUsePacket.SkillUse(skillCast, coords));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
-
-                // TODO: Check if the skill is a buff to the player or to allies.
-                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-                // This is true for developed purposes.
-                if (true)
-                {
-                    Status status = new Status(skillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
-                    StatusHandler.Handle(session, status);
-                }
             }
         }
 
@@ -184,7 +175,8 @@ namespace MapleServer2.PacketHandlers.Game
 
                     // TODO: Check if the skill is a debuff for an entity
                     // This is true for developed purposes.
-                    if (true)
+                    SkillCast skillCast = session.FieldPlayer.Value.SkillCast;
+                    if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() && skillCast.IsChainSkill())
                     {
                         Status status = new Status(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
                         StatusHandler.Handle(session, status);
@@ -218,6 +210,7 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF coord1 = packet.Read<CoordF>();
 
             // TODO: Verify rest of skills to proc correctly.
+            // Send status correctly when Region attacks are proc.
             if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
             {
                 return;
@@ -227,7 +220,6 @@ namespace MapleServer2.PacketHandlers.Game
                 SkillCast skillCast = session.Player.Cast(skill, 1, skillSN, unknown);
                 RegionSkillHandler.Handle(session, unknown, coord, skillCast);
             }
-
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)

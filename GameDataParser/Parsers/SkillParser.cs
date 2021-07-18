@@ -147,12 +147,12 @@ namespace GameDataParser.Parsers
                 {
                     foreach (XmlNode level in levels)
                     {
-                        SkillAdditionalData data = ParseSkillData(level);
-
                         int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
-                        if (skillList.Find(x => x.SkillId == skillId).SkillLevels.Select(x => x.Level).Contains(currentLevel))
+                        List<SkillLevel> skillLevels = skillList.Find(x => x.SkillId == skillId).SkillLevels;
+
+                        if (skillLevels.Select(x => x.Level).Contains(currentLevel))
                         {
-                            skillList.Find(x => x.SkillId == skillId).SkillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = data;
+                            skillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = ParseSkillData(level);
                         }
                     }
                 }
@@ -164,10 +164,7 @@ namespace GameDataParser.Parsers
                     foreach (XmlNode level in levels)
                     {
                         int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
-
-                        SkillAdditionalData data = ParseSkillData(level);
-                        SkillLevel skillLevel = new SkillLevel(currentLevel, data);
-                        skillLevels.Add(skillLevel);
+                        skillLevels.Add(new SkillLevel(currentLevel, ParseSkillData(level)));
                     }
                     skillList.Add(new SkillMetadata(skillId, skillLevels));
                 }

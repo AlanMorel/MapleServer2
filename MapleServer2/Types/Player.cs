@@ -292,6 +292,14 @@ namespace MapleServer2.Types
                 SkillCast = skillCast;
                 Session.SendNotice(skillCast.SkillId.ToString());
 
+                // TODO: Move this and all others combat cases like recover sp to its own class.
+                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield())
+                {
+                    Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
+                    StatusHandler.Handle(Session, status);
+                }
+
                 // Refresh out-of-combat timer
                 if (CombatCTS != null)
                 {
