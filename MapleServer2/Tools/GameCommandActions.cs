@@ -240,7 +240,7 @@ namespace MapleServer2.Tools
                 }
 
                 session.Player.Coord = CoordF.From(x, y, z);
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Send(FieldPacket.RequestEnter(session.Player));
             }
         }
 

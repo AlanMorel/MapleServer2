@@ -23,7 +23,7 @@ namespace MapleServer2.Types
         public int ArchitectScoreTotal { get; set; }
         public long DecorationExp { get; set; }
         public long DecorationLevel { get; set; }
-        public List<int> InteriorRewardsCollected { get; set; }
+        public List<int> InteriorRewardsClaimed { get; set; }
 
         private readonly long[] DecorationExpTable = new long[] { 0, 100, 300, 1000, 2100, 5500, 7700, 9900, 13200, 16500 };
 
@@ -45,9 +45,9 @@ namespace MapleServer2.Types
 
         public Home() { }
 
-        public Home(Account account, string houseName, int homeTemplate)
+        public Home(long accountId, string houseName, int homeTemplate)
         {
-            AccountId = account.Id;
+            AccountId = accountId;
             Name = houseName;
             Description = "Thanks for visiting. Come back soon!";
             MapId = (int) Map.PrivateResidence;
@@ -55,52 +55,40 @@ namespace MapleServer2.Types
             PlotNumber = 0;
             ApartmentNumber = 0;
             DecorationLevel = 1;
-            InteriorRewardsCollected = new List<int>();
+            Size = 4;
+            Height = 5;
+            InteriorRewardsClaimed = new List<int>();
             Expiration = 32503561200; // Year 2999
             Password = "******";
             Permissions = new Dictionary<HomePermission, byte>();
-            GenerateTemplate(this, homeTemplate);
+
+            switch (homeTemplate)
+            {
+                case 0:
+                    HomeTemplates.WoodlandPath().ForEach(x => FurnishingInventory.Add(x.Uid, x));
+                    break;
+                case 1:
+                    HomeTemplates.PinkPerfection().ForEach(x => FurnishingInventory.Add(x.Uid, x));
+                    break;
+                case 2:
+                    HomeTemplates.KerningBunker().ForEach(x => FurnishingInventory.Add(x.Uid, x));
+                    break;
+                default:
+                    Size = 10;
+                    Height = 5;
+                    break;
+            }
 
             Id = DatabaseManager.CreateHouse(this);
         }
 
-        private static void GenerateTemplate(Home home, int homeTemplate)
-        {
-            if (homeTemplate == 0)
-            {
-                home.Size = 4;
-                home.Height = 5;
-                HomeTemplates.WoodlandPath().ForEach(x => home.FurnishingInventory.Add(x.Uid, x));
-            }
-            else if (homeTemplate == 1)
-            {
-                home.Size = 4;
-                home.Height = 5;
-                HomeTemplates.PinkPerfection().ForEach(x => home.FurnishingInventory.Add(x.Uid, x));
-            }
-            else if (homeTemplate == 2)
-            {
-                home.Size = 4;
-                home.Height = 5;
-                HomeTemplates.KerningBunker().ForEach(x => home.FurnishingInventory.Add(x.Uid, x));
-            }
-            else
-            {
-                home.Size = 10;
-                home.Height = 5;
-            }
-        }
-
         public void GainExp(long exp)
         {
-            if (exp <= 0)
+            if (exp <= 0 || DecorationLevel > 9) // level 10 max
             {
                 return;
             }
-            if (DecorationLevel > 9) // level 10 is max
-            {
-                return;
-            }
+
             if (DecorationExp + exp >= DecorationExpTable[DecorationLevel])
             {
                 exp -= DecorationExpTable[DecorationLevel];

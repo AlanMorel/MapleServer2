@@ -179,8 +179,8 @@ namespace MapleServer2.Types
                 new MasteryExp(MasteryType.PetTaming)
             });
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            MapId = 52000065;
-            Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
+            MapId = 2000062;
+            Coord = CoordF.From(2850, 2550, 1801); // Intro map (52000065)
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
@@ -200,7 +200,7 @@ namespace MapleServer2.Types
             QuestList = new List<QuestStatus>();
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
-            ReturnCoord = CoordF.From(-900, -900, 3000);
+            ReturnCoord = CoordF.From(-675, 525, 600);
             GroupChatId = new int[3];
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
@@ -212,6 +212,13 @@ namespace MapleServer2.Types
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
+
+            Coord = coord;
+            Rotation = rotation;
+            SafeBlock = coord;
+            MapId = mapId;
+            InstanceId = instanceId;
+
             if (coord == default || rotation == default)
             {
                 MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
@@ -230,14 +237,6 @@ namespace MapleServer2.Types
                     Rotation = spawn.Rotation.ToFloat();
                 }
             }
-            else
-            {
-                Coord = coord;
-                Rotation = rotation;
-                SafeBlock = coord;
-            }
-            MapId = mapId;
-            InstanceId = instanceId;
 
             if (!UnlockedMaps.Contains(MapId))
             {
@@ -245,7 +244,7 @@ namespace MapleServer2.Types
             }
 
             DatabaseManager.UpdateCharacter(this);
-            Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
+            Session.Send(FieldPacket.RequestEnter(this));
         }
 
         public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)

@@ -482,10 +482,13 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(); // timestamp
             pWriter.WriteLong(home?.DecorationLevel ?? 1);
             pWriter.WriteLong(home?.DecorationExp ?? 0);
-            pWriter.WriteInt(home.InteriorRewardsCollected.Count);
-            foreach (int rewardId in home.InteriorRewardsCollected)
+            pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);
+            if (home != null)
             {
-                pWriter.WriteInt(rewardId);
+                foreach (int rewardId in home.InteriorRewardsClaimed)
+                {
+                    pWriter.WriteInt(rewardId);
+                }
             }
 
             return pWriter;

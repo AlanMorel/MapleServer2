@@ -1,4 +1,6 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -55,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account, player.Name, homeTemplate);
+                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate);
                 GameServer.HomeManager.AddHome(player.Account.Home);
             }
 
@@ -67,7 +69,25 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
-            player.Warp(player.Account.Home.MapId, instanceId: player.Account.Home.Id);
+            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+
+            // Send inventories
+            session.Send(WarehouseInventoryPacket.StartList());
+            int counter = 0;
+            foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
+            {
+                session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+            }
+            session.Send(WarehouseInventoryPacket.EndList());
+
+            session.Send(FurnishingInventoryPacket.StartList());
+            foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
+            {
+                session.Send(FurnishingInventoryPacket.Load(cube));
+            }
+            session.Send(FurnishingInventoryPacket.EndList());
+
+            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.Id);
         }
     }
 }

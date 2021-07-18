@@ -195,10 +195,11 @@ namespace MapleServer2.PacketHandlers.Game
                 player.ReturnMapId = player.MapId;
                 player.ReturnCoord = player.SafeBlock;
             }
+
             player.VisitingHomeId = home.Id;
             session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
 
-            player.Warp(home.MapId, instanceId: home.Id);
+            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.Id);
         }
 
         private static void HandleReturnMap(GameSession session)
@@ -231,7 +232,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Rotation = dstPortal.Rotation.ToFloat();
             session.Player.Coord = dstPortal.Coord.ToFloat();
             DatabaseManager.UpdateCharacter(session.Player);
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            session.Send(FieldPacket.RequestEnter(session.Player));
         }
     }
 }

@@ -180,7 +180,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account, player.Name, homeTemplate)
+                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate)
                 {
                     PlotId = player.MapId,
                     PlotNumber = land.Id,
@@ -642,8 +642,8 @@ namespace MapleServer2.PacketHandlers.Game
                 {ItemHousingCategory.Fences, 2}, {ItemHousingCategory.NaturalTerrain, 4},
             };
 
-            Home home = session.Player.Account.Home;
-            if (home == null)
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            if (home == null || home.AccountId != session.Player.Account.Home?.AccountId)
             {
                 return;
             }
@@ -710,7 +710,7 @@ namespace MapleServer2.PacketHandlers.Game
             int rewardId = packet.ReadInt();
             Home home = session.Player.Account.Home;
 
-            if (rewardId <= 1 || rewardId >= 11 || home == null || home.InteriorRewardsCollected.Contains(rewardId))
+            if (rewardId <= 1 || rewardId >= 11 || home == null || home.InteriorRewardsClaimed.Contains(rewardId))
             {
                 return;
             }
@@ -738,7 +738,7 @@ namespace MapleServer2.PacketHandlers.Game
                 default:
                     break;
             }
-            home.InteriorRewardsCollected.Add(rewardId);
+            home.InteriorRewardsClaimed.Add(rewardId);
             session.Send(ResponseCubePacket.DecorationScore(home));
         }
 

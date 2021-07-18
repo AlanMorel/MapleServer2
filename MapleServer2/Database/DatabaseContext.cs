@@ -261,7 +261,7 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new Dictionary<HomePermission, byte>() : JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(i));
 
-                entity.Property(e => e.InteriorRewardsCollected).HasConversion(
+                entity.Property(e => e.InteriorRewardsClaimed).HasConversion(
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
                 entity.HasMany(e => e.FurnishingCubes).WithOne(e => e.Home);

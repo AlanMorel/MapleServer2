@@ -45,25 +45,25 @@ namespace MapleServer2.PacketHandlers.Game
 
                 session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(isHome, home));
 
+                // Set spawning coords for home
                 List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == 50400190).ToList();
                 CoordF coord;
                 CoordF rotation;
                 if (portals.Count > 0)
                 {
-                    Cube portal = portals.OrderBy(x => random.Next()).Take(1).First();
-                    rotation = portal.Rotation;
+                    Cube portal = portals.OrderBy(x => new Random().Next()).Take(1).First();
                     coord = portal.CoordF;
+                    rotation = portal.Rotation;
                 }
                 else
                 {
                     byte homeSize = (byte) (home.Size - 1);
                     int x = -1 * Block.BLOCK_SIZE * homeSize;
-                    coord = CoordF.From(x, x, 300);
+                    coord = CoordF.From(x, x, 150);
                     rotation = CoordF.From(0, 0, 0);
                 }
                 session.Player.Coord = coord;
                 session.Player.Rotation = rotation;
-                session.Player.InstanceId = session.Player.VisitingHomeId;
             }
             else
             {

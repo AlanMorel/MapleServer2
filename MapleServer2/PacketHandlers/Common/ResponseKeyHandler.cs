@@ -158,7 +158,7 @@ namespace MapleServer2.PacketHandlers.Common
             // 0xF0, ResponsePet P(0F 01)
             // RequestFieldEnter
             //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            session.Send(FieldPacket.RequestEnter(session.Player));
             // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
             // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
