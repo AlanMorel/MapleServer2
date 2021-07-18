@@ -21,8 +21,7 @@ namespace MapleServer2.Types
 
     public class Mob : NpcMetadata
     {
-
-        private MobAI AI;
+        private readonly MobAI AI;
         public bool IsDead { get; set; }
         public short ZRotation; // In degrees * 10
         public IFieldObject<MobSpawn> OriginSpawn;

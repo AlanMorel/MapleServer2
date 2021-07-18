@@ -17,7 +17,7 @@ namespace MapleServer2.Types
         public readonly SpawnMetadata SpawnData;
         public List<IFieldObject<Mob>> Mobs;
 
-        public MobSpawn(int id, CoordF pos, int spawnRadius, int maxPopulation, SpawnMetadata spawnData, List<int> mobIDs = null)
+        public MobSpawn(int id, CoordF pos, int spawnRadius, int maxPopulation, SpawnMetadata spawnData/*, List<int> mobIDs = null*/)
         {
             Id = id;
             SpawnPosition = pos;
@@ -28,7 +28,7 @@ namespace MapleServer2.Types
             Mobs = new List<IFieldObject<Mob>>();
         }
 
-        public MobSpawn(MapMobSpawn mapSpawnData) : this(mapSpawnData.Id, mapSpawnData.Coord.ToFloat(), mapSpawnData.SpawnRadius, mapSpawnData.NpcCount, mapSpawnData.SpawnData, mapSpawnData.NpcList)
+        public MobSpawn(MapMobSpawn mapSpawnData) : this(mapSpawnData.Id, mapSpawnData.Coord.ToFloat(), mapSpawnData.SpawnRadius, mapSpawnData.NpcCount, mapSpawnData.SpawnData/*, mapSpawnData.NpcList*/)
         {
 
         }
