@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MapleServer2.Enums;
 using MapleServer2.Data.Static;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
@@ -78,10 +79,10 @@ namespace MapleServer2.Types
 
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
         {
-            Maple2Storage.Types.Metadata.SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
+            SkillMetadata skillData = SkillMetadataStorage.GetSkill(SkillId);
             if (skillData.Type == (int) type && skillData.SubType == (int) subType && skillData != null)
             {
-                Maple2Storage.Types.Metadata.SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
+                SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
                 if (skillAdditionalData.BuffType == (int) buffType && skillAdditionalData.BuffSubType == (int) buffSubType && skillAdditionalData != null)
                 {
                     return true;

@@ -135,7 +135,9 @@ namespace GameDataParser.Parsers
             foreach (PackFileEntry entry in Resources.XmlFiles)
             {
                 if (!entry.Name.StartsWith("additionaleffect"))
-                { continue; }
+                {
+                    continue;
+                }
 
                 XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
                 XmlNodeList levels = document.SelectNodes("/ms2/level");

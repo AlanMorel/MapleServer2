@@ -218,14 +218,16 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF coord1 = packet.Read<CoordF>();
 
             // TODO: Verify rest of skills to proc correctly.
-            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() != null)
+            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
             {
-                foreach (int skill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
-                {
-                    SkillCast skillCast = session.Player.Cast(skill, 1, skillSN, unknown);
-                    RegionSkillHandler.Handle(session, unknown, coord, skillCast);
-                }
+                return;
             }
+            foreach (int skill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+            {
+                SkillCast skillCast = session.Player.Cast(skill, 1, skillSN, unknown);
+                RegionSkillHandler.Handle(session, unknown, coord, skillCast);
+            }
+
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
