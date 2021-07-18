@@ -74,18 +74,8 @@ namespace MapleServer2.Types
 
         public bool IsBuffToEntity() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Entity);
 
-        public bool IsDebuffToEntity()
-        {
-            if (VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity))
-            {
-                return true;
-            }
-            else if (VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Entity))
-            {
-                return true;
-            }
-            return false;
-        }
+                public bool IsDebuffToEntity() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Debuff, BuffSubType.Entity) || VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Entity);
+
 
         public bool IsDebuffToOwner() => VerifySkillTypeOf(BuffType.Debuff, BuffSubType.Owner);
 
