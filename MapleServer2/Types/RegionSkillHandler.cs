@@ -18,7 +18,7 @@ namespace MapleServer2.Types
             return Task.Run(async () =>
             {
                 // TODO: Get the correct Region Skill Duration when calling chain Skills
-                await Task.Delay(skillCast.DurationTick());
+                await Task.Delay(skillCast.DurationTick() + 2000);
                 session.Send(RegionSkillPacket.Remove(sourceId));
             });
         }

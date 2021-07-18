@@ -7,6 +7,7 @@ namespace MapleServer2.Types
     public static class StatusHandler
     {
         // Public caller to handle status on Player
+        // TODO: Handle Add Stacks to status.
         public static void Handle(GameSession session, Status status)
         {
             session.Send(BuffPacket.SendBuff(0, status));

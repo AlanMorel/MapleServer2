@@ -174,9 +174,8 @@ namespace MapleServer2.PacketHandlers.Game
                     mobs.Add((mob, damage));
 
                     // TODO: Check if the skill is a debuff for an entity
-                    // This is true for developed purposes.
                     SkillCast skillCast = session.FieldPlayer.Value.SkillCast;
-                    if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() && skillCast.IsChainSkill())
+                    if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
                     {
                         Status status = new Status(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
                         StatusHandler.Handle(session, status);
