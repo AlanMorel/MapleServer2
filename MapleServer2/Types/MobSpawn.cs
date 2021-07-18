@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -44,8 +44,7 @@ namespace MapleServer2.Types
                     spawnOffsets.Add(CoordF.From(i * Block.BLOCK_SIZE - spawnRadius, j * Block.BLOCK_SIZE - spawnRadius, 0));
                 }
             }
-            Random offsetRNG = new Random();
-            return spawnOffsets.OrderBy(x => offsetRNG.Next()).ToList();
+            return spawnOffsets.OrderBy(x => RandomProvider.Get().Next()).ToList();
         }
 
         public static List<CoordF> SelectPoints(int count, int spawnRadius)

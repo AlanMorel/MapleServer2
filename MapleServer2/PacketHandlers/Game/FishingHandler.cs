@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -269,7 +270,7 @@ namespace MapleServer2.PacketHandlers.Game
             //determine fish rarity
             List<FishMetadata> selectedFishRarities = FilterFishesByRarity(fishes);
 
-            Random rnd = new Random();
+            Random rnd = RandomProvider.Get();
             int randomFishIndex = rnd.Next(selectedFishRarities.Count);
             FishMetadata fish = selectedFishRarities[randomFishIndex];
 
@@ -304,12 +305,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static List<FishMetadata> FilterFishesByRarity(List<FishMetadata> fishes)
         {
-            Random rnd = new Random();
             List<FishMetadata> selectedFishRarities = new List<FishMetadata>();
             int fishRarity;
             do // re-rolls until there is an acceptable rarity
             {
-                fishRarity = rnd.NextDouble() switch
+                fishRarity = RandomProvider.Get().NextDouble() switch
                 {
                     >= 0 and < 0.60 => 1,
                     >= 0.60 and < 0.85 => 2,
@@ -339,7 +339,7 @@ namespace MapleServer2.PacketHandlers.Game
             bool minigame = false;
             int fishingTick = 15000; // base fishing tick
 
-            Random rnd = new Random();
+            Random rnd = RandomProvider.Get();
 
             int successChance = rnd.Next(0, 100);
             if (successChance < 90)
@@ -369,7 +369,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleCatchItem(GameSession session)
         {
             // hardcoding the catch items for now
-            Random rnd = new Random();
+            Random rnd = RandomProvider.Get();
 
             int itemChance = rnd.Next(0, 100);
             if (itemChance > 10)

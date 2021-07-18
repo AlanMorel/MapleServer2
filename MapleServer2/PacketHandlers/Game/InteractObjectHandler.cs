@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -85,7 +85,6 @@ namespace MapleServer2.PacketHandlers.Game
                     int numCount = session.Player.GatheringCount[mapObject.RecipeId].Current;
 
                     List<RecipeItem> items = RecipeMetadataStorage.GetResult(recipe);
-                    Random rand = new Random();
                     int masteryDiffFactor = numCount switch
                     {
                         int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetFactor(0),
@@ -97,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
                     foreach (RecipeItem item in items)
                     {
                         int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
-                        if (rand.Next(100) >= prob)
+                        if (RandomProvider.Get().Next(100) >= prob)
                         {
                             continue;
                         }
