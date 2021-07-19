@@ -127,7 +127,7 @@ namespace MapleServer2.Types
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
-        private TimeInfo Timestamps;
+        private readonly TimeInfo Timestamps;
         public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
 
         public List<Status> StatusContainer = new List<Status>();
@@ -514,7 +514,7 @@ namespace MapleServer2.Types
             }
         }
 
-        private Task OnlineTimer(PlayerStatId statId)
+        private Task OnlineTimer()
         {
             return Task.Run(async () =>
             {

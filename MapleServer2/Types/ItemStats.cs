@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -224,9 +225,8 @@ namespace MapleServer2.Types
             }
             int calibratedValue = (int) (value * calibrationFactor);
 
-            Random random = new Random();
             int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
-            int summedFlat = normalStat.Flat + random.Next(value, calibratedValue);
+            int summedFlat = normalStat.Flat + RandomProvider.Get().Next(value, calibratedValue);
             normalStats[index] = new NormalStat(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
         }
 
@@ -240,7 +240,7 @@ namespace MapleServer2.Types
             }
 
             // get amount of slots
-            Random random = new Random();
+            Random random = RandomProvider.Get();
             int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
 
             List<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
@@ -302,8 +302,6 @@ namespace MapleServer2.Types
                 return null;
             }
 
-            Random random = new Random();
-
             List<ItemStat> itemStats = new List<ItemStat>();
 
             List<ParserStat> attributes = isSpecialStat ? randomOptions.Stats : randomOptions.Stats.Where(x => (short) x.Id != ignoreStat).ToList();
@@ -343,7 +341,7 @@ namespace MapleServer2.Types
                 itemStats.Add(specialStat);
             }
 
-            return itemStats.OrderBy(x => random.Next()).Take(item.Stats.BonusStats.Count).ToList();
+            return itemStats.OrderBy(x => RandomProvider.Get().Next()).Take(item.Stats.BonusStats.Count).ToList();
         }
 
         // Roll new values for existing bonus stats
@@ -433,7 +431,7 @@ namespace MapleServer2.Types
         private static int Roll(int itemId)
         {
             int itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
-            Random random = new Random();
+            Random random = RandomProvider.Get();
             if (itemLevelFactor >= 70)
             {
                 return random.NextDouble() switch
@@ -488,10 +486,9 @@ namespace MapleServer2.Types
             }
 
             // roll to unlock sockets
-            Random random = new Random();
             for (int i = 0; i < GemSockets.Count; i++)
             {
-                int successNumber = random.Next(0, 100);
+                int successNumber = RandomProvider.Get().Next(0, 100);
 
                 // 5% success rate to unlock a gemsocket
                 if (successNumber < 95)

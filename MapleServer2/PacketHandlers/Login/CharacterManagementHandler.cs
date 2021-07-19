@@ -62,8 +62,8 @@ namespace MapleServer2.PacketHandlers.Login
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             AuthData authData = new AuthData
             {
-                TokenA = session.GetToken(),
-                TokenB = session.GetToken(),
+                TokenA = LoginSession.GetToken(),
+                TokenB = LoginSession.GetToken(),
                 CharacterId = charId,
             };
             // Write AuthData to storage shared with GameServer

@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 
 namespace MapleServer2.Types
 {
     public class MobAI
     {
         public delegate bool Condition(Mob mob);
-
-        private static readonly Random rand = new Random();
-
         public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
 
         public MobAI()
@@ -36,7 +34,7 @@ namespace MapleServer2.Types
                 }
                 else if (mob.StateActions[mob.State].Length > 0)
                 {
-                    int roll = rand.Next(10000);
+                    int roll = RandomProvider.Get().Next(10000);
                     foreach ((string name, NpcAction type, int probability) in mob.StateActions[mob.State])
                     {
                         if (roll < probability)
