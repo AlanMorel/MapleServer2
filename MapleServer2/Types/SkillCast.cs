@@ -91,10 +91,10 @@ namespace MapleServer2.Types
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
         {
             SkillMetadata skillData = GetSkillMetadata();
-            if (skillData.Type == type.GetValue() && skillData.SubType == subType.GetValue() && skillData != null)
+            if (skillData != null && skillData.Type == type.GetValue() && skillData.SubType == subType.GetValue())
             {
                 SkillAdditionalData skillAdditionalData = skillData.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
-                if (skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue() && skillAdditionalData != null)
+                if (skillAdditionalData != null && skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue())
                 {
                     return true;
                 }
