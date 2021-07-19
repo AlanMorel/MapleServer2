@@ -29,7 +29,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(home.Background);
                 pWriter.WriteByte(home.Lighting);
                 pWriter.WriteByte(home.Camera);
-                pWriter.WriteByte((byte) home.Permissions.Count);
+                pWriter.WriteByte(9);
                 for (int i = 0; i < 9; i++) // permissions
                 {
                     if (home.Permissions.ContainsKey((HomePermission) i))
