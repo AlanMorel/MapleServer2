@@ -6,7 +6,6 @@ using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {
-    // TODO: Implement decoration reward cooldown
     // TODO: Implement architect expiration
 
     public class Home
@@ -26,6 +25,7 @@ namespace MapleServer2.Types
         public int ArchitectScoreTotal { get; set; }
         public long DecorationExp { get; set; }
         public long DecorationLevel { get; set; }
+        public long DecorationRewardTimestamp { get; set; }
         public List<int> InteriorRewardsClaimed { get; set; }
 
         private readonly long[] DecorationExpTable = new long[] { 0, 100, 300, 1000, 2100, 5500, 7700, 9900, 13200, 16500 };

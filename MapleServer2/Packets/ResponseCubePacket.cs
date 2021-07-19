@@ -483,7 +483,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
             pWriter.WriteLong(home?.AccountId ?? 0);
-            pWriter.WriteLong(); // timestamp of claiming reward
+            pWriter.WriteLong(home?.DecorationRewardTimestamp ?? 0);
             pWriter.WriteLong(home?.DecorationLevel ?? 1);
             pWriter.WriteLong(home?.DecorationExp ?? 0);
             pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);

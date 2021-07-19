@@ -709,6 +709,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             home.GainExp(decorationScore);
             InventoryController.Add(session, new Item(rewardsIds.OrderBy(x => RandomProvider.Get().Next()).First()), true);
+            home.DecorationRewardTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             session.Send(ResponseCubePacket.DecorationScore(home));
         }
 
