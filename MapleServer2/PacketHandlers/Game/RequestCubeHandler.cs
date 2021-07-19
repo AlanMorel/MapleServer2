@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -707,7 +708,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             home.GainExp(decorationScore);
-            InventoryController.Add(session, new Item(rewardsIds.OrderBy(x => new Random().Next()).First()), true);
+            InventoryController.Add(session, new Item(rewardsIds.OrderBy(x => RandomProvider.Get().Next()).First()), true);
             session.Send(ResponseCubePacket.DecorationScore(home));
         }
 

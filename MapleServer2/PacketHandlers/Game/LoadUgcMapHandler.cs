@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -21,8 +21,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            Random random = new Random();
-
             bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
             UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
             List<byte> plots = new List<byte>();
@@ -51,7 +49,7 @@ namespace MapleServer2.PacketHandlers.Game
                 CoordF rotation;
                 if (portals.Count > 0)
                 {
-                    Cube portal = portals.OrderBy(x => new Random().Next()).Take(1).First();
+                    Cube portal = portals.OrderBy(x => RandomProvider.Get().Next()).Take(1).First();
                     coord = portal.CoordF;
                     coord.Z += 1;
                     rotation = portal.Rotation;
