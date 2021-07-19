@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Maple2Storage.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Network;
 using Microsoft.Extensions.Logging;
@@ -10,16 +10,14 @@ namespace MapleServer2.Servers.Login
         protected override SessionType Type => SessionType.Login;
 
         public long AccountId;
-        private readonly Random Rng;
 
         public LoginSession(ILogger<LoginSession> logger) : base(logger)
         {
-            Rng = new Random();
         }
 
-        public int GetToken()
+        public static int GetToken()
         {
-            return Rng.Next();
+            return RandomProvider.Get().Next();
         }
 
         public override void EndSession()

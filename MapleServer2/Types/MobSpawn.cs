@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -17,7 +17,7 @@ namespace MapleServer2.Types
         public readonly SpawnMetadata SpawnData;
         public List<IFieldObject<Mob>> Mobs;
 
-        public MobSpawn(int id, CoordF pos, int spawnRadius, int maxPopulation, SpawnMetadata spawnData, List<int> mobIDs = null)
+        public MobSpawn(int id, CoordF pos, int spawnRadius, int maxPopulation, SpawnMetadata spawnData/*, List<int> mobIDs = null*/)
         {
             Id = id;
             SpawnPosition = pos;
@@ -28,7 +28,7 @@ namespace MapleServer2.Types
             Mobs = new List<IFieldObject<Mob>>();
         }
 
-        public MobSpawn(MapMobSpawn mapSpawnData) : this(mapSpawnData.Id, mapSpawnData.Coord.ToFloat(), mapSpawnData.SpawnRadius, mapSpawnData.NpcCount, mapSpawnData.SpawnData, mapSpawnData.NpcList)
+        public MobSpawn(MapMobSpawn mapSpawnData) : this(mapSpawnData.Id, mapSpawnData.Coord.ToFloat(), mapSpawnData.SpawnRadius, mapSpawnData.NpcCount, mapSpawnData.SpawnData/*, mapSpawnData.NpcList*/)
         {
 
         }
@@ -44,8 +44,7 @@ namespace MapleServer2.Types
                     spawnOffsets.Add(CoordF.From(i * Block.BLOCK_SIZE - spawnRadius, j * Block.BLOCK_SIZE - spawnRadius, 0));
                 }
             }
-            Random offsetRNG = new Random();
-            return spawnOffsets.OrderBy(x => offsetRNG.Next()).ToList();
+            return spawnOffsets.OrderBy(x => RandomProvider.Get().Next()).ToList();
         }
 
         public static List<CoordF> SelectPoints(int count, int spawnRadius)
