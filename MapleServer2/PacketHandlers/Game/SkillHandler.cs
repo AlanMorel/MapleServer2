@@ -118,13 +118,10 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadInt();
             for (int i = 0; i < count; i++)
             {
-                packet.ReadLong();
+                packet.ReadInt(); // increment +1 every count
                 packet.ReadInt();
-                packet.ReadByte();
-                if (packet.ReadBool())
-                {
-                    packet.ReadLong();
-                }
+                packet.ReadInt();
+                packet.ReadShort(); // increment +1 every count
             }
         }
 
