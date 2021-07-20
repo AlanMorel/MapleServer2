@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -14,14 +14,14 @@ namespace GameDataParser.Parsers
         protected override List<RecipeMetadata> Parse()
         {
             List<RecipeMetadata> recipeList = new List<RecipeMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/masteryreceipe"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList recipes = document.SelectNodes("/ms2/receipe");
 
                 foreach (XmlNode recipe in recipes)

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
@@ -17,7 +17,7 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset Cubes to later reference while iterating over exported maps
             Dictionary<string, string> mapCubes = new Dictionary<string, string>();
-            foreach (PackFileEntry entry in Resources.ExportedFiles)
+            foreach (PackFileEntry entry in Resources.ExportedReader.Files)
             {
                 if (!entry.Name.StartsWith("flat/presets/presets cube/"))
                 {
@@ -36,7 +36,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedReader.GetXmlDocument(entry);
                 XmlElement root = document.DocumentElement;
                 string cubeName = root.Attributes["name"].Value.ToLower();
                 XmlNode propertyAttribute = root.SelectSingleNode("property[@name='MapAttribute']");
@@ -46,9 +46,9 @@ namespace GameDataParser.Parsers
 
             // Parse map names
             Dictionary<int, string> mapNames = new Dictionary<int, string>();
-            foreach (PackFileEntry entry in Resources.XmlFiles.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
+            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
             {
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     int id = int.Parse(node.Attributes["id"].Value);
@@ -59,7 +59,7 @@ namespace GameDataParser.Parsers
 
             // Parse every block for each map
             List<MapMetadata> mapsList = new List<MapMetadata>();
-            foreach (PackFileEntry entry in Resources.ExportedFiles.Where(x => x.Name.StartsWith("xblock/")))
+            foreach (PackFileEntry entry in Resources.ExportedReader.Files.Where(x => x.Name.StartsWith("xblock/")))
             {
                 if (entry.Name.Contains("_cn.xblock") || entry.Name.Contains("_jp.xblock") || entry.Name.Contains("_kr.xblock"))
                 {
@@ -78,7 +78,7 @@ namespace GameDataParser.Parsers
                 string xblockName = entry.Name[7..];
                 metadata.XBlockName = xblockName.Remove(xblockName.Length - 7, 7);
 
-                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedReader.GetXmlDocument(entry);
                 XmlNodeList mapEntities = document.SelectNodes("/game/entitySet/entity");
 
                 List<MapBlock> blocks = new List<MapBlock>();

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
@@ -16,7 +16,7 @@ namespace GameDataParser.Parsers
         protected override List<UGCMapMetadata> Parse()
         {
             List<UGCMapMetadata> ugcmap = new List<UGCMapMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("ugcmap"))
                 {
@@ -27,7 +27,7 @@ namespace GameDataParser.Parsers
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
                 metadata.MapId = int.Parse(filename);
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList nodes = document.SelectNodes("/ugcmap/group");
 
                 foreach (XmlNode node in nodes)

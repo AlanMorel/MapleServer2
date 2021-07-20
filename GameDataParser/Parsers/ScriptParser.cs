@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -22,7 +22,7 @@ namespace GameDataParser.Parsers
         private static List<ScriptMetadata> ParseNpc(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in resources.XmlFiles)
+            foreach (PackFileEntry entry in resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("script/npc"))
@@ -32,7 +32,7 @@ namespace GameDataParser.Parsers
 
                 ScriptMetadata metadata = new ScriptMetadata();
                 int npcId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
-                XmlDocument document = resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     if (node.Name == "monologue")
@@ -97,7 +97,7 @@ namespace GameDataParser.Parsers
         private static List<ScriptMetadata> ParseQuest(MetadataResources resources)
         {
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
-            foreach (PackFileEntry entry in resources.XmlFiles)
+            foreach (PackFileEntry entry in resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("script/quest"))
@@ -110,7 +110,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
                 {
                     // Skip locales other than NA and null
