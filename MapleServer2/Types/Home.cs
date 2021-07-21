@@ -47,6 +47,11 @@ namespace MapleServer2.Types
         public readonly Dictionary<long, Cube> FurnishingInventory = new Dictionary<long, Cube>();
         public List<Cube> FurnishingCubes { get; set; } // DB ONLY
 
+        // Decor planner
+        public byte DecorPlannerSize;
+        public byte DecorPlannerHeight;
+        public readonly Dictionary<long, Cube> DecorPlannerInventory = new Dictionary<long, Cube>();
+
         public Home() { }
 
         public Home(long accountId, string houseName, int homeTemplate)

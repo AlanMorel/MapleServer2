@@ -221,9 +221,9 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).Level;
         }
 
-        public static bool GetCubeProp(int itemId)
+        public static bool GetIsCubeSolid(int itemId)
         {
-            return map.GetValueOrDefault(itemId).IsCubeProp;
+            return map.GetValueOrDefault(itemId).IsCubeSolid;
         }
 
         public static ItemHousingCategory GetHousingCategory(int itemId)

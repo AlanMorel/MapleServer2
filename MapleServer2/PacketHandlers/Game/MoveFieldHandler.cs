@@ -23,7 +23,8 @@ namespace MapleServer2.PacketHandlers.Game
             Move = 0x0,
             LeaveInstance = 0x1,
             VisitHouse = 0x02,
-            ReturnMap = 0x03
+            ReturnMap = 0x03,
+            EnterDecorPlaner = 0x04
         }
 
         private enum PortalTypes
@@ -51,6 +52,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestMoveFieldMode.ReturnMap:
                     HandleReturnMap(session);
+                    break;
+                case RequestMoveFieldMode.EnterDecorPlaner:
+                    HandleEnterDecorPlaner(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -202,14 +206,28 @@ namespace MapleServer2.PacketHandlers.Game
             player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.Id);
         }
 
+        // This also leaves decor planning
         private static void HandleReturnMap(GameSession session)
         {
             Player player = session.Player;
+            if (player.IsInDecorPlanner)
+            {
+                player.IsInDecorPlanner = false;
+                player.Warp((int) Map.PrivateResidence, instanceId: player.VisitingHomeId);
+                return;
+            }
             CoordF returnCoord = player.ReturnCoord;
             returnCoord.Z += Block.BLOCK_SIZE;
             player.Warp(player.ReturnMapId, returnCoord, player.Rotation);
             player.ReturnMapId = 0;
             player.VisitingHomeId = 0;
+        }
+
+        private static void HandleEnterDecorPlaner(GameSession session)
+        {
+            Player player = session.Player;
+            player.IsInDecorPlanner = true;
+            player.Warp((int) Map.PrivateResidence, instanceId: player.VisitingHomeId);
         }
 
         public static void HandleInstanceMove(GameSession session, int mapId)

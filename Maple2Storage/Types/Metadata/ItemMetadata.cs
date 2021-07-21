@@ -74,7 +74,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 33)]
         public int OptionLevelFactor;
         [XmlElement(Order = 34)]
-        public bool IsCubeProp;
+        public bool IsCubeSolid;
         [XmlElement(Order = 35)]
         public ItemHousingCategory HousingCategory;
 

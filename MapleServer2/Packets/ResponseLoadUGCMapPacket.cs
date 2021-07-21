@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public class ResponseLoadUGCMapPacket
     {
-        public static Packet LoadUGCMap(bool isHome, Home home = null)
+        public static Packet LoadUGCMap(bool isHome, Home home = null, bool inDecorPlanner = false)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
             pWriter.WriteLong();
@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(home.ArchitectScoreTotal);
                 pWriter.WriteInt();
                 pWriter.WriteInt();
-                pWriter.WriteByte();
+                pWriter.WriteBool(inDecorPlanner);
                 pWriter.WriteByte(home.Size);
                 pWriter.WriteByte(home.Height);
                 pWriter.WriteByte(home.Background);

@@ -41,10 +41,11 @@ namespace MapleServer2.PacketHandlers.Game
 
                 homes = new List<Home>() { home };
 
-                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome, home));
+                session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome, home, session.Player.IsInDecorPlanner));
 
                 // Find spawning coords for home
-                List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == 50400190).ToList();
+                int cubePortalId = 50400190;
+                List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == cubePortalId).ToList();
                 CoordF coord;
                 CoordF rotation;
                 if (portals.Count > 0)
@@ -73,10 +74,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             List<Cube> cubes = new List<Cube>();
-            homes.ForEach(h =>
+            if (!session.Player.IsInDecorPlanner)
             {
-                cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0).ToList());
-            });
+                homes.ForEach(h =>
+                {
+                    cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0).ToList());
+                });
+            }
 
             session.Send(SendCubesPacket.LoadPlots(homes, session.Player.MapId));
             session.Send(SendCubesPacket.LoadCubes(cubes));

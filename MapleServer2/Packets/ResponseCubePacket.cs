@@ -109,13 +109,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlaceFurnishing(IFieldObject<Cube> cube, IFieldObject<Player> player, bool sendOnlyObjectId)
+        public static Packet PlaceFurnishing(IFieldObject<Cube> cube, int ownerObjectId, int fieldPlayerObjectId, bool sendOnlyObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
             pWriter.WriteBool(sendOnlyObjectId);
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(ownerObjectId);
+            pWriter.WriteInt(fieldPlayerObjectId);
 
             if (sendOnlyObjectId)
             {
@@ -138,24 +138,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CantPlaceHere(IFieldObject<Player> player)
+        public static Packet CantPlaceHere(int fieldPlayerObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
             pWriter.WriteByte(44);
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(fieldPlayerObjectId);
+            pWriter.WriteInt(fieldPlayerObjectId);
 
             return pWriter;
         }
 
-        public static Packet RemoveCube(IFieldObject<Player> player, CoordB coord)
+        public static Packet RemoveCube(int ownerObjectId, int fieldPlayerObjectId, CoordB coord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.RemoveCube);
             pWriter.WriteByte();
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(ownerObjectId);
+            pWriter.WriteInt(fieldPlayerObjectId);
             pWriter.Write(coord);
             pWriter.WriteByte();
             pWriter.WriteByte();
@@ -177,13 +177,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ReplaceCube(IFieldObject<Player> player, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
+        public static Packet ReplaceCube(int homeOwnerObjectId, int fieldPlayerObjectId, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.ReplaceCube);
             pWriter.WriteBool(sendOnlyObjectId);
-            pWriter.WriteInt(player.ObjectId);
-            pWriter.WriteInt(player.ObjectId);
+            pWriter.WriteInt(homeOwnerObjectId);
+            pWriter.WriteInt(fieldPlayerObjectId);
 
             if (sendOnlyObjectId)
             {
@@ -191,8 +191,8 @@ namespace MapleServer2.Packets
             }
             pWriter.Write(newCube.Coord.ToByte());
             pWriter.WriteByte();
-            pWriter.WriteInt(newCube.Value.Item.Id);
             pWriter.WriteLong(newCube.Value.Item.Uid);
+            pWriter.WriteInt(newCube.Value.Item.Id);
             pWriter.WriteLong(newCube.Value.Uid);
             pWriter.WriteLong();
             pWriter.WriteByte();

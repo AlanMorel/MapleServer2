@@ -84,6 +84,7 @@ namespace MapleServer2.Types
         public string Motto;
 
         public long VisitingHomeId;
+        public bool IsInDecorPlanner;
 
         public Mapleopoly Mapleopoly = new Mapleopoly();
 

@@ -179,6 +179,7 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.GatheringCount);
                 entity.Ignore(e => e.Mailbox);
                 entity.Ignore(e => e.InstanceId);
+                entity.Ignore(e => e.IsInDecorPlanner);
             });
 
             modelBuilder.Entity<Levels>(entity =>
@@ -266,6 +267,10 @@ namespace MapleServer2.Database
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
                 entity.HasMany(e => e.FurnishingCubes).WithOne(e => e.Home);
                 entity.HasMany(e => e.WarehouseItems).WithOne(e => e.Home);
+
+                entity.Ignore(e => e.DecorPlannerHeight);
+                entity.Ignore(e => e.DecorPlannerSize);
+                entity.Ignore(e => e.DecorPlannerInventory);
             });
 
             modelBuilder.Entity<SkillTab>(entity =>

@@ -228,7 +228,7 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
-            if (State.Cubes.IsEmpty)
+            if (State.Cubes.IsEmpty && !player.Value.IsInDecorPlanner)
             {
                 if (MapId == (int) Map.PrivateResidence)
                 {
@@ -390,16 +390,16 @@ namespace MapleServer2.Servers.Game
             return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
-        public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
+        public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player, sendOnlyObjectId: false));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, sendOnlyObjectId: false));
         }
 
-        public void RemoveCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
+        public void RemoveCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
             State.RemoveCube(cube.ObjectId);
-            BroadcastPacket(ResponseCubePacket.RemoveCube(player, cube.Coord.ToByte()));
+            BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
         }
 
         public void AddInstrument(IFieldObject<Instrument> instrument)

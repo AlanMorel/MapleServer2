@@ -501,8 +501,8 @@ namespace GameDataParser.Parsers
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 XmlNode install = item.SelectSingleNode("install");
-                bool cubeProp = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
-                metadata.IsCubeProp = cubeProp;
+                bool isCubeSolid = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
+                metadata.IsCubeSolid = isCubeSolid;
 
                 XmlNode housing = item.SelectSingleNode("housing");
                 string value = housing.Attributes["categoryTag"].Value;
