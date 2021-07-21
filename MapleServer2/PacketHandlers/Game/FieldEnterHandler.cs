@@ -23,7 +23,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Liftable: 00 00 00 00 00
             // SendBreakable
             // Self
-            session.EnterField(session.Player.MapId);
+            session.EnterField(session.Player);
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
             if (session.Player.IsVip())

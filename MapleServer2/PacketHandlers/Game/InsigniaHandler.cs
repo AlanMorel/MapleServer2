@@ -49,9 +49,8 @@ namespace MapleServer2.PacketHandlers.Game
                     return session.Player.Levels.PrestigeLevel >= 100;
                 default:
                     Console.WriteLine("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
-                    break;
+                    return false;
             }
-            return false;
         }
     }
 }

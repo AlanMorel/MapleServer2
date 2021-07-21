@@ -1,0 +1,90 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="ai">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="behavior" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="spawn" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="normal" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="combat" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="dead" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="enterAttackRange" type="behaviorType" maxOccurs="1" />
+                            <xs:element name="enterProjectileRange" type="behaviorType" maxOccurs="1" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Attribute Enums -->
+    <xs:simpleType name="stateEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="spawn" />
+            <xs:enumeration value="normal" />
+            <xs:enumeration value="combat" />
+            <xs:enumeration value="dead" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="actionEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="idle" />
+            <xs:enumeration value="bore" />
+            <xs:enumeration value="walk" />
+            <xs:enumeration value="run" />
+            <xs:enumeration value="jump" />
+            <xs:enumeration value="dead" />
+            <xs:enumeration value="hit" />
+            <xs:enumeration value="skill" />
+            <xs:enumeration value="spawn" />
+            <xs:enumeration value="stun" />
+            <xs:enumeration value="talk" />
+            <xs:enumeration value="regen" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="movementEnum" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="hold" />
+            <xs:enumeration value="patrol" />
+            <xs:enumeration value="lookAt" />
+            <xs:enumeration value="follow" />
+            <xs:enumeration value="strafe" />
+            <xs:enumeration value="run" />
+            <xs:enumeration value="dodge" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Element Types -->
+    <xs:complexType name="behaviorType">
+        <xs:sequence>
+            <xs:element name="idle" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="bore" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="walk" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="run" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="jump" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="dead" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="hit" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="skill" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="spawn" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="stun" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="talk" type="actionType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="regen" type="actionType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="movement" type="movementEnum" />
+    </xs:complexType>
+    <xs:complexType name="actionType">
+        <xs:all>
+            <xs:element name="condition" type="conditionType" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="conditionType">
+        <xs:attribute name="lastAction" type="actionEnum" />
+        <xs:attribute name="minHpPercent" type="xs:int" />
+        <xs:attribute name="maxHpPercent" type="xs:int" />
+        <xs:attribute name="minHp" type="xs:int" />
+        <xs:attribute name="maxHp" type="xs:int" />
+        <xs:attribute name="minSp" type="xs:int" />
+        <xs:attribute name="maxSp" type="xs:int" />
+    </xs:complexType>
+</xs:schema>

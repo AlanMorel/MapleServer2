@@ -1,11 +1,10 @@
 ﻿using System;
+using Maple2Storage.Tools;
 
 namespace MapleServer2.Types
 {
     public class DamageHandler
     {
-        private static readonly Random rand = new Random();
-
         public double Damage { get; private set; }
         public bool IsCrit { get; private set; }
 
@@ -19,6 +18,10 @@ namespace MapleServer2.Types
 
         public static DamageHandler CalculateDamage(SkillCast skill, Player player, Mob mob, bool isCrit = false)
         {
+            if (player.GmFlags.Contains("oneshot"))
+            {
+                return new DamageHandler((double) mob.Stats.Hp.Total, true);
+            }
             // TODO: Calculate attack damage w/ stats
             double attackDamage = 300;
             double skillDamageRate = isCrit ? skill.GetCriticalDamage() : skill.GetDamageRate();
@@ -37,7 +40,7 @@ namespace MapleServer2.Types
 
         public static bool RollCrit(int critRate = 0)
         {
-            return rand.Next(1000) < Math.Clamp(50 + critRate, 0, 400);
+            return RandomProvider.Get().Next(1000) < Math.Clamp(50 + critRate, 0, 400);
         }
     }
 }

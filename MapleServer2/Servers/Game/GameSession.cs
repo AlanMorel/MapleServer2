@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
-using MaplePacketLib2.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -22,32 +20,11 @@ namespace MapleServer2.Servers.Game
         public Player Player => FieldPlayer.Value;
 
         public FieldManager FieldManager { get; private set; }
+        private readonly FieldManagerFactory FieldManagerFactory;
 
-        private readonly ManagerFactory<FieldManager> FieldManagerFactory;
-
-        // TODO: Replace this with a scheduler.
-        private readonly CancellationTokenSource CancellationToken;
-
-        public GameSession(ManagerFactory<FieldManager> fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
+        public GameSession(FieldManagerFactory fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
         {
             FieldManagerFactory = fieldManagerFactory;
-            CancellationToken = new CancellationTokenSource();
-
-            // Continuously sends field updates to client
-            new Thread(() =>
-            {
-                while (!CancellationToken.IsCancellationRequested)
-                {
-                    if (FieldManager != null)
-                    {
-                        foreach (Packet update in FieldManager.GetUpdates())
-                        {
-                            Send(update);
-                        }
-                    }
-                    Thread.Sleep(1000);
-                }
-            }).Start();
         }
 
         public void SendNotice(string message)
@@ -59,21 +36,32 @@ namespace MapleServer2.Servers.Game
         public void InitPlayer(Player player)
         {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
-            FieldManager = FieldManagerFactory.GetManager(player.MapId);
+            FieldManager = FieldManagerFactory.GetManager(player.MapId, instanceId: 0);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
         }
 
-        public void EnterField(int newMapId)
+        public void EnterField(Player player)
         {
             // If moving maps, need to get the FieldManager for new map
-            if (newMapId != FieldManager.MapId)
+            if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
             {
                 FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
-                FieldManagerFactory.Release(FieldManager.MapId);
+
+                if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
+                {
+                    //If instance is destroyed, reset dungeonSession
+                    DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
+                    //check if the destroyed map was a dungeon map
+                    if (dungeonSession != null && FieldManager.InstanceId == dungeonSession.DungeonInstanceId
+                        && dungeonSession.IsDungeonSessionMap(FieldManager.MapId))
+                    {
+                        GameServer.DungeonManager.ResetDungeonSession(player, dungeonSession);
+                    }
+                }
 
                 // Initialize for new Map
-                FieldManager = FieldManagerFactory.GetManager(newMapId);
+                FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);
             }
 
@@ -90,7 +78,6 @@ namespace MapleServer2.Servers.Game
         {
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-            CancellationToken.Cancel();
             // Should we Join the thread to wait for it to complete?
         }
     }

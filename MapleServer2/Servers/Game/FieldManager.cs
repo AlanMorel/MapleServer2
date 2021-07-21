@@ -29,18 +29,19 @@ namespace MapleServer2.Servers.Game
         private int Counter = 10000000;
 
         public readonly int MapId;
+        public readonly int InstanceId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
-
         private Task MapLoopTask;
-
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private int PlayerCount;
 
-        public FieldManager(int mapId)
+        public FieldManager(int mapId, int instanceId)
         {
             MapId = mapId;
+            InstanceId = instanceId;
             BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
             // Load default npcs for map from config
             foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
@@ -92,6 +93,7 @@ namespace MapleServer2.Servers.Game
                     IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
+                    PortalType = portal.PortalType
                 });
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);
@@ -106,8 +108,8 @@ namespace MapleServer2.Servers.Game
             }
             AddInteractObject(actors);
 
-            string mapName = MapMetadataStorage.GetMetadata(mapId).Name;
-            Triggers = TriggerLoader.GetTriggers(mapName).Select(initializer =>
+            string xBlockName = MapMetadataStorage.GetMetadata(mapId).XBlockName;
+            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
             {
                 TriggerContext context = new TriggerContext(this, Logger);
                 TriggerState startState = initializer.Invoke(context);
@@ -155,6 +157,17 @@ namespace MapleServer2.Servers.Game
                 trigger.Next();
             }
             return updates;
+        }
+
+        private void SendUpdates()
+        {
+            foreach (Packet update in GetUpdates())
+            {
+                Broadcast(session =>
+                {
+                    session.Send(update);
+                });
+            }
         }
 
         public IFieldObject<T> RequestFieldObject<T>(T player)
@@ -426,8 +439,7 @@ namespace MapleServer2.Servers.Game
 
         public bool RemoveItem(int objectId, out Item item)
         {
-            Item itemResult;
-            if (!State.RemoveItem(objectId, out itemResult))
+            if (!State.RemoveItem(objectId, out Item itemResult))
             {
                 item = itemResult;
                 return false;
@@ -522,28 +534,19 @@ namespace MapleServer2.Servers.Game
                 while (!State.Players.IsEmpty)
                 {
                     HealingSpot();
-                    MonsterMovement();
+                    UpdateMobs();
+                    SendUpdates();
                     await Task.Delay(1000);
                 }
             });
         }
 
-        private void MonsterMovement()
+        private void UpdateMobs()
         {
-            Random Rand = new Random();
             foreach (IFieldObject<Mob> mob in State.Mobs.Values)
             {
-                short x = (short) Rand.Next(-70, 70); //random x position, units are block units
-
-                mob.Coord += mob.Value.Speed.ToFloat(); //current position that is given to ControlMob Packet
-
-                mob.Value.Speed = CoordS.From(x, 0, 0); //speed vector given to ControlMob Packet
-
-                mob.Value.ZRotation = (short) (x * 10); //looking direction of the monster
-
-                //using random animation values, makes it look more lively for now
-                //will be replaced with correct animations on mob creation once animations have been handled. 
-                mob.Value.Animation = (short) Rand.Next(20);
+                mob.Coord += mob.Value.Velocity;    // Set current position (given to ControlMob Packet)
+                mob.Value.Act();
             }
         }
 
@@ -557,7 +560,7 @@ namespace MapleServer2.Servers.Game
                     if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
                     {
                         int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
-                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), owner: player.ObjectId, source: healingSpot.ObjectId, duration: 100, stacks: 1);
+                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), owner: player.ObjectId, source: healingSpot.ObjectId, stacks: 1);
 
                         player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                         BroadcastPacket(SkillDamagePacket.ApplyHeal(status, healAmount));
@@ -602,6 +605,16 @@ namespace MapleServer2.Servers.Game
                     SpawnMobs(mobSpawn);
                 }
             });
+        }
+
+        public int Increment()
+        {
+            return Interlocked.Increment(ref PlayerCount);
+        }
+
+        public int Decrement()
+        {
+            return Interlocked.Decrement(ref PlayerCount);
         }
     }
 }

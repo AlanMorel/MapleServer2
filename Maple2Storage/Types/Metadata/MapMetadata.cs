@@ -11,6 +11,8 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public string Name = "";
         [XmlElement(Order = 3)]
+        public string XBlockName = "";
+        [XmlElement(Order = 4)]
         public List<MapBlock> Blocks { get; set; }
 
         public MapMetadata()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -19,7 +20,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
 
         public static void OpenBox(GameSession session, List<ItemContent> content)
         {
-            Random rng = new Random();
+            Random rng = RandomProvider.Get();
             bool oneGroup = true;
 
             foreach (ItemContent item in content)
@@ -100,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
 
         public static void GiveItem(GameSession session, ItemContent content)
         {
-            Random rng = new Random();
+            Random rng = RandomProvider.Get();
 
             // Currency
             if (content.Id.ToString().StartsWith("9"))

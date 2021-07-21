@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -22,34 +24,48 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 7)]
         public int[] SkillIds = Array.Empty<int>();
         [XmlElement(Order = 8)]
-        public string AiInfo = string.Empty;  // This should be a deep structure, parsing the values in path to the XML referenced here.
+        public byte[] SkillLevels = Array.Empty<byte>();
         [XmlElement(Order = 9)]
-        public int Experience;  // -1, 0, or some other number 6287481 (max)
+        public byte[] SkillPriorities = Array.Empty<byte>();
         [XmlElement(Order = 10)]
-        public int[] GlobalDropBoxIds = Array.Empty<int>();
+        public short[] SkillProbs = Array.Empty<short>();
         [XmlElement(Order = 11)]
-        public CoordS Rotation; // In degrees * 10
+        public short SkillCooldown;
         [XmlElement(Order = 12)]
-        public CoordS Speed;  // Packet/Callers uses XYZ?
+        public Dictionary<NpcState, (string, NpcAction, short)[]> StateActions = new Dictionary<NpcState, (string, NpcAction, short)[]>();
         [XmlElement(Order = 13)]
-        public CoordS Coord;
+        public string AiInfo = string.Empty;  // This should be a deep structure, parsing the values in path to the XML referenced here.
         [XmlElement(Order = 14)]
-        public short Animation;
+        public int Experience;  // -1, 0, or some other number 6287481 (max)
         [XmlElement(Order = 15)]
-        public NpcMetadataBasic NpcMetadataBasic = new NpcMetadataBasic();
+        public int[] GlobalDropBoxIds = Array.Empty<int>();
         [XmlElement(Order = 16)]
-        public NpcMetadataCombat NpcMetadataCombat = new NpcMetadataCombat();
+        public CoordS Rotation;     // In degrees * 10
         [XmlElement(Order = 17)]
-        public NpcMetadataDead NpcMetadataDead = new NpcMetadataDead();
+        public float WalkSpeed;
         [XmlElement(Order = 18)]
-        public NpcMetadataDistance NpcMetadataDistance = new NpcMetadataDistance();  // combat related
+        public float RunSpeed;
         [XmlElement(Order = 19)]
-        public NpcMetadataInteract NpcMetadataInteract = new NpcMetadataInteract();
+        public short MoveRange;
         [XmlElement(Order = 20)]
-        public NpcStats Stats;
+        public CoordS Coord;
         [XmlElement(Order = 21)]
-        public short Kind; // 13 = Shop
+        public short Animation;
         [XmlElement(Order = 22)]
+        public NpcMetadataBasic NpcMetadataBasic = new NpcMetadataBasic();
+        [XmlElement(Order = 23)]
+        public NpcMetadataCombat NpcMetadataCombat = new NpcMetadataCombat();
+        [XmlElement(Order = 24)]
+        public NpcMetadataDead NpcMetadataDead = new NpcMetadataDead();
+        [XmlElement(Order = 25)]
+        public NpcMetadataDistance NpcMetadataDistance = new NpcMetadataDistance();  // combat related
+        [XmlElement(Order = 26)]
+        public NpcMetadataInteract NpcMetadataInteract = new NpcMetadataInteract();
+        [XmlElement(Order = 27)]
+        public NpcStats Stats;
+        [XmlElement(Order = 28)]
+        public short Kind; // 13 = Shop
+        [XmlElement(Order = 29)]
         public int ShopId;
 
         public NpcMetadata() { }

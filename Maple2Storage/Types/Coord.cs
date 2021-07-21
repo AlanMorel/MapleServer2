@@ -25,6 +25,17 @@ namespace Maple2Storage.Types
             };
         }
 
+        public static CoordF From(float distance, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            return new CoordF
+            {
+                X = (float) (distance * Math.Cos(angle)),
+                Y = (float) (distance * Math.Sin(angle)),
+                Z = 0.0f,
+            };
+        }
+
         public readonly CoordS ToShort()
         {
             return CoordS.From((short) X, (short) Y, (short) Z);
@@ -53,14 +64,53 @@ namespace Maple2Storage.Types
             return From((float) (left.X + right.X), (float) (left.Y + right.Y), (float) (left.Z + right.Z));
         }
 
+        public static CoordF operator +(CoordF coord, float value)
+        {
+            return From(coord.X + value, coord.Y + value, coord.Z + value);
+        }
+
+        public static CoordF operator +(float value, CoordF coord)
+        {
+            return From(coord.X + value, coord.Y + value, coord.Z + value);
+        }
+
         public static CoordF operator -(CoordF left, CoordF right)
         {
             return From((float) (left.X - right.X), (float) (left.Y - right.Y), (float) (left.Z - right.Z));
         }
 
+        public static CoordF operator -(CoordF coord, float value)
+        {
+            return From(coord.X - value, coord.Y - value, coord.Z - value);
+        }
+
+        public static float operator *(CoordF left, CoordF right)
+        {
+            return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
+        }
+
+        public static CoordF operator *(CoordF coord, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+            return From((float) (coord.X * cos - coord.Y * sin), (float) (coord.X * sin + coord.Y * cos), coord.Z);
+        }
+
         public float Length()
         {
             return (float) Math.Sqrt((X * X + Y * Y + Z * Z));
+        }
+
+        public static float Distance(CoordF left, CoordF right)
+        {
+            CoordF displacement = left - right;
+            return displacement.Length();
+        }
+
+        public double XYAngle()
+        {
+            return (1800 * Math.Atan2(Y, X) / Math.PI) + 900;
         }
 
         public override string ToString() => $"CoordF({X}, {Y}, {Z})";
@@ -122,6 +172,17 @@ namespace Maple2Storage.Types
             };
         }
 
+        public static CoordS From(short distance, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            return new CoordS
+            {
+                X = (short) (distance * Math.Cos(angle)),
+                Y = (short) (distance * Math.Sin(angle)),
+                Z = 0,
+            };
+        }
+
         public readonly CoordF ToFloat()
         {
             return CoordF.From(X, Y, Z);
@@ -150,14 +211,53 @@ namespace Maple2Storage.Types
             return From((short) (left.X + right.X), (short) (left.Y + right.Y), (short) (left.Z + right.Z));
         }
 
+        public static CoordS operator +(CoordS coord, short value)
+        {
+            return From((short) (coord.X + value), (short) (coord.Y + value), (short) (coord.Z + value));
+        }
+
+        public static CoordS operator +(short value, CoordS coord)
+        {
+            return From((short) (coord.X + value), (short) (coord.Y + value), (short) (coord.Z + value));
+        }
+
         public static CoordS operator -(CoordS left, CoordS right)
         {
             return From((short) (left.X - right.X), (short) (left.Y - right.Y), (short) (left.Z - right.Z));
         }
 
+        public static CoordS operator -(CoordS coord, short value)
+        {
+            return From((short) (coord.X - value), (short) (coord.Y - value), (short) (coord.Z - value));
+        }
+
+        public static short operator *(CoordS left, CoordS right)
+        {
+            return (short) ((left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z));
+        }
+
+        public static CoordS operator *(CoordS coord, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+            return From((short) (coord.X * cos - coord.Y * sin), (short) (coord.X * sin + coord.Y * cos), coord.Z);
+        }
+
         public short Length()
         {
             return (short) Math.Sqrt((X * X + Y * Y + Z * Z));
+        }
+
+        public static short Distance(CoordS left, CoordS right)
+        {
+            CoordS displacement = left - right;
+            return displacement.Length();
+        }
+
+        public double XYAngle()
+        {
+            return (1800 * Math.Atan2(Y, X) / Math.PI) + 900;
         }
 
         public override string ToString() => $"CoordS({X}, {Y}, {Z})";
@@ -219,6 +319,17 @@ namespace Maple2Storage.Types
             };
         }
 
+        public static CoordB From(sbyte distance, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            return new CoordB
+            {
+                X = (sbyte) (distance * Math.Cos(angle)),
+                Y = (sbyte) (distance * Math.Sin(angle)),
+                Z = 0,
+            };
+        }
+
         public readonly CoordF ToFloat()
         {
             return CoordF.From(
@@ -250,14 +361,53 @@ namespace Maple2Storage.Types
             return From((sbyte) (left.X + right.X), (sbyte) (left.Y + right.Y), (sbyte) (left.Z + right.Z));
         }
 
+        public static CoordB operator +(CoordB coord, short value)
+        {
+            return From((sbyte) (coord.X + value), (sbyte) (coord.Y + value), (sbyte) (coord.Z + value));
+        }
+
+        public static CoordB operator +(short value, CoordB coord)
+        {
+            return From((sbyte) (coord.X + value), (sbyte) (coord.Y + value), (sbyte) (coord.Z + value));
+        }
+
         public static CoordB operator -(CoordB left, CoordB right)
         {
             return From((sbyte) (left.X - right.X), (sbyte) (left.Y - right.Y), (sbyte) (left.Z - right.Z));
         }
 
+        public static CoordB operator -(CoordB coord, sbyte value)
+        {
+            return From((sbyte) (coord.X - value), (sbyte) (coord.Y - value), (sbyte) (coord.Z - value));
+        }
+
+        public static sbyte operator *(CoordB left, CoordB right)
+        {
+            return (sbyte) ((left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z));
+        }
+
+        public static CoordB operator *(CoordB coord, double zRotation)
+        {
+            double angle = Math.PI * ((zRotation - 900) / 1800);
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+            return From((sbyte) (coord.X * cos - coord.Y * sin), (sbyte) (coord.X * sin + coord.Y * cos), coord.Z);
+        }
+
         public sbyte Length()
         {
             return (sbyte) Math.Sqrt((X * X + Y * Y + Z * Z));
+        }
+
+        public static sbyte Distance(CoordB left, CoordB right)
+        {
+            CoordB displacement = left - right;
+            return displacement.Length();
+        }
+
+        public double XYAngle()
+        {
+            return (1800 * Math.Atan2(Y, X) / Math.PI) + 900;
         }
 
         public static CoordB Parse(string value, string separator)

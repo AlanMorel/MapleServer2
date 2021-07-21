@@ -20,7 +20,7 @@ namespace MapleServer2.Types
         public int RecruitMemberCount { get; set; }
         public List<Player> ReadyCheck { get; set; }
         public int RemainingMembers { get; set; } //# of members left to reply to ready check
-        public int Dungeon { get; set; }
+        public int DungeonSessionId = -1;
 
         //List of players and their session.
         public List<Player> Members { get; }
