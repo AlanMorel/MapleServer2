@@ -232,7 +232,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 foreach (GuildApplication application in guild.Applications)
                 {
-                    Player player = GameServer.Storage.GetPlayerByCharacterId(application.CharacterId);
+                    Player player = GameServer.Storage.GetPlayerById(application.CharacterId);
                     if (player == null)
                     {
                         continue;
@@ -617,7 +617,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Player applier = GameServer.Storage.GetPlayerByCharacterId(application.CharacterId);
+            Player applier = GameServer.Storage.GetPlayerById(application.CharacterId);
 
             session.Send(GuildPacket.ApplicationResponse(guildApplicationId, applier.Name, response));
             if (response == 1)

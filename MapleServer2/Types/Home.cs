@@ -7,7 +7,6 @@ using MapleServer2.Enums;
 namespace MapleServer2.Types
 {
     // TODO: Implement architect expiration
-
     public class Home
     {
         public readonly long Id;
