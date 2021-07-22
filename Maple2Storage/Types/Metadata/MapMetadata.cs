@@ -13,17 +13,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 3)]
         public string XBlockName = "";
         [XmlElement(Order = 4)]
-        public List<MapBlock> Blocks { get; set; }
+        public Dictionary<CoordS, MapBlock> Blocks;
 
         public MapMetadata()
         {
-            Blocks = new List<MapBlock>();
-        }
-
-        protected bool Equals(MapMetadata other)
-        {
-            return Id == other.Id &&
-                   Blocks == other.Blocks;
+            Blocks = new Dictionary<CoordS, MapBlock>();
         }
     }
 
@@ -46,13 +40,6 @@ namespace Maple2Storage.Types.Metadata
             Coord = coord;
             Attribute = attribute;
             Type = type;
-        }
-
-        protected bool Equals(MapBlock other)
-        {
-            return Coord == other.Coord &&
-                   Attribute == other.Attribute &&
-                   Type == other.Type;
         }
     }
 }
