@@ -30,6 +30,10 @@ namespace MapleServer2.Data.Static
         public static bool BlockExists(int mapId, CoordS coord)
         {
             MapMetadata mapD = GetMetadata(mapId);
+            if (mapD == null)
+            {
+                return false;
+            }
             MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
             if (block == null)
             {
