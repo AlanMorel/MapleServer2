@@ -188,10 +188,9 @@ namespace MapleServer2.Tools
 
         private static void ProcessOneshotCommand(GameSession session)
         {
-            Player player = session.Player;
-            if (player.GmFlags.Contains("oneshot"))
+            if (session.Player.GmFlags.Contains("oneshot"))
             {
-                player.GmFlags.Remove("oneshot");
+                session.Player.GmFlags.Remove("oneshot");
                 session.SendNotice("Oneshot mode disabled.");
             }
             else
