@@ -25,15 +25,13 @@ namespace GameDataParser.Parsers
 
             // Parse map names
             MapNames = new Dictionary<int, string>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
+            PackFileEntry file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.StartsWith("string/en/mapname.xml"));
+            XmlDocument document = Resources.XmlReader.GetXmlDocument(file);
+            foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
-                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
-                {
-                    int id = int.Parse(node.Attributes["id"].Value);
-                    string name = node.Attributes["name"].Value;
-                    MapNames[id] = name;
-                }
+                int id = int.Parse(node.Attributes["id"].Value);
+                string name = node.Attributes["name"].Value;
+                MapNames[id] = name;
             }
 
             // Parse every block for each map
@@ -79,7 +77,7 @@ namespace GameDataParser.Parsers
                     Attribute = cube.MapAttribute
                 };
 
-                metadata.Blocks.Add(mapBlock);
+                metadata.Blocks.TryAdd(mapBlock.Coord, mapBlock);
             }
 
             if (metadata.Blocks.Count == 0)
