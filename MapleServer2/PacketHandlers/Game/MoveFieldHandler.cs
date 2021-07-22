@@ -173,7 +173,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (player.VisitingHomeId == home.Id)
+            if (player.VisitingHomeId == home.Id && player.MapId == (int) Map.PrivateResidence)
             {
                 session.SendNotice($"You are already at {target.Name}'s home!");
                 return;

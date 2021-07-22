@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,6 +41,7 @@ namespace MapleServer2.PacketHandlers.Game
             HomePassword = 0x18,
             NominateHouse = 0x19,
             HomeDescription = 0x1D,
+            ClearInterior = 0x1F,
             LoadLayout = 0x23,
             IncreaseSize = 0x25,
             DecreaseSize = 0x26,
@@ -103,6 +104,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case RequestCubeMode.HomeDescription:
                     HandleHomeDescription(session, packet);
+                    break;
+                case RequestCubeMode.ClearInterior:
+                    HandleClearInterior(session);
                     break;
                 case RequestCubeMode.LoadLayout:
                     HandleLoadLayout(session, packet);
@@ -615,6 +619,20 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeDescription(description));
         }
 
+        private static void HandleClearInterior(GameSession session)
+        {
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            if (home == null)
+            {
+                return;
+            }
+            foreach (IFieldObject<Cube> cube in session.FieldManager.State.Cubes.Values)
+            {
+                RemoveCube(session, session.FieldPlayer, cube, home);
+            }
+            session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
+        }
+
         private static void HandleLoadLayout(GameSession session, PacketReader packet)
         {
             int layoutId = packet.ReadInt();
@@ -856,8 +874,10 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            home.Permissions.TryGetValue(permission, out byte oldSetting);
-            home.Permissions[permission] = oldSetting != 0 ? setting : (byte) 0;
+            if (home.Permissions.ContainsKey(permission))
+            {
+                home.Permissions[permission] = setting;
+            }
             session.FieldManager.BroadcastPacket(ResponseCubePacket.SetPermission(permission, setting));
         }
 
