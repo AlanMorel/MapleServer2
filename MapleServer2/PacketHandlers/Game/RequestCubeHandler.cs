@@ -287,8 +287,7 @@ namespace MapleServer2.PacketHandlers.Game
             IFieldObject<Cube> fieldCube;
             if (session.Player.IsInDecorPlanner)
             {
-                Item item = new Item(itemId);
-                Cube cube = new Cube(item, plotNumber, coordF, rotation);
+                Cube cube = new Cube(new Item(itemId), plotNumber, coordF, rotation);
 
                 fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coordF;
@@ -316,13 +315,13 @@ namespace MapleServer2.PacketHandlers.Game
 
             Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
-            if ((!warehouseItems.ContainsKey(itemUid) || warehouseItems[itemUid].Amount <= 0) && !PurchaseFurnishingItem(session, shopMetadata))
+            if ((!warehouseItems.TryGetValue(itemUid, out Item item) || warehouseItems[itemUid].Amount <= 0) && !PurchaseFurnishingItem(session, shopMetadata))
             {
                 NotEnoughMoney(session, shopMetadata);
                 return;
             }
 
-            fieldCube = AddCube(session, itemId, itemUid, rotation, coordF, plotNumber, homeOwner, warehouseItems, furnishingInventory);
+            fieldCube = AddCube(session, item, itemId, rotation, coordF, plotNumber, homeOwner, warehouseItems, furnishingInventory);
 
             homeOwner.Value.Session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
             session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
@@ -451,11 +450,9 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             IFieldObject<Cube> newFieldCube;
-            Item item;
             if (player.IsInDecorPlanner)
             {
-                item = new Item(replacementItemId);
-                Cube cube = new Cube(item, plotNumber, coord.ToFloat(), rotation);
+                Cube cube = new Cube(new Item(replacementItemId), plotNumber, coord.ToFloat(), rotation);
 
                 newFieldCube = session.FieldManager.RequestFieldObject(cube);
                 newFieldCube.Coord = coord.ToFloat();
@@ -487,13 +484,13 @@ namespace MapleServer2.PacketHandlers.Game
 
             Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
-            if ((!warehouseItems.ContainsKey(replacementItemUid) || warehouseItems[replacementItemUid].Amount <= 0) && !PurchaseFurnishingItem(session, shopMetadata))
+            if ((!warehouseItems.TryGetValue(replacementItemUid, out Item item) || warehouseItems[replacementItemUid].Amount <= 0) && !PurchaseFurnishingItem(session, shopMetadata))
             {
                 NotEnoughMoney(session, shopMetadata);
                 return;
             }
 
-            newFieldCube = AddCube(session, replacementItemId, replacementItemUid, rotation, coord.ToFloat(), plotNumber, homeOwner, warehouseItems, furnishingInventory);
+            newFieldCube = AddCube(session, item, replacementItemId, rotation, coord.ToFloat(), plotNumber, homeOwner, warehouseItems, furnishingInventory);
 
             if (oldFieldCube != null)
             {
@@ -519,7 +516,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(homeOwner.ObjectId, session.FieldPlayer.ObjectId, newFieldCube, sendOnlyObjectId: false));
-            session.FieldManager.State.AddCube(newFieldCube);
+            session.FieldManager.AddCube(newFieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
         }
 
         private static void HandlePickup(GameSession session, PacketReader packet)
@@ -663,7 +660,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
             {
                 int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
-                session.Send(UserMoveByPortalPacket.Move(session, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+                foreach (IFieldObject<Player> item in session.FieldManager.State.Players.Values)
+                {
+                    item.Value.Session.Send(UserMoveByPortalPacket.Move(item.Value.Session, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+                }
             }
         }
 
@@ -698,11 +698,12 @@ namespace MapleServer2.PacketHandlers.Game
             int decorationScore = 0;
             foreach (ItemHousingCategory category in goals.Keys)
             {
-                if (!current.ContainsKey(category))
+                current.TryGetValue(category, out int currentCount);
+                if (currentCount == 0)
                 {
                     continue;
                 }
-                if (current[category] >= goals[category])
+                if (currentCount >= goals[category])
                 {
                     switch (category)
                     {
@@ -855,7 +856,8 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            home.Permissions[permission] = home.Permissions.ContainsKey(permission) ? setting : (byte) 0;
+            home.Permissions.TryGetValue(permission, out byte oldSetting);
+            home.Permissions[permission] = oldSetting != 0 ? setting : (byte) 0;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.SetPermission(permission, setting));
         }
 
@@ -1054,41 +1056,40 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static IFieldObject<Cube> AddCube(GameSession session, int itemId, long itemUid, CoordF rotation, CoordF coordF, int plotNumber, IFieldObject<Player> homeOwner, Dictionary<long, Item> warehouseItems, Dictionary<long, Cube> furnishingInventory)
+        private static IFieldObject<Cube> AddCube(GameSession session, Item item, int itemId, CoordF rotation, CoordF coordF, int plotNumber, IFieldObject<Player> homeOwner, Dictionary<long, Item> warehouseItems, Dictionary<long, Cube> furnishingInventory)
         {
             IFieldObject<Cube> fieldCube;
-            if (!warehouseItems.ContainsKey(itemUid) || warehouseItems[itemUid].Amount <= 0)
+            if (item == null || item.Amount <= 0)
             {
-                Item item = new Item(itemId);
-                Cube cube = new Cube(item, plotNumber, coordF, rotation);
+                Cube cube = new Cube(new Item(itemId), plotNumber, coordF, rotation);
 
                 fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coordF;
                 fieldCube.Rotation = rotation;
 
-                homeOwner.Value.Session.Send(WarehouseInventoryPacket.Load(item, warehouseItems.Values.Count));
-                homeOwner.Value.Session.Send(WarehouseInventoryPacket.GainItemMessage(item, 1));
+                homeOwner.Value.Session.Send(WarehouseInventoryPacket.Load(cube.Item, warehouseItems.Values.Count));
+                homeOwner.Value.Session.Send(WarehouseInventoryPacket.GainItemMessage(cube.Item, 1));
                 homeOwner.Value.Session.Send(WarehouseInventoryPacket.Count(warehouseItems.Values.Count + 1));
                 session.FieldManager.BroadcastPacket(ResponseCubePacket.PlaceFurnishing(fieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId, sendOnlyObjectId: true));
-                homeOwner.Value.Session.Send(WarehouseInventoryPacket.Remove(item.Uid));
+                homeOwner.Value.Session.Send(WarehouseInventoryPacket.Remove(cube.Item.Uid));
             }
             else
             {
-                Item item = warehouseItems[itemUid];
                 Cube cube = new Cube(item, plotNumber, coordF, rotation);
 
                 fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coordF;
                 fieldCube.Rotation = rotation;
 
-                warehouseItems[itemUid].Amount--;
-                if (item.Amount > 0)
+                if (item.Amount - 1 > 0)
                 {
-                    homeOwner.Value.Session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
+                    item.Amount--;
+                    session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
                 }
                 else
                 {
-                    homeOwner.Value.Session.Send(WarehouseInventoryPacket.Remove(item.Uid));
+                    warehouseItems.Remove(item.Uid);
+                    session.Send(WarehouseInventoryPacket.Remove(item.Uid));
                 }
             }
             furnishingInventory.Add(fieldCube.Value.Uid, fieldCube.Value);
@@ -1113,7 +1114,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                item.Amount++;
+                warehouseItems[item.Uid].Amount++;
                 homeOwner.Value.Session.Send(WarehouseInventoryPacket.UpdateAmount(item.Uid, item.Amount));
             }
             session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);

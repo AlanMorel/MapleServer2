@@ -66,6 +66,10 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Player.Coord = coord;
                 session.Player.SafeBlock = coord;
                 session.Player.Rotation = rotation;
+                if (session.Player.InstanceId == 0)
+                {
+                    session.Player.InstanceId = home.InstanceId;
+                }
             }
             else
             {

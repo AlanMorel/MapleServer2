@@ -191,8 +191,8 @@ namespace MapleServer2.Packets
             }
             pWriter.Write(newCube.Coord.ToByte());
             pWriter.WriteByte();
-            pWriter.WriteLong(newCube.Value.Item.Uid);
             pWriter.WriteInt(newCube.Value.Item.Id);
+            pWriter.WriteLong(newCube.Value.Item.Uid);
             pWriter.WriteLong(newCube.Value.Uid);
             pWriter.WriteLong();
             pWriter.WriteByte();

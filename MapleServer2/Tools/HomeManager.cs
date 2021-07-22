@@ -11,6 +11,7 @@ namespace MapleServer2.Tools
     {
         private readonly ConcurrentDictionary<long, Home> HomeList;
         private readonly List<int> MapIds; // cache for maps already loaded
+        private long InstanceCounter = 0;
 
         public HomeManager()
         {
@@ -20,17 +21,6 @@ namespace MapleServer2.Tools
         }
 
         public void AddHome(Home home) => HomeList[home.Id] = home;
-
-        public void AddHomes(List<Home> homes)
-        {
-            foreach (Home home in homes)
-            {
-                if (!HomeList.ContainsKey(home.Id))
-                {
-                    AddHome(home);
-                }
-            }
-        }
 
         public void RemoveHome(Home home) => HomeList.Remove(home.Id, out _);
 
@@ -42,7 +32,9 @@ namespace MapleServer2.Tools
                 home = DatabaseManager.GetHome(id);
                 if (home != null)
                 {
+                    home.InstanceId = InstanceCounter;
                     AddHome(home);
+                    IncrementCounter();
                 }
             }
             return home;
@@ -53,6 +45,12 @@ namespace MapleServer2.Tools
             if (!MapIds.Contains(mapId))
             {
                 List<Home> homes = DatabaseManager.GetHomesOnMap(mapId);
+                foreach (Home home in homes)
+                {
+                    home.InstanceId = InstanceCounter;
+                    AddHome(home);
+                    IncrementCounter();
+                }
                 MapIds.Add(mapId);
             }
             return HomeList.Values.Where(h => h.PlotId == mapId).ToList();
@@ -60,7 +58,7 @@ namespace MapleServer2.Tools
 
         private void SaveLoop()
         {
-            _ = Task.Run(async () =>
+            Task.Run(async () =>
               {
                   while (true)
                   {
@@ -73,5 +71,7 @@ namespace MapleServer2.Tools
                   }
               });
         }
+
+        private void IncrementCounter() => InstanceCounter += 2;
     }
 }

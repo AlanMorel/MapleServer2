@@ -203,7 +203,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = home.Id;
             session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
 
-            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.Id);
+            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);
         }
 
         // This also leaves decor planning
@@ -213,9 +213,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (player.IsInDecorPlanner)
             {
                 player.IsInDecorPlanner = false;
-                player.Warp((int) Map.PrivateResidence, instanceId: player.VisitingHomeId);
+                player.Warp((int) Map.PrivateResidence, instanceId: --player.InstanceId);
                 return;
             }
+
             CoordF returnCoord = player.ReturnCoord;
             returnCoord.Z += Block.BLOCK_SIZE;
             player.Warp(player.ReturnMapId, returnCoord, player.Rotation);
@@ -226,8 +227,11 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleEnterDecorPlaner(GameSession session)
         {
             Player player = session.Player;
-            player.IsInDecorPlanner = true;
-            player.Warp((int) Map.PrivateResidence, instanceId: player.VisitingHomeId);
+            if (!player.IsInDecorPlanner)
+            {
+                player.IsInDecorPlanner = true;
+                player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
+            }
         }
 
         public static void HandleInstanceMove(GameSession session, int mapId)

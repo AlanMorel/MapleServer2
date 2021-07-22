@@ -46,6 +46,10 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
+            if (session.Player.Account.Home == null)
+            {
+                return;
+            }
 
             target.Session.Send(InviteToHomePacket.InviteToHome(session.Player));
         }
@@ -76,6 +80,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 session.Send(FurnishingInventoryPacket.EndList());
             }
+            Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
 
             if (player.MapId != (int) Map.PrivateResidence)
             {
@@ -85,7 +90,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.VisitingHomeId = player.Account.Home.Id;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
-            player.Warp(player.Account.Home.MapId, player.Coord, player.Rotation, instanceId: player.Account.Home.Id);
+            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);
         }
     }
 }
