@@ -7,7 +7,7 @@ namespace MapleServer2.Types
     {
         public int UniqueId { get; set; }
         public int SkillId { get; set; }
-        public int Owner { get; set; }
+        public int Target { get; set; }
         public int Source { get; set; }
         public int Stacks { get; set; }
         public short Level { get; set; }
@@ -19,25 +19,25 @@ namespace MapleServer2.Types
 
         public Status() { }
 
-        public Status(SkillCast skillCast, int owner, int source, int stacks)
+        public Status(SkillCast skillCast, int target, int source, int stacks)
         {
             SkillId = skillCast.SkillId;
             UniqueId = GuidGenerator.Int();
-            Owner = owner;
+            Target = target;
             Source = source;
             Level = skillCast.SkillLevel;
-            Stacks = Math.Max(1, stacks);
+            Stacks = stacks;
             SkillCast = skillCast;
             Start = Environment.TickCount;
             Duration = skillCast.DurationTick();
             End = Start + Duration;
         }
 
-        public Status(int id, int owner, int source, short level, int duration, int stacks)
+        public Status(int id, int target, int source, short level, int duration, int stacks)
         {
             SkillId = id;
             UniqueId = GuidGenerator.Int();
-            Owner = owner;
+            Target = target;
             Source = source;
             Level = level;
             Stacks = Math.Max(1, stacks);
@@ -48,7 +48,7 @@ namespace MapleServer2.Types
 
         public void Overlap(Status other)
         {
-            Owner = other.Owner;
+            Target = other.Target;
             Source = other.Source;
             Start = other.Start;
             End = other.End;

@@ -283,14 +283,14 @@ namespace MapleServer2.Types
                 ConsumeSp(spiritCost);
                 ConsumeStamina(staminaCost);
                 SkillCast = skillCast;
+                Session.SendNotice(skillCast.SkillId.ToString());
 
-                // TODO: Since the method skillCast.IsBuff is not correct implemented, this is true for now for testing purposes.
-                // This will have to check many Buff types and subtypes to consider the skill a buff or debuff.
-                if (true)
+                // TODO: Move this and all others combat cases like recover sp to its own class.
+                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield())
                 {
                     Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
-                    Session.SendNotice(skillCast.SkillId.ToString());
-                    StatusHandler(status);
+                    StatusHandler.Handle(Session, status);
                 }
 
                 // Refresh out-of-combat timer
@@ -305,23 +305,6 @@ namespace MapleServer2.Types
                 return skillCast;
             }
             return null;
-        }
-
-        private void StatusHandler(Status status)
-        {
-            StatusContainer.Add(status);
-            Session.Send(BuffPacket.SendBuff(0, status));
-            RemoveStatusTask(status);
-        }
-
-        private Task RemoveStatusTask(Status status)
-        {
-            return Task.Run(async () =>
-            {
-                await Task.Delay(status.Duration);
-                StatusContainer.Remove(status);
-                Session.Send(BuffPacket.SendBuff(1, status));
-            });
         }
 
         private Task StartCombatEnd(CancellationTokenSource ct)

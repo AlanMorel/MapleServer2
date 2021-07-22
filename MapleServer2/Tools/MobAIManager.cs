@@ -14,10 +14,10 @@ namespace MapleServer2.Tools
 
         public static void Load(string dirPath, string schemaPath = null)
         {
-            Console.WriteLine("Loading AI...");
+            Console.WriteLine("Loading Mob AI...");
             foreach (string filePath in Directory.GetFiles(dirPath, "*.xml", SearchOption.AllDirectories))
             {
-                string filename = filePath.Split(@"MobAI\")[1];
+                string filename = Path.GetFileName(filePath);
                 XmlDocument document = new XmlDocument();
                 try
                 {
