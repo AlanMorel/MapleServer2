@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
@@ -18,14 +18,14 @@ namespace GameDataParser.Parsers
         {
             List<ItemOptionRandomMetadata> items = new List<ItemOptionRandomMetadata>();
             Dictionary<int, List<ItemOptionRandom>> itemOptionsRandom = new Dictionary<int, List<ItemOptionRandom>>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("itemoption/option/random"))
                 {
                     continue;
                 }
 
-                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList nodeList = innerDocument.SelectNodes("/ms2/option");
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
                 foreach (XmlNode node in nodeList)

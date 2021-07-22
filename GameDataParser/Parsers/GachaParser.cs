@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         protected override List<GachaMetadata> Parse()
         {
             Dictionary<int, List<GachaContent>> gachaContent = new Dictionary<int, List<GachaContent>>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("table/individualitemdrop_newgacha"))  // Capsules
@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     if (node.Name == "individualDropBox")
@@ -61,7 +61,7 @@ namespace GameDataParser.Parsers
             }
 
             List<GachaMetadata> gacha = new List<GachaMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("table/gacha_info"))
@@ -69,7 +69,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     if (node.Name == "randomBox")

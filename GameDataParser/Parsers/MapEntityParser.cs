@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -31,12 +31,12 @@ namespace GameDataParser.Parsers
             List<string> portalNames = new List<string> { "MS2RoomEnterPortal", "MS2RoomLeavePortal", "MS2TriggerPortal", "Portal_Type_A", "Portal_BossGate",
                         "Portal_BossGate_02", "Portal_cube", "Portal_entrance", "Portal_memberance_A", "Portal_shadowWorld", "Portal_UGC", "Portal_UGCspawn", "Portal_underworld", "Eff_portal_test_A_"};
 
-            foreach (PackFileEntry entry in Resources.ExportedFiles
+            foreach (PackFileEntry entry in Resources.ExportedReader.Files
                 .Where(entry => Regex.Match(entry.Name, @"^flat/presets/presets (common|object|npc)/").Success)
                 .OrderBy(entry => entry.Name))
             {
                 // Parse XML
-                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedReader.GetXmlDocument(entry);
                 string modelName = document.DocumentElement.Attributes["name"].Value;
 
                 // A local in-mem storage for all flat file supplementary data.
@@ -65,10 +65,10 @@ namespace GameDataParser.Parsers
 
             // fetch interactID and recipeID relation from xml (can be expanded to parse other xml info)
             Dictionary<int, int> interactRecipeMap = new Dictionary<int, int>();
-            foreach (PackFileEntry entry in Resources.XmlFiles
+            foreach (PackFileEntry entry in Resources.XmlReader.Files
                 .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success))
             {
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList interactNodes = document.SelectNodes("/ms2/interact");
 
                 foreach (XmlNode node in interactNodes)
@@ -82,10 +82,10 @@ namespace GameDataParser.Parsers
 
             // Get mob spawn ID and mob spawn information from xml (can be expanded to parse other xml info)
             Dictionary<string, Dictionary<string, SpawnMetadata>> spawnTagMap = new Dictionary<string, Dictionary<string, SpawnMetadata>>();
-            foreach (PackFileEntry entry in Resources.XmlFiles
+            foreach (PackFileEntry entry in Resources.XmlReader.Files
                 .Where(entry => Regex.Match(entry.Name, "table/mapspawntag").Success))
             {
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList regionNodes = document.SelectNodes("/ms2/region");
 
                 foreach (XmlNode node in regionNodes)
@@ -117,7 +117,7 @@ namespace GameDataParser.Parsers
 
             // Iterate over map xblocks
             Dictionary<string, string> maps = new Dictionary<string, string>();  // Have we already parsed this map?
-            foreach (PackFileEntry entry in Resources.ExportedFiles
+            foreach (PackFileEntry entry in Resources.ExportedReader.Files
                 .Where(entry => entry.Name.StartsWith("xblock/"))
                 .OrderByDescending(entry => entry.Name))
             {
@@ -137,7 +137,7 @@ namespace GameDataParser.Parsers
                 maps.Add(mapId, entry.Name);  // Only used to check if we've visited this node before.
 
                 MapEntityMetadata metadata = new MapEntityMetadata(int.Parse(mapId));
-                XmlDocument document = Resources.ExportedMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.ExportedReader.GetXmlDocument(entry);
 
                 foreach (XmlNode node in document.SelectNodes("/game/entitySet/entity"))
                 {
