@@ -15,16 +15,16 @@ namespace GameDataParser.Parsers
 {
     public class MapParser : Exporter<List<MapMetadata>>
     {
-        private List<MapMetadata> mapsList;
-        private Dictionary<int, string> mapNames;
+        private List<MapMetadata> MapsList;
+        private Dictionary<int, string> MapNames;
         public MapParser(MetadataResources resources) : base(resources, "map") { }
 
         protected override List<MapMetadata> Parse()
         {
-            mapsList = new List<MapMetadata>();
-            
+            MapsList = new List<MapMetadata>();
+
             // Parse map names
-            mapNames = new Dictionary<int, string>();
+            MapNames = new Dictionary<int, string>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("string/en/mapname.xml")))
             {
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
@@ -32,7 +32,7 @@ namespace GameDataParser.Parsers
                 {
                     int id = int.Parse(node.Attributes["id"].Value);
                     string name = node.Attributes["name"].Value;
-                    mapNames[id] = name;
+                    MapNames[id] = name;
                 }
             }
 
@@ -40,10 +40,10 @@ namespace GameDataParser.Parsers
             FlatTypeIndex index = new FlatTypeIndex(Resources.ExportedReader);
             XBlockParser parser = new XBlockParser(Resources.ExportedReader, index);
             parser.Include(typeof(IMS2CubeProp)); // We only care about cubes here
-            
+
             parser.Parse(AddMetadata);
-            
-            return mapsList;
+
+            return MapsList;
         }
 
         private void AddMetadata(string xblock, IEnumerable<IMapEntity> entities)
@@ -52,7 +52,7 @@ namespace GameDataParser.Parsers
             {
                 return;
             }
-                
+
             string mapIdStr = Regex.Match(xblock, @"\d{8}").Value;
             if (string.IsNullOrEmpty(mapIdStr))
             {
@@ -78,20 +78,20 @@ namespace GameDataParser.Parsers
                     SaleableGroup = cube.CubeSalableGroup,
                     Attribute = cube.MapAttribute
                 };
-                    
+
                 metadata.Blocks.Add(mapBlock);
             }
-                
+
             if (metadata.Blocks.Count == 0)
             {
                 return;
             }
-                
-            if (mapNames.ContainsKey(metadata.Id))
+
+            if (MapNames.ContainsKey(metadata.Id))
             {
-                metadata.Name = mapNames[metadata.Id];
+                metadata.Name = MapNames[metadata.Id];
             }
-            mapsList.Add(metadata);
+            MapsList.Add(metadata);
         }
     }
 }

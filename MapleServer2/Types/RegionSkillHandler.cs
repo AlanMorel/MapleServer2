@@ -1,7 +1,7 @@
-﻿using Maple2Storage.Types;
+﻿using System.Threading.Tasks;
+using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using System.Threading.Tasks;
 
 namespace MapleServer2.Types
 {

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.IO;
-using System.IO.MemoryMappedFiles;
-using Maple2.File.IO;
+﻿using Maple2.File.IO;
 
 namespace GameDataParser.Files
 {
