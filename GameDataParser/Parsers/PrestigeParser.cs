@@ -1,6 +1,6 @@
 ﻿using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         {
             PrestigeMetadata prestigeMetadata = new PrestigeMetadata();
 
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 // Only check for reward for now, abilities will need to be added later
                 if (!entry.Name.StartsWith("table/adventurelevelreward"))
@@ -22,7 +22,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList rewards = document.SelectNodes("/ms2/reward");
 
                 foreach (XmlNode reward in rewards)

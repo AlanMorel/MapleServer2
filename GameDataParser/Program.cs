@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
-using GameDataParser.Crypto;
-using GameDataParser.Crypto.Stream;
 using GameDataParser.Files;
 using GameDataParser.Parsers;
 
@@ -82,18 +78,6 @@ namespace GameDataParser
             TimeSpan runtime = spinner.GetRuntime();
 
             Console.WriteLine($"\rExporting finished in {runtime.Minutes} minutes and {runtime.Seconds} seconds");
-        }
-
-        public static XmlReader GetReader(this MemoryMappedFile m2dFile, IPackFileHeader header)
-        {
-            return XmlReader.Create(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
-        }
-
-        public static XmlDocument GetDocument(this MemoryMappedFile m2dFile, IPackFileHeader header)
-        {
-            XmlDocument document = new XmlDocument();
-            document.Load(new MemoryStream(CryptoManager.DecryptData(header, m2dFile)));
-            return document;
         }
     }
 }

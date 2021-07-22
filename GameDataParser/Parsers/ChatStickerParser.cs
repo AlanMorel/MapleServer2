@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -14,14 +14,14 @@ namespace GameDataParser.Parsers
         {
             // Iterate over preset objects to later reference while iterating over exported maps
             List<ChatStickerMetadata> chatStickers = new List<ChatStickerMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/chatemoticon"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     ChatStickerMetadata metadata = new ChatStickerMetadata();

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -19,14 +19,14 @@ namespace GameDataParser.Parsers
         {
             // Parse EXP tables
             Dictionary<int, ExpMetadata> levelExp = new Dictionary<int, ExpMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/expbasetable"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     if (node.Name == "table")
@@ -58,9 +58,9 @@ namespace GameDataParser.Parsers
             List<NpcMetadata> npcs = new List<NpcMetadata>();
 
             // Parse the NpcId -> Names first.
-            foreach (PackFileEntry entry in Resources.XmlFiles.Where(entry => entry.Name.Equals("string/en/npcname.xml")))
+            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(entry => entry.Name.Equals("string/en/npcname.xml")))
             {
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
 
                 foreach (XmlNode node in document.SelectNodes("ms2/key"))
                 {
@@ -73,9 +73,9 @@ namespace GameDataParser.Parsers
             }
 
             // Handle /npc files second, to setup the NpcMetadata
-            foreach (PackFileEntry entry in Resources.XmlFiles.Where(entry => entry.Name.StartsWith("npc/")))
+            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(entry => entry.Name.StartsWith("npc/")))
             {
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
 
                 XmlNode npcModelNode = document.SelectSingleNode("ms2/environment/model") ?? document.SelectSingleNode("ms2/model");
                 XmlNode npcBasicNode = document.SelectSingleNode("ms2/environment/basic") ?? document.SelectSingleNode("ms2/basic");

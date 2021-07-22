@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         protected override List<ItemExtractionMetadata> Parse()
         {
             List<ItemExtractionMetadata> palette = new List<ItemExtractionMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("table/na/itemextraction"))
@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     ItemExtractionMetadata metadata = new ItemExtractionMetadata();
