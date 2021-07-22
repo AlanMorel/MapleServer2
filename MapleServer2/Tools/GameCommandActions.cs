@@ -20,6 +20,9 @@ namespace MapleServer2.Tools
             string[] args = command.ToLower().Split(" ", 2);
             switch (args[0])
             {
+                case "goto":
+                    ProcessGotoCommand(session, args.Length > 1 ? args[1] : "");
+                    break;
                 case "commands":
                     ProcessCommandList(session);
                     break;
@@ -27,53 +30,109 @@ namespace MapleServer2.Tools
                     ProcessQuestCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "oneshot":
-                    Player player = session.Player;
-                    if (player.GmFlags.Contains("oneshot"))
-                    {
-                        player.GmFlags.Remove("oneshot");
-                        session.SendNotice("oneshot mode disabled");
-                    }
-                    else
-                    {
-                        session.Player.GmFlags.Add("oneshot");
-                        session.SendNotice("oneshot mode enabled");
-                    }
+                    ProcessOneshotCommand(session);
                     break;
                 case "status":
                     ProcessStatusCommand(session, args.Length > 1 ? args[1] : "");
                     break;
                 case "sethandicraft":
-                    session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, value);
+                        }
+                    }
                     break;
                 case "setprestigelevel":
-                    session.Player.Levels.SetPrestigeLevel(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Levels.SetPrestigeLevel(value);
+                        }
+                    }
                     break;
                 case "setlevel":
-                    session.Player.Levels.SetLevel(ParseShort(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (short value, bool success) = ParseShort(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Levels.SetLevel(value);
+                        }
+                    }
                     break;
                 case "gainprestigeexp":
-                    session.Player.Levels.GainPrestigeExp(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Levels.GainPrestigeExp(value);
+                        }
+                    }
                     break;
                 case "gainexp":
-                    session.Player.Levels.GainExp(ParseInt(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Levels.GainExp(value);
+                        }
+                    }
                     break;
                 case "setvalor":
-                    session.Player.Wallet.ValorToken.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.ValorToken.SetAmount(value);
+                        }
+                    }
                     break;
                 case "settreva":
-                    session.Player.Wallet.Treva.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.Treva.SetAmount(value);
+                        }
+                    }
                     break;
                 case "setrue":
-                    session.Player.Wallet.Rue.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.Rue.SetAmount(value);
+                        }
+                    }
                     break;
                 case "sethavi":
-                    session.Player.Wallet.HaviFruit.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.HaviFruit.SetAmount(value);
+                        }
+                    }
                     break;
                 case "setmeso":
-                    session.Player.Wallet.Meso.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.Meso.SetAmount(value);
+                        }
+                    }
                     break;
                 case "setmeret":
-                    session.Player.Wallet.Meret.SetAmount(ParseLong(session, args.Length > 1 ? args[1] : ""));
+                    {
+                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        if (success)
+                        {
+                            session.Player.Wallet.Meret.SetAmount(value);
+                        }
+                    }
                     break;
                 case "item":
                     ProcessItemCommand(session, args.Length > 1 ? args[1] : "");
@@ -109,9 +168,44 @@ namespace MapleServer2.Tools
             }
         }
 
+        private static void ProcessGotoCommand(GameSession session, string name)
+        {
+            Player target = GameServer.Storage.GetPlayerByName(name);
+            if (target == null)
+            {
+                session.SendNotice($"Couldn't find player with name: {name}!");
+                return;
+            }
+
+            IFieldObject<Player> fieldPlayer = target.Session.FieldPlayer;
+            if (target.MapId == session.Player.MapId && target.InstanceId == session.Player.InstanceId)
+            {
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, fieldPlayer.Coord, fieldPlayer.Rotation));
+                return;
+            }
+            session.Player.Warp(mapId: target.MapId, coord: fieldPlayer.Coord, instanceId: target.InstanceId);
+        }
+
+        private static void ProcessOneshotCommand(GameSession session)
+        {
+            Player player = session.Player;
+            if (player.GmFlags.Contains("oneshot"))
+            {
+                player.GmFlags.Remove("oneshot");
+                session.SendNotice("Oneshot mode disabled.");
+            }
+            else
+            {
+                session.Player.GmFlags.Add("oneshot");
+                session.SendNotice("Oneshot mode enabled.");
+            }
+        }
+
         private static void ProcessCommandList(GameSession session)
         {
             string message = "Emulator Commands \n" +
+                "Teleport to player: /goto <font color='#71a6f0'>player name</font> \n" +
+                "Toggle One shot: /oneshot \n" +
                 "Complete Quest: /completequest <font color='#71a6f0'>questID</font> \n" +
                 "Activate Buff: /status id:<font color='#71a6f0'>buffID</font> \n" +
                 "Set Prestige Level: /setprestigelevel <font color='#71a6f0'>level</font> \n" +
@@ -128,8 +222,8 @@ namespace MapleServer2.Tools
                 "Get Item: /item id:<font color='#71a6f0'>itemID</font> [amount:<font color='#71a6f0'>amount</font> rarity:<font color='#71a6f0'>raritytier</font>] \n" +
                 "Spawn Npc: /npc id:<font color='#71a6f0'>npcID</font> [ani:<font color='#71a6f0'>animationID</font> dir:<font color='#71a6f0'>directionvalue</font> coord:<font color='#71a6f0'>X,Y,Z Coords</font>] \n" +
                 "Spawn Mob: /mob id:<font color='#71a6f0'>mobID</font> [ani:<font color='#71a6f0'>animationID</font> dir:<font color='#71a6f0'>directionvalue</font> coord:<font color='#71a6f0'>X,Y,Z Coords</font>] \n" +
-                "Move to Map: /map id:<font color='#71a6f0'>mapID</font> \n" +
-                "Display Current Coords: /coord \n" +
+                "Current Map & Move to Map: /map [id:<font color='#71a6f0'>mapID</font>] \n" +
+                "Current Coords & Move to Coord: /coord [<font color='#71a6f0'>x</font>, <font color='#71a6f0'>y</font>, <font color='#71a6f0'>z</font>]\n" +
                 "Turn off battle stance: /battleoff \n" +
                 "Display Notice Server Wide: /notice <font color='#71a6f0'>message</font> \n";
             session.Send(NoticePacket.Notice(message, NoticeType.Chat));
@@ -226,21 +320,14 @@ namespace MapleServer2.Tools
             else
             {
                 string[] coords = command.Replace(" ", "").Split(",");
-                if (!float.TryParse(coords[0], out float x))
+                if (!float.TryParse(coords[0], out float x) || !float.TryParse(coords[1], out float y) || !float.TryParse(coords[2], out float z))
                 {
-                    return;
-                }
-                if (!float.TryParse(coords[1], out float y))
-                {
-                    return;
-                }
-                if (!float.TryParse(coords[2], out float z))
-                {
+                    session.SendNotice("Correct usage: /coord 200, 100, 100");
                     return;
                 }
 
                 session.Player.Coord = CoordF.From(x, y, z);
-                session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, CoordF.From(x, y, z), session.Player.Rotation));
             }
         }
 
@@ -406,69 +493,69 @@ namespace MapleServer2.Tools
             return false;
         }
 
-        private static long ParseLong(GameSession session, string s)
+        private static (long, bool) ParseLong(GameSession session, string s)
         {
             try
             {
-                return long.Parse(s);
+                return (long.Parse(s), true);
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type long.");
-                return -1;
+                return (-1, false);
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return -1;
+                return (-1, false);
             }
             catch (Exception)
             {
-                return -1;
+                return (-1, false);
             }
         }
 
-        private static int ParseInt(GameSession session, string s)
+        private static (int, bool) ParseInt(GameSession session, string s)
         {
             try
             {
-                return int.Parse(s);
+                return (int.Parse(s), true);
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type int.");
-                return -1;
+                return (-1, false);
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return -1;
+                return (-1, false);
             }
             catch (Exception)
             {
-                return -1;
+                return (-1, false);
             }
         }
 
-        private static short ParseShort(GameSession session, string s)
+        private static (short, bool) ParseShort(GameSession session, string s)
         {
             try
             {
-                return short.Parse(s);
+                return (short.Parse(s), true);
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type short.");
-                return -1;
+                return (-1, false);
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return -1;
+                return (-1, false);
             }
             catch (Exception)
             {
-                return -1;
+                return (-1, false);
             }
         }
     }
