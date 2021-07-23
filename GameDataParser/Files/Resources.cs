@@ -12,14 +12,11 @@ namespace GameDataParser.Files
 
         public MetadataResources()
         {
-            string xmlHeaderPath = $"{Paths.INPUT}/Xml.m2h";
-            string exportedHeaderPath = $"{Paths.INPUT}/Exported.m2h";
+            string xmlPath = $"{Paths.INPUT}/Xml.m2d";
+            string exportedPath = $"{Paths.INPUT}/Exported.m2d";
 
-            XmlMemFile = MemoryMappedFile.CreateFromFile(xmlPath);
-            ExportedMemFile = MemoryMappedFile.CreateFromFile(exportedPath);
-
-            XmlFiles = FileList.ReadFile(File.OpenRead(xmlHeaderPath));
-            ExportedFiles = FileList.ReadFile(File.OpenRead(exportedHeaderPath));
+            XmlReader = new M2dReader(xmlPath);
+            ExportedReader = new M2dReader(exportedPath);
         }
     }
 }
