@@ -508,16 +508,9 @@ namespace GameDataParser.Parsers
                 string value = housing.Attributes["categoryTag"].Value;
                 if (!string.IsNullOrEmpty(value))
                 {
-                    short category;
-                    if (value.Contains(","))
-                    {
-                        List<string> categories = new List<string>(value.Split(","));
-                        category = short.Parse(categories[0]);
-                    }
-                    else
-                    {
-                        category = short.Parse(value);
-                    }
+                    List<string> categories = new List<string>(value.Split(","));
+                    short category = short.Parse(categories[0]);
+
                     metadata.HousingCategory = (ItemHousingCategory) category;
                 }
 
