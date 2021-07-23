@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Maple2Storage.Types;
 
 namespace MapleServer2.Types
