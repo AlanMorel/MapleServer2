@@ -278,11 +278,11 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                            Console.WriteLine($"Format error parsing {coordMatch.Value} as CoordB");
+                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as CoordB");
                         }
                         catch (OverflowException ex)
                         {
-                            Console.WriteLine($"Error parsing {coordMatch.Value} as CoordB: {ex.Message}");
+                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as CoordB: {ex.Message}");
                         }
                         break;
                     case IMS2TriggerObject triggerObject:
