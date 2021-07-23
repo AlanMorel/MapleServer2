@@ -2,13 +2,13 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>9</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="DotNetZip" Version="1.15.0" />
-      <PackageReference Include="Maple2.File.Parser" Version="1.0.3" />
+      <PackageReference Include="Maple2.File.Parser" Version="2.0.0-alpha" />
     </ItemGroup>
 
     <ItemGroup>
