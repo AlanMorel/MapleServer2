@@ -69,7 +69,7 @@ namespace MapleServer2.PacketHandlers.Game
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
                 session.Player.ConsumeHp(fallDamage);
 
-                session.Send(UserMoveByPortalPacket.Move(session, safeBlock, session.Player.Rotation));
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.Player.Rotation));
                 session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
                 session.Send(FallDamagePacket.FallDamage(session, fallDamage));
             }

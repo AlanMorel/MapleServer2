@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,14 +13,14 @@ namespace GameDataParser.Parsers
         protected override List<MasteryFactorMetadata> Parse()
         {
             List<MasteryFactorMetadata> masteryFactorList = new();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/masterydifferentialfactor"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList factors = document.SelectNodes("/ms2/v");
 
                 foreach (XmlNode factor in factors)

@@ -52,6 +52,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Remove the item from the users inventory
             InventoryController.Remove(session, itemUid, out Item item);
+            if (item == null)
+            {
+                return;
+            }
 
             // Get correct equipped inventory
             Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);

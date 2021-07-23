@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -21,14 +21,14 @@ namespace GameDataParser.Parsers
         {
             // Item boxes
             Dictionary<string, List<ItemContent>> itemDrops = new Dictionary<string, List<ItemContent>>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/individualitemdrop") && !entry.Name.StartsWith("table/na/individualitemdrop"))
                 {
                     continue;
                 }
 
-                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
                 foreach (XmlNode individualBoxItem in individualBoxItems)
                 {
@@ -69,14 +69,14 @@ namespace GameDataParser.Parsers
 
             // Item breaking ingredients
             Dictionary<int, List<ItemBreakReward>> rewards = new Dictionary<int, List<ItemBreakReward>>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/itembreakingredient"))
                 {
                     continue;
                 }
 
-                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
                 foreach (XmlNode nodes in individualItems)
                 {
@@ -104,13 +104,13 @@ namespace GameDataParser.Parsers
 
             // Item rarity
             Dictionary<int, int> rarities = new Dictionary<int, int>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/na/itemwebfinder"))
                 {
                     continue;
                 }
-                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
                 foreach (XmlNode node in nodes)
                 {
@@ -122,7 +122,7 @@ namespace GameDataParser.Parsers
 
             // Items
             List<ItemMetadata> items = new List<ItemMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("item/"))
                 {
@@ -143,7 +143,7 @@ namespace GameDataParser.Parsers
                 Debug.Assert(metadata.Id > 0, $"Invalid Id {metadata.Id} from {itemId}");
 
                 // Parse XML
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNode item = document.SelectSingleNode("ms2/environment");
 
                 // Tag

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -16,12 +16,12 @@ namespace GameDataParser.Parsers
         protected override List<SkillMetadata> Parse()
         {
             List<SkillMetadata> skillList = new List<SkillMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 // Parsing Skills
                 if (entry.Name.StartsWith("skill"))
                 {
-                    XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                    XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                     XmlNode ui = document.SelectSingleNode("/ms2/basic/ui");
                     XmlNode kinds = document.SelectSingleNode("/ms2/basic/kinds");
                     XmlNode stateAttr = document.SelectSingleNode("/ms2/basic/stateAttr");
@@ -75,7 +75,7 @@ namespace GameDataParser.Parsers
                 // Parsing SubSkills
                 else if (entry.Name.StartsWith("table/job"))
                 {
-                    XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                    XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                     XmlNodeList jobs = document.SelectNodes("/ms2/job");
                     foreach (XmlNode job in jobs)
                     {
@@ -132,14 +132,14 @@ namespace GameDataParser.Parsers
                 }
             }
             // Parsing Additional Data
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("additionaleffect"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList levels = document.SelectNodes("/ms2/level");
                 int skillId = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
 

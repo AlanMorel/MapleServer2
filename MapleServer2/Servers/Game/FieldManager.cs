@@ -109,13 +109,17 @@ namespace MapleServer2.Servers.Game
             }
             AddInteractObject(actors);
 
-            string xBlockName = MapMetadataStorage.GetMetadata(mapId).XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+            MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+            if (mapMetadata != null)
             {
-                TriggerContext context = new TriggerContext(this, Logger);
-                TriggerState startState = initializer.Invoke(context);
-                return new TriggerScript(context, startState);
-            }).ToArray();
+                string xBlockName = mapMetadata.XBlockName;
+                Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+                {
+                    TriggerContext context = new TriggerContext(this, Logger);
+                    TriggerState startState = initializer.Invoke(context);
+                    return new TriggerScript(context, startState);
+                }).ToArray();
+            }
 
             if (MapEntityStorage.HasHealingSpot(MapId))
             {

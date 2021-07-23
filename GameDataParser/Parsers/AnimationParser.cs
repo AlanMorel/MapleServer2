@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,14 +13,14 @@ namespace GameDataParser.Parsers
         protected override List<AnimationMetadata> Parse()
         {
             List<AnimationMetadata> animations = new List<AnimationMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("anikeytext"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode animationNode in document.DocumentElement.ChildNodes)
                 {
                     AnimationMetadata metadata = new AnimationMetadata();

@@ -180,6 +180,7 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.Mailbox);
                 entity.Ignore(e => e.InstanceId);
                 entity.Ignore(e => e.IsInDecorPlanner);
+                entity.Ignore(e => e.PartyId);
             });
 
             modelBuilder.Entity<Levels>(entity =>
