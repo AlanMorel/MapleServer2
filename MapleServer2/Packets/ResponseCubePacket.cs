@@ -34,6 +34,7 @@ namespace MapleServer2.Packets
             UpdateArchitectScore = 0x1C,
             HomeDescription = 0x1D,
             ReturnMap = 0x22,
+            LoadLayout = 0x24,
             IncreaseSize = 0x25,
             DecreaseSize = 0x26,
             Rewards = 0x27,
@@ -41,6 +42,7 @@ namespace MapleServer2.Packets
             SetPermission = 0x2B,
             IncreaseHeight = 0x2C,
             DecreaseHeight = 0x2D,
+            SaveLayout = 0x2E,
             ChangeBackground = 0x33,
             ChangeLighting = 0x34,
             GiveBuildingPermission = 0x35,
@@ -48,6 +50,7 @@ namespace MapleServer2.Packets
             LoadWarehouseItems = 0x37,
             AddBuildingPermission = 0x39,
             RemoveBuildingPermission = 0x3A,
+            UpdateSizeHeight = 0x3E
         }
 
         public static Packet LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid)
@@ -340,6 +343,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet BillPopup(Dictionary<byte, long> cubeCosts, int cubeCount)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.LoadLayout);
+            pWriter.WriteByte((byte) cubeCosts.Keys.Count);
+            pWriter.WriteInt(cubeCount);
+            foreach (KeyValuePair<byte, long> kvp in cubeCosts)
+            {
+                pWriter.WriteByte(kvp.Key);
+                pWriter.WriteLong(kvp.Value);
+            }
+
+            return pWriter;
+        }
+
         public static Packet IncreaseSize(byte size)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
@@ -356,6 +374,26 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ResponseCubePacketMode.DecreaseSize);
             pWriter.WriteByte();
             pWriter.WriteByte(size);
+
+            return pWriter;
+        }
+
+        public static Packet DecorationScore(Home home)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
+            pWriter.WriteLong(home?.AccountId ?? 0);
+            pWriter.WriteLong(home?.DecorationRewardTimestamp ?? 0);
+            pWriter.WriteLong(home?.DecorationLevel ?? 1);
+            pWriter.WriteLong(home?.DecorationExp ?? 0);
+            pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);
+            if (home != null)
+            {
+                foreach (int rewardId in home.InteriorRewardsClaimed)
+                {
+                    pWriter.WriteInt(rewardId);
+                }
+            }
 
             return pWriter;
         }
@@ -396,6 +434,19 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ResponseCubePacketMode.DecreaseHeight);
             pWriter.WriteByte();
             pWriter.WriteByte(size);
+
+            return pWriter;
+        }
+
+        public static Packet SaveLayout(long accountId, int layoutId, string layoutName, long timestamp)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.SaveLayout);
+            pWriter.WriteByte();
+            pWriter.WriteLong(accountId);
+            pWriter.WriteInt(layoutId);
+            pWriter.WriteUnicodeString(layoutName);
+            pWriter.WriteLong(timestamp);
 
             return pWriter;
         }
@@ -478,22 +529,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet DecorationScore(Home home)
+        public static Packet UpdateHomeSizeHeight(byte size, byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
-            pWriter.WriteLong(home?.AccountId ?? 0);
-            pWriter.WriteLong(home?.DecorationRewardTimestamp ?? 0);
-            pWriter.WriteLong(home?.DecorationLevel ?? 1);
-            pWriter.WriteLong(home?.DecorationExp ?? 0);
-            pWriter.WriteInt(home?.InteriorRewardsClaimed.Count ?? 0);
-            if (home != null)
-            {
-                foreach (int rewardId in home.InteriorRewardsClaimed)
-                {
-                    pWriter.WriteInt(rewardId);
-                }
-            }
+            pWriter.WriteEnum(ResponseCubePacketMode.UpdateSizeHeight);
+            pWriter.WriteByte();
+            pWriter.WriteByte(size);
+            pWriter.WriteByte(height);
 
             return pWriter;
         }

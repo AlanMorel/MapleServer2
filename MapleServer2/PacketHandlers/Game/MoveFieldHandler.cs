@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -230,6 +231,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (!player.IsInDecorPlanner)
             {
                 player.IsInDecorPlanner = true;
+                Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+                home.DecorPlannerHeight = home.Height;
+                home.DecorPlannerSize = home.Size;
+                home.DecorPlannerInventory = new Dictionary<long, Cube>();
                 player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
             }
         }

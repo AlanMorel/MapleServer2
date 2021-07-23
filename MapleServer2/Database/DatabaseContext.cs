@@ -45,7 +45,7 @@ namespace MapleServer2.Database
         public DbSet<FieldPopupEvent> Event_FieldPopup { get; set; }
         public DbSet<CardReverseGame> CardReverseGame { get; set; }
         public DbSet<Home> Homes { get; set; }
-
+        public DbSet<HomeLayout> Home_Layouts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -268,10 +268,22 @@ namespace MapleServer2.Database
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
                 entity.HasMany(e => e.FurnishingCubes).WithOne(e => e.Home);
                 entity.HasMany(e => e.WarehouseItems).WithOne(e => e.Home);
+                entity.HasMany(e => e.Layouts).WithOne(e => e.Home);
 
                 entity.Ignore(e => e.DecorPlannerHeight);
                 entity.Ignore(e => e.DecorPlannerSize);
                 entity.Ignore(e => e.DecorPlannerInventory);
+            });
+
+            modelBuilder.Entity<HomeLayout>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+                entity.Property(e => e.Id);
+                entity.Property(e => e.Name);
+                entity.Property(e => e.Size);
+                entity.Property(e => e.Height);
+                entity.Property(e => e.Timestamp);
+                entity.HasMany(e => e.Cubes).WithOne(e => e.Layout);
             });
 
             modelBuilder.Entity<SkillTab>(entity =>

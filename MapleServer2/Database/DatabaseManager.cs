@@ -721,6 +721,7 @@ namespace MapleServer2.Database
                 Home home = context.Homes
                 .Include(x => x.FurnishingCubes).ThenInclude(x => x.Item)
                 .Include(x => x.WarehouseItems)
+                .Include(x => x.Layouts).ThenInclude(x => x.Cubes).ThenInclude(x => x.Item)
                 .FirstOrDefault(x => x.Id == id);
 
                 if (home != null)
@@ -782,6 +783,45 @@ namespace MapleServer2.Database
                 context.Entry(cube).State = EntityState.Added;
                 SaveChanges(context);
                 return cube.Uid;
+            }
+        }
+
+        public static long AddLayout(HomeLayout homeLayout)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(homeLayout).State = EntityState.Added;
+                SaveChanges(context);
+                return homeLayout.Uid;
+            }
+        }
+
+        public static bool SaveLayout(HomeLayout homeLayout)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(homeLayout).State = EntityState.Modified;
+                foreach (Cube cube in homeLayout.Cubes)
+                {
+                    cube.Home = null;
+                    cube.Layout = homeLayout;
+                    cube.Uid = 0;
+                    context.Entry(cube).State = EntityState.Added;
+                }
+                return SaveChanges(context);
+            }
+        }
+
+        public static bool DeleteLayout(HomeLayout homeLayout)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(homeLayout).State = EntityState.Deleted;
+                foreach (Cube cube in homeLayout.Cubes)
+                {
+                    context.Entry(cube).State = EntityState.Deleted;
+                }
+                return SaveChanges(context);
             }
         }
 

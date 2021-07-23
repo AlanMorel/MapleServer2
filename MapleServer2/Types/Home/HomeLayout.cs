@@ -5,26 +5,29 @@ namespace MapleServer2.Types
 {
     public class HomeLayout
     {
-        private readonly long Uid;
+        public readonly long Uid;
         public Home Home;
         public int Id;
         public string Name;
         public byte Size;
         public byte Height;
+        public long Timestamp;
         public List<Cube> Cubes;
 
         public HomeLayout() { }
 
-        public HomeLayout(Home home, int layoutId, string layoutName, byte size, byte height, List<Cube> cubes)
+        public HomeLayout(Home home, int layoutId, string layoutName, byte size, byte height, long timestamp, List<Cube> cubes)
         {
             Home = home;
             Id = layoutId;
             Name = layoutName;
             Size = size;
             Height = height;
-            Cubes = cubes;
+            Timestamp = timestamp;
+            Uid = DatabaseManager.AddLayout(this);
 
-            // Uid = DatabaseManager.AddLayout(this);
+            Cubes = cubes;
+            DatabaseManager.SaveLayout(this);
         }
     }
 }

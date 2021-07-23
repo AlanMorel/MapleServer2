@@ -29,8 +29,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(home.Background);
                 pWriter.WriteByte(home.Lighting);
                 pWriter.WriteByte(home.Camera);
-                pWriter.WriteByte(9);
-                for (int i = 0; i < 9; i++) // permissions
+                pWriter.WriteByte(Home.PERMISSION_COUNT);
+                for (int i = 0; i < Home.PERMISSION_COUNT; i++)
                 {
                     if (home.Permissions.ContainsKey((HomePermission) i))
                     {
@@ -42,7 +42,14 @@ namespace MapleServer2.Packets
                         pWriter.WriteBool(false);
                     }
                 }
-                pWriter.WriteShort();
+                pWriter.WriteByte((byte) home.Layouts.Count);
+                foreach (HomeLayout layout in home.Layouts)
+                {
+                    pWriter.WriteInt(layout.Id);
+                    pWriter.WriteUnicodeString(layout.Name);
+                    pWriter.WriteLong(layout.Timestamp);
+                }
+                pWriter.WriteByte();
             }
 
             return pWriter;

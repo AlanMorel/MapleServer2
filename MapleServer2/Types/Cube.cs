@@ -11,6 +11,7 @@ namespace MapleServer2.Types
         public CoordF CoordF;
         public CoordF Rotation;
         public Home Home;
+        public HomeLayout Layout;
 
         public Cube() { }
 

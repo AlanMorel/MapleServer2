@@ -42,7 +42,7 @@ namespace MapleServer2.PacketHandlers.Game
             NominateHouse = 0x19,
             HomeDescription = 0x1D,
             ClearInterior = 0x1F,
-            LoadLayout = 0x23,
+            RequestLayout = 0x23,
             IncreaseSize = 0x25,
             DecreaseSize = 0x26,
             DecorationReward = 0x28,
@@ -52,6 +52,8 @@ namespace MapleServer2.PacketHandlers.Game
             IncreaseHeight = 0x2C,
             DecreaseHeight = 0x2D,
             SaveLayout = 0x2E,
+            DecorPlannerLoadLayout = 0x2F,
+            LoadLayout = 0x30,
             KickEveryone = 0x31,
             ChangeBackground = 0x33,
             ChangeLighting = 0x34,
@@ -108,8 +110,8 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestCubeMode.ClearInterior:
                     HandleClearInterior(session);
                     break;
-                case RequestCubeMode.LoadLayout:
-                    HandleLoadLayout(session, packet);
+                case RequestCubeMode.RequestLayout:
+                    HandleRequestLayout(session, packet);
                     break;
                 case RequestCubeMode.IncreaseSize:
                 case RequestCubeMode.DecreaseSize:
@@ -117,14 +119,20 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestCubeMode.DecreaseHeight:
                     HandleModifySize(session, mode);
                     break;
-                case RequestCubeMode.SaveLayout:
-                    HandleSaveLayout(session, packet);
-                    break;
                 case RequestCubeMode.DecorationReward:
                     HandleDecorationReward(session);
                     break;
                 case RequestCubeMode.InteriorDesingReward:
                     HandleInteriorDesingReward(session, packet);
+                    break;
+                case RequestCubeMode.SaveLayout:
+                    HandleSaveLayout(session, packet);
+                    break;
+                case RequestCubeMode.DecorPlannerLoadLayout:
+                    HandleDecorPlannerLoadLayout(session, packet);
+                    break;
+                case RequestCubeMode.LoadLayout:
+                    HandleLoadLayout(session, packet);
                     break;
                 case RequestCubeMode.KickEveryone:
                     HandleKickEveryone(session);
@@ -357,13 +365,6 @@ namespace MapleServer2.PacketHandlers.Game
             IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
             if (cube == default || cube.Value.Item == null)
             {
-                return;
-            }
-
-            if (player.IsInDecorPlanner)
-            {
-                home.DecorPlannerInventory.Remove(cube.Value.Uid);
-                session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
                 return;
             }
 
@@ -633,11 +634,136 @@ namespace MapleServer2.PacketHandlers.Game
             session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
         }
 
+        private static void HandleRequestLayout(GameSession session, PacketReader packet)
+        {
+            int layoutId = packet.ReadInt();
+
+            if (!session.FieldManager.State.Cubes.IsEmpty)
+            {
+                session.SendNotice("Please clear the interior first."); // TODO: use notice packet
+                return;
+            }
+
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            if (home == null)
+            {
+                return;
+            }
+
+            HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+            if (layout == default)
+            {
+                return;
+            }
+
+            Dictionary<int, int> groupedCubes = layout.Cubes.GroupBy(x => x.Item.Id).ToDictionary(x => x.Key, x => x.Count()); // Dictionary<item id, count> 
+
+            int cubeCount = 0;
+            Dictionary<byte, long> cubeCosts = new Dictionary<byte, long>();
+            foreach (KeyValuePair<int, int> cube in groupedCubes)
+            {
+                Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Key);
+                if (item == null)
+                {
+                    FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
+                    if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
+                    {
+                        cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * cube.Value;
+                    }
+                    else
+                    {
+                        cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * cube.Value);
+                    }
+                    cubeCount += cube.Value;
+                    continue;
+                }
+                if (item.Amount < cube.Value)
+                {
+                    FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
+                    int missingCubes = cube.Value - item.Amount;
+                    if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
+                    {
+                        cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * missingCubes;
+                    }
+                    else
+                    {
+                        cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * missingCubes);
+                    }
+                    cubeCount += missingCubes;
+                }
+            }
+
+            session.Send(ResponseCubePacket.BillPopup(cubeCosts, cubeCount));
+        }
+
+        private static void HandleDecorPlannerLoadLayout(GameSession session, PacketReader packet)
+        {
+            int layoutId = packet.ReadInt();
+
+            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+
+            if (layout == default)
+            {
+                return;
+            }
+
+            home.Size = layout.Size;
+            home.Height = layout.Height;
+            session.Send(ResponseCubePacket.UpdateHomeSizeHeight(layout.Size, layout.Height));
+
+            int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+            foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
+            {
+                fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            }
+
+            foreach (Cube layoutCube in layout.Cubes)
+            {
+                Cube cube = new Cube(new Item(layoutCube.Item.Id), layoutCube.PlotNumber, layoutCube.CoordF, layoutCube.Rotation);
+                IFieldObject<Cube> fieldCube = session.FieldManager.RequestFieldObject(layoutCube);
+                fieldCube.Coord = layoutCube.CoordF;
+                fieldCube.Rotation = layoutCube.Rotation;
+                home.DecorPlannerInventory.Add(layoutCube.Uid, layoutCube);
+
+                session.FieldManager.AddCube(fieldCube, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId);
+            }
+
+            session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
+        }
+
         private static void HandleLoadLayout(GameSession session, PacketReader packet)
         {
             int layoutId = packet.ReadInt();
 
             Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+
+            if (layout == default)
+            {
+                return;
+            }
+
+            home.Size = layout.Size;
+            home.Height = layout.Height;
+            session.Send(ResponseCubePacket.UpdateHomeSizeHeight(layout.Size, layout.Height));
+
+            int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+            foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
+            {
+                fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            }
+
+            foreach (Cube cube in layout.Cubes)
+            {
+                Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Item.Id);
+                IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.FieldPlayer, home.WarehouseInventory, home.FurnishingInventory);
+                session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
+                session.FieldManager.AddCube(fieldCube, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId);
+            }
+
+            session.Send(WarehouseInventoryPacket.Count(home.WarehouseInventory.Count));
+            session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
         }
 
         private static void HandleModifySize(GameSession session, RequestCubeMode mode)
@@ -658,29 +784,58 @@ namespace MapleServer2.PacketHandlers.Game
 
             RemoveBlocks(session, mode, home);
 
-            switch (mode)
+            if (session.Player.IsInDecorPlanner)
             {
-                case RequestCubeMode.IncreaseSize:
-                    session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseSize(++home.Size));
-                    break;
-                case RequestCubeMode.DecreaseSize:
-                    session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseSize(--home.Size));
-                    break;
-                case RequestCubeMode.IncreaseHeight:
-                    session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseHeight(++home.Height));
-                    break;
-                case RequestCubeMode.DecreaseHeight:
-                    session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseHeight(--home.Height));
-                    break;
+                switch (mode)
+                {
+                    case RequestCubeMode.IncreaseSize:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseSize(++home.DecorPlannerSize));
+                        break;
+                    case RequestCubeMode.DecreaseSize:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseSize(--home.DecorPlannerSize));
+                        break;
+                    case RequestCubeMode.IncreaseHeight:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseHeight(++home.DecorPlannerHeight));
+                        break;
+                    case RequestCubeMode.DecreaseHeight:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseHeight(--home.DecorPlannerHeight));
+                        break;
+                }
+            }
+            else
+            {
+                switch (mode)
+                {
+                    case RequestCubeMode.IncreaseSize:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseSize(++home.Size));
+                        break;
+                    case RequestCubeMode.DecreaseSize:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseSize(--home.Size));
+                        break;
+                    case RequestCubeMode.IncreaseHeight:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseHeight(++home.Height));
+                        break;
+                    case RequestCubeMode.DecreaseHeight:
+                        session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseHeight(--home.Height));
+                        break;
+                }
             }
 
-            // move player to safe coord
+            // move players to safe coord
             if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
             {
-                int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
-                foreach (IFieldObject<Player> item in session.FieldManager.State.Players.Values)
+                int x;
+                if (session.Player.IsInDecorPlanner)
                 {
-                    item.Value.Session.Send(UserMoveByPortalPacket.Move(item.Value.Session, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+                    x = -1 * Block.BLOCK_SIZE * (home.DecorPlannerSize - 1);
+                }
+                else
+                {
+                    x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+                }
+                foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
+                {
+                    fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
                 }
             }
         }
@@ -691,6 +846,22 @@ namespace MapleServer2.PacketHandlers.Game
             string layoutName = packet.ReadUnicodeString();
 
             Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+            if (layout != default)
+            {
+                DatabaseManager.DeleteLayout(layout);
+                home.Layouts.Remove(layout);
+            }
+
+            if (session.Player.IsInDecorPlanner)
+            {
+                home.Layouts.Add(new HomeLayout(home, layoutId, layoutName, home.DecorPlannerSize, home.DecorPlannerHeight, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.DecorPlannerInventory.Values.ToList()));
+            }
+            else
+            {
+                home.Layouts.Add(new HomeLayout(home, layoutId, layoutName, home.Size, home.Height, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.FurnishingInventory.Values.ToList()));
+            }
+            session.Send(ResponseCubePacket.SaveLayout(home.AccountId, layoutId, layoutName, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
 
         private static void HandleDecorationReward(GameSession session)
@@ -991,10 +1162,10 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool IsCoordOutsideHeightLimit(CoordS coordS, int mapId, byte height)
         {
-            MapMetadata metadata = MapMetadataStorage.GetMetadata(mapId);
+            Dictionary<CoordS, MapBlock> mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
             for (int i = 0; i <= height; i++) // checking blocks in the same Z axis
             {
-                MapBlock block = metadata.Blocks.FirstOrDefault(x => x.Coord == coordS);
+                mapBlocks.TryGetValue(coordS, out MapBlock block);
                 if (block == null)
                 {
                     coordS.Z -= Block.BLOCK_SIZE;
@@ -1014,15 +1185,16 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static CoordB? GetGroundCoord(CoordB coord, int mapId, byte height)
         {
-            List<MapBlock> blocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
+            Dictionary<CoordS, MapBlock> mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
             for (int i = 0; i <= height; i++)
             {
-                MapBlock blockExists = blocks.FirstOrDefault(x => x.Coord == coord.ToShort());
-                if (blockExists != default)
+                mapBlocks.TryGetValue(coord.ToShort(), out MapBlock block);
+                if (block == null)
                 {
-                    return blockExists.Coord.ToByte();
+                    coord -= CoordB.From(0, 0, 1);
+                    continue;
                 }
-                coord -= CoordB.From(0, 0, 1);
+                return block.Coord.ToByte();
             }
             return null;
         }
@@ -1120,6 +1292,13 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+
+            if (session.Player.IsInDecorPlanner)
+            {
+                home.DecorPlannerInventory.Remove(cube.Value.Uid);
+                session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+                return;
+            }
 
             furnishingInventory.Remove(cube.Value.Uid);
             homeOwner.Value.Session.Send(FurnishingInventoryPacket.Remove(cube.Value));

@@ -36,6 +36,7 @@ namespace MapleServer2.Types
         public byte Camera { get; set; }
 
         // Permissions
+        public const byte PERMISSION_COUNT = 9;
         public bool IsPrivate => !Password.Equals("******");
         public string Password { get; set; }
         public Dictionary<HomePermission, byte> Permissions { get; set; }
@@ -50,7 +51,7 @@ namespace MapleServer2.Types
         // Decor planner
         public byte DecorPlannerSize;
         public byte DecorPlannerHeight;
-        public readonly Dictionary<long, Cube> DecorPlannerInventory = new Dictionary<long, Cube>();
+        public Dictionary<long, Cube> DecorPlannerInventory = new Dictionary<long, Cube>();
 
         public Home() { }
 
