@@ -500,12 +500,12 @@ namespace GameDataParser.Parsers
 
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
-                XmlNode install = item.SelectSingleNode("install");
-                bool isCubeSolid = byte.Parse(install.Attributes["cubeProp"].Value) == 1;
+                XmlNode installNode = item.SelectSingleNode("install");
+                bool isCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
                 metadata.IsCubeSolid = isCubeSolid;
 
-                XmlNode housing = item.SelectSingleNode("housing");
-                string value = housing.Attributes["categoryTag"].Value;
+                XmlNode housingNode = item.SelectSingleNode("housing");
+                string value = housingNode.Attributes["categoryTag"].Value;
                 if (!string.IsNullOrEmpty(value))
                 {
                     List<string> categories = new List<string>(value.Split(","));
