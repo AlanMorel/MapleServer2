@@ -228,15 +228,17 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleEnterDecorPlaner(GameSession session)
         {
             Player player = session.Player;
-            if (!player.IsInDecorPlanner)
+            if (player.IsInDecorPlanner)
             {
-                player.IsInDecorPlanner = true;
-                Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
-                home.DecorPlannerHeight = home.Height;
-                home.DecorPlannerSize = home.Size;
-                home.DecorPlannerInventory = new Dictionary<long, Cube>();
-                player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
+                return;
             }
+
+            player.IsInDecorPlanner = true;
+            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            home.DecorPlannerHeight = home.Height;
+            home.DecorPlannerSize = home.Size;
+            home.DecorPlannerInventory = new Dictionary<long, Cube>();
+            player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
         }
 
         public static void HandleInstanceMove(GameSession session, int mapId)

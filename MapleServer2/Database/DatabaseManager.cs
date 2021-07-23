@@ -817,10 +817,7 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 context.Entry(homeLayout).State = EntityState.Deleted;
-                foreach (Cube cube in homeLayout.Cubes)
-                {
-                    context.Entry(cube).State = EntityState.Deleted;
-                }
+                homeLayout.Cubes.ForEach(cube => context.Entry(cube).State = EntityState.Deleted);
                 return SaveChanges(context);
             }
         }
