@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -13,7 +13,7 @@ namespace GameDataParser.Parsers
         protected override List<InstrumentCategoryInfoMetadata> Parse()
         {
             List<InstrumentCategoryInfoMetadata> instrument = new List<InstrumentCategoryInfoMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
 
                 if (!entry.Name.StartsWith("table/instrumentcategoryinfo"))
@@ -21,7 +21,7 @@ namespace GameDataParser.Parsers
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
                     InstrumentCategoryInfoMetadata metadata = new InstrumentCategoryInfoMetadata();

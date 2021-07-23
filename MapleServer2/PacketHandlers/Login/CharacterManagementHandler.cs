@@ -74,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Login
             // LoginPacket.LoginError("message?");
         }
 
-        public void HandleCreate(LoginSession session, PacketReader packet)
+        public static void HandleCreate(LoginSession session, PacketReader packet)
         {
             byte gender = packet.ReadByte();
             Job job = (Job) packet.ReadShort();
@@ -82,8 +82,6 @@ namespace MapleServer2.PacketHandlers.Login
             SkinColor skinColor = packet.Read<SkinColor>();
             packet.Skip(2);
             Dictionary<ItemSlot, Item> cosmetics = new Dictionary<ItemSlot, Item>();
-
-            Logger.Info($"Creating character: {name}, gender: {gender}, skinColor: {skinColor}, job: {job}");
 
             int equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
@@ -167,7 +165,6 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                 }
-                Logger.Info($" > {type} - id: {id}, color: {equipColor}");
             }
             packet.ReadInt(); // const? (4)
 

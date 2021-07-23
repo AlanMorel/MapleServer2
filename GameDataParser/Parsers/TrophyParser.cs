@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
@@ -15,14 +15,14 @@ namespace GameDataParser.Parsers
         protected override List<TrophyMetadata> Parse()
         {
             List<TrophyMetadata> trophyList = new List<TrophyMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("achieve/"))
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNode trophy = document.SelectSingleNode("/ms2/achieves");
 
                 TrophyMetadata newTrophy = new TrophyMetadata();

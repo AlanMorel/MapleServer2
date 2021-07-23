@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetZip" Version="1.15.0" />
+      <PackageReference Include="Maple2.File.Parser" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,9 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Files\m2dFiles\" />
       <Folder Include="Hash\" />
-      <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>

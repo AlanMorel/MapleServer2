@@ -108,13 +108,17 @@ namespace MapleServer2.Servers.Game
             }
             AddInteractObject(actors);
 
-            string xBlockName = MapMetadataStorage.GetMetadata(mapId).XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+            MapMetadata metadata = MapMetadataStorage.GetMetadata(mapId);
+            if (metadata != null)
             {
-                TriggerContext context = new TriggerContext(this, Logger);
-                TriggerState startState = initializer.Invoke(context);
-                return new TriggerScript(context, startState);
-            }).ToArray();
+                string xBlockName = metadata.XBlockName;
+                Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+                {
+                    TriggerContext context = new TriggerContext(this, Logger);
+                    TriggerState startState = initializer.Invoke(context);
+                    return new TriggerScript(context, startState);
+                }).ToArray();
+            }
 
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
@@ -560,7 +564,7 @@ namespace MapleServer2.Servers.Game
                     if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
                     {
                         int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
-                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), owner: player.ObjectId, source: healingSpot.ObjectId, stacks: 1);
+                        Status status = new Status(new SkillCast(70000018, 1, 0, 1), target: player.ObjectId, source: healingSpot.ObjectId, stacks: 1);
 
                         player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                         BroadcastPacket(SkillDamagePacket.ApplyHeal(status, healAmount));

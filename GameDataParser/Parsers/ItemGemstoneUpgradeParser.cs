@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -14,7 +14,7 @@ namespace GameDataParser.Parsers
         protected override List<ItemGemstoneUpgradeMetadata> Parse()
         {
             List<ItemGemstoneUpgradeMetadata> gems = new List<ItemGemstoneUpgradeMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles)
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/na/itemgemstoneupgrade"))
                 {
@@ -22,7 +22,7 @@ namespace GameDataParser.Parsers
                 }
 
                 // Parse XML
-                XmlDocument document = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList keys = document.SelectNodes("/ms2/key");
 
                 foreach (XmlNode key in keys)

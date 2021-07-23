@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Xml;
-using GameDataParser.Crypto.Common;
 using GameDataParser.Files;
+using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
@@ -16,9 +16,9 @@ namespace GameDataParser.Parsers
         protected override List<ItemOptionRangeMetadata> Parse()
         {
             List<ItemOptionRangeMetadata> items = new List<ItemOptionRangeMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlFiles.Where(x => x.Name.StartsWith("table/itemoptionvariation_")))
+            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("table/itemoptionvariation_")))
             {
-                XmlDocument innerDocument = Resources.XmlMemFile.GetDocument(entry.FileHeader);
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList nodeList = innerDocument.SelectNodes("/ms2/option");
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
 
