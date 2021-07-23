@@ -45,7 +45,7 @@ namespace MapleServer2.Database
         public DbSet<FieldPopupEvent> Event_FieldPopup { get; set; }
         public DbSet<CardReverseGame> CardReverseGame { get; set; }
         public DbSet<Home> Homes { get; set; }
-        public DbSet<HomeLayout> Home_Layouts { get; set; }
+        public DbSet<HomeLayout> HomeLayouts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
