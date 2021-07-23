@@ -108,10 +108,10 @@ namespace MapleServer2.Servers.Game
             }
             AddInteractObject(actors);
 
-            MapMetadata metadata = MapMetadataStorage.GetMetadata(mapId);
-            if (metadata != null)
+            MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+            if (mapMetadata != null)
             {
-                string xBlockName = metadata.XBlockName;
+                string xBlockName = mapMetadata.XBlockName;
                 Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
                 {
                     TriggerContext context = new TriggerContext(this, Logger);
