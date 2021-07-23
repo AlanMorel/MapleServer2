@@ -428,12 +428,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet DecreaseHeight(byte size)
+        public static Packet DecreaseHeight(byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.DecreaseHeight);
             pWriter.WriteByte();
-            pWriter.WriteByte(size);
+            pWriter.WriteByte(height);
 
             return pWriter;
         }
@@ -529,7 +529,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateHomeSizeHeight(byte size, byte height)
+        public static Packet UpdateHomeSizeAndHeight(byte size, byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.UpdateSizeHeight);

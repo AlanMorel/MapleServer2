@@ -710,7 +710,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             home.Size = layout.Size;
             home.Height = layout.Height;
-            session.Send(ResponseCubePacket.UpdateHomeSizeHeight(layout.Size, layout.Height));
+            session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
             int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
             foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
@@ -746,7 +746,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             home.Size = layout.Size;
             home.Height = layout.Height;
-            session.Send(ResponseCubePacket.UpdateHomeSizeHeight(layout.Size, layout.Height));
+            session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
             int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
             foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)

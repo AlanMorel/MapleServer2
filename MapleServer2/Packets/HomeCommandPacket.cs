@@ -23,11 +23,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateArchitectScore(int objectId, int architectScoreCurrent, int architectScoreTotal)
+        public static Packet UpdateArchitectScore(int ownerObjectId, int architectScoreCurrent, int architectScoreTotal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
             pWriter.WriteEnum(HomeCommandMode.UpdateArchitectScore);
-            pWriter.WriteInt(objectId);
+            pWriter.WriteInt(ownerObjectId);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteInt(architectScoreCurrent);
             pWriter.WriteInt(architectScoreTotal);

@@ -180,8 +180,8 @@ namespace MapleServer2.Types
                 new MasteryExp(MasteryType.PetTaming)
             });
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            MapId = 2000062;
-            Coord = CoordF.From(2850, 2550, 1801); // Intro map (52000065)
+            MapId = (int) Map.UnknownLocation;
+            Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
