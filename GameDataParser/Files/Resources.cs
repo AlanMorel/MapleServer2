@@ -7,17 +7,11 @@ namespace GameDataParser.Files
 {
     public class MetadataResources
     {
-        public List<PackFileEntry> XmlFiles;
-        public List<PackFileEntry> ExportedFiles;
-
-        public MemoryMappedFile XmlMemFile;
-        public MemoryMappedFile ExportedMemFile;
+        public readonly M2dReader XmlReader;
+        public readonly M2dReader ExportedReader;
 
         public MetadataResources()
         {
-            string xmlPath = $"{Paths.INPUT}/Xml.m2d";
-            string exportedPath = $"{Paths.INPUT}/Exported.m2d";
-
             string xmlHeaderPath = $"{Paths.INPUT}/Xml.m2h";
             string exportedHeaderPath = $"{Paths.INPUT}/Exported.m2h";
 
