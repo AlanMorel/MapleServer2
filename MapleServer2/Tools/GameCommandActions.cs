@@ -37,7 +37,7 @@ namespace MapleServer2.Tools
                     break;
                 case "sethandicraft":
                     {
-                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseInt(session, args.Length > 1 ? args[1] : "", out int value);
                         if (success)
                         {
                             session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, value);
@@ -46,7 +46,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setprestigelevel":
                     {
-                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseInt(session, args.Length > 1 ? args[1] : "", out int value);
                         if (success)
                         {
                             session.Player.Levels.SetPrestigeLevel(value);
@@ -55,7 +55,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setlevel":
                     {
-                        (short value, bool success) = ParseShort(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseShort(session, args.Length > 1 ? args[1] : "", out short value);
                         if (success)
                         {
                             session.Player.Levels.SetLevel(value);
@@ -64,7 +64,7 @@ namespace MapleServer2.Tools
                     break;
                 case "gainprestigeexp":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Levels.GainPrestigeExp(value);
@@ -73,7 +73,7 @@ namespace MapleServer2.Tools
                     break;
                 case "gainexp":
                     {
-                        (int value, bool success) = ParseInt(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseInt(session, args.Length > 1 ? args[1] : "", out int value);
                         if (success)
                         {
                             session.Player.Levels.GainExp(value);
@@ -82,7 +82,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setvalor":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.ValorToken.SetAmount(value);
@@ -91,7 +91,7 @@ namespace MapleServer2.Tools
                     break;
                 case "settreva":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.Treva.SetAmount(value);
@@ -100,7 +100,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setrue":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.Rue.SetAmount(value);
@@ -109,7 +109,7 @@ namespace MapleServer2.Tools
                     break;
                 case "sethavi":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.HaviFruit.SetAmount(value);
@@ -118,7 +118,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setmeso":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.Meso.SetAmount(value);
@@ -127,7 +127,7 @@ namespace MapleServer2.Tools
                     break;
                 case "setmeret":
                     {
-                        (long value, bool success) = ParseLong(session, args.Length > 1 ? args[1] : "");
+                        bool success = TryParseLong(session, args.Length > 1 ? args[1] : "", out long value);
                         if (success)
                         {
                             session.Player.Wallet.Meret.SetAmount(value);
@@ -180,7 +180,7 @@ namespace MapleServer2.Tools
             IFieldObject<Player> fieldPlayer = target.Session.FieldPlayer;
             if (target.MapId == session.Player.MapId && target.InstanceId == session.Player.InstanceId)
             {
-                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, fieldPlayer.Coord, fieldPlayer.Rotation));
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, fieldPlayer.Coord, fieldPlayer.Rotation));
                 return;
             }
             session.Player.Warp(mapId: target.MapId, coord: fieldPlayer.Coord, instanceId: target.InstanceId);
@@ -318,15 +318,14 @@ namespace MapleServer2.Tools
             }
             else
             {
-                string[] coords = command.Replace(" ", "").Split(",");
-                if (!float.TryParse(coords[0], out float x) || !float.TryParse(coords[1], out float y) || !float.TryParse(coords[2], out float z))
+                if (TryParseCoord(command, out CoordF coordF))
                 {
                     session.SendNotice("Correct usage: /coord 200, 100, 100");
                     return;
                 }
 
-                session.Player.Coord = CoordF.From(x, y, z);
-                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, CoordF.From(x, y, z), session.Player.Rotation));
+                session.Player.Coord = coordF;
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, coordF, session.Player.Rotation));
             }
         }
 
@@ -492,69 +491,75 @@ namespace MapleServer2.Tools
             return false;
         }
 
-        private static (long, bool) ParseLong(GameSession session, string s)
+        private static bool TryParseLong(GameSession session, string value, out long result)
         {
+            result = 0;
             try
             {
-                return (long.Parse(s), true);
+                result = long.Parse(value);
+                return true;
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type long.");
-                return (-1, false);
+                return false;
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return (-1, false);
+                return false;
             }
             catch (Exception)
             {
-                return (-1, false);
+                return false;
             }
         }
 
-        private static (int, bool) ParseInt(GameSession session, string s)
+        private static bool TryParseInt(GameSession session, string value, out int result)
         {
+            result = 0;
             try
             {
-                return (int.Parse(s), true);
+                result = int.Parse(value);
+                return true;
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type int.");
-                return (-1, false);
+                return false;
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return (-1, false);
+                return false;
             }
             catch (Exception)
             {
-                return (-1, false);
+                return false;
             }
         }
 
-        private static (short, bool) ParseShort(GameSession session, string s)
+        private static bool TryParseShort(GameSession session, string value, out short result)
         {
+            result = 0;
             try
             {
-                return (short.Parse(s), true);
+                result = short.Parse(value);
+                return true;
             }
             catch (FormatException)
             {
                 session.SendNotice("The input is not type short.");
-                return (-1, false);
+                return false;
             }
             catch (OverflowException)
             {
                 session.SendNotice("You entered a number too big or too small.");
-                return (-1, false);
+                return false;
             }
             catch (Exception)
             {
-                return (-1, false);
+                return false;
             }
         }
     }
