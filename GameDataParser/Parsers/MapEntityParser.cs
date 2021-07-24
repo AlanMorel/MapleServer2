@@ -255,6 +255,14 @@ namespace GameDataParser.Parsers
                         // TODO: Do we need to parse these as some special NPC object?
                         // "mixinMS2Breakable"  But not "mixinMS2BreakableActor", as in ke_fi_prop_buoy_A01_ or el_move_woodbox_B04_
                         break;
+                    case IMS2TriggerObject triggerObject:
+                        switch (triggerObject)
+                        {
+                            case IMS2TriggerMesh triggerMesh:
+                                Console.WriteLine($"found trigger mesh: \n ID:{triggerMesh.TriggerObjectID}\n {triggerMesh.ModelName}");
+                                break;
+                        }
+                        break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
                         // These are objects which you can place in the world
                         string nameCoord = placeable.EntityName.ToLower();
@@ -283,14 +291,6 @@ namespace GameDataParser.Parsers
                         catch (OverflowException ex)
                         {
                             Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as CoordB: {ex.Message}");
-                        }
-                        break;
-                    case IMS2TriggerObject triggerObject:
-                        switch (triggerObject)
-                        {
-                            case IMS2TriggerMesh triggerMesh:
-                                Console.WriteLine($"found trigger mesh: \n ID:{triggerMesh.TriggerObjectID}\n {triggerMesh.ModelName}");
-                                break;
                         }
                         break;
                 }
