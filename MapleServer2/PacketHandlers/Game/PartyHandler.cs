@@ -138,7 +138,6 @@ namespace MapleServer2.PacketHandlers.Game
                     // create party
                     Party newParty = new(session.Player);
                     GameServer.PartyManager.AddParty(newParty);
-                    System.Console.WriteLine(newParty.Id);
                     session.Send(PartyPacket.Create(newParty, true));
                     other.Session.Send(PartyPacket.SendInvite(session.Player, newParty));
                 }

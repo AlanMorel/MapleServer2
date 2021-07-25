@@ -241,7 +241,6 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     continue;
                 }
-                System.Console.WriteLine($"{member.Name} Instrument is not null");
 
                 member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
                 member.Session.FieldManager.AddInstrument(member.Session.Player.Instrument);
