@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
@@ -17,6 +18,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
         public readonly ConcurrentDictionary<int, IFieldObject<Instrument>> Instruments;
+        public readonly ConcurrentDictionary<int, IFieldObject<TriggerObject>> TriggerObjects;
 
         public FieldState()
         {
@@ -31,6 +33,7 @@ namespace MapleServer2.Types
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
             Instruments = new ConcurrentDictionary<int, IFieldObject<Instrument>>();
+            TriggerObjects = new ConcurrentDictionary<int, IFieldObject<TriggerObject>>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)

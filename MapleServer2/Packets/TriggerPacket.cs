@@ -1,4 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System;
+using System.Collections.Generic;
+using Maple2Storage.Types.Metadata;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
 namespace MapleServer2.Packets
@@ -7,19 +10,39 @@ namespace MapleServer2.Packets
     {
         private enum TriggerPacketMode : byte
         {
-            Trigger = 0x3,
+            SendTriggers = 0x2,
+            SingleTrigger = 0x3,
             Banner = 0x8,
             Timer = 0xE,
         }
 
-        public static Packet Trigger(int arg1, byte arg2)
+        public static Packet SendTriggers(List<TriggerObject> triggerObjects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.Trigger);
-            pWriter.WriteInt(arg1);
-            pWriter.WriteByte(arg2);
-            pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteEnum(TriggerPacketMode.SendTriggers);
+            pWriter.WriteInt(triggerObjects.Count);
+
+            foreach (TriggerObject triggerObject in triggerObjects)
+            {
+                if (triggerObject is TriggerMesh)
+                {
+                    Console.WriteLine("triggerObject is TriggerMesh");
+                }
+            }
+
+            return pWriter;
+        }
+
+        public static Packet SetMeshTrigger(int meshId, bool isVisible, float arg5)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+            pWriter.WriteInt(meshId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteFloat(arg5);
+            pWriter.WriteInt(0);
+            pWriter.WriteShort(16256); //constant: 80 3F
             return pWriter;
         }
 
@@ -31,6 +54,16 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(stringGuideId);
             pWriter.WriteInt(stringGuideId);
             pWriter.WriteInt(time); //display duration in ms
+            return pWriter;
+        }
+
+        public static Packet MovieTrigger(string path, int movieId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.Banner);
+            pWriter.WriteByte(0x04);
+            pWriter.WriteUnicodeString(path);
+            pWriter.WriteInt(movieId);
             return pWriter;
         }
 

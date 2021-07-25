@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Maple2Storage.Enums;
+using ProtoBuf;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -31,6 +32,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 11)]
         public List<CoordS> HealingSpot;
+        [XmlElement(Order = 12)]
+        public readonly List<TriggerObject> TriggerObjects;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -43,6 +46,7 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            TriggerObjects = new List<TriggerObject>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -56,6 +60,7 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            TriggerObjects = new List<TriggerObject>();
         }
 
         public override string ToString() =>
@@ -456,6 +461,40 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
     }
+
+    [XmlType]
+    [ProtoContract, ProtoInclude(5, typeof(TriggerMesh))]
+    public class TriggerObject
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+
+        public TriggerObject(int id)
+        {
+            Id = id;
+        }
+    }
+
+    [XmlType]
+    public class TriggerMesh : TriggerObject
+    {
+        [XmlElement(Order = 1)]
+        public bool IsVisible;
+        public TriggerMesh(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+        }
+    }
+
+    //[XmlType]
+    //public class TriggerEffect : TriggerObject
+    //{
+    //    [XmlElement(Order = 1)]
+    //    public bool IsVisible = true;
+    //    public TriggerEffect(int id) : base(id)
+    //    {
+    //    }
+    //}
 
     [Flags]
     public enum MapPortalFlag : byte

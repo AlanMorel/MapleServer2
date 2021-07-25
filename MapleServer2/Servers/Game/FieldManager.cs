@@ -116,6 +116,12 @@ namespace MapleServer2.Servers.Game
                 return new TriggerScript(context, startState);
             }).ToArray();
 
+            foreach (TriggerObject triggerObject in MapEntityStorage.GetTriggerObjects(mapId))
+            {
+                Console.WriteLine($"found triggerobject in map {triggerObject.ToString()}");
+            }
+
+
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
@@ -128,6 +134,7 @@ namespace MapleServer2.Servers.Game
                     }
                 }
             }
+
         }
 
         // Gets a list of packets to update the state of all field objects for client.
@@ -251,6 +258,7 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InstrumentPacket.PlayScore(instrument));
                 }
             }
+           // TriggerPacket.SendTriggers(State.)
 
             State.AddPlayer(player);
 

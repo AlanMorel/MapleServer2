@@ -19,6 +19,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
         private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
+        private static readonly Dictionary<int, List<TriggerObject>> TriggerObjects = new Dictionary<int, List<TriggerObject>>();
 
         static MapEntityStorage()
         {
@@ -34,6 +35,7 @@ namespace MapleServer2.Data.Static
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
                 healthSpot.Add(entity.MapId, entity.HealingSpot);
+                TriggerObjects.Add(entity.MapId, entity.TriggerObjects);
             }
         }
 
@@ -104,6 +106,11 @@ namespace MapleServer2.Data.Static
         public static List<CoordS> GetHealingSpot(int mapId)
         {
             return healthSpot.GetValueOrDefault(mapId);
+        }
+
+        public static List<TriggerObject> GetTriggerObjects(int mapId)
+        {
+            return TriggerObjects.GetValueOrDefault(mapId);
         }
     }
 }

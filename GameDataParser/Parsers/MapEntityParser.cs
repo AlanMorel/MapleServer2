@@ -259,8 +259,11 @@ namespace GameDataParser.Parsers
                         switch (triggerObject)
                         {
                             case IMS2TriggerMesh triggerMesh:
-                                Console.WriteLine($"found trigger mesh: \n ID:{triggerMesh.TriggerObjectID}\n {triggerMesh.ModelName}");
+                                metadata.TriggerObjects.Add(new TriggerMesh(triggerMesh.TriggerObjectID, triggerMesh.IsVisible));
                                 break;
+                            //case IMS2TriggerEffect triggerEffect:
+                            //    metadata.TriggerObjects.Add(new TriggerEffect(triggerEffect.TriggerObjectID));
+                            //    break;
                         }
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
