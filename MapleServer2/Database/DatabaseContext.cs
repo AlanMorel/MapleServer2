@@ -252,7 +252,7 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Name).HasMaxLength(16);
                 entity.Property(e => e.Description).HasMaxLength(100);
                 entity.Property(e => e.MapId);
-                entity.Property(e => e.PlotId);
+                entity.Property(e => e.PlotMapId);
                 entity.Property(e => e.PlotNumber);
                 entity.Property(e => e.ApartmentNumber);
                 entity.Property(e => e.Size);
@@ -273,6 +273,8 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.DecorPlannerHeight);
                 entity.Ignore(e => e.DecorPlannerSize);
                 entity.Ignore(e => e.DecorPlannerInventory);
+                entity.Ignore(e => e.Mesos);
+                entity.Ignore(e => e.Merets);
             });
 
             modelBuilder.Entity<HomeLayout>(entity =>

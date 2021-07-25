@@ -53,7 +53,7 @@ namespace MapleServer2.Tools
                 }
                 MapIds.Add(mapId);
             }
-            return HomeList.Values.Where(h => h.PlotId == mapId).ToList();
+            return HomeList.Values.Where(h => h.PlotMapId == mapId).ToList();
         }
 
         private void SaveLoop()

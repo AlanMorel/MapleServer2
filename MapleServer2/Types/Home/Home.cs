@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public long InstanceId;
         public long AccountId { get; set; }
         public int MapId { get; set; }
-        public int PlotId { get; set; }
+        public int PlotMapId { get; set; }
         public int PlotNumber { get; set; }
         public int ApartmentNumber { get; set; }
         public long Expiration { get; set; }
@@ -53,6 +53,10 @@ namespace MapleServer2.Types
         public byte DecorPlannerHeight;
         public Dictionary<long, Cube> DecorPlannerInventory = new Dictionary<long, Cube>();
 
+        // Budget wallet
+        public long Mesos;
+        public long Merets;
+
         public Home() { }
 
         public Home(long accountId, string houseName, int homeTemplate)
@@ -61,7 +65,7 @@ namespace MapleServer2.Types
             Name = houseName;
             Description = "Thanks for visiting. Come back soon!";
             MapId = (int) Map.PrivateResidence;
-            PlotId = 0;
+            PlotMapId = 0;
             PlotNumber = 0;
             ApartmentNumber = 0;
             DecorationLevel = 1;

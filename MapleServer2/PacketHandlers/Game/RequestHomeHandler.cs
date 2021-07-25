@@ -88,6 +88,7 @@ namespace MapleServer2.PacketHandlers.Game
                 player.ReturnCoord = player.SafeBlock;
             }
             player.VisitingHomeId = player.Account.Home.Id;
+            player.Guide = null;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
             player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);

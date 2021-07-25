@@ -785,7 +785,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(member.MapId);
             pWriter.WriteShort(); // player.channel
             pWriter.WriteUnicodeString(member.ProfileUrl);
-            pWriter.WriteInt(member.Account.Home?.PlotId ?? 0);
+            pWriter.WriteInt(member.Account.Home?.PlotMapId ?? 0);
             pWriter.WriteInt(member.Account.Home?.PlotNumber ?? 0);
             pWriter.WriteInt(member.Account.Home?.ApartmentNumber ?? 0);
             pWriter.WriteLong(member.Account.Home?.Expiration ?? 0);

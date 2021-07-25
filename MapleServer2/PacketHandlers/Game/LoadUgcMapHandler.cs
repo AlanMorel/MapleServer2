@@ -82,7 +82,8 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 homes.ForEach(h =>
                 {
-                    cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0).ToList());
+                    int plotNumber = mapIsHome ? 1 : h.PlotNumber;
+                    cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0 && x.PlotNumber == plotNumber).ToList());
                 });
             }
 

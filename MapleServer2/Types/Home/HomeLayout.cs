@@ -26,8 +26,11 @@ namespace MapleServer2.Types
             Timestamp = timestamp;
             Uid = DatabaseManager.AddLayout(this);
 
-            Cubes = cubes;
-            DatabaseManager.SaveLayout(this);
+            Cubes = new List<Cube>();
+            foreach (Cube cube in cubes)
+            {
+                Cubes.Add(new Cube(cube.Item, cube.PlotNumber, cube.CoordF, cube.Rotation, homeLayout: this));
+            }
         }
     }
 }

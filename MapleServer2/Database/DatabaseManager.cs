@@ -742,11 +742,15 @@ namespace MapleServer2.Database
             {
                 List<Home> homes = context.Homes
                 .Include(x => x.FurnishingCubes).ThenInclude(x => x.Item)
-                .Where(x => x.PlotId == mapId).ToList();
+                .Include(x => x.WarehouseItems)
+                .Include(x => x.Layouts).ThenInclude(x => x.Cubes).ThenInclude(x => x.Item)
+                .Where(x => x.PlotMapId == mapId).ToList();
 
                 foreach (Home home in homes)
                 {
+                    home.WarehouseItems.ForEach(item => home.WarehouseInventory.Add(item.Uid, item));
                     home.FurnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+                    home.WarehouseItems = null;
                     home.FurnishingCubes = null;
                 }
                 return homes;
@@ -793,22 +797,6 @@ namespace MapleServer2.Database
                 context.Entry(homeLayout).State = EntityState.Added;
                 SaveChanges(context);
                 return homeLayout.Uid;
-            }
-        }
-
-        public static bool SaveLayout(HomeLayout homeLayout)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                context.Entry(homeLayout).State = EntityState.Modified;
-                foreach (Cube cube in homeLayout.Cubes)
-                {
-                    cube.Home = null;
-                    cube.Layout = homeLayout;
-                    cube.Uid = 0;
-                    context.Entry(cube).State = EntityState.Added;
-                }
-                return SaveChanges(context);
             }
         }
 

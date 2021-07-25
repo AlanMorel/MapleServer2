@@ -48,6 +48,7 @@ namespace MapleServer2.Packets
             GiveBuildingPermission = 0x35,
             ChangeCamera = 0x36,
             LoadWarehouseItems = 0x37,
+            UpdateBudget = 0x38,
             AddBuildingPermission = 0x39,
             RemoveBuildingPermission = 0x3A,
             UpdateSizeHeight = 0x3E
@@ -104,7 +105,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.ForfeitPlot2);
-            pWriter.WriteByte(72); // unkwon
+            pWriter.WriteByte(72); // unknown
             pWriter.WriteShort();
             pWriter.WriteInt(plotId);
             pWriter.WriteInt(plotNumber);
@@ -238,7 +239,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ResponseCubePacketMode.LoadHome);
             pWriter.WriteInt(fieldPlayer.ObjectId);
             pWriter.WriteInt(player.Account.Home?.MapId ?? 0);
-            pWriter.WriteInt(player.Account.Home?.PlotId ?? 0);
+            pWriter.WriteInt(player.Account.Home?.PlotMapId ?? 0);
             pWriter.WriteInt(player.Account.Home?.PlotNumber ?? 0);
             pWriter.WriteInt(player.Account.Home?.ApartmentNumber ?? 0);
             pWriter.WriteUnicodeString(player.Account.Home?.Name ?? "");
@@ -504,6 +505,17 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(item.Id);
                 pWriter.WriteInt(item.Amount);
             }
+
+            return pWriter;
+        }
+
+        public static Packet UpdateBudget(Home home)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+            pWriter.WriteEnum(ResponseCubePacketMode.UpdateBudget);
+            pWriter.WriteByte();
+            pWriter.WriteLong(home.Mesos);
+            pWriter.WriteLong(home.Merets);
 
             return pWriter;
         }

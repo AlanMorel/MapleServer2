@@ -214,6 +214,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (player.IsInDecorPlanner)
             {
                 player.IsInDecorPlanner = false;
+                player.Guide = null;
                 player.Warp((int) Map.PrivateResidence, instanceId: --player.InstanceId);
                 return;
             }
@@ -234,6 +235,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             player.IsInDecorPlanner = true;
+            player.Guide = null;
             Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
             home.DecorPlannerHeight = home.Height;
             home.DecorPlannerSize = home.Size;

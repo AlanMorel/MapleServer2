@@ -15,12 +15,14 @@ namespace MapleServer2.Types
 
         public Cube() { }
 
-        public Cube(Item item, int plotNumber, CoordF coordF, CoordF rotation)
+        public Cube(Item item, int plotNumber, CoordF coordF, CoordF rotation, HomeLayout homeLayout = null, Home home = null)
         {
             Item = item;
             PlotNumber = plotNumber;
             CoordF = coordF;
             Rotation = rotation;
+            Layout = homeLayout;
+            Home = home;
 
             Uid = DatabaseManager.CreateCube(this);
         }
