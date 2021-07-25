@@ -84,9 +84,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (session.Player.PartyId != 0)
+            if (session.Player.Party != null)
             {
-                Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                Party party = session.Player.Party;
 
                 if (party.Leader != session.Player)
                 {
@@ -100,9 +100,9 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                if (other.PartyId != 0)
+                if (other.Party != null)
                 {
-                    Party otherParty = GameServer.PartyManager.GetPartyById(other.PartyId);
+                    Party otherParty = other.Party;
 
                     if (otherParty.Members.Count > 1)
                     {
@@ -115,16 +115,16 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                if (other.PartyId != 0)
+                if (other.Party != null)
                 {
-                    Party otherParty = GameServer.PartyManager.GetPartyById(other.PartyId);
+                    Party otherParty = other.Party;
 
                     if (otherParty.Members.Count == 1)
                     {
                         Party newParty = new(session.Player);
                         GameServer.PartyManager.AddParty(newParty);
 
-                        session.Send(PartyPacket.Create(newParty));
+                        session.Send(PartyPacket.Create(newParty, true));
                         other.Session.Send(PartyPacket.SendInvite(session.Player, newParty));
                         return;
                     }
@@ -139,7 +139,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Party newParty = new(session.Player);
                     GameServer.PartyManager.AddParty(newParty);
                     System.Console.WriteLine(newParty.Id);
-                    session.Send(PartyPacket.Create(newParty));
+                    session.Send(PartyPacket.Create(newParty, true));
                     other.Session.Send(PartyPacket.SendInvite(session.Player, newParty));
                 }
             }
@@ -180,9 +180,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (session.Player.PartyId != 0)
+            if (session.Player.Party != null)
             {
-                Party currentParty = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+                Party currentParty = session.Player.Party;
                 if (currentParty.Members.Count == 1)
                 {
                     currentParty.RemoveMember(session.Player);
@@ -194,7 +194,7 @@ namespace MapleServer2.PacketHandlers.Game
                 //establish party.
                 party.BroadcastPacketParty(PartyPacket.Join(session.Player));
                 party.AddMember(session.Player);
-                session.Send(PartyPacket.Create(party));
+                session.Send(PartyPacket.Create(party, true));
                 party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(party.Leader));
                 party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
                 return;
@@ -202,7 +202,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             party.BroadcastPacketParty(PartyPacket.Join(session.Player));
             party.AddMember(session.Player);
-            session.Send(PartyPacket.Create(party));
+            session.Send(PartyPacket.Create(party, true));
             party.BroadcastPacketParty(PartyPacket.UpdatePlayer(session.Player));
 
             foreach (Player member in party.Members)
@@ -216,7 +216,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLeave(GameSession session)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
 
             session.Send(PartyPacket.Leave(session.Player, 1)); //1 = You're the player leaving
             party?.RemoveMember(session.Player);
@@ -267,7 +267,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (session.Player.PartyId != 0)
+            if (session.Player.Party == null)
             {
                 return;
             }
@@ -300,7 +300,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long charId = packet.ReadLong();
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;
@@ -345,14 +345,14 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int dungeonId = packet.ReadInt();
 
-            if (session.Player.PartyId == 0)
+            if (session.Player.Party == null)
             {
                 Party newParty = new(session.Player);
                 GameServer.PartyManager.AddParty(newParty);
-                session.Send(PartyPacket.Create(newParty));
+                session.Send(PartyPacket.Create(newParty, true));
             }
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
 
             // TODO: Party pairing system
 
@@ -382,7 +382,7 @@ namespace MapleServer2.PacketHandlers.Game
             int checkNum = packet.ReadInt() + 1; //+ 1 is because the ReadyChecks variable is always 1 ahead
             byte response = packet.ReadByte();
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;

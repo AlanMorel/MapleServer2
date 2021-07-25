@@ -34,6 +34,10 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ChatStickerPacket.LoadChatSticker(session.Player));
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
 
+            if (session.Player.Party != null)
+            {
+                session.Send(PartyPacket.UpdatePlayer(session.Player));
+            }
             // Normally skill layout would be loaded from a database
             QuickSlot arrowStream = QuickSlot.From(10500001);
             QuickSlot arrowBarrage = QuickSlot.From(10500011);

@@ -94,7 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
             //the session belongs to the party leader
             if (groupEnter)
             {
-                Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
+                Party party = player.Party;
                 if (party.DungeonSessionId != -1)
                 {
                     session.SendNotice("Need to reset dungeon before entering another instance");
@@ -124,7 +124,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleEnterDungeonButton(GameSession session)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(party.DungeonSessionId);
             if (dungeonSession == null) //Can be removed when enter dungeon button is removed on dungeonsession deletion.
             {
@@ -150,19 +150,19 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int dungeonId = packet.ReadInt();
 
-            if (session.Player.PartyId == 0)
+            if (session.Player.Party == null)
             {
                 Party newParty = new(session.Player);
                 GameServer.PartyManager.AddParty(newParty);
 
-                session.Send(PartyPacket.Create(newParty));
+                session.Send(PartyPacket.Create(newParty, false));
                 session.Send(PartyPacket.PartyHelp(dungeonId));
                 MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(newParty, dungeonId));
 
                 return;
             }
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
 
             party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
             MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));

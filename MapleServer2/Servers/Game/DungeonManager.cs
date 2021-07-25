@@ -109,9 +109,9 @@ namespace MapleServer2.Servers.Game
             }
             RemoveDungeonSession(dungeonSession.SessionId);
             //if last player leaves lobby or dungeonmap -> destroy dungeonSession.
-            if (dungeonSession.DungeonType == DungeonType.Group && player.PartyId != 0)
+            if (dungeonSession.DungeonType == DungeonType.Group && player.Party != null)
             {
-                Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
+                Party party = player.Party;
                 party.DungeonSessionId = -1;
             }
             else

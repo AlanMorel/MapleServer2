@@ -85,7 +85,7 @@ namespace MapleServer2.PacketHandlers.Game
             InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
-            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
+            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
             {
                 Improvise = true
             };
@@ -137,7 +137,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 InstrumentTick = session.ServerTick,
                 Score = score,
@@ -192,7 +192,7 @@ namespace MapleServer2.PacketHandlers.Game
             long instrumentItemUid = packet.ReadLong();
             long scoreItemUid = packet.ReadLong();
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;
@@ -214,7 +214,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
             InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
-            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 Score = score,
                 Ensemble = true,
@@ -241,10 +241,11 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     continue;
                 }
+                System.Console.WriteLine($"{member.Name} Instrument is not null");
 
                 member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
                 member.Session.FieldManager.AddInstrument(member.Session.Player.Instrument);
-                session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
+                session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(member.Session.Player.Instrument));
                 member.Instrument.Value.Score.PlayCount -= 1;
                 member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
                 member.Instrument.Value.Ensemble = false;
