@@ -33,9 +33,9 @@ namespace MapleServer2.Tools
             return PartyList.TryGetValue(id, out Party foundParty) ? foundParty : null;
         }
 
-        public Party GetPartyByMember(long id)
+        public Party GetPartyByMember(long characterId)
         {
-            return PartyList.Values.FirstOrDefault(x => x.Members.Any(z => z.CharacterId == id));
+            return PartyList.Values.FirstOrDefault(x => x.Members.Any(z => z.CharacterId == characterId));
         }
 
         public Party GetPartyByLeader(Player leader)
