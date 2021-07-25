@@ -81,7 +81,7 @@ namespace MapleServer2.Packets
 
             foreach (Player member in party.Members)
             {
-                pWriter.WriteBool(member.Session == null);
+                pWriter.WriteBool(!member.Session.Connected());
                 CharacterListPacket.WriteCharacter(member, pWriter);
                 WritePartyDungeonInfo(pWriter);
             }
