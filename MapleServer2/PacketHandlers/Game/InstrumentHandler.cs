@@ -5,6 +5,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using Instrument = MapleServer2.Types.Instrument;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -85,7 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
             InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
-            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
             {
                 Improvise = true
             };
@@ -137,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 InstrumentTick = session.ServerTick,
                 Score = score,
@@ -214,7 +215,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
             InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
             InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
-            Types.Instrument instrument = new Types.Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+            Instrument instrument = new Instrument(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
             {
                 Score = score,
                 Ensemble = true,
