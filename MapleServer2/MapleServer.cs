@@ -20,6 +20,7 @@ namespace MapleServer2
     {
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public static void Main(string[] args)
         {
             // Force Globalization to en-US because we use periods instead of commas for decimals
