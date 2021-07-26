@@ -85,7 +85,6 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Name).HasMaxLength(25).IsRequired();
                 entity.Property(e => e.ProfileUrl).HasDefaultValue("").HasMaxLength(50);
                 entity.Property(e => e.Motto).HasDefaultValue("").HasMaxLength(25);
-                entity.Property(e => e.PartyId);
                 entity.Property(e => e.ClubId);
                 entity.HasOne(e => e.Guild);
                 entity.HasOne(e => e.GuildMember);
@@ -179,8 +178,7 @@ namespace MapleServer2.Database
                 entity.Ignore(e => e.GatheringCount);
                 entity.Ignore(e => e.Mailbox);
                 entity.Ignore(e => e.InstanceId);
-                entity.Ignore(e => e.IsInDecorPlanner);
-                entity.Ignore(e => e.PartyId);
+                entity.Ignore(e => e.Party);
             });
 
             modelBuilder.Entity<Levels>(entity =>

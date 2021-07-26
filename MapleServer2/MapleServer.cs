@@ -12,12 +12,14 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using NLog;
+using Pastel;
 
 namespace MapleServer2
 {
     public static class MapleServer
     {
-        private static GameServer gameServer;
+        private static GameServer GameServer;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)
         {
@@ -39,10 +41,7 @@ namespace MapleServer2
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
-            // No DI here because MapleServer is static
-            Logger logger = LogManager.GetCurrentClassLogger();
-
-            logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
+            Logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -51,8 +50,8 @@ namespace MapleServer2
 
             IContainer gameContainer = GameContainerConfig.Configure();
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
-            gameServer = gameScope.Resolve<GameServer>();
-            gameServer.Start();
+            GameServer = gameScope.Resolve<GameServer>();
+            GameServer.Start();
 
             // Input commands to the server
             while (true)
@@ -62,7 +61,7 @@ namespace MapleServer2
                 {
                     case "exit":
                     case "quit":
-                        gameServer.Stop();
+                        GameServer.Stop();
                         loginServer.Stop();
                         return;
                     case "send":
@@ -73,22 +72,22 @@ namespace MapleServer2
                         string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
                         pWriter.Write(packet.ToByteArray());
-                        logger.Info(pWriter);
+                        Logger.Info(pWriter);
 
-                        foreach (Session session in GetSessions(loginServer, gameServer))
+                        foreach (Session session in GetSessions(loginServer, GameServer))
                         {
-                            logger.Info($"Sending packet to {session}: {pWriter}");
+                            Logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
                         }
 
                         break;
                     case "resolve":
                         PacketStructureResolver resolver = PacketStructureResolver.Parse(input[1]);
-                        GameSession first = gameServer.GetSessions().Single();
+                        GameSession first = GameServer.GetSessions().Single();
                         resolver.Start(first);
                         break;
                     default:
-                        logger.Info($"Unknown command:{input[0]} args:{(input.Length > 1 ? input[1] : "N/A")}");
+                        Logger.Info($"Unknown command:{input[0]} args:{(input.Length > 1 ? input[1] : "N/A")}");
                         break;
                 }
             }
@@ -98,29 +97,29 @@ namespace MapleServer2
         {
             if (DatabaseContext.Exists())
             {
-                Console.WriteLine("Database already exists.");
+                Logger.Info("Database already exists.");
                 return;
             }
 
-            Console.WriteLine("Creating database...");
+            Logger.Info("Creating database...");
             DatabaseContext.CreateDatabase();
 
-            Console.WriteLine("Seeding shops...");
+            Logger.Info("Seeding shops...");
             ShopsSeeding.Seed();
 
-            Console.WriteLine("Seeding Meret Market...");
+            Logger.Info("Seeding Meret Market...");
             MeretMarketItemSeeding.Seed();
 
-            Console.WriteLine("Seeding Mapleopoly...");
+            Logger.Info("Seeding Mapleopoly...");
             MapleopolySeeding.Seed();
 
-            Console.WriteLine("Seeding events...");
+            Logger.Info("Seeding events...");
             GameEventSeeding.Seed();
 
-            Console.WriteLine("Seeding card reverse game...");
+            Logger.Info("Seeding card reverse game...");
             CardReverseGameSeeding.Seed();
 
-            Console.WriteLine("Database created.");
+            Logger.Info("Database created.".Pastel("#aced66"));
         }
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
@@ -137,7 +136,7 @@ namespace MapleServer2
 
         public static void BroadcastAll(Action<GameSession> action)
         {
-            IEnumerable<GameSession> sessions = gameServer.GetSessions();
+            IEnumerable<GameSession> sessions = GameServer.GetSessions();
             lock (sessions)
             {
                 foreach (GameSession session in sessions)

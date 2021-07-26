@@ -114,7 +114,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             bool isFriend = BuddyManager.IsFriend(session.Player, otherPlayer.Value);
             bool isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
-            bool isPartyMember = session.Player.PartyId == otherPlayer.Value.PartyId;
+            bool isPartyMember = session.Player.Party == otherPlayer.Value.Party;
 
             if (!isFriend &&
                 !isGuildMember &&

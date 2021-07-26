@@ -36,6 +36,10 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ResponseCubePacket.DecorationScore(session.Player.Account.Home));
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
             session.Send(ResponseCubePacket.ReturnMap(session.Player.ReturnMapId));
+            if (session.Player.Party != null)
+            {
+                session.Send(PartyPacket.UpdatePlayer(session.Player));
+            }
 
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
 

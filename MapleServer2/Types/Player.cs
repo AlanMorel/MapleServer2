@@ -108,7 +108,7 @@ namespace MapleServer2.Types
 
         public List<Buddy> BuddyList;
 
-        public long PartyId;
+        public Party Party;
         public long ClubId;
         // TODO make this as an array
 
@@ -452,6 +452,10 @@ namespace MapleServer2.Types
                         // TODO: Check if regen-enabled
                         Stats[statId] = AddStatRegen(statId, regenStatId);
                         Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        if (Party != null)
+                        {
+                            Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
+                        }
                     }
                 }
             });

@@ -141,7 +141,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandlePartyChat(GameSession session, string message, ChatType type)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;

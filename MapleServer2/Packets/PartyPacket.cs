@@ -70,22 +70,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Create(Party party)
+        public static Packet Create(Party party, bool joinNotice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.Create);
-            pWriter.WriteByte(1);
+            pWriter.WriteBool(joinNotice);
             pWriter.WriteInt(party.Id);
             pWriter.WriteLong(party.Leader.CharacterId);
             pWriter.WriteByte((byte) party.Members.Count);
 
             foreach (Player member in party.Members)
             {
-                pWriter.WriteByte(0);
+                pWriter.WriteBool(!member.Session.Connected());
                 CharacterListPacket.WriteCharacter(member, pWriter);
-                pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
-                pWriter.WriteInt(); // dungeonID
-                pWriter.WriteByte(); // dungeon clear count
+                WritePartyDungeonInfo(pWriter);
             }
 
             pWriter.WriteByte(); // is in dungeon? might be a bool.
@@ -108,11 +106,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LogoutNotice(Player player)
+        public static Packet LogoutNotice(long characterId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.LogoutNotice);
-            pWriter.WriteLong(player.CharacterId);
+            pWriter.WriteLong(characterId);
             return pWriter;
         }
 
@@ -147,9 +145,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(player.CharacterId);
 
             CharacterListPacket.WriteCharacter(player, pWriter);
-            pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
-            pWriter.WriteInt(); // dungeonID
-            pWriter.WriteByte(); // dungeon clear count
+            WritePartyDungeonInfo(pWriter);
             return pWriter;
         }
 
@@ -159,9 +155,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(PartyPacketMode.UpdateDungeonInfo);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteInt(); //unknown: but value 100 was frequent
-            pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
-            pWriter.WriteInt(); // dungeonID
-            pWriter.WriteByte(); // dungeon clear count
+            WritePartyDungeonInfo(pWriter);
             return pWriter;
         }
 
@@ -263,6 +257,13 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PARTY);
             pWriter.WriteEnum(PartyPacketMode.EndReadyCheck);
             return pWriter;
+        }
+
+        private static void WritePartyDungeonInfo(PacketWriter pWriter)
+        {
+            pWriter.WriteInt(1); // dungeon info from player. Dungeon count (loop every dungeon)
+            pWriter.WriteInt(); // dungeonID
+            pWriter.WriteByte(); // dungeon clear count
         }
     }
 }
