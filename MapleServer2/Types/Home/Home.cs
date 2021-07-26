@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 
@@ -59,42 +61,41 @@ namespace MapleServer2.Types
 
         public Home() { }
 
-        public Home(long accountId, string houseName, int homeTemplate)
+        public Home(long accountId, string houseName, string homeTemplate)
         {
             AccountId = accountId;
             Name = houseName;
             Description = "Thanks for visiting. Come back soon!";
             MapId = (int) Map.PrivateResidence;
-            PlotMapId = 0;
-            PlotNumber = 0;
-            ApartmentNumber = 0;
             DecorationLevel = 1;
-            Size = 4;
-            Height = 5;
             InteriorRewardsClaimed = new List<int>();
             Expiration = 32503561200; // Year 2999
             Password = "******";
             Permissions = new Dictionary<HomePermission, byte>();
             Layouts = new List<HomeLayout>();
 
-            switch (homeTemplate)
-            {
-                case 0:
-                    HomeTemplates.WoodlandPath().ForEach(x => FurnishingInventory.Add(x.Uid, x));
-                    break;
-                case 1:
-                    HomeTemplates.PinkPerfection().ForEach(x => FurnishingInventory.Add(x.Uid, x));
-                    break;
-                case 2:
-                    HomeTemplates.KerningBunker().ForEach(x => FurnishingInventory.Add(x.Uid, x));
-                    break;
-                default:
-                    Size = 10;
-                    Height = 5;
-                    break;
-            }
+            SetTemplate(homeTemplate);
 
             Id = DatabaseManager.CreateHouse(this);
+        }
+
+        private void SetTemplate(string homeTemplate)
+        {
+            HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate(homeTemplate.ToString());
+            if (templateMetadata == null)
+            {
+                Size = 10;
+                Height = 4;
+                return;
+            }
+
+            Size = templateMetadata.Size;
+            Height = templateMetadata.Height;
+            foreach (CubeTemplate cubeTemplate in templateMetadata.Cubes)
+            {
+                Cube cube = new Cube(new Item(cubeTemplate.ItemId), 1, cubeTemplate.CoordF, cubeTemplate.Rotation);
+                FurnishingInventory.Add(cube.Uid, cube);
+            }
         }
 
         public void GainExp(long exp)

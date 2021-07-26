@@ -205,7 +205,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate)
+                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate.ToString())
                 {
                     PlotMapId = player.MapId,
                     PlotNumber = land.Id,
