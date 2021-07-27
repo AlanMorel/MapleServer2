@@ -95,7 +95,7 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 characters = context.Characters
-                .Where(p => p.AccountId == accountId)
+                .Where(p => p.AccountId == accountId && !p.IsDeleted)
                 .Include(p => p.Levels)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
                 .ToList();
@@ -205,8 +205,7 @@ namespace MapleServer2.Database
 
                 if (player.GuildMember != null)
                 {
-                    GuildMember dbGuildMember = context.GuildMembers.Find(player.CharacterId);
-                    context.Entry(dbGuildMember).CurrentValues.SetValues(player.GuildMember);
+                    context.Entry(player.GuildMember).State = EntityState.Modified;
                 }
                 if (player.Account != null)
                 {
@@ -220,40 +219,12 @@ namespace MapleServer2.Database
             }
         }
 
-        // TODO: rework to not delete rows, only hide character
-        public static bool DeleteCharacter(Player player)
+        public static bool DeleteCharacter(long characterId)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                Player character = context.Characters.Find(player.CharacterId);
-                List<Item> items = context.Items.Where(x => x.BankInventory.Id == player.BankInventory.Id || x.Inventory.Id == player.Inventory.Id).ToList();
-                List<Buddy> buddies = context.Buddies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<QuestStatus> quests = context.Quests.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<SkillTab> skilltabs = context.SkillTabs.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<Mail> mails = context.Mails.Where(x => x.PlayerId == player.CharacterId).ToList();
-                Inventory inventory = context.Inventories.First(x => x.Id == player.Inventory.Id);
-                BankInventory bankInventory = context.BankInventories.First(x => x.Id == player.BankInventory.Id);
-                Wallet wallet = context.Wallets.First(x => x.Id == player.Wallet.Id);
-                Levels level = context.Levels.First(x => x.Id == player.Levels.Id);
-                GameOptions gameOptions = context.GameOptions.First(x => x.Id == player.GameOptions.Id);
-
-                if (player.Trophies.Count != 0)
-                {
-                    List<Trophy> trophies = context.Trophies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                    trophies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                }
-
-                items.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                buddies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                quests.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                skilltabs.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                mails.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                context.Entry(inventory).State = EntityState.Deleted;
-                context.Entry(wallet).State = EntityState.Deleted;
-                context.Entry(bankInventory).State = EntityState.Deleted;
-                context.Entry(level).State = EntityState.Deleted;
-                context.Entry(gameOptions).State = EntityState.Deleted;
-                context.Entry(character).State = EntityState.Deleted;
+                Player character = context.Characters.Find(characterId);
+                character.IsDeleted = true;
 
                 return SaveChanges(context);
             }
@@ -400,9 +371,21 @@ namespace MapleServer2.Database
             List<Guild> guilds = new List<Guild>();
             using (DatabaseContext context = new DatabaseContext())
             {
-                guilds = context.Guilds
-                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
-                .Include(p => p.Leader).ToList();
+                guilds = context.Guilds.Include(x => x.Leader).Include(x => x.Members).ToList();
+                foreach (Guild guild in guilds)
+                {
+                    guild.Leader = context.Characters
+                    .Include(x => x.Account).ThenInclude(x => x.Home)
+                    .Include(x => x.Levels)
+                    .FirstOrDefault(x => x.CharacterId == guild.Leader.CharacterId);
+                    foreach (GuildMember guildMember in guild.Members)
+                    {
+                        guildMember.Player = context.Characters
+                        .Include(x => x.Account).ThenInclude(x => x.Home)
+                        .Include(x => x.Levels)
+                        .FirstOrDefault(x => x.CharacterId == guildMember.Id);
+                    }
+                }
             }
             return guilds;
         }
@@ -421,26 +404,9 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                context.Guilds.Add(guild);
+                context.Entry(guild).State = EntityState.Added;
                 SaveChanges(context);
                 return guild.Id;
-            }
-        }
-
-        public static Guild GetGuild(long guildId)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                Guild guild = context.Guilds
-                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
-                .Include(p => p.Leader)
-                .FirstOrDefault(p => p.Id == guildId);
-                if (guild == null)
-                {
-                    return null;
-                }
-
-                return guild;
             }
         }
 
@@ -448,8 +414,14 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                Guild dbGuild = context.Guilds.Find(guild.Id);
-                context.Entry(dbGuild).CurrentValues.SetValues(guild);
+                Guild dbGuild = context.Guilds.AsNoTracking().Include(x => x.Leader).FirstOrDefault(x => x.Id == guild.Id);
+
+                context.Entry(guild).State = EntityState.Modified;
+                if (dbGuild.Leader.CharacterId != guild.Leader.CharacterId)
+                {
+                    context.Entry(guild.Leader).State = EntityState.Modified;
+                }
+
                 return SaveChanges(context);
             }
         }
@@ -458,7 +430,7 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                context.GuildMembers.Add(member);
+                context.Entry(member).State = EntityState.Added;
                 return SaveChanges(context);
             }
         }

@@ -68,12 +68,13 @@ namespace MapleServer2.Database
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Username).IsUnique();
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(25);
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.CreationTime);
                 entity.Property(e => e.LastLoginTime);
                 entity.Property(e => e.CharacterSlots);
-
+                entity.HasMany(e => e.Players).WithOne(e => e.Account);
                 entity.HasOne(e => e.Home);
             });
 
@@ -81,7 +82,7 @@ namespace MapleServer2.Database
             {
                 entity.HasKey(e => e.CharacterId);
                 entity.HasIndex(e => e.Name).IsUnique();
-                entity.HasOne(e => e.Account).WithMany(p => p.Players);
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
                 entity.Property(e => e.Name).HasMaxLength(25).IsRequired();
                 entity.Property(e => e.ProfileUrl).HasDefaultValue("").HasMaxLength(50);
                 entity.Property(e => e.Motto).HasDefaultValue("").HasMaxLength(25);
@@ -662,6 +663,7 @@ namespace MapleServer2.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.MapId);
             });
+
             modelBuilder.Entity<CardReverseGame>(entity =>
             {
                 entity.HasKey(e => e.Id);

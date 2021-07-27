@@ -73,7 +73,7 @@ namespace MapleServer2.PacketHandlers.Game
             int objectId = packet.ReadInt();
 
             QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            if (questStatus == null || questStatus.Completed)
             {
                 return;
             }
@@ -115,7 +115,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int questId = packet.ReadInt();
             QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            if (questStatus == null || questStatus.Completed)
             {
                 return;
             }
