@@ -34,6 +34,7 @@ namespace MapleServer2.Servers.Game
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
+        private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -116,11 +117,32 @@ namespace MapleServer2.Servers.Game
                 return new TriggerScript(context, startState);
             }).ToArray();
 
-            foreach (TriggerObject triggerObject in MapEntityStorage.GetTriggerObjects(mapId))
+            foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(mapId))
             {
-                Console.WriteLine($"found triggerobject in map {triggerObject.ToString()}");
+                if (mapTriggerMesh != null)
+                {
+                    TriggerMesh triggerMesh = new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible);
+                    State.AddTriggerObject(triggerMesh);
+                }
             }
 
+            foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(mapId))
+            {
+                if (mapTriggerEffect != null)
+                {
+                    TriggerEffect triggerEffect = new TriggerEffect(mapTriggerEffect.Id);
+                    State.AddTriggerObject(triggerEffect);
+                }
+            }
+
+            foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
+            {
+                if (mapTriggerCamera != null)
+                {
+                    TriggerCamera triggerCamera = new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled);
+                    State.AddTriggerObject(triggerCamera);
+                }
+            }
 
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
@@ -177,9 +199,9 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public IFieldObject<T> RequestFieldObject<T>(T player)
+        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject)
         {
-            return WrapObject(player);
+            return WrapObject(wrappingObject);
         }
 
         public void AddPlayer(GameSession sender, IFieldObject<Player> player)
@@ -258,7 +280,11 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InstrumentPacket.PlayScore(instrument));
                 }
             }
-           // TriggerPacket.SendTriggers(State.)
+
+            List<TriggerObject> triggerObjects = new List<TriggerObject>();
+            triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
+
+            sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
 

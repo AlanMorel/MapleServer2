@@ -18,7 +18,9 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
         public readonly ConcurrentDictionary<int, IFieldObject<Instrument>> Instruments;
-        public readonly ConcurrentDictionary<int, IFieldObject<TriggerObject>> TriggerObjects;
+        public readonly ConcurrentDictionary<int, TriggerMesh> TriggerMeshes;
+        public readonly ConcurrentDictionary<int, TriggerEffect> TriggerEffects;
+        public readonly ConcurrentDictionary<int, TriggerCamera> TriggerCameras;
 
         public FieldState()
         {
@@ -33,7 +35,9 @@ namespace MapleServer2.Types
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
             Instruments = new ConcurrentDictionary<int, IFieldObject<Instrument>>();
-            TriggerObjects = new ConcurrentDictionary<int, IFieldObject<TriggerObject>>();
+            TriggerMeshes = new ConcurrentDictionary<int, TriggerMesh>();
+            TriggerEffects = new ConcurrentDictionary<int, TriggerEffect>();
+            TriggerCameras = new ConcurrentDictionary<int, TriggerCamera>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -152,6 +156,22 @@ namespace MapleServer2.Types
         public void AddHealingSpot(IFieldObject<HealingSpot> healingSpot)
         {
             HealingSpots[healingSpot.ObjectId] = healingSpot;
+        }
+
+        public void AddTriggerObject(TriggerObject triggerObject)
+        {
+            if (triggerObject is TriggerMesh)
+            {
+                TriggerMeshes[triggerObject.Id] = (TriggerMesh) triggerObject;
+            }
+            if (triggerObject is TriggerEffect)
+            {
+                TriggerEffects[triggerObject.Id] = (TriggerEffect) triggerObject;
+            }
+            if (triggerObject is TriggerCamera)
+            {
+                TriggerCameras[triggerObject.Id] = (TriggerCamera) triggerObject;
+            }
         }
     }
 }

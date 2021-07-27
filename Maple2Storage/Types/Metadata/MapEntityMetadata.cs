@@ -33,7 +33,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 11)]
         public List<CoordS> HealingSpot;
         [XmlElement(Order = 12)]
-        public readonly List<TriggerObject> TriggerObjects;
+        public readonly List<MapTriggerMesh> TriggerMeshes;
+        [XmlElement(Order = 13)]
+        public readonly List<MapTriggerEffect> TriggerEffects;
+        [XmlElement(Order = 14)]
+        public readonly List<MapTriggerCamera> TriggerCameras;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -46,7 +50,9 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
-            TriggerObjects = new List<TriggerObject>();
+            TriggerMeshes = new List<MapTriggerMesh>();
+            TriggerEffects = new List<MapTriggerEffect>();
+            TriggerCameras = new List<MapTriggerCamera>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -60,7 +66,9 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
-            TriggerObjects = new List<TriggerObject>();
+            TriggerMeshes = new List<MapTriggerMesh>();
+            TriggerEffects = new List<MapTriggerEffect>();
+            TriggerCameras = new List<MapTriggerCamera>();
         }
 
         public override string ToString() =>
@@ -462,39 +470,63 @@ namespace Maple2Storage.Types.Metadata
             $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
     }
 
-    [XmlType]
-    [ProtoContract, ProtoInclude(5, typeof(TriggerMesh))]
-    public class TriggerObject
+    [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
+    [ProtoInclude(11, typeof(MapTriggerEffect))]
+    [ProtoInclude(12, typeof(MapTriggerCamera))]
+    public class MapTriggerObject
     {
-        [XmlElement(Order = 1)]
+        [ProtoMember(1)]
         public int Id;
 
-        public TriggerObject(int id)
+        public MapTriggerObject()
+        {
+        }
+        public MapTriggerObject(int id)
         {
             Id = id;
         }
     }
 
-    [XmlType]
-    public class TriggerMesh : TriggerObject
+    [ProtoContract]
+    public class MapTriggerMesh : MapTriggerObject
     {
-        [XmlElement(Order = 1)]
+        [ProtoMember(10)]
         public bool IsVisible;
-        public TriggerMesh(int id, bool isVisible) : base(id)
+        public MapTriggerMesh(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
         }
+
+        private MapTriggerMesh() : base()
+        {
+        }
     }
 
-    //[XmlType]
-    //public class TriggerEffect : TriggerObject
-    //{
-    //    [XmlElement(Order = 1)]
-    //    public bool IsVisible = true;
-    //    public TriggerEffect(int id) : base(id)
-    //    {
-    //    }
-    //}
+    [ProtoContract]
+    public class MapTriggerEffect : MapTriggerObject
+    {
+        public MapTriggerEffect(int id) : base(id)
+        {
+        }
+        private MapTriggerEffect() : base()
+        {
+        }
+    }
+
+    [XmlType]
+    [ProtoContract]
+    public class MapTriggerCamera : MapTriggerObject
+    {
+        [ProtoMember(3)]
+        public bool IsEnabled;
+        public MapTriggerCamera(int id, bool isEnabled) : base(id)
+        {
+            IsEnabled = isEnabled;
+        }
+        private MapTriggerCamera() : base()
+        {
+        }
+    }
 
     [Flags]
     public enum MapPortalFlag : byte

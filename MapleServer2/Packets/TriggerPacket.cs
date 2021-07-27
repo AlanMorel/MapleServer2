@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
@@ -16,17 +16,24 @@ namespace MapleServer2.Packets
             Timer = 0xE,
         }
 
-        public static Packet SendTriggers(List<TriggerObject> triggerObjects)
+        public static Packet SendTriggerObjects(List<TriggerObject> triggerObjects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
             pWriter.WriteEnum(TriggerPacketMode.SendTriggers);
             pWriter.WriteInt(triggerObjects.Count);
-
+            
             foreach (TriggerObject triggerObject in triggerObjects)
             {
                 if (triggerObject is TriggerMesh)
                 {
-                    Console.WriteLine("triggerObject is TriggerMesh");
+                    TriggerMesh triggerMesh = (TriggerMesh) triggerObject;
+                    //pWriter.Write(SetMeshTrigger(triggerMesh.Id, triggerMesh.IsVisible, 0));
+                    pWriter.WriteInt(triggerMesh.Id);
+                    pWriter.WriteBool(triggerMesh.IsVisible);
+                    pWriter.WriteByte(0x00);
+                    pWriter.WriteFloat(2);
+                    pWriter.WriteInt(0);
+                    pWriter.WriteShort(16256); //constant: 80 3F
                 }
             }
 

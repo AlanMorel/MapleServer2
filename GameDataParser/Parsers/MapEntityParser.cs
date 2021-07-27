@@ -259,11 +259,14 @@ namespace GameDataParser.Parsers
                         switch (triggerObject)
                         {
                             case IMS2TriggerMesh triggerMesh:
-                                metadata.TriggerObjects.Add(new TriggerMesh(triggerMesh.TriggerObjectID, triggerMesh.IsVisible));
+                                metadata.TriggerMeshes.Add(new MapTriggerMesh(triggerMesh.TriggerObjectID, triggerMesh.IsVisible));
                                 break;
-                            //case IMS2TriggerEffect triggerEffect:
-                            //    metadata.TriggerObjects.Add(new TriggerEffect(triggerEffect.TriggerObjectID));
-                            //    break;
+                            case IMS2TriggerEffect triggerEffect:
+                                metadata.TriggerEffects.Add(new MapTriggerEffect(triggerEffect.TriggerObjectID));
+                                break;
+                            case IMS2TriggerCamera triggerCamera:
+                                metadata.TriggerCameras.Add(new MapTriggerCamera(triggerCamera.TriggerObjectID, triggerCamera.Enabled));
+                                break;
                         }
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
