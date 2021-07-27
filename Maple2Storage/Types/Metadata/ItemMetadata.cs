@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -72,6 +73,10 @@ namespace Maple2Storage.Types.Metadata
         public int OptionConstant;
         [XmlElement(Order = 33)]
         public int OptionLevelFactor;
+        [XmlElement(Order = 34)]
+        public bool IsCubeSolid;
+        [XmlElement(Order = 35)]
+        public ItemHousingCategory HousingCategory;
 
         // Required for deserialization
         public ItemMetadata()

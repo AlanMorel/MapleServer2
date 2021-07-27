@@ -63,7 +63,6 @@ namespace MapleServer2.Data.Static
         public static int GetPlotNumber(int mapId, CoordB coord)
         {
             CoordS coordS = coord.ToShort();
-            List<MapBlock> blocks = new List<MapBlock>();
             MapMetadata mapMetadata = GetMetadata(mapId);
             for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
             {

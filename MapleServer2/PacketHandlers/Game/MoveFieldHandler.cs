@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -21,7 +22,10 @@ namespace MapleServer2.PacketHandlers.Game
         private enum RequestMoveFieldMode : byte
         {
             Move = 0x0,
-            LeaveInstance = 0x1
+            LeaveInstance = 0x1,
+            VisitHouse = 0x02,
+            ReturnMap = 0x03,
+            EnterDecorPlaner = 0x04
         }
 
         private enum PortalTypes
@@ -44,13 +48,22 @@ namespace MapleServer2.PacketHandlers.Game
                 case RequestMoveFieldMode.LeaveInstance:
                     HandleLeaveInstance(session);
                     break;
+                case RequestMoveFieldMode.VisitHouse:
+                    HandleVisitHouse(session, packet);
+                    break;
+                case RequestMoveFieldMode.ReturnMap:
+                    HandleReturnMap(session);
+                    break;
+                case RequestMoveFieldMode.EnterDecorPlaner:
+                    HandleEnterDecorPlaner(session);
+                    break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
                     break;
             }
         }
 
-        public static void HandleMove(GameSession session, PacketReader packet)
+        private static void HandleMove(GameSession session, PacketReader packet)
         {
             int srcMapId = packet.ReadInt();
             if (srcMapId != session.FieldManager.MapId)
@@ -140,13 +153,94 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLeaveInstance(GameSession session)
         {
-            session.Player.MapId = session.Player.ReturnMapId;
-            session.Player.Rotation = session.FieldPlayer.Rotation;
-            session.Player.Coord = session.Player.ReturnCoord;
-            session.Player.ReturnCoord.Z += Block.BLOCK_SIZE;
-            session.Player.InstanceId = session.Player.InstanceId;   //return back to dungeon instance id or if not dungeon back to normal
-            DatabaseManager.UpdateCharacter(session.Player);
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            Player player = session.Player;
+            player.Warp(player.ReturnMapId, player.ReturnCoord, player.Rotation, instanceId: 0);
+        }
+
+        private static void HandleVisitHouse(GameSession session, PacketReader packet)
+        {
+            int returnMapId = packet.ReadInt();
+            packet.Skip(8);
+            long accountId = packet.ReadLong();
+            string password = packet.ReadUnicodeString();
+
+            Player target = GameServer.Storage.GetPlayerByAccountId(accountId);
+            Player player = session.Player;
+
+            Home home = target.Account.Home;
+            if (target == null || home == null)
+            {
+                session.SendNotice("This player does not have a home!");
+                return;
+            }
+
+            if (player.VisitingHomeId == home.Id && player.MapId == (int) Map.PrivateResidence)
+            {
+                session.SendNotice($"You are already at {target.Name}'s home!");
+                return;
+            }
+
+            if (home.IsPrivate)
+            {
+                if (password == "")
+                {
+                    session.Send(EnterUGCMapPacket.RequestPassword(accountId));
+                    return;
+                }
+
+                if (home.Password != password)
+                {
+                    session.Send(EnterUGCMapPacket.WrongPassword(accountId));
+                    return;
+                }
+            }
+
+            if (player.MapId != (int) Map.PrivateResidence)
+            {
+                player.ReturnMapId = player.MapId;
+                player.ReturnCoord = player.SafeBlock;
+            }
+
+            player.VisitingHomeId = home.Id;
+            session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
+
+            player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);
+        }
+
+        // This also leaves decor planning
+        private static void HandleReturnMap(GameSession session)
+        {
+            Player player = session.Player;
+            if (player.IsInDecorPlanner)
+            {
+                player.IsInDecorPlanner = false;
+                player.Guide = null;
+                player.Warp((int) Map.PrivateResidence, instanceId: --player.InstanceId);
+                return;
+            }
+
+            CoordF returnCoord = player.ReturnCoord;
+            returnCoord.Z += Block.BLOCK_SIZE;
+            player.Warp(player.ReturnMapId, returnCoord, player.Rotation);
+            player.ReturnMapId = 0;
+            player.VisitingHomeId = 0;
+        }
+
+        private static void HandleEnterDecorPlaner(GameSession session)
+        {
+            Player player = session.Player;
+            if (player.IsInDecorPlanner)
+            {
+                return;
+            }
+
+            player.IsInDecorPlanner = true;
+            player.Guide = null;
+            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            home.DecorPlannerHeight = home.Height;
+            home.DecorPlannerSize = home.Size;
+            home.DecorPlannerInventory = new Dictionary<long, Cube>();
+            player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
         }
 
         public static void HandleInstanceMove(GameSession session, int mapId)
@@ -169,7 +263,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Rotation = dstPortal.Rotation.ToFloat();
             session.Player.Coord = dstPortal.Coord.ToFloat();
             DatabaseManager.UpdateCharacter(session.Player);
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            session.Send(FieldPacket.RequestEnter(session.Player));
         }
     }
 }

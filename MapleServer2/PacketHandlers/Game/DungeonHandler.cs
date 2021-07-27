@@ -63,7 +63,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleEnterDungeonPortal(GameSession session)
         {
-            int instanceId = session.Player.InstanceId;
+            long instanceId = session.Player.InstanceId;
             DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(instanceId);
             if (dungeonSession == null)
             {

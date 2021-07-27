@@ -22,6 +22,7 @@ namespace MapleServer2.Database
         public DbSet<Hotbar> Hotbars { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<BankInventory> BankInventories { get; set; }
+        public DbSet<Cube> Cubes { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Mail> Mails { get; set; }
         public DbSet<Buddy> Buddies { get; set; }
@@ -43,8 +44,8 @@ namespace MapleServer2.Database
         public DbSet<UGCMapExtensionSaleEvent> Event_UGCMapExtensionSale { get; set; }
         public DbSet<FieldPopupEvent> Event_FieldPopup { get; set; }
         public DbSet<CardReverseGame> CardReverseGame { get; set; }
-        // public DbSet<Home> Homes { get; set; }
-
+        public DbSet<Home> Homes { get; set; }
+        public DbSet<HomeLayout> HomeLayouts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -69,6 +70,11 @@ namespace MapleServer2.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(25);
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.CreationTime);
+                entity.Property(e => e.LastLoginTime);
+                entity.Property(e => e.CharacterSlots);
+
+                entity.HasOne(e => e.Home);
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -79,7 +85,6 @@ namespace MapleServer2.Database
                 entity.Property(e => e.Name).HasMaxLength(25).IsRequired();
                 entity.Property(e => e.ProfileUrl).HasDefaultValue("").HasMaxLength(50);
                 entity.Property(e => e.Motto).HasDefaultValue("").HasMaxLength(25);
-                entity.Property(e => e.HomeName).HasDefaultValue("").HasMaxLength(25);
                 entity.Property(e => e.ClubId);
                 entity.HasOne(e => e.Guild);
                 entity.HasOne(e => e.GuildMember);
@@ -163,6 +168,8 @@ namespace MapleServer2.Database
                     i => JsonConvert.SerializeObject(i),
                     i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
 
+                entity.Property(e => e.VisitingHomeId);
+
                 entity.Ignore(e => e.DismantleInventory);
                 entity.Ignore(e => e.LockInventory);
                 entity.Ignore(e => e.HairInventory);
@@ -236,17 +243,48 @@ namespace MapleServer2.Database
                 entity.Property(e => e.CreationTimestamp);
             });
 
-            // modelBuilder.Entity<Home>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.HasOne(e => e.Owner);
-            //     entity.Property(e => e.Name).HasDefaultValue("My Home");
-            //     entity.Property(e => e.MapId);
-            //     entity.Property(e => e.PlotId);
-            //     entity.Property(e => e.PlotNumber);
-            //     entity.Property(e => e.ApartmentNumber);
-            //     entity.Property(e => e.Expiration);
-            // });
+            modelBuilder.Entity<Home>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.AccountId);
+                entity.Property(e => e.Name).HasMaxLength(16);
+                entity.Property(e => e.Description).HasMaxLength(100);
+                entity.Property(e => e.MapId);
+                entity.Property(e => e.PlotMapId);
+                entity.Property(e => e.PlotNumber);
+                entity.Property(e => e.ApartmentNumber);
+                entity.Property(e => e.Size);
+                entity.Property(e => e.Height);
+                entity.Property(e => e.Expiration);
+                entity.Property(e => e.Password);
+                entity.Property(e => e.Permissions).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new Dictionary<HomePermission, byte>() : JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(i));
+
+                entity.Property(e => e.InteriorRewardsClaimed).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new List<int>() : JsonConvert.DeserializeObject<List<int>>(i));
+                entity.HasMany(e => e.FurnishingCubes).WithOne(e => e.Home);
+                entity.HasMany(e => e.WarehouseItems).WithOne(e => e.Home);
+                entity.HasMany(e => e.Layouts).WithOne(e => e.Home);
+
+                entity.Ignore(e => e.DecorPlannerHeight);
+                entity.Ignore(e => e.DecorPlannerSize);
+                entity.Ignore(e => e.DecorPlannerInventory);
+                entity.Ignore(e => e.Mesos);
+                entity.Ignore(e => e.Merets);
+            });
+
+            modelBuilder.Entity<HomeLayout>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+                entity.Property(e => e.Id);
+                entity.Property(e => e.Name);
+                entity.Property(e => e.Size);
+                entity.Property(e => e.Height);
+                entity.Property(e => e.Timestamp);
+                entity.HasMany(e => e.Cubes).WithOne(e => e.Layout);
+            });
 
             modelBuilder.Entity<SkillTab>(entity =>
             {
@@ -300,6 +338,21 @@ namespace MapleServer2.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.ExtraSize);
                 entity.HasMany(e => e.DB_Items).WithOne(x => x.BankInventory);
+            });
+
+            modelBuilder.Entity<Cube>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+                entity.HasOne(e => e.Item);
+                entity.Property(e => e.PlotNumber);
+
+                entity.Property(e => e.CoordF).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new CoordF() : JsonConvert.DeserializeObject<CoordF>(i));
+
+                entity.Property(e => e.Rotation).HasConversion(
+                    i => JsonConvert.SerializeObject(i),
+                    i => i == null ? new CoordF() : JsonConvert.DeserializeObject<CoordF>(i));
             });
 
             modelBuilder.Entity<Item>(entity =>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -85,6 +86,25 @@ namespace MapleServer2.PacketHandlers.Common
                 InventoryController.LoadInventoryTab(session, tab);
             }
 
+            if (player.Account.Home != null)
+            {
+                Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+                session.Send(WarehouseInventoryPacket.StartList());
+                int counter = 0;
+                foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
+                {
+                    session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
+                }
+                session.Send(WarehouseInventoryPacket.EndList());
+
+                session.Send(FurnishingInventoryPacket.StartList());
+                foreach (Cube cube in home.FurnishingInventory.Values.Where(x => x.Item != null))
+                {
+                    session.Send(FurnishingInventoryPacket.Load(cube));
+                }
+                session.Send(FurnishingInventoryPacket.EndList());
+            }
+
             session.Send(QuestPacket.StartList());
             session.Send(QuestPacket.Packet1F());
             session.Send(QuestPacket.Packet20());
@@ -105,11 +125,6 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(TrophyPacket.WriteTableContent(trophy));
             }
 
-            session.Send(WarehouseInventoryPacket.Count()); // Typically sent after buddylist
-            session.Send(WarehouseInventoryPacket.StartList());
-            session.Send(WarehouseInventoryPacket.EndList());
-            session.Send(FurnishingInventoryPacket.StartList());
-            session.Send(FurnishingInventoryPacket.EndList());
             // SendQuest, SendAchieve, SendManufacturer, SendUserMaid
             session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());
@@ -143,7 +158,7 @@ namespace MapleServer2.PacketHandlers.Common
             // 0xF0, ResponsePet P(0F 01)
             // RequestFieldEnter
             //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-            session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+            session.Send(FieldPacket.RequestEnter(session.Player));
 
             Party party = GameServer.PartyManager.GetPartyByMember(session.Player.CharacterId);
             if (party != null)
