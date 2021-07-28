@@ -262,7 +262,7 @@ namespace GameDataParser.Parsers
                                 metadata.TriggerMeshes.Add(new MapTriggerMesh(triggerMesh.TriggerObjectID, triggerMesh.IsVisible));
                                 break;
                             case IMS2TriggerEffect triggerEffect:
-                                metadata.TriggerEffects.Add(new MapTriggerEffect(triggerEffect.TriggerObjectID));
+                                metadata.TriggerEffects.Add(new MapTriggerEffect(triggerEffect.TriggerObjectID, triggerEffect.IsVisible));
                                 break;
                             case IMS2TriggerCamera triggerCamera:
                                 metadata.TriggerCameras.Add(new MapTriggerCamera(triggerCamera.TriggerObjectID, triggerCamera.Enabled));

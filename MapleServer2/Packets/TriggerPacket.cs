@@ -21,7 +21,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
             pWriter.WriteEnum(TriggerPacketMode.SendTriggers);
             pWriter.WriteInt(triggerObjects.Count);
-            
+
             foreach (TriggerObject triggerObject in triggerObjects)
             {
                 if (triggerObject is TriggerMesh)
@@ -31,9 +31,25 @@ namespace MapleServer2.Packets
                     pWriter.WriteInt(triggerMesh.Id);
                     pWriter.WriteBool(triggerMesh.IsVisible);
                     pWriter.WriteByte(0x00);
-                    pWriter.WriteFloat(2);
+                    pWriter.WriteInt(2);
                     pWriter.WriteInt(0);
                     pWriter.WriteShort(16256); //constant: 80 3F
+                }
+
+                if (triggerObject is TriggerEffect)
+                {
+                    TriggerEffect triggerEffect = (TriggerEffect) triggerObject;
+                    pWriter.WriteInt(triggerEffect.Id);
+                    pWriter.WriteBool(triggerEffect.IsVisible);
+                    pWriter.WriteByte(0x00);
+                    pWriter.WriteInt(3); //not sure where this value is coming from.
+                }
+
+                if (triggerObject is TriggerCamera)
+                {
+                    TriggerCamera triggerCamera = (TriggerCamera) triggerObject;
+                    pWriter.WriteInt(triggerCamera.Id);
+                    pWriter.WriteBool(triggerCamera.IsEnabled);
                 }
             }
 
@@ -47,7 +63,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(meshId);
             pWriter.WriteBool(isVisible);
             pWriter.WriteByte(0x00);
-            pWriter.WriteFloat(arg5);
+            pWriter.WriteInt((int) arg5);
             pWriter.WriteInt(0);
             pWriter.WriteShort(16256); //constant: 80 3F
             return pWriter;

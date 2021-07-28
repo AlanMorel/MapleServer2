@@ -23,8 +23,10 @@ namespace MapleServer2.Types
 
     public class TriggerEffect : TriggerObject
     {
-        public TriggerEffect(int id) : base(id)
+        public bool IsVisible;
+        public TriggerEffect(int id, bool isVisible) : base(id)
         {
+            IsVisible = isVisible;
         }
     }
 

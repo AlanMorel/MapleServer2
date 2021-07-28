@@ -130,7 +130,7 @@ namespace MapleServer2.Servers.Game
             {
                 if (mapTriggerEffect != null)
                 {
-                    TriggerEffect triggerEffect = new TriggerEffect(mapTriggerEffect.Id);
+                    TriggerEffect triggerEffect = new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible);
                     State.AddTriggerObject(triggerEffect);
                 }
             }
@@ -283,7 +283,8 @@ namespace MapleServer2.Servers.Game
 
             List<TriggerObject> triggerObjects = new List<TriggerObject>();
             triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
-
+            triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
+            triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);

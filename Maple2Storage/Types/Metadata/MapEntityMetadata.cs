@@ -490,7 +490,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerMesh : MapTriggerObject
     {
-        [ProtoMember(10)]
+        [ProtoMember(2)]
         public bool IsVisible;
         public MapTriggerMesh(int id, bool isVisible) : base(id)
         {
@@ -505,8 +505,11 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerEffect : MapTriggerObject
     {
-        public MapTriggerEffect(int id) : base(id)
+        [ProtoMember(3)]
+        public bool IsVisible;
+        public MapTriggerEffect(int id, bool isVisible) : base(id)
         {
+            IsVisible = isVisible;
         }
         private MapTriggerEffect() : base()
         {
@@ -517,7 +520,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerCamera : MapTriggerObject
     {
-        [ProtoMember(3)]
+        [ProtoMember(4)]
         public bool IsEnabled;
         public MapTriggerCamera(int id, bool isEnabled) : base(id)
         {
