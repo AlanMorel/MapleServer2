@@ -34,6 +34,8 @@ namespace MapleServer2.Servers.Game
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
+        private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
+        private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -103,7 +105,7 @@ namespace MapleServer2.Servers.Game
             List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
             foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
             {
-                // TODO: Group these fieldActors by their correct packet type. 
+                // TODO: Group these fieldActors by their correct packet type.
                 actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
             }
             AddInteractObject(actors);
@@ -120,6 +122,33 @@ namespace MapleServer2.Servers.Game
                 }).ToArray();
             }
 
+            foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(mapId))
+            {
+                if (mapTriggerMesh != null)
+                {
+                    TriggerMesh triggerMesh = new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible);
+                    State.AddTriggerObject(triggerMesh);
+                }
+            }
+
+            foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(mapId))
+            {
+                if (mapTriggerEffect != null)
+                {
+                    TriggerEffect triggerEffect = new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible);
+                    State.AddTriggerObject(triggerEffect);
+                }
+            }
+
+            foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
+            {
+                if (mapTriggerCamera != null)
+                {
+                    TriggerCamera triggerCamera = new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled);
+                    State.AddTriggerObject(triggerCamera);
+                }
+            }
+
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
@@ -132,6 +161,7 @@ namespace MapleServer2.Servers.Game
                     }
                 }
             }
+
         }
 
         // Gets a list of packets to update the state of all field objects for client.
@@ -174,9 +204,9 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public IFieldObject<T> RequestFieldObject<T>(T player)
+        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject)
         {
-            return WrapObject(player);
+            return WrapObject(wrappingObject);
         }
 
         public void AddPlayer(GameSession sender, IFieldObject<Player> player)
@@ -255,6 +285,12 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InstrumentPacket.PlayScore(instrument));
                 }
             }
+
+            List<TriggerObject> triggerObjects = new List<TriggerObject>();
+            triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
+            triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
+            triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
+            sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
 
@@ -619,6 +655,16 @@ namespace MapleServer2.Servers.Game
         public int Decrement()
         {
             return Interlocked.Decrement(ref PlayerCount);
+        }
+
+        public void AddMapTimer(MapTimer timer)
+        {
+            MapTimers.Add(timer);
+        }
+
+        public MapTimer GetMapTimer(string id)
+        {
+            return MapTimers.FirstOrDefault(x => x.Id == id);
         }
     }
 }

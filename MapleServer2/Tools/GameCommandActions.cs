@@ -155,6 +155,9 @@ namespace MapleServer2.Tools
                 case "setguildexp":
                     ProcessGuildExp(session, args[1]);
                     break;
+                case "timer":
+                    session.Send(TriggerPacket.Timer2());
+                    break;
                 case "setguildfunds":
                     ProcessGuildFunds(session, args[1]);
                     break;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Maple2Storage.Enums;
+using ProtoBuf;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -31,6 +32,14 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapInteractMesh> InteractMeshes;
         [XmlElement(Order = 11)]
         public List<CoordS> HealingSpot;
+        [XmlElement(Order = 12)]
+        public readonly List<MapTriggerMesh> TriggerMeshes;
+        [XmlElement(Order = 13)]
+        public readonly List<MapTriggerEffect> TriggerEffects;
+        [XmlElement(Order = 14)]
+        public readonly List<MapTriggerCamera> TriggerCameras;
+        [XmlElement(Order = 15)]
+        public readonly List<MapTriggerBox> TriggerBoxes;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -43,6 +52,10 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            TriggerMeshes = new List<MapTriggerMesh>();
+            TriggerEffects = new List<MapTriggerEffect>();
+            TriggerCameras = new List<MapTriggerCamera>();
+            TriggerBoxes = new List<MapTriggerBox>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -56,6 +69,10 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            TriggerMeshes = new List<MapTriggerMesh>();
+            TriggerEffects = new List<MapTriggerEffect>();
+            TriggerCameras = new List<MapTriggerCamera>();
+            TriggerBoxes = new List<MapTriggerBox>();
         }
 
         public override string ToString() =>
@@ -455,6 +472,84 @@ namespace Maple2Storage.Types.Metadata
         }
         public override string ToString() =>
             $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
+    }
+
+    [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
+    [ProtoInclude(11, typeof(MapTriggerEffect))]
+    [ProtoInclude(12, typeof(MapTriggerCamera))]
+    [ProtoInclude(13, typeof(MapTriggerBox))]
+    public class MapTriggerObject
+    {
+        [ProtoMember(1)]
+        public int Id;
+
+        public MapTriggerObject()
+        {
+        }
+        public MapTriggerObject(int id)
+        {
+            Id = id;
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerMesh : MapTriggerObject
+    {
+        [ProtoMember(2)]
+        public bool IsVisible;
+        public MapTriggerMesh(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+        }
+
+        private MapTriggerMesh() : base()
+        {
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerEffect : MapTriggerObject
+    {
+        [ProtoMember(3)]
+        public bool IsVisible;
+        public MapTriggerEffect(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+        }
+        private MapTriggerEffect() : base()
+        {
+        }
+    }
+
+    [XmlType]
+    [ProtoContract]
+    public class MapTriggerCamera : MapTriggerObject
+    {
+        [ProtoMember(4)]
+        public bool IsEnabled;
+        public MapTriggerCamera(int id, bool isEnabled) : base(id)
+        {
+            IsEnabled = isEnabled;
+        }
+        private MapTriggerCamera() : base()
+        {
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerBox : MapTriggerObject
+    {
+        [ProtoMember(5)]
+        public CoordF Position;
+        public CoordF Dimension;
+        public MapTriggerBox(int id, CoordF position, CoordF dimension) : base(id)
+        {
+            Position = position;
+            Dimension = dimension;
+        }
+        private MapTriggerBox() : base()
+        {
+        }
     }
 
     [Flags]

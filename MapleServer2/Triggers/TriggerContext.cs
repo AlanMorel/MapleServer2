@@ -93,7 +93,7 @@ namespace MapleServer2.Triggers
 
         public int GetUserCount(int boxId, int userTagId)
         {
-            return 0;
+            return 20;
         }
 
         public int GetUserValue(string key)

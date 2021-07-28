@@ -1,6 +1,9 @@
-﻿using Maple2.Trigger;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using MapleServer2.Packets;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
@@ -8,10 +11,26 @@ namespace MapleServer2.Triggers
     {
         public void CreateWidget(WidgetType type)
         {
+            Widget widget = new Widget(type);
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
+            {
+                player.Value.Widgets.Add(widget);
+            }
         }
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
         {
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
+            {
+                Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
+                if (widget == null)
+                {
+                    continue;
+                }
+                widget.State = name;
+            }
         }
 
         public void GuideEvent(int eventId)
@@ -20,6 +39,7 @@ namespace MapleServer2.Triggers
 
         public void HideGuideSummary(int entityId, int textId)
         {
+            Field.BroadcastPacket(TriggerPacket.Banner(03, entityId, textId));
         }
 
         public void Notice(bool arg1, string arg2, bool arg3)
@@ -30,8 +50,13 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void PlaySystemSoundInBox(int[] arg1, string arg2)
+        public void PlaySystemSoundInBox(int[] boxId, string sound)
         {
+            if (boxId.Length == 0)
+            {
+                Field.BroadcastPacket(SystemSoundPacket.Play(sound));
+                return;
+            }
         }
 
         public void ScoreBoardCreate(string type, int maxScore)
@@ -46,8 +71,9 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetEventUI(byte arg1, string script, int arg3, string arg4)
+        public void SetEventUI(byte arg1, string script, int arg3, string boxId)
         {
+
         }
 
         public void SetVisibleUI(string uiName, bool visible)
@@ -56,6 +82,7 @@ namespace MapleServer2.Triggers
 
         public void ShowCountUI(string text, byte stage, byte count, byte soundType)
         {
+            Field.BroadcastPacket(MassiveEventPacket.Round(text, stage, count, soundType));
         }
 
         public void ShowRoundUI(byte round, int duration)
@@ -64,7 +91,7 @@ namespace MapleServer2.Triggers
 
         public void ShowGuideSummary(int entityId, int textId, int duration)
         {
-            Field.BroadcastPacket(TriggerPacket.Banner(02, textId, duration));
+            Field.BroadcastPacket(TriggerPacket.Banner(02, entityId, textId, duration));
         }
 
         public void SideNpcTalk(int npcId, string illust, int duration, string script, string voice, SideNpcTalkType type, string usm)
@@ -81,6 +108,22 @@ namespace MapleServer2.Triggers
 
         public void SetCinematicUI(byte type, string script, bool arg3)
         {
+            Field.BroadcastPacket(NoticePacket.Notice($"Setting cinematic UI type: {type}", Enums.NoticeType.Chat));
+            switch (type)
+            {
+
+                case 0:
+                    Field.BroadcastPacket(CinematicPacket.HideUi(false));
+                    break;
+                case 1:
+                    Field.BroadcastPacket(CinematicPacket.HideUi(true));
+                    break;
+                case 2:
+                case 4:
+                    Field.BroadcastPacket(CinematicPacket.View(type));
+                    break;
+
+            }
         }
 
         public void SetCinematicIntro(string text)
@@ -97,6 +140,7 @@ namespace MapleServer2.Triggers
 
         public void PlaySceneMovie(string fileName, int movieId, string skipType)
         {
+            Field.BroadcastPacket(TriggerPacket.StartCutscene(fileName, movieId));
         }
 
         public void SetSceneSkip(TriggerState state, string arg2)
