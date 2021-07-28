@@ -30,12 +30,12 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetMesh(int[] arg1, bool arg2, int arg3, int arg4, float arg5)
+        public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)
         {
-            foreach (int triggerMeshId in arg1)
+            foreach (int triggerMeshId in meshIds)
             {
-                Field.State.TriggerMeshes[triggerMeshId].IsVisible = arg2;
-                Field.BroadcastPacket(TriggerPacket.SetMeshTrigger(triggerMeshId, arg2, arg5));
+                Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.SetMeshTrigger(triggerMeshId, isVisible, arg5));
             }
         }
 
