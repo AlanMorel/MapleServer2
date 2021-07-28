@@ -22,8 +22,13 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetInteractObject(int[] arg1, byte arg2, bool arg4, bool arg3)
+        public void SetInteractObject(int[] interactObjectIds, byte active, bool arg4, bool arg3)
         {
+            foreach (int interactObjectId in interactObjectIds)
+            {
+                //Field.State.InteractObjects[interactObject] = interactObject.
+                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+            }
         }
 
         public void SetLadder(int arg1, bool arg2, bool arg3, byte arg4)
