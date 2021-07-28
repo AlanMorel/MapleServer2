@@ -143,6 +143,8 @@ namespace MapleServer2.Types
         public List<string> GmFlags = new List<string>();
         public int DungeonSessionId = -1;
 
+        public List<Widget> Widgets = new List<Widget>();
+
         class TimeInfo
         {
             public long CharCreation;

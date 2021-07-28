@@ -25,14 +25,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Round(string text, int round, int countFrom)
+        public static Packet Round(string text, int round, int countFrom, int soundType = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
             pWriter.WriteEnum(MassiveEventPacketMode.RoundBanner);
             pWriter.WriteUnicodeString(text);
             pWriter.WriteInt(round);
             pWriter.WriteInt(countFrom);
-            pWriter.WriteInt();
+            pWriter.WriteInt(soundType);
             return pWriter;
         }
 

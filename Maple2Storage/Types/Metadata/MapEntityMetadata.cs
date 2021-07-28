@@ -38,6 +38,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerEffect> TriggerEffects;
         [XmlElement(Order = 14)]
         public readonly List<MapTriggerCamera> TriggerCameras;
+        [XmlElement(Order = 15)]
+        public readonly List<MapTriggerBox> TriggerBoxes;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -53,6 +55,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerMeshes = new List<MapTriggerMesh>();
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
+            TriggerBoxes = new List<MapTriggerBox>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -69,6 +72,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerMeshes = new List<MapTriggerMesh>();
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
+            TriggerBoxes = new List<MapTriggerBox>();
         }
 
         public override string ToString() =>
@@ -473,6 +477,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
+    [ProtoInclude(13, typeof(MapTriggerBox))]
     public class MapTriggerObject
     {
         [ProtoMember(1)]
@@ -527,6 +532,22 @@ namespace Maple2Storage.Types.Metadata
             IsEnabled = isEnabled;
         }
         private MapTriggerCamera() : base()
+        {
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerBox : MapTriggerObject
+    {
+        [ProtoMember(5)]
+        public CoordF Position;
+        public CoordF Dimension;
+        public MapTriggerBox(int id, CoordF position, CoordF dimension) : base(id)
+        {
+            Position = position;
+            Dimension = dimension;
+        }
+        private MapTriggerBox() : base()
         {
         }
     }

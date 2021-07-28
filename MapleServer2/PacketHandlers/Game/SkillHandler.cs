@@ -158,17 +158,6 @@ namespace MapleServer2.PacketHandlers.Game
                         HandleMobKill(session, mob);
                     }
 
-                    if (mob.Value.Id == 29000128) // Temp fix for tutorial barrier
-                    {
-                        session.Send("4F 00 03 E8 03 00 00 00 00 00 00 00 00 00 00 00 00 80 3F".ToByteArray());
-                        session.Send("4F 00 03 D0 07 00 00 00 00 00 00 00 00 00 00 00 00 80 3F".ToByteArray());
-                        session.Send("4F 00 08 01 04 01 00 00".ToByteArray());
-
-                        IFieldObject<Portal> portal = session.FieldManager.State.Portals.Values.First(p => p.Value.Id == 1);
-                        portal.Value.Update(true, true, true);
-                        session.FieldManager.BroadcastPacket(FieldPacket.UpdatePortal(portal));
-                    }
-
                     mobs.Add((mob, damage));
 
                     // TODO: Check if the skill is a debuff for an entity

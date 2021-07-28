@@ -35,6 +35,7 @@ namespace MapleServer2.Servers.Game
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
         private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
+        private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -104,7 +105,7 @@ namespace MapleServer2.Servers.Game
             List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
             foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
             {
-                // TODO: Group these fieldActors by their correct packet type. 
+                // TODO: Group these fieldActors by their correct packet type.
                 actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
             }
             AddInteractObject(actors);
@@ -650,6 +651,16 @@ namespace MapleServer2.Servers.Game
         public int Decrement()
         {
             return Interlocked.Decrement(ref PlayerCount);
+        }
+
+        public void AddMapTimer(MapTimer timer)
+        {
+            MapTimers.Add(timer);
+        }
+
+        public MapTimer GetMapTimer(string id)
+        {
+            return MapTimers.FirstOrDefault(x => x.Id == id);
         }
     }
 }

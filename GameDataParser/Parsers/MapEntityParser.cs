@@ -267,6 +267,15 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerCamera triggerCamera:
                                 metadata.TriggerCameras.Add(new MapTriggerCamera(triggerCamera.TriggerObjectID, triggerCamera.Enabled));
                                 break;
+                            case IMS2TriggerBox triggerBox:
+                                CoordF position = CoordF.From(triggerBox.Position.X, triggerBox.Position.Y, triggerBox.Position.Z);
+                                CoordF shapeDimensions = CoordF.From(triggerBox.ShapeDimensions.X, triggerBox.ShapeDimensions.Y, triggerBox.ShapeDimensions.Z);
+                                if (int.Parse(mapId) == 52000065)
+                                {
+                                    Console.WriteLine($"shapeDimensions in CoordF:{shapeDimensions}, From file: {triggerBox.ShapeDimensions}");
+                                }
+                                metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, position, shapeDimensions));
+                                break;
                         }
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
