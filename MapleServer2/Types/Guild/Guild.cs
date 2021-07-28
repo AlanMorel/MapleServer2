@@ -34,11 +34,14 @@ namespace MapleServer2.Types
 
         public Guild() { }
 
-        public Guild(string name)
+        public Guild(string name, Player leader)
         {
             GuildPropertyMetadata property = GuildPropertyMetadataStorage.GetMetadata(0);
+            GuildMember guildMemberLeader = new GuildMember(leader, 0);
 
             Name = name;
+            Leader = leader;
+            Members.Add(guildMemberLeader);
             Capacity = (byte) property.Capacity;
             Exp = 0;
             Funds = 0;
@@ -62,32 +65,17 @@ namespace MapleServer2.Types
                 Buffs.Add(new GuildBuff(buffId));
             }
             Id = DatabaseManager.CreateGuild(this);
-        }
-
-        public void AddLeader(Player player)
-        {
-            GuildMember leader = new GuildMember(player);
-
-            player.Guild = this;
-            leader.AddGuildMember(player);
-            Members.Add(leader);
-            player.GuildMember = leader;
-            leader.Rank = 0;
-            Leader = player;
-
-            DatabaseManager.Update(leader);
-            DatabaseManager.UpdateGuild(this);
-            DatabaseManager.UpdateCharacter(player);
+            Leader.Guild = this;
+            DatabaseManager.UpdateCharacter(leader);
         }
 
         public void AddMember(Player player)
         {
-            GuildMember member = new GuildMember(player);
+            GuildMember member = new GuildMember(player, 5);
+            Members.Add(member);
 
-            member.Player = player;
             player.Guild = this;
             player.GuildMember = member;
-            Members.Add(member);
 
             DatabaseManager.Update(member);
             DatabaseManager.UpdateGuild(this);
@@ -96,23 +84,29 @@ namespace MapleServer2.Types
 
         public void RemoveMember(Player player)
         {
-            GuildMember member = Members.First(x => x.Player == player);
+            GuildMember member = Members.First(x => x.Player.CharacterId == player.CharacterId);
             Members.Remove(member);
+            player.Guild = null;
+            player.GuildMember = null;
 
-            DatabaseManager.Delete(member);
             DatabaseManager.UpdateGuild(this);
             DatabaseManager.UpdateCharacter(player);
+            DatabaseManager.Delete(member);
         }
 
         public void AssignNewLeader(Player oldLeader, Player newLeader)
         {
-            GuildMember newLeadMember = Members.First(x => x.Player == newLeader);
-            GuildMember oldLeadMember = Members.First(x => x.Player == oldLeader);
+            GuildMember newLeadMember = Members.First(x => x.Player.CharacterId == newLeader.CharacterId);
+            GuildMember oldLeadMember = Members.First(x => x.Player.CharacterId == oldLeader.CharacterId);
 
-            Members.Insert(0, newLeadMember);
+            Members.Remove(newLeadMember);
             Members.Remove(oldLeadMember);
+            Members.Insert(0, newLeadMember);
             Members.Add(oldLeadMember);
+
             DatabaseManager.UpdateGuild(this);
+            DatabaseManager.Update(newLeadMember);
+            DatabaseManager.Update(oldLeadMember);
         }
 
         public void ModifyFunds(GameSession session, GuildPropertyMetadata property, int funds)
@@ -172,7 +166,18 @@ namespace MapleServer2.Types
 
         private List<GameSession> GetSessions()
         {
-            return Members.Where(x => x.Player.Session.Connected()).Select(x => x.Player.Session).ToList();
+            List<GameSession> sessions = new List<GameSession>();
+            foreach (GuildMember guildMember in Members)
+            {
+                Player player = GameServer.Storage.GetPlayerById(guildMember.Player.CharacterId);
+                if (player == null)
+                {
+                    continue;
+                }
+                sessions.Add(player.Session);
+            }
+
+            return sessions;
         }
     }
 

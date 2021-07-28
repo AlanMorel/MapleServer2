@@ -26,6 +26,7 @@ namespace MapleServer2.Types
         public long AccountId { get; private set; }
         public long CharacterId { get; set; }
         public long CreationTime { get; private set; }
+        public bool IsDeleted;
 
         public string Name { get; private set; }
         // Gender - 0 = male, 1 = female
