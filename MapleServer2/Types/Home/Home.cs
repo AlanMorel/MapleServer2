@@ -81,7 +81,7 @@ namespace MapleServer2.Types
 
         private void SetTemplate(string homeTemplate)
         {
-            HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate(homeTemplate.ToString());
+            HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate(homeTemplate);
             if (templateMetadata == null)
             {
                 Size = 10;

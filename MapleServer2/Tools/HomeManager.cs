@@ -20,7 +20,12 @@ namespace MapleServer2.Tools
             SaveLoop();
         }
 
-        public void AddHome(Home home) => HomeList[home.Id] = home;
+        public void AddHome(Home home)
+        {
+            home.InstanceId = InstanceCounter;
+            HomeList[home.Id] = home;
+            IncrementCounter();
+        }
 
         public void RemoveHome(Home home) => HomeList.Remove(home.Id, out _);
 
