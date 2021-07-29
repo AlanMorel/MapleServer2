@@ -360,7 +360,9 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
             }
 
-            MoveFieldHandler.HandleInstanceMove(session, (int) mapId);
+            session.Player.ReturnCoord = session.FieldPlayer.Coord;
+            session.Player.ReturnMapId = session.Player.MapId;
+            session.Player.Warp((int) mapId, instanceId: session.Player.CharacterId);
         }
 
         private static void HandleDeleteSavedHair(GameSession session, PacketReader packet)

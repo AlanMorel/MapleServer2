@@ -214,7 +214,6 @@ namespace MapleServer2.Types
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
-
             Coord = coord;
             Rotation = rotation;
             SafeBlock = coord;

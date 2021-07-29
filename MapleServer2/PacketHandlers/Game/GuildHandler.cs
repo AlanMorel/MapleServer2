@@ -829,7 +829,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            MoveFieldHandler.HandleInstanceMove(session, fieldId);
+            session.Player.ReturnCoord = session.FieldPlayer.Coord;
+            session.Player.ReturnMapId = session.Player.MapId;
+            session.Player.Warp(fieldId, instanceId: guild.Id);
         }
 
         private static void HandleGuildDonate(GameSession session, PacketReader packet)
