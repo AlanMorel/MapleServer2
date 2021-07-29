@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using NLog;
+using NLog.LayoutRenderers;
 
 namespace MapleServer2.Types
 {
@@ -62,6 +65,7 @@ namespace MapleServer2.Types
                 {
                     if (data.NpcMetadataBasic.Difficulty >= minDifficulty && data.NpcMetadataBasic.Difficulty <= difficulty)
                     {
+                        Console.WriteLine("found matching tag difficulty");
                         matchedNpcs.Add(data);
                     }
                 }

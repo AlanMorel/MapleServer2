@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Intrinsics.X86;
 using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
@@ -68,10 +69,18 @@ namespace GameDataParser.Parsers
                         spawnTime = 0;
                     }
 
+                    //foreach (string s in spawnTags)
+                    //{
+                    //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+                    //    Console.WriteLine($"{Convert.ToHexString(bytes)}");
+                    //}
+
                     if (!int.TryParse(node.Attributes["population"].Value, out int population))
                     {
                         population = 0;
                     }
+
+                    //Console.WriteLine(difficulty + minDifficulty);
 
                     bool isPetSpawn = node.Attributes["petPopulation"] != null &&
                                       int.Parse(node.Attributes["petPopulation"].Value) > 0;
@@ -83,6 +92,10 @@ namespace GameDataParser.Parsers
                         SpawnTagMap[mapID] = new Dictionary<int, SpawnMetadata>();
                     }
 
+                    if (mapID == "02000038")
+                    {
+                        Console.WriteLine($"id: {spawnPointID}");
+                    }
                     SpawnTagMap[mapID][spawnPointID] = spawnData;
                 }
             }
@@ -201,6 +214,13 @@ namespace GameDataParser.Parsers
                                     new MapPlayerSpawn(ToCoordS(pcSpawn.Position), ToCoordS(pcSpawn.Rotation)));
                                 break;
                             case ISpawnPointNPC npcSpawn:
+                                if (mapId == "02000038")
+                                {
+                                    Console.WriteLine($"spawnpointID : {npcSpawn.SpawnPointID}, radius: {npcSpawn.SpawnRadius}");
+                                    bool b1 = SpawnTagMap.ContainsKey(mapId);
+                                    bool b2 = SpawnTagMap[mapId].ContainsKey(npcSpawn.SpawnPointID);
+                                    Console.WriteLine($"contains map {b1}, contains spawnpoint id: {npcSpawn.SpawnPointID} {b2}");
+                                }
                                 // These tend to be vendors, shops, etc.
                                 // If the name tag begins with SpawnPointNPC, I think these are mob spawn locations. Skipping these.
                                 string npcIdStr = npcSpawn.NpcList.FirstOrDefault().Key ?? "0";
@@ -224,10 +244,34 @@ namespace GameDataParser.Parsers
                         switch (spawnBase)
                         {
                             case IMS2RegionSpawn regionSpawn:
+                                if (mapId == "02000038")
+                                {
+                                    Console.WriteLine($"spawnpointID : {regionSpawn.SpawnPointID}, radius: {regionSpawn.SpawnRadius}");
+                                    bool b1 = SpawnTagMap.ContainsKey(mapId);
+                                    bool b2 = SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID);
+                                    Console.WriteLine($"contains map {b1}, contains spawnpoint id: {regionSpawn.SpawnPointID} {b2}");
+                                }
                                 SpawnMetadata mobSpawnData =
                                     (SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID))
                                         ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
                                         : null; // Do we need this spawn data (?)
+
+                                if (mobSpawnData != null)
+                                {
+                                    //foreach (string s in mobSpawnData.Tags)
+                                    //{
+                                    //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+                                    //    Console.WriteLine($"{Convert.ToHexString(bytes)}");
+                                    //}
+
+                                    // Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
+                                    //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
+                                    //Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
+                                }
+
+
+
+
                                 int mobNpcCount = mobSpawnData?.Population ?? 6;
 
                                 // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
@@ -304,11 +348,11 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
+                          //  Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
                         }
                         catch (OverflowException ex)
                         {
-                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
+                          //  Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
                         }
                         break;
                 }
