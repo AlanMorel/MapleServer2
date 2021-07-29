@@ -304,11 +304,11 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as CoordB");
+                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
                         }
                         catch (OverflowException ex)
                         {
-                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as CoordB: {ex.Message}");
+                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
                         }
                         break;
                 }

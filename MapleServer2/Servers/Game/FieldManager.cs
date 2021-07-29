@@ -617,11 +617,13 @@ namespace MapleServer2.Servers.Game
                 int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
                 if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
                 {
+                    Console.WriteLine($"NOT SPAWNING: mobs count{mobSpawn.Value.Mobs.Count} spawncount{spawnCount} max pop{mobSpawn.Value.MaxPopulation}");
                     break;
                 }
 
                 for (int i = 0; i < spawnCount; i++)
                 {
+                    Console.WriteLine($"spwn mobs: {mob.Id} max pop {mobSpawn.Value.MaxPopulation} mobs: {mobSpawn.Value.Mobs}");
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
                     AddMob(fieldMob);
