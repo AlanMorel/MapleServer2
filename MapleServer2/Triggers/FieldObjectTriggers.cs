@@ -18,8 +18,12 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetEffect(int[] arg1, bool arg2, int arg3, byte arg4)
+        public void SetEffect(int[] triggerIds, bool isVisible, int arg3, byte arg4)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                Field.BroadcastPacket(TriggerPacket.SetEffectTrigger(triggerId, isVisible));
+            }
         }
 
         public void SetInteractObject(int[] interactObjectIds, byte active, bool arg4, bool arg3)
@@ -27,7 +31,7 @@ namespace MapleServer2.Triggers
             foreach (int interactObjectId in interactObjectIds)
             {
                 //Field.State.InteractObjects[interactObject] = interactObject.
-                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+                //       Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
             }
         }
 
@@ -58,7 +62,12 @@ namespace MapleServer2.Triggers
             {
                 return;
             }
-            IFieldObject<Portal> portal = Field.State.Portals.Values.First<IFieldObject<Portal>>(p => p.Value.Id == portalId);
+
+            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == portalId);
+            if (portal == null)
+            {
+                return;
+            }
             portal.Value.Update(visible, enabled, minimapVisible);
             Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }

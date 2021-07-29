@@ -26,7 +26,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.Write(player.Coord);
-            pWriter.Write(player.Value.Rotation);
+            pWriter.Write(player.Rotation);
             pWriter.WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
 
             return pWriter;

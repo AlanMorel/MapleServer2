@@ -196,6 +196,14 @@ namespace GameDataParser.Parsers
                     case ISpawnPoint spawn:
                         switch (spawn)
                         {
+                            case IEventSpawnPointNPC eventSpawnNpc: // trigger mob/npc spawns
+                                                                    // TODO: Parse "value" from NPCList.
+                                List<string> npcIds = new List<string>();
+                                npcIds.AddRange(eventSpawnNpc.NpcList.Keys);
+
+                                metadata.EventNpcSpawnPoints.Add(new MapEventNpcSpawnPoint(eventSpawnNpc.SpawnPointID, eventSpawnNpc.NpcCount, npcIds, eventSpawnNpc.SpawnAnimation, eventSpawnNpc.SpawnRadius,
+                                    CoordF.FromVector3(eventSpawnNpc.Position), CoordF.FromVector3(eventSpawnNpc.Rotation)));
+                                break;
                             case ISpawnPointPC pcSpawn:
                                 metadata.PlayerSpawns.Add(
                                     new MapPlayerSpawn(ToCoordS(pcSpawn.Position), ToCoordS(pcSpawn.Rotation)));
@@ -243,13 +251,10 @@ namespace GameDataParser.Parsers
                         }
                         break;
                     case IPortal portal:
-                        MapPortalFlag flags = portal.IsVisible ? MapPortalFlag.Visible : MapPortalFlag.None;
-                        flags |= portal.PortalEnable ? MapPortalFlag.Enabled : MapPortalFlag.None;
-                        flags |= portal.MinimapIconVisible ? MapPortalFlag.MinimapVisible : MapPortalFlag.None;
-                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, flags, portal.TargetFieldSN,
-                            ToCoordS(portal.Position), ToCoordS(portal.Rotation), portal.TargetPortalID,
-                            (byte) portal.PortalType));
+                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN, 
+                            ToCoordS(portal.Position), ToCoordS(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
+
                     case IMS2Breakable:
                         // case IMS2BreakableActor
                         // TODO: Do we need to parse these as some special NPC object?
@@ -268,16 +273,14 @@ namespace GameDataParser.Parsers
                                 metadata.TriggerCameras.Add(new MapTriggerCamera(triggerCamera.TriggerObjectID, triggerCamera.Enabled));
                                 break;
                             case IMS2TriggerBox triggerBox:
-                                CoordF position = CoordF.From(triggerBox.Position.X, triggerBox.Position.Y, triggerBox.Position.Z);
-                                CoordF shapeDimensions = CoordF.From(triggerBox.ShapeDimensions.X, triggerBox.ShapeDimensions.Y, triggerBox.ShapeDimensions.Z);
-                                if (int.Parse(mapId) == 52000065)
-                                {
-                                    Console.WriteLine($"shapeDimensions in CoordF:{shapeDimensions}, From file: {triggerBox.ShapeDimensions}");
-                                }
-                                metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, position, shapeDimensions));
+                                metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position), CoordF.FromVector3(triggerBox.ShapeDimensions)));
                                 break;
                             case IMS2TriggerLadder triggerLadder:
-                               // metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder));
+                                // metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder));
+                                break;
+                            case IMS2TriggerPortal triggerPortal:
+                                metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
+                                    triggerPortal.TargetFieldSN, ToCoordS(triggerPortal.Position), ToCoordS(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                                 break;
                         }
                         break;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -72,9 +74,31 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool MonsterDead(int[] arg1, bool arg2)
+        public bool MonsterDead(int[] spawnPointIds, bool arg2)
         {
-            return false;
+            // TODO: Needs a better check for multiple mob spawns
+            foreach (int spawnPointId in spawnPointIds)
+            {
+                MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+                if (spawnPoint == null)
+                {
+                    continue;
+                }
+                foreach (string npcId in spawnPoint.NpcIds)
+                {
+                    if (int.TryParse(npcId, out int id))
+                    {
+                        if (Field.State.Mobs.Values.Where(x => x.Value.Id == id).Count() != 0)
+                        {
+                            Console.WriteLine("Monster is NOT dead");
+                            return false;
+                        }
+                    }
+                }
+
+            }
+            Console.WriteLine("Monster is dead");
+            return true;
         }
 
         public bool MonsterInCombat(int[] arg1)
@@ -109,11 +133,13 @@ namespace MapleServer2.Triggers
 
         public bool RandomCondition(float arg1, string desc)
         {
-            return false;
+            Console.WriteLine("Checking Random Condition");
+            return true;
         }
 
         public bool TimeExpired(string id)
         {
+            Console.WriteLine("Checking TimeExpired");
             MapTimer timer = Field.GetMapTimer(id);
             if (timer == null)
             {
@@ -132,39 +158,39 @@ namespace MapleServer2.Triggers
 
         public bool UserDetected(int[] boxIds, byte jobId)
         {
-            //List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            //foreach (int boxId in boxIds)
-            //{
-            //    MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-            //    if (box == null)
-            //    {
-            //        return false;
-            //    }
-            //    float x = box.Position.X - box.Dimension.X;
-            //    Console.WriteLine($"Dimensions: {box.Dimension}");
-            //    CoordF minCoord = CoordF.From(
-            //        box.Position.X - box.Dimension.X,
-            //        box.Position.Y - box.Dimension.Y,
-            //        box.Position.Z - box.Dimension.Z);
-            //    CoordF maxCoord = CoordF.From(
-            //        box.Position.X + box.Dimension.X,
-            //        box.Position.Y + box.Dimension.Y,
-            //        box.Position.Z + box.Dimension.Z);
-            //    foreach (IFieldObject<Player> player in players)
-            //    {
-            //        bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
-            //        bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
-            //        if (min && max)
-            //        {
-            //            Console.WriteLine("Player detected");
-            //            return true;
-            //        }
-            //        Console.WriteLine($"Box Coord: {box.Position}, MinCoord: {minCoord}, MaxCoord: {maxCoord}");
-            //    }
-            //}
-            //Console.WriteLine("NO Player detected");
-            //return false;
-            return true;
+            Job job = (Job) jobId;
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            if (job != Job.None)
+            {
+                players = players.Where(x => x.Value.Job == job).ToList();
+            }
+            foreach (int boxId in boxIds)
+            {
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                if (box == null)
+                {
+                    return false;
+                }
+
+                CoordF minCoord = CoordF.From(
+                    box.Position.X - box.Dimension.X,
+                    box.Position.Y - box.Dimension.Y,
+                    box.Position.Z - box.Dimension.Z);
+                CoordF maxCoord = CoordF.From(
+                    box.Position.X + box.Dimension.X,
+                    box.Position.Y + box.Dimension.Y,
+                    box.Position.Z + box.Dimension.Z);
+                foreach (IFieldObject<Player> player in players)
+                {
+                    bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
+                    bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+                    if (min && max)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public bool WaitAndResetTick(int waitTick)
@@ -196,7 +222,7 @@ namespace MapleServer2.Triggers
         public bool WidgetCondition(WidgetType type, string name, string arg3)
         {
             string debug = $"Widget Type: {type}, State Name: {name}, Arg3: {arg3}";
-            Field.BroadcastPacket(NoticePacket.Notice(debug, Enums.NoticeType.Chat));
+            Field.BroadcastPacket(NoticePacket.Notice(debug, NoticeType.Chat));
             List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
             foreach (IFieldObject<Player> player in players)
             {
@@ -206,7 +232,8 @@ namespace MapleServer2.Triggers
                 {
                     continue;
                 }
-                Console.WriteLine($"{widget.State}");
+                widget.State = name;
+                Console.WriteLine("Widget condition true");
                 return widget.State == name;
 
             }
