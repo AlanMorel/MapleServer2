@@ -61,7 +61,7 @@ namespace MapleServer2.Types
 
         public Home() { }
 
-        public Home(long accountId, string houseName, string homeTemplate)
+        public Home(long accountId, string houseName, int homeTemplate)
         {
             AccountId = accountId;
             Name = houseName;
@@ -74,12 +74,12 @@ namespace MapleServer2.Types
             Permissions = new Dictionary<HomePermission, byte>();
             Layouts = new List<HomeLayout>();
 
-            SetTemplate(homeTemplate);
+            SetTemplate(homeTemplate + 1); // the Templates ids in the XMLs are from 1-3 and the client request 0-2
 
             Id = DatabaseManager.CreateHouse(this);
         }
 
-        private void SetTemplate(string homeTemplate)
+        private void SetTemplate(int homeTemplate)
         {
             HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate(homeTemplate.ToString());
             if (templateMetadata == null)

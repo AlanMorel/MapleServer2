@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MapleServer2.Database;
 using MapleServer2.Types;
@@ -20,7 +21,11 @@ namespace MapleServer2.Tools
             SaveLoop();
         }
 
-        public void AddHome(Home home) => HomeList[home.Id] = home;
+        public void AddHome(Home home)
+        {
+            home.InstanceId = IncrementCounter();
+            HomeList[home.Id] = home;
+        }
 
         public void RemoveHome(Home home) => HomeList.Remove(home.Id, out _);
 
@@ -32,9 +37,8 @@ namespace MapleServer2.Tools
                 home = DatabaseManager.GetHome(id);
                 if (home != null)
                 {
-                    home.InstanceId = InstanceCounter;
+                    home.InstanceId = IncrementCounter();
                     AddHome(home);
-                    IncrementCounter();
                 }
             }
             return home;
@@ -47,9 +51,8 @@ namespace MapleServer2.Tools
                 List<Home> homes = DatabaseManager.GetHomesOnMap(mapId);
                 foreach (Home home in homes)
                 {
-                    home.InstanceId = InstanceCounter;
+                    home.InstanceId = IncrementCounter();
                     AddHome(home);
-                    IncrementCounter();
                 }
                 MapIds.Add(mapId);
             }
@@ -72,6 +75,12 @@ namespace MapleServer2.Tools
               });
         }
 
-        private void IncrementCounter() => InstanceCounter += 2;
+        // Each home have two instance id's, one for the home and one for the decor planner.
+        private long IncrementCounter()
+        {
+            Interlocked.Increment(ref InstanceCounter);
+            Interlocked.Increment(ref InstanceCounter);
+            return InstanceCounter;
+        }
     }
 }

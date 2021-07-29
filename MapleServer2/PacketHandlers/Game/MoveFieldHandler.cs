@@ -5,7 +5,6 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -99,14 +98,14 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
 
-            if (srcPortal.Target == 0)
-            {
-                return;
-            }
-
             if (!MapEntityStorage.HasSafePortal(srcMapId)) // map is instance only
             {
                 HandleLeaveInstance(session);
+                return;
+            }
+
+            if (srcPortal.Target == 0)
+            {
                 return;
             }
 
@@ -241,29 +240,6 @@ namespace MapleServer2.PacketHandlers.Game
             home.DecorPlannerSize = home.Size;
             home.DecorPlannerInventory = new Dictionary<long, Cube>();
             player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
-        }
-
-        public static void HandleInstanceMove(GameSession session, int mapId)
-        {
-            // TODO: Revise to include instancing
-
-            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
-            {
-                session.Player.ReturnCoord = session.FieldPlayer.Coord;
-                session.Player.ReturnMapId = session.Player.MapId;
-            }
-
-            MapPortal dstPortal = MapEntityStorage.GetPortals(mapId).First(x => x.Id == 1);
-            if (dstPortal == null)
-            {
-                return;
-            }
-
-            session.Player.MapId = mapId;
-            session.Player.Rotation = dstPortal.Rotation.ToFloat();
-            session.Player.Coord = dstPortal.Coord.ToFloat();
-            DatabaseManager.UpdateCharacter(session.Player);
-            session.Send(FieldPacket.RequestEnter(session.Player));
         }
     }
 }

@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(MountPacket.StopTwoPersonRide(otherPlayer.ObjectId, session.FieldPlayer.ObjectId));
             session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, otherPlayer.Coord, otherPlayer.Rotation));
-
+            session.Player.Mount = null;
             if (otherPlayer.Value.Mount != null)
             {
                 otherPlayer.Value.Mount.Value.Players.Remove(session.FieldPlayer);

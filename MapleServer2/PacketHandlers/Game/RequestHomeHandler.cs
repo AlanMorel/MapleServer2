@@ -61,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate.ToString());
+                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate);
                 GameServer.HomeManager.AddHome(player.Account.Home);
 
                 // Send inventories

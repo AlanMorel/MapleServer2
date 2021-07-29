@@ -823,13 +823,15 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            int fieldId = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
-            if (fieldId == 0)
+            int mapid = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
+            if (mapid == 0)
             {
                 return;
             }
 
-            MoveFieldHandler.HandleInstanceMove(session, fieldId);
+            session.Player.ReturnCoord = session.FieldPlayer.Coord;
+            session.Player.ReturnMapId = session.Player.MapId;
+            session.Player.Warp(mapId: mapid, instanceId: guild.Id);
         }
 
         private static void HandleGuildDonate(GameSession session, PacketReader packet)
