@@ -174,7 +174,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleBuyPlot(GameSession session, PacketReader packet)
         {
             int groupId = packet.ReadInt();
-            int homeTemplate = packet.ReadInt() + 1;
+            int homeTemplate = packet.ReadInt();
             Player player = session.Player;
 
             if (player.Account.Home != null && player.Account.Home.PlotMapId != 0)
@@ -205,7 +205,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (player.Account.Home == null)
             {
-                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate.ToString())
+                player.Account.Home = new Home(player.Account.Id, player.Name, homeTemplate)
                 {
                     PlotMapId = player.MapId,
                     PlotNumber = land.Id,
