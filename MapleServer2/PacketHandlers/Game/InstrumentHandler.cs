@@ -5,8 +5,8 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Instrument = MapleServer2.Types.Instrument;
 using Microsoft.Extensions.Logging;
+using Instrument = MapleServer2.Types.Instrument;
 
 namespace MapleServer2.PacketHandlers.Game
 {
