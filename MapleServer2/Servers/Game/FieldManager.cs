@@ -483,11 +483,6 @@ namespace MapleServer2.Servers.Game
             }
             item = itemResult;
 
-            Broadcast(session =>
-            {
-                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
-                session.Send(FieldPacket.RemoveItem(objectId));
-            });
             return true;
         }
 
