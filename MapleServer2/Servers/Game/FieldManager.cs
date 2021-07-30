@@ -611,19 +611,25 @@ namespace MapleServer2.Servers.Game
         private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
         {
             List<CoordF> spawnPoints = MobSpawn.SelectPoints(mobSpawn.Value.SpawnRadius);
-
+            
             foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
             {
-                int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
+                if (mob.Name == "Constructor Type 13")
                 {
-                    Console.WriteLine($"NOT SPAWNING: mobs count{mobSpawn.Value.Mobs.Count} spawncount{spawnCount} max pop{mobSpawn.Value.MaxPopulation}");
+                    continue;
+                }
+                Console.WriteLine($"monster: {mob.Name}");
+                int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
+               // Console.WriteLine($"groupspawncount {groupSpawnCount} monster: {mob.Name}");
+                if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
+                {
+                  //  Console.WriteLine($"Mob spawn is full: Not spawning Monster: {mob.Name}");
                     break;
                 }
 
-                for (int i = 0; i < spawnCount; i++)
+                for (int i = 0; i < groupSpawnCount; i++)
                 {
-                    Console.WriteLine($"spwn mobs: {mob.Id} max pop {mobSpawn.Value.MaxPopulation} mobs: {mobSpawn.Value.Mobs}");
+                    
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
                     AddMob(fieldMob);

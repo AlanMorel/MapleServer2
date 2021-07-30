@@ -61,12 +61,12 @@ namespace MapleServer2.Types
             HashSet<NpcMetadata> matchedNpcs = new HashSet<NpcMetadata>();
             foreach (string tag in tags)
             {
-                foreach (NpcMetadata data in NpcMetadataStorage.GetNpcsByMainTag(tag))
+                foreach (NpcMetadata mob in NpcMetadataStorage.GetNpcsByMainTag(tag))
                 {
-                    if (data.NpcMetadataBasic.Difficulty >= minDifficulty && data.NpcMetadataBasic.Difficulty <= difficulty)
+                    if (mob.NpcMetadataBasic.Difficulty >= minDifficulty && mob.NpcMetadataBasic.Difficulty <= difficulty)
                     {
-                        Console.WriteLine("found matching tag difficulty");
-                        matchedNpcs.Add(data);
+                        Console.WriteLine($"found mob: {mob.Name} {mob.Id}");
+                        matchedNpcs.Add(mob);
                     }
                 }
             }

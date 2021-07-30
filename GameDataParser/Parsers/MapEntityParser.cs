@@ -243,6 +243,35 @@ namespace GameDataParser.Parsers
                     case IMS2RegionSpawnBase spawnBase:
                         switch (spawnBase)
                         {
+                            case IMS2RegionBoxSpawn boxSpawn:
+                                SpawnMetadata mobSpawnDataBox =
+                                    (SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(boxSpawn.SpawnPointID))
+                                        ? SpawnTagMap[mapId][boxSpawn.SpawnPointID]
+                                        : null; // Do we need this spawn data (?)
+
+                                //if (mobSpawnData != null)
+                                //{
+                                //    foreach (string s in mobSpawnData.Tags)
+                                //    {
+                                //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+                                //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
+                                //    }
+
+                                //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
+                                //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
+                                //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
+                                //}
+
+                                int mobNpcCountBox = mobSpawnDataBox?.Population ?? 6;
+                                int mobSpawnRadiusBox = 150;
+                                // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
+                                // MS2RegionSpawn, it's only set for SpawnPointNPC.
+                                List<int> mobNpcListBox = new List<int>();
+                                mobNpcListBox.Add(21000025); // Placeholder
+                                metadata.MobSpawns.Add(new MapMobSpawn(boxSpawn.SpawnPointID, ToCoordS(boxSpawn.Position),
+                                    mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
+                                // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
+                                break;
                             case IMS2RegionSpawn regionSpawn:
                                 if (mapId == "02000038")
                                 {
@@ -256,21 +285,18 @@ namespace GameDataParser.Parsers
                                         ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
                                         : null; // Do we need this spawn data (?)
 
-                                if (mobSpawnData != null)
-                                {
-                                    //foreach (string s in mobSpawnData.Tags)
-                                    //{
-                                    //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
-                                    //    Console.WriteLine($"{Convert.ToHexString(bytes)}");
-                                    //}
+                                //if (mobSpawnData != null)
+                                //{
+                                //    foreach (string s in mobSpawnData.Tags)
+                                //    {
+                                //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+                                //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
+                                //    }
 
-                                    // Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
-                                    //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
-                                    //Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
-                                }
-
-
-
+                                //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
+                                //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
+                                //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
+                                //}
 
                                 int mobNpcCount = mobSpawnData?.Population ?? 6;
 
@@ -280,9 +306,6 @@ namespace GameDataParser.Parsers
                                 mobNpcList.Add(21000025); // Placeholder
                                 metadata.MobSpawns.Add(new MapMobSpawn(regionSpawn.SpawnPointID, ToCoordS(regionSpawn.Position),
                                     mobNpcCount, mobNpcList, (int) regionSpawn.SpawnRadius, mobSpawnData));
-                                break;
-                            case IMS2RegionBoxSpawn boxSpawn:
-                                // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
                                 break;
                         }
                         break;
