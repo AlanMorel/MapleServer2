@@ -90,9 +90,9 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
                 {
-                    IsVisible = portal.Flags.HasFlag(MapPortalFlag.Visible),
-                    IsEnabled = portal.Flags.HasFlag(MapPortalFlag.Enabled),
-                    IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
+                    IsVisible = portal.IsVisible,
+                    IsEnabled = portal.Enable,
+                    IsMinimapVisible = portal.MinimapVisible,
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
                     PortalType = portal.PortalType

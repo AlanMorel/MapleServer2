@@ -13,12 +13,14 @@ namespace MapleServer2.Packets
             SendTriggers = 0x2,
             SingleTrigger = 0x3,
             Cutscene = 0x4,
+            Camera = 0x5,
             UI = 0x8,
             Timer = 0xE,
         }
 
         public enum TriggerUIMode : byte
         {
+            Guide = 0x1,
             EnableBanner = 0x2,
             DisableBanner = 0x3,
             StartCutscene = 0x4,
@@ -76,6 +78,17 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet SetEffectTrigger(int effectId, bool isVisible)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+            pWriter.WriteInt(effectId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteByte();
+            pWriter.WriteInt(3); //unsure where this 3 is coming from, triggermesh also has it
+            return pWriter;
+        }
+
         public static Packet SetMeshTrigger(int meshId, bool isVisible, float arg5)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
@@ -86,6 +99,15 @@ namespace MapleServer2.Packets
             pWriter.WriteInt((int) arg5);
             pWriter.WriteInt(0);
             pWriter.WriteShort(16256); //constant: 80 3F
+            return pWriter;
+        }
+
+        public static Packet Guide(int eventId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.UI);
+            pWriter.WriteEnum(TriggerUIMode.Guide);
+            pWriter.WriteInt(eventId);
             return pWriter;
         }
 
@@ -116,6 +138,19 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(TriggerPacketMode.UI);
             pWriter.WriteEnum(TriggerUIMode.StopCutscene);
             pWriter.WriteInt(movieId);
+            return pWriter;
+        }
+
+        public static Packet Camera(int[] pathIds, bool returnView)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.Camera);
+            pWriter.WriteByte((byte) pathIds.Length);
+            foreach (int pathId in pathIds)
+            {
+                pWriter.WriteInt(pathId);
+            }
+            pWriter.WriteBool(returnView);
             return pWriter;
         }
 

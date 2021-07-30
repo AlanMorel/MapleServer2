@@ -40,6 +40,9 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerCamera> TriggerCameras;
         [XmlElement(Order = 15)]
         public readonly List<MapTriggerBox> TriggerBoxes;
+        [XmlElement(Order = 16)]
+        [XmlElement(Order = 17)]
+        public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -56,6 +59,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
+            EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -73,6 +77,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
+            EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
         }
 
         public override string ToString() =>
@@ -269,26 +274,34 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public readonly string Name;
         [XmlElement(Order = 3)]
-        public readonly MapPortalFlag Flags;
+        public readonly bool Enable;
         [XmlElement(Order = 4)]
-        public readonly int Target;
+        public readonly bool IsVisible;
         [XmlElement(Order = 5)]
-        public readonly CoordS Coord;
+        public readonly bool MinimapVisible;
         [XmlElement(Order = 6)]
-        public readonly CoordS Rotation;
+        public readonly int Target;
         [XmlElement(Order = 7)]
-        public readonly int TargetPortalId;
+        public readonly CoordS Coord;
         [XmlElement(Order = 8)]
+        public readonly CoordS Rotation;
+        [XmlElement(Order = 9)]
+        public readonly int TargetPortalId;
+        [XmlElement(Order = 10)]
         public readonly byte PortalType;
+        [XmlElement(Order = 11)]
+        public readonly int TriggerId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, MapPortalFlag flags, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType)
+        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType)
         {
             Id = id;
             Name = name;
-            Flags = flags;
+            Enable = enable;
+            IsVisible = isVisible;
+            MinimapVisible = minimapVisible;
             Target = target;
             Coord = coord;
             Rotation = rotation;
@@ -296,19 +309,37 @@ namespace Maple2Storage.Types.Metadata
             PortalType = portalType;
         }
 
+        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType, int triggerId)
+        {
+            Id = id;
+            Name = name;
+            Enable = enable;
+            IsVisible = isVisible;
+            MinimapVisible = minimapVisible;
+            Target = target;
+            Coord = coord;
+            Rotation = rotation;
+            TargetPortalId = targetPortalId;
+            PortalType = portalType;
+            TriggerId = triggerId;
+        }
+
         public override string ToString() =>
-            $"MapPortal(Id:{Id},String:{Name},Flags:{Flags},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType})";
+            $"MapPortal(Id:{Id},String:{Name},Enable:{Enable},IsVisible:{IsVisible},MinimapVisible:{MinimapVisible},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType},TriggerId:{TriggerId})";
 
         protected bool Equals(MapPortal other)
         {
             return Id == other.Id
                    && Name == other.Name
-                   && Flags == other.Flags
+                   && Enable == other.Enable
+                   && IsVisible == other.IsVisible
+                   && MinimapVisible == other.MinimapVisible
                    && Target == other.Target
                    && Coord.Equals(other.Coord)
                    && Rotation.Equals(other.Rotation)
                    && TargetPortalId == other.TargetPortalId
-                   && PortalType == other.PortalType;
+                   && PortalType == other.PortalType
+                   && TriggerId == other.TriggerId;
         }
 
         public override bool Equals(object obj)
@@ -333,7 +364,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, (byte) Flags, Target, Coord, Rotation);
+            return HashCode.Combine(Id, Target, Coord, Rotation);
         }
 
         public static bool operator ==(MapPortal left, MapPortal right)
@@ -474,6 +505,45 @@ namespace Maple2Storage.Types.Metadata
             $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
     }
 
+    [XmlType]
+    [ProtoContract]
+    public class MapEventNpcSpawnPoint
+    {
+        [ProtoMember(1)]
+        [XmlElement(Order = 1)]
+        public int Id;
+        [ProtoMember(2)]
+        [XmlElement(Order = 2)]
+        public uint Count;
+        [ProtoMember(3)]
+        [XmlElement(Order = 3)]
+        public List<string> NpcIds;
+        [ProtoMember(4)]
+        [XmlElement(Order = 4)]
+        public string SpawnAnimation;
+        [ProtoMember(5)]
+        [XmlElement(Order = 5)]
+        public float SpawnRadius;
+        [ProtoMember(6)]
+        [XmlElement(Order = 6)]
+        public CoordF Position;
+        [ProtoMember(7)]
+        [XmlElement(Order = 7)]
+        public CoordF Rotation;
+
+        public MapEventNpcSpawnPoint() { }
+        public MapEventNpcSpawnPoint(int id, uint count, List<string> npcIds, string spawnAnimation, float spawnRadius, CoordF position, CoordF rotation)
+        {
+            Id = id;
+            Count = count;
+            NpcIds = new List<string>(npcIds);
+            SpawnAnimation = spawnAnimation;
+            SpawnRadius = spawnRadius;
+            Position = position;
+            Rotation = rotation;
+        }
+    }
+
     [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
@@ -481,7 +551,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(14, typeof(MapTriggerLadder))]
     public class MapTriggerObject
     {
-        [ProtoMember(1)]
+        [ProtoMember(8)]
         public int Id;
 
         public MapTriggerObject()
@@ -496,7 +566,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerMesh : MapTriggerObject
     {
-        [ProtoMember(2)]
+        [ProtoMember(9)]
         public bool IsVisible;
         public MapTriggerMesh(int id, bool isVisible) : base(id)
         {
@@ -511,7 +581,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerEffect : MapTriggerObject
     {
-        [ProtoMember(3)]
+        [ProtoMember(10)]
         public bool IsVisible;
         public MapTriggerEffect(int id, bool isVisible) : base(id)
         {
@@ -525,7 +595,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerCamera : MapTriggerObject
     {
-        [ProtoMember(4)]
+        [ProtoMember(11)]
         public bool IsEnabled;
         public MapTriggerCamera(int id, bool isEnabled) : base(id)
         {
@@ -539,9 +609,9 @@ namespace Maple2Storage.Types.Metadata
     [ProtoContract]
     public class MapTriggerBox : MapTriggerObject
     {
-        [ProtoMember(5)]
+        [ProtoMember(12)]
         public CoordF Position;
-        [ProtoMember(6)]
+        [ProtoMember(13)]
         public CoordF Dimension;
         public MapTriggerBox(int id, CoordF position, CoordF dimension) : base(id)
         {
@@ -564,14 +634,5 @@ namespace Maple2Storage.Types.Metadata
         private MapTriggerLadder() : base()
         {
         }
-    }
-
-    [Flags]
-    public enum MapPortalFlag : byte
-    {
-        None = 0,
-        Visible = 1,
-        Enabled = 2,
-        MinimapVisible = 4,
     }
 }

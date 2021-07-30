@@ -2,6 +2,7 @@
 using System.Linq;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -35,6 +36,7 @@ namespace MapleServer2.Triggers
 
         public void GuideEvent(int eventId)
         {
+            Field.BroadcastPacket(TriggerPacket.Guide(eventId));
         }
 
         public void HideGuideSummary(int entityId, int textId)
@@ -52,7 +54,8 @@ namespace MapleServer2.Triggers
 
         public void PlaySystemSoundInBox(int[] boxId, string sound)
         {
-            if (boxId.Length == 0)
+            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
+            if (boxId != null)
             {
                 Field.BroadcastPacket(SystemSoundPacket.Play(sound));
                 return;
@@ -71,8 +74,19 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetEventUI(byte arg1, string script, int arg3, string boxId)
+        public void SetEventUI(byte typeId, string script, int duration, string boxId)
         {
+            EventBannerType type = EventBannerType.None;
+            switch (typeId)
+            {
+                case 1:
+                    type = EventBannerType.None;
+                    break;
+            }
+            if (boxId == "0")
+            {
+                Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
+            }
 
         }
 
@@ -100,6 +114,10 @@ namespace MapleServer2.Triggers
 
         public void ShowCaption(CaptionType type, string title, string script, Align align, float offsetRateX, float offsetRateY, int duration, float scale)
         {
+            string captionAlign = align.ToString().Replace(" ", "").Replace(",", "");
+            captionAlign = captionAlign.First().ToString().ToLower() + captionAlign.Substring(1);
+            System.Console.WriteLine(captionAlign);
+            Field.BroadcastPacket(CinematicPacket.Caption(type, title, script, captionAlign, offsetRateX, offsetRateY, duration, scale));
         }
 
         public void ShowEventResult(EventResultType type, string text, int duration, int userTagId, int triggerBoxId, bool isOutSide)
@@ -108,7 +126,7 @@ namespace MapleServer2.Triggers
 
         public void SetCinematicUI(byte type, string script, bool arg3)
         {
-            Field.BroadcastPacket(NoticePacket.Notice($"Setting cinematic UI type: {type}", Enums.NoticeType.Chat));
+            System.Console.WriteLine($"Setting cinematic UI type: {type}");
             switch (type)
             {
 
@@ -145,6 +163,8 @@ namespace MapleServer2.Triggers
 
         public void SetSceneSkip(TriggerState state, string arg2)
         {
+            // TODO: Properly handle the trigger state
+            Field.BroadcastPacket(CinematicPacket.SetSceneSkip(arg2));
         }
 
         public void SetSkip(TriggerState state)
