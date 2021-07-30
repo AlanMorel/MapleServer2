@@ -39,6 +39,12 @@ namespace MapleServer2.Servers.Game
             FieldManager = FieldManagerFactory.GetManager(player.MapId, instanceId: 0);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
+            Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
+            if (party != null)
+            {
+                party.BroadcastPacketParty(PartyPacket.LoginNotice(player), this);
+            }
+
         }
 
         public void EnterField(Player player)
@@ -77,6 +83,11 @@ namespace MapleServer2.Servers.Game
 
         public override void EndSession()
         {
+            if (Player.Party != null)
+            {
+                Player.Party.CheckOffineParty(Player);
+            }
+
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
             // Should we Join the thread to wait for it to complete?

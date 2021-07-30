@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game
 {
     public class PlayerStorage
     {
-        private readonly ConcurrentDictionary<long, Player> IdStorage;
+        private readonly ConcurrentDictionary<long, Player> CharacterId;
         private readonly ConcurrentDictionary<string, Player> NameStorage;
 
         public PlayerStorage()
         {
-            IdStorage = new ConcurrentDictionary<long, Player>();
+            CharacterId = new ConcurrentDictionary<long, Player>();
 
             StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
             NameStorage = new ConcurrentDictionary<string, Player>(ignoreCase);
@@ -20,13 +21,13 @@ namespace MapleServer2.Servers.Game
 
         public void AddPlayer(Player player)
         {
-            IdStorage[player.CharacterId] = player;
+            CharacterId[player.CharacterId] = player;
             NameStorage[player.Name] = player;
         }
 
         public void RemovePlayer(Player player)
         {
-            IdStorage.Remove(player.CharacterId, out _);
+            CharacterId.Remove(player.CharacterId, out _);
             NameStorage.Remove(player.Name, out _);
         }
 
@@ -37,7 +38,13 @@ namespace MapleServer2.Servers.Game
 
         public Player GetPlayerById(long id)
         {
-            return IdStorage.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
+            return CharacterId.TryGetValue(id, out Player foundPlayer) ? foundPlayer : null;
+        }
+
+        public Player GetPlayerByAccountId(long accountId)
+        {
+            Player player = CharacterId.Values.FirstOrDefault(p => p.AccountId == accountId);
+            return player == default ? null : player;
         }
     }
 }

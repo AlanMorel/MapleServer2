@@ -19,7 +19,7 @@ namespace MapleServer2.Tools
                 foreach (Item i in session.Player.Inventory.Items.Values)
                 {
                     // Checks to see if item exists in database (dictionary)
-                    if (i.Id != item.Id || i.Amount >= i.StackLimit)
+                    if (i.Id != item.Id || i.Amount >= i.StackLimit || i.Rarity != item.Rarity)
                     {
                         continue;
                     }

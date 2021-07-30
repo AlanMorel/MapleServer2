@@ -77,7 +77,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleJoin(GameSession session, PacketReader packet)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;

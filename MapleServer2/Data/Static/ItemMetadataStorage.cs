@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -218,6 +219,16 @@ namespace MapleServer2.Data.Static
         public static int GetLevel(int itemId)
         {
             return map.GetValueOrDefault(itemId).Level;
+        }
+
+        public static bool GetIsCubeSolid(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).IsCubeSolid;
+        }
+
+        public static ItemHousingCategory GetHousingCategory(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).HousingCategory;
         }
     }
 }

@@ -9,6 +9,7 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -29,7 +30,7 @@ namespace MapleServer2.Servers.Game
         private int Counter = 10000000;
 
         public readonly int MapId;
-        public readonly int InstanceId;
+        public readonly long InstanceId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
@@ -40,7 +41,7 @@ namespace MapleServer2.Servers.Game
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
 
-        public FieldManager(int mapId, int instanceId)
+        public FieldManager(int mapId, long instanceId)
         {
             MapId = mapId;
             InstanceId = instanceId;
@@ -260,10 +261,41 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InteractObjectPacket.AddInteractObjects(objects));
                 }
             }
-            if (State.Cubes.Values.Count > 0)
+
+            if (State.Cubes.IsEmpty && !player.Value.IsInDecorPlanner)
             {
-                sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
+                if (MapId == (int) Map.PrivateResidence)
+                {
+                    Home home = GameServer.HomeManager.GetHome(player.Value.VisitingHomeId);
+                    if (home != null)
+                    {
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
+                    }
+                }
+                else
+                {
+                    List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
+                    foreach (Home home in homes)
+                    {
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
+                    }
+                }
             }
+
             foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
             {
                 sender.Send(GuideObjectPacket.Add(guide));
@@ -398,15 +430,16 @@ namespace MapleServer2.Servers.Game
             return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
-        public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
+        public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, sendOnlyObjectId: false));
         }
 
-        public bool RemoveCube(IFieldObject<Cube> cube)
+        public void RemoveCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
-            return State.RemoveCube(cube.ObjectId);
+            State.RemoveCube(cube.ObjectId);
+            BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
         }
 
         public void AddInstrument(IFieldObject<Instrument> instrument)
@@ -486,11 +519,6 @@ namespace MapleServer2.Servers.Game
             }
             item = itemResult;
 
-            Broadcast(session =>
-            {
-                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
-                session.Send(FieldPacket.RemoveItem(objectId));
-            });
             return true;
         }
 
