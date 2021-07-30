@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -141,18 +140,14 @@ namespace MapleServer2.Triggers
 
         public bool TimeExpired(string id)
         {
-            Console.WriteLine("Checking TimeExpired");
             MapTimer timer = Field.GetMapTimer(id);
             if (timer == null)
             {
-                Console.WriteLine("No timer found");
                 return false;
             }
 
-            System.Console.WriteLine($"TimerID: {timer.Id}, CurrentTick: {Environment.TickCount}, EndTick of Timer: {timer.EndTick}");
             if (timer.EndTick < Environment.TickCount)
             {
-                Console.WriteLine($"{timer.Id}: EndTick is less than TickCount");
                 return true;
             }
             return false;
@@ -234,7 +229,6 @@ namespace MapleServer2.Triggers
                 {
                     continue;
                 }
-                widget.State = name;
                 Console.WriteLine("Widget condition true");
                 return widget.State == name;
 
