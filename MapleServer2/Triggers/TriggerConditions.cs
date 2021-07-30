@@ -131,10 +131,12 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool RandomCondition(float arg1, string desc)
+        public bool RandomCondition(float proc, string desc)
         {
-            Console.WriteLine("Checking Random Condition");
-            return true;
+            Random random = new Random();
+            float result = (float) random.NextDouble();
+            result *= 100;
+            return result <= proc;
         }
 
         public bool TimeExpired(string id)
