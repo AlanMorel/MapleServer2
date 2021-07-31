@@ -2,8 +2,11 @@
 using System.Linq;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -52,13 +55,23 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void PlaySystemSoundInBox(int[] boxId, string sound)
+        public void PlaySystemSoundInBox(int[] boxIds, string sound)
         {
             Field.BroadcastPacket(SystemSoundPacket.Play(sound));
-            if (boxId != null)
+            if (boxIds != null)
             {
-                Field.BroadcastPacket(SystemSoundPacket.Play(sound));
-                return;
+                foreach (int boxId in boxIds)
+                {
+                    MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+
+                    foreach (IFieldObject<Player> player in Field.State.Players.Values)
+                    {
+                        if (FieldManager.IsPlayerInBox(box, player))
+                        {
+                            player.Value.Session.Send(SystemSoundPacket.Play(sound));
+                        }
+                    }
+                }
             }
         }
 
@@ -74,7 +87,7 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetEventUI(byte typeId, string script, int duration, string boxId)
+        public void SetEventUI(byte typeId, string script, int duration, string box)
         {
             EventBannerType type = EventBannerType.None;
             switch (typeId)
@@ -82,12 +95,57 @@ namespace MapleServer2.Triggers
                 case 1:
                     type = EventBannerType.None;
                     break;
-            }
-            if (boxId == "0")
-            {
-                Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
+                case 6:
+                    type = EventBannerType.Bonus;
+                    break;
             }
 
+            if (box == "0")
+            {
+                Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
+                return;
+            }
+
+            if (box.Contains("!"))
+            {
+                box = box[1..];
+                int boxId = int.Parse(box);
+
+                List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+                MapTriggerBox triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+
+                foreach (IFieldObject<Player> player in players)
+                {
+                    if (FieldManager.IsPlayerInBox(triggerBox, player))
+                    {
+                        players.Remove(player);
+                    }
+                }
+                foreach (IFieldObject<Player> player in players)
+                {
+                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
+                }
+
+                return;
+            }
+            else
+            {
+                int boxId = int.Parse(box);
+                List<IFieldObject<Player>> players = new List<IFieldObject<Player>>();
+                MapTriggerBox triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+
+                foreach (IFieldObject<Player> player in Field.State.Players.Values)
+                {
+                    if (FieldManager.IsPlayerInBox(triggerBox, player))
+                    {
+                        players.Add(player);
+                    }
+                }
+                foreach (IFieldObject<Player> player in players)
+                {
+                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
+                }
+            }
         }
 
         public void SetVisibleUI(string uiName, bool visible)
@@ -115,7 +173,7 @@ namespace MapleServer2.Triggers
         public void ShowCaption(CaptionType type, string title, string script, Align align, float offsetRateX, float offsetRateY, int duration, float scale)
         {
             string captionAlign = align.ToString().Replace(" ", "").Replace(",", "");
-            captionAlign = captionAlign.First().ToString().ToLower() + captionAlign.Substring(1);
+            captionAlign = captionAlign.First().ToString().ToLower() + captionAlign[1..];
             System.Console.WriteLine(captionAlign);
             Field.BroadcastPacket(CinematicPacket.Caption(type, title, script, captionAlign, offsetRateX, offsetRateY, duration, scale));
         }
@@ -126,7 +184,6 @@ namespace MapleServer2.Triggers
 
         public void SetCinematicUI(byte type, string script, bool arg3)
         {
-            System.Console.WriteLine($"Setting cinematic UI type: {type}");
             switch (type)
             {
 
@@ -140,7 +197,6 @@ namespace MapleServer2.Triggers
                 case 4:
                     Field.BroadcastPacket(CinematicPacket.View(type));
                     break;
-
             }
         }
 

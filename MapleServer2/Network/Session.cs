@@ -278,8 +278,8 @@ namespace MapleServer2.Network
                 case SendOp.EMOTION:
                 case SendOp.CHARACTER_LIST:
                 case SendOp.ITEM_INVENTORY:
-                //   case SendOp.FIELD_ADD_NPC:
-                //   case SendOp.FIELD_PORTAL:
+                case SendOp.FIELD_ADD_NPC:
+                case SendOp.FIELD_PORTAL:
                 case SendOp.NPC_CONTROL:
                 case SendOp.RIDE_SYNC:
                 case SendOp.PROXY_GAME_OBJ:
@@ -289,7 +289,7 @@ namespace MapleServer2.Network
                 case SendOp.QUEST:
                 case SendOp.STORAGE_INVENTORY:
                 case SendOp.TROPHY:
-                    //   case SendOp.INTERACT_OBJECT:
+                case SendOp.INTERACT_OBJECT:
                     break;
                 default:
                     string packetString = packet.ToHexString(' ');

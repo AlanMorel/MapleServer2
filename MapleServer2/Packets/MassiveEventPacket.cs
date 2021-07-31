@@ -41,7 +41,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
             pWriter.WriteEnum(MassiveEventPacketMode.TextBanner);
-            pWriter.WriteEnum(type); // 00 = LOSE, 01 = GAMEOVER, 02 = WINNER, 03 = BONUS, 04 = DRAW, 05 = SUCCESS, 06 = (NONE), 07 = FAIL
+            pWriter.WriteEnum(type);
             pWriter.WriteUnicodeString(script);
             pWriter.WriteInt(duration);
             return pWriter;
