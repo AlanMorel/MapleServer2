@@ -18,17 +18,17 @@ namespace MapleServer2.Triggers
 
         public void Next()
         {
-            //if (Environment.TickCount < Context.NextTick)
-            //{
-            //    return;
-            //}
+            if (Environment.TickCount < Context.NextTick)
+            {
+                return;
+            }
 
-            //Context.NextTick = Environment.TickCount + 200; // Wait 200ms between execution
+            Context.NextTick = Environment.TickCount + 200; // Wait 200ms between execution
 
             if (NextState != null)
             {
                 State?.OnExit();
-                Context.NextTick = 0; //ADDED
+                Context.NextTick = 0;
                 State = NextState;
                 State.OnEnter();
                 NextState = null;

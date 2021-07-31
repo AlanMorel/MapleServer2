@@ -65,7 +65,6 @@ namespace MapleServer2.Types
                 {
                     if (mob.NpcMetadataBasic.Difficulty >= minDifficulty && mob.NpcMetadataBasic.Difficulty <= difficulty)
                     {
-                        Console.WriteLine($"found mob: {mob.Name} {mob.Id}");
                         matchedNpcs.Add(mob);
                     }
                 }
