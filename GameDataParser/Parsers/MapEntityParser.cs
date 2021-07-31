@@ -92,10 +92,6 @@ namespace GameDataParser.Parsers
                         SpawnTagMap[mapID] = new Dictionary<int, SpawnMetadata>();
                     }
 
-                    if (mapID == "02000038")
-                    {
-                        Console.WriteLine($"id: {spawnPointID}");
-                    }
                     SpawnTagMap[mapID][spawnPointID] = spawnData;
                 }
             }
@@ -222,13 +218,6 @@ namespace GameDataParser.Parsers
                                     new MapPlayerSpawn(ToCoordS(pcSpawn.Position), ToCoordS(pcSpawn.Rotation)));
                                 break;
                             case ISpawnPointNPC npcSpawn:
-                                if (mapId == "02000038")
-                                {
-                                    Console.WriteLine($"spawnpointID : {npcSpawn.SpawnPointID}, radius: {npcSpawn.SpawnRadius}");
-                                    bool b1 = SpawnTagMap.ContainsKey(mapId);
-                                    bool b2 = SpawnTagMap[mapId].ContainsKey(npcSpawn.SpawnPointID);
-                                    Console.WriteLine($"contains map {b1}, contains spawnpoint id: {npcSpawn.SpawnPointID} {b2}");
-                                }
                                 // These tend to be vendors, shops, etc.
                                 // If the name tag begins with SpawnPointNPC, I think these are mob spawn locations. Skipping these.
                                 string npcIdStr = npcSpawn.NpcList.FirstOrDefault().Key ?? "0";
@@ -255,20 +244,7 @@ namespace GameDataParser.Parsers
                                 SpawnMetadata mobSpawnDataBox =
                                     (SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(boxSpawn.SpawnPointID))
                                         ? SpawnTagMap[mapId][boxSpawn.SpawnPointID]
-                                        : null; // Do we need this spawn data (?)
-
-                                //if (mobSpawnData != null)
-                                //{
-                                //    foreach (string s in mobSpawnData.Tags)
-                                //    {
-                                //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
-                                //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
-                                //    }
-
-                                //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
-                                //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
-                                //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
-                                //}
+                                        : null;
 
                                 int mobNpcCountBox = mobSpawnDataBox?.Population ?? 6;
                                 int mobSpawnRadiusBox = 150;
@@ -291,20 +267,7 @@ namespace GameDataParser.Parsers
                                 SpawnMetadata mobSpawnData =
                                     (SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID))
                                         ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
-                                        : null; // Do we need this spawn data (?)
-
-                                //if (mobSpawnData != null)
-                                //{
-                                //    foreach (string s in mobSpawnData.Tags)
-                                //    {
-                                //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
-                                //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
-                                //    }
-
-                                //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
-                                //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
-                                //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
-                                //}
+                                        : null;
 
                                 int mobNpcCount = mobSpawnData?.Population ?? 6;
 
@@ -342,12 +305,15 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerBox triggerBox:
                                 metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position), CoordF.FromVector3(triggerBox.ShapeDimensions)));
                                 break;
-                            case IMS2TriggerLadder triggerLadder:
-                                // metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder));
-                                break;
+                            //case IMS2TriggerLadder triggerLadder: //the packet uses int id, bool, bool, constant int: 3. The two bools are always both 0 or 1, not sure where they are coming from.
+                            //    metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder.TriggerObjectID));
+                            //    break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
                                     triggerPortal.TargetFieldSN, ToCoordS(triggerPortal.Position), ToCoordS(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
+                                break;
+                            case IMS2TriggerActor triggerActor:
+                                metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
                                 break;
                         }
                         break;
@@ -374,7 +340,19 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                          //  Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
+                            //  Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
+                            //if (mobSpawnData != null)
+                            //{
+                            //    foreach (string s in mobSpawnData.Tags)
+                            //    {
+                            //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+                            //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
+                            //    }
+
+                            //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
+                            //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
+                            //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
+                            //}
                         }
                         catch (OverflowException ex)
                         {

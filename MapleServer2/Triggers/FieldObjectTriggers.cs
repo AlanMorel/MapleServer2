@@ -6,8 +6,11 @@ namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
-        public void SetActor(int arg1, bool arg2, string arg3, bool arg4, bool arg5)
+        public void SetActor(int actorId, bool isVisible, string stateName, bool arg4, bool arg5)
         {
+            Field.State.TriggerActors[actorId].IsVisible = isVisible;
+            Field.State.TriggerActors[actorId].StateName = stateName;
+            Field.BroadcastPacket(TriggerPacket.SetActorTrigger(actorId, isVisible, stateName));
         }
 
         public void SetAgent(int[] arg1, bool arg2)
@@ -26,17 +29,19 @@ namespace MapleServer2.Triggers
             }
         }
 
-        public void SetInteractObject(int[] interactObjectIds, byte active, bool arg4, bool arg3)
+        public void SetInteractObject(int[] interactObjectIds, byte state, bool arg4, bool arg3)
         {
+            //This should be correct, but the current way of parsing interactObjects does not comply with triggerScripts. Needs changing.
             foreach (int interactObjectId in interactObjectIds)
             {
-                //Field.State.InteractObjects[interactObject] = interactObject.
-                //       Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+                //Field.State.InteractObjects[interactObjectId].Id = state
+                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
             }
         }
 
-        public void SetLadder(int arg1, bool arg2, bool arg3, byte arg4)
+        public void SetLadder(int ladderId, bool arg2, bool arg3, byte arg4)
         {
+            //Field.BroadcastPacket(TriggerPacket.SetLadderTrigger(arg1, arg2, arg3))
         }
 
         public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)

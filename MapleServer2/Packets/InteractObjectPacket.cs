@@ -28,6 +28,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
             pWriter.WriteEnum(InteractObjectMode.Activate);
+            pWriter.WriteInt(interactObjectId);
             pWriter.WriteEnum(InteractStatus.Enabled);
             return pWriter;
         }

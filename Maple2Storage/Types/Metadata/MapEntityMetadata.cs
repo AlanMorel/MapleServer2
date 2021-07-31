@@ -40,9 +40,12 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerCamera> TriggerCameras;
         [XmlElement(Order = 15)]
         public readonly List<MapTriggerBox> TriggerBoxes;
-        [XmlElement(Order = 16)]
+        //[XmlElement(Order = 16)]
+        //public readonly List<MapTriggerLadder> TriggerLadders;
         [XmlElement(Order = 17)]
         public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
+        [XmlElement(Order = 18)]
+        public readonly List<MapTriggerActor> TriggerActors;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -59,7 +62,9 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
+            //TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
+            TriggerActors = new List<MapTriggerActor>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -77,7 +82,9 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
+            //TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
+            TriggerActors = new List<MapTriggerActor>();
         }
 
         public override string ToString() =>
@@ -548,7 +555,8 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
     [ProtoInclude(13, typeof(MapTriggerBox))]
-    [ProtoInclude(14, typeof(MapTriggerLadder))]
+   // [ProtoInclude(14, typeof(MapTriggerLadder))]
+    [ProtoInclude(15, typeof(MapTriggerActor))]
     public class MapTriggerObject
     {
         [ProtoMember(8)]
@@ -623,15 +631,37 @@ namespace Maple2Storage.Types.Metadata
         }
     }
 
+    //[ProtoContract]
+    //public class MapTriggerLadder : MapTriggerObject
+    //{
+    //    [ProtoMember(14)]
+    //    public bool IsEnabled;
+    //    [ProtoMember(1337)]
+    //    public bool Unknown;
+    //    [ProtoMember(6077)]
+    //    public bool Unknown;
+
+    //    public MapTriggerLadder(int id, bool isEnabled) : base(id)
+    //    {
+    //    }
+    //    private MapTriggerLadder() : base()
+    //    {
+    //    }
+    //}
+
     [ProtoContract]
-    public class MapTriggerLadder : MapTriggerObject
+    public class MapTriggerActor : MapTriggerObject
     {
-        //[ProtoMember(7)]
-        //public bool IsEnabled;
-        public MapTriggerLadder(int id, bool isEnabled) : base(id)
+        [ProtoMember(15)]
+        public bool IsVisible;
+        [ProtoMember(16)]
+        public string InitialSequence;
+        public MapTriggerActor(int id, bool isVisible, string initialSequence) : base(id)
         {
+            IsVisible = isVisible;
+            InitialSequence = initialSequence;
         }
-        private MapTriggerLadder() : base()
+        private MapTriggerActor() : base()
         {
         }
     }

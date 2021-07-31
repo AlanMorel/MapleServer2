@@ -14,6 +14,7 @@ namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
+        private static int WaitTickTimeFirst;
         public bool BonusGameRewardDetected(byte arg1)
         {
             return false;
@@ -200,7 +201,18 @@ namespace MapleServer2.Triggers
 
         public bool WaitTick(int waitTick)
         {
-            NextTick += waitTick;
+            if (NextTick == 0)
+            {
+                NextTick = Environment.TickCount + waitTick;
+                return false;
+            }
+
+            if (NextTick > Environment.TickCount)
+            {
+                return false;
+            }
+
+            NextTick = 0;
             return true;
         }
 

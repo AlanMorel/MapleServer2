@@ -136,6 +136,15 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
+            foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(mapId))
+            {
+                if (mapTriggerActor != null)
+                {
+                    TriggerActor triggerActor = new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence);
+                    State.AddTriggerObject(triggerActor);
+                }
+            }
+
             foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
             {
                 if (mapTriggerCamera != null)
@@ -286,6 +295,7 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
             triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
+            triggerObjects.AddRange(State.TriggerActors.Values.ToList());
             sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
@@ -629,7 +639,6 @@ namespace MapleServer2.Servers.Game
 
                 for (int i = 0; i < groupSpawnCount; i++)
                 {
-                    
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
                     AddMob(fieldMob);
