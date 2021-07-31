@@ -218,13 +218,16 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public MapNpc() { }
 
-        public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation)
+        public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation, bool isSpawnOnFieldCreate, bool isDayDie, bool isNightDie)
         {
             Id = id;
             ModelName = modelName;
             InstanceName = instanceName;
             Coord = coord;
             Rotation = rotation;
+            IsSpawnOnFieldCreate = isSpawnOnFieldCreate;
+            IsDayDie = isDayDie;
+            IsNightDie = isNightDie;
         }
 
         public override string ToString() =>

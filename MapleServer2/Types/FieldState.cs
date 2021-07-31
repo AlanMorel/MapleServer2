@@ -175,7 +175,6 @@ namespace MapleServer2.Types
                 case TriggerActor triggerActor:
                     TriggerActors[triggerActor.Id] = triggerActor;
                     break;
-
             }
         }
     }

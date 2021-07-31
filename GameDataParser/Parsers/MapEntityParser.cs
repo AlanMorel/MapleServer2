@@ -226,11 +226,8 @@ namespace GameDataParser.Parsers
                                 }
 
                                 MapNpc npc = new MapNpc(npcId, npcSpawn.ModelName, npcSpawn.EntityName, ToCoordS(npcSpawn.Position),
-                                    ToCoordS(npcSpawn.Rotation));
+                                    ToCoordS(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
                                 // Parse some additional flat supplemented data about this NPC.
-                                npc.IsSpawnOnFieldCreate = npcSpawn.IsSpawnOnFieldCreate;
-                                npc.IsDayDie = npcSpawn.dayDie;
-                                npc.IsNightDie = npcSpawn.nightDie;
 
                                 metadata.Npcs.Add(npc);
                                 break;
@@ -256,13 +253,6 @@ namespace GameDataParser.Parsers
                                 // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
                                 break;
                             case IMS2RegionSpawn regionSpawn:
-                                if (mapId == "02000038")
-                                {
-                                    Console.WriteLine($"spawnpointID : {regionSpawn.SpawnPointID}, radius: {regionSpawn.SpawnRadius}");
-                                    bool b1 = SpawnTagMap.ContainsKey(mapId);
-                                    bool b2 = SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID);
-                                    Console.WriteLine($"contains map {b1}, contains spawnpoint id: {regionSpawn.SpawnPointID} {b2}");
-                                }
                                 SpawnMetadata mobSpawnData =
                                     (SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID))
                                         ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
@@ -344,10 +334,11 @@ namespace GameDataParser.Parsers
                             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
                             Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
-
                         catch (OverflowException ex)
                         {
                             Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
+                            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
+                            Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
                         break;
                 }
