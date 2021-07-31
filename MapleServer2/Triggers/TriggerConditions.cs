@@ -138,7 +138,7 @@ namespace MapleServer2.Triggers
         public bool TimeExpired(string id)
         {
             MapTimer timer = Field.GetMapTimer(id);
-            if (timer == null && timer.EndTick > Environment.TickCount)
+            if (timer == null || timer.EndTick >= Environment.TickCount)
             {
                 return false;
             }
