@@ -478,6 +478,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
     [ProtoInclude(13, typeof(MapTriggerBox))]
+    [ProtoInclude(14, typeof(MapTriggerLadder))]
     public class MapTriggerObject
     {
         [ProtoMember(1)]
@@ -521,7 +522,6 @@ namespace Maple2Storage.Types.Metadata
         }
     }
 
-    [XmlType]
     [ProtoContract]
     public class MapTriggerCamera : MapTriggerObject
     {
@@ -541,6 +541,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(5)]
         public CoordF Position;
+        [ProtoMember(6)]
         public CoordF Dimension;
         public MapTriggerBox(int id, CoordF position, CoordF dimension) : base(id)
         {
@@ -548,6 +549,19 @@ namespace Maple2Storage.Types.Metadata
             Dimension = dimension;
         }
         private MapTriggerBox() : base()
+        {
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerLadder : MapTriggerObject
+    {
+        //[ProtoMember(7)]
+        //public bool IsEnabled;
+        public MapTriggerLadder(int id, bool isEnabled) : base(id)
+        {
+        }
+        private MapTriggerLadder() : base()
         {
         }
     }

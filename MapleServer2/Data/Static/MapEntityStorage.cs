@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Maple2Storage.Tools;
@@ -133,6 +134,10 @@ namespace MapleServer2.Data.Static
         public static MapTriggerBox GetTriggerBox(int mapId, int boxId)
         {
             return TriggerBoxes.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == boxId);
+        }
+        public static List<MapTriggerBox> GetTriggerBoxes(int mapId)
+        {
+            return TriggerBoxes.GetValueOrDefault(mapId);
         }
     }
 }
