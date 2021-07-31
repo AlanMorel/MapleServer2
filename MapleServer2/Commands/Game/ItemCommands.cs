@@ -35,9 +35,6 @@ namespace MapleServer2.Commands.Game
 
             Item item = new Item(itemId)
             {
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
-                PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
                 Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
                 Amount = amount >= 0 ? amount : 1
             };
