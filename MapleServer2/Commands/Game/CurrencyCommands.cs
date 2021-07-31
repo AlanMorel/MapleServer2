@@ -1,4 +1,7 @@
 ﻿using MapleServer2.Commands.Core;
+using MapleServer2.Enums;
+using MapleServer2.Packets;
+using System.Drawing;
 
 namespace MapleServer2.Commands.Game
 {
@@ -20,6 +23,18 @@ namespace MapleServer2.Commands.Game
             string currencyName = trigger.Get<string>("name");
             long amount = trigger.Get<long>("amount");
 
+            if (string.IsNullOrEmpty(currencyName))
+            {
+                trigger.Session.SendNotice("No currency type were found. Try one of the list.");
+                trigger.Session.Send(NoticePacket.Notice(CommandHelpers.Color("valor, treva, rue, havi, meso, meret", Color.DarkOrange), NoticeType.Chat));
+                return;
+            }
+            if (amount <= 0)
+            {
+                trigger.Session.SendNotice("Amount must be more than 0 to add.");
+                return;
+            }
+
             switch (currencyName)
             {
                 case "valor":
@@ -39,9 +54,6 @@ namespace MapleServer2.Commands.Game
                     break;
                 case "meret":
                     trigger.Session.Player.Wallet.Meret.SetAmount(amount);
-                    break;
-                default:
-                    trigger.Session.SendNotice("No currency type were found. Try again.");
                     break;
             }
         }

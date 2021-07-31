@@ -24,7 +24,7 @@ namespace MapleServer2.Commands.Core
         {
             if (CommandsParametersByName.ContainsKey(name))
             {
-                return CommandsParametersByName[name].DefaultValue != null ? (T) CommandsParametersByName[name].DefaultValue : (T) new object();
+                return (T) CommandsParametersByName[name].DefaultValue;
             }
             Logger.Error("{0} is not an existing parameter.", name);
             return default;

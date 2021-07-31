@@ -24,8 +24,8 @@ namespace MapleServer2.Commands.Game
         public override void Execute(GameCommandTrigger trigger)
         {
             int itemId = trigger.Get<int>("id");
-            int rarity = trigger.Get<int>("rarity") != 0 ? trigger.Get<int>("rarity") : 1;
-            int amount = trigger.Get<int>("amount") != 0 ? trigger.Get<int>("amount") : 1;
+            int rarity = trigger.Get<int>("rarity");
+            int amount = trigger.Get<int>("amount");
 
             if (!ItemMetadataStorage.IsValid(itemId))
             {
@@ -38,8 +38,8 @@ namespace MapleServer2.Commands.Game
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TransferFlag = TransferFlag.Splitable | TransferFlag.Tradeable,
                 PlayCount = itemId.ToString().StartsWith("35") ? 10 : 0,
-                Rarity = rarity,
-                Amount = amount
+                Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
+                Amount = amount >= 0 ? amount : 1
             };
             item.Stats = new ItemStats(item);
 

@@ -30,6 +30,12 @@ namespace MapleServer2.Commands.Game
                 return;
             }
             int guildExp = trigger.Get<int>("exp");
+
+            if (guildExp <= 0)
+            {
+                trigger.Session.SendNotice("Amount must be more than 0 to add.");
+                return;
+            }
             guild.Exp = guildExp;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
             GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
@@ -59,6 +65,12 @@ namespace MapleServer2.Commands.Game
                 return;
             }
             int guildFunds = trigger.Get<int>("amount");
+
+            if (guildFunds <= 0)
+            {
+                trigger.Session.SendNotice("Amount must be more than 0 to add.");
+                return;
+            }
             guild.Funds = guildFunds;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
             DatabaseManager.Update(guild);

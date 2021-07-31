@@ -5,6 +5,7 @@ using MapleServer2.Commands.Core;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using MapleServer2.Enums;
+using System.Drawing;
 
 namespace MapleServer2.Commands.Game
 {
@@ -13,7 +14,7 @@ namespace MapleServer2.Commands.Game
         public InfoCommands()
         {
             Aliases = new[]
-{
+            {
                 "commands"
             };
             Description = "Give informations about all commands";
@@ -28,13 +29,13 @@ namespace MapleServer2.Commands.Game
             {
                 foreach (string alias in command.Aliases)
                 {
-                    stringBuilder.Append($"<font color='#d68a11'>/{alias}</font>");
+                    stringBuilder.Append(CommandHelpers.Color(CommandHelpers.Bold(alias), Color.DarkOrange));
                 }
 
-                stringBuilder.Append($"<font color='#ffefad'> {command.Description}</font>\n");
+                stringBuilder.Append($"{CommandHelpers.Color(command.Description, Color.Wheat)}\n");
                 foreach (IParameter param in command.Parameters)
                 {
-                    stringBuilder.Append($"<font color='#93f5eb'> - {param.Name}</font> <font color='#ffefad'>{param.Description}</font>\n");
+                    stringBuilder.Append($" - {CommandHelpers.Color(param.Name, Color.Aquamarine)} {CommandHelpers.Color(param.Description, Color.Wheat)}\n");
                 }
             }
             trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
@@ -62,7 +63,7 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice("No message provided.");
                 return;
             }
-            string message = CommandHelpers.BuildString(args);
+            string message = CommandHelpers.BuildString(args, trigger.Session.Player.Name);
             MapleServer.BroadcastPacketAll(NoticePacket.Notice(message));
         }
     }
