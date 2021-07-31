@@ -276,9 +276,6 @@ namespace GameDataParser.Parsers
                                 }
                                 metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, position, shapeDimensions));
                                 break;
-                            case IMS2TriggerLadder triggerLadder:
-                               // metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder));
-                                break;
                         }
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic

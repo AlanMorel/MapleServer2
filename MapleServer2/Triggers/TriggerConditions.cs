@@ -24,7 +24,7 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
-            return !Field.State.Players.IsEmpty;
+            return Field.State.Players.IsEmpty;
         }
 
         public bool CheckNpcAdditionalEffect(int spawnPointId, int additionalEffectId, byte level)
@@ -132,39 +132,38 @@ namespace MapleServer2.Triggers
 
         public bool UserDetected(int[] boxIds, byte jobId)
         {
-            //List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            //foreach (int boxId in boxIds)
-            //{
-            //    MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-            //    if (box == null)
-            //    {
-            //        return false;
-            //    }
-            //    float x = box.Position.X - box.Dimension.X;
-            //    Console.WriteLine($"Dimensions: {box.Dimension}");
-            //    CoordF minCoord = CoordF.From(
-            //        box.Position.X - box.Dimension.X,
-            //        box.Position.Y - box.Dimension.Y,
-            //        box.Position.Z - box.Dimension.Z);
-            //    CoordF maxCoord = CoordF.From(
-            //        box.Position.X + box.Dimension.X,
-            //        box.Position.Y + box.Dimension.Y,
-            //        box.Position.Z + box.Dimension.Z);
-            //    foreach (IFieldObject<Player> player in players)
-            //    {
-            //        bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
-            //        bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
-            //        if (min && max)
-            //        {
-            //            Console.WriteLine("Player detected");
-            //            return true;
-            //        }
-            //        Console.WriteLine($"Box Coord: {box.Position}, MinCoord: {minCoord}, MaxCoord: {maxCoord}");
-            //    }
-            //}
-            //Console.WriteLine("NO Player detected");
-            //return false;
-            return true;
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (int boxId in boxIds)
+            {
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                if (box == null)
+                {
+                    return false;
+                }
+                float x = box.Position.X - box.Dimension.X;
+                Console.WriteLine($"Dimensions: {box.Dimension}");
+                CoordF minCoord = CoordF.From(
+                    box.Position.X - box.Dimension.X,
+                    box.Position.Y - box.Dimension.Y,
+                    box.Position.Z - box.Dimension.Z);
+                CoordF maxCoord = CoordF.From(
+                    box.Position.X + box.Dimension.X,
+                    box.Position.Y + box.Dimension.Y,
+                    box.Position.Z + box.Dimension.Z);
+                foreach (IFieldObject<Player> player in players)
+                {
+                    bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
+                    bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+                    if (min && max)
+                    {
+                        Console.WriteLine("Player detected");
+                        return true;
+                    }
+                    Console.WriteLine($"Box Coord: {box.Position}, MinCoord: {minCoord}, MaxCoord: {maxCoord}");
+                }
+            }
+            Console.WriteLine("NO Player detected");
+            return false;
         }
 
         public bool WaitAndResetTick(int waitTick)

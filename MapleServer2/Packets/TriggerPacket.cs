@@ -41,9 +41,9 @@ namespace MapleServer2.Packets
                         pWriter.WriteInt(triggerMesh.Id);
                         pWriter.WriteBool(triggerMesh.IsVisible);
                         pWriter.WriteByte(0x00);
-                        pWriter.WriteInt(2); //get this from the correct place, it probably is not always 2
+                        pWriter.WriteInt(2);
                         pWriter.WriteInt(0);
-                        pWriter.WriteShort(16256); //constant: 80 3F ends a Mesh trigger.
+                        pWriter.WriteShort(16256); //constant: 80 3F
                         break;
 
                     case TriggerEffect:
@@ -62,17 +62,6 @@ namespace MapleServer2.Packets
                 }
             }
 
-            return pWriter;
-        }
-
-        public static Packet SetLadderTrigger(int ladderId, bool arg2, bool arg3)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-            pWriter.WriteInt(ladderId);
-            pWriter.WriteBool(arg2);
-            pWriter.WriteBool(arg3);
-            pWriter.WriteInt(3); //unsure where this 3 is coming from, triggermesh also has it
             return pWriter;
         }
 
