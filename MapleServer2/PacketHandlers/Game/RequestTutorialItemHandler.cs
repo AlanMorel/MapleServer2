@@ -21,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
 
-            foreach(TutorialItemMetadata tutorialItem in metadata)
+            foreach (TutorialItemMetadata tutorialItem in metadata)
             {
                 if (session.Player.Inventory.Items.Any(x => x.Value.Id == tutorialItem.ItemId) || session.Player.Inventory.Equips.Any(x => x.Value.Id == tutorialItem.ItemId))
                 {

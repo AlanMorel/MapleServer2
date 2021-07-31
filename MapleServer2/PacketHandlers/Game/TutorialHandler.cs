@@ -17,9 +17,9 @@ namespace MapleServer2.PacketHandlers.Game
         {
             JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
             {
-                foreach(int taxiMapId in metadata.OpenTaxis)
+                foreach (int taxiMapId in metadata.OpenTaxis)
                 {
-                    if(session.Player.UnlockedTaxis.Contains(taxiMapId))
+                    if (session.Player.UnlockedTaxis.Contains(taxiMapId))
                     {
                         continue;
                     }

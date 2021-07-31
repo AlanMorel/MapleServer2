@@ -68,7 +68,7 @@ namespace GameDataParser.Parsers
                             }
                         }
 
-                        if (childNode.Name.Equals("skills"))
+                        else if (childNode.Name.Equals("skills"))
                         {
                             foreach (XmlNode skillNode in childNode)
                             {
@@ -98,7 +98,7 @@ namespace GameDataParser.Parsers
                             }
                         }
 
-                        if (childNode.Name.Equals("learn"))
+                        else if (childNode.Name.Equals("learn"))
                         {
                             JobLearnedSkillsMetadata learnedSkills = new JobLearnedSkillsMetadata();
                             learnedSkills.Level = int.Parse(childNode.Attributes["level"].Value);
