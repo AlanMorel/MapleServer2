@@ -74,10 +74,11 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice($"No MOB was found with the id: <font color='#93f5eb'>{mobId}</font>");
                 return;
             }
-            Mob mob = new Mob(mobId);
-
-            mob.Animation = trigger.Get<byte>("ani");
-            mob.ZRotation = trigger.Get<short>("dir");
+            Mob mob = new Mob(mobId)
+            {
+                Animation = trigger.Get<byte>("ani"),
+                ZRotation = trigger.Get<short>("dir")
+            };
 
             IFieldObject<Mob> fieldMob = trigger.Session.FieldManager.RequestFieldObject(mob);
             CoordF coord = trigger.Get<CoordF>("coord");
