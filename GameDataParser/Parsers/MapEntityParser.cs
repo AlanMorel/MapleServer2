@@ -142,7 +142,7 @@ namespace GameDataParser.Parsers
                         {
                             metadata.BoundingBox0 = ToCoordS(bounding.Position);
                         }
-                        else if (bounding.EntityName.EndsWith("1"))
+                        else if (bounding.EntityName.EndsWith("1") && metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0))
                         {
                             metadata.BoundingBox1 = ToCoordS(bounding.Position);
                         }
