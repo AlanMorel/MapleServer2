@@ -29,10 +29,11 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice($"No NPC was found with the id: <font color='#93f5eb'>{npcId}</font>");
                 return;
             }
-            Npc npc = new Npc(npcId);
-
-            npc.Animation = trigger.Get<byte>("ani");
-            npc.ZRotation = trigger.Get<short>("dir");
+            Npc npc = new Npc(npcId)
+            {
+                Animation = trigger.Get<byte>("ani"),
+                ZRotation = trigger.Get<short>("dir")
+            };
 
             IFieldObject<Npc> fieldNpc = trigger.Session.FieldManager.RequestFieldObject(npc);
             CoordF coord = trigger.Get<CoordF>("coord");
