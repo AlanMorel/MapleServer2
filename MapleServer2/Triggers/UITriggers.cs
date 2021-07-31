@@ -69,7 +69,6 @@ namespace MapleServer2.Triggers
                         if (FieldManager.IsPlayerInBox(box, player))
                         {
                             player.Value.Session.Send(SystemSoundPacket.Play(sound));
-
                         }
                     }
                 }

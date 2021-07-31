@@ -22,7 +22,6 @@ namespace MapleServer2.Triggers
                 State?.OnExit();
                 Context.NextTick = 0;
                 State = NextState;
-
                 State.OnEnter();
                 NextState = null;
             }
