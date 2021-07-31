@@ -138,7 +138,7 @@ namespace GameDataParser.Parsers
                 switch (entity)
                 {
                     case IMS2Bounding bounding:
-                        if (bounding.EntityName.EndsWith("0"))
+                        if (bounding.EntityName.EndsWith("0") && metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0))
                         {
                             metadata.BoundingBox0 = ToCoordS(bounding.Position);
                         }
