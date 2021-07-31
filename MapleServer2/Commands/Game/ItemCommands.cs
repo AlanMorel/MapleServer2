@@ -14,8 +14,8 @@ namespace MapleServer2.Commands.Game
                 "item"
             };
             Description = "Give an item to the current player.";
-            AddParameter<int>("id", "Item id");
-            AddParameter<int>("amount", "Amount of the same item.");
+            AddParameter("id", "Item id", 20000027);
+            AddParameter("amount", "Amount of the same item.", 1);
             AddParameter<int>("rarity", "Item rarity.");
         }
 
@@ -34,7 +34,7 @@ namespace MapleServer2.Commands.Game
             Item item = new Item(itemId)
             {
                 Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
-                Amount = amount >= 0 ? amount : 1
+                Amount = amount
             };
             item.Stats = new ItemStats(item);
 

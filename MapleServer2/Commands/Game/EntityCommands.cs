@@ -2,6 +2,7 @@
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Types;
+using Color = System.Drawing.Color;
 
 namespace MapleServer2.Commands.Game
 {
@@ -14,10 +15,10 @@ namespace MapleServer2.Commands.Game
                 "npc"
             };
             Description = "Spawn a NPC from id.";
-            AddParameter<int>("id", "The id of the NPC.");
-            AddParameter<byte>("ani", "The animation of the NPC.");
-            AddParameter<short>("dir", "The rotation of the NPC.");
-            AddParameter<CoordF>("coord", "The position of the NPC.");
+            AddParameter("id", "The id of the NPC.", 11003146);
+            AddParameter("ani", "The animation of the NPC.", 1);
+            AddParameter("dir", "The rotation of the NPC.", 2700);
+            AddParameter("coord", "The position of the NPC.", CoordF.From(0, 0, 0));
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -26,12 +27,12 @@ namespace MapleServer2.Commands.Game
 
             if (NpcMetadataStorage.GetNpc(npcId) == null)
             {
-                trigger.Session.SendNotice($"No NPC was found with the id: <font color='#93f5eb'>{npcId}</font>");
+                trigger.Session.SendNotice($"No NPC was found with the id: {CommandHelpers.Color(npcId, Color.DarkOliveGreen)}");
                 return;
             }
             Npc npc = new Npc(npcId)
             {
-                Animation = trigger.Get<byte>("ani"),
+                Animation = trigger.Get<short>("ani"),
                 ZRotation = trigger.Get<short>("dir")
             };
 
@@ -59,10 +60,10 @@ namespace MapleServer2.Commands.Game
                 "mob"
             };
             Description = "Spawn a MOB from id.";
-            AddParameter<int>("id", "The id of the MOB.");
-            AddParameter<byte>("ani", "The animation of the MOB.");
-            AddParameter<short>("dir", "The rotation of the MOB.");
-            AddParameter<CoordF>("coord", "The position of the MOB.");
+            AddParameter("id", "The id of the MOB.", 21000001);
+            AddParameter("ani", "The animation of the MOB.", 1);
+            AddParameter("dir", "The rotation of the MOB.", 2700);
+            AddParameter("coord", "The position of the MOB.", CoordF.From(0, 0, 0));
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -71,12 +72,12 @@ namespace MapleServer2.Commands.Game
 
             if (NpcMetadataStorage.GetNpc(mobId) == null)
             {
-                trigger.Session.SendNotice($"No MOB was found with the id: <font color='#93f5eb'>{mobId}</font>");
+                trigger.Session.SendNotice($"No MOB was found with the id: {CommandHelpers.Color(mobId, Color.DarkOliveGreen)}");
                 return;
             }
             Mob mob = new Mob(mobId)
             {
-                Animation = trigger.Get<byte>("ani"),
+                Animation = trigger.Get<short>("ani"),
                 ZRotation = trigger.Get<short>("dir")
             };
 

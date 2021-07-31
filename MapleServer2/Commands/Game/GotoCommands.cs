@@ -81,7 +81,7 @@ namespace MapleServer2.Commands.Game
                 "coord"
             };
             Description = "Get the current coord of the player.";
-            AddParameter<CoordF>("pos", "The position in map.");
+            AddParameter("pos", "The position in map.", CoordF.From(0, 0, 0));
         }
 
         public override void Execute(GameCommandTrigger trigger)
