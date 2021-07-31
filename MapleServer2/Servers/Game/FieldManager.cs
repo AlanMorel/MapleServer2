@@ -621,7 +621,7 @@ namespace MapleServer2.Servers.Game
         private void SpawnMobs(IFieldObject<MobSpawn> mobSpawn)
         {
             List<CoordF> spawnPoints = MobSpawn.SelectPoints(mobSpawn.Value.SpawnRadius);
-            
+
             foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
             {
                 if (mob.Name == "Constructor Type 13")
@@ -630,10 +630,10 @@ namespace MapleServer2.Servers.Game
                 }
                 Console.WriteLine($"monster: {mob.Name}");
                 int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-               // Console.WriteLine($"groupspawncount {groupSpawnCount} monster: {mob.Name}");
+                                                                             // Console.WriteLine($"groupspawncount {groupSpawnCount} monster: {mob.Name}");
                 if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
                 {
-                  //  Console.WriteLine($"Mob spawn is full: Not spawning Monster: {mob.Name}");
+                    //  Console.WriteLine($"Mob spawn is full: Not spawning Monster: {mob.Name}");
                     break;
                 }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -14,7 +13,6 @@ namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
-        private static int WaitTickTimeFirst;
         public bool BonusGameRewardDetected(byte arg1)
         {
             return false;

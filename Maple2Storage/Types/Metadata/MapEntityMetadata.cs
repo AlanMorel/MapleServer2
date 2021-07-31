@@ -555,7 +555,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
     [ProtoInclude(13, typeof(MapTriggerBox))]
-   // [ProtoInclude(14, typeof(MapTriggerLadder))]
+    // [ProtoInclude(14, typeof(MapTriggerLadder))]
     [ProtoInclude(15, typeof(MapTriggerActor))]
     public class MapTriggerObject
     {

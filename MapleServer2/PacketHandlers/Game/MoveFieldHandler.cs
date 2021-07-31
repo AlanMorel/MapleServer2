@@ -90,7 +90,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 return;
             }
-            
+
             if (!MapEntityStorage.HasSafePortal(srcMapId)) // map is instance only
             {
                 HandleLeaveInstance(session);

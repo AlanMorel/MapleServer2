@@ -50,7 +50,7 @@ namespace MapleServer2.Packets
                     case TriggerEffect triggerEffect:
                         pWriter.WriteInt(triggerEffect.Id);
                         pWriter.WriteBool(triggerEffect.IsVisible);
-                        pWriter.WriteByte(0x00); 
+                        pWriter.WriteByte(0x00);
                         pWriter.WriteInt(3); //not sure where this value is coming from.
                         break;
 
@@ -66,12 +66,12 @@ namespace MapleServer2.Packets
                         pWriter.WriteUnicodeString(triggerActor.StateName);
                         return pWriter;
 
-                    //case TriggerLadder triggerLadder:
-                    //    pWriter.WriteInt(triggerLadder.Id);
-                    //    pWriter.WriteBool(0x00);
-                    //    pWriter.WriteBool(0x00);
-                    //    pWriter.WriteInt(3); //not sure where this value is coming from.
-                    //    break;
+                        //case TriggerLadder triggerLadder:
+                        //    pWriter.WriteInt(triggerLadder.Id);
+                        //    pWriter.WriteBool(0x00);
+                        //    pWriter.WriteBool(0x00);
+                        //    pWriter.WriteInt(3); //not sure where this value is coming from.
+                        //    break;
                 }
             }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.Intrinsics.X86;
 using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
@@ -281,7 +280,7 @@ namespace GameDataParser.Parsers
                         }
                         break;
                     case IPortal portal:
-                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN, 
+                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
                             ToCoordS(portal.Position), ToCoordS(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
 
@@ -333,6 +332,7 @@ namespace GameDataParser.Parsers
                         }
 
                         try
+                        //TODO: The parser will output errors here, which are non-critical. 
                         {
                             CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
                             metadata.Objects.Add(new MapObject(coord, int.Parse(mapProperties.ObjectWeaponItemCode)));
@@ -340,23 +340,14 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                            //  Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
-                            //if (mobSpawnData != null)
-                            //{
-                            //    foreach (string s in mobSpawnData.Tags)
-                            //    {
-                            //        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
-                            //        Console.WriteLine($"{Convert.ToHexString(bytes)}");
-                            //    }
-
-                            //    Console.WriteLine($"{mobSpawnData.Difficulty} {mobSpawnData.MinDifficulty}");
-                            //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mobSpawnData.Tags[0]);
-                            //    Console.WriteLine($"{Convert.ToHexString(bytes)}, {mobSpawnData.Population}");
-                            //}
+                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
+                            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
+                            Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
+
                         catch (OverflowException ex)
                         {
-                          //  Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
+                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
                         }
                         break;
                 }
