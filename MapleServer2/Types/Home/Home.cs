@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
@@ -111,6 +114,24 @@ namespace MapleServer2.Types
                 DecorationLevel++;
             }
             DecorationExp += exp;
+        }
+
+        public Item AddWarehouseItem(GameSession session, int itemId, int amount, Item item = default)
+        {
+            Item furnishingItem = WarehouseInventory.Values.FirstOrDefault(x => x.Id == itemId);
+            if (furnishingItem == default)
+            {
+                furnishingItem = item == default ? new Item(itemId, amount) : item;
+                WarehouseInventory[furnishingItem.Uid] = furnishingItem;
+                session.Send(WarehouseInventoryPacket.Load(furnishingItem, WarehouseInventory.Values.Count));
+                session.Send(WarehouseInventoryPacket.Count(WarehouseInventory.Values.Count + 1));
+            }
+            else
+            {
+                WarehouseInventory[furnishingItem.Uid].Amount += amount;
+                session.Send(WarehouseInventoryPacket.UpdateAmount(furnishingItem.Uid, furnishingItem.Amount));
+            }
+            return furnishingItem;
         }
     }
 }
