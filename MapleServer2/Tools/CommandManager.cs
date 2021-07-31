@@ -88,7 +88,7 @@ namespace MapleServer2.Tools
             command.Execute(trigger);
         }
 
-        public CommandBase GetCommand(string alias)
+        public static CommandBase GetCommand(string alias)
         {
             CommandsByAlias.TryGetValue(alias, out CommandBase command);
             return command;
