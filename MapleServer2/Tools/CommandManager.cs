@@ -34,7 +34,6 @@ namespace MapleServer2.Tools
                 if (commandType.IsSubclassOf(typeof(CommandBase)))
                 {
                     RegisterCommand(commandType);
-                    Logger.Info(commandType.Name + " was registered.");
                 }
             }
             Logger.Info("Commands loaded.".Pastel("#aced66"));
