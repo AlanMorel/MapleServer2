@@ -128,23 +128,21 @@ namespace MapleServer2.Triggers
 
                 return;
             }
-            else
-            {
-                int boxId = int.Parse(box);
-                List<IFieldObject<Player>> players = new List<IFieldObject<Player>>();
-                MapTriggerBox triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
 
-                foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            int triggerBoxId = int.Parse(box);
+            List<IFieldObject<Player>> fieldPlayers = new List<IFieldObject<Player>>();
+            MapTriggerBox mapTriggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, triggerBoxId);
+
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(mapTriggerBox, player))
                 {
-                    if (FieldManager.IsPlayerInBox(triggerBox, player))
-                    {
-                        players.Add(player);
-                    }
+                    fieldPlayers.Add(player);
                 }
-                foreach (IFieldObject<Player> player in players)
-                {
-                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
-                }
+            }
+            foreach (IFieldObject<Player> player in fieldPlayers)
+            {
+                player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
             }
         }
 
@@ -174,7 +172,6 @@ namespace MapleServer2.Triggers
         {
             string captionAlign = align.ToString().Replace(" ", "").Replace(",", "");
             captionAlign = captionAlign.First().ToString().ToLower() + captionAlign[1..];
-            System.Console.WriteLine(captionAlign);
             Field.BroadcastPacket(CinematicPacket.Caption(type, title, script, captionAlign, offsetRateX, offsetRateY, duration, scale));
         }
 
@@ -186,7 +183,6 @@ namespace MapleServer2.Triggers
         {
             switch (type)
             {
-
                 case 0:
                     Field.BroadcastPacket(CinematicPacket.HideUi(false));
                     break;

@@ -66,7 +66,6 @@ namespace MapleServer2.PacketHandlers.Game
                     widget.Arg = arg.ToString();
                     break;
             }
-
         }
     }
 }
