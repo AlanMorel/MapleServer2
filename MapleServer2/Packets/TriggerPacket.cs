@@ -38,7 +38,6 @@ namespace MapleServer2.Packets
                 switch (triggerObject)
                 {
                     case TriggerMesh triggerMesh:
-                        //pWriter.Write(SetMeshTrigger(triggerMesh.Id, triggerMesh.IsVisible, 0));
                         pWriter.WriteInt(triggerMesh.Id);
                         pWriter.WriteBool(triggerMesh.IsVisible);
                         pWriter.WriteByte(0x00);
@@ -74,9 +73,9 @@ namespace MapleServer2.Packets
                         //    break;
                 }
             }
-
             return pWriter;
         }
+
         public static Packet SetActorTrigger(int actorId, bool isVisible, string stateName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
@@ -86,6 +85,7 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(stateName); //"Closed" or "Opened"
             return pWriter;
         }
+
         public static Packet SetLadderTrigger(int ladderId, bool arg2, bool arg3)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);

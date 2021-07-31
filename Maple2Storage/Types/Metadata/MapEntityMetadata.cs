@@ -305,21 +305,7 @@ namespace Maple2Storage.Types.Metadata
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType)
-        {
-            Id = id;
-            Name = name;
-            Enable = enable;
-            IsVisible = isVisible;
-            MinimapVisible = minimapVisible;
-            Target = target;
-            Coord = coord;
-            Rotation = rotation;
-            TargetPortalId = targetPortalId;
-            PortalType = portalType;
-        }
-
-        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType, int triggerId)
+        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType, int triggerId = 0)
         {
             Id = id;
             Name = name;

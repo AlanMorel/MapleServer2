@@ -65,8 +65,6 @@ namespace MapleServer2.PacketHandlers.Game
                     widget.State = "IsTriggerEvent";
                     widget.Arg = arg.ToString();
                     break;
-
-
             }
 
         }

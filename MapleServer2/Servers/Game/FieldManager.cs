@@ -171,7 +171,6 @@ namespace MapleServer2.Servers.Game
                     }
                 }
             }
-
         }
 
         // Gets a list of packets to update the state of all field objects for client.

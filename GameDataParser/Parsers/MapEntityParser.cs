@@ -68,18 +68,10 @@ namespace GameDataParser.Parsers
                         spawnTime = 0;
                     }
 
-                    //foreach (string s in spawnTags)
-                    //{
-                    //    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
-                    //    Console.WriteLine($"{Convert.ToHexString(bytes)}");
-                    //}
-
                     if (!int.TryParse(node.Attributes["population"].Value, out int population))
                     {
                         population = 0;
                     }
-
-                    //Console.WriteLine(difficulty + minDifficulty);
 
                     bool isPetSpawn = node.Attributes["petPopulation"] != null &&
                                       int.Parse(node.Attributes["petPopulation"].Value) > 0;
@@ -322,7 +314,7 @@ namespace GameDataParser.Parsers
                         }
 
                         try
-                        //TODO: The parser will output errors here, which are non-critical. 
+                        //TODO: The parser will output errors here, which are non-critical, yet need resolving later.
                         {
                             CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
                             metadata.Objects.Add(new MapObject(coord, int.Parse(mapProperties.ObjectWeaponItemCode)));
@@ -331,14 +323,14 @@ namespace GameDataParser.Parsers
                         {
                             // ignored
                             Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
-                            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
+                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
+                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
                         catch (OverflowException ex)
                         {
                             Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
-                            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
+                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
+                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
                         break;
                 }
