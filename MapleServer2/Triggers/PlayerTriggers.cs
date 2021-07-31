@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Numerics;
 using Maple2.Trigger.Enum;
-using Maple2Storage.Types.Metadata;
-using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 

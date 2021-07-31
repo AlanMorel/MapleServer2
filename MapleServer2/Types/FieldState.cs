@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {

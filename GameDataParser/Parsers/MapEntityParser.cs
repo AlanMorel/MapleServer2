@@ -251,7 +251,7 @@ namespace GameDataParser.Parsers
                         }
                         break;
                     case IPortal portal:
-                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN, 
+                        metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
                             ToCoordS(portal.Position), ToCoordS(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
 

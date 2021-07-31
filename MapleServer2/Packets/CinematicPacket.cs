@@ -11,6 +11,7 @@ namespace MapleServer2.Packets
             HideUi = 0x1,
             View = 0x3,
             SetSceneSkip = 0x4,
+            BalloonTalk = 0x8,
             Caption = 0xA,
         }
 
@@ -37,6 +38,18 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(CinematicPacketMode.SetSceneSkip);
             pWriter.WriteByte(1); //??
             pWriter.WriteMapleString(skipState);
+            return pWriter;
+        }
+
+        public static Packet BalloonTalk(int objectId, bool isNpcId, string msg, int duration, int delayTick)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
+            pWriter.WriteEnum(CinematicPacketMode.BalloonTalk);
+            pWriter.WriteBool(isNpcId);
+            pWriter.WriteInt(objectId);
+            pWriter.WriteUnicodeString(msg);
+            pWriter.WriteInt(duration);
+            pWriter.WriteInt(delayTick);
             return pWriter;
         }
 

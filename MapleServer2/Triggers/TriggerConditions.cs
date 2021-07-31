@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Maple2.Trigger.Enum;
-using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
-using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -87,16 +86,14 @@ namespace MapleServer2.Triggers
                 {
                     if (int.TryParse(npcId, out int id))
                     {
-                        if (Field.State.Mobs.Values.Where(x => x.Value.Id == id).Count() != 0)
+                        if (Field.State.Mobs.Values.Where(x => x.Value.Id == id).Any())
                         {
-                            Console.WriteLine("Monster is NOT dead");
                             return false;
                         }
                     }
                 }
 
             }
-            Console.WriteLine("Monster is dead");
             return true;
         }
 
@@ -169,19 +166,9 @@ namespace MapleServer2.Triggers
                     return false;
                 }
 
-                CoordF minCoord = CoordF.From(
-                    box.Position.X - box.Dimension.X,
-                    box.Position.Y - box.Dimension.Y,
-                    box.Position.Z - box.Dimension.Z);
-                CoordF maxCoord = CoordF.From(
-                    box.Position.X + box.Dimension.X,
-                    box.Position.Y + box.Dimension.Y,
-                    box.Position.Z + box.Dimension.Z);
                 foreach (IFieldObject<Player> player in players)
                 {
-                    bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
-                    bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
-                    if (min && max)
+                    if (FieldManager.IsPlayerInBox(box, player))
                     {
                         return true;
                     }
@@ -197,7 +184,18 @@ namespace MapleServer2.Triggers
 
         public bool WaitTick(int waitTick)
         {
-            NextTick += waitTick;
+            if (NextTick == 0)
+            {
+                NextTick = Environment.TickCount + waitTick;
+                return false;
+            }
+
+            if (NextTick > Environment.TickCount)
+            {
+                return false;
+            }
+
+            NextTick = 0;
             return true;
         }
 
@@ -218,23 +216,16 @@ namespace MapleServer2.Triggers
 
         public bool WidgetCondition(WidgetType type, string name, string arg3)
         {
-            string debug = $"Widget Type: {type}, State Name: {name}, Arg3: {arg3}";
-            Field.BroadcastPacket(NoticePacket.Notice(debug, NoticeType.Chat));
             List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
             foreach (IFieldObject<Player> player in players)
             {
                 Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
-                Console.WriteLine($"Widget: {widget.Type} State: {widget.State}");
                 if (widget == null)
                 {
                     continue;
                 }
-                Console.WriteLine("Widget condition true");
                 return widget.State == name;
-
             }
-
-            Console.WriteLine("Widget condition false");
             return false;
         }
     }
