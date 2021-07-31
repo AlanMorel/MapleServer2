@@ -331,6 +331,21 @@ namespace MapleServer2.Servers.Game
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
         }
 
+        public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
+        {
+            CoordF minCoord = CoordF.From(
+                    box.Position.X - box.Dimension.X,
+                    box.Position.Y - box.Dimension.Y,
+                    box.Position.Z - box.Dimension.Z);
+            CoordF maxCoord = CoordF.From(
+                box.Position.X + box.Dimension.X,
+                box.Position.Y + box.Dimension.Y,
+                box.Position.Z + box.Dimension.Z);
+            bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
+            bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+            return min && max;
+        }
+
         // Spawned NPCs will not appear until controlled
         public void AddNpc(IFieldObject<Npc> fieldNpc)
         {

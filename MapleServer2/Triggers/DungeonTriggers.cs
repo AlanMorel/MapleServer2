@@ -63,10 +63,6 @@ namespace MapleServer2.Triggers
             int msTime = time * 1000;
             int endTick = Environment.TickCount + msTime;
             MapTimer timer = new MapTimer(id, endTick);
-            Console.WriteLine($"ID: {id} \n" +
-                $"ClearAtZero: {clearAtZero} \n" +
-                $"Display:{display} \n" +
-                $"Time: {time}");
             Field.AddMapTimer(timer);
             Field.BroadcastPacket(TriggerPacket.Timer(msTime, clearAtZero, display));
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -97,9 +96,6 @@ namespace MapleServer2.Tools
                 case "setguildexp":
                     ProcessGuildExp(session, args[1]);
                     break;
-                case "test":
-                    ProcessTest(session);
-                    break;
                 case "setguildfunds":
                     ProcessGuildFunds(session, args[1]);
                     break;
@@ -137,19 +133,6 @@ namespace MapleServer2.Tools
                 "Turn off battle stance: /battleoff \n" +
                 "Display Notice Server Wide: /notice <font color='#71a6f0'>message</font> \n";
             session.Send(NoticePacket.Notice(message, NoticeType.Chat));
-        }
-
-        private static void ProcessTest(GameSession session)
-        {
-            List<IFieldObject<Portal>> portals = session.FieldManager.State.Portals.Values.ToList();
-            if (portals == null)
-            {
-                return;
-            }
-            foreach (IFieldObject<Portal> portal in portals)
-            {
-                Console.WriteLine($"Portal ID: {portal.Value.Id}, Target Portal ID:");
-            }
         }
 
         private static void ProcessGuildExp(GameSession session, string command)

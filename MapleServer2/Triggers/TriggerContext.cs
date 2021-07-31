@@ -1,6 +1,5 @@
 ﻿using Maple2.Trigger;
 using Maple2Storage.Types.Metadata;
-using Maple2Storage.Types;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -99,32 +98,22 @@ namespace MapleServer2.Triggers
 
         public int GetUserCount(int boxId, int userTagId)
         {
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-            int userCount = 0;
-            if (box == null)
+            if (boxId != 0)
             {
-                return 0;
-            }
+                List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                int userCount = 0;
 
-            CoordF minCoord = CoordF.From(
-                box.Position.X - box.Dimension.X,
-                box.Position.Y - box.Dimension.Y,
-                box.Position.Z - box.Dimension.Z);
-            CoordF maxCoord = CoordF.From(
-                box.Position.X + box.Dimension.X,
-                box.Position.Y + box.Dimension.Y,
-                box.Position.Z + box.Dimension.Z);
-            foreach (IFieldObject<Player> player in players)
-            {
-                bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
-                bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
-                if (min && max)
+                foreach (IFieldObject<Player> player in players)
                 {
-                    userCount++;
+                    if (FieldManager.IsPlayerInBox(box, player))
+                    {
+                        userCount++;
+                    }
                 }
+                return userCount;
             }
-            return 20;
+            return Field.State.Players.Values.Count;
         }
 
         public int GetUserValue(string key)
