@@ -181,8 +181,8 @@ namespace MapleServer2.Types
                 new MasteryExp(MasteryType.PetTaming)
             });
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            MapId = (int) Map.UnknownLocation;
-            Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
+            MapId = JobMetadataStorage.GetStartMapId((int) job);
+            Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
