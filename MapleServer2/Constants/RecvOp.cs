@@ -139,6 +139,7 @@
         ITEM_SOCKET_SCROLL = 0x008C,
         MAPLEOPOLY = 0x008E,
         PREMIUM_CLUB = 0x008F,
+        HOME_ACTION = 0x0091,
         CONSTRUCT_RECIPE = 0x0093,
         CONSTRUCT_SHOP = 0x0094,
         CLUB = 0x0096,

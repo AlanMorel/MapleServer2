@@ -2,18 +2,18 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>9</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Autofac" Version="6.1.0" />
       <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
       <PackageReference Include="Maple2.Trigger" Version="1.1.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="5.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-      <PackageReference Include="MySql.EntityFrameworkCore" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-preview.6.21352.12" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0-preview.6.21352.12" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.6.21352.12" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.0-preview3" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
       <PackageReference Include="Pastel" Version="2.1.0" />

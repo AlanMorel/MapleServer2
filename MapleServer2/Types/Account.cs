@@ -13,6 +13,8 @@ namespace MapleServer2.Types
         public long LastLoginTime { get; set; }
         public int CharacterSlots { get; set; }
 
+        public Home Home;
+
         public virtual ICollection<Player> Players { get; set; }
 
         public Account() { }

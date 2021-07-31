@@ -14,7 +14,7 @@ namespace MapleServer2.Tools
             Managers = new Dictionary<int, List<FieldManager>>();
         }
 
-        public FieldManager GetManager(int key, int instanceId)
+        public FieldManager GetManager(int key, long instanceId)
         {
             lock (Managers)
             {
@@ -36,7 +36,7 @@ namespace MapleServer2.Tools
             }
         }
 
-        public bool Release(int key, int instanceId, Player player)
+        public bool Release(int key, long instanceId, Player player)
         {
             lock (Managers)
             {

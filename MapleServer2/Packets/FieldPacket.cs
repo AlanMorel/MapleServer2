@@ -16,11 +16,11 @@ namespace MapleServer2.Packets
             UpdatePortal = 0x02
         }
 
-        public static Packet RequestEnter(IFieldObject<Player> player)
+        public static Packet RequestEnter(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
             pWriter.WriteByte(0x00);
-            pWriter.WriteInt(player.Value.MapId);
+            pWriter.WriteInt(player.MapId);
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteInt();

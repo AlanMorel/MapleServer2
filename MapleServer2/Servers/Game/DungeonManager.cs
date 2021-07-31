@@ -68,9 +68,8 @@ namespace MapleServer2.Servers.Game
             return !DungeonSessionList.ContainsKey(dungeonSessionId) ? null : DungeonSessionList[dungeonSessionId];
         }
 
-        public DungeonSession GetDungeonSessionByInstanceId(int instanceId)
+        public DungeonSession GetDungeonSessionByInstanceId(long instanceId)
         {
-
             return DungeonSessionList.FirstOrDefault(session => session.Value.DungeonInstanceId == instanceId).Value;
         }
 
@@ -109,10 +108,9 @@ namespace MapleServer2.Servers.Game
             }
             RemoveDungeonSession(dungeonSession.SessionId);
             //if last player leaves lobby or dungeonmap -> destroy dungeonSession.
-            if (dungeonSession.DungeonType == DungeonType.Group && player.PartyId != 0)
+            if (dungeonSession.DungeonType == DungeonType.Group && player.Party != null)
             {
-                Party party = GameServer.PartyManager.GetPartyById(player.PartyId);
-                party.DungeonSessionId = -1;
+                player.Party.DungeonSessionId = -1;
             }
             else
             {

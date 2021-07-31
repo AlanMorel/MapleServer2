@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
@@ -29,37 +28,45 @@ namespace MapleServer2.Data.Static
 
         public static bool BlockExists(int mapId, CoordS coord)
         {
-            MapMetadata mapD = GetMetadata(mapId);
-            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
-            if (block == null)
+            MapMetadata mapMetadata = GetMetadata(mapId);
+            if (mapMetadata == null)
             {
                 return false;
             }
-            return true;
+            mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+            return block != null;
         }
 
         public static bool BlockAboveExists(int mapId, CoordS coord)
         {
-            MapMetadata mapD = GetMetadata(mapId);
+            MapMetadata mapMetadata = GetMetadata(mapId);
+            if (mapMetadata == null)
+            {
+                return false;
+            }
             coord.Z += Block.BLOCK_SIZE;
-            MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
             return block != null;
         }
 
         public static MapBlock GetMapBlock(int mapId, CoordS coord)
         {
-            MapMetadata mapD = GetMetadata(mapId);
-            return mapD.Blocks.FirstOrDefault(x => x.Coord == coord);
+            MapMetadata mapMetadata = GetMetadata(mapId);
+            if (mapMetadata == null)
+            {
+                return null;
+            }
+            mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+            return block;
         }
 
         public static int GetPlotNumber(int mapId, CoordB coord)
         {
             CoordS coordS = coord.ToShort();
-            List<MapBlock> blocks = new List<MapBlock>();
-            MapMetadata mapD = GetMetadata(mapId);
+            MapMetadata mapMetadata = GetMetadata(mapId);
             for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
             {
-                MapBlock block = mapD.Blocks.FirstOrDefault(x => x.Coord == coordS);
+                mapMetadata.Blocks.TryGetValue(coordS, out MapBlock block);
                 if (block == null)
                 {
                     coordS.Z -= Block.BLOCK_SIZE;

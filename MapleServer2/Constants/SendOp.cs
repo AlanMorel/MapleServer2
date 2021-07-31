@@ -234,6 +234,7 @@
         SET_CAMERA = 0x00F4,
         FIREWORKS = 0x00F7,
         CLUB = 0x00F8,
+        INVITE_TO_HOME = 0x00FA,
         ITEM_EXCHANGE = 0x0104,
         ITEM = 0x0105,
         ITEM_ENCHANT_TRANSFORM = 0x0106,
