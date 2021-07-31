@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Maple2Storage.Types;
-using MapleServer2.Extensions;
 using Color = System.Drawing.Color;
 
 namespace MapleServer2.Commands.Core
@@ -16,7 +15,7 @@ namespace MapleServer2.Commands.Core
             result = CoordF.From(coord[0], coord[1], coord[2]);
         }
 
-        internal static string BuildString(string[] args, string name = "")
+        internal static string BuildString(string[] args, string name)
         {
             StringBuilder stringBuilder = new();
             stringBuilder.Append($"[{name}] ");

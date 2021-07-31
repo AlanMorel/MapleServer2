@@ -3,7 +3,7 @@ using NLog;
 
 namespace MapleServer2.Commands.Core
 {
-    public class Parameter<T> : IParameter
+    public class Parameter<T> : IParameter<T>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -11,7 +11,7 @@ namespace MapleServer2.Commands.Core
         public string Description { get; set; }
         public T Value { get; private set; }
         public Type ValueType => typeof(T);
-        object IParameter.DefaultValue => Value;
+        dynamic IParameter.DefaultValue => Value;
 
         public Parameter(string name, string description = "", T defaultValue = default)
         {
@@ -20,13 +20,13 @@ namespace MapleServer2.Commands.Core
             Value = defaultValue;
         }
 
-        public void SetValue(string str) => Value = ConvertString(str) != null ? (T) ConvertString(str) : default;
+        public void SetValue(string str) => Value = ConvertString(str);
 
-        public void SetValue(object obj) => Value = obj != null ? (T) obj : default;
+        public void SetValue(dynamic obj) => Value = obj;
 
-        public void SetDefaultValue() => Value = (T) ConvertString(string.Empty);
+        public void SetDefaultValue() => Value = ConvertString(string.Empty);
 
-        public object ConvertString(string value)
+        public dynamic ConvertString(string value)
         {
             try
             {
@@ -42,8 +42,7 @@ namespace MapleServer2.Commands.Core
             }
             catch (Exception)
             {
-                Logger.Error($"Error converting arg: {value} => {typeof(T)}.");
-                return default;
+                return Activator.CreateInstance(typeof(T));
             }
         }
     }
