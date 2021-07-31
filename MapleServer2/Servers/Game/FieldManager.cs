@@ -674,12 +674,9 @@ namespace MapleServer2.Servers.Game
                 {
                     continue;
                 }
-                Console.WriteLine($"monster: {mob.Name}");
                 int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                                                                             // Console.WriteLine($"groupspawncount {groupSpawnCount} monster: {mob.Name}");
                 if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
                 {
-                    //  Console.WriteLine($"Mob spawn is full: Not spawning Monster: {mob.Name}");
                     break;
                 }
 

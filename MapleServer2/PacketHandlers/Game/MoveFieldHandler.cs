@@ -121,7 +121,6 @@ namespace MapleServer2.PacketHandlers.Game
             .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId); // target map's portal id == source portal's targetPortalId
             if (dstPortal == default)
             {
-                System.Console.WriteLine($"Unable to find portal id:{srcPortal.TargetPortalId} in map:{srcPortal.Target}. Teleport player to a spawn point...");
                 session.Player.Warp(srcPortal.Target);
                 return;
             }
