@@ -19,12 +19,11 @@ namespace MapleServer2.Commands.Game
             {
                 trigger.Session.Player.GmFlags.Remove("oneshot");
                 trigger.Session.SendNotice("Oneshot mode disabled.");
+                return;
             }
-            else
-            {
-                trigger.Session.Player.GmFlags.Add("oneshot");
-                trigger.Session.SendNotice("Oneshot mode enabled.");
-            }
+
+            trigger.Session.Player.GmFlags.Add("oneshot");
+            trigger.Session.SendNotice("Oneshot mode enabled.");
         }
     }
 }
