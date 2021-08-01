@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
@@ -33,6 +34,16 @@ namespace Maple2Storage.Types
                 X = (float) (distance * Math.Cos(angle)),
                 Y = (float) (distance * Math.Sin(angle)),
                 Z = 0.0f,
+            };
+        }
+
+        public static CoordF FromVector3(Vector3 vector3)
+        {
+            return new CoordF
+            {
+                X = vector3.X,
+                Y = vector3.Y,
+                Z = vector3.Z
             };
         }
 
@@ -181,6 +192,11 @@ namespace Maple2Storage.Types
                 Y = (short) (distance * Math.Sin(angle)),
                 Z = 0,
             };
+        }
+
+        public static CoordS FromVector3(Vector3 vector3)
+        {
+            return From((short) vector3.X, (short) vector3.Y, (short) vector3.Z);
         }
 
         public readonly CoordF ToFloat()

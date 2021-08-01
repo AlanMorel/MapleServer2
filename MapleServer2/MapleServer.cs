@@ -23,6 +23,8 @@ namespace MapleServer2
 
         public static void Main(string[] args)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
             // Force Globalization to en-US because we use periods instead of commas for decimals
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
@@ -154,6 +156,13 @@ namespace MapleServer2
             sessions.AddRange(gameServer.GetSessions());
 
             return sessions;
+        }
+
+        private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception) args.ExceptionObject;
+            Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
+
         }
     }
 }
