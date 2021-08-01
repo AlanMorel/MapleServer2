@@ -39,6 +39,8 @@ namespace MapleServer2.Database.Classes
 
         public Home FindById(long id) => ReadHome(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
 
+        public Home FindByAccountId(long accountId) => ReadHome(QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault());
+
         public List<Home> FindAllByMapId(int mapId)
         {
             IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("map_id", mapId).Get();
@@ -98,6 +100,17 @@ namespace MapleServer2.Database.Classes
             Dictionary<long, Item> warehouseItems = DatabaseManager.Items.FindAllByHomeId(data.id);
             Dictionary<long, Cube> furnishingCubes = DatabaseManager.Cubes.FindAllByHomeId(data.id);
             List<HomeLayout> layouts = DatabaseManager.HomeLayouts.FindAllByHomeId(data.id);
+
+            foreach (Item item in warehouseItems.Values)
+            {
+                item.SetMetadataValues();
+            }
+
+            foreach (Cube cube in furnishingCubes.Values)
+            {
+                cube.Item.SetMetadataValues();
+            }
+
             return new Home()
             {
                 Id = data.id,

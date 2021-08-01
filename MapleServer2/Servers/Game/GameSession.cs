@@ -35,7 +35,7 @@ namespace MapleServer2.Servers.Game
         public void InitPlayer(Player player)
         {
             Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
-            FieldManager = FieldManagerFactory.GetManager(player.MapId, instanceId: 0);
+            FieldManager = FieldManagerFactory.GetManager(player);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
             GameServer.BuddyManager.SetFriendSessions(player);
@@ -77,7 +77,7 @@ namespace MapleServer2.Servers.Game
                 }
 
                 // Initialize for new Map
-                FieldManager = FieldManagerFactory.GetManager(player.MapId, player.InstanceId);
+                FieldManager = FieldManagerFactory.GetManager(player);
                 FieldPlayer = FieldManager.RequestFieldObject(Player);
             }
 

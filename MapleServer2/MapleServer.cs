@@ -114,6 +114,14 @@ namespace MapleServer2
 
         private static void DailyReset()
         {
+            List<Player> players = GameServer.Storage.GetAllPlayers();
+            foreach (Player player in players)
+            {
+                player.GatheringCount = new();
+                DatabaseManager.Characters.Update(player);
+            }
+            DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
+
             DatabaseManager.ServerInfo.SetLastDailyReset(DateTimeOffset.UtcNow.UtcDateTime);
         }
 

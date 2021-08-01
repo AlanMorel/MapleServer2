@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -38,13 +39,13 @@ namespace MapleServer2.Managers
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
 
-        public FieldManager(int mapId, long instanceId)
+        public FieldManager(Player player)
         {
-            MapId = mapId;
-            InstanceId = instanceId;
-            BoundingBox = MapEntityStorage.GetBoundingBox(mapId);
+            MapId = player.MapId;
+            InstanceId = player.InstanceId;
+            BoundingBox = MapEntityStorage.GetBoundingBox(MapId);
             // Load default npcs for map from config
-            foreach (MapNpc npc in MapEntityStorage.GetNpcs(mapId))
+            foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
             {
                 IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
                 {
@@ -70,7 +71,7 @@ namespace MapleServer2.Managers
             }
 
             // Spawn map's mobs at the mob spawners
-            foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(mapId))
+            foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(MapId))
             {
                 if (mobSpawn.SpawnData == null)
                 {
@@ -84,7 +85,7 @@ namespace MapleServer2.Managers
             }
 
             // Load default portals for map from config
-            foreach (MapPortal portal in MapEntityStorage.GetPortals(mapId))
+            foreach (MapPortal portal in MapEntityStorage.GetPortals(MapId))
             {
                 IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
                 {
@@ -93,13 +94,14 @@ namespace MapleServer2.Managers
                     IsMinimapVisible = portal.MinimapVisible,
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
+                    TargetPortalId = portal.TargetPortalId,
                     PortalType = portal.PortalType
                 });
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);
             }
 
-            MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+            MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
             if (mapMetadata != null)
             {
                 string xBlockName = mapMetadata.XBlockName;
@@ -111,7 +113,7 @@ namespace MapleServer2.Managers
                 }).ToArray();
             }
 
-            foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(mapId))
+            foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(MapId))
             {
                 if (mapTriggerMesh != null)
                 {
@@ -120,7 +122,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(mapId))
+            foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(MapId))
             {
                 if (mapTriggerEffect != null)
                 {
@@ -129,7 +131,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(mapId))
+            foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(MapId))
             {
                 if (mapTriggerActor != null)
                 {
@@ -138,7 +140,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
+            foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(MapId))
             {
                 if (mapTriggerCamera != null)
                 {
@@ -147,7 +149,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(mapId))
+            foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(MapId))
             {
                 if (mapTriggerCube != null)
                 {
@@ -156,7 +158,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(mapId))
+            foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(MapId))
             {
                 if (mapTriggerLadder != null)
                 {
@@ -165,7 +167,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(mapId))
+            foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(MapId))
             {
                 if (mapTriggerRope != null)
                 {
@@ -174,7 +176,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(mapId))
+            foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(MapId))
             {
                 if (mapTriggerSound != null)
                 {
@@ -184,7 +186,7 @@ namespace MapleServer2.Managers
             }
 
             // Load breakables
-            foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(mapId))
+            foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(MapId))
             {
                 if (mapActor != null)
                 {
@@ -193,7 +195,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(mapId))
+            foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(MapId))
             {
                 if (mapNif != null)
                 {
@@ -203,12 +205,80 @@ namespace MapleServer2.Managers
             }
 
             // Load interact objects
-            foreach (MapInteractObject mapInteract in MapEntityStorage.GetInteractObjects(mapId))
+            foreach (MapInteractObject mapInteract in MapEntityStorage.GetInteractObjects(MapId))
             {
                 if (mapInteract != null)
                 {
                     InteractObject interactObject = new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default);
                     State.AddInteractObject(interactObject);
+                }
+            }
+
+            // Load cubes
+            if (MapId == (int) Map.PrivateResidence)
+            {
+                Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+                if (home != null)
+                {
+                    // Add cubes to state
+                    Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                    foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
+                    {
+                        IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                        ugcCube.Coord = cube.CoordF;
+                        ugcCube.Rotation = cube.Rotation;
+                        State.AddCube(ugcCube);
+                    }
+
+                    // Add portals to state
+                    IEnumerable<Cube> cubePortals = cubes.Values.Where(x => x.Item.Id == 50400158);
+                    foreach (Cube cubePortal in cubePortals)
+                    {
+                        Portal portal = new Portal(GuidGenerator.Int())
+                        {
+                            IsVisible = true,
+                            IsEnabled = true,
+                            IsMinimapVisible = false,
+                            Rotation = cubePortal.Rotation,
+                            PortalType = PortalTypes.Home
+                        };
+
+                        IFieldObject<Portal> fieldPortal = RequestFieldObject(portal);
+                        fieldPortal.Coord = cubePortal.CoordF;
+                        fieldPortal.Value.UGCPortalMethod = cubePortal.PortalSettings.Method;
+                        if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
+                        {
+                            switch (cubePortal.PortalSettings.Destination)
+                            {
+                                case UGCPortalDestination.PortalInHome:
+                                    fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
+                                    break;
+                                case UGCPortalDestination.SelectedMap:
+                                    fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
+                                    break;
+                                case UGCPortalDestination.FriendHome:
+                                    fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
+                                    break;
+                            }
+                        }
+                        cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
+                        AddPortal(fieldPortal);
+                    }
+                }
+            }
+            else
+            {
+                List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
+                foreach (Home home in homes)
+                {
+                    Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                    foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
+                    {
+                        IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                        ugcCube.Coord = cube.CoordF;
+                        ugcCube.Rotation = cube.Rotation;
+                        State.AddCube(ugcCube);
+                    }
                 }
             }
 
@@ -304,37 +374,16 @@ namespace MapleServer2.Managers
                 sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
 
-            if (State.Cubes.IsEmpty && !player.Value.IsInDecorPlanner)
+            if (player.Value.MapId == (int) Map.PrivateResidence && !player.Value.IsInDecorPlanner)
             {
-                if (MapId == (int) Map.PrivateResidence)
+                // Send function cubes
+                List<Cube> functionCubes = State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
+                && (x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching))
+                .Select(x => x.Value).ToList();
+
+                if (functionCubes.Count > 0)
                 {
-                    Home home = GameServer.HomeManager.GetHome(player.Value.VisitingHomeId);
-                    if (home != null)
-                    {
-                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
-                        {
-                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                            ugcCube.Coord = cube.CoordF;
-                            ugcCube.Rotation = cube.Rotation;
-                            State.AddCube(ugcCube);
-                        }
-                    }
-                }
-                else
-                {
-                    List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
-                    foreach (Home home in homes)
-                    {
-                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
-                        {
-                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                            ugcCube.Coord = cube.CoordF;
-                            ugcCube.Rotation = cube.Rotation;
-                            State.AddCube(ugcCube);
-                        }
-                    }
+                    sender.Send(FunctionCubePacket.SendCubes(functionCubes));
                 }
             }
 
@@ -525,6 +574,12 @@ namespace MapleServer2.Managers
         {
             State.AddPortal(portal);
             BroadcastPacket(FieldPacket.AddPortal(portal));
+        }
+
+        public void RemovePortal(IFieldObject<Portal> portal)
+        {
+            State.RemovePortal(portal.ObjectId);
+            BroadcastPacket(FieldPacket.RemovePortal(portal.Value));
         }
 
         public void SendChat(Player player, string message, ChatType type) => Broadcast(session => session.Send(ChatPacket.Send(player, message, type)));

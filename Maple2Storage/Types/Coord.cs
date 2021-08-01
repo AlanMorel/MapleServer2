@@ -435,6 +435,8 @@ namespace Maple2Storage.Types
             );
         }
 
+        public byte[] ToArray() => new byte[3] { (byte) X, (byte) Y, (byte) Z };
+
         public override string ToString() => $"CoordB({X}, {Y}, {Z})";
 
         public bool Equals(CoordB other)

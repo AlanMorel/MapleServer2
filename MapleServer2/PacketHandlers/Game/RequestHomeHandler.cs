@@ -77,7 +77,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 session.Send(FurnishingInventoryPacket.EndList());
             }
-            Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
             player.VisitingHomeId = player.Account.Home.Id;
             player.Guide = null;

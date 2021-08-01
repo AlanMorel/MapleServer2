@@ -323,14 +323,14 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 9)]
         public readonly int TargetPortalId;
         [XmlElement(Order = 10)]
-        public readonly byte PortalType;
+        public readonly PortalTypes PortalType;
         [XmlElement(Order = 11)]
         public readonly int TriggerId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType, int triggerId = 0)
+        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, PortalTypes portalType, int triggerId = 0)
         {
             Id = id;
             Name = name;
