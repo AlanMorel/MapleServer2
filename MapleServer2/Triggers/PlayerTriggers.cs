@@ -1,5 +1,9 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using Maple2.Trigger.Enum;
+using MapleServer2.Packets;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
@@ -45,8 +49,18 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void MoveUser(int arg1, int arg2, int arg3)
+        public void MoveUser(int mapId, int triggerId, int arg3)
         {
+            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
+            if (portal == null)
+            {
+                return;
+            }
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
+            {
+                //       player.Value.Warp(mapId, portal.Coord, portal.Rotation);
+            }
         }
 
         public void MoveUserPath(string arg1)
@@ -91,6 +105,7 @@ namespace MapleServer2.Triggers
 
         public void SetOnetimeEffect(int id, bool enable, string path)
         {
+            Field.BroadcastPacket(OneTimeEffectPacket.View(id, enable, path));
         }
 
         public void SetTimeScale(bool enable, float startScale, float endScale, float duration, byte interpolator)

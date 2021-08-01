@@ -69,7 +69,8 @@ namespace GameDataParser
                 new UGCMapParser(resources),
                 new FurnishingShopParser(resources),
                 new HomeTemplateParser(resources),
-                new JobParser(resources)
+                new MasteryUGCHousingParser(resources),
+				new JobParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

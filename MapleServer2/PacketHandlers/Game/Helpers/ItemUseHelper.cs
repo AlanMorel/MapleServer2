@@ -4,6 +4,7 @@ using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -118,29 +119,49 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                         session.Player.Wallet.Meret.Modify(rng.Next(content.MinAmount, content.MaxAmount));
                         break;
                 }
+                return;
             }
-            // Items
-            else
+
+            // Furnishing items
+            if (content.Id.ToString().StartsWith("5"))
             {
-                Item item = new Item(content.Id)
+                if (session.Player.Account.Home == null)
+                {
+                    return;
+                }
+
+                Home home = GameServer.HomeManager.GetHome(session.Player.Account.Home.Id);
+                if (home == null)
+                {
+                    return;
+                }
+
+                int amount = rng.Next(content.MinAmount, content.MaxAmount);
+
+                Item furnishingItem = home.AddWarehouseItem(session, content.Id, amount);
+                session.Send(WarehouseInventoryPacket.GainItemMessage(furnishingItem, amount));
+                return;
+            }
+
+            // Other items
+            Item item = new Item(content.Id)
+            {
+                Amount = rng.Next(content.MinAmount, content.MaxAmount),
+                Rarity = content.Rarity,
+                Enchants = content.EnchantLevel,
+            };
+            item.Stats = new ItemStats(item);
+            InventoryController.Add(session, item, true);
+
+            if (content.Id2 != 0)
+            {
+                item = new Item(content.Id2)
                 {
                     Amount = rng.Next(content.MinAmount, content.MaxAmount),
                     Rarity = content.Rarity,
-                    Enchants = content.EnchantLevel,
                 };
                 item.Stats = new ItemStats(item);
                 InventoryController.Add(session, item, true);
-
-                if (content.Id2 != 0)
-                {
-                    item = new Item(content.Id2)
-                    {
-                        Amount = rng.Next(content.MinAmount, content.MaxAmount),
-                        Rarity = content.Rarity,
-                    };
-                    item.Stats = new ItemStats(item);
-                    InventoryController.Add(session, item, true);
-                }
             }
         }
     }
