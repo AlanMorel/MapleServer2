@@ -70,7 +70,8 @@ namespace GameDataParser
                 new FurnishingShopParser(resources),
                 new HomeTemplateParser(resources),
                 new MasteryUGCHousingParser(resources),
-                new JobParser(resources)
+                new JobParser(resources),
+                new RewardContentParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

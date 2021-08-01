@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Maple2.Trigger;
+using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -37,6 +38,7 @@ namespace MapleServer2.Servers.Game
         private readonly TriggerScript[] Triggers;
         private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
+        private readonly List<Widget> Widgets = new List<Widget>();
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -355,6 +357,7 @@ namespace MapleServer2.Servers.Game
                 Sessions.Remove(sender);
             }
             State.RemovePlayer(player.ObjectId);
+            player.Value.Triggers.Clear();
 
             // Remove player
             Broadcast(session =>
@@ -721,6 +724,16 @@ namespace MapleServer2.Servers.Game
         public MapTimer GetMapTimer(string id)
         {
             return MapTimers.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void AddWidget(Widget widget)
+        {
+            Widgets.Add(widget);
+        }
+
+        public Widget GetWidget(WidgetType type)
+        {
+            return Widgets.FirstOrDefault(x => x.Type == type);
         }
     }
 }

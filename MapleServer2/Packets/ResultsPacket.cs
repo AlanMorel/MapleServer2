@@ -43,11 +43,10 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(item.Id);
                 pWriter.WriteInt(item.Amount);
                 pWriter.WriteInt(item.Rarity);
+                pWriter.WriteByte(0x0);
+                pWriter.WriteByte(0x0);
+                pWriter.WriteByte(0x0);
             }
-
-            pWriter.WriteByte(0x0);
-            pWriter.WriteByte(0x0);
-            pWriter.WriteByte(0x0);
 
             if (bonus)
             {
@@ -65,22 +64,28 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Rounds(int roundsCleared, int totalRounds, int expGain, List<Item> itemRewards)
+        public static Packet Rounds(int roundsCleared, int totalRounds)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
             pWriter.WriteEnum(ResultsPacketMode.Rounds);
             pWriter.WriteInt(roundsCleared);
             pWriter.WriteInt(totalRounds);
-            pWriter.WriteInt(expGain);
+            pWriter.WriteInt(1); // amount of rewards (meso and/or exp)
 
-            foreach (Item item in itemRewards)
-            {
-                pWriter.WriteInt(item.Id);
-                pWriter.WriteInt(item.Amount);
-                pWriter.WriteInt(item.Rarity);
-            }
+            // loop rewards
+            pWriter.WriteByte(1); // 1 = mesos, 2 = exp
+            pWriter.WriteInt(0); // amount of mesos/exp
 
-            pWriter.WriteInt();
+            pWriter.WriteInt(0); // amount of items
+
+            // loop items
+            //pWriter.WriteInt(); // item Id
+            //pWriter.WriteInt(); // item amount
+            //pWriter.WriteInt(); // item rarity
+            //pWriter.WriteByte();
+            //pWriter.WriteByte();
+            //pWriter.WriteByte();
+
             return pWriter;
         }
 

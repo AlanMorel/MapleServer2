@@ -51,6 +51,16 @@ namespace MapleServer2.Triggers
 
         public void MoveUser(int mapId, int triggerId, int arg3)
         {
+            // move player out of map
+            if (mapId == 0 && triggerId == 0)
+            {
+                foreach (IFieldObject<Player> player in Field.State.Players.Values)
+                {
+                    player.Value.Warp(player.Value.ReturnMapId, player.Value.ReturnCoord, player.Coord);
+                }
+                return;
+            }
+
             IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
             if (portal == null)
             {
@@ -114,6 +124,8 @@ namespace MapleServer2.Triggers
 
         public void AddBuff(int[] arg1, int arg2, byte arg3, bool arg4, bool arg5, string feature)
         {
+            Field.BroadcastPacket(NoticePacket.Notice("Add buff", Enums.NoticeType.ChatAndFastText));
+
         }
 
         public void RemoveBuff(int arg1, int arg2, bool arg3)
@@ -126,6 +138,15 @@ namespace MapleServer2.Triggers
 
         public void SetUserValue(int triggerId, string key, int value)
         {
+            PlayerTrigger playerTrigger = new PlayerTrigger(key)
+            {
+                TriggerId = triggerId,
+                Value = value
+            };
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                player.Value.Triggers.Add(playerTrigger);
+            }
         }
 
         public void SetUserValueFromDungeonRewardCount(string key, int dungeonRewardId)

@@ -16,11 +16,7 @@ namespace MapleServer2.Triggers
         public void CreateWidget(WidgetType type)
         {
             Widget widget = new Widget(type);
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
-            {
-                player.Value.Widgets.Add(widget);
-            }
+            Field.AddWidget(widget);
         }
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
@@ -28,7 +24,7 @@ namespace MapleServer2.Triggers
             List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
             foreach (IFieldObject<Player> player in players)
             {
-                Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
+                Widget widget = Field.GetWidget(type);
                 if (widget == null)
                 {
                     continue;
@@ -95,6 +91,9 @@ namespace MapleServer2.Triggers
                 case 1:
                     type = EventBannerType.None;
                     break;
+                case 3:
+                    type = EventBannerType.Winner;
+                    break;
                 case 6:
                     type = EventBannerType.Bonus;
                     break;
@@ -105,8 +104,7 @@ namespace MapleServer2.Triggers
                 Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
                 return;
             }
-
-            if (box.Contains("!"))
+            else if (box.Contains("!"))
             {
                 box = box[1..];
                 int boxId = int.Parse(box);

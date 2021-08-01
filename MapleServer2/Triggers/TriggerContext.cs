@@ -1,6 +1,7 @@
 ﻿using Maple2.Trigger;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using NLog;
@@ -118,7 +119,13 @@ namespace MapleServer2.Triggers
 
         public int GetUserValue(string key)
         {
-            return 0;
+            IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(x => x.Key == key));
+            if (player == null)
+            {
+                return 0;
+            }
+            int value = player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
+            return value;
         }
     }
 }

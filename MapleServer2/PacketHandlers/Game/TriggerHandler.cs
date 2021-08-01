@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger.Enum;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
@@ -45,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (submode)
             {
                 case TriggerUIMode.StopCutscene:
-                    widget = session.Player.Widgets.FirstOrDefault(x => x.Type == WidgetType.SceneMovie);
+                    widget = session.FieldManager.GetWidget(WidgetType.SceneMovie);
                     if (widget == null)
                     {
                         return;
@@ -57,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(CinematicPacket.View(2));
                     break;
                 case TriggerUIMode.Guide:
-                    widget = session.Player.Widgets.FirstOrDefault(x => x.Type == WidgetType.Guide);
+                    widget = session.FieldManager.GetWidget(WidgetType.Guide);
                     if (widget == null)
                     {
                         return;
