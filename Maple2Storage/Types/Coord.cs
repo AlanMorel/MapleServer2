@@ -194,6 +194,11 @@ namespace Maple2Storage.Types
             };
         }
 
+        public static CoordS FromVector3(Vector3 vector3)
+        {
+            return From((short) vector3.X, (short) vector3.Y, (short) vector3.Z);
+        }
+
         public readonly CoordF ToFloat()
         {
             return CoordF.From(X, Y, Z);

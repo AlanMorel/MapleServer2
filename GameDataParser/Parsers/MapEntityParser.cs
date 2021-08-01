@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
@@ -130,13 +129,13 @@ namespace GameDataParser.Parsers
                 switch (entity)
                 {
                     case IMS2Bounding bounding:
-                        if (bounding.EntityName.EndsWith("0") && metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0))
+                        if (bounding.EntityName.EndsWith("0") && metadata.BoundingBox0.Equals(CoordS.From(0, 0, 0)))
                         {
-                            metadata.BoundingBox0 = ToCoordS(bounding.Position);
+                            metadata.BoundingBox0 = CoordS.FromVector3(bounding.Position);
                         }
-                        else if (bounding.EntityName.EndsWith("1") && metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0))
+                        else if (bounding.EntityName.EndsWith("1") && metadata.BoundingBox1.Equals(CoordS.From(0, 0, 0)))
                         {
-                            metadata.BoundingBox1 = ToCoordS(bounding.Position);
+                            metadata.BoundingBox1 = CoordS.FromVector3(bounding.Position);
                         }
                         break;
                     // TODO: This can probably be more generally handled as IMS2RegionSkill
@@ -146,7 +145,7 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
-                        metadata.HealingSpot.Add(ToCoordS(healingRegion.Position));
+                        metadata.HealingSpot.Add(CoordS.FromVector3(healingRegion.Position));
                         break;
                     case IMS2InteractObject interact: // TODO: this one is kinda fucked
                         if (interact.interactID == 0)
@@ -206,7 +205,7 @@ namespace GameDataParser.Parsers
                                 break;
                             case ISpawnPointPC pcSpawn:
                                 metadata.PlayerSpawns.Add(
-                                    new MapPlayerSpawn(ToCoordS(pcSpawn.Position), ToCoordS(pcSpawn.Rotation)));
+                                    new MapPlayerSpawn(CoordS.FromVector3(pcSpawn.Position), CoordS.FromVector3(pcSpawn.Rotation)));
                                 break;
                             case ISpawnPointNPC npcSpawn:
                                 // These tend to be vendors, shops, etc.
@@ -217,8 +216,8 @@ namespace GameDataParser.Parsers
                                     continue;
                                 }
 
-                                MapNpc npc = new MapNpc(npcId, npcSpawn.ModelName, npcSpawn.EntityName, ToCoordS(npcSpawn.Position),
-                                    ToCoordS(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
+                                MapNpc npc = new MapNpc(npcId, npcSpawn.ModelName, npcSpawn.EntityName, CoordS.FromVector3(npcSpawn.Position),
+                                    CoordS.FromVector3(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
                                 // Parse some additional flat supplemented data about this NPC.
 
                                 metadata.Npcs.Add(npc);
@@ -240,7 +239,7 @@ namespace GameDataParser.Parsers
                                 // MS2RegionSpawn, it's only set for SpawnPointNPC.
                                 List<int> mobNpcListBox = new List<int>();
                                 mobNpcListBox.Add(21000025); // Placeholder
-                                metadata.MobSpawns.Add(new MapMobSpawn(boxSpawn.SpawnPointID, ToCoordS(boxSpawn.Position),
+                                metadata.MobSpawns.Add(new MapMobSpawn(boxSpawn.SpawnPointID, CoordS.FromVector3(boxSpawn.Position),
                                     mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
                                 // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
                                 break;
@@ -254,16 +253,18 @@ namespace GameDataParser.Parsers
 
                                 // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
                                 // MS2RegionSpawn, it's only set for SpawnPointNPC.
-                                List<int> mobNpcList = new List<int>();
-                                mobNpcList.Add(21000025); // Placeholder
-                                metadata.MobSpawns.Add(new MapMobSpawn(regionSpawn.SpawnPointID, ToCoordS(regionSpawn.Position),
+                                List<int> mobNpcList = new List<int>
+                                {
+                                    21000025 // Placeholder
+                                };
+                                metadata.MobSpawns.Add(new MapMobSpawn(regionSpawn.SpawnPointID, CoordS.FromVector3(regionSpawn.Position),
                                     mobNpcCount, mobNpcList, (int) regionSpawn.SpawnRadius, mobSpawnData));
                                 break;
                         }
                         break;
                     case IPortal portal:
                         metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
-                            ToCoordS(portal.Position), ToCoordS(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
+                            CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
 
                     case IMS2Breakable:
@@ -291,7 +292,7 @@ namespace GameDataParser.Parsers
                             //    break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
-                                    triggerPortal.TargetFieldSN, ToCoordS(triggerPortal.Position), ToCoordS(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
+                                    triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                                 break;
                             case IMS2TriggerActor triggerActor:
                                 metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
@@ -376,11 +377,6 @@ namespace GameDataParser.Parsers
             }
 
             Entities.Add(metadata);
-        }
-
-        private static CoordS ToCoordS(Vector3 vector3)
-        {
-            return CoordS.From((short) vector3.X, (short) vector3.Y, (short) vector3.Z);
         }
     }
 }
