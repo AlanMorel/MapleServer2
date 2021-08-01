@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetZip" Version="1.15.0" />
-      <PackageReference Include="Maple2.File.Parser" Version="2.0.0-alpha" />
+      <PackageReference Include="Maple2.File.Parser" Version="1.0.6" />
     </ItemGroup>
 
     <ItemGroup>
