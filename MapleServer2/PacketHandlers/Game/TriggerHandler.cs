@@ -39,22 +39,33 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleCutscene(GameSession session, PacketReader packet)
         {
             TriggerUIMode submode = (TriggerUIMode) packet.ReadByte();
-            int movieId = packet.ReadInt();
+            int arg = packet.ReadInt();
 
-            if (submode == TriggerUIMode.StopCutscene)
+            Widget widget;
+            switch (submode)
             {
-                Widget widget = session.Player.Widgets.FirstOrDefault(x => x.Type == WidgetType.SceneMovie);
-                if (widget == null)
-                {
-                    return;
-                }
-                widget.State = "IsStop";
-                session.Send(TriggerPacket.StopCutscene(movieId));
-                session.Send(CinematicPacket.HideUi(false));
-                session.Send(CinematicPacket.View(2));
-
+                case TriggerUIMode.StopCutscene:
+                    widget = session.Player.Widgets.FirstOrDefault(x => x.Type == WidgetType.SceneMovie);
+                    if (widget == null)
+                    {
+                        return;
+                    }
+                    widget.State = "IsStop";
+                    widget.Arg = arg.ToString();
+                    session.Send(TriggerPacket.StopCutscene(arg));
+                    session.Send(CinematicPacket.HideUi(false));
+                    session.Send(CinematicPacket.View(2));
+                    break;
+                case TriggerUIMode.Guide:
+                    widget = session.Player.Widgets.FirstOrDefault(x => x.Type == WidgetType.Guide);
+                    if (widget == null)
+                    {
+                        return;
+                    }
+                    widget.State = "IsTriggerEvent";
+                    widget.Arg = arg.ToString();
+                    break;
             }
-
         }
     }
 }

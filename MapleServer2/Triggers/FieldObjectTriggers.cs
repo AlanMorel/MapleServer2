@@ -6,8 +6,11 @@ namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
-        public void SetActor(int arg1, bool arg2, string arg3, bool arg4, bool arg5)
+        public void SetActor(int actorId, bool isVisible, string stateName, bool arg4, bool arg5)
         {
+            Field.State.TriggerActors[actorId].IsVisible = isVisible;
+            Field.State.TriggerActors[actorId].StateName = stateName;
+            Field.BroadcastPacket(TriggerPacket.SetActorTrigger(actorId, isVisible, stateName));
         }
 
         public void SetAgent(int[] arg1, bool arg2)
@@ -18,16 +21,27 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetEffect(int[] arg1, bool arg2, int arg3, byte arg4)
+        public void SetEffect(int[] triggerIds, bool isVisible, int arg3, byte arg4)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                Field.BroadcastPacket(TriggerPacket.SetEffectTrigger(triggerId, isVisible));
+            }
         }
 
-        public void SetInteractObject(int[] arg1, byte arg2, bool arg4, bool arg3)
+        public void SetInteractObject(int[] interactObjectIds, byte state, bool arg4, bool arg3)
         {
+            //This should be correct, but the current way of parsing interactObjects does not comply with triggerScripts. Needs changing.
+            foreach (int interactObjectId in interactObjectIds)
+            {
+                //Field.State.InteractObjects[interactObjectId].Id = state
+                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+            }
         }
 
-        public void SetLadder(int arg1, bool arg2, bool arg3, byte arg4)
+        public void SetLadder(int ladderId, bool arg2, bool arg3, byte arg4)
         {
+            //Field.BroadcastPacket(TriggerPacket.SetLadderTrigger(arg1, arg2, arg3))
         }
 
         public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)
@@ -53,7 +67,12 @@ namespace MapleServer2.Triggers
             {
                 return;
             }
-            IFieldObject<Portal> portal = Field.State.Portals.Values.First<IFieldObject<Portal>>(p => p.Value.Id == portalId);
+
+            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == portalId);
+            if (portal == null)
+            {
+                return;
+            }
             portal.Value.Update(visible, enabled, minimapVisible);
             Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }

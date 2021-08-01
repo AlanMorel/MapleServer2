@@ -1,6 +1,4 @@
-﻿
-
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class TriggerObject
     {
@@ -36,6 +34,17 @@ namespace MapleServer2.Types
         public TriggerCamera(int id, bool isEnabled) : base(id)
         {
             IsEnabled = isEnabled;
+        }
+    }
+
+    public class TriggerActor : TriggerObject
+    {
+        public bool IsVisible;
+        public string StateName;
+        public TriggerActor(int id, bool isVisible, string stateName) : base(id)
+        {
+            IsVisible = isVisible;
+            StateName = stateName;
         }
     }
 }

@@ -5,7 +5,6 @@ using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
-using MapleServer2.Types;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -20,11 +19,12 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
         private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
+        private static readonly Dictionary<int, List<MapEventNpcSpawnPoint>> EventNpcSpawnPoints = new Dictionary<int, List<MapEventNpcSpawnPoint>>();
         private static readonly Dictionary<int, List<MapTriggerMesh>> TriggerMeshes = new Dictionary<int, List<MapTriggerMesh>>();
         private static readonly Dictionary<int, List<MapTriggerEffect>> TriggerEffects = new Dictionary<int, List<MapTriggerEffect>>();
         private static readonly Dictionary<int, List<MapTriggerCamera>> TriggerCameras = new Dictionary<int, List<MapTriggerCamera>>();
         private static readonly Dictionary<int, List<MapTriggerBox>> TriggerBoxes = new Dictionary<int, List<MapTriggerBox>>();
-
+        private static readonly Dictionary<int, List<MapTriggerActor>> TriggerActors = new Dictionary<int, List<MapTriggerActor>>();
 
         static MapEntityStorage()
         {
@@ -40,10 +40,12 @@ namespace MapleServer2.Data.Static
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
                 healthSpot.Add(entity.MapId, entity.HealingSpot);
+                EventNpcSpawnPoints.Add(entity.MapId, entity.EventNpcSpawnPoints);
                 TriggerMeshes.Add(entity.MapId, entity.TriggerMeshes);
                 TriggerEffects.Add(entity.MapId, entity.TriggerEffects);
                 TriggerCameras.Add(entity.MapId, entity.TriggerCameras);
                 TriggerBoxes.Add(entity.MapId, entity.TriggerBoxes);
+                TriggerActors.Add(entity.MapId, entity.TriggerActors);
             }
         }
 
@@ -116,6 +118,11 @@ namespace MapleServer2.Data.Static
             return healthSpot.GetValueOrDefault(mapId);
         }
 
+        public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId)
+        {
+            return EventNpcSpawnPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == spawnPointId);
+        }
+
         public static List<MapTriggerMesh> GetTriggerMeshes(int mapId)
         {
             return TriggerMeshes.GetValueOrDefault(mapId);
@@ -133,6 +140,14 @@ namespace MapleServer2.Data.Static
         public static MapTriggerBox GetTriggerBox(int mapId, int boxId)
         {
             return TriggerBoxes.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == boxId);
+        }
+        public static List<MapTriggerBox> GetTriggerBoxes(int mapId)
+        {
+            return TriggerBoxes.GetValueOrDefault(mapId);
+        }
+        public static List<MapTriggerActor> GetTriggerActors(int mapId)
+        {
+            return TriggerActors.GetValueOrDefault(mapId);
         }
     }
 }

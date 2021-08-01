@@ -6,6 +6,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using MapleServer2.Commands.Core;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -23,9 +24,10 @@ namespace MapleServer2.PacketHandlers.Game
             string recipient = packet.ReadUnicodeString();
             long clubId = packet.ReadLong();
 
-            if (message.Substring(0, 1).Equals("/"))
+            if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
             {
-                GameCommandActions.Process(session, message);
+                string[] args = message[1..].ToLower().Split(" ");
+                GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session));
                 return;
             }
 

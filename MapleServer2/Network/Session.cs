@@ -48,7 +48,7 @@ namespace MapleServer2.Network
 
         protected readonly ILogger Logger;
 
-        private static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         protected Session(ILogger<Session> logger)
         {

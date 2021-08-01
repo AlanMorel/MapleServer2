@@ -1,6 +1,11 @@
 ﻿using Maple2.Trigger;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using NLog;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MapleServer2.Triggers
 {
@@ -93,7 +98,22 @@ namespace MapleServer2.Triggers
 
         public int GetUserCount(int boxId, int userTagId)
         {
-            return 20;
+            if (boxId != 0)
+            {
+                List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                int userCount = 0;
+
+                foreach (IFieldObject<Player> player in players)
+                {
+                    if (FieldManager.IsPlayerInBox(box, player))
+                    {
+                        userCount++;
+                    }
+                }
+                return userCount;
+            }
+            return Field.State.Players.Values.Count;
         }
 
         public int GetUserValue(string key)

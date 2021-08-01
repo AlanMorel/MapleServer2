@@ -13,12 +13,14 @@ namespace MapleServer2.Packets
             SendTriggers = 0x2,
             SingleTrigger = 0x3,
             Cutscene = 0x4,
+            Camera = 0x5,
             UI = 0x8,
             Timer = 0xE,
         }
 
         public enum TriggerUIMode : byte
         {
+            Guide = 0x1,
             EnableBanner = 0x2,
             DisableBanner = 0x3,
             StartCutscene = 0x4,
@@ -35,33 +37,74 @@ namespace MapleServer2.Packets
             {
                 switch (triggerObject)
                 {
-                    case TriggerMesh:
-                        TriggerMesh triggerMesh = (TriggerMesh) triggerObject;
-                        //pWriter.Write(SetMeshTrigger(triggerMesh.Id, triggerMesh.IsVisible, 0));
+                    case TriggerMesh triggerMesh:
                         pWriter.WriteInt(triggerMesh.Id);
                         pWriter.WriteBool(triggerMesh.IsVisible);
                         pWriter.WriteByte(0x00);
-                        pWriter.WriteInt(2);
+                        pWriter.WriteInt(2); //get this from the correct place, it probably is not always 2
                         pWriter.WriteInt(0);
-                        pWriter.WriteShort(16256); //constant: 80 3F
+                        pWriter.WriteShort(16256); //constant: 80 3F ends a Mesh trigger.
                         break;
 
-                    case TriggerEffect:
-                        TriggerEffect triggerEffect = (TriggerEffect) triggerObject;
+                    case TriggerEffect triggerEffect:
                         pWriter.WriteInt(triggerEffect.Id);
                         pWriter.WriteBool(triggerEffect.IsVisible);
                         pWriter.WriteByte(0x00);
                         pWriter.WriteInt(3); //not sure where this value is coming from.
                         break;
 
-                    case TriggerCamera:
-                        TriggerCamera triggerCamera = (TriggerCamera) triggerObject;
+                    case TriggerCamera triggerCamera:
                         pWriter.WriteInt(triggerCamera.Id);
                         pWriter.WriteBool(triggerCamera.IsEnabled);
                         break;
+
+                    case TriggerActor triggerActor:
+                        pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+                        pWriter.WriteInt(triggerActor.Id);
+                        pWriter.WriteBool(triggerActor.IsVisible);
+                        pWriter.WriteUnicodeString(triggerActor.StateName);
+                        return pWriter;
+
+                        //case TriggerLadder triggerLadder:
+                        //    pWriter.WriteInt(triggerLadder.Id);
+                        //    pWriter.WriteBool(0x00);
+                        //    pWriter.WriteBool(0x00);
+                        //    pWriter.WriteInt(3); //not sure where this value is coming from.
+                        //    break;
                 }
             }
+            return pWriter;
+        }
 
+        public static Packet SetActorTrigger(int actorId, bool isVisible, string stateName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+            pWriter.WriteInt(actorId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteUnicodeString(stateName); //"Closed" or "Opened"
+            return pWriter;
+        }
+
+        public static Packet SetLadderTrigger(int ladderId, bool arg2, bool arg3)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+            pWriter.WriteInt(ladderId);
+            pWriter.WriteBool(arg2);
+            pWriter.WriteBool(arg3);
+            pWriter.WriteInt(3); //unsure where this 3 is coming from triggereffect also has it
+            return pWriter;
+        }
+
+        public static Packet SetEffectTrigger(int effectId, bool isVisible)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
+            pWriter.WriteInt(effectId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteByte();
+            pWriter.WriteInt(3); //unsure where this 3 is coming from, triggermesh also has it
             return pWriter;
         }
 
@@ -75,6 +118,15 @@ namespace MapleServer2.Packets
             pWriter.WriteInt((int) arg5);
             pWriter.WriteInt(0);
             pWriter.WriteShort(16256); //constant: 80 3F
+            return pWriter;
+        }
+
+        public static Packet Guide(int eventId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.UI);
+            pWriter.WriteEnum(TriggerUIMode.Guide);
+            pWriter.WriteInt(eventId);
             return pWriter;
         }
 
@@ -105,6 +157,19 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(TriggerPacketMode.UI);
             pWriter.WriteEnum(TriggerUIMode.StopCutscene);
             pWriter.WriteInt(movieId);
+            return pWriter;
+        }
+
+        public static Packet Camera(int[] pathIds, bool returnView)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.Camera);
+            pWriter.WriteByte((byte) pathIds.Length);
+            foreach (int pathId in pathIds)
+            {
+                pWriter.WriteInt(pathId);
+            }
+            pWriter.WriteBool(returnView);
             return pWriter;
         }
 

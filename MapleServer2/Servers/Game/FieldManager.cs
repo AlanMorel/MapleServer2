@@ -91,9 +91,9 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
                 {
-                    IsVisible = portal.Flags.HasFlag(MapPortalFlag.Visible),
-                    IsEnabled = portal.Flags.HasFlag(MapPortalFlag.Enabled),
-                    IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
+                    IsVisible = portal.IsVisible,
+                    IsEnabled = portal.Enable,
+                    IsMinimapVisible = portal.MinimapVisible,
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
                     PortalType = portal.PortalType
@@ -141,6 +141,15 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
+            foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(mapId))
+            {
+                if (mapTriggerActor != null)
+                {
+                    TriggerActor triggerActor = new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence);
+                    State.AddTriggerObject(triggerActor);
+                }
+            }
+
             foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
             {
                 if (mapTriggerCamera != null)
@@ -162,7 +171,6 @@ namespace MapleServer2.Servers.Game
                     }
                 }
             }
-
         }
 
         // Gets a list of packets to update the state of all field objects for client.
@@ -322,6 +330,7 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
             triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
+            triggerObjects.AddRange(State.TriggerActors.Values.ToList());
             sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
@@ -355,6 +364,21 @@ namespace MapleServer2.Servers.Game
             });
 
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
+        }
+
+        public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
+        {
+            CoordF minCoord = CoordF.From(
+                    box.Position.X - box.Dimension.X,
+                    box.Position.Y - box.Dimension.Y,
+                    box.Position.Z - box.Dimension.Z);
+            CoordF maxCoord = CoordF.From(
+                box.Position.X + box.Dimension.X,
+                box.Position.Y + box.Dimension.Y,
+                box.Position.Z + box.Dimension.Z);
+            bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
+            bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+            return min && max;
         }
 
         // Spawned NPCs will not appear until controlled
@@ -646,13 +670,17 @@ namespace MapleServer2.Servers.Game
 
             foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
             {
-                int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
+                if (mob.Name == "Constructor Type 13")
+                {
+                    continue;
+                }
+                int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
+                if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
                 {
                     break;
                 }
 
-                for (int i = 0; i < spawnCount; i++)
+                for (int i = 0; i < groupSpawnCount; i++)
                 {
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];

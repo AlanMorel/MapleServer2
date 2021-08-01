@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Packets
 {
@@ -36,12 +37,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet TextBanner(byte type, string text, int duration)
+        public static Packet TextBanner(EventBannerType type, string script, int duration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
             pWriter.WriteEnum(MassiveEventPacketMode.TextBanner);
-            pWriter.WriteByte(type); // 00 = LOSE, 01 = GAMEOVER, 02 = WINNER, 03 = BONUS, 04 = DRAW, 05 = SUCCESS, 06 = (NONE), 07 = FAIL
-            pWriter.WriteUnicodeString(text);
+            pWriter.WriteEnum(type);
+            pWriter.WriteUnicodeString(script);
             pWriter.WriteInt(duration);
             return pWriter;
         }

@@ -12,6 +12,7 @@ namespace MapleServer2.Packets
         private enum InteractObjectMode : byte
         {
             Use = 0x05,
+            Activate = 0x06, //could also just be lever object
             AddInteractObject = 0x08,
             AddAdBalloons = 0x09,
             Extra = 0x0D
@@ -21,6 +22,15 @@ namespace MapleServer2.Packets
         {
             Disabled = 0x00,
             Enabled = 0x01
+        }
+
+        public static Packet ActivateInteractObject(int interactObjectId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+            pWriter.WriteEnum(InteractObjectMode.Activate);
+            pWriter.WriteInt(interactObjectId);
+            pWriter.WriteEnum(InteractStatus.Enabled);
+            return pWriter;
         }
 
         public static Packet AddInteractObjects(ICollection<IFieldObject<InteractObject>> objects)
