@@ -363,6 +363,7 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
+            sender.ReleaseField(player.Value);
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
         }
 

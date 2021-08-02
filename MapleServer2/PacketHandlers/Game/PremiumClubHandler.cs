@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Player.VIPExpiration += vipTime;
                 session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
             }
-
+            session.Send(BuffPacket.SendBuff(0, new Status(100000014, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
         }
     }
