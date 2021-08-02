@@ -22,7 +22,7 @@ namespace MapleServer2.Commands.Core
 
             foreach (string arg in args[1..])
             {
-                stringBuilder.Append($"{arg}");
+                stringBuilder.Append($"{arg} ");
             }
             return stringBuilder.ToString();
         }

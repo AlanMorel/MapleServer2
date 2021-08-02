@@ -58,7 +58,7 @@ namespace MapleServer2.Commands.Game
         {
             string[] args = trigger.Get<string[]>("message");
 
-            if (args.Length <= 1)
+            if (args == null || args.Length <= 1)
             {
                 trigger.Session.SendNotice("No message provided.");
                 return;

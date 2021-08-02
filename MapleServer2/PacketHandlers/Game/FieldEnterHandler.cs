@@ -5,6 +5,7 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -27,6 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
             if (session.Player.IsVip())
             {
+                session.Send(BuffPacket.SendBuff(0, new Status(100000014, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, (int) session.Player.VIPExpiration, 1)));
                 session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
             }
             session.Send(EmotePacket.LoadEmotes(session.Player));

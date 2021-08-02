@@ -16,24 +16,21 @@ namespace MapleServer2.Tools
 
         public FieldManager GetManager(int key, long instanceId)
         {
-            lock (Managers)
+            if (!Managers.TryGetValue(key, out List<FieldManager> list))
             {
-                if (!Managers.TryGetValue(key, out List<FieldManager> list))
-                {
-                    list = new List<FieldManager>() { new FieldManager(key, instanceId) };
-                    Managers[key] = list;
-                }
-
-                FieldManager manager = list.FirstOrDefault(x => x.InstanceId == instanceId);
-                if (manager == default)
-                {
-                    manager = new FieldManager(key, instanceId);
-                    Managers[key].Add(manager);
-                }
-
-                manager.Increment();
-                return manager;
+                list = new List<FieldManager>() { new FieldManager(key, instanceId) };
+                Managers[key] = list;
             }
+
+            FieldManager manager = list.FirstOrDefault(x => x.InstanceId == instanceId);
+            if (manager == default)
+            {
+                manager = new FieldManager(key, instanceId);
+                Managers[key].Add(manager);
+            }
+
+            manager.Increment();
+            return manager;
         }
 
         public bool Release(int key, long instanceId, Player player)
