@@ -58,6 +58,7 @@ namespace MapleServer2.Commands.Core
                     if (string.IsNullOrEmpty(arg))
                     {
                         definedParam[index].SetDefaultValue();
+                        CommandsParametersByName = Command.Parameters.ToDictionary(entry => entry.Name);
                         return true;
                     }
                     if (definedParam[index].ValueType.IsArray)

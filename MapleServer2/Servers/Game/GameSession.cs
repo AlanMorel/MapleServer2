@@ -44,7 +44,6 @@ namespace MapleServer2.Servers.Game
             {
                 party.BroadcastPacketParty(PartyPacket.LoginNotice(player), this);
             }
-
         }
 
         public void EnterField(Player player)
@@ -90,6 +89,11 @@ namespace MapleServer2.Servers.Game
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
             // Should we Join the thread to wait for it to complete?
+        }
+
+        public void ReleaseField(Player player)
+        {
+            FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player);
         }
     }
 }

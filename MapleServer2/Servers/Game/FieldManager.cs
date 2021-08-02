@@ -41,7 +41,6 @@ namespace MapleServer2.Servers.Game
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
 
-        // TODO: Optimize first load for BoundingBox and MapInteractObject for better performance.
         public FieldManager(int mapId, long instanceId)
         {
             MapId = mapId;
@@ -335,7 +334,11 @@ namespace MapleServer2.Servers.Game
             sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
-            MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
+
+            if (MapLoopTask == null)
+            {
+                MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
+            }
 
             // Broadcast new player to all players in map
             Broadcast(session =>
@@ -360,6 +363,7 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
+            sender.ReleaseField(player.Value);
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
         }
 
