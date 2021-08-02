@@ -297,6 +297,9 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerActor triggerActor:
                                 metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
                                 break;
+                            case IMS2TriggerCube triggerCube:
+                                metadata.TriggerCubes.Add(new MapTriggerCube(triggerCube.TriggerObjectID, triggerCube.IsVisible));
+                                break;
                         }
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic

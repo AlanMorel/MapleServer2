@@ -161,6 +161,15 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
+            foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(mapId))
+            {
+                if (mapTriggerCube != null)
+                {
+                    TriggerCube triggerCamera = new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible);
+                    State.AddTriggerObject(triggerCamera);
+                }
+            }
+
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
@@ -333,7 +342,7 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             triggerObjects.AddRange(State.TriggerActors.Values.ToList());
-            sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
+            sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
 
             State.AddPlayer(player);
 

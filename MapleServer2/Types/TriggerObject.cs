@@ -13,9 +13,11 @@
     public class TriggerMesh : TriggerObject
     {
         public bool IsVisible;
+        public int Value; // unknown what this currently is
         public TriggerMesh(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
+            Value = 0;
         }
     }
 
@@ -45,6 +47,15 @@
         {
             IsVisible = isVisible;
             StateName = stateName;
+        }
+    }
+
+    public class TriggerCube : TriggerObject
+    {
+        public bool IsVisible;
+        public TriggerCube(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
         }
     }
 }

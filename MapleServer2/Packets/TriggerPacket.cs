@@ -10,8 +10,8 @@ namespace MapleServer2.Packets
     {
         private enum TriggerPacketMode : byte
         {
-            SendTriggers = 0x2,
-            SingleTrigger = 0x3,
+            LoadTriggers = 0x2,
+            UpdateTrigger = 0x3,
             Cutscene = 0x4,
             Camera = 0x5,
             UI = 0x8,
@@ -27,98 +27,65 @@ namespace MapleServer2.Packets
             StopCutscene = 0x5,
         }
 
-        public static Packet SendTriggerObjects(List<TriggerObject> triggerObjects)
+        public static Packet LoadTriggers(List<TriggerObject> triggerObjects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SendTriggers);
+            pWriter.WriteEnum(TriggerPacketMode.LoadTriggers);
             pWriter.WriteInt(triggerObjects.Count);
 
             foreach (TriggerObject triggerObject in triggerObjects)
             {
-                switch (triggerObject)
-                {
-                    case TriggerMesh triggerMesh:
-                        pWriter.WriteInt(triggerMesh.Id);
-                        pWriter.WriteBool(triggerMesh.IsVisible);
-                        pWriter.WriteByte(0x00);
-                        pWriter.WriteInt(2); //get this from the correct place, it probably is not always 2
-                        pWriter.WriteInt(0);
-                        pWriter.WriteShort(16256); //constant: 80 3F ends a Mesh trigger.
-                        break;
-
-                    case TriggerEffect triggerEffect:
-                        pWriter.WriteInt(triggerEffect.Id);
-                        pWriter.WriteBool(triggerEffect.IsVisible);
-                        pWriter.WriteByte(0x00);
-                        pWriter.WriteInt(3); //not sure where this value is coming from.
-                        break;
-
-                    case TriggerCamera triggerCamera:
-                        pWriter.WriteInt(triggerCamera.Id);
-                        pWriter.WriteBool(triggerCamera.IsEnabled);
-                        break;
-
-                    case TriggerActor triggerActor:
-                        pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-                        pWriter.WriteInt(triggerActor.Id);
-                        pWriter.WriteBool(triggerActor.IsVisible);
-                        pWriter.WriteUnicodeString(triggerActor.StateName);
-                        return pWriter;
-
-                        //case TriggerLadder triggerLadder:
-                        //    pWriter.WriteInt(triggerLadder.Id);
-                        //    pWriter.WriteBool(0x00);
-                        //    pWriter.WriteBool(0x00);
-                        //    pWriter.WriteInt(3); //not sure where this value is coming from.
-                        //    break;
-                }
+                WriteTrigger(pWriter, triggerObject);
             }
             return pWriter;
         }
 
-        public static Packet SetActorTrigger(int actorId, bool isVisible, string stateName)
+        public static Packet UpdateTrigger(TriggerObject trigger)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-            pWriter.WriteInt(actorId);
-            pWriter.WriteBool(isVisible);
-            pWriter.WriteUnicodeString(stateName); //"Closed" or "Opened"
+            pWriter.WriteEnum(TriggerPacketMode.UpdateTrigger);
+            WriteTrigger(pWriter, trigger);
             return pWriter;
         }
 
-        public static Packet SetLadderTrigger(int ladderId, bool arg2, bool arg3)
+        public static void WriteTrigger(PacketWriter pWriter, TriggerObject trigger)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-            pWriter.WriteInt(ladderId);
-            pWriter.WriteBool(arg2);
-            pWriter.WriteBool(arg3);
-            pWriter.WriteInt(3); //unsure where this 3 is coming from triggereffect also has it
-            return pWriter;
-        }
+            switch (trigger)
+            {
+                case TriggerMesh triggerMesh:
+                    pWriter.WriteInt(triggerMesh.Id);
+                    pWriter.WriteBool(triggerMesh.IsVisible);
+                    pWriter.WriteByte(0x00);
+                    pWriter.WriteInt(triggerMesh.Value);
+                    pWriter.WriteUnicodeString("");
+                    pWriter.WriteFloat(1); //constant
+                    break;
 
-        public static Packet SetEffectTrigger(int effectId, bool isVisible)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-            pWriter.WriteInt(effectId);
-            pWriter.WriteBool(isVisible);
-            pWriter.WriteByte();
-            pWriter.WriteInt(3); //unsure where this 3 is coming from, triggermesh also has it
-            return pWriter;
-        }
+                case TriggerEffect triggerEffect:
+                    pWriter.WriteInt(triggerEffect.Id);
+                    pWriter.WriteBool(triggerEffect.IsVisible);
+                    pWriter.WriteByte(0x00);
+                    pWriter.WriteInt(3); //not sure where this value is coming from.
+                    break;
 
-        public static Packet SetMeshTrigger(int meshId, bool isVisible, float arg5)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.SingleTrigger);
-            pWriter.WriteInt(meshId);
-            pWriter.WriteBool(isVisible);
-            pWriter.WriteByte(0x00);
-            pWriter.WriteInt();
-            pWriter.WriteUnicodeString("");
-            pWriter.WriteFloat(1);
-            return pWriter;
+                case TriggerCamera triggerCamera:
+                    pWriter.WriteInt(triggerCamera.Id);
+                    pWriter.WriteBool(triggerCamera.IsEnabled);
+                    break;
+
+                case TriggerActor triggerActor: // needs verification if this is the packet structure
+                    pWriter.WriteInt(triggerActor.Id);
+                    pWriter.WriteBool(triggerActor.IsVisible);
+                    pWriter.WriteUnicodeString(triggerActor.StateName);
+                    break;
+
+                    //case TriggerLadder triggerLadder:
+                    //    pWriter.WriteInt(triggerLadder.Id);
+                    //    pWriter.WriteBoolarg2);
+                    //    pWriter.WriteBool(arg3);
+                    //    pWriter.WriteInt(3); //not sure where this value is coming from.
+                    //    break;
+            }
         }
 
         public static Packet Guide(int eventId)
@@ -184,36 +151,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteUnicodeString("");
             return pWriter;
-        }
-
-        public static Packet Timer2()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.Timer);
-            pWriter.WriteBool(false);
-            pWriter.WriteInt(Environment.TickCount);
-            pWriter.WriteInt(18000);
-            pWriter.WriteBool(false);
-            pWriter.WriteInt();
-            pWriter.WriteUnicodeString("");
-            return pWriter;
-        }
-
-        public static void WriteTriggerMesh(PacketWriter pWriter, int meshId, bool isVisible, float arg5)
-        {
-            pWriter.WriteInt(meshId);
-            pWriter.WriteBool(isVisible);
-            pWriter.WriteByte(0x00);
-            pWriter.WriteInt(2); //get this from the correct place, it probably is not always 2
-            pWriter.WriteUnicodeString("");
-            pWriter.WriteFloat(1); //constant
-        }
-
-        public static void WriteTriggerActor(PacketWriter pWriter, int actorId, bool isVisible, string stateName)
-        {
-            pWriter.WriteInt(actorId);
-            pWriter.WriteBool(isVisible);
-            pWriter.WriteUnicodeString(stateName); //"Closed" or "Opened"
         }
     }
 }

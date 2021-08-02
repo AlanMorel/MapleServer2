@@ -46,6 +46,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
         [XmlElement(Order = 18)]
         public readonly List<MapTriggerActor> TriggerActors;
+        [XmlElement(Order = 19)]
+        public readonly List<MapTriggerCube> TriggerCubes;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -65,6 +67,7 @@ namespace Maple2Storage.Types.Metadata
             //TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
             TriggerActors = new List<MapTriggerActor>();
+            TriggerCubes = new List<MapTriggerCube>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -85,6 +88,7 @@ namespace Maple2Storage.Types.Metadata
             //TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
             TriggerActors = new List<MapTriggerActor>();
+            TriggerCubes = new List<MapTriggerCube>();
         }
 
         public override string ToString() =>
@@ -546,6 +550,7 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(13, typeof(MapTriggerBox))]
     // [ProtoInclude(14, typeof(MapTriggerLadder))]
     [ProtoInclude(15, typeof(MapTriggerActor))]
+    [ProtoInclude(16, typeof(MapTriggerCube))]
     public class MapTriggerObject
     {
         [ProtoMember(8)]
@@ -652,6 +657,17 @@ namespace Maple2Storage.Types.Metadata
         }
         private MapTriggerActor() : base()
         {
+        }
+    }
+
+    [ProtoContract]
+    public class MapTriggerCube : MapTriggerObject
+    {
+        [ProtoMember(17)]
+        public bool IsVisible;
+        public MapTriggerCube(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, TriggerEffect> TriggerEffects;
         public readonly ConcurrentDictionary<int, TriggerCamera> TriggerCameras;
         public readonly ConcurrentDictionary<int, TriggerActor> TriggerActors;
+        public readonly ConcurrentDictionary<int, TriggerCube> TriggerCubes;
 
         public FieldState()
         {
@@ -39,6 +40,7 @@ namespace MapleServer2.Types
             TriggerEffects = new ConcurrentDictionary<int, TriggerEffect>();
             TriggerCameras = new ConcurrentDictionary<int, TriggerCamera>();
             TriggerActors = new ConcurrentDictionary<int, TriggerActor>();
+            TriggerCubes = new ConcurrentDictionary<int, TriggerCube>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -174,6 +176,9 @@ namespace MapleServer2.Types
                     break;
                 case TriggerActor triggerActor:
                     TriggerActors[triggerActor.Id] = triggerActor;
+                    break;
+                case TriggerCube triggerCube:
+                    TriggerCubes[triggerCube.Id] = triggerCube;
                     break;
             }
         }

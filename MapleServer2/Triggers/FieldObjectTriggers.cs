@@ -10,22 +10,28 @@ namespace MapleServer2.Triggers
         {
             Field.State.TriggerActors[actorId].IsVisible = isVisible;
             Field.State.TriggerActors[actorId].StateName = stateName;
-            Field.BroadcastPacket(TriggerPacket.SetActorTrigger(actorId, isVisible, stateName));
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerActors[actorId]));
         }
 
         public void SetAgent(int[] arg1, bool arg2)
         {
         }
 
-        public void SetCube(int[] ids, bool isVisible, byte randomCount)
+        public void SetCube(int[] triggerIds, bool isVisible, byte randomCount)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                Field.State.TriggerCubes[triggerId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerCubes[triggerId]));
+            }
         }
 
         public void SetEffect(int[] triggerIds, bool isVisible, int arg3, byte arg4)
         {
             foreach (int triggerId in triggerIds)
             {
-                Field.BroadcastPacket(TriggerPacket.SetEffectTrigger(triggerId, isVisible));
+                Field.State.TriggerEffects[triggerId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerEffects[triggerId]));
             }
         }
 
@@ -49,7 +55,7 @@ namespace MapleServer2.Triggers
             foreach (int triggerMeshId in meshIds)
             {
                 Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.SetMeshTrigger(triggerMeshId, isVisible, arg5));
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
             }
         }
 

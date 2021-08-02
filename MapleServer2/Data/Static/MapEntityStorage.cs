@@ -25,6 +25,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapTriggerCamera>> TriggerCameras = new Dictionary<int, List<MapTriggerCamera>>();
         private static readonly Dictionary<int, List<MapTriggerBox>> TriggerBoxes = new Dictionary<int, List<MapTriggerBox>>();
         private static readonly Dictionary<int, List<MapTriggerActor>> TriggerActors = new Dictionary<int, List<MapTriggerActor>>();
+        private static readonly Dictionary<int, List<MapTriggerCube>> TriggerCubes = new Dictionary<int, List<MapTriggerCube>>();
 
         static MapEntityStorage()
         {
@@ -46,6 +47,7 @@ namespace MapleServer2.Data.Static
                 TriggerCameras.Add(entity.MapId, entity.TriggerCameras);
                 TriggerBoxes.Add(entity.MapId, entity.TriggerBoxes);
                 TriggerActors.Add(entity.MapId, entity.TriggerActors);
+                TriggerCubes.Add(entity.MapId, entity.TriggerCubes);
             }
         }
 
@@ -148,6 +150,11 @@ namespace MapleServer2.Data.Static
         public static List<MapTriggerActor> GetTriggerActors(int mapId)
         {
             return TriggerActors.GetValueOrDefault(mapId);
+        }
+
+        public static List<MapTriggerCube> GetTriggerCubes(int mapId)
+        {
+            return TriggerCubes.GetValueOrDefault(mapId);
         }
     }
 }
