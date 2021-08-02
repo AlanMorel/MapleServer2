@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
             SystemVerificationFailed = 0x15, // Session verification failed. A connection is not possible. Clicking ok closes client.
             GameVerificationFailed2 = 0x16, // Game verification failed. Please restart the game.
             SystemError4 = 0x17, // System error
-            IpCannotConned = 0x18, // Connecting from an IP that cannot connect. Clicking ok closes client.
+            IpCannotConnect = 0x18, // Connecting from an IP that cannot connect. Clicking ok closes client.
             LoginSessionTimeout = 0x19, // Your login session has timed out. Please restart your client.
             BuyFoundersPack = 0x1A, // Access this by purchasing a Founder's Pack.
             SystemError5 = 0x1B, // System error
