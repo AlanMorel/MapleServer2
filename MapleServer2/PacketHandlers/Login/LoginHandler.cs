@@ -40,16 +40,20 @@ namespace MapleServer2.PacketHandlers.Login
             string username = packet.ReadUnicodeString();
             string password = packet.ReadUnicodeString();
 
-            // Hash the password with BCrypt
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-
-            // TODO: Change authenticate to return bool and add packet for wrong password
-            Account account = DatabaseManager.Authenticate(username, password);
-
-            // Auto add new accounts
-            if (account == default)
+            Account account;
+            if (DatabaseManager.AccountExists(username.ToLower()))
             {
-                account = new Account(username, passwordHash);
+                if (!DatabaseManager.Authenticate(username, password, out account))
+                {
+                    session.Send(LoginResultPacket.IncorrectPassword());
+                    return;
+                }
+            }
+            else
+            {
+                // Hash the password with BCrypt
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+                account = new Account(username, passwordHash); // Create a new account if username doesn't exist
             }
 
             Logger.Debug($"Logging in with account ID: {account.Id}");
