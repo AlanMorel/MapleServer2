@@ -45,7 +45,7 @@ namespace MapleServer2.Packets
         public static Packet InitLogin(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.LoginOk); // Login State
+            pWriter.WriteEnum(LoginModes.LoginOk);
             pWriter.WriteInt(); // Const
             pWriter.WriteUnicodeString(""); // Ban reason
             pWriter.WriteLong(accountId);
@@ -74,6 +74,24 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
             pWriter.WriteEnum(LoginModes.IncorrectPassword);
             pWriter.WriteZero(45);
+
+            return pWriter;
+        }
+
+        public static Packet AccountBanned()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+            pWriter.WriteEnum(LoginModes.AccountSuspended);
+            pWriter.WriteInt(); // Const
+            pWriter.WriteUnicodeString(""); // Ban reason
+            pWriter.WriteLong(); // account id
+            pWriter.WriteLong(); // SyncTime
+            pWriter.WriteInt(); // SyncTicks
+            pWriter.WriteByte(); // TimeZone
+            pWriter.WriteByte(); // BlockType
+            pWriter.WriteInt(); // Const
+            pWriter.WriteLong(); // Const
+            pWriter.WriteInt(2); // Const
 
             return pWriter;
         }
