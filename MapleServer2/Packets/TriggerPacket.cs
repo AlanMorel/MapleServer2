@@ -115,9 +115,9 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(meshId);
             pWriter.WriteBool(isVisible);
             pWriter.WriteByte(0x00);
-            pWriter.WriteInt((int) arg5);
-            pWriter.WriteInt(0);
-            pWriter.WriteShort(16256); //constant: 80 3F
+            pWriter.WriteInt();
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteFloat(1);
             return pWriter;
         }
 
@@ -197,6 +197,23 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteUnicodeString("");
             return pWriter;
+        }
+
+        public static void WriteTriggerMesh(PacketWriter pWriter, int meshId, bool isVisible, float arg5)
+        {
+            pWriter.WriteInt(meshId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteByte(0x00);
+            pWriter.WriteInt(2); //get this from the correct place, it probably is not always 2
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteFloat(1); //constant
+        }
+
+        public static void WriteTriggerActor(PacketWriter pWriter, int actorId, bool isVisible, string stateName)
+        {
+            pWriter.WriteInt(actorId);
+            pWriter.WriteBool(isVisible);
+            pWriter.WriteUnicodeString(stateName); //"Closed" or "Opened"
         }
     }
 }
