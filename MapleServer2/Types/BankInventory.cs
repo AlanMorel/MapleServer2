@@ -151,7 +151,7 @@ namespace MapleServer2.Types
         {
             long meretPrice = 330;
             int expansionAmount = 6;
-            if (!session.Player.Wallet.RemoveMerets(meretPrice))
+            if (!session.Player.Account.RemoveMerets(session, meretPrice))
             {
                 return;
             }

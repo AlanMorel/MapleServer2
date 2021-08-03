@@ -94,7 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
-            session.Player.Wallet.Meso.Modify(price * quantity);
+            session.Player.Wallet.Meso.Modify(session, price * quantity);
 
             InventoryController.Consume(session, item.Uid, quantity);
 
@@ -111,24 +111,24 @@ namespace MapleServer2.PacketHandlers.Game
             switch (shopItem.TokenType)
             {
                 case ShopCurrencyType.Meso:
-                    session.Player.Wallet.Meso.Modify(-(shopItem.Price * quantity));
+                    session.Player.Wallet.Meso.Modify(session, -(shopItem.Price * quantity));
                     break;
                 case ShopCurrencyType.ValorToken:
-                    session.Player.Wallet.ValorToken.Modify(-(shopItem.Price * quantity));
+                    session.Player.Wallet.ValorToken.Modify(session, -(shopItem.Price * quantity));
                     break;
                 case ShopCurrencyType.Treva:
-                    session.Player.Wallet.Treva.Modify(-(shopItem.Price * quantity));
+                    session.Player.Wallet.Treva.Modify(session, -(shopItem.Price * quantity));
                     break;
                 case ShopCurrencyType.Rue:
-                    session.Player.Wallet.Rue.Modify(-(shopItem.Price * quantity));
+                    session.Player.Wallet.Rue.Modify(session, -(shopItem.Price * quantity));
                     break;
                 case ShopCurrencyType.HaviFruit:
-                    session.Player.Wallet.HaviFruit.Modify(-(shopItem.Price * quantity));
+                    session.Player.Wallet.HaviFruit.Modify(session, -(shopItem.Price * quantity));
                     break;
                 case ShopCurrencyType.Meret:
                 case ShopCurrencyType.GameMeret:
                 case ShopCurrencyType.EventMeret:
-                    session.Player.Wallet.RemoveMerets(shopItem.Price * quantity);
+                    session.Player.Account.RemoveMerets(session, shopItem.Price * quantity);
                     break;
                 case ShopCurrencyType.Item:
                     Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == shopItem.RequiredItemId).Value;

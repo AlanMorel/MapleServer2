@@ -35,7 +35,7 @@ namespace MapleServer2.Commands.Game
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             trigger.Session.Player.Levels.GainExp(questStatus.Reward.Exp);
-            trigger.Session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+            trigger.Session.Player.Wallet.Meso.Modify(trigger.Session, questStatus.Reward.Money);
 
             foreach (QuestRewardItem reward in questStatus.RewardItems)
             {

@@ -598,19 +598,19 @@ namespace MapleServer2.PacketHandlers.Game
             switch (type)
             {
                 case ShopCurrencyType.Meso:
-                    return session.Player.Wallet.Meso.Modify(-tokenCost);
+                    return session.Player.Wallet.Meso.Modify(session, -tokenCost);
                 case ShopCurrencyType.ValorToken:
-                    return session.Player.Wallet.ValorToken.Modify(-tokenCost);
+                    return session.Player.Wallet.ValorToken.Modify(session, -tokenCost);
                 case ShopCurrencyType.Treva:
-                    return session.Player.Wallet.Treva.Modify(-tokenCost);
+                    return session.Player.Wallet.Treva.Modify(session, -tokenCost);
                 case ShopCurrencyType.Rue:
-                    return session.Player.Wallet.Rue.Modify(-tokenCost);
+                    return session.Player.Wallet.Rue.Modify(session, -tokenCost);
                 case ShopCurrencyType.HaviFruit:
-                    return session.Player.Wallet.HaviFruit.Modify(-tokenCost);
+                    return session.Player.Wallet.HaviFruit.Modify(session, -tokenCost);
                 case ShopCurrencyType.Meret:
                 case ShopCurrencyType.GameMeret:
                 case ShopCurrencyType.EventMeret:
-                    return session.Player.Wallet.RemoveMerets(tokenCost);
+                    return session.Player.Account.RemoveMerets(session, tokenCost);
                 case ShopCurrencyType.Item:
                     Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == requiredItemId).Value;
                     if (itemCost == null)

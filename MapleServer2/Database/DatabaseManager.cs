@@ -163,9 +163,6 @@ namespace MapleServer2.Database
             player.Mailbox = new Mailbox(mails);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
             player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
-            player.Wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
-                                wallet.EventMeret.Amount, wallet.ValorToken.Amount, wallet.Treva.Amount,
-                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount, wallet.Id);
 
             return player;
         }

@@ -99,7 +99,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
                 InventoryController.Consume(session, voucher.Uid, 1);
             }
-            else if (!session.Player.Wallet.RemoveMerets(30))
+            else if (!session.Player.Account.RemoveMerets(session, 30))
             {
                 session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
                 return;

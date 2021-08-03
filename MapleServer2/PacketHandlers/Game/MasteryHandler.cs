@@ -110,7 +110,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // does the play have enough mesos for this recipe?
-            if (!session.Player.Wallet.Meso.Modify(-recipe.RequireMeso))
+            if (!session.Player.Wallet.Meso.Modify(session, -recipe.RequireMeso))
             {
                 session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMesos));
                 return;

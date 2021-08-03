@@ -113,13 +113,13 @@ namespace MapleServer2.PacketHandlers.Game
             switch (marketItem.TokenType)
             {
                 case MeretMarketCurrencyType.Meret:
-                    if (!session.Player.Wallet.RemoveMerets(marketItem.SalePrice))
+                    if (!session.Player.Account.RemoveMerets(session, marketItem.SalePrice))
                     {
                         return;
                     }
                     break;
                 case MeretMarketCurrencyType.Meso:
-                    if (!session.Player.Wallet.Meso.Modify(marketItem.SalePrice))
+                    if (!session.Player.Wallet.Meso.Modify(session, marketItem.SalePrice))
                     {
                         return;
                     }

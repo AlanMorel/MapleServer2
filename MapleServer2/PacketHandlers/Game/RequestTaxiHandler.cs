@@ -56,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeso(GameSession session, int mapId, long mesoPrice)
         {
-            if (!session.Player.Wallet.Meso.Modify(-mesoPrice))
+            if (!session.Player.Wallet.Meso.Modify(session, -mesoPrice))
             {
                 return;
             }
@@ -66,7 +66,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
         {
-            if (!session.Player.Wallet.RemoveMerets(meretPrice))
+            if (!session.Player.Account.RemoveMerets(session, meretPrice))
             {
                 return;
             }

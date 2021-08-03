@@ -28,7 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
                     case 90000015:
                     case 90000016:
                     case 90000020:
-                        session.Player.Wallet.Meret.Modify(fieldItem.Value.Amount);
+                        session.Player.Account.Meret.Modify(session, fieldItem.Value.Amount);
                         break;
                     case 90000008:
                         session.Player.Levels.GainExp(fieldItem.Value.Amount);

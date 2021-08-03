@@ -110,13 +110,13 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 switch (content.Id)
                 {
                     case 90000001: // Meso
-                        session.Player.Wallet.Meso.Modify(rng.Next(content.MinAmount, content.MaxAmount));
+                        session.Player.Wallet.Meso.Modify(session, rng.Next(content.MinAmount, content.MaxAmount));
                         break;
                     case 90000004: // Meret
                     case 90000011: // Meret
                     case 90000015: // Meret
                     case 90000016: // Meret
-                        session.Player.Wallet.Meret.Modify(rng.Next(content.MinAmount, content.MaxAmount));
+                        session.Player.Account.Meret.Modify(session, rng.Next(content.MinAmount, content.MaxAmount));
                         break;
                 }
                 return;

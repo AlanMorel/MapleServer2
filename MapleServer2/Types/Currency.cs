@@ -1,64 +1,63 @@
 ﻿using Maple2Storage.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
     public class Currency
     {
-        private readonly Player Player;
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
 
         public Currency() { }
 
-        public Currency(Player player, CurrencyType type, long input)
+        public Currency(CurrencyType type, long input)
         {
-            Player = player;
             Type = type;
             Amount = input;
         }
 
-        public bool Modify(long input)
+        public bool Modify(GameSession session, long input)
         {
             if (Amount + input < 0)
             {
                 return false;
             }
             Amount += input;
-            UpdateWallet();
+            UpdateWallet(session);
             return true;
         }
 
-        public void SetAmount(long input)
+        public void SetAmount(GameSession session, long input)
         {
             if (input < 0)
             {
                 return;
             }
             Amount = input;
-            UpdateWallet();
+            UpdateWallet(session);
         }
 
-        private void UpdateWallet()
+        private void UpdateWallet(GameSession session)
         {
             switch (Type)
             {
                 case CurrencyType.Meso:
-                    Player.Session.Send(MesosPacket.UpdateMesos(Player.Session));
+                    session.Send(MesosPacket.UpdateMesos(Amount));
                     break;
                 case CurrencyType.Meret:
                 case CurrencyType.GameMeret:
                 case CurrencyType.EventMeret:
-                    Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
+                    session.Send(MeretsPacket.UpdateMerets(session.Player.Account));
                     break;
                 case CurrencyType.ValorToken:
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
                 case CurrencyType.HaviFruit:
-                    Player.Session.Send(WalletPacket.UpdateWallet(Type, Amount));
+                    session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
                 case CurrencyType.Bank:
-                    Player.Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
+                    session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
                     break;
