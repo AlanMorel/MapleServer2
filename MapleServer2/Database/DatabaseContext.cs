@@ -76,6 +76,16 @@ namespace MapleServer2.Database
                 entity.Property(e => e.CharacterSlots);
                 entity.HasMany(e => e.Players).WithOne(e => e.Account);
                 entity.HasOne(e => e.Home);
+
+                entity.Property(e => e.Meret).HasConversion(
+                  i => i.Amount,
+                  i => new Currency(CurrencyType.Meret, i));
+                entity.Property(e => e.GameMeret).HasConversion(
+                    i => i.Amount,
+                    i => new Currency(CurrencyType.GameMeret, i));
+                entity.Property(e => e.EventMeret).HasConversion(
+                    i => i.Amount,
+                    i => new Currency(CurrencyType.EventMeret, i));
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -477,34 +487,25 @@ namespace MapleServer2.Database
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Meso).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.Meso, i));
-                entity.Property(e => e.Meret).HasConversion(
-                    i => i.Amount,
-                    i => new Currency(null, CurrencyType.Meret, i));
-                entity.Property(e => e.GameMeret).HasConversion(
-                    i => i.Amount,
-                    i => new Currency(null, CurrencyType.GameMeret, i));
-                entity.Property(e => e.EventMeret).HasConversion(
-                    i => i.Amount,
-                    i => new Currency(null, CurrencyType.EventMeret, i));
+                    i => new Currency(CurrencyType.Meso, i));
                 entity.Property(e => e.ValorToken).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.ValorToken, i));
+                    i => new Currency(CurrencyType.ValorToken, i));
                 entity.Property(e => e.Treva).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.Treva, i));
+                    i => new Currency(CurrencyType.Treva, i));
                 entity.Property(e => e.Rue).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.Rue, i));
+                    i => new Currency(CurrencyType.Rue, i));
                 entity.Property(e => e.HaviFruit).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.HaviFruit, i));
+                    i => new Currency(CurrencyType.HaviFruit, i));
                 entity.Property(e => e.MesoToken).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.MesoToken, i));
+                    i => new Currency(CurrencyType.MesoToken, i));
                 entity.Property(e => e.Bank).HasConversion(
                     i => i.Amount,
-                    i => new Currency(null, CurrencyType.Bank, i));
+                    i => new Currency(CurrencyType.Bank, i));
             });
 
             modelBuilder.Entity<Trophy>(entity =>

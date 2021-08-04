@@ -18,9 +18,9 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(session.Player.Wallet.Meso.Amount);
 
             pWriter.WriteLong(); // Total Merets
-            pWriter.WriteLong(session.Player.Wallet.Meret.Amount); // Merets
-            pWriter.WriteLong(session.Player.Wallet.GameMeret.Amount); // Game Merets
-            pWriter.WriteLong(session.Player.Wallet.EventMeret.Amount); // Event Merets
+            pWriter.WriteLong(session.Player.Account.Meret.Amount); // Merets
+            pWriter.WriteLong(session.Player.Account.GameMeret.Amount); // Game Merets
+            pWriter.WriteLong(session.Player.Account.EventMeret.Amount); // Event Merets
 
             pWriter.WriteLong();
 

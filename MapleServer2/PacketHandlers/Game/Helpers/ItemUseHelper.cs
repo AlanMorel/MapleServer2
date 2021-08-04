@@ -116,7 +116,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     case 90000011: // Meret
                     case 90000015: // Meret
                     case 90000016: // Meret
-                        session.Player.Wallet.Meret.Modify(rng.Next(content.MinAmount, content.MaxAmount));
+                        session.Player.Account.Meret.Modify(rng.Next(content.MinAmount, content.MaxAmount));
                         break;
                 }
                 return;

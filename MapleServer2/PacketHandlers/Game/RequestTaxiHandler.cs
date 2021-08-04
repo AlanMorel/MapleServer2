@@ -66,7 +66,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
         {
-            if (!session.Player.Wallet.RemoveMerets(meretPrice))
+            if (!session.Player.Account.RemoveMerets(meretPrice))
             {
                 return;
             }
