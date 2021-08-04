@@ -184,7 +184,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (!session.Player.Wallet.Meso.Modify(session, -2000))
+            if (!session.Player.Wallet.Meso.Modify(-2000))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.NotEnoughMesos));
                 return;
@@ -708,7 +708,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (buffId > 1000)
             {
-                if (!session.Player.Wallet.Meso.Modify(session, -buff.Cost))
+                if (!session.Player.Wallet.Meso.Modify(-buff.Cost))
                 {
                     return;
                 }
@@ -853,7 +853,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (!session.Player.Wallet.Meso.Modify(session, -donationAmount))
+            if (!session.Player.Wallet.Meso.Modify(-donationAmount))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.NotEnoughMesos));
                 return;

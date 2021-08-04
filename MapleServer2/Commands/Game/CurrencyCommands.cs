@@ -40,22 +40,22 @@ namespace MapleServer2.Commands.Game
             switch (currencyName)
             {
                 case "valor":
-                    session.Player.Wallet.ValorToken.SetAmount(session, amount);
+                    session.Player.Wallet.ValorToken.SetAmount(amount);
                     break;
                 case "treva":
-                    session.Player.Wallet.Treva.SetAmount(session, amount);
+                    session.Player.Wallet.Treva.SetAmount(amount);
                     break;
                 case "rue":
-                    session.Player.Wallet.Rue.SetAmount(session, amount);
+                    session.Player.Wallet.Rue.SetAmount(amount);
                     break;
                 case "havi":
-                    session.Player.Wallet.HaviFruit.SetAmount(session, amount);
+                    session.Player.Wallet.HaviFruit.SetAmount(amount);
                     break;
                 case "meso":
-                    session.Player.Wallet.Meso.SetAmount(session, amount);
+                    session.Player.Wallet.Meso.SetAmount(amount);
                     break;
                 case "meret":
-                    session.Player.Account.Meret.SetAmount(session, amount);
+                    session.Player.Account.Meret.SetAmount(amount);
                     break;
             }
         }

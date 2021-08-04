@@ -6,6 +6,7 @@ namespace MapleServer2.Types
 {
     public class Currency
     {
+        public GameSession Session { private get; set; }
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
 
@@ -17,47 +18,47 @@ namespace MapleServer2.Types
             Amount = input;
         }
 
-        public bool Modify(GameSession session, long input)
+        public bool Modify(long input)
         {
             if (Amount + input < 0)
             {
                 return false;
             }
             Amount += input;
-            UpdateWallet(session);
+            UpdateWallet();
             return true;
         }
 
-        public void SetAmount(GameSession session, long input)
+        public void SetAmount(long input)
         {
             if (input < 0)
             {
                 return;
             }
             Amount = input;
-            UpdateWallet(session);
+            UpdateWallet();
         }
 
-        private void UpdateWallet(GameSession session)
+        private void UpdateWallet()
         {
             switch (Type)
             {
                 case CurrencyType.Meso:
-                    session.Send(MesosPacket.UpdateMesos(Amount));
+                    Session.Send(MesosPacket.UpdateMesos(Amount));
                     break;
                 case CurrencyType.Meret:
                 case CurrencyType.GameMeret:
                 case CurrencyType.EventMeret:
-                    session.Send(MeretsPacket.UpdateMerets(session.Player.Account));
+                    Session.Send(MeretsPacket.UpdateMerets(Session.Player.Account));
                     break;
                 case CurrencyType.ValorToken:
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
                 case CurrencyType.HaviFruit:
-                    session.Send(WalletPacket.UpdateWallet(Type, Amount));
+                    Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
                 case CurrencyType.Bank:
-                    session.Send(StorageInventoryPacket.UpdateMesos(Amount));
+                    Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
                     break;

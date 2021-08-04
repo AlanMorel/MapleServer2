@@ -39,6 +39,16 @@ namespace MapleServer2.PacketHandlers.Common
             }
 
             player.Session = session;
+            player.Wallet.Meso.Session = session;
+            player.Wallet.ValorToken.Session = session;
+            player.Wallet.Treva.Session = session;
+            player.Wallet.Rue.Session = session;
+            player.Wallet.HaviFruit.Session = session;
+            player.Wallet.MesoToken.Session = session;
+            player.Wallet.Bank.Session = session;
+            player.Account.Meret.Session = session;
+            player.Account.GameMeret.Session = session;
+            player.Account.EventMeret.Session = session;
 
             session.InitPlayer(player);
 

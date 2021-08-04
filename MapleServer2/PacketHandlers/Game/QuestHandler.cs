@@ -82,7 +82,7 @@ namespace MapleServer2.PacketHandlers.Game
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             session.Player.Levels.GainExp(questStatus.Reward.Exp);
-            session.Player.Wallet.Meso.Modify(session, questStatus.Reward.Money);
+            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
 
             foreach (QuestRewardItem reward in questStatus.RewardItems)
             {

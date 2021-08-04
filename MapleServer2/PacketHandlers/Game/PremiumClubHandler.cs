@@ -94,7 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             PremiumClubPackageMetadata vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
 
-            if (!session.Player.Account.RemoveMerets(session, vipPackage.Price))
+            if (!session.Player.Account.RemoveMerets(vipPackage.Price))
             {
                 return;
             }

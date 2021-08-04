@@ -65,7 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
 
-            if (!session.Player.Wallet.Meso.Modify(session, -exchange.MesoCost * quantity))
+            if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
             {
                 session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientMeso));
                 return;

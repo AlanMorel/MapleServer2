@@ -105,16 +105,16 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (mode == 1) // add mesos
             {
-                if (wallet.Meso.Modify(session, -amount))
+                if (wallet.Meso.Modify(-amount))
                 {
-                    wallet.Bank.Modify(session, amount);
+                    wallet.Bank.Modify(amount);
                 }
             }
             else if (mode == 0) // remove mesos
             {
-                if (wallet.Bank.Modify(session, -amount))
+                if (wallet.Bank.Modify(-amount))
                 {
-                    wallet.Meso.Modify(session, amount);
+                    wallet.Meso.Modify(amount);
                 }
             }
         }

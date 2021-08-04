@@ -1162,9 +1162,9 @@ namespace MapleServer2.PacketHandlers.Game
             switch (shop.FurnishingTokenType)
             {
                 case 1: // meso
-                    return session.Player.Wallet.Meso.Modify(session, -shop.Price);
+                    return session.Player.Wallet.Meso.Modify(-shop.Price);
                 case 3: // meret
-                    return session.Player.Account.RemoveMerets(session, shop.Price);
+                    return session.Player.Account.RemoveMerets(shop.Price);
                 default:
                     session.SendNotice($"Unknown currency: {shop.FurnishingTokenType}");
                     return false;
@@ -1179,7 +1179,7 @@ namespace MapleServer2.PacketHandlers.Game
                     if (home.Mesos - shop.Price >= 0)
                     {
                         home.Mesos -= shop.Price;
-                        owner.Wallet.Meso.Modify(owner.Session, -shop.Price);
+                        owner.Wallet.Meso.Modify(-shop.Price);
                         fieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
                         return true;
                     }
@@ -1188,7 +1188,7 @@ namespace MapleServer2.PacketHandlers.Game
                     if (home.Merets - shop.Price >= 0)
                     {
                         home.Merets -= shop.Price;
-                        owner.Account.RemoveMerets(owner.Session, shop.Price);
+                        owner.Account.RemoveMerets(shop.Price);
                         fieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
                         return true;
                     }
@@ -1207,17 +1207,17 @@ namespace MapleServer2.PacketHandlers.Game
                 case 90000001:
                 case 90000002:
                 case 90000003:
-                    return session.Player.Wallet.Meso.Modify(session, -price);
+                    return session.Player.Wallet.Meso.Modify(-price);
                 case 90000004:
-                    return session.Player.Account.RemoveMerets(session, price);
+                    return session.Player.Account.RemoveMerets(price);
                 case 90000006:
-                    return session.Player.Wallet.ValorToken.Modify(session, -price);
+                    return session.Player.Wallet.ValorToken.Modify(-price);
                 case 90000013:
-                    return session.Player.Wallet.Rue.Modify(session, -price);
+                    return session.Player.Wallet.Rue.Modify(-price);
                 case 90000014:
-                    return session.Player.Wallet.HaviFruit.Modify(session, -price);
+                    return session.Player.Wallet.HaviFruit.Modify(-price);
                 case 90000017:
-                    return session.Player.Wallet.Treva.Modify(session, -price);
+                    return session.Player.Wallet.Treva.Modify(-price);
                 default:
                     session.SendNotice($"Unknown item currency: {priceItemCode}");
                     return false;

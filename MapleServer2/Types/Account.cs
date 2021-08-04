@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Maple2Storage.Enums;
 using MapleServer2.Database;
-using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
@@ -39,9 +38,9 @@ namespace MapleServer2.Types
             Id = DatabaseManager.CreateAccount(this);
         }
 
-        public bool RemoveMerets(GameSession session, long amount)
+        public bool RemoveMerets(long amount)
         {
-            if (Meret.Modify(session, -amount) || GameMeret.Modify(session, -amount) || EventMeret.Modify(session, -amount))
+            if (Meret.Modify(-amount) || GameMeret.Modify(-amount) || EventMeret.Modify(-amount))
             {
                 return true;
             }
@@ -49,9 +48,9 @@ namespace MapleServer2.Types
             if (Meret.Amount + GameMeret.Amount + EventMeret.Amount >= amount)
             {
                 long rest = Meret.Amount + GameMeret.Amount + EventMeret.Amount - amount;
-                Meret.SetAmount(session, rest);
-                GameMeret.SetAmount(session, 0);
-                EventMeret.SetAmount(session, 0);
+                Meret.SetAmount(rest);
+                GameMeret.SetAmount(0);
+                EventMeret.SetAmount(0);
 
                 return true;
             }

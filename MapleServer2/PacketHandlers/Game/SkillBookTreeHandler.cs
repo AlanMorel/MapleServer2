@@ -102,7 +102,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleAddTab(GameSession session)
         {
-            if (!session.Player.Account.RemoveMerets(session, 990))
+            if (!session.Player.Account.RemoveMerets(990))
             {
                 return;
             }

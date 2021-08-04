@@ -35,7 +35,7 @@ namespace MapleServer2.Types
             Active = true;
 
             giver.Session.Send(MeretsPacket.UpdateMerets(giver.Account, rewardAmount));
-            giver.Account.EventMeret.Modify(giver.Session, rewardAmount);
+            giver.Account.EventMeret.Modify(rewardAmount);
             Task task = Start(this);
         }
 
@@ -73,7 +73,7 @@ namespace MapleServer2.Types
             {
                 player.Session.FieldManager.BroadcastPacket(PlayerHostPacket.HongbaoGiftNotice(player, this, dividedAwardAmount));
                 player.Session.Send(MeretsPacket.UpdateMerets(player.Account, dividedAwardAmount));
-                player.Account.EventMeret.Modify(player.Session, dividedAwardAmount);
+                player.Account.EventMeret.Modify(dividedAwardAmount);
             }
 
             Active = false;

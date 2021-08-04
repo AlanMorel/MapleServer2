@@ -211,7 +211,7 @@ namespace MapleServer2.Tools
             long meretPrice = 390;
             short expansionAmount = 6;
 
-            if (session.Player.Account.RemoveMerets(session, meretPrice))
+            if (session.Player.Account.RemoveMerets(meretPrice))
             {
                 inventory.ExtraSize[tab] += expansionAmount;
                 session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));

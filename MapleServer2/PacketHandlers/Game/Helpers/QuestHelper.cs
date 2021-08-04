@@ -39,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
                 session.Player.Levels.GainExp(quest.Reward.Exp);
-                session.Player.Wallet.Meso.Modify(session, quest.Reward.Money);
+                session.Player.Wallet.Meso.Modify(quest.Reward.Money);
                 session.Send(QuestPacket.CompleteQuest(quest.Basic.Id, false));
                 return;
             }
