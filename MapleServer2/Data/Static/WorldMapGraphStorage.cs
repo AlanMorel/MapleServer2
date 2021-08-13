@@ -440,7 +440,7 @@ namespace MapleServer2.Data.Static
                 return false;
             }
 
-            Path path = pathFinder.FindShortestPath(originNode, destinationNode);
+            DijkstraAlgorithm.Pathing.Path path = pathFinder.FindShortestPath(originNode, destinationNode);
             if (path == null)
             {
                 return false;
