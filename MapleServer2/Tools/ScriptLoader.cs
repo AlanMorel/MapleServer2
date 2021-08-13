@@ -20,7 +20,7 @@ namespace MapleServer2.Tools
             Script = new Script();
             try
             {
-                Script.DoFile($"Scripts/{scriptName}");
+                Script.DoFile($"Scripts/{scriptName}.lua");
             }
             catch (Exception ex)
             {
