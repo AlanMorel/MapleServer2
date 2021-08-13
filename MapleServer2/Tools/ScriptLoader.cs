@@ -4,7 +4,7 @@ using NLog;
 
 namespace MapleServer2.Tools
 {
-    public class LuaLoader
+    public class ScriptLoader
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -12,15 +12,15 @@ namespace MapleServer2.Tools
         private readonly string ScriptName;
 
         /// <summary>
-        /// Loads an lua script from the Scripts folder.
+        /// Loads an script from the Scripts folder.
         /// </summary>
-        public LuaLoader(string scriptName)
+        public ScriptLoader(string scriptName)
         {
             ScriptName = scriptName;
             Script = new Script();
             try
             {
-                Script.DoFile($"Scripts/{scriptName}.lua");
+                Script.DoFile($"Scripts/{scriptName}");
             }
             catch (Exception ex)
             {

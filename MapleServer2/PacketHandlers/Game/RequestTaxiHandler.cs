@@ -65,9 +65,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            LuaLoader luaLoader = new LuaLoader("calcTaxiCharge");
+            ScriptLoader scriptLoader = new ScriptLoader("calcTaxiCost.lua");
 
-            DynValue result = luaLoader.Call(mapCount, session.Player.Levels.Level);
+            DynValue result = scriptLoader.Call(mapCount, session.Player.Levels.Level);
             if (result == null)
             {
                 return;
@@ -82,9 +82,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeso(GameSession session, int mapId)
         {
-            LuaLoader luaLoader = new LuaLoader("calcAirTaxiCharge");
+            ScriptLoader scriptLoader = new ScriptLoader("calcAirTaxiCost.lua");
 
-            DynValue result = luaLoader.Call(session.Player.Levels.Level);
+            DynValue result = scriptLoader.Call(session.Player.Levels.Level);
             if (result == null)
             {
                 return;

@@ -1,9 +1,9 @@
-function calcTaxiCharge(maps, level)
+function calcTaxiCost(maps, level)
     local cost = 0
 
     if level <= 24 then
         cost = 0.35307 * level ^ 2 + -1.4401 * level + 34.075
-    elseif level >= 25 then
+    else
         cost = 0.23451 * (level - 24) ^ 2 + 24.221 * (level - 24) + 265.66
     end
 
