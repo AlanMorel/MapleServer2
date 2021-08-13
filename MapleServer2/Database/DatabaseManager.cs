@@ -204,6 +204,10 @@ namespace MapleServer2.Database
                 {
                     context.Entry(player.GuildMember).State = EntityState.Modified;
                 }
+                if (player.Guild != null)
+                {
+                    context.Entry(player.Guild).State = EntityState.Modified;
+                }
                 if (player.Account != null)
                 {
                     context.Entry(player.Account).State = EntityState.Modified;
