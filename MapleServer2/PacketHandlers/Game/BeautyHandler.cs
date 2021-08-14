@@ -356,7 +356,7 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
             }
 
-            if (session.Player.MapId is not (int) Map.RosettaBeautySalon or (int) Map.TriaPlasticSurgery or (int) Map.DouglasDyeWorkshop)
+            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
             {
                 session.Player.ReturnCoord = session.FieldPlayer.Coord;
                 session.Player.ReturnMapId = session.Player.MapId;
