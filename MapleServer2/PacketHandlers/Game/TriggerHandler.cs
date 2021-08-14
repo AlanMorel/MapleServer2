@@ -17,7 +17,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum TriggerMode : byte
         {
-            Cutscene = 0x8,
+            SkipCutscene = 0x7,
+            UpdateWidget = 0x8,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -26,8 +27,11 @@ namespace MapleServer2.PacketHandlers.Game
 
             switch (mode)
             {
-                case TriggerMode.Cutscene:
-                    HandleCutscene(session, packet);
+                case TriggerMode.SkipCutscene:
+                    HandleSkipCutscene(session, packet);
+                    break;
+                case TriggerMode.UpdateWidget:
+                    HandleUpdateWidget(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -35,7 +39,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleCutscene(GameSession session, PacketReader packet)
+        private static void HandleSkipCutscene(GameSession session, PacketReader packet)
+        {
+            session.FieldManager.SkipScene = true;
+            // TODO: Start the SkipScene state
+        }
+
+        private static void HandleUpdateWidget(GameSession session, PacketReader packet)
         {
             TriggerUIMode submode = (TriggerUIMode) packet.ReadByte();
             int arg = packet.ReadInt();

@@ -11,6 +11,7 @@ namespace MapleServer2.Packets
             HideUi = 0x1,
             View = 0x3,
             SetSceneSkip = 0x4,
+            StartSceneSkip = 0x5,
             BalloonTalk = 0x8,
             Caption = 0xA,
         }
@@ -28,7 +29,8 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
             pWriter.WriteEnum(CinematicPacketMode.View);
             pWriter.WriteInt(type);
-            pWriter.WriteInt();
+            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString("");
             return pWriter;
         }
 
@@ -38,6 +40,13 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(CinematicPacketMode.SetSceneSkip);
             pWriter.WriteByte(1); //??
             pWriter.WriteMapleString(skipState);
+            return pWriter;
+        }
+
+        public static Packet StartSceneSkip()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
+            pWriter.WriteEnum(CinematicPacketMode.StartSceneSkip);
             return pWriter;
         }
 

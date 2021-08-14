@@ -55,8 +55,8 @@ namespace MapleServer2.Packets
                 case TriggerMesh triggerMesh:
                     pWriter.WriteInt(triggerMesh.Id);
                     pWriter.WriteBool(triggerMesh.IsVisible);
-                    pWriter.WriteByte(0x00);
-                    pWriter.WriteInt(triggerMesh.Value);
+                    pWriter.WriteByte(0);
+                    pWriter.WriteInt(triggerMesh.Animation);
                     pWriter.WriteUnicodeString("");
                     pWriter.WriteFloat(1); //constant
                     break;
@@ -73,18 +73,17 @@ namespace MapleServer2.Packets
                     pWriter.WriteBool(triggerCamera.IsEnabled);
                     break;
 
-                case TriggerActor triggerActor: // needs verification if this is the packet structure
+                case TriggerActor triggerActor:
                     pWriter.WriteInt(triggerActor.Id);
                     pWriter.WriteBool(triggerActor.IsVisible);
                     pWriter.WriteUnicodeString(triggerActor.StateName);
                     break;
-
-                    //case TriggerLadder triggerLadder:
-                    //    pWriter.WriteInt(triggerLadder.Id);
-                    //    pWriter.WriteBoolarg2);
-                    //    pWriter.WriteBool(arg3);
-                    //    pWriter.WriteInt(3); //not sure where this value is coming from.
-                    //    break;
+                case TriggerLadder triggerLadder:
+                    pWriter.WriteInt(triggerLadder.Id);
+                    pWriter.WriteBool(triggerLadder.IsVisible);
+                    pWriter.WriteBool(triggerLadder.AnimationEffect);
+                    pWriter.WriteInt(triggerLadder.AnimationDelay);
+                    break;
             }
         }
 

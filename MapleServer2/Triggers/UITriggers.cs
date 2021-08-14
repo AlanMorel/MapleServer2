@@ -21,16 +21,12 @@ namespace MapleServer2.Triggers
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
         {
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
+            Widget widget = Field.GetWidget(type);
+            if (widget == null)
             {
-                Widget widget = Field.GetWidget(type);
-                if (widget == null)
-                {
-                    continue;
-                }
-                widget.State = name;
+                return;
             }
+            widget.State = name;
         }
 
         public void GuideEvent(int eventId)
@@ -53,7 +49,6 @@ namespace MapleServer2.Triggers
 
         public void PlaySystemSoundInBox(int[] boxIds, string sound)
         {
-            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
             if (boxIds != null)
             {
                 foreach (int boxId in boxIds)
@@ -68,7 +63,10 @@ namespace MapleServer2.Triggers
                         }
                     }
                 }
+                return;
             }
+            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
+
         }
 
         public void ScoreBoardCreate(string type, int maxScore)
@@ -213,7 +211,7 @@ namespace MapleServer2.Triggers
 
         public void SetSceneSkip(TriggerState state, string arg2)
         {
-            // TODO: Properly handle the trigger state
+            SkipSceneState = state;
             Field.BroadcastPacket(CinematicPacket.SetSceneSkip(arg2));
         }
 

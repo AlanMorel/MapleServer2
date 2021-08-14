@@ -23,6 +23,7 @@ namespace MapleServer2.Servers.Game
         public static readonly BuddyManager BuddyManager = new();
         public static readonly HomeManager HomeManager = new();
         public static readonly CommandManager CommandManager = new();
+        public static readonly GlobalEventManager GlobalEventManager= new();
 
         public GameServer(PacketRouter<GameSession> router, ILogger<GameServer> logger, IComponentContext context) :
             base(router, logger, context)

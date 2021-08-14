@@ -35,10 +35,11 @@ namespace MapleServer2.Servers.Game
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
-        private readonly TriggerScript[] Triggers;
+        public readonly TriggerScript[] Triggers;
         private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private readonly List<Widget> Widgets = new List<Widget>();
+        public bool SkipScene;
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -165,8 +166,26 @@ namespace MapleServer2.Servers.Game
             {
                 if (mapTriggerCube != null)
                 {
-                    TriggerCube triggerCamera = new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible);
-                    State.AddTriggerObject(triggerCamera);
+                    TriggerCube triggerCube = new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible);
+                    State.AddTriggerObject(triggerCube);
+                }
+            }
+
+            foreach(MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(mapId))
+            {
+                if (mapTriggerLadder != null)
+                {
+                    TriggerLadder triggerLadder = new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible);
+                    State.AddTriggerObject(triggerLadder);
+                }
+            }
+
+            foreach(MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(mapId))
+            {
+                if (mapTriggerRope != null)
+                {
+                    TriggerRope triggerRope = new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible);
+                    State.AddTriggerObject(triggerRope);
                 }
             }
 
@@ -743,6 +762,11 @@ namespace MapleServer2.Servers.Game
         public Widget GetWidget(WidgetType type)
         {
             return Widgets.FirstOrDefault(x => x.Type == type);
+        }
+
+        public void EnableSceneSkip(bool enable)
+        {
+            SkipScene = enable;
         }
     }
 }

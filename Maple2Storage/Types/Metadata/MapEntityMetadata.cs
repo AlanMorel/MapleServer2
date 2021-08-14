@@ -40,14 +40,18 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerCamera> TriggerCameras;
         [XmlElement(Order = 15)]
         public readonly List<MapTriggerBox> TriggerBoxes;
-        //[XmlElement(Order = 16)]
-        //public readonly List<MapTriggerLadder> TriggerLadders;
+        [XmlElement(Order = 16)]
+        public readonly List<MapTriggerLadder> TriggerLadders;
         [XmlElement(Order = 17)]
         public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
         [XmlElement(Order = 18)]
         public readonly List<MapTriggerActor> TriggerActors;
         [XmlElement(Order = 19)]
         public readonly List<MapTriggerCube> TriggerCubes;
+        [XmlElement(Order = 20)]
+        public readonly List<MapTriggerSound> TriggerSounds;
+        [XmlElement(Order = 21)]
+        public readonly List<MapTriggerRope> TriggerRopes;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -64,10 +68,12 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
-            //TriggerLadders = new List<MapTriggerLadder>();
+            TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
             TriggerActors = new List<MapTriggerActor>();
             TriggerCubes = new List<MapTriggerCube>();
+            TriggerSounds = new List<MapTriggerSound>();
+            TriggerRopes = new List<MapTriggerRope>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -85,10 +91,12 @@ namespace Maple2Storage.Types.Metadata
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
             TriggerBoxes = new List<MapTriggerBox>();
-            //TriggerLadders = new List<MapTriggerLadder>();
+            TriggerLadders = new List<MapTriggerLadder>();
             EventNpcSpawnPoints = new List<MapEventNpcSpawnPoint>();
             TriggerActors = new List<MapTriggerActor>();
             TriggerCubes = new List<MapTriggerCube>();
+            TriggerSounds = new List<MapTriggerSound>();
+            TriggerRopes = new List<MapTriggerRope>();
         }
 
         public override string ToString() =>
@@ -548,17 +556,18 @@ namespace Maple2Storage.Types.Metadata
     [ProtoInclude(11, typeof(MapTriggerEffect))]
     [ProtoInclude(12, typeof(MapTriggerCamera))]
     [ProtoInclude(13, typeof(MapTriggerBox))]
-    // [ProtoInclude(14, typeof(MapTriggerLadder))]
+    [ProtoInclude(14, typeof(MapTriggerLadder))]
     [ProtoInclude(15, typeof(MapTriggerActor))]
     [ProtoInclude(16, typeof(MapTriggerCube))]
+    [ProtoInclude(17, typeof(MapTriggerSound))]
+    [ProtoInclude(18, typeof(MapTriggerRope))]
     public class MapTriggerObject
     {
         [ProtoMember(8)]
         public int Id;
 
-        public MapTriggerObject()
-        {
-        }
+        public MapTriggerObject() { }
+
         public MapTriggerObject(int id)
         {
             Id = id;
@@ -575,9 +584,7 @@ namespace Maple2Storage.Types.Metadata
             IsVisible = isVisible;
         }
 
-        private MapTriggerMesh() : base()
-        {
-        }
+        private MapTriggerMesh() : base() { }
     }
 
     [ProtoContract]
@@ -589,9 +596,8 @@ namespace Maple2Storage.Types.Metadata
         {
             IsVisible = isVisible;
         }
-        private MapTriggerEffect() : base()
-        {
-        }
+
+        private MapTriggerEffect() : base() { }
     }
 
     [ProtoContract]
@@ -603,9 +609,8 @@ namespace Maple2Storage.Types.Metadata
         {
             IsEnabled = isEnabled;
         }
-        private MapTriggerCamera() : base()
-        {
-        }
+
+        private MapTriggerCamera() : base() { }
     }
 
     [ProtoContract]
@@ -620,28 +625,23 @@ namespace Maple2Storage.Types.Metadata
             Position = position;
             Dimension = dimension;
         }
-        private MapTriggerBox() : base()
-        {
-        }
+
+        private MapTriggerBox() : base() { }
     }
 
-    //[ProtoContract]
-    //public class MapTriggerLadder : MapTriggerObject
-    //{
-    //    [ProtoMember(14)]
-    //    public bool IsEnabled;
-    //    [ProtoMember(1337)]
-    //    public bool Unknown;
-    //    [ProtoMember(6077)]
-    //    public bool Unknown;
+    [ProtoContract]
+    public class MapTriggerLadder : MapTriggerObject
+    {
+        [ProtoMember(14)]
+        public bool IsVisible;
 
-    //    public MapTriggerLadder(int id, bool isEnabled) : base(id)
-    //    {
-    //    }
-    //    private MapTriggerLadder() : base()
-    //    {
-    //    }
-    //}
+        public MapTriggerLadder(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+        }
+
+        private MapTriggerLadder() : base() { }
+    }
 
     [ProtoContract]
     public class MapTriggerActor : MapTriggerObject
@@ -655,9 +655,8 @@ namespace Maple2Storage.Types.Metadata
             IsVisible = isVisible;
             InitialSequence = initialSequence;
         }
-        private MapTriggerActor() : base()
-        {
-        }
+
+        private MapTriggerActor() : base() { }
     }
 
     [ProtoContract]
@@ -669,5 +668,34 @@ namespace Maple2Storage.Types.Metadata
         {
             IsVisible = isVisible;
         }
+
+        public MapTriggerCube() : base() { }
+    }
+
+    [ProtoContract]
+    public class MapTriggerSound : MapTriggerObject
+    {
+        [ProtoMember(18)]
+        public bool Enabled;
+        public MapTriggerSound(int id, bool enabled) : base(id)
+        {
+            Enabled = enabled;
+        }
+
+        public MapTriggerSound() : base() { }
+    }
+
+    [ProtoContract]
+    public class MapTriggerRope : MapTriggerObject
+    {
+        [ProtoMember(19)]
+        public bool IsVisible;
+
+        public MapTriggerRope(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+        }
+
+        private MapTriggerRope() : base() { }
     }
 }

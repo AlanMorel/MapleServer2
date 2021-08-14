@@ -61,15 +61,21 @@ namespace MapleServer2.Triggers
                 return;
             }
 
-            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
-            if (portal == null)
+            if (mapId == Field.MapId)
             {
+                IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
+                if (portal == null)
+                {
+                    return;
+                }
+                List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+                foreach (IFieldObject<Player> player in players)
+                {
+                    player.Coord = portal.Coord;
+                    player.Rotation = portal.Rotation;
+                    player.Value.Session.Send(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation));
+                }
                 return;
-            }
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
-            {
-                //       player.Value.Warp(mapId, portal.Coord, portal.Rotation);
             }
         }
 

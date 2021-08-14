@@ -45,9 +45,12 @@ namespace MapleServer2.Triggers
             }
         }
 
-        public void SetLadder(int ladderId, bool arg2, bool arg3, byte arg4)
+        public void SetLadder(int ladderId, bool isVisible, bool animationEffect, byte animationDelay)
         {
-            //Field.BroadcastPacket(TriggerPacket.SetLadderTrigger(arg1, arg2, arg3))
+            Field.State.TriggerLadders[ladderId].IsVisible = isVisible;
+            Field.State.TriggerLadders[ladderId].AnimationEffect = animationEffect;
+            Field.State.TriggerLadders[ladderId].AnimationDelay = animationDelay;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ladderId]));
         }
 
         public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)

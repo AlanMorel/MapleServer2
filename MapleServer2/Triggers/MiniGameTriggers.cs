@@ -18,6 +18,7 @@ namespace MapleServer2.Triggers
 
         public void StartMiniGameRound(int boxId, byte round)
         {
+
         }
 
         public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)

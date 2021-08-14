@@ -23,11 +23,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             foreach (TutorialItemMetadata tutorialItem in metadata)
             {
-                if (session.Player.Inventory.Items.Any(x => x.Value.Id == tutorialItem.ItemId) || session.Player.Inventory.Equips.Any(x => x.Value.Id == tutorialItem.ItemId))
-                {
-                    continue;
-                }
-
                 Item item = new Item(tutorialItem.ItemId)
                 {
                     Rarity = tutorialItem.Rarity,

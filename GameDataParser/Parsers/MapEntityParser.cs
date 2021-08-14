@@ -152,7 +152,6 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-
                         if (interact.ModelName.Contains("funct_extract_"))
                         {
                             metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
@@ -287,9 +286,12 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerBox triggerBox:
                                 metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position), CoordF.FromVector3(triggerBox.ShapeDimensions)));
                                 break;
-                            //case IMS2TriggerLadder triggerLadder: //the packet uses int id, bool, bool, constant int: 3. The two bools are always both 0 or 1, not sure where they are coming from.
-                            //    metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder.TriggerObjectID));
-                            //    break;
+                            case IMS2TriggerLadder triggerLadder: // TODO: Find which parameters correspond to animationeffect (bool) and animation delay (int?)
+                                metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder.TriggerObjectID, triggerLadder.IsVisible));
+                                break;
+                            case IMS2TriggerRope triggerRope: // TODO: Find which parameters correspond to animationeffect (bool) and animation delay (int?)
+                                metadata.TriggerRopes.Add(new MapTriggerRope(triggerRope.TriggerObjectID, triggerRope.IsVisible));
+                                break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
                                     triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
@@ -299,6 +301,9 @@ namespace GameDataParser.Parsers
                                 break;
                             case IMS2TriggerCube triggerCube:
                                 metadata.TriggerCubes.Add(new MapTriggerCube(triggerCube.TriggerObjectID, triggerCube.IsVisible));
+                                break;
+                            case IMS2TriggerSound triggerSound:
+                                metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
                         }
                         break;

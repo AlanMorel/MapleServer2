@@ -13,11 +13,11 @@
     public class TriggerMesh : TriggerObject
     {
         public bool IsVisible;
-        public int Value; // unknown what this currently is
+        public int Animation;
         public TriggerMesh(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
-            Value = 0;
+            Animation = 3; //TODO : Find this value somewhere in the flat block. Default animation time is 3
         }
     }
 
@@ -48,6 +48,24 @@
             IsVisible = isVisible;
             StateName = stateName;
         }
+    }
+
+    public class TriggerLadder : TriggerObject
+    {
+        public bool IsVisible;
+        public bool AnimationEffect;
+        public int AnimationDelay;
+        public TriggerLadder(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+            AnimationEffect = false;
+            AnimationDelay = 3;
+        }
+    }
+
+    public class TriggerRope : TriggerLadder
+    {
+        public TriggerRope(int id, bool isVisible) : base(id, isVisible) { }
     }
 
     public class TriggerCube : TriggerObject
