@@ -208,11 +208,10 @@ namespace MapleServer2.Tools
         public static void ExpandInventory(GameSession session, InventoryTab tab)
         {
             Inventory inventory = session.Player.Inventory;
-            Wallet wallet = session.Player.Wallet;
             long meretPrice = 390;
             short expansionAmount = 6;
 
-            if (wallet.RemoveMerets(meretPrice))
+            if (session.Player.Account.RemoveMerets(meretPrice))
             {
                 inventory.ExtraSize[tab] += expansionAmount;
                 session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));

@@ -11,7 +11,17 @@ namespace MapleServer2.Commands.Core
         public string Description { get; set; }
         public T Value { get; private set; }
         public Type ValueType => typeof(T);
-        dynamic IParameter.DefaultValue => Value;
+        dynamic IParameter.DefaultValue
+        {
+            get
+            {
+                return Value;
+            }
+            set
+            {
+                Value = default;
+            }
+        }
 
         public Parameter(string name, string description = "", T defaultValue = default)
         {

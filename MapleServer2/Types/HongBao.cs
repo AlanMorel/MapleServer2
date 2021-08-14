@@ -34,8 +34,8 @@ namespace MapleServer2.Types
             Duration = duration;
             Active = true;
 
-            giver.Session.Send(MeretsPacket.UpdateMerets(giver.Session, rewardAmount));
-            giver.Wallet.EventMeret.Modify(rewardAmount);
+            giver.Session.Send(MeretsPacket.UpdateMerets(giver.Account, rewardAmount));
+            giver.Account.EventMeret.Modify(rewardAmount);
             Task task = Start(this);
         }
 
@@ -72,8 +72,8 @@ namespace MapleServer2.Types
             foreach (Player player in Receivers)
             {
                 player.Session.FieldManager.BroadcastPacket(PlayerHostPacket.HongbaoGiftNotice(player, this, dividedAwardAmount));
-                player.Session.Send(MeretsPacket.UpdateMerets(player.Session, dividedAwardAmount));
-                player.Wallet.EventMeret.Modify(dividedAwardAmount);
+                player.Session.Send(MeretsPacket.UpdateMerets(player.Account, dividedAwardAmount));
+                player.Account.EventMeret.Modify(dividedAwardAmount);
             }
 
             Active = false;

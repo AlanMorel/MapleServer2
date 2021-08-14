@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using MapleServer2.Commands.Core;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
-using MapleServer2.Enums;
-using System.Drawing;
 
 namespace MapleServer2.Commands.Game
 {
@@ -58,7 +58,7 @@ namespace MapleServer2.Commands.Game
         {
             string[] args = trigger.Get<string[]>("message");
 
-            if (args.Length <= 1)
+            if (args == null || args.Length <= 1)
             {
                 trigger.Session.SendNotice("No message provided.");
                 return;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
