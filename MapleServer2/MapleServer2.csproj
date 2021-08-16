@@ -17,13 +17,15 @@
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-preview.6.21352.12" />
       <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0-preview.6.21352.12" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.6.21352.12" />
-      <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.0-preview3" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
       <PackageReference Include="Pastel" Version="2.1.0" />
       <PackageReference Include="SharpZipLib" Version="1.3.1" />
       <PackageReference Include="DijkstraAlgorithm" Version="1.1.0" />
       <PackageReference Include="MoonSharp" Version="2.0.0" />
+      <PackageReference Include="MySql.Data" Version="8.0.26" />
+      <PackageReference Include="SqlKata" Version="2.3.7" />
+      <PackageReference Include="SqlKata.Execution" Version="2.3.7" />
     </ItemGroup>
 
     <ItemGroup>

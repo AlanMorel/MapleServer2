@@ -46,9 +46,7 @@ namespace MapleServer2.Tools
 
         public Guild GetGuildByLeader(Player leader)
         {
-            return (from entry in GuildList
-                    where entry.Value.Leader.CharacterId == leader.CharacterId
-                    select entry.Value).FirstOrDefault();
+            return GuildList.Values.Where(guild => guild.LeaderCharacterId == leader.CharacterId).FirstOrDefault();
         }
     }
 }

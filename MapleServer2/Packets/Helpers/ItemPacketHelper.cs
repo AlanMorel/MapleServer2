@@ -80,12 +80,12 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte(); // 2nd flag, use to skip charbound
 
             // CharBound means untradable, unsellable, bound to char (ignores TransferFlag, but not 2nd flag!!)
-            bool isCharBound = item.Owner != null;
+            bool isCharBound = item.OwnerCharacterId != 0;
             pWriter.WriteBool(isCharBound);
             if (isCharBound)
             {
-                pWriter.WriteLong(item.Owner.CharacterId);
-                pWriter.WriteUnicodeString(item.Owner.Name);
+                pWriter.WriteLong(item.OwnerCharacterId);
+                pWriter.WriteUnicodeString(item.OwnerCharacterName);
             }
 
             pWriter.WriteSockets(item.Stats);

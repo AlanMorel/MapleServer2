@@ -3,7 +3,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -56,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
 
-            Shop shop = DatabaseManager.GetShop(metadata.ShopId);
+            Shop shop = DatabaseShop.FindById(metadata.ShopId);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {metadata.ShopId}");
@@ -103,7 +103,7 @@ namespace MapleServer2.PacketHandlers.Game
             int itemUid = packet.ReadInt();
             int quantity = packet.ReadInt();
 
-            ShopItem shopItem = DatabaseManager.GetShopItem(itemUid);
+            ShopItem shopItem = DatabaseShopItem.FindByUid(itemUid);
 
             switch (shopItem.TokenType)
             {
@@ -165,7 +165,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Shop shop = DatabaseManager.GetShop(item.ShopID);
+            Shop shop = DatabaseShop.FindById(item.ShopID);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {item.ShopID}");

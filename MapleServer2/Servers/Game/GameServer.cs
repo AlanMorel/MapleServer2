@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Autofac;
 using MapleServer2.Commands.Core;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Network;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -28,7 +28,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            List<Guild> guilds = DatabaseManager.GetGuilds();
+            List<Guild> guilds = DatabaseGuild.GetAllGuilds();
             foreach (Guild guild in guilds)
             {
                 GuildManager.AddGuild(guild);

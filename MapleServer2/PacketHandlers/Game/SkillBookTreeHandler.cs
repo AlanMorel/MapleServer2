@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -64,7 +64,7 @@ namespace MapleServer2.PacketHandlers.Game
                 SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
                 if (skillTab == default)
                 {
-                    skillTab = new SkillTab(session.Player, session.Player.Job, tabId, tabName);
+                    skillTab = new SkillTab(session.Player.CharacterId, session.Player.Job, tabId, tabName);
                     session.Player.SkillTabs.Add(skillTab);
                 }
                 else
@@ -86,7 +86,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Player.ActiveSkillTabId = activeTabId;
             session.Send(SkillBookTreePacket.Save(session.Player, selectedTab));
-            DatabaseManager.UpdateSkillTabs(session.Player);
+            foreach (SkillTab skillTab in session.Player.SkillTabs)
+            {
+                DatabaseSkillTab.Update(skillTab);
+            }
         }
 
         private static void HandleRename(GameSession session, PacketReader packet)

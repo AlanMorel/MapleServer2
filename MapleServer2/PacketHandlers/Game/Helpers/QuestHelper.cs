@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
+using MapleServer2.Database.Classes;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -34,6 +35,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 }
                 quest.Completed = true;
                 quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                DatabaseQuest.Update(quest);
 
                 session.Player.Levels.GainExp(quest.Reward.Exp);
                 session.Player.Wallet.Meso.Modify(quest.Reward.Money);
@@ -59,6 +61,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 }
                 condition.Current++;
                 session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition.IndexOf(condition) + 1, condition.Current));
+                DatabaseQuest.Update(quest);
                 return;
             }
         }

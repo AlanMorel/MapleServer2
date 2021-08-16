@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            List<MapleopolyTile> tiles = DatabaseManager.GetMapleopolyTiles();
+            List<MapleopolyTile> tiles = DatabaseMapleopoly.GetMapleopolyTiles();
 
             int tokenAmount = 0;
             Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
@@ -103,7 +103,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
 
-            MapleopolyTile currentTile = DatabaseManager.GetsingleMapleopolyTile(currentTilePosition + 1);
+            MapleopolyTile currentTile = DatabaseMapleopoly.GetSingleMapleopolyTile(currentTilePosition + 1);
 
             switch (currentTile.Type)
             {
@@ -150,7 +150,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             int difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
 
-            List<MapleopolyEvent> items = DatabaseManager.GetMapleopolyEvent();
+            List<MapleopolyEvent> items = DatabaseEvent.FindAllMapleopolyEvents();
             for (int i = 0; i < difference; i++)
             {
                 session.Player.Mapleopoly.TotalTrips++;

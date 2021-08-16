@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -20,11 +20,11 @@ namespace MapleServer2.Types
         public string Type { get; private set; }
         public List<long> Timestamps { get; private set; }
 
-        public readonly Player Player;
+        public readonly long CharacterId;
 
         public Trophy() { }
 
-        public Trophy(Player player, int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
+        public Trophy(long characterId, int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
         {
             Id = trophyId;
             NextGrade = grade;
@@ -34,8 +34,22 @@ namespace MapleServer2.Types
             Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
             Type = TrophyMetadataStorage.GetMetadata(Id).Categories[0];
             IsDone = isDone;
-            Player = player;
-            Uid = DatabaseManager.AddTrophy(this);
+            CharacterId = characterId;
+            Uid = DatabaseTrophy.CreateTrophy(this);
+        }
+
+        public Trophy(long uid, int trophyId, int nextGrade, int maxGrade, long counter, long condition, bool isDone, string type, List<long> timestamps, long characterId)
+        {
+            Uid = uid;
+            Id = trophyId;
+            NextGrade = nextGrade;
+            MaxGrade = maxGrade;
+            Counter = counter;
+            Condition = condition;
+            IsDone = isDone;
+            Type = type;
+            Timestamps = timestamps;
+            CharacterId = characterId;
         }
 
         public TrophyPacket.GradeStatus GetGradeStatus()

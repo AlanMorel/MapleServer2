@@ -1,5 +1,5 @@
 ﻿using Maple2Storage.Enums;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 
 namespace MapleServer2.Types
 {
@@ -12,15 +12,28 @@ namespace MapleServer2.Types
         public long LastLoginTime { get; set; }
         public int CharacterSlots { get; set; }
 
-        public Currency Meret { get; private set; }
-        public Currency GameMeret { get; private set; }
-        public Currency EventMeret { get; private set; }
+        public Currency Meret { get; set; }
+        public Currency GameMeret { get; set; }
+        public Currency EventMeret { get; set; }
 
+        public long HomeId;
         public Home Home;
 
-        public virtual ICollection<Player> Players { get; set; }
-
         public Account() { }
+
+        public Account(string username, string passwordHash, long creationTime, long lastLoginTime, int characterSlots, long meretAmount, long gameMeretAmount, long eventMeretAmount, long accountId, long homeId)
+        {
+            Id = accountId;
+            Username = username;
+            PasswordHash = passwordHash;
+            CreationTime = creationTime;
+            LastLoginTime = lastLoginTime;
+            CharacterSlots = characterSlots;
+            Meret = new Currency(CurrencyType.Meret, meretAmount);
+            GameMeret = new Currency(CurrencyType.GameMeret, gameMeretAmount);
+            EventMeret = new Currency(CurrencyType.EventMeret, eventMeretAmount);
+            HomeId = homeId;
+        }
 
         public Account(string username, string passwordHash)
         {
@@ -33,7 +46,7 @@ namespace MapleServer2.Types
             GameMeret = new Currency(CurrencyType.GameMeret, 0);
             EventMeret = new Currency(CurrencyType.EventMeret, 0);
 
-            Id = DatabaseManager.CreateAccount(this);
+            Id = DatabaseAccount.CreateAccount(this);
         }
 
         public bool RemoveMerets(long amount)

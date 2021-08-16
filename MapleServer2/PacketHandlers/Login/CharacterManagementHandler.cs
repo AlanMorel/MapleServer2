@@ -3,7 +3,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -41,9 +41,10 @@ namespace MapleServer2.PacketHandlers.Login
         private void HandleDelete(LoginSession session, PacketReader packet)
         {
             long characterId = packet.ReadLong();
-            if (!DatabaseManager.DeleteCharacter(characterId))
+            if (!DatabaseCharacter.SetCharacterDeleted(characterId))
             {
-                throw new ArgumentException("Could not delete character");
+                Logger.Error("Could not delete character");
+                return;
             }
             session.Send(CharacterListPacket.DeleteCharacter(characterId));
             Logger.Info($"Character id {characterId} deleted!");
@@ -166,7 +167,7 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            if (DatabaseManager.NameExists(name))
+            if (DatabaseCharacter.NameExists(name))
             {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
@@ -175,13 +176,14 @@ namespace MapleServer2.PacketHandlers.Login
             Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
             foreach (Item item in cosmetics.Values)
             {
-                item.Owner = newCharacter;
+                item.OwnerCharacterId = newCharacter.CharacterId;
+                item.OwnerCharacterName = newCharacter.Name;
             }
             newCharacter.Inventory.Cosmetics = cosmetics;
-            DatabaseManager.UpdateCharacter(newCharacter);
+            DatabaseCharacter.Update(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
-            Account account = DatabaseManager.GetAccount(session.AccountId);
+            Account account = DatabaseAccount.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)

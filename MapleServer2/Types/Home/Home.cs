@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -11,7 +11,7 @@ namespace MapleServer2.Types
     // TODO: Implement architect expiration
     public class Home
     {
-        public readonly long Id;
+        public long Id;
         public long InstanceId;
         public long AccountId { get; set; }
         public int MapId { get; set; }
@@ -46,10 +46,8 @@ namespace MapleServer2.Types
         public List<long> BuildingPermissions = new List<long>(); // account ids
 
         // Inventories
-        public readonly Dictionary<long, Item> WarehouseInventory = new Dictionary<long, Item>();
-        public List<Item> WarehouseItems { get; set; } // DB ONLY
-        public readonly Dictionary<long, Cube> FurnishingInventory = new Dictionary<long, Cube>();
-        public List<Cube> FurnishingCubes { get; set; } // DB ONLY
+        public Dictionary<long, Item> WarehouseInventory = new Dictionary<long, Item>();
+        public Dictionary<long, Cube> FurnishingInventory = new Dictionary<long, Cube>();
 
         // Decor planner
         public byte DecorPlannerSize;
@@ -75,26 +73,23 @@ namespace MapleServer2.Types
             Permissions = new Dictionary<HomePermission, byte>();
             Layouts = new List<HomeLayout>();
 
-            SetTemplate(homeTemplate + 1); // the Templates ids in the XMLs are from 1-3 and the client request 0-2
-
-            Id = DatabaseManager.CreateHouse(this);
-        }
-
-        private void SetTemplate(int homeTemplate)
-        {
-            HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate(homeTemplate.ToString());
+            // the Templates ids in the XMLs are from 1-3 and the client request 0-2
+            HomeTemplateMetadata templateMetadata = HomeTemplateMetadataStorage.GetTemplate((homeTemplate + 1).ToString());
             if (templateMetadata == null)
             {
                 Size = 10;
                 Height = 4;
-                return;
+            }
+            else
+            {
+                Size = templateMetadata.Size;
+                Height = templateMetadata.Height;
             }
 
-            Size = templateMetadata.Size;
-            Height = templateMetadata.Height;
+            Id = DatabaseHome.CreateHome(this);
             foreach (CubeTemplate cubeTemplate in templateMetadata.Cubes)
             {
-                Cube cube = new Cube(new Item(cubeTemplate.ItemId), 1, cubeTemplate.CoordF, cubeTemplate.Rotation);
+                Cube cube = new Cube(new Item(cubeTemplate.ItemId), 1, cubeTemplate.CoordF, cubeTemplate.Rotation, 0, Id);
                 FurnishingInventory.Add(cube.Uid, cube);
             }
         }

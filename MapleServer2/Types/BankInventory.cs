@@ -1,4 +1,5 @@
-﻿using MapleServer2.Packets;
+﻿using MapleServer2.Database.Classes;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
@@ -11,20 +12,21 @@ namespace MapleServer2.Types
         public int ExtraSize;
 
         public Item[] Items = new Item[36];
-        public List<Item> DB_Items { get; set; }
 
-        public BankInventory() { }
-
-        public BankInventory(BankInventory bankInventory)
+        public BankInventory()
         {
-            Id = bankInventory.Id;
-            ExtraSize = bankInventory.ExtraSize;
-            Items = new Item[DEFAULT_SIZE + ExtraSize];
-            for (int i = 0; i < bankInventory.DB_Items.Count; i++)
-            {
-                Item item = bankInventory.DB_Items[i];
+            Id = DatabaseBankInventory.CreateBankInventory(this);
+        }
 
-                item.SetMetadataValues(item.Id);
+        public BankInventory(long id, int extraSize, List<Item> items)
+        {
+            Id = id;
+            ExtraSize = extraSize;
+            Items = new Item[DEFAULT_SIZE + ExtraSize];
+            for (int i = 0; i < items.Count; i++)
+            {
+                Item item = items[i];
+                item.SetMetadataValues();
                 Items[i] = item;
             }
         }

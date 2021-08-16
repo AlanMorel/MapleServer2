@@ -2,7 +2,7 @@
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -39,9 +39,9 @@ namespace MapleServer2.PacketHandlers.Login
             string password = packet.ReadUnicodeString();
 
             Account account;
-            if (DatabaseManager.AccountExists(username.ToLower()))
+            if (DatabaseAccount.AccountExists(username.ToLower()))
             {
-                if (!DatabaseManager.Authenticate(username, password, out account))
+                if (!DatabaseAccount.Authenticate(username, password, out account))
                 {
                     session.Send(LoginResultPacket.IncorrectPassword());
                     return;
@@ -66,12 +66,12 @@ namespace MapleServer2.PacketHandlers.Login
 
                     session.Send(pWriter);
 
-                    List<Banner> banners = DatabaseManager.GetBanners();
+                    List<Banner> banners = DatabaseMeretMarket.FindAllBanners();
                     session.Send(BannerListPacket.SetBanner(banners));
                     session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
                     break;
                 case 2:
-                    List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
+                    List<Player> characters = DatabaseAccount.FindAllByAccountId(session.AccountId);
 
                     Logger.Debug($"Initializing login with account id: {session.AccountId}");
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));

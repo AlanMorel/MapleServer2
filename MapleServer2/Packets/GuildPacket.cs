@@ -79,9 +79,9 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(guild.Capacity);
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString(guild.Notice);
-            pWriter.WriteLong(guild.Leader.AccountId);
-            pWriter.WriteLong(guild.Leader.CharacterId);
-            pWriter.WriteUnicodeString(guild.Leader.Name);
+            pWriter.WriteLong(guild.LeaderAccountId);
+            pWriter.WriteLong(guild.LeaderCharacterId);
+            pWriter.WriteUnicodeString(guild.LeaderName);
             pWriter.WriteLong(guild.CreationTimestamp);
             pWriter.WriteByte(0x1);
             pWriter.WriteInt(1000);
@@ -367,7 +367,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(GuildPacketMode.UpdateRankNotice);
             pWriter.WriteByte();
             pWriter.WriteInt();
-            pWriter.WriteUnicodeString(guild.Leader.Name);
+            pWriter.WriteUnicodeString(guild.LeaderName);
             pWriter.WriteByte(rankIndex);
             pWriter.WriteByte(rankIndex);
             pWriter.WriteUnicodeString(guild.Ranks[rankIndex].Name);
@@ -678,7 +678,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(); // lifestyle trophy accummulative total
                 pWriter.WriteInt(guild.Members.Count);
                 pWriter.WriteInt(guild.Capacity);
-                pWriter.WriteUnicodeString(guild.Leader.Name);
+                pWriter.WriteUnicodeString(guild.LeaderName);
                 pWriter.WriteLong(player.AccountId);
                 pWriter.WriteLong(player.CharacterId);
                 pWriter.WriteLong(application.CreationTimestamp);
@@ -704,9 +704,9 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(guild.Members.Count);
                 pWriter.WriteInt(guild.Capacity);
                 pWriter.WriteInt(guild.Exp);
-                pWriter.WriteLong(guild.Leader.AccountId);
-                pWriter.WriteLong(guild.Leader.CharacterId);
-                pWriter.WriteUnicodeString(guild.Leader.Name);
+                pWriter.WriteLong(guild.LeaderAccountId);
+                pWriter.WriteLong(guild.LeaderCharacterId);
+                pWriter.WriteUnicodeString(guild.LeaderName);
             }
             return pWriter;
         }

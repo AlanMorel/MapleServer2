@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -47,7 +47,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            List<CardReverseGame> cards = DatabaseManager.GetCardReverseGame();
+            List<CardReverseGame> cards = DatabaseCardReverseGame.FindAll();
             session.Send(CardReverseGamePacket.Open(cards));
         }
 
@@ -69,7 +69,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Unknown how this game works as to whether it's weighted or not
             // Currently being handled by each item having an equal chance
 
-            List<CardReverseGame> cards = DatabaseManager.GetCardReverseGame();
+            List<CardReverseGame> cards = DatabaseCardReverseGame.FindAll();
 
             int index = RandomProvider.Get().Next(cards.Count);
 

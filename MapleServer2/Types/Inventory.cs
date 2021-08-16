@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using Maple2Storage.Types;
+using MapleServer2.Database.Classes;
 
 // TODO: make this class thread safe?
 namespace MapleServer2.Types
@@ -13,8 +14,6 @@ namespace MapleServer2.Types
         public Dictionary<ItemSlot, Item> Equips;
         public Dictionary<ItemSlot, Item> Cosmetics;
         public List<Item> Badges;
-
-        public List<Item> DB_Items { get; set; }
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] SlotMaps;
@@ -48,23 +47,26 @@ namespace MapleServer2.Types
             {
                 SlotMaps[i] = new Dictionary<short, long>();
             }
+            Id = DatabaseInventory.CreateInventory(this);
         }
 
-        public Inventory(IEnumerable<Item> loadItems) : this()
+        public Inventory(long id, Dictionary<InventoryTab, short> extraSize, List<Item> items)
         {
-            foreach (Item item in loadItems)
+            Equips = new Dictionary<ItemSlot, Item>();
+            Cosmetics = new Dictionary<ItemSlot, Item>();
+            Badges = new List<Item>();
+            Items = new Dictionary<long, Item>();
+            byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
+            SlotMaps = new Dictionary<short, long>[maxTabs + 1];
+            for (byte i = 0; i <= maxTabs; i++)
             {
-                Add(item);
+                SlotMaps[i] = new Dictionary<short, long>();
             }
-        }
-
-        public Inventory(Inventory inventory) : this()
-        {
-            Id = inventory.Id;
-            ExtraSize = inventory.ExtraSize;
-            foreach (Item item in inventory.DB_Items)
+            Id = id;
+            ExtraSize = extraSize;
+            foreach (Item item in items)
             {
-                item.SetMetadataValues(item.Id);
+                item.SetMetadataValues();
                 if (item.IsEquipped)
                 {
                     if (item.InventoryTab == InventoryTab.Outfit)

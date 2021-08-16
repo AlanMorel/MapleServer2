@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -61,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleOpenPremium(GameSession session, PacketReader packet)
         {
             MeretMarketCategory category = (MeretMarketCategory) packet.ReadInt();
-            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(category);
+            List<MeretMarketItem> marketItems = DatabaseMeretMarket.FindAllByCategoryId(category);
             if (marketItems == null)
             {
                 return;
@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
             string unk6 = packet.ReadUnicodeString();
             long price = packet.ReadLong();
 
-            MeretMarketItem marketItem = DatabaseManager.GetMeretMarketItem(marketItemId);
+            MeretMarketItem marketItem = DatabaseMeretMarket.FindById(marketItemId);
             if (marketItem == null)
             {
                 return;
@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleHome(GameSession session)
         {
-            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(MeretMarketCategory.Promo);
+            List<MeretMarketItem> marketItems = DatabaseMeretMarket.FindAllByCategoryId(MeretMarketCategory.Promo);
             if (marketItems == null)
             {
                 return;

@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database;
+using MapleServer2.Database.Classes;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -60,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Shop shop = DatabaseManager.GetShop(item.ShopID);
+            Shop shop = DatabaseShop.FindById(item.ShopID);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {item.ShopID}");
@@ -101,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void OpenSystemShop(GameSession session, int shopId)
         {
-            Shop shop = DatabaseManager.GetShop(shopId);
+            Shop shop = DatabaseShop.FindById(shopId);
 
             session.Send(ShopPacket.Open(shop));
             foreach (ShopItem shopItem in shop.Items)
