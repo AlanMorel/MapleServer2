@@ -36,7 +36,7 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
+                    if (individualBoxItem.Attributes["minCount"].Value.Contains('.'))
                     {
                         continue;
                     }

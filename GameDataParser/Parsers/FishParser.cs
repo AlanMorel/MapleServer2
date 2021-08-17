@@ -26,7 +26,7 @@ namespace GameDataParser.Parsers
                     {
                         List<int> habitat = new List<int>();
                         int fishId = int.Parse(node.Attributes["id"].Value);
-                        if (node.Attributes["habitat"].Value.Contains(","))
+                        if (node.Attributes["habitat"].Value.Contains(','))
                         {
                             habitat.AddRange(node.Attributes["habitat"].Value.Split(",").Select(int.Parse).ToList());
                         }
