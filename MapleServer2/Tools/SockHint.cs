@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using MaplePacketLib2.Tools;
 
 namespace MapleServer2.Tools

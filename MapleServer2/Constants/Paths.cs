@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace MapleServer2.Constants
+﻿namespace MapleServer2.Constants
 {
     public static class Paths
     {

@@ -4,7 +4,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Packets
 {
-    class FallDamagePacket
+    internal class FallDamagePacket
     {
         public static Packet FallDamage(GameSession session, int hpLost)
         {

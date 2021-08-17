@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NLog;
+﻿using NLog;
 
 namespace MapleServer2.Commands.Core
 {

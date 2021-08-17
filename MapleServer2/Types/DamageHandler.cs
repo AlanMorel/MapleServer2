@@ -1,5 +1,4 @@
-﻿using System;
-using Maple2Storage.Tools;
+﻿using Maple2Storage.Tools;
 
 namespace MapleServer2.Types
 {
@@ -20,7 +19,7 @@ namespace MapleServer2.Types
         {
             if (player.GmFlags.Contains("oneshot"))
             {
-                return new DamageHandler((double) mob.Stats.Hp.Total, true);
+                return new DamageHandler(mob.Stats.Hp.Total, true);
             }
             // TODO: Calculate attack damage w/ stats
             double attackDamage = 300;

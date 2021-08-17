@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;

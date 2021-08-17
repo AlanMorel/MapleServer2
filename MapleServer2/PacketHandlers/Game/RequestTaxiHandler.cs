@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Extensions;
@@ -11,7 +10,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game
 {
-    class RequestTaxiHandler : GamePacketHandler
+    internal class RequestTaxiHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 

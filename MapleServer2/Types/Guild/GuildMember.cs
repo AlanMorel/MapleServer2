@@ -1,5 +1,4 @@
-﻿using System;
-using MapleServer2.Database;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {

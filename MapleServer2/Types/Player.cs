@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -141,7 +136,7 @@ namespace MapleServer2.Types
 
         public List<Widget> Widgets = new List<Widget>();
 
-        class TimeInfo
+        private class TimeInfo
         {
             public long CharCreation;
             public long OnlineDuration;

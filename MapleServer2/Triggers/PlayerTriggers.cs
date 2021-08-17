@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 using Maple2.Trigger.Enum;
 using MapleServer2.Packets;
 using MapleServer2.Types;
