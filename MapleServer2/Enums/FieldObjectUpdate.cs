@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MapleServer2.Enums
+﻿namespace MapleServer2.Enums
 {
     [Flags]
     public enum FieldObjectUpdate : byte

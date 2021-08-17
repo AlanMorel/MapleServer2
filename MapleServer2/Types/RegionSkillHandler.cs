@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 

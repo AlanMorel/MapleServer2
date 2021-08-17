@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DijkstraAlgorithm.Graphing;
+﻿using DijkstraAlgorithm.Graphing;
 using DijkstraAlgorithm.Pathing;
 
 namespace MapleServer2.Data.Static

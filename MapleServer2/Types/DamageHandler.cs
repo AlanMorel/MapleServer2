@@ -1,5 +1,4 @@
-﻿using System;
-using Maple2Storage.Tools;
+﻿using Maple2Storage.Tools;
 
 namespace MapleServer2.Types
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace MapleServer2.Tools
+﻿namespace MapleServer2.Tools
 {
     public static class DotEnv
     {

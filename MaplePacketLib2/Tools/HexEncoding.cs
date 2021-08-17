@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace MaplePacketLib2.Tools
+﻿namespace MaplePacketLib2.Tools
 {
     public static class HexEncoding
     {

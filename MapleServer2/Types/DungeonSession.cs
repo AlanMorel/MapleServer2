@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types

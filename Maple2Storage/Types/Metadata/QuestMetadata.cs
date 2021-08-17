@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata

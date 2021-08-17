@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MapleServer2.Types
+﻿namespace MapleServer2.Types
 {
     public class Mailbox
     {
