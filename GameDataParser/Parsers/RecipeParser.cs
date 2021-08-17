@@ -5,7 +5,7 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class RecipeParser : Exporter<List<RecipeMetadata>>
+    internal class RecipeParser : Exporter<List<RecipeMetadata>>
     {
         public RecipeParser(MetadataResources resources) : base(resources, "recipe") { }
 

@@ -4,7 +4,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    class MeretsPacket
+    internal class MeretsPacket
     {
         public static Packet UpdateMerets(Account account, long amountGain = 0)
         {

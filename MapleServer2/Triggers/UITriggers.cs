@@ -104,7 +104,7 @@ namespace MapleServer2.Triggers
                 return;
             }
 
-            if (box.Contains("!"))
+            if (box.Contains('!'))
             {
                 box = box[1..];
                 int boxId = int.Parse(box);

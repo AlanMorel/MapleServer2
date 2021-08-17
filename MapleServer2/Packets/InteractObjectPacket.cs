@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    class InteractObjectPacket
+    internal class InteractObjectPacket
     {
         private enum InteractObjectMode : byte
         {

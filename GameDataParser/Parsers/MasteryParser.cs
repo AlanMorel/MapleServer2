@@ -5,7 +5,7 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class MasteryParser : Exporter<List<MasteryMetadata>>
+    internal class MasteryParser : Exporter<List<MasteryMetadata>>
     {
         public MasteryParser(MetadataResources resources) : base(resources, "mastery") { }
 

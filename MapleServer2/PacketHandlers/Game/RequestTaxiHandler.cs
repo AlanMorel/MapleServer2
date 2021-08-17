@@ -10,7 +10,7 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game
 {
-    class RequestTaxiHandler : GamePacketHandler
+    internal class RequestTaxiHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 

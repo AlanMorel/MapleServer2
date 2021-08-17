@@ -5,7 +5,7 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class ExpParser : Exporter<List<ExpMetadata>>
+    internal class ExpParser : Exporter<List<ExpMetadata>>
     {
         public ExpParser(MetadataResources resources) : base(resources, "exp") { }
 

@@ -6,7 +6,7 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class TrophyParser : Exporter<List<TrophyMetadata>>
+    internal class TrophyParser : Exporter<List<TrophyMetadata>>
     {
         public TrophyParser(MetadataResources resources) : base(resources, "trophy") { }
 

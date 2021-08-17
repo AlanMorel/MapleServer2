@@ -136,7 +136,7 @@ namespace MapleServer2.Types
 
         public List<Widget> Widgets = new List<Widget>();
 
-        class TimeInfo
+        private class TimeInfo
         {
             public long CharCreation;
             public long OnlineDuration;

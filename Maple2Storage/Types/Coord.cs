@@ -348,9 +348,9 @@ namespace Maple2Storage.Types
         public readonly CoordF ToFloat()
         {
             return CoordF.From(
-                (float) (X * Block.BLOCK_SIZE),
-                (float) (Y * Block.BLOCK_SIZE),
-                (float) (Z * Block.BLOCK_SIZE));
+                 X * Block.BLOCK_SIZE,
+                 Y * Block.BLOCK_SIZE,
+                 Z * Block.BLOCK_SIZE);
         }
 
         public readonly CoordS ToShort()
@@ -429,9 +429,9 @@ namespace Maple2Storage.Types
         {
             string[] coord = value.Split(separator);
             return CoordB.From(
-                (sbyte) sbyte.Parse(coord[0]),
-                (sbyte) sbyte.Parse(coord[1]),
-                (sbyte) sbyte.Parse(coord[2])
+                 sbyte.Parse(coord[0]),
+                 sbyte.Parse(coord[1]),
+                 sbyte.Parse(coord[2])
             );
         }
 
