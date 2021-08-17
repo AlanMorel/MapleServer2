@@ -1,5 +1,4 @@
-﻿using System;
-using MapleServer2.Database;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -17,20 +16,15 @@ namespace MapleServer2.Types
 
         public GuildMember() { }
 
-        public GuildMember(Player player)
+        public GuildMember(Player player, byte rank)
         {
             Id = player.CharacterId;
-            Rank = 5;
+            Player = player;
+            Rank = rank;
             Motto = "";
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             DatabaseManager.CreateGuildMember(this);
-        }
-
-        public void AddGuildMember(Player player)
-        {
-            Player = player;
             player.GuildMember = this;
-            DatabaseManager.UpdateCharacter(player);
         }
 
         public void AddContribution(int contribution)

@@ -1,5 +1,4 @@
-﻿using System;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -69,7 +68,7 @@ namespace MapleServer2.PacketHandlers.Game
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
                 session.Player.ConsumeHp(fallDamage);
 
-                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, safeBlock, session.Player.Rotation));
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.Player.Rotation));
                 session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
                 session.Send(FallDamagePacket.FallDamage(session, fallDamage));
             }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class RecipeParser : Exporter<List<RecipeMetadata>>
+    internal class RecipeParser : Exporter<List<RecipeMetadata>>
     {
         public RecipeParser(MetadataResources resources) : base(resources, "recipe") { }
 

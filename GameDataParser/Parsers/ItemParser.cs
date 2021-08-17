@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Web;
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
@@ -39,7 +36,7 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
+                    if (individualBoxItem.Attributes["minCount"].Value.Contains('.'))
                     {
                         continue;
                     }
@@ -498,6 +495,20 @@ namespace GameDataParser.Parsers
                 }
 
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
+
+                XmlNode installNode = item.SelectSingleNode("install");
+                bool isCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
+                metadata.IsCubeSolid = isCubeSolid;
+
+                XmlNode housingNode = item.SelectSingleNode("housing");
+                string value = housingNode.Attributes["categoryTag"].Value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    List<string> categories = new List<string>(value.Split(","));
+                    short category = short.Parse(categories[0]);
+
+                    metadata.HousingCategory = (ItemHousingCategory) category;
+                }
 
                 // Item breaking ingredients
                 if (rewards.ContainsKey(itemId))

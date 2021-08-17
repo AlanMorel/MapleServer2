@@ -6,6 +6,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Microsoft.Extensions.Logging;
+using Instrument = MapleServer2.Types.Instrument;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -192,7 +193,7 @@ namespace MapleServer2.PacketHandlers.Game
             long instrumentItemUid = packet.ReadLong();
             long scoreItemUid = packet.ReadLong();
 
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;
@@ -244,7 +245,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                 member.Instrument.Value.InstrumentTick = instrumentTick; // set the tick to be all the same
                 member.Session.FieldManager.AddInstrument(member.Session.Player.Instrument);
-                session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
+                session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(member.Session.Player.Instrument));
                 member.Instrument.Value.Score.PlayCount -= 1;
                 member.Session.Send(InstrumentPacket.UpdateScoreUses(member.Instrument.Value.Score.Uid, member.Instrument.Value.Score.PlayCount));
                 member.Instrument.Value.Ensemble = false;

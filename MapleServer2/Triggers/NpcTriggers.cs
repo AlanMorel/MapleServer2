@@ -1,12 +1,29 @@
 ﻿using System.Numerics;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
+using MapleServer2.Packets;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
-        public void AddBalloonTalk(int spawnPointId, string msg, int duration, int delayTick, bool npcId)
+        public void AddBalloonTalk(int spawnPointId, string msg, int duration, int delayTick, bool isNpcId)
         {
+            if (!isNpcId)
+            {
+                if (spawnPointId == 0)
+                {
+                    IFieldObject<Player> player = Field.State.Players.Values.First();
+                    if (player == null)
+                    {
+                        return;
+                    }
+                    player.Value.Session.Send(CinematicPacket.BalloonTalk(player.ObjectId, isNpcId, msg, duration, delayTick));
+                    return;
+                }
+            }
         }
 
         public void RemoveBalloonTalk(int spawnPointId)
@@ -17,8 +34,30 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void CreateMonster(int[] arg1, bool arg2, int arg3)
+        public void CreateMonster(int[] spawnPointIds, bool arg2, int arg3)
         {
+            foreach (int spawnPointId in spawnPointIds)
+            {
+                MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+                if (spawnPoint == null)
+                {
+                    continue;
+                }
+                for (int i = 0; i < spawnPoint.Count; i++)
+                {
+                    foreach (string npcId in spawnPoint.NpcIds)
+                    {
+                        if (int.TryParse(npcId, out int id))
+                        {
+                            Mob mob = new Mob(id);
+                            IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
+                            fieldMob.Coord = spawnPoint.Position;
+                            fieldMob.Rotation = spawnPoint.Rotation;
+                            Field.AddMob(fieldMob);
+                        }
+                    }
+                }
+            }
         }
 
         public void ChangeMonster(int arg1, int arg2)

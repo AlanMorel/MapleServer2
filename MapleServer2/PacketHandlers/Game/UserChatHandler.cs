@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
+using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -23,9 +23,10 @@ namespace MapleServer2.PacketHandlers.Game
             string recipient = packet.ReadUnicodeString();
             long clubId = packet.ReadLong();
 
-            if (message.Substring(0, 1).Equals("/"))
+            if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
             {
-                GameCommandActions.Process(session, message);
+                string[] args = message[1..].ToLower().Split(" ");
+                GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session));
                 return;
             }
 
@@ -97,7 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
                 InventoryController.Consume(session, voucher.Uid, 1);
             }
-            else if (!session.Player.Wallet.RemoveMerets(30))
+            else if (!session.Player.Account.RemoveMerets(30))
             {
                 session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
                 return;
@@ -141,7 +142,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandlePartyChat(GameSession session, string message, ChatType type)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;

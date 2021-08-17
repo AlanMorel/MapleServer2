@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace MapleServer2.Types
 {
@@ -17,6 +16,10 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
         public readonly ConcurrentDictionary<int, IFieldObject<Instrument>> Instruments;
+        public readonly ConcurrentDictionary<int, TriggerMesh> TriggerMeshes;
+        public readonly ConcurrentDictionary<int, TriggerEffect> TriggerEffects;
+        public readonly ConcurrentDictionary<int, TriggerCamera> TriggerCameras;
+        public readonly ConcurrentDictionary<int, TriggerActor> TriggerActors;
 
         public FieldState()
         {
@@ -31,6 +34,10 @@ namespace MapleServer2.Types
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
             Instruments = new ConcurrentDictionary<int, IFieldObject<Instrument>>();
+            TriggerMeshes = new ConcurrentDictionary<int, TriggerMesh>();
+            TriggerEffects = new ConcurrentDictionary<int, TriggerEffect>();
+            TriggerCameras = new ConcurrentDictionary<int, TriggerCamera>();
+            TriggerActors = new ConcurrentDictionary<int, TriggerActor>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -149,6 +156,25 @@ namespace MapleServer2.Types
         public void AddHealingSpot(IFieldObject<HealingSpot> healingSpot)
         {
             HealingSpots[healingSpot.ObjectId] = healingSpot;
+        }
+
+        public void AddTriggerObject(TriggerObject triggerObject)
+        {
+            switch (triggerObject)
+            {
+                case TriggerMesh triggerMesh:
+                    TriggerMeshes[triggerMesh.Id] = triggerMesh;
+                    break;
+                case TriggerEffect triggerEffect:
+                    TriggerEffects[triggerEffect.Id] = triggerEffect;
+                    break;
+                case TriggerCamera triggerCamera:
+                    TriggerCameras[triggerCamera.Id] = triggerCamera;
+                    break;
+                case TriggerActor triggerActor:
+                    TriggerActors[triggerActor.Id] = triggerActor;
+                    break;
+            }
         }
     }
 }

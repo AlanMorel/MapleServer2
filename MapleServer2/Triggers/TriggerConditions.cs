@@ -1,4 +1,9 @@
 ﻿using Maple2.Trigger.Enum;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
+using MapleServer2.Enums;
+using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
@@ -16,7 +21,6 @@ namespace MapleServer2.Triggers
 
         public bool CheckDungeonLobbyUserCount()
         {
-            //TODO: Implement checking dungeon lobby user count. The below is temporary.
             return !Field.State.Players.IsEmpty;
         }
 
@@ -65,9 +69,29 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool MonsterDead(int[] arg1, bool arg2)
+        public bool MonsterDead(int[] spawnPointIds, bool arg2)
         {
-            return false;
+            // TODO: Needs a better check for multiple mob spawns
+            foreach (int spawnPointId in spawnPointIds)
+            {
+                MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+                if (spawnPoint == null)
+                {
+                    continue;
+                }
+                foreach (string npcId in spawnPoint.NpcIds)
+                {
+                    if (int.TryParse(npcId, out int id))
+                    {
+                        if (Field.State.Mobs.Values.Where(x => x.Value.Id == id).Any())
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+            }
+            return true;
         }
 
         public bool MonsterInCombat(int[] arg1)
@@ -100,18 +124,49 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool RandomCondition(float arg1, string desc)
+        public bool RandomCondition(float proc, string desc)
         {
-            return false;
+            Random random = new Random();
+            float result = (float) random.NextDouble();
+            result *= 100;
+            return result <= proc;
         }
 
-        public bool TimeExpired(string arg1)
+        public bool TimeExpired(string id)
         {
-            return false;
+            MapTimer timer = Field.GetMapTimer(id);
+            if (timer == null || timer.EndTick >= Environment.TickCount)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public bool UserDetected(int[] arg1, byte arg2)
+        public bool UserDetected(int[] boxIds, byte jobId)
         {
+            Job job = (Job) jobId;
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            if (job != Job.None)
+            {
+                players = players.Where(x => x.Value.Job == job).ToList();
+            }
+            foreach (int boxId in boxIds)
+            {
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                if (box == null)
+                {
+                    return false;
+                }
+
+                foreach (IFieldObject<Player> player in players)
+                {
+                    if (FieldManager.IsPlayerInBox(box, player))
+                    {
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 
@@ -122,7 +177,18 @@ namespace MapleServer2.Triggers
 
         public bool WaitTick(int waitTick)
         {
-            NextTick += waitTick;
+            if (NextTick == 0)
+            {
+                NextTick = Environment.TickCount + waitTick;
+                return false;
+            }
+
+            if (NextTick > Environment.TickCount)
+            {
+                return false;
+            }
+
+            NextTick = 0;
             return true;
         }
 
@@ -141,8 +207,18 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool WidgetCondition(WidgetType type, string arg2, string arg3)
+        public bool WidgetCondition(WidgetType type, string name, string arg3)
         {
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
+            {
+                Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
+                if (widget == null)
+                {
+                    continue;
+                }
+                return widget.State == name;
+            }
             return false;
         }
     }

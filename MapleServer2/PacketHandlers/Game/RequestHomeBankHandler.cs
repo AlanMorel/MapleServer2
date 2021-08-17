@@ -14,7 +14,8 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum BankMode : byte
         {
-            Open = 0x02,
+            House = 0x01,
+            Inventory = 0x02,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -22,7 +23,10 @@ namespace MapleServer2.PacketHandlers.Game
             BankMode mode = (BankMode) packet.ReadByte();
             switch (mode)
             {
-                case BankMode.Open:
+                case BankMode.House:
+                    HandleOpen(session, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                    break;
+                case BankMode.Inventory:
                     HandleOpen(session);
                     break;
                 default:
@@ -31,9 +35,9 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpen(GameSession session)
+        private static void HandleOpen(GameSession session, long date = 0)
         {
-            session.Send(HomeBank.OpenBank());
+            session.Send(HomeBank.OpenBank(date));
         }
     }
 }

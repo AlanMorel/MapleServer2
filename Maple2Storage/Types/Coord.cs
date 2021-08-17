@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
@@ -33,6 +33,16 @@ namespace Maple2Storage.Types
                 X = (float) (distance * Math.Cos(angle)),
                 Y = (float) (distance * Math.Sin(angle)),
                 Z = 0.0f,
+            };
+        }
+
+        public static CoordF FromVector3(Vector3 vector3)
+        {
+            return new CoordF
+            {
+                X = vector3.X,
+                Y = vector3.Y,
+                Z = vector3.Z
             };
         }
 
@@ -181,6 +191,11 @@ namespace Maple2Storage.Types
                 Y = (short) (distance * Math.Sin(angle)),
                 Z = 0,
             };
+        }
+
+        public static CoordS FromVector3(Vector3 vector3)
+        {
+            return From((short) vector3.X, (short) vector3.Y, (short) vector3.Z);
         }
 
         public readonly CoordF ToFloat()
@@ -333,9 +348,9 @@ namespace Maple2Storage.Types
         public readonly CoordF ToFloat()
         {
             return CoordF.From(
-                (float) (X * Block.BLOCK_SIZE),
-                (float) (Y * Block.BLOCK_SIZE),
-                (float) (Z * Block.BLOCK_SIZE));
+                 X * Block.BLOCK_SIZE,
+                 Y * Block.BLOCK_SIZE,
+                 Z * Block.BLOCK_SIZE);
         }
 
         public readonly CoordS ToShort()
@@ -414,9 +429,9 @@ namespace Maple2Storage.Types
         {
             string[] coord = value.Split(separator);
             return CoordB.From(
-                (sbyte) sbyte.Parse(coord[0]),
-                (sbyte) sbyte.Parse(coord[1]),
-                (sbyte) sbyte.Parse(coord[2])
+                 sbyte.Parse(coord[0]),
+                 sbyte.Parse(coord[1]),
+                 sbyte.Parse(coord[2])
             );
         }
 

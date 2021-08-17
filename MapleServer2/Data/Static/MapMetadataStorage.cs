@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
@@ -63,7 +61,6 @@ namespace MapleServer2.Data.Static
         public static int GetPlotNumber(int mapId, CoordB coord)
         {
             CoordS coordS = coord.ToShort();
-            List<MapBlock> blocks = new List<MapBlock>();
             MapMetadata mapMetadata = GetMetadata(mapId);
             for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
             {

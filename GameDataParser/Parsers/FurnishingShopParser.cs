@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
@@ -15,7 +14,8 @@ namespace GameDataParser.Parsers
             List<FurnishingShopMetadata> furnishingShops = new List<FurnishingShopMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-                if (!entry.Name.StartsWith("table/na/shop_ugcall"))
+                // files shop_maid and shop_ugcall
+                if (!entry.Name.StartsWith("table/na/shop_"))
                 {
                     continue;
                 }

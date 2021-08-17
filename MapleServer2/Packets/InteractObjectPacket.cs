@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -7,11 +6,12 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
-    class InteractObjectPacket
+    internal class InteractObjectPacket
     {
         private enum InteractObjectMode : byte
         {
             Use = 0x05,
+            Activate = 0x06, //could also just be lever object
             AddInteractObject = 0x08,
             AddAdBalloons = 0x09,
             Extra = 0x0D
@@ -21,6 +21,15 @@ namespace MapleServer2.Packets
         {
             Disabled = 0x00,
             Enabled = 0x01
+        }
+
+        public static Packet ActivateInteractObject(int interactObjectId)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+            pWriter.WriteEnum(InteractObjectMode.Activate);
+            pWriter.WriteInt(interactObjectId);
+            pWriter.WriteEnum(InteractStatus.Enabled);
+            return pWriter;
         }
 
         public static Packet AddInteractObjects(ICollection<IFieldObject<InteractObject>> objects)

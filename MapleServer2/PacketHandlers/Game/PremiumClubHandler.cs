@@ -1,5 +1,4 @@
-﻿using System;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -94,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             PremiumClubPackageMetadata vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
 
-            if (!session.Player.Wallet.RemoveMerets(vipPackage.Price))
+            if (!session.Player.Account.RemoveMerets(vipPackage.Price))
             {
                 return;
             }
@@ -130,7 +129,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Player.VIPExpiration += vipTime;
                 session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
             }
-
+            session.Send(BuffPacket.SendBuff(0, new Status(100000014, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
             session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
         }
     }

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Packets;
@@ -102,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleAddTab(GameSession session)
         {
-            if (!session.Player.Wallet.RemoveMerets(990))
+            if (!session.Player.Account.RemoveMerets(990))
             {
                 return;
             }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -73,7 +70,7 @@ namespace MapleServer2.PacketHandlers.Game
             int objectId = packet.ReadInt();
 
             QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            if (questStatus == null || questStatus.Completed)
             {
                 return;
             }
@@ -115,7 +112,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int questId = packet.ReadInt();
             QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            if (questStatus == null || questStatus.Completed)
             {
                 return;
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -21,11 +16,12 @@ namespace MapleServer2.Types
         public readonly long UnknownId = 0x01EF80C2; //0x01CC3721;
         public GameSession Session;
 
-        public readonly Account Account;
+        public Account Account;
         // Constant Values
         public long AccountId { get; private set; }
         public long CharacterId { get; set; }
         public long CreationTime { get; private set; }
+        public bool IsDeleted;
 
         public string Name { get; private set; }
         // Gender - 0 = male, 1 = female
@@ -39,7 +35,7 @@ namespace MapleServer2.Types
         // Mutable Values
         public Levels Levels { get; set; }
         public int MapId { get; set; }
-        public int InstanceId { get; set; }
+        public long InstanceId { get; set; }
         public int TitleId { get; set; }
         public short InsigniaId { get; set; }
         public List<int> Titles { get; set; }
@@ -83,13 +79,8 @@ namespace MapleServer2.Types
         public string ProfileUrl; // profile/e2/5a/2755104031905685000/637207943431921205.png
         public string Motto;
 
-        // TODO: Rework to use class Home
-        public int HomeMapId = 62000000;
-        public int PlotMapId;
-        public int HomePlotNumber;
-        public int ApartmentNumber;
-        public long HomeExpiration; // if player does not have a purchased plot, home expiration needs to be set to a far away date
-        public string HomeName;
+        public long VisitingHomeId;
+        public bool IsInDecorPlanner;
 
         public Mapleopoly Mapleopoly = new Mapleopoly();
 
@@ -113,7 +104,7 @@ namespace MapleServer2.Types
 
         public List<Buddy> BuddyList;
 
-        public long PartyId;
+        public Party Party;
         public long ClubId;
         // TODO make this as an array
 
@@ -143,7 +134,9 @@ namespace MapleServer2.Types
         public List<string> GmFlags = new List<string>();
         public int DungeonSessionId = -1;
 
-        class TimeInfo
+        public List<Widget> Widgets = new List<Widget>();
+
+        private class TimeInfo
         {
             public long CharCreation;
             public long OnlineDuration;
@@ -168,8 +161,7 @@ namespace MapleServer2.Types
             Job = job;
             GameOptions = new GameOptions();
             GameOptions.Initialize();
-            Wallet = new Wallet(this, meso: 0, meret: 0, gameMeret: 0, eventMeret: 0, valorToken: 0, treva: 0, rue: 0,
-                                haviFruit: 0, mesoToken: 0, bank: 0);
+            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, mesoToken: 0, bank: 0);
             Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
             {
                 new MasteryExp(MasteryType.Fishing),
@@ -185,12 +177,11 @@ namespace MapleServer2.Types
                 new MasteryExp(MasteryType.PetTaming)
             });
             Timestamps = new TimeInfo(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            MapId = 52000065;
-            Coord = CoordF.From(-675, 525, 600); // Intro map (52000065)
+            MapId = JobMetadataStorage.GetStartMapId((int) job);
+            Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
-            HomeName = "HomeName";
             CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
             TitleId = 0;
             InsigniaId = 0;
@@ -207,7 +198,7 @@ namespace MapleServer2.Types
             QuestList = new List<QuestStatus>();
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
-            ReturnCoord = CoordF.From(-900, -900, 3000);
+            ReturnCoord = CoordF.From(-675, 525, 600);
             GroupChatId = new int[3];
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
@@ -217,8 +208,14 @@ namespace MapleServer2.Types
             ActiveSkillTabId = SkillTabs[0].TabId;
         }
 
-        public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, int instanceId = 0)
+        public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
+            Coord = coord;
+            Rotation = rotation;
+            SafeBlock = coord;
+            MapId = mapId;
+            InstanceId = instanceId;
+
             if (coord == default || rotation == default)
             {
                 MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
@@ -237,14 +234,6 @@ namespace MapleServer2.Types
                     Rotation = spawn.Rotation.ToFloat();
                 }
             }
-            else
-            {
-                Coord = coord;
-                Rotation = rotation;
-                SafeBlock = coord;
-            }
-            MapId = mapId;
-            InstanceId = instanceId;
 
             if (!UnlockedMaps.Contains(MapId))
             {
@@ -252,7 +241,7 @@ namespace MapleServer2.Types
             }
 
             DatabaseManager.UpdateCharacter(this);
-            Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
+            Session.Send(FieldPacket.RequestEnter(this));
         }
 
         public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
@@ -459,6 +448,10 @@ namespace MapleServer2.Types
                         // TODO: Check if regen-enabled
                         Stats[statId] = AddStatRegen(statId, regenStatId);
                         Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        if (Party != null)
+                        {
+                            Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
+                        }
                     }
                 }
             });

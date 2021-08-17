@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -114,7 +113,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             bool isFriend = BuddyManager.IsFriend(session.Player, otherPlayer.Value);
             bool isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
-            bool isPartyMember = session.Player.PartyId == otherPlayer.Value.PartyId;
+            bool isPartyMember = session.Player.Party == otherPlayer.Value.Party;
 
             if (!isFriend &&
                 !isGuildMember &&
@@ -137,8 +136,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.FieldManager.BroadcastPacket(MountPacket.StopTwoPersonRide(otherPlayer.ObjectId, session.FieldPlayer.ObjectId));
-            session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer.ObjectId, otherPlayer.Coord, otherPlayer.Rotation));
-
+            session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, otherPlayer.Coord, otherPlayer.Rotation));
+            session.Player.Mount = null;
             if (otherPlayer.Value.Mount != null)
             {
                 otherPlayer.Value.Mount.Value.Players.Remove(session.FieldPlayer);

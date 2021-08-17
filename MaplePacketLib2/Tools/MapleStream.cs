@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MaplePacketLib2.Tools
+﻿namespace MaplePacketLib2.Tools
 {
     // Converts a stream of bytes into individual packets
     public class MapleStream

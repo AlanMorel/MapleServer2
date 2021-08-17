@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Tools;
+﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -298,7 +295,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
             if (otherPlayer == null)
             {
-                session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, NoticeType.Popup));
+                session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, type: NoticeType.Popup));
                 return;
             }
 
@@ -382,7 +379,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             account.CharacterSlots++;
-            DatabaseManager.UpdateAccount(account);
+            DatabaseManager.Update(account);
             session.Send(CouponUsePacket.CharacterSlotAdded());
             InventoryController.Consume(session, item.Uid, 1);
         }

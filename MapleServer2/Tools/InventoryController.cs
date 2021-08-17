@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -19,7 +17,7 @@ namespace MapleServer2.Tools
                 foreach (Item i in session.Player.Inventory.Items.Values)
                 {
                     // Checks to see if item exists in database (dictionary)
-                    if (i.Id != item.Id || i.Amount >= i.StackLimit)
+                    if (i.Id != item.Id || i.Amount >= i.StackLimit || i.Rarity != item.Rarity)
                     {
                         continue;
                     }
@@ -208,11 +206,10 @@ namespace MapleServer2.Tools
         public static void ExpandInventory(GameSession session, InventoryTab tab)
         {
             Inventory inventory = session.Player.Inventory;
-            Wallet wallet = session.Player.Wallet;
             long meretPrice = 390;
             short expansionAmount = 6;
 
-            if (wallet.RemoveMerets(meretPrice))
+            if (session.Player.Account.RemoveMerets(meretPrice))
             {
                 inventory.ExtraSize[tab] += expansionAmount;
                 session.Send(ItemInventoryPacket.LoadTab(tab, inventory.ExtraSize[tab]));

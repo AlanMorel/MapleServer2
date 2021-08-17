@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Maple2.Trigger;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
+using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -29,16 +25,18 @@ namespace MapleServer2.Servers.Game
         private int Counter = 10000000;
 
         public readonly int MapId;
-        public readonly int InstanceId;
+        public readonly long InstanceId;
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         private readonly TriggerScript[] Triggers;
+        private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
+        private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
 
-        public FieldManager(int mapId, int instanceId)
+        public FieldManager(int mapId, long instanceId)
         {
             MapId = mapId;
             InstanceId = instanceId;
@@ -88,9 +86,9 @@ namespace MapleServer2.Servers.Game
             {
                 IFieldObject<Portal> fieldPortal = RequestFieldObject(new Portal(portal.Id)
                 {
-                    IsVisible = portal.Flags.HasFlag(MapPortalFlag.Visible),
-                    IsEnabled = portal.Flags.HasFlag(MapPortalFlag.Enabled),
-                    IsMinimapVisible = portal.Flags.HasFlag(MapPortalFlag.MinimapVisible),
+                    IsVisible = portal.IsVisible,
+                    IsEnabled = portal.Enable,
+                    IsMinimapVisible = portal.MinimapVisible,
                     Rotation = portal.Rotation.ToFloat(),
                     TargetMapId = portal.Target,
                     PortalType = portal.PortalType
@@ -103,21 +101,57 @@ namespace MapleServer2.Servers.Game
             List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
             foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
             {
-                // TODO: Group these fieldActors by their correct packet type. 
+                // TODO: Group these fieldActors by their correct packet type.
                 actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
             }
             AddInteractObject(actors);
 
-            MapMetadata metadata = MapMetadataStorage.GetMetadata(mapId);
-            if (metadata != null)
+            MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
+            if (mapMetadata != null)
             {
-                string xBlockName = metadata.XBlockName;
+                string xBlockName = mapMetadata.XBlockName;
                 Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
                 {
                     TriggerContext context = new TriggerContext(this, Logger);
                     TriggerState startState = initializer.Invoke(context);
                     return new TriggerScript(context, startState);
                 }).ToArray();
+            }
+
+            foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(mapId))
+            {
+                if (mapTriggerMesh != null)
+                {
+                    TriggerMesh triggerMesh = new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible);
+                    State.AddTriggerObject(triggerMesh);
+                }
+            }
+
+            foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(mapId))
+            {
+                if (mapTriggerEffect != null)
+                {
+                    TriggerEffect triggerEffect = new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible);
+                    State.AddTriggerObject(triggerEffect);
+                }
+            }
+
+            foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(mapId))
+            {
+                if (mapTriggerActor != null)
+                {
+                    TriggerActor triggerActor = new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence);
+                    State.AddTriggerObject(triggerActor);
+                }
+            }
+
+            foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(mapId))
+            {
+                if (mapTriggerCamera != null)
+                {
+                    TriggerCamera triggerCamera = new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled);
+                    State.AddTriggerObject(triggerCamera);
+                }
             }
 
             if (MapEntityStorage.HasHealingSpot(MapId))
@@ -174,9 +208,9 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public IFieldObject<T> RequestFieldObject<T>(T player)
+        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject)
         {
-            return WrapObject(player);
+            return WrapObject(wrappingObject);
         }
 
         public void AddPlayer(GameSession sender, IFieldObject<Player> player)
@@ -230,10 +264,41 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InteractObjectPacket.AddInteractObjects(objects));
                 }
             }
-            if (State.Cubes.Values.Count > 0)
+
+            if (State.Cubes.IsEmpty && !player.Value.IsInDecorPlanner)
             {
-                sender.Send(CubePacket.LoadCubes(State.Cubes.Values));
+                if (MapId == (int) Map.PrivateResidence)
+                {
+                    Home home = GameServer.HomeManager.GetHome(player.Value.VisitingHomeId);
+                    if (home != null)
+                    {
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
+                    }
+                }
+                else
+                {
+                    List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
+                    foreach (Home home in homes)
+                    {
+                        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+                        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
+                        {
+                            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                            ugcCube.Coord = cube.CoordF;
+                            ugcCube.Rotation = cube.Rotation;
+                            State.AddCube(ugcCube);
+                        }
+                    }
+                }
             }
+
             foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
             {
                 sender.Send(GuideObjectPacket.Add(guide));
@@ -255,6 +320,13 @@ namespace MapleServer2.Servers.Game
                     sender.Send(InstrumentPacket.PlayScore(instrument));
                 }
             }
+
+            List<TriggerObject> triggerObjects = new List<TriggerObject>();
+            triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
+            triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
+            triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
+            triggerObjects.AddRange(State.TriggerActors.Values.ToList());
+            sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
 
             State.AddPlayer(player);
 
@@ -286,7 +358,23 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
+            sender.ReleaseField(player.Value);
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
+        }
+
+        public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
+        {
+            CoordF minCoord = CoordF.From(
+                    box.Position.X - box.Dimension.X,
+                    box.Position.Y - box.Dimension.Y,
+                    box.Position.Z - box.Dimension.Z);
+            CoordF maxCoord = CoordF.From(
+                box.Position.X + box.Dimension.X,
+                box.Position.Y + box.Dimension.Y,
+                box.Position.Z + box.Dimension.Z);
+            bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
+            bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+            return min && max;
         }
 
         // Spawned NPCs will not appear until controlled
@@ -362,15 +450,16 @@ namespace MapleServer2.Servers.Game
             return State.RemoveGuide(fieldGuide.ObjectId);
         }
 
-        public void AddCube(IFieldObject<Cube> cube, IFieldObject<Player> player)
+        public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
             State.AddCube(cube);
-            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, player));
+            BroadcastPacket(ResponseCubePacket.PlaceFurnishing(cube, houseOwnerObjectId, fieldPlayerObjectId, sendOnlyObjectId: false));
         }
 
-        public bool RemoveCube(IFieldObject<Cube> cube)
+        public void RemoveCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
-            return State.RemoveCube(cube.ObjectId);
+            State.RemoveCube(cube.ObjectId);
+            BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
         }
 
         public void AddInstrument(IFieldObject<Instrument> instrument)
@@ -450,11 +539,6 @@ namespace MapleServer2.Servers.Game
             }
             item = itemResult;
 
-            Broadcast(session =>
-            {
-                session.Send(FieldPacket.PickupItem(objectId, itemResult, session.FieldPlayer.ObjectId));
-                session.Send(FieldPacket.RemoveItem(objectId));
-            });
             return true;
         }
 
@@ -582,13 +666,17 @@ namespace MapleServer2.Servers.Game
 
             foreach (NpcMetadata mob in mobSpawn.Value.SpawnMobs)
             {
-                int spawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
-                if (mobSpawn.Value.Mobs.Count + spawnCount > mobSpawn.Value.MaxPopulation)
+                if (mob.Name == "Constructor Type 13")
+                {
+                    continue;
+                }
+                int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount;  // Spawn count changes due to field effect (?)
+                if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
                 {
                     break;
                 }
 
-                for (int i = 0; i < spawnCount; i++)
+                for (int i = 0; i < groupSpawnCount; i++)
                 {
                     IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
                     fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
@@ -619,6 +707,16 @@ namespace MapleServer2.Servers.Game
         public int Decrement()
         {
             return Interlocked.Decrement(ref PlayerCount);
+        }
+
+        public void AddMapTimer(MapTimer timer)
+        {
+            MapTimers.Add(timer);
+        }
+
+        public MapTimer GetMapTimer(string id)
+        {
+            return MapTimers.FirstOrDefault(x => x.Id == id);
         }
     }
 }

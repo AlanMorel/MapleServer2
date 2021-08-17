@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Security.Cryptography;
-using System.Threading;
-using System.Threading.Tasks;
 using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -48,7 +43,7 @@ namespace MapleServer2.Network
 
         protected readonly ILogger Logger;
 
-        private static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         protected Session(ILogger<Session> logger)
         {
@@ -238,6 +233,8 @@ namespace MapleServer2.Network
                         case RecvOp.KEY_TABLE:
                         case RecvOp.RIDE_SYNC:
                         case RecvOp.GUIDE_OBJECT_SYNC:
+                        case RecvOp.STATE:
+                        case RecvOp.STATE_FALL_DAMAGE:
                             break;
                         default:
                             string packetString = packet.ToString();

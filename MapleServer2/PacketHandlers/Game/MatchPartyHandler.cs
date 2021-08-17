@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -63,10 +61,10 @@ namespace MapleServer2.PacketHandlers.Game
                 Party newParty = new(partyName, approval, session.Player, memberCountRecruit);
                 GameServer.PartyManager.AddParty(newParty);
 
-                session.Send(PartyPacket.Create(newParty));
+                session.Send(PartyPacket.Create(newParty, false));
                 session.Send(PartyPacket.UpdateHitpoints(session.Player));
 
-                session.Player.PartyId = newParty.Id;
+                session.Player.Party = newParty;
                 party = newParty;
             }
             else
@@ -87,7 +85,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleRemoveListing(GameSession session)
         {
-            Party party = GameServer.PartyManager.GetPartyById(session.Player.PartyId);
+            Party party = session.Player.Party;
             if (party == null)
             {
                 return;

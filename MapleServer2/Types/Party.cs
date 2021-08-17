@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -56,13 +52,13 @@ namespace MapleServer2.Types
         public void AddMember(Player player)
         {
             Members.Add(player);
-            player.PartyId = Id;
+            player.Party = this;
         }
 
         public void RemoveMember(Player player)
         {
             Members.Remove(player);
-            player.PartyId = 0;
+            player.Party = null;
 
             if (Leader.CharacterId == player.CharacterId && Members.Count > 2)
             {
@@ -74,11 +70,9 @@ namespace MapleServer2.Types
 
         public void FindNewLeader()
         {
-            Player newLeader = Members.First();
+            Player newLeader = Members.First(x => x.CharacterId != Leader.CharacterId);
             BroadcastPacketParty(PartyPacket.SetLeader(newLeader));
             Leader = newLeader;
-            Members.Remove(newLeader);
-            Members.Insert(0, newLeader);
         }
 
         public void CheckDisband()
@@ -90,10 +84,25 @@ namespace MapleServer2.Types
 
             BroadcastParty(session =>
             {
-                session.Player.PartyId = 0;
+                session.Player.Party = null;
                 session.Send(PartyPacket.Disband());
             });
             GameServer.PartyManager.RemoveParty(this);
+        }
+
+        public void CheckOffineParty(Player player)
+        {
+            List<GameSession> sessions = GetSessions();
+            if (sessions.Count == 0)
+            {
+                GameServer.PartyManager.RemoveParty(this);
+                return;
+            }
+            BroadcastPacketParty(PartyPacket.LogoutNotice(player.CharacterId));
+            if (Leader == player)
+            {
+                FindNewLeader();
+            }
         }
 
         public void BroadcastPacketParty(Packet packet, GameSession sender = null)
@@ -123,7 +132,15 @@ namespace MapleServer2.Types
 
         private List<GameSession> GetSessions()
         {
-            return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
+            List<GameSession> sessions = new List<GameSession>();
+            foreach (Player member in Members)
+            {
+                if (member.Session.Connected())
+                {
+                    sessions.Add(GameServer.Storage.GetPlayerById(member.CharacterId).Session);
+                }
+            }
+            return sessions;
         }
 
         public Task StartReadyCheck()

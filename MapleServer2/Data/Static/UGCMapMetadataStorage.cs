@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
 
@@ -26,11 +23,9 @@ namespace MapleServer2.Data.Static
             return map.ContainsKey(mapId);
         }
 
-        public static UGCMapGroup GetMetadata(int mapId, byte groupId)
-        {
-            UGCMapMetadata mapMetadata = map.GetValueOrDefault(mapId);
-            return mapMetadata.Groups.FirstOrDefault(x => x.Id == groupId);
-        }
+        public static UGCMapGroup GetGroupMetadata(int mapId, byte groupId) => GetMetadata(mapId).Groups.FirstOrDefault(x => x.Id == groupId);
+
+        public static UGCMapMetadata GetMetadata(int mapId) => map.GetValueOrDefault(mapId);
 
         public static int GetId(int exchangeId)
         {

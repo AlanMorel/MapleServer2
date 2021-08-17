@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -195,10 +192,9 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                 return;
             }
-            Guild newGuild = new Guild(guildName);
+            Guild newGuild = new Guild(guildName, session.Player);
 
             GameServer.GuildManager.AddGuild(newGuild);
-            newGuild.AddLeader(session.Player);
 
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag2(session.Player, guildName));
             session.Send(GuildPacket.Create(guildName));
@@ -470,14 +466,15 @@ namespace MapleServer2.PacketHandlers.Game
             Player oldLeader = session.Player;
 
             Guild guild = GameServer.GuildManager.GetGuildByLeader(oldLeader);
-            if (guild == null || guild.Leader != oldLeader)
+            if (guild == null || guild.Leader.CharacterId != oldLeader.CharacterId)
             {
                 return;
             }
-            GuildMember newLeaderMember = guild.Members.FirstOrDefault(x => x.Player == newLeader);
-            GuildMember oldLeaderMember = guild.Members.FirstOrDefault(x => x.Player == oldLeader);
+            GuildMember newLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == newLeader.CharacterId);
+            GuildMember oldLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == oldLeader.CharacterId);
             newLeaderMember.Rank = 0;
             oldLeaderMember.Rank = 1;
+            guild.Leader = newLeader;
 
             session.Send(GuildPacket.TransferLeaderConfirm(newLeader));
             guild.BroadcastPacketGuild(GuildPacket.AssignNewLeader(newLeader, oldLeader));
@@ -823,13 +820,15 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            int fieldId = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
-            if (fieldId == 0)
+            int mapid = GuildHouseMetadataStorage.GetFieldId(guild.HouseRank, guild.HouseTheme);
+            if (mapid == 0)
             {
                 return;
             }
 
-            MoveFieldHandler.HandleInstanceMove(session, fieldId);
+            session.Player.ReturnCoord = session.FieldPlayer.Coord;
+            session.Player.ReturnMapId = session.Player.MapId;
+            session.Player.Warp(mapId: mapid, instanceId: guild.Id);
         }
 
         private static void HandleGuildDonate(GameSession session, PacketReader packet)

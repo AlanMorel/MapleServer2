@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Reflection;
 using Autofac;
+using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Tools;
@@ -19,6 +19,8 @@ namespace MapleServer2.Servers.Game
         public static readonly GroupChatManager GroupChatManager = new();
         public static readonly HongBaoManager HongBaoManager = new();
         public static readonly BuddyManager BuddyManager = new();
+        public static readonly HomeManager HomeManager = new();
+        public static readonly CommandManager CommandManager = new();
 
         public GameServer(PacketRouter<GameSession> router, ILogger<GameServer> logger, IComponentContext context) :
             base(router, logger, context)
@@ -34,6 +36,7 @@ namespace MapleServer2.Servers.Game
 
             ushort port = ushort.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
             Start(port);
+            CommandManager.RegisterAll(Assembly.GetAssembly(typeof(CommandBase)));
         }
     }
 }

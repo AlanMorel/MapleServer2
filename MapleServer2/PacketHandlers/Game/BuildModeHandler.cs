@@ -40,14 +40,23 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleStop(GameSession session)
         {
+            if (session.FieldPlayer.Value.Guide == null)
+            {
+                return;
+            }
             session.Send(BuildModePacket.Use(session.FieldPlayer, false));
-            session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
+            session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.FieldPlayer.Value.Guide));
             session.FieldManager.RemoveGuide(session.FieldPlayer.Value.Guide);
             session.Player.Guide = null; // remove guide from player
         }
 
         private static void HandleStart(GameSession session, PacketReader packet)
         {
+            if (session.FieldPlayer.Value.Guide != null)
+            {
+                return;
+            }
+
             byte unk = packet.ReadByte();
             int furnishingItemId = packet.ReadInt();
             long furnishingItemUid = packet.ReadLong();

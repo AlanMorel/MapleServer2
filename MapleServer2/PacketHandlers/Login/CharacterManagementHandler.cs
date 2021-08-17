@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -42,13 +40,13 @@ namespace MapleServer2.PacketHandlers.Login
 
         private void HandleDelete(LoginSession session, PacketReader packet)
         {
-            long deleteCharId = packet.ReadLong();
-            if (!DatabaseManager.DeleteCharacter(DatabaseManager.GetCharacter(deleteCharId)))
+            long characterId = packet.ReadLong();
+            if (!DatabaseManager.DeleteCharacter(characterId))
             {
                 throw new ArgumentException("Could not delete character");
             }
-            session.Send(CharacterListPacket.DeleteCharacter(deleteCharId));
-            Logger.Info($"Deleting {deleteCharId}");
+            session.Send(CharacterListPacket.DeleteCharacter(characterId));
+            Logger.Info($"Character id {characterId} deleted!");
         }
 
         public void HandleSelect(LoginSession session, PacketReader packet)

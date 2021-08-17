@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GameDataParser.Files;
+﻿using GameDataParser.Files;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 

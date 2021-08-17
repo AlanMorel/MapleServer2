@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
@@ -59,31 +56,33 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.Accounts.FirstOrDefault(a => a.Id == accountId);
+                return context.Accounts
+                .Include(p => p.Home)
+                .FirstOrDefault(a => a.Id == accountId);
             }
         }
 
-        public static Account Authenticate(string username, string password)
+        public static bool Authenticate(string username, string password, out Account account)
         {
-            Account account;
             using (DatabaseContext context = new DatabaseContext())
             {
-                account = context.Accounts.SingleOrDefault(x => x.Username == username);
-            }
+                Account dbAccount = context.Accounts.SingleOrDefault(x => x.Username == username);
+                if (BCrypt.Net.BCrypt.Verify(password, dbAccount.PasswordHash))
+                {
+                    account = dbAccount;
+                    return true;
+                }
 
-            if (account == null || !BCrypt.Net.BCrypt.Verify(password, account.PasswordHash))
-            {
-                return null;
+                account = null;
+                return false;
             }
-
-            return account;
         }
 
         public static bool AccountExists(string username)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.Accounts.FirstOrDefault(a => a.Username == username) != null;
+                return context.Accounts.Any(a => a.Username == username);
             }
         }
 
@@ -93,7 +92,7 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 characters = context.Characters
-                .Where(p => p.AccountId == accountId)
+                .Where(p => p.AccountId == accountId && !p.IsDeleted)
                 .Include(p => p.Levels)
                 .Include(p => p.Inventory).ThenInclude(p => p.DB_Items)
                 .ToList();
@@ -107,16 +106,6 @@ namespace MapleServer2.Database
             }
 
             return characters;
-        }
-
-        public static bool UpdateAccount(Account account)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                Account dbAccount = context.Accounts.Find(account.Id);
-                context.Entry(dbAccount).CurrentValues.SetValues(account);
-                return SaveChanges(context);
-            }
         }
 
         public static long CreateCharacter(Player player)
@@ -139,7 +128,6 @@ namespace MapleServer2.Database
                 .Include(p => p.Levels)
                 .Include(p => p.SkillTabs)
                 .Include(p => p.Guild)
-                // .Include(p => p.Home)
                 .Include(p => p.GameOptions).ThenInclude(p => p.Hotbars)
                 .Include(p => p.Wallet)
                 .Include(p => p.BuddyList)
@@ -151,6 +139,7 @@ namespace MapleServer2.Database
                 {
                     return null;
                 }
+                player.Account = GetAccount(player.AccountId);
                 mails = context.Mails.Where(m => m.PlayerId == characterId).ToList();
 
                 player.QuestList = context.Quests.Where(x => x.Player.CharacterId == characterId).ToList();
@@ -166,14 +155,11 @@ namespace MapleServer2.Database
             {
                 item.SetMetadataValues(item.Id);
             }
-            player.BankInventory = new BankInventory(player.BankInventory);
             player.Inventory = new Inventory(player.Inventory);
+            player.BankInventory = new BankInventory(player.BankInventory);
             player.Mailbox = new Mailbox(mails);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
             player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
-            player.Wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
-                                wallet.EventMeret.Amount, wallet.ValorToken.Amount, wallet.Treva.Amount,
-                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount, wallet.Id);
 
             return player;
         }
@@ -207,14 +193,21 @@ namespace MapleServer2.Database
                 context.Entry(player).State = EntityState.Modified;
                 context.Entry(player.Wallet).State = EntityState.Modified;
                 context.Entry(player.Levels).State = EntityState.Modified;
-                context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.Inventory).State = EntityState.Modified;
+                context.Entry(player.BankInventory).State = EntityState.Modified;
                 context.Entry(player.GameOptions).State = EntityState.Modified;
 
                 if (player.GuildMember != null)
                 {
-                    GuildMember dbGuildMember = context.GuildMembers.Find(player.CharacterId);
-                    context.Entry(dbGuildMember).CurrentValues.SetValues(player.GuildMember);
+                    context.Entry(player.GuildMember).State = EntityState.Modified;
+                }
+                if (player.Guild != null)
+                {
+                    context.Entry(player.Guild).State = EntityState.Modified;
+                }
+                if (player.Account != null)
+                {
+                    context.Entry(player.Account).State = EntityState.Modified;
                 }
                 UpdateHotbars(player);
                 UpdateQuests(player);
@@ -224,39 +217,12 @@ namespace MapleServer2.Database
             }
         }
 
-        public static bool DeleteCharacter(Player player)
+        public static bool DeleteCharacter(long characterId)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                Player character = context.Characters.Find(player.CharacterId);
-                List<Item> items = context.Items.Where(x => x.BankInventory.Id == player.BankInventory.Id || x.Inventory.Id == player.Inventory.Id).ToList();
-                List<Buddy> buddies = context.Buddies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<QuestStatus> quests = context.Quests.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<SkillTab> skilltabs = context.SkillTabs.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                List<Mail> mails = context.Mails.Where(x => x.PlayerId == player.CharacterId).ToList();
-                Inventory inventory = context.Inventories.First(x => x.Id == player.Inventory.Id);
-                BankInventory bankInventory = context.BankInventories.First(x => x.Id == player.BankInventory.Id);
-                Wallet wallet = context.Wallets.First(x => x.Id == player.Wallet.Id);
-                Levels level = context.Levels.First(x => x.Id == player.Levels.Id);
-                GameOptions gameOptions = context.GameOptions.First(x => x.Id == player.GameOptions.Id);
-
-                if (player.Trophies.Count != 0)
-                {
-                    List<Trophy> trophies = context.Trophies.Where(x => x.Player.CharacterId == player.CharacterId).ToList();
-                    trophies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                }
-
-                items.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                buddies.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                quests.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                skilltabs.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                mails.ForEach(x => context.Entry(x).State = EntityState.Deleted);
-                context.Entry(inventory).State = EntityState.Deleted;
-                context.Entry(wallet).State = EntityState.Deleted;
-                context.Entry(bankInventory).State = EntityState.Deleted;
-                context.Entry(level).State = EntityState.Deleted;
-                context.Entry(gameOptions).State = EntityState.Deleted;
-                context.Entry(character).State = EntityState.Deleted;
+                Player character = context.Characters.Find(characterId);
+                character.IsDeleted = true;
 
                 return SaveChanges(context);
             }
@@ -340,7 +306,7 @@ namespace MapleServer2.Database
             {
                 foreach (Item item in inventory.DB_Items)
                 {
-                    Item dbItem = context.Items.Include(x => x.Inventory).Include(x => x.BankInventory).FirstOrDefault(x => x.Uid == item.Uid);
+                    Item dbItem = context.Items.Find(item.Uid);
                     if (dbItem == null)
                     {
                         item.Inventory = inventory;
@@ -354,7 +320,7 @@ namespace MapleServer2.Database
 
                 foreach (Item item in bankInventory.DB_Items)
                 {
-                    Item dbItem = context.Items.Include(x => x.Inventory).Include(x => x.BankInventory).FirstOrDefault(x => x.Uid == item.Uid);
+                    Item dbItem = context.Items.Find(item.Uid);
                     if (dbItem == null)
                     {
                         item.BankInventory = bankInventory;
@@ -403,9 +369,21 @@ namespace MapleServer2.Database
             List<Guild> guilds = new List<Guild>();
             using (DatabaseContext context = new DatabaseContext())
             {
-                guilds = context.Guilds
-                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
-                .Include(p => p.Leader).ToList();
+                guilds = context.Guilds.Include(x => x.Leader).Include(x => x.Members).ToList();
+                foreach (Guild guild in guilds)
+                {
+                    guild.Leader = context.Characters
+                    .Include(x => x.Account).ThenInclude(x => x.Home)
+                    .Include(x => x.Levels)
+                    .FirstOrDefault(x => x.CharacterId == guild.Leader.CharacterId);
+                    foreach (GuildMember guildMember in guild.Members)
+                    {
+                        guildMember.Player = context.Characters
+                        .Include(x => x.Account).ThenInclude(x => x.Home)
+                        .Include(x => x.Levels)
+                        .FirstOrDefault(x => x.CharacterId == guildMember.Id);
+                    }
+                }
             }
             return guilds;
         }
@@ -424,26 +402,9 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                context.Guilds.Add(guild);
+                context.Entry(guild).State = EntityState.Added;
                 SaveChanges(context);
                 return guild.Id;
-            }
-        }
-
-        public static Guild GetGuild(long guildId)
-        {
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                Guild guild = context.Guilds
-                .Include(p => p.Members).ThenInclude(p => p.Player).ThenInclude(p => p.Levels)
-                .Include(p => p.Leader)
-                .FirstOrDefault(p => p.Id == guildId);
-                if (guild == null)
-                {
-                    return null;
-                }
-
-                return guild;
             }
         }
 
@@ -451,8 +412,14 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                Guild dbGuild = context.Guilds.Find(guild.Id);
-                context.Entry(dbGuild).CurrentValues.SetValues(guild);
+                Guild dbGuild = context.Guilds.AsNoTracking().Include(x => x.Leader).FirstOrDefault(x => x.Id == guild.Id);
+
+                context.Entry(guild).State = EntityState.Modified;
+                if (dbGuild.Leader.CharacterId != guild.Leader.CharacterId)
+                {
+                    context.Entry(guild.Leader).State = EntityState.Modified;
+                }
+
                 return SaveChanges(context);
             }
         }
@@ -461,7 +428,7 @@ namespace MapleServer2.Database
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                context.GuildMembers.Add(member);
+                context.Entry(member).State = EntityState.Added;
                 return SaveChanges(context);
             }
         }
@@ -691,6 +658,136 @@ namespace MapleServer2.Database
             using (DatabaseContext context = new DatabaseContext())
             {
                 return context.CardReverseGame.ToList();
+            }
+        }
+
+        public static long CreateHouse(Home home)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(home).State = EntityState.Added;
+
+                home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
+                foreach (Item item in home.WarehouseItems)
+                {
+                    context.Entry(item).State = EntityState.Modified;
+                }
+
+                home.FurnishingCubes = home.FurnishingInventory.Values.Where(x => x != null).ToList();
+                foreach (Cube cube in home.FurnishingCubes)
+                {
+                    cube.Home = home;
+                    context.Entry(cube).State = EntityState.Modified;
+                }
+                SaveChanges(context);
+                return home.Id;
+            }
+        }
+
+        public static Home GetHome(long id)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                Home home = context.Homes.Find(id);
+
+                if (home != null)
+                {
+                    List<Cube> furnishingCubes = context.Cubes.Include(x => x.Item).Where(x => x.Home.Id == home.Id).ToList();
+                    List<Item> warehouseItems = context.Items.Where(x => x.Home.Id == home.Id).ToList();
+                    List<HomeLayout> layouts = context.HomeLayouts.Where(x => x.Home.Id == home.Id).ToList();
+                    foreach (HomeLayout layout in layouts)
+                    {
+                        layout.Cubes = context.Cubes.Include(x => x.Item).Where(x => x.Layout.Id == layout.Id).ToList().ToList();
+                    }
+                    warehouseItems.ForEach(item => home.WarehouseInventory.Add(item.Uid, item));
+                    furnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+
+                    home.Layouts = layouts;
+                    home.WarehouseItems = null;
+                    home.FurnishingCubes = null;
+                }
+
+                return home;
+            }
+        }
+
+        public static List<Home> GetHomesOnMap(int mapId)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                List<Home> homes = context.Homes.Where(x => x.MapId == mapId).ToList();
+
+                foreach (Home home in homes)
+                {
+                    List<Cube> furnishingCubes = context.Cubes.Include(x => x.Item).Where(x => x.Home.Id == home.Id).ToList();
+                    List<Item> warehouseItems = context.Items.Where(x => x.Home.Id == home.Id).ToList();
+                    List<HomeLayout> layouts = context.HomeLayouts.Where(x => x.Home.Id == home.Id).ToList();
+                    foreach (HomeLayout layout in layouts)
+                    {
+                        layout.Cubes = context.Cubes.Include(x => x.Item).Where(x => x.Layout.Id == layout.Id).ToList().ToList();
+                    }
+                    warehouseItems.ForEach(item => home.WarehouseInventory.Add(item.Uid, item));
+                    furnishingCubes.ForEach(cube => home.FurnishingInventory.Add(cube.Uid, cube));
+
+                    home.Layouts = layouts;
+                    home.WarehouseItems = null;
+                    home.FurnishingCubes = null;
+                }
+
+                return homes;
+            }
+        }
+
+        public static void UpdateHome(Home home)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(home).State = EntityState.Modified;
+
+                home.WarehouseItems = home.WarehouseInventory.Values.Where(x => x != null).ToList();
+                foreach (Item item in home.WarehouseItems)
+                {
+                    item.Home = home;
+                    context.Entry(item).State = EntityState.Modified;
+                }
+
+                home.FurnishingCubes = home.FurnishingInventory.Values.Where(x => x != null).ToList();
+                foreach (Cube cube in home.FurnishingCubes)
+                {
+                    cube.Home = home;
+                    context.Entry(cube).State = EntityState.Modified;
+                }
+                SaveChanges(context);
+            }
+        }
+
+        public static long CreateCube(Cube cube)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(cube).State = EntityState.Added;
+                SaveChanges(context);
+                return cube.Uid;
+            }
+        }
+
+        public static long AddLayout(HomeLayout homeLayout)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(homeLayout).State = EntityState.Added;
+                SaveChanges(context);
+                return homeLayout.Uid;
+            }
+        }
+
+        public static bool DeleteLayout(HomeLayout homeLayout)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                context.Entry(homeLayout).State = EntityState.Deleted;
+                homeLayout.Cubes.ForEach(cube => context.Entry(cube).State = EntityState.Deleted);
+                return SaveChanges(context);
             }
         }
 

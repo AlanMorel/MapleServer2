@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Tools;
+﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -58,11 +56,11 @@ namespace MapleServer2.Types
             HashSet<NpcMetadata> matchedNpcs = new HashSet<NpcMetadata>();
             foreach (string tag in tags)
             {
-                foreach (NpcMetadata data in NpcMetadataStorage.GetNpcsByMainTag(tag))
+                foreach (NpcMetadata mob in NpcMetadataStorage.GetNpcsByMainTag(tag))
                 {
-                    if (data.NpcMetadataBasic.Difficulty >= minDifficulty && data.NpcMetadataBasic.Difficulty <= difficulty)
+                    if (mob.NpcMetadataBasic.Difficulty >= minDifficulty && mob.NpcMetadataBasic.Difficulty <= difficulty)
                     {
-                        matchedNpcs.Add(data);
+                        matchedNpcs.Add(mob);
                     }
                 }
             }

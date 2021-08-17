@@ -1,4 +1,7 @@
-﻿namespace MapleServer2.Triggers
+﻿using MapleServer2.Packets;
+using MapleServer2.Types;
+
+namespace MapleServer2.Triggers
 {
     public partial class TriggerContext
     {
@@ -54,8 +57,13 @@
         {
         }
 
-        public void SetTimer(string id, int arg2, bool arg3, bool arg4, int arg5, string arg6)
+        public void SetTimer(string id, int time, bool clearAtZero, bool display, int arg5, string arg6)
         {
+            int msTime = time * 1000;
+            int endTick = Environment.TickCount + msTime;
+            MapTimer timer = new MapTimer(id, endTick);
+            Field.AddMapTimer(timer);
+            Field.BroadcastPacket(TriggerPacket.Timer(msTime, clearAtZero, display));
         }
 
         public void ResetTimer(string id)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -226,7 +223,9 @@ namespace MapleServer2.Types
             int calibratedValue = (int) (value * calibrationFactor);
 
             int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
-            int summedFlat = normalStat.Flat + RandomProvider.Get().Next(value, calibratedValue);
+            int biggerValue = Math.Max(value, calibratedValue);
+            int smallerValue = Math.Min(value, calibratedValue);
+            int summedFlat = normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue);
             normalStats[index] = new NormalStat(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
         }
 
