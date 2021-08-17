@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Maple2Storage.Tools
+﻿namespace Maple2Storage.Tools
 {
     /// <summary>
     /// Thread-safe provider for "Random" instances. Use whenever no custom

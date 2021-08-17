@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class ExpParser : Exporter<List<ExpMetadata>>
+    internal class ExpParser : Exporter<List<ExpMetadata>>
     {
         public ExpParser(MetadataResources resources) : base(resources, "exp") { }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace GameDataParser.Files
+﻿namespace GameDataParser.Files
 {
     public static class Paths
     {

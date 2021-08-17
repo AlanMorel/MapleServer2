@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;

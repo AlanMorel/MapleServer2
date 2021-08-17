@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Maple2.Trigger;
+﻿using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -106,7 +104,7 @@ namespace MapleServer2.Triggers
                 return;
             }
 
-            if (box.Contains("!"))
+            if (box.Contains('!'))
             {
                 box = box[1..];
                 int boxId = int.Parse(box);

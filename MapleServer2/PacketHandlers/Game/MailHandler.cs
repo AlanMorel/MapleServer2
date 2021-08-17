@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;

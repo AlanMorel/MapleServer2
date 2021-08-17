@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 
 namespace MaplePacketLib2.Crypto
 {

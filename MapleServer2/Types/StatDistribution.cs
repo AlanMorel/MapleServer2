@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MapleServer2.Enums;
+﻿using MapleServer2.Enums;
 
 namespace MapleServer2.Types
 {

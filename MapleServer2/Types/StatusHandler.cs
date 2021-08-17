@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using MapleServer2.Packets;
+﻿using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types

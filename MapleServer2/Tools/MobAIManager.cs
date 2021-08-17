@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Schema;
 using Maple2Storage.Enums;
 using MapleServer2.Types;

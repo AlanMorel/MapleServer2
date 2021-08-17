@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 
 namespace MapleServer2.Database.Types
 {
