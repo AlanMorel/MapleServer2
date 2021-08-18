@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
+using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using Microsoft.Extensions.Logging;
+using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game
 {
-    class RequestTaxiHandler : GamePacketHandler
+    internal class RequestTaxiHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 
@@ -26,7 +29,6 @@ namespace MapleServer2.PacketHandlers.Game
             RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
 
             int mapId = 0;
-            long mesoPrice = 30000;
             long meretPrice = 15;
 
             if (mode != RequestTaxiMode.DiscoverTaxi)
@@ -37,10 +39,10 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case RequestTaxiMode.Car:
-                    mesoPrice = 5000; //For now make all car taxis cost 5k, as we don't know the formula to calculate it yet.
-                    goto case RequestTaxiMode.RotorsMeso;
+                    HandleCarTaxi(session, mapId);
+                    break;
                 case RequestTaxiMode.RotorsMeso:
-                    HandleRotorMeso(session, mapId, mesoPrice);
+                    HandleRotorMeso(session, mapId);
                     break;
                 case RequestTaxiMode.RotorsMeret:
                     HandleRotorMeret(session, mapId, meretPrice);
@@ -54,14 +56,45 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleRotorMeso(GameSession session, int mapId, long mesoPrice)
+        private void HandleCarTaxi(GameSession session, int mapId)
         {
-            if (!session.Player.Wallet.Meso.Modify(-mesoPrice))
+            if (!WorldMapGraphStorage.CanPathFind(mapOrigin: session.Player.MapId.ToString(), mapDestination: mapId.ToString(), out int mapCount))
+            {
+                Logger.Warning("Path not found.");
+                return;
+            }
+
+            ScriptLoader scriptLoader = new ScriptLoader("calcTaxiCost");
+
+            DynValue result = scriptLoader.Call(mapCount, session.Player.Levels.Level);
+            if (result == null)
             {
                 return;
             }
 
-            HandleTeleport(session, mapId);
+            if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
+            {
+                return;
+            }
+            session.Player.Warp(mapId);
+        }
+
+        private static void HandleRotorMeso(GameSession session, int mapId)
+        {
+            ScriptLoader scriptLoader = new ScriptLoader("calcAirTaxiCost");
+
+            DynValue result = scriptLoader.Call(session.Player.Levels.Level);
+            if (result == null)
+            {
+                return;
+            }
+
+            if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
+            {
+                return;
+            }
+
+            session.Player.Warp(mapId);
         }
 
         private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
@@ -71,7 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            HandleTeleport(session, mapId);
+            session.Player.Warp(mapId);
         }
 
         private static void HandleDiscoverTaxi(GameSession session)
@@ -83,11 +116,6 @@ namespace MapleServer2.PacketHandlers.Game
                 unlockedTaxis.Add(mapId);
             }
             session.Send(TaxiPacket.DiscoverTaxi(mapId));
-        }
-
-        private static void HandleTeleport(GameSession session, int mapId)
-        {
-            session.Player.Warp(mapId);
         }
     }
 }

@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets
 {
-    class MesosPacket
+    internal class MesosPacket
     {
         public static Packet UpdateMesos(long mesoAmount)
         {

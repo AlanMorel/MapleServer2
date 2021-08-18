@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -168,7 +165,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             ModifyBeauty(session, packet, beautyItem);
-            session.Player.ShopId = 0;
         }
 
         private static void HandleModifyExistingBeauty(GameSession session, PacketReader packet)
@@ -197,7 +193,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             beautyItem.Color = equipColor;
             ModifyBeauty(session, packet, beautyItem);
-            session.Player.ShopId = 0;
         }
 
         private static void HandleModifySkin(GameSession session, PacketReader packet)
@@ -215,7 +210,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Player.SkinColor = skinColor;
             session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.FieldPlayer, skinColor));
-            session.Player.ShopId = 0;
         }
         private static void HandleRandomHair(GameSession session, PacketReader packet)
         {
@@ -277,7 +271,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, newHair, ItemSlot.HR));
             session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
-            session.Player.ShopId = 0;
         }
 
         private static void HandleChooseRandomHair(GameSession session, PacketReader packet)
@@ -360,8 +353,11 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
             }
 
-            session.Player.ReturnCoord = session.FieldPlayer.Coord;
-            session.Player.ReturnMapId = session.Player.MapId;
+            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
+            {
+                session.Player.ReturnCoord = session.FieldPlayer.Coord;
+                session.Player.ReturnMapId = session.Player.MapId;
+            }
             session.Player.Warp(mapId: (int) mapId, instanceId: session.Player.CharacterId);
         }
 
@@ -453,7 +449,6 @@ namespace MapleServer2.PacketHandlers.Game
 
                 item.Color = equipColor[i];
                 session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, item));
-                session.Player.ShopId = 0;
             }
         }
 

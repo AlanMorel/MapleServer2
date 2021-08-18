@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MapleServer2.Commands.Core
+﻿namespace MapleServer2.Commands.Core
 {
     public interface IParameter
     {

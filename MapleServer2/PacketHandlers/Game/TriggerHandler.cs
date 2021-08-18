@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger.Enum;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;

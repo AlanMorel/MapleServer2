@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 
 namespace MapleServer2.Packets
 {
-    class WorldMapPacket
+    internal class WorldMapPacket
     {
         public static Packet Open()
         {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 
 namespace MapleServer2.Tools
 {

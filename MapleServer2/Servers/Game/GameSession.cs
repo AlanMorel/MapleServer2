@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;

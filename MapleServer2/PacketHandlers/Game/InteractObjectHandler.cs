@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -15,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
-    class InteractObjectHandler : GamePacketHandler
+    internal class InteractObjectHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
 
@@ -95,7 +93,7 @@ namespace MapleServer2.PacketHandlers.Game
 
                     foreach (RecipeItem item in items)
                     {
-                        int prob = (int) (RarityChance[item.Rarity] * masteryDiffFactor) / 10000;
+                        int prob = RarityChance[item.Rarity] * masteryDiffFactor / 10000;
                         if (RandomProvider.Get().Next(100) >= prob)
                         {
                             continue;
