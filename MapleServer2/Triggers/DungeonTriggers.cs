@@ -1,5 +1,4 @@
-﻿using System;
-using MapleServer2.Packets;
+﻿using MapleServer2.Packets;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers

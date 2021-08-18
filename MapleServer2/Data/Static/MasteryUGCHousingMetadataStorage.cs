@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.IO;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using ProtoBuf;
 

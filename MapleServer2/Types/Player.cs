@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -141,7 +136,7 @@ namespace MapleServer2.Types
 
         public List<PlayerTrigger> Triggers = new List<PlayerTrigger>();
 
-        class TimeInfo
+        private class TimeInfo
         {
             public long CharCreation;
             public long OnlineDuration;
@@ -166,8 +161,7 @@ namespace MapleServer2.Types
             Job = job;
             GameOptions = new GameOptions();
             GameOptions.Initialize();
-            Wallet = new Wallet(this, meso: 0, meret: 0, gameMeret: 0, eventMeret: 0, valorToken: 0, treva: 0, rue: 0,
-                                haviFruit: 0, mesoToken: 0, bank: 0);
+            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, mesoToken: 0, bank: 0);
             Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
             {
                 new MasteryExp(MasteryType.Fishing),

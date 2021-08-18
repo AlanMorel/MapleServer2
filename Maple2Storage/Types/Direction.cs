@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Maple2Storage.Types
+﻿namespace Maple2Storage.Types
 {
     public static class Direction
     {

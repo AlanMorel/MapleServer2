@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Maple2.Trigger;
+﻿using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
@@ -16,17 +14,25 @@ namespace MapleServer2.Triggers
         public void CreateWidget(WidgetType type)
         {
             Widget widget = new Widget(type);
-            Field.AddWidget(widget);
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
+            {
+                player.Value.Widgets.Add(widget);
+            }
         }
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
         {
-            Widget widget = Field.GetWidget(type);
-            if (widget == null)
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            foreach (IFieldObject<Player> player in players)
             {
-                return;
+                Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
+                if (widget == null)
+                {
+                    continue;
+                }
+                widget.State = name;
             }
-            widget.State = name;
         }
 
         public void GuideEvent(int eventId)
@@ -49,6 +55,7 @@ namespace MapleServer2.Triggers
 
         public void PlaySystemSoundInBox(int[] boxIds, string sound)
         {
+            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
             if (boxIds != null)
             {
                 foreach (int boxId in boxIds)
@@ -63,10 +70,7 @@ namespace MapleServer2.Triggers
                         }
                     }
                 }
-                return;
             }
-            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
-
         }
 
         public void ScoreBoardCreate(string type, int maxScore)
@@ -89,9 +93,6 @@ namespace MapleServer2.Triggers
                 case 1:
                     type = EventBannerType.None;
                     break;
-                case 3:
-                    type = EventBannerType.Winner;
-                    break;
                 case 6:
                     type = EventBannerType.Bonus;
                     break;
@@ -102,7 +103,8 @@ namespace MapleServer2.Triggers
                 Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
                 return;
             }
-            else if (box.Contains("!"))
+
+            if (box.Contains('!'))
             {
                 box = box[1..];
                 int boxId = int.Parse(box);
@@ -211,7 +213,7 @@ namespace MapleServer2.Triggers
 
         public void SetSceneSkip(TriggerState state, string arg2)
         {
-            SkipSceneState = state;
+            // TODO: Properly handle the trigger state
             Field.BroadcastPacket(CinematicPacket.SetSceneSkip(arg2));
         }
 

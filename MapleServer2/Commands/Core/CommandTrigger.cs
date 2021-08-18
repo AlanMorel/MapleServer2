@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using NLog;
 
 namespace MapleServer2.Commands.Core
@@ -42,6 +39,11 @@ namespace MapleServer2.Commands.Core
             List<IParameter> definedParam = new List<IParameter>(Command.Parameters);
             int index = 0;
 
+            if (definedParam.Count != 0)
+            {
+                Command.Parameters.ForEach(x => x.DefaultValue = default);
+            }
+
             foreach (string arg in Args)
             {
                 try
@@ -49,6 +51,12 @@ namespace MapleServer2.Commands.Core
                     if (command.Aliases.Any(x => x == arg) || definedParam.Count < index)
                     {
                         continue;
+                    }
+                    if (string.IsNullOrEmpty(arg))
+                    {
+                        definedParam[index].SetDefaultValue();
+                        CommandsParametersByName = Command.Parameters.ToDictionary(entry => entry.Name);
+                        return true;
                     }
                     if (definedParam[index].ValueType.IsArray)
                     {

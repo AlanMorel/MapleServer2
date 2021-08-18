@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Maple2Storage.Enums;
+﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -1164,7 +1160,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case 1: // meso
                     return session.Player.Wallet.Meso.Modify(-shop.Price);
                 case 3: // meret
-                    return session.Player.Wallet.RemoveMerets(shop.Price);
+                    return session.Player.Account.RemoveMerets(shop.Price);
                 default:
                     session.SendNotice($"Unknown currency: {shop.FurnishingTokenType}");
                     return false;
@@ -1188,7 +1184,7 @@ namespace MapleServer2.PacketHandlers.Game
                     if (home.Merets - shop.Price >= 0)
                     {
                         home.Merets -= shop.Price;
-                        owner.Wallet.RemoveMerets(shop.Price);
+                        owner.Account.RemoveMerets(shop.Price);
                         fieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
                         return true;
                     }
@@ -1209,7 +1205,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case 90000003:
                     return session.Player.Wallet.Meso.Modify(-price);
                 case 90000004:
-                    return session.Player.Wallet.RemoveMerets(price);
+                    return session.Player.Account.RemoveMerets(price);
                 case 90000006:
                     return session.Player.Wallet.ValorToken.Modify(-price);
                 case 90000013:

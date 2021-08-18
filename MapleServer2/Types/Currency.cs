@@ -1,19 +1,19 @@
 ﻿using Maple2Storage.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types
 {
     public class Currency
     {
-        private readonly Player Player;
+        public GameSession Session { private get; set; }
         private readonly CurrencyType Type;
         public long Amount { get; private set; }
 
         public Currency() { }
 
-        public Currency(Player player, CurrencyType type, long input)
+        public Currency(CurrencyType type, long input)
         {
-            Player = player;
             Type = type;
             Amount = input;
         }
@@ -44,21 +44,21 @@ namespace MapleServer2.Types
             switch (Type)
             {
                 case CurrencyType.Meso:
-                    Player.Session.Send(MesosPacket.UpdateMesos(Player.Session));
+                    Session.Send(MesosPacket.UpdateMesos(Amount));
                     break;
                 case CurrencyType.Meret:
                 case CurrencyType.GameMeret:
                 case CurrencyType.EventMeret:
-                    Player.Session.Send(MeretsPacket.UpdateMerets(Player.Session));
+                    Session.Send(MeretsPacket.UpdateMerets(Session.Player.Account));
                     break;
                 case CurrencyType.ValorToken:
                 case CurrencyType.Treva:
                 case CurrencyType.Rue:
                 case CurrencyType.HaviFruit:
-                    Player.Session.Send(WalletPacket.UpdateWallet(Type, Amount));
+                    Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
                 case CurrencyType.Bank:
-                    Player.Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
+                    Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
                     break;

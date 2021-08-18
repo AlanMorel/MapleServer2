@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace MapleServer2.Commands.Core
+﻿namespace MapleServer2.Commands.Core
 {
     public interface IParameter
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        dynamic DefaultValue { get; }
+        dynamic DefaultValue { get; set; }
         Type ValueType { get; }
 
         dynamic ConvertString(string value);

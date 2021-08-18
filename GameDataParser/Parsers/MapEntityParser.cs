@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.Flat;
@@ -194,8 +191,8 @@ namespace GameDataParser.Parsers
                     case ISpawnPoint spawn:
                         switch (spawn)
                         {
+                            // TODO: Parse "value" from NPCList.
                             case IEventSpawnPointNPC eventSpawnNpc: // trigger mob/npc spawns
-                                                                    // TODO: Parse "value" from NPCList.
                                 List<string> npcIds = new List<string>();
                                 npcIds.AddRange(eventSpawnNpc.NpcList.Keys);
 
@@ -236,8 +233,10 @@ namespace GameDataParser.Parsers
                                 int mobSpawnRadiusBox = 150;
                                 // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
                                 // MS2RegionSpawn, it's only set for SpawnPointNPC.
-                                List<int> mobNpcListBox = new List<int>();
-                                mobNpcListBox.Add(21000025); // Placeholder
+                                List<int> mobNpcListBox = new List<int>
+                                {
+                                    21000025 // Placeholder
+                                };
                                 metadata.MobSpawns.Add(new MapMobSpawn(boxSpawn.SpawnPointID, CoordS.FromVector3(boxSpawn.Position),
                                     mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
                                 // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.

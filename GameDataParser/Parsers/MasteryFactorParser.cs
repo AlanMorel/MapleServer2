@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
 {
-    class MasteryFactorParser : Exporter<List<MasteryFactorMetadata>>
+    internal class MasteryFactorParser : Exporter<List<MasteryFactorMetadata>>
     {
         public MasteryFactorParser(MetadataResources resources) : base(resources, "mastery-factor") { }
 

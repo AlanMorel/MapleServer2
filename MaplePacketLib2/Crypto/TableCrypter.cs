@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MaplePacketLib2.Crypto
+﻿namespace MaplePacketLib2.Crypto
 {
     public class TableCrypter : ICrypter
     {

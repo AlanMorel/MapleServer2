@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
@@ -394,6 +389,7 @@ namespace MapleServer2.Servers.Game
                 session.Send(FieldObjectPacket.RemovePlayer(player));
             });
 
+            sender.ReleaseField(player.Value);
             ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
         }
 

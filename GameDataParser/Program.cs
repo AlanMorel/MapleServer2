@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using GameDataParser.Files;
 using GameDataParser.Parsers;
 
@@ -11,7 +6,7 @@ namespace GameDataParser
 {
     internal static class Program
     {
-        static async Task Main()
+        private static async Task Main()
         {
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 

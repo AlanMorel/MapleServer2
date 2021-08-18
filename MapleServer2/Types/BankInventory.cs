@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MapleServer2.Packets;
+﻿using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
@@ -151,7 +148,7 @@ namespace MapleServer2.Types
         {
             long meretPrice = 330;
             int expansionAmount = 6;
-            if (!session.Player.Wallet.RemoveMerets(meretPrice))
+            if (!session.Player.Account.RemoveMerets(meretPrice))
             {
                 return;
             }

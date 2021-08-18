@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
@@ -113,7 +110,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (marketItem.TokenType)
             {
                 case MeretMarketCurrencyType.Meret:
-                    if (!session.Player.Wallet.RemoveMerets(marketItem.SalePrice))
+                    if (!session.Player.Account.RemoveMerets(marketItem.SalePrice))
                     {
                         return;
                     }

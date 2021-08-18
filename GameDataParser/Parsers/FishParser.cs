@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
@@ -29,7 +26,7 @@ namespace GameDataParser.Parsers
                     {
                         List<int> habitat = new List<int>();
                         int fishId = int.Parse(node.Attributes["id"].Value);
-                        if (node.Attributes["habitat"].Value.Contains(","))
+                        if (node.Attributes["habitat"].Value.Contains(','))
                         {
                             habitat.AddRange(node.Attributes["habitat"].Value.Split(",").Select(int.Parse).ToList());
                         }

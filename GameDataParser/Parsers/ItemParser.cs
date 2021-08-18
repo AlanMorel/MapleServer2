@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Web;
 using System.Xml;
 using GameDataParser.Files;
@@ -40,7 +36,7 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    if (individualBoxItem.Attributes["minCount"].Value.Contains("."))
+                    if (individualBoxItem.Attributes["minCount"].Value.Contains('.'))
                     {
                         continue;
                     }

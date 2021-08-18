@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using MapleServer2.Database.Types;
 using MapleServer2.Types;
 using Microsoft.EntityFrameworkCore;
@@ -65,27 +62,27 @@ namespace MapleServer2.Database
             }
         }
 
-        public static Account Authenticate(string username, string password)
+        public static bool Authenticate(string username, string password, out Account account)
         {
-            Account account;
             using (DatabaseContext context = new DatabaseContext())
             {
-                account = context.Accounts.SingleOrDefault(x => x.Username == username);
-            }
+                Account dbAccount = context.Accounts.SingleOrDefault(x => x.Username == username);
+                if (BCrypt.Net.BCrypt.Verify(password, dbAccount.PasswordHash))
+                {
+                    account = dbAccount;
+                    return true;
+                }
 
-            if (account == null || !BCrypt.Net.BCrypt.Verify(password, account.PasswordHash))
-            {
-                return null;
+                account = null;
+                return false;
             }
-
-            return account;
         }
 
         public static bool AccountExists(string username)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                return context.Accounts.FirstOrDefault(a => a.Username == username) != null;
+                return context.Accounts.Any(a => a.Username == username);
             }
         }
 
@@ -163,9 +160,6 @@ namespace MapleServer2.Database
             player.Mailbox = new Mailbox(mails);
             player.SkillTabs.ForEach(skilltab => skilltab.GenerateSkills(player.Job));
             player.Levels = new Levels(player, levels.Level, levels.Exp, levels.RestExp, levels.PrestigeLevel, levels.PrestigeExp, levels.MasteryExp, levels.Id);
-            player.Wallet = new Wallet(player, wallet.Meso.Amount, wallet.Meret.Amount, wallet.GameMeret.Amount,
-                                wallet.EventMeret.Amount, wallet.ValorToken.Amount, wallet.Treva.Amount,
-                                wallet.Rue.Amount, wallet.HaviFruit.Amount, wallet.MesoToken.Amount, wallet.Bank.Amount, wallet.Id);
 
             return player;
         }
@@ -206,6 +200,10 @@ namespace MapleServer2.Database
                 if (player.GuildMember != null)
                 {
                     context.Entry(player.GuildMember).State = EntityState.Modified;
+                }
+                if (player.Guild != null)
+                {
+                    context.Entry(player.Guild).State = EntityState.Modified;
                 }
                 if (player.Account != null)
                 {

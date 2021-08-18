@@ -4,8 +4,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using NLog;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MapleServer2.Triggers
 {
