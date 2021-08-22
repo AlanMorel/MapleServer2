@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -88,7 +88,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(SkillBookTreePacket.Save(session.Player, selectedTab));
             foreach (SkillTab skillTab in session.Player.SkillTabs)
             {
-                DatabaseSkillTab.Update(skillTab);
+                DatabaseManager.SkillTabs.Update(skillTab);
             }
         }
 

@@ -6,9 +6,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseSkillTab
     {
-        public static long CreateSkillTab(SkillTab skillTab, long characterId)
+        private readonly string TableName = "SkillTabs";
+
+        public long CreateSkillTab(SkillTab skillTab, long characterId)
         {
-            return DatabaseManager.QueryFactory.Query("SkillTabs").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 skillTab.TabId,
                 skillTab.Name,
@@ -17,9 +19,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static List<SkillTab> FindAllByCharacterId(long characterId, int jobId)
+        public List<SkillTab> FindAllByCharacterId(long characterId, int jobId)
         {
-            IEnumerable<dynamic> skillTabsResult = DatabaseManager.QueryFactory.Query("SkillTabs").Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> skillTabsResult = DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
             List<SkillTab> skillTabs = new List<SkillTab>();
             foreach (dynamic item in skillTabsResult)
             {
@@ -28,9 +30,9 @@ namespace MapleServer2.Database.Classes
             return skillTabs;
         }
 
-        public static void Update(SkillTab skillTab)
+        public void Update(SkillTab skillTab)
         {
-            DatabaseManager.QueryFactory.Query("SkillTabs").Where("Uid", skillTab.Uid).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", skillTab.Uid).Update(new
             {
                 skillTab.TabId,
                 skillTab.Name,
@@ -38,6 +40,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long uid) => DatabaseManager.QueryFactory.Query("SkillTabs").Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
     }
 }

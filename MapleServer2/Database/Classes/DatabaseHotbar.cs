@@ -6,18 +6,20 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHotbar
     {
-        public static long CreateHotbar(Hotbar hotbar, long gameOptionsId)
+        private readonly string TableName = "hotbars";
+
+        public long CreateHotbar(Hotbar hotbar, long gameOptionsId)
         {
-            return DatabaseManager.QueryFactory.Query("hotbars").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 Slots = JsonConvert.SerializeObject(hotbar.Slots),
                 gameOptionsId
             });
         }
 
-        public static List<Hotbar> FindAllByGameOptionsId(long gameOptionsId)
+        public List<Hotbar> FindAllByGameOptionsId(long gameOptionsId)
         {
-            IEnumerable<dynamic> hotbarsResult = DatabaseManager.QueryFactory.Query("Hotbars").Where("GameOptionsId", gameOptionsId).Get();
+            IEnumerable<dynamic> hotbarsResult = DatabaseManager.QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Get();
             List<Hotbar> hotbars = new List<Hotbar>();
             foreach (dynamic item in hotbarsResult)
             {
@@ -26,12 +28,14 @@ namespace MapleServer2.Database.Classes
             return hotbars;
         }
 
-        public static void Update(Hotbar hotbar)
+        public void Update(Hotbar hotbar)
         {
-            DatabaseManager.QueryFactory.Query("Hotbars").Where("HotbarId", hotbar.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("HotbarId", hotbar.Id).Update(new
             {
                 Slots = JsonConvert.SerializeObject(hotbar.Slots)
             });
         }
+
+        public void DeleteAllByGameOptionsId(long gameOptionsId) => DatabaseManager.QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Delete();
     }
 }

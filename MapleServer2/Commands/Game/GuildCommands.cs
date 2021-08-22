@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -39,7 +39,7 @@ namespace MapleServer2.Commands.Game
             guild.Exp = guildExp;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildExp(guild.Exp));
             GuildPropertyMetadata data = GuildPropertyMetadataStorage.GetMetadata(guild.Exp);
-            DatabaseGuild.Update(guild);
+            DatabaseManager.Guilds.Update(guild);
         }
     }
 
@@ -73,7 +73,7 @@ namespace MapleServer2.Commands.Game
             }
             guild.Funds = guildFunds;
             guild.BroadcastPacketGuild(GuildPacket.UpdateGuildFunds(guild.Funds));
-            DatabaseGuild.Update(guild);
+            DatabaseManager.Guilds.Update(guild);
         }
     }
 }

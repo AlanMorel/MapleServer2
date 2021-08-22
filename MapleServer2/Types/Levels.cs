@@ -1,5 +1,5 @@
 ﻿using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -31,7 +31,7 @@ namespace MapleServer2.Types
 
             if (id == 0)
             {
-                Id = DatabaseLevels.CreateLevels(this);
+                Id = DatabaseManager.Levels.CreateLevels(this);
                 return;
             }
             Id = id;

@@ -7,19 +7,21 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseInventory
     {
-        public static long CreateInventory(Inventory inventory)
+        private readonly string TableName = "inventories";
+
+        public long CreateInventory(Inventory inventory)
         {
-            return DatabaseManager.QueryFactory.Query("inventories").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 ExtraSize = JsonConvert.SerializeObject(inventory.ExtraSize),
             });
         }
 
-        public static Inventory FindById(long id) => ReadInventory(DatabaseManager.QueryFactory.Query("inventories").Where("Id", id).FirstOrDefault());
+        public Inventory FindById(long id) => ReadInventory(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public static void Update(Inventory inventory)
+        public void Update(Inventory inventory)
         {
-            DatabaseManager.QueryFactory.Query("inventories").Where("Id", inventory.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", inventory.Id).Update(new
             {
                 ExtraSize = JsonConvert.SerializeObject(inventory.ExtraSize),
             });
@@ -33,12 +35,12 @@ namespace MapleServer2.Database.Classes
                 item.InventoryId = inventory.Id;
                 item.BankInventoryId = 0;
                 item.HomeId = 0;
-                DatabaseItem.Update(item);
+                DatabaseManager.Items.Update(item);
             }
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("inventories").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
-        private static Inventory ReadInventory(dynamic data) => new Inventory(data.Id, JsonConvert.DeserializeObject<Dictionary<InventoryTab, short>>(data.ExtraSize), DatabaseItem.FindAllByInventoryId(data.Id));
+        private static Inventory ReadInventory(dynamic data) => new Inventory(data.Id, JsonConvert.DeserializeObject<Dictionary<InventoryTab, short>>(data.ExtraSize), DatabaseManager.Items.FindAllByInventoryId(data.Id));
     }
 }

@@ -1,4 +1,4 @@
-﻿using MapleServer2.Database.Classes;
+﻿using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -15,7 +15,7 @@ namespace MapleServer2.Types
 
         public BankInventory()
         {
-            Id = DatabaseBankInventory.CreateBankInventory(this);
+            Id = DatabaseManager.BankInventories.CreateBankInventory(this);
         }
 
         public BankInventory(long id, int extraSize, List<Item> items)

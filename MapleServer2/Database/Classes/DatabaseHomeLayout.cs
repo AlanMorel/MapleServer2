@@ -5,9 +5,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHomeLayout
     {
-        public static long CreateHomeLayout(HomeLayout homeLayout)
+        private readonly string TableName = "HomeLayouts";
+
+        public long CreateHomeLayout(HomeLayout homeLayout)
         {
-            return DatabaseManager.QueryFactory.Query("HomeLayouts").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 homeLayout.Id,
                 homeLayout.Size,
@@ -18,19 +20,19 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static List<HomeLayout> FindAllByHomeId(long homeId)
+        public List<HomeLayout> FindAllByHomeId(long homeId)
         {
-            List<HomeLayout> homeLayouts = DatabaseManager.QueryFactory.Query("HomeLayouts").Where("HomeId", homeId).Get<HomeLayout>().ToList();
+            List<HomeLayout> homeLayouts = DatabaseManager.QueryFactory.Query(TableName).Where("HomeId", homeId).Get<HomeLayout>().ToList();
             foreach (HomeLayout homeLayout in homeLayouts)
             {
-                homeLayout.Cubes = DatabaseCube.FindAllByLayoutUid(homeLayout.Uid);
+                homeLayout.Cubes = DatabaseManager.Cubes.FindAllByLayoutUid(homeLayout.Uid);
             }
             return homeLayouts;
         }
 
-        public static void Update(HomeLayout homeLayout)
+        public void Update(HomeLayout homeLayout)
         {
-            DatabaseManager.QueryFactory.Query("HomeLayouts").Where("Uid", homeLayout.Uid).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", homeLayout.Uid).Update(new
             {
                 homeLayout.Id,
                 homeLayout.Size,
@@ -41,6 +43,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long uid) => DatabaseManager.QueryFactory.Query("HomeLayouts").Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
     }
 }

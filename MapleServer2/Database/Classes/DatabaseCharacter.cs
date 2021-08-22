@@ -6,11 +6,13 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public static class DatabaseCharacter
+    public class DatabaseCharacter
     {
-        public static long CreatePlayer(Player player)
+        private readonly string TableName = "Characters";
+
+        public long CreatePlayer(Player player)
         {
-            return DatabaseManager.QueryFactory.Query("characters").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 player.AccountId,
                 player.CreationTime,
@@ -56,9 +58,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static Player FindById(long id)
+        public Player FindById(long id)
         {
-            return ReadCharacter(DatabaseManager.QueryFactory.Query("Characters").Where("CharacterId", id)
+            return ReadCharacter(DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", id)
             .Join("Levels", "Levels.Id", "Characters.LevelsId")
             .Join("Accounts", "Accounts.Id", "Characters.AccountId")
             .Join("GameOptions", "GameOptions.Id", "Characters.GameOptionsId")
@@ -74,9 +76,67 @@ namespace MapleServer2.Database.Classes
             .FirstOrDefault());
         }
 
-        public static void Update(Player player)
+        public List<Player> FindAllByAccountId(long accountId)
         {
-            DatabaseManager.QueryFactory.Query("Characters").Where("CharacterId", player.CharacterId).Update(new
+            List<Player> characters = new List<Player>();
+
+            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("AccountId", accountId)
+            .Join("Levels", "Levels.Id", "Characters.LevelsId")
+            .Select(
+                "Characters.{*}",
+                "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}").Get();
+
+            foreach (dynamic data in result)
+            {
+                characters.Add(new Player()
+                {
+                    CharacterId = data.CharacterId,
+                    AccountId = data.AccountId,
+                    CreationTime = data.CreationTime,
+                    Name = data.Name,
+                    Gender = data.Gender,
+                    Awakened = data.Awakened,
+                    Job = (Job) data.Job,
+                    Levels = new Levels(data.Level, data.Exp, data.RestExp, data.PrestigeLevel, data.PrestigeExp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.MasteryExp), data.LevelsId),
+                    MapId = data.MapId,
+                    TitleId = data.TitleId,
+                    InsigniaId = data.InsigniaId,
+                    Titles = JsonConvert.DeserializeObject<List<int>>(data.Titles),
+                    PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.PrestigeRewardsClaimed),
+                    VIPExpiration = data.VIPExpiration,
+                    MaxSkillTabs = data.MaxSkillTabs,
+                    ActiveSkillTabId = data.ActiveSkillTabId,
+                    BankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId),
+                    ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.ChatSticker),
+                    ClubId = data.ClubId,
+                    Coord = JsonConvert.DeserializeObject<CoordF>(data.Coord),
+                    Emotes = JsonConvert.DeserializeObject<List<int>>(data.Emotes),
+                    FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.FavoriteStickers),
+                    GroupChatId = JsonConvert.DeserializeObject<int[]>(data.GroupChatId),
+                    GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.GuildApplications),
+                    GuildId = data.GuildId ?? 0,
+                    Inventory = DatabaseManager.Inventories.FindById(data.InventoryId),
+                    IsDeleted = data.IsDeleted,
+                    Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.Mapleopoly),
+                    Motto = data.Motto,
+                    ProfileUrl = data.ProfileUrl,
+                    ReturnCoord = JsonConvert.DeserializeObject<CoordF>(data.ReturnCoord),
+                    ReturnMapId = data.ReturnMapId,
+                    SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.SkinColor),
+                    StatPointDistribution = JsonConvert.DeserializeObject<StatDistribution>(data.StatPointDistribution),
+                    Stats = JsonConvert.DeserializeObject<PlayerStats>(data.Stats),
+                    TrophyCount = JsonConvert.DeserializeObject<int[]>(data.TrophyCount),
+                    UnlockedMaps = JsonConvert.DeserializeObject<List<int>>(data.UnlockedMaps),
+                    UnlockedTaxis = JsonConvert.DeserializeObject<List<int>>(data.UnlockedTaxis),
+                    VisitingHomeId = data.VisitingHomeId
+                });
+            }
+            return characters;
+        }
+
+        public void Update(Player player)
+        {
+            DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", player.CharacterId).Update(new
             {
                 player.Name,
                 player.Gender,
@@ -114,42 +174,42 @@ namespace MapleServer2.Database.Classes
                 player.VisitingHomeId
             });
 
-            DatabaseLevels.Update(player.Levels);
-            DatabaseWallet.Update(player.Wallet);
+            DatabaseManager.Levels.Update(player.Levels);
+            DatabaseManager.Wallets.Update(player.Wallet);
             if (player.Account != null)
             {
-                DatabaseAccount.Update(player.Account);
+                DatabaseManager.Accounts.Update(player.Account);
             }
-            DatabaseGameOptions.Update(player.GameOptions);
-            DatabaseInventory.Update(player.Inventory);
-            DatabaseBankInventory.Update(player.BankInventory);
+            DatabaseManager.GameOptions.Update(player.GameOptions);
+            DatabaseManager.Inventories.Update(player.Inventory);
+            DatabaseManager.BankInventories.Update(player.BankInventory);
 
             foreach (KeyValuePair<int, Trophy> trophy in player.TrophyData)
             {
-                DatabaseTrophy.Update(trophy.Value);
+                DatabaseManager.Trophies.Update(trophy.Value);
             }
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("Character").Where("CharacterId", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", id).Delete() == 1;
 
-        public static bool SetCharacterDeleted(long characterId)
+        public bool SetCharacterDeleted(long characterId)
         {
-            return DatabaseManager.QueryFactory.Query("Characters").Where("CharacterId", characterId).Update(new
+            return DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new
             {
                 IsDeleted = true
             }) == 1;
         }
 
-        public static bool NameExists(string name) => DatabaseManager.QueryFactory.Query("Characters").Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
 
         private static Player ReadCharacter(dynamic data)
         {
-            List<Hotbar> hotbars = DatabaseHotbar.FindAllByGameOptionsId(data.GameOptionsId);
-            List<SkillTab> skillTabs = DatabaseSkillTab.FindAllByCharacterId(data.CharacterId, data.Job);
-            Inventory inventory = DatabaseInventory.FindById(data.InventoryId);
-            BankInventory bankInventory = DatabaseBankInventory.FindById(data.BankInventoryId);
-            Dictionary<int, Trophy> trophies = DatabaseTrophy.FindAllByCharacterId(data.CharacterId);
-            List<QuestStatus> questList = DatabaseQuest.FindAllByCharacterId(data.CharacterId);
+            List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.GameOptionsId);
+            List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.CharacterId, data.Job);
+            Inventory inventory = DatabaseManager.Inventories.FindById(data.InventoryId);
+            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId);
+            Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.CharacterId);
+            List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.CharacterId);
 
             return new Player()
             {

@@ -5,9 +5,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuildApplication
     {
-        public static long CreateGuildApplication(GuildApplication guildApplication)
+        private readonly string TableName = "guildapplications";
+
+        public long CreateGuildApplication(GuildApplication guildApplication)
         {
-            return DatabaseManager.QueryFactory.Query("guildapplications").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 guildApplication.CharacterId,
                 guildApplication.GuildId,
@@ -15,13 +17,13 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static GuildApplication FindById(long id) => DatabaseManager.QueryFactory.Query("guildapplications").Where("Id", id).Get<GuildApplication>().FirstOrDefault();
+        public GuildApplication FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Get<GuildApplication>().FirstOrDefault();
 
-        public static List<GuildApplication> FindAllByGuildId(long guildId) => DatabaseManager.QueryFactory.Query("guildapplications").Where("GuildId", guildId).Get<GuildApplication>().ToList();
+        public List<GuildApplication> FindAllByGuildId(long guildId) => DatabaseManager.QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildApplication>().ToList();
 
-        public static void Update(GuildApplication guildApplication)
+        public void Update(GuildApplication guildApplication)
         {
-            DatabaseManager.QueryFactory.Query("table").Where("Id", guildApplication.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guildApplication.Id).Update(new
             {
                 guildApplication.CharacterId,
                 guildApplication.GuildId,
@@ -29,6 +31,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("guildapplications").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

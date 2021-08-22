@@ -1,4 +1,4 @@
-﻿using MapleServer2.Database.Classes;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Size = size;
             Height = height;
             Timestamp = timestamp;
-            Uid = DatabaseHomeLayout.CreateHomeLayout(this);
+            Uid = DatabaseManager.HomeLayouts.CreateHomeLayout(this);
 
             foreach (Cube cube in cubes)
             {

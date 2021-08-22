@@ -1,5 +1,5 @@
 ﻿using Maple2Storage.Types;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -24,7 +24,7 @@ namespace MapleServer2.Types
             HomeId = homeId;
             LayoutUid = homeLayoutId;
 
-            Uid = DatabaseCube.CreateCube(this);
+            Uid = DatabaseManager.Cubes.CreateCube(this);
         }
 
         public Cube(long uid, Item item, int plotNumber, CoordF coordF, float rotation, long homeLayoutUid = 0, long homeId = 0)

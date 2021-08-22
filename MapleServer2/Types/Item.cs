@@ -2,7 +2,7 @@
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types
@@ -92,7 +92,7 @@ namespace MapleServer2.Types
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, ItemSlot, Level);
             CanRepackage = true; // If false, item becomes untradable
-            Uid = DatabaseItem.CreateItem(this);
+            Uid = DatabaseManager.Items.CreateItem(this);
         }
 
         public Item(int id, int amount) : this(id)
@@ -165,7 +165,7 @@ namespace MapleServer2.Types
             Amount -= amount;
             splitItem.Amount = amount;
             splitItem.Slot = -1;
-            splitItem.Uid = DatabaseItem.CreateItem(this);
+            splitItem.Uid = DatabaseManager.Items.CreateItem(this);
             return true;
         }
 

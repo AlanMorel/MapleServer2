@@ -7,24 +7,29 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuildMember
     {
-        public static void CreateGuildMember(GuildMember guildMember) => DatabaseManager.QueryFactory.Query("GuildMembers").Insert(new
-        {
-            guildMember.Id,
-            guildMember.Motto,
-            guildMember.Rank,
-            guildMember.DailyContribution,
-            guildMember.ContributionTotal,
-            guildMember.DailyDonationCount,
-            guildMember.AttendanceTimestamp,
-            guildMember.JoinTimestamp,
-            guildMember.GuildId
-        });
+        private readonly string TableName = "GuildMembers";
 
-        public static GuildMember FindById(long id) => DatabaseManager.QueryFactory.Query("GuildMembers").Where("Id", id).Get<GuildMember>().FirstOrDefault();
-
-        public static List<GuildMember> GetMembersByGuildId(long guildId)
+        public void CreateGuildMember(GuildMember guildMember)
         {
-            List<GuildMember> members = DatabaseManager.QueryFactory.Query("GuildMembers").Where("GuildId", guildId).Get<GuildMember>().ToList();
+            DatabaseManager.QueryFactory.Query(TableName).Insert(new
+            {
+                guildMember.Id,
+                guildMember.Motto,
+                guildMember.Rank,
+                guildMember.DailyContribution,
+                guildMember.ContributionTotal,
+                guildMember.DailyDonationCount,
+                guildMember.AttendanceTimestamp,
+                guildMember.JoinTimestamp,
+                guildMember.GuildId
+            });
+        }
+
+        public GuildMember FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Get<GuildMember>().FirstOrDefault();
+
+        public List<GuildMember> GetMembersByGuildId(long guildId)
+        {
+            List<GuildMember> members = DatabaseManager.QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildMember>().ToList();
             foreach (GuildMember guildMember in members)
             {
                 dynamic result = DatabaseManager.QueryFactory.Query("Characters").Where("CharacterId", guildMember.Id)
@@ -54,7 +59,10 @@ namespace MapleServer2.Database.Classes
                 {
                     CharacterId = result.CharacterId,
                     AccountId = result.AccountId,
-                    Account = new Account(),
+                    Account = new Account()
+                    {
+                        Home = home
+                    },
                     CreationTime = result.CreationTime,
                     Name = result.Name,
                     Gender = result.Gender,
@@ -67,14 +75,13 @@ namespace MapleServer2.Database.Classes
                     ProfileUrl = result.ProfileUrl,
                     TrophyCount = JsonConvert.DeserializeObject<int[]>(result.TrophyCount),
                 };
-                guildMember.Player.Account.Home = home;
             }
             return members;
         }
 
-        public static void Update(GuildMember guildMember)
+        public void Update(GuildMember guildMember)
         {
-            DatabaseManager.QueryFactory.Query("GuildMembers").Where("Id", guildMember.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guildMember.Id).Update(new
             {
                 guildMember.Rank,
                 guildMember.DailyContribution,
@@ -87,6 +94,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("GuildMembers").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

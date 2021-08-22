@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants.Skills;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 
 namespace MapleServer2.Types
@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Name = name;
             ResetSkillTree(job);
             TabId = id;
-            Uid = DatabaseSkillTab.CreateSkillTab(this, characterId);
+            Uid = DatabaseManager.SkillTabs.CreateSkillTab(this, characterId);
         }
 
         public SkillTab(string name, int jobId, long tabId, long uid, Dictionary<int, int> skillLevels)

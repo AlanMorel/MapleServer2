@@ -1,4 +1,4 @@
-﻿using MapleServer2.Database.Classes;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -16,7 +16,7 @@ namespace MapleServer2.Types
             {
                 Slots[i] = new QuickSlot();
             }
-            Id = DatabaseHotbar.CreateHotbar(this, gameOptionsId);
+            Id = DatabaseManager.Hotbars.CreateHotbar(this, gameOptionsId);
         }
 
         public Hotbar(QuickSlot[] slots, long id)

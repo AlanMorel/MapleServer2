@@ -1,5 +1,5 @@
 ﻿using Maple2Storage.Enums;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -46,7 +46,7 @@ namespace MapleServer2.Types
             GameMeret = new Currency(CurrencyType.GameMeret, 0);
             EventMeret = new Currency(CurrencyType.EventMeret, 0);
 
-            Id = DatabaseAccount.CreateAccount(this);
+            Id = DatabaseManager.Accounts.CreateAccount(this);
         }
 
         public bool RemoveMerets(long amount)

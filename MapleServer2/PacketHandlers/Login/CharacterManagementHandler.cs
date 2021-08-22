@@ -3,7 +3,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
 using MapleServer2.Packets;
@@ -41,7 +41,7 @@ namespace MapleServer2.PacketHandlers.Login
         private void HandleDelete(LoginSession session, PacketReader packet)
         {
             long characterId = packet.ReadLong();
-            if (!DatabaseCharacter.SetCharacterDeleted(characterId))
+            if (!DatabaseManager.Characters.SetCharacterDeleted(characterId))
             {
                 Logger.Error("Could not delete character");
                 return;
@@ -167,7 +167,7 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            if (DatabaseCharacter.NameExists(name))
+            if (DatabaseManager.Characters.NameExists(name))
             {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
@@ -180,10 +180,10 @@ namespace MapleServer2.PacketHandlers.Login
                 item.OwnerCharacterName = newCharacter.Name;
             }
             newCharacter.Inventory.Cosmetics = cosmetics;
-            DatabaseCharacter.Update(newCharacter);
+            DatabaseManager.Characters.Update(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
-            Account account = DatabaseAccount.FindById(session.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)

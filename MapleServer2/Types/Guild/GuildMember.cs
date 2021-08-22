@@ -1,4 +1,4 @@
-﻿using MapleServer2.Database.Classes;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -36,14 +36,14 @@ namespace MapleServer2.Types
             Motto = "";
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             GuildId = guildId;
-            DatabaseGuildMember.CreateGuildMember(this);
+            DatabaseManager.GuildMembers.CreateGuildMember(this);
         }
 
         public void AddContribution(int contribution)
         {
             ContributionTotal += contribution;
             DailyContribution += contribution;
-            DatabaseGuildMember.Update(this);
+            DatabaseManager.GuildMembers.Update(this);
         }
     }
 }

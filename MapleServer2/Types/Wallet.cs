@@ -1,5 +1,5 @@
 ﻿using Maple2Storage.Enums;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -27,7 +27,7 @@ namespace MapleServer2.Types
 
             if (id == 0)
             {
-                Id = DatabaseWallet.CreateWallet(this);
+                Id = DatabaseManager.Wallets.CreateWallet(this);
                 return;
             }
             Id = id;

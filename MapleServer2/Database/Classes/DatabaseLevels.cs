@@ -4,11 +4,13 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public static class DatabaseLevels
+    public class DatabaseLevels
     {
-        public static long CreateLevels(Levels levels)
+        private readonly string TableName = "Levels";
+
+        public long CreateLevels(Levels levels)
         {
-            return DatabaseManager.QueryFactory.Query("Levels").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 levels.Level,
                 levels.Exp,
@@ -19,9 +21,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static void Update(Levels levels)
+        public void Update(Levels levels)
         {
-            DatabaseManager.QueryFactory.Query("Levels").Where("Id", levels.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", levels.Id).Update(new
             {
                 levels.Level,
                 levels.Exp,
@@ -32,6 +34,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("table").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

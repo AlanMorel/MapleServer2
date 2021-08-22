@@ -5,9 +5,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseWallet
     {
-        public static long CreateWallet(Wallet wallet)
+        private readonly string TableName = "wallets";
+
+        public long CreateWallet(Wallet wallet)
         {
-            return DatabaseManager.QueryFactory.Query("wallets").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 Meso = wallet.Meso.Amount,
                 ValorToken = wallet.ValorToken.Amount,
@@ -19,9 +21,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static void Update(Wallet wallet)
+        public void Update(Wallet wallet)
         {
-            DatabaseManager.QueryFactory.Query("wallets").Where("Id", wallet.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", wallet.Id).Update(new
             {
                 Meso = wallet.Meso.Amount,
                 ValorToken = wallet.ValorToken.Amount,
@@ -33,6 +35,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("wallets").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

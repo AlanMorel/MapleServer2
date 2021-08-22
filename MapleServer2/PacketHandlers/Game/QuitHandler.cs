@@ -2,7 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
@@ -48,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
         private void HandleChangeCharacter(GameSession session)
         {
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
-            DatabaseCharacter.Update(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
             AuthData authData = AuthStorage.GetData(session.Player.AccountId);
 
             session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, authData));
@@ -57,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleQuit(GameSession session)
         {
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
-            DatabaseCharacter.Update(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
         }
     }
 }

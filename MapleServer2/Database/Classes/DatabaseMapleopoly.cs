@@ -5,8 +5,10 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseMapleopoly
     {
-        public static List<MapleopolyTile> GetMapleopolyTiles() => DatabaseManager.QueryFactory.Query("mapleopolytiles").Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
+        private readonly string TableName = "mapleopolytiles";
 
-        public static MapleopolyTile GetSingleMapleopolyTile(int tilePosition) => DatabaseManager.QueryFactory.Query("mapleopolytiles").Where("TilePosition", tilePosition).Get<MapleopolyTile>().FirstOrDefault();
+        public List<MapleopolyTile> GetMapleopolyTiles() => DatabaseManager.QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
+
+        public MapleopolyTile GetSingleMapleopolyTile(int tilePosition) => DatabaseManager.QueryFactory.Query(TableName).Where("TilePosition", tilePosition).Get<MapleopolyTile>().FirstOrDefault();
     }
 }

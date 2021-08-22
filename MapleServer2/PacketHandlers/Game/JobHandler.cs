@@ -1,6 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -71,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
-            DatabaseSkillTab.Update(skillTab);
+            DatabaseManager.SkillTabs.Update(skillTab);
         }
 
         private static void HandleResetSkillTree(GameSession session, PacketReader packet)
@@ -81,7 +81,7 @@ namespace MapleServer2.PacketHandlers.Game
             SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
             skillTab.ResetSkillTree(session.Player.Job);
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
-            DatabaseSkillTab.Update(skillTab);
+            DatabaseManager.SkillTabs.Update(skillTab);
         }
 
         private static void HandlePresetSkillTree(GameSession session, PacketReader packet)
@@ -98,7 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
-            DatabaseSkillTab.Update(skillTab);
+            DatabaseManager.SkillTabs.Update(skillTab);
         }
     }
 }

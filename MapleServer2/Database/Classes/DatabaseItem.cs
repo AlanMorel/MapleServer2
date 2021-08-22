@@ -8,11 +8,12 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseItem
     {
-        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        private readonly string TableName = "Items";
 
-        public static long CreateItem(Item item)
+        public long CreateItem(Item item)
         {
-            return DatabaseManager.QueryFactory.Query("Items").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 item.Level,
                 ItemSlot = (byte) item.ItemSlot,
@@ -52,11 +53,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static Item FindByUid(long uid) => ReadItem(DatabaseManager.QueryFactory.Query("Items").Where("Uid", uid).FirstOrDefault());
+        public Item FindByUid(long uid) => ReadItem(DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
 
-        public static List<Item> FindAllByInventoryId(long inventoryId)
+        public List<Item> FindAllByInventoryId(long inventoryId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query("Items").Where("InventoryId", inventoryId).Get();
+            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("InventoryId", inventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -65,9 +66,9 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
-        public static List<Item> FindAllByBankInventoryId(long bankInventoryId)
+        public List<Item> FindAllByBankInventoryId(long bankInventoryId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query("Items").Where("BankInventoryId", bankInventoryId).Get();
+            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("BankInventoryId", bankInventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -76,9 +77,9 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
-        public static Dictionary<long, Item> FindAllByHomeId(long homeId)
+        public Dictionary<long, Item> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query("Items").Where("HomeId", homeId).Get();
+            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
             Dictionary<long, Item> items = new Dictionary<long, Item>();
             foreach (dynamic data in result)
             {
@@ -88,9 +89,9 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
-        public static void Update(Item item)
+        public void Update(Item item)
         {
-            DatabaseManager.QueryFactory.Query("Items").Where("Uid", item.Uid).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", item.Uid).Update(new
             {
                 item.Level,
                 ItemSlot = (byte) item.ItemSlot,
@@ -130,9 +131,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long uid) => DatabaseManager.QueryFactory.Query("Items").Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
-        private static Item ReadItem(dynamic data)
+        private Item ReadItem(dynamic data)
         {
             return new Item()
             {

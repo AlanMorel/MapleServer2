@@ -5,7 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -265,7 +265,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 previousHair.Slot = -1;
                 session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
-                DatabaseItem.Delete(previousHair.Uid);
+                DatabaseManager.Items.Delete(previousHair.Uid);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, previousHair));
             }
 
@@ -286,7 +286,7 @@ namespace MapleServer2.PacketHandlers.Game
                 if (cosmetics.Remove(ItemSlot.HR, out Item newHair))
                 {
                     newHair.Slot = -1;
-                    DatabaseItem.Delete(newHair.Uid);
+                    DatabaseManager.Items.Delete(newHair.Uid);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, newHair));
                 }
 
@@ -486,7 +486,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (cosmetics.Remove(itemSlot, out Item removeItem))
             {
                 removeItem.Slot = -1;
-                DatabaseItem.Delete(removeItem.Uid);
+                DatabaseManager.Items.Delete(removeItem.Uid);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
             }
             // equip new item

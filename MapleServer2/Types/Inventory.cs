@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using Maple2Storage.Types;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 
 // TODO: make this class thread safe?
 namespace MapleServer2.Types
@@ -47,7 +47,7 @@ namespace MapleServer2.Types
             {
                 SlotMaps[i] = new Dictionary<short, long>();
             }
-            Id = DatabaseInventory.CreateInventory(this);
+            Id = DatabaseManager.Inventories.CreateInventory(this);
         }
 
         public Inventory(long id, Dictionary<InventoryTab, short> extraSize, List<Item> items)

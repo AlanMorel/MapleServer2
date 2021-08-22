@@ -1,6 +1,6 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -50,7 +50,7 @@ namespace MapleServer2.Types
             RewardItems = metadata.RewardItem;
             Started = started;
             StartTimestamp = startTimestamp;
-            Uid = DatabaseQuest.CreateQuest(this);
+            Uid = DatabaseManager.Quests.CreateQuest(this);
         }
 
         public void SetMetadataValues()

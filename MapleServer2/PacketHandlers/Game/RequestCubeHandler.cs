@@ -5,7 +5,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -186,7 +186,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             //Check if sale event is active
             int price = land.Price;
-            UGCMapContractSaleEvent ugcMapContractSale = DatabaseEvent.FindUGCMapContractSaleEvent();
+            UGCMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUGCMapContractSaleEvent();
             if (ugcMapContractSale != null)
             {
                 int markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);
@@ -534,7 +534,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (oldFieldCube != null)
             {
                 furnishingInventory.Remove(oldFieldCube.Value.Uid);
-                DatabaseCube.Delete(oldFieldCube.Value.Uid);
+                DatabaseManager.Cubes.Delete(oldFieldCube.Value.Uid);
                 homeOwner.Value.Session.Send(FurnishingInventoryPacket.Remove(oldFieldCube.Value));
                 session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
             }
@@ -878,7 +878,7 @@ namespace MapleServer2.PacketHandlers.Game
             HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
             if (layout != default)
             {
-                DatabaseHomeLayout.Delete(layout.Uid);
+                DatabaseManager.HomeLayouts.Delete(layout.Uid);
                 home.Layouts.Remove(layout);
             }
 
@@ -1365,7 +1365,7 @@ namespace MapleServer2.PacketHandlers.Game
             furnishingInventory.Remove(cube.Value.Uid);
             homeOwner.Value.Session.Send(FurnishingInventoryPacket.Remove(cube.Value));
 
-            DatabaseCube.Delete(cube.Value.Uid);
+            DatabaseManager.Cubes.Delete(cube.Value.Uid);
             _ = home.AddWarehouseItem(homeOwner.Value.Session, cube.Value.Item.Id, 1, cube.Value.Item);
             session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
         }

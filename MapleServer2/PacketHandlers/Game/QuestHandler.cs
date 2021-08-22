@@ -2,7 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -62,7 +62,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             questStatus.Started = true;
             questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            DatabaseQuest.Update(questStatus);
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.AcceptQuest(questId));
         }
 
@@ -96,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            DatabaseQuest.Update(questStatus);
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.CompleteQuest(questId, true));
 
             // Add next quest
@@ -131,7 +131,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            DatabaseQuest.Update(questStatus);
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.CompleteQuest(questId, false));
         }
 

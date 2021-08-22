@@ -7,9 +7,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHome
     {
-        public static long CreateHome(Home home)
+        private readonly string TableName = "Homes";
+
+        public long CreateHome(Home home)
         {
-            return DatabaseManager.QueryFactory.Query("Homes").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 home.AccountId,
                 home.MapId,
@@ -35,11 +37,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static Home FindById(long id) => ReadHome(DatabaseManager.QueryFactory.Query("Homes").Where("Id", id).FirstOrDefault());
+        public Home FindById(long id) => ReadHome(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public static List<Home> FindHomesOnMap(int mapId)
+        public List<Home> FindHomesOnMap(int mapId)
         {
-            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query("Homes").Where("MapId", mapId).Get();
+            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query(TableName).Where("MapId", mapId).Get();
             List<Home> homes = new List<Home>();
             foreach (dynamic data in results)
             {
@@ -48,9 +50,9 @@ namespace MapleServer2.Database.Classes
             return homes;
         }
 
-        public static void Update(Home home)
+        public void Update(Home home)
         {
-            DatabaseManager.QueryFactory.Query("Homes").Where("Id", home.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", home.Id).Update(new
             {
                 home.MapId,
                 home.PlotMapId,
@@ -77,15 +79,15 @@ namespace MapleServer2.Database.Classes
             foreach (Item item in home.WarehouseInventory.Where(item => item.Value != null).Select(x => x.Value))
             {
                 item.HomeId = home.Id;
-                DatabaseItem.Update(item);
+                DatabaseManager.Items.Update(item);
             }
             foreach (Cube cube in home.FurnishingInventory.Where(cube => cube.Value != null).Select(x => x.Value))
             {
-                DatabaseCube.Update(cube);
+                DatabaseManager.Cubes.Update(cube);
             }
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("Homes").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
         private static Home ReadHome(dynamic data)
         {
@@ -93,9 +95,9 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            Dictionary<long, Item> warehouseItems = DatabaseItem.FindAllByHomeId(data.Id);
-            Dictionary<long, Cube> furnishingCubes = DatabaseCube.FindAllByHomeId(data.Id);
-            List<HomeLayout> layouts = DatabaseHomeLayout.FindAllByHomeId(data.Id);
+            Dictionary<long, Item> warehouseItems = DatabaseManager.Items.FindAllByHomeId(data.Id);
+            Dictionary<long, Cube> furnishingCubes = DatabaseManager.Cubes.FindAllByHomeId(data.Id);
+            List<HomeLayout> layouts = DatabaseManager.HomeLayouts.FindAllByHomeId(data.Id);
             return new Home()
             {
                 Id = data.Id,

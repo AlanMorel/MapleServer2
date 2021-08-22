@@ -1,4 +1,4 @@
-﻿using MapleServer2.Database.Classes;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public GameOptions()
         {
             KeyBinds = new Dictionary<int, KeyBind>();
-            Id = DatabaseGameOptions.CreateGameOptions(this);
+            Id = DatabaseManager.GameOptions.CreateGameOptions(this);
 
             Hotbars = new List<Hotbar>();
 

@@ -6,9 +6,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseTrophy
     {
-        public static long CreateTrophy(Trophy trophy)
+        private readonly string TableName = "trophies";
+
+        public long CreateTrophy(Trophy trophy)
         {
-            return DatabaseManager.QueryFactory.Query("trophies").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 trophy.Id,
                 trophy.NextGrade,
@@ -22,9 +24,9 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static Dictionary<int, Trophy> FindAllByCharacterId(long characterId)
+        public Dictionary<int, Trophy> FindAllByCharacterId(long characterId)
         {
-            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query("trophies").Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
             Dictionary<int, Trophy> trophies = new Dictionary<int, Trophy>();
             foreach (dynamic data in results)
             {
@@ -34,9 +36,9 @@ namespace MapleServer2.Database.Classes
             return trophies;
         }
 
-        public static void Update(Trophy trophy)
+        public void Update(Trophy trophy)
         {
-            DatabaseManager.QueryFactory.Query("trophies").Where("Uid", trophy.Uid).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", trophy.Uid).Update(new
             {
                 trophy.Id,
                 trophy.NextGrade,
@@ -50,7 +52,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long uid) => DatabaseManager.QueryFactory.Query("trophies").Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
         private static Trophy ReadTrophy(dynamic data) => new Trophy(data.Uid, data.Id, data.NextGrade, data.MaxGrade, data.Counter, data.Condition, data.IsDone, data.Type, JsonConvert.DeserializeObject<List<long>>(data.Timestamps), data.CharacterId);
     }

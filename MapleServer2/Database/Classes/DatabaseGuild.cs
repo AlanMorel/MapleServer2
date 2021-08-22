@@ -6,9 +6,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuild
     {
-        public static long CreateGuild(Guild guild)
+        private readonly string TableName = "Guilds";
+
+        public long CreateGuild(Guild guild)
         {
-            return DatabaseManager.QueryFactory.Query("Guilds").InsertGetId<long>(new
+            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 guild.Name,
                 guild.CreationTimestamp,
@@ -30,13 +32,13 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static Guild FindById(long id) => ReadGuild(DatabaseManager.QueryFactory.Query("guilds").Where("Id", id).FirstOrDefault());
+        public Guild FindById(long id) => ReadGuild(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public static bool GuildNameExists(string name) => DatabaseManager.QueryFactory.Query("Guilds").Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool GuildNameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
 
-        public static List<Guild> GetAllGuilds()
+        public List<Guild> GetAllGuilds()
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query("guilds").Get();
+            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Get();
             List<Guild> guilds = new List<Guild>();
             foreach (dynamic data in result)
             {
@@ -45,9 +47,9 @@ namespace MapleServer2.Database.Classes
             return guilds;
         }
 
-        public static void Update(Guild guild)
+        public void Update(Guild guild)
         {
-            DatabaseManager.QueryFactory.Query("Guilds").Where("Id", guild.Id).Update(new
+            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guild.Id).Update(new
             {
                 guild.Name,
                 guild.CreationTimestamp,
@@ -69,7 +71,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public static bool Delete(long id) => DatabaseManager.QueryFactory.Query("Guilds").Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
         private static Guild ReadGuild(dynamic data)
         {
@@ -93,8 +95,8 @@ namespace MapleServer2.Database.Classes
                 Notice = data.Notice,
                 Ranks = JsonConvert.DeserializeObject<GuildRank[]>(data.Ranks),
                 Services = JsonConvert.DeserializeObject<List<GuildService>>(data.Services),
-                Members = DatabaseGuildMember.GetMembersByGuildId(data.Id),
-                Applications = DatabaseGuildApplication.FindAllByGuildId(data.Id),
+                Members = DatabaseManager.GuildMembers.GetMembersByGuildId(data.Id),
+                Applications = DatabaseManager.GuildApplications.FindAllByGuildId(data.Id),
             };
         }
     }

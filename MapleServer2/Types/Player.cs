@@ -2,7 +2,7 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -201,7 +201,7 @@ namespace MapleServer2.Types
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
-            CharacterId = DatabaseCharacter.CreatePlayer(this);
+            CharacterId = DatabaseManager.Characters.CreatePlayer(this);
             SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, CharacterId, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
             ActiveSkillTabId = CharacterId;
         }
@@ -238,7 +238,7 @@ namespace MapleServer2.Types
                 UnlockedMaps.Add(MapId);
             }
 
-            DatabaseCharacter.Update(this);
+            DatabaseManager.Characters.Update(this);
             Session.Send(FieldPacket.RequestEnter(this));
         }
 
@@ -492,7 +492,7 @@ namespace MapleServer2.Types
             TrophyData[trophyId].AddCounter(Session, addAmount);
             if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
             {
-                DatabaseTrophy.Update(TrophyData[trophyId]);
+                DatabaseManager.Trophies.Update(TrophyData[trophyId]);
                 Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
             }
         }

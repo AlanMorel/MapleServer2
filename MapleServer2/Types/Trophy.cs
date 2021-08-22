@@ -1,7 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -35,7 +35,7 @@ namespace MapleServer2.Types
             Type = TrophyMetadataStorage.GetMetadata(Id).Categories[0];
             IsDone = isDone;
             CharacterId = characterId;
-            Uid = DatabaseTrophy.CreateTrophy(this);
+            Uid = DatabaseManager.Trophies.CreateTrophy(this);
         }
 
         public Trophy(long uid, int trophyId, int nextGrade, int maxGrade, long counter, long condition, bool isDone, string type, List<long> timestamps, long characterId)

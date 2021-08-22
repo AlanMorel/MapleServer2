@@ -4,7 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -371,7 +371,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleExpandCharacterSlot(GameSession session, Item item)
         {
-            Account account = DatabaseAccount.FindById(session.Player.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
             if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
             {
                 session.Send(CouponUsePacket.MaxCharacterSlots());
@@ -379,7 +379,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             account.CharacterSlots++;
-            DatabaseAccount.Update(account);
+            DatabaseManager.Accounts.Update(account);
             session.Send(CouponUsePacket.CharacterSlotAdded());
             InventoryController.Consume(session, item.Uid, 1);
         }

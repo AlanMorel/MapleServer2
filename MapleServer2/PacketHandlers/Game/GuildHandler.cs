@@ -2,7 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Database.Classes;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -187,7 +187,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (DatabaseGuild.GuildNameExists(guildName))
+            if (DatabaseManager.Guilds.GuildNameExists(guildName))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                 return;
@@ -212,7 +212,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
                 application.Remove(session.Player, guild);
             }
-            DatabaseCharacter.Update(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
         }
 
         private static void HandleDisband(GameSession session)
@@ -241,7 +241,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player));
             guild.RemoveMember(session.Player);
             GameServer.GuildManager.RemoveGuild(guild);
-            DatabaseGuild.Delete(guild.Id);
+            DatabaseManager.Guilds.Delete(guild.Id);
         }
 
         private static void HandleInvite(GameSession session, PacketReader packet)
