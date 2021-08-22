@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Wallet wallet)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 Meso = wallet.Meso.Amount,
                 ValorToken = wallet.ValorToken.Amount,
@@ -23,7 +23,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Wallet wallet)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", wallet.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", wallet.Id).Update(new
             {
                 Meso = wallet.Meso.Amount,
                 ValorToken = wallet.ValorToken.Amount,
@@ -35,6 +35,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

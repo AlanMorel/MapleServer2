@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Levels levels)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 levels.Level,
                 levels.Exp,
@@ -23,7 +23,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Levels levels)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", levels.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", levels.Id).Update(new
             {
                 levels.Level,
                 levels.Exp,
@@ -34,6 +34,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

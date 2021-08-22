@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Trophy trophy)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 trophy.Id,
                 trophy.NextGrade,
@@ -26,7 +26,7 @@ namespace MapleServer2.Database.Classes
 
         public Dictionary<int, Trophy> FindAllByCharacterId(long characterId)
         {
-            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
             Dictionary<int, Trophy> trophies = new Dictionary<int, Trophy>();
             foreach (dynamic data in results)
             {
@@ -38,7 +38,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Trophy trophy)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", trophy.Uid).Update(new
+            QueryFactory.Query(TableName).Where("Uid", trophy.Uid).Update(new
             {
                 trophy.Id,
                 trophy.NextGrade,
@@ -52,7 +52,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
         private static Trophy ReadTrophy(dynamic data) => new Trophy(data.Uid, data.Id, data.NextGrade, data.MaxGrade, data.Counter, data.Condition, data.IsDone, data.Type, JsonConvert.DeserializeObject<List<long>>(data.Timestamps), data.CharacterId);
     }

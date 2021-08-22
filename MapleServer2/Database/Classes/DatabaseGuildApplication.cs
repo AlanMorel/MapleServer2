@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(GuildApplication guildApplication)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 guildApplication.CharacterId,
                 guildApplication.GuildId,
@@ -17,13 +17,13 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public GuildApplication FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Get<GuildApplication>().FirstOrDefault();
+        public GuildApplication FindById(long id) => QueryFactory.Query(TableName).Where("Id", id).Get<GuildApplication>().FirstOrDefault();
 
-        public List<GuildApplication> FindAllByGuildId(long guildId) => DatabaseManager.QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildApplication>().ToList();
+        public List<GuildApplication> FindAllByGuildId(long guildId) => QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildApplication>().ToList();
 
         public void Update(GuildApplication guildApplication)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guildApplication.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", guildApplication.Id).Update(new
             {
                 guildApplication.CharacterId,
                 guildApplication.GuildId,
@@ -31,6 +31,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

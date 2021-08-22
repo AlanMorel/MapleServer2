@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Hotbar hotbar, long gameOptionsId)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 Slots = JsonConvert.SerializeObject(hotbar.Slots),
                 gameOptionsId
@@ -19,7 +19,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Hotbar> FindAllByGameOptionsId(long gameOptionsId)
         {
-            IEnumerable<dynamic> hotbarsResult = DatabaseManager.QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Get();
+            IEnumerable<dynamic> hotbarsResult = QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Get();
             List<Hotbar> hotbars = new List<Hotbar>();
             foreach (dynamic item in hotbarsResult)
             {
@@ -30,12 +30,12 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Hotbar hotbar)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("HotbarId", hotbar.Id).Update(new
+            QueryFactory.Query(TableName).Where("HotbarId", hotbar.Id).Update(new
             {
                 Slots = JsonConvert.SerializeObject(hotbar.Slots)
             });
         }
 
-        public void DeleteAllByGameOptionsId(long gameOptionsId) => DatabaseManager.QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Delete();
+        public void DeleteAllByGameOptionsId(long gameOptionsId) => QueryFactory.Query(TableName).Where("GameOptionsId", gameOptionsId).Delete();
     }
 }

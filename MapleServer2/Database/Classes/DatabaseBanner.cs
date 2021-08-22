@@ -7,8 +7,8 @@ namespace MapleServer2.Database.Classes
     {
         public DatabaseBanner(string tableName) : base(tableName) { }
 
-        public List<Banner> FindAllBanners() => DatabaseManager.QueryFactory.Query(TableName).Get<Banner>().ToList();
+        public List<Banner> FindAllBanners() => QueryFactory.Query(TableName).Get<Banner>().ToList();
 
-        public Banner FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("BannerId", id).Get<Banner>().FirstOrDefault();
+        public Banner FindById(long id) => QueryFactory.Query(TableName).Where("BannerId", id).Get<Banner>().FirstOrDefault();
     }
 }

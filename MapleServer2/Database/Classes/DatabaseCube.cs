@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Cube cube)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 CoordX = cube.CoordF.X,
                 CoordY = cube.CoordF.Y,
@@ -23,11 +23,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Cube FindById(long uid) => ReadCube(DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
+        public Cube FindById(long uid) => ReadCube(QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
 
         public Dictionary<long, Cube> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
             Dictionary<long, Cube> cubes = new Dictionary<long, Cube>();
             foreach (dynamic data in result)
             {
@@ -39,7 +39,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Cube> FindAllByLayoutUid(long layoutUid)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("LayoutUid", layoutUid).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("LayoutUid", layoutUid).Get();
             List<Cube> cubes = new List<Cube>();
             foreach (dynamic data in result)
             {
@@ -50,7 +50,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Cube cube)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", cube.Uid).Update(new
+            QueryFactory.Query(TableName).Where("Uid", cube.Uid).Update(new
             {
                 CoordX = cube.CoordF.X,
                 CoordY = cube.CoordF.Y,
@@ -63,7 +63,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
         private static Cube ReadCube(dynamic data) => new Cube(data.Uid, DatabaseManager.Items.FindByUid(data.ItemUid), data.PlotNumber, CoordF.From(data.CoordX, data.CoordY, data.CoordZ), data.Rotation, data.HomeLayoutId ?? 0, data.HomeId ?? 0);
     }

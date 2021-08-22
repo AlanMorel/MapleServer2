@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(GameOptions gameOptions)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 KeyBinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
                 gameOptions.ActiveHotbarId
@@ -19,7 +19,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(GameOptions gameOptions)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", gameOptions.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", gameOptions.Id).Update(new
             {
                 KeyBinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
                 gameOptions.ActiveHotbarId
@@ -33,7 +33,7 @@ namespace MapleServer2.Database.Classes
         public bool Delete(long id)
         {
             DatabaseManager.Hotbars.DeleteAllByGameOptionsId(id);
-            return DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+            return QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
         }
     }
 }

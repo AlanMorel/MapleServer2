@@ -12,7 +12,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Player player)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 player.AccountId,
                 player.CreationTime,
@@ -60,7 +60,7 @@ namespace MapleServer2.Database.Classes
 
         public Player FindById(long id)
         {
-            return ReadCharacter(DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", id)
+            return ReadCharacter(QueryFactory.Query(TableName).Where("CharacterId", id)
             .Join("Levels", "Levels.Id", "Characters.LevelsId")
             .Join("Accounts", "Accounts.Id", "Characters.AccountId")
             .Join("GameOptions", "GameOptions.Id", "Characters.GameOptionsId")
@@ -80,7 +80,7 @@ namespace MapleServer2.Database.Classes
         {
             List<Player> characters = new List<Player>();
 
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("AccountId", accountId)
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("AccountId", accountId)
             .Join("Levels", "Levels.Id", "Characters.LevelsId")
             .Select(
                 "Characters.{*}",
@@ -136,7 +136,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Player player)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", player.CharacterId).Update(new
+            QueryFactory.Query(TableName).Where("CharacterId", player.CharacterId).Update(new
             {
                 player.Name,
                 player.Gender,
@@ -190,17 +190,17 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("CharacterId", id).Delete() == 1;
 
         public bool SetCharacterDeleted(long characterId)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new
+            return QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new
             {
                 IsDeleted = true
             }) == 1;
         }
 
-        public bool NameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
 
         private static Player ReadCharacter(dynamic data)
         {

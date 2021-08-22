@@ -11,7 +11,7 @@ namespace MapleServer2.Database.Classes
 
         public void Insert(GuildMember guildMember)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Insert(new
+            QueryFactory.Query(TableName).Insert(new
             {
                 guildMember.Id,
                 guildMember.Motto,
@@ -25,14 +25,14 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public GuildMember FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Get<GuildMember>().FirstOrDefault();
+        public GuildMember FindById(long id) => QueryFactory.Query(TableName).Where("Id", id).Get<GuildMember>().FirstOrDefault();
 
         public List<GuildMember> FindAllByGuildId(long guildId)
         {
-            List<GuildMember> members = DatabaseManager.QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildMember>().ToList();
+            List<GuildMember> members = QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildMember>().ToList();
             foreach (GuildMember guildMember in members)
             {
-                dynamic result = DatabaseManager.QueryFactory.Query("Characters").Where("CharacterId", guildMember.Id)
+                dynamic result = QueryFactory.Query("Characters").Where("CharacterId", guildMember.Id)
                     .Join("Levels", "Levels.Id", "Characters.LevelsId")
                     .Join("Accounts", "Accounts.Id", "Characters.AccountId")
                     .LeftJoin("Homes", "Homes.AccountId", "Accounts.Id")
@@ -81,7 +81,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(GuildMember guildMember)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guildMember.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", guildMember.Id).Update(new
             {
                 guildMember.Rank,
                 guildMember.DailyContribution,
@@ -94,6 +94,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

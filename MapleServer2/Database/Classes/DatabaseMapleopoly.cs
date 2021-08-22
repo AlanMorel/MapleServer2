@@ -7,8 +7,8 @@ namespace MapleServer2.Database.Classes
     {
         public DatabaseMapleopoly(string tableName) : base(tableName) { }
 
-        public List<MapleopolyTile> FindAllTiles() => DatabaseManager.QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
+        public List<MapleopolyTile> FindAllTiles() => QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
 
-        public MapleopolyTile FindTileByPosition(int tilePosition) => DatabaseManager.QueryFactory.Query(TableName).Where("TilePosition", tilePosition).Get<MapleopolyTile>().FirstOrDefault();
+        public MapleopolyTile FindTileByPosition(int tilePosition) => QueryFactory.Query(TableName).Where("TilePosition", tilePosition).Get<MapleopolyTile>().FirstOrDefault();
     }
 }

@@ -14,7 +14,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Item item)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 item.Level,
                 ItemSlot = (byte) item.ItemSlot,
@@ -54,11 +54,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Item FindByUid(long uid) => ReadItem(DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
+        public Item FindByUid(long uid) => ReadItem(QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
 
         public List<Item> FindAllByInventoryId(long inventoryId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("InventoryId", inventoryId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("InventoryId", inventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -69,7 +69,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Item> FindAllByBankInventoryId(long bankInventoryId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("BankInventoryId", bankInventoryId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("BankInventoryId", bankInventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -80,7 +80,7 @@ namespace MapleServer2.Database.Classes
 
         public Dictionary<long, Item> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
             Dictionary<long, Item> items = new Dictionary<long, Item>();
             foreach (dynamic data in result)
             {
@@ -92,7 +92,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Item item)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", item.Uid).Update(new
+            QueryFactory.Query(TableName).Where("Uid", item.Uid).Update(new
             {
                 item.Level,
                 ItemSlot = (byte) item.ItemSlot,
@@ -132,7 +132,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
         private Item ReadItem(dynamic data)
         {

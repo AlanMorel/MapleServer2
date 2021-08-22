@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(SkillTab skillTab, long characterId)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 skillTab.TabId,
                 skillTab.Name,
@@ -21,7 +21,7 @@ namespace MapleServer2.Database.Classes
 
         public List<SkillTab> FindAllByCharacterId(long characterId, int jobId)
         {
-            IEnumerable<dynamic> skillTabsResult = DatabaseManager.QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> skillTabsResult = QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
             List<SkillTab> skillTabs = new List<SkillTab>();
             foreach (dynamic item in skillTabsResult)
             {
@@ -32,7 +32,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(SkillTab skillTab)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Uid", skillTab.Uid).Update(new
+            QueryFactory.Query(TableName).Where("Uid", skillTab.Uid).Update(new
             {
                 skillTab.TabId,
                 skillTab.Name,
@@ -40,6 +40,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
     }
 }

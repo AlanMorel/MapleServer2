@@ -11,17 +11,17 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Inventory inventory)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 ExtraSize = JsonConvert.SerializeObject(inventory.ExtraSize),
             });
         }
 
-        public Inventory FindById(long id) => ReadInventory(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public Inventory FindById(long id) => ReadInventory(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
         public void Update(Inventory inventory)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", inventory.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", inventory.Id).Update(new
             {
                 ExtraSize = JsonConvert.SerializeObject(inventory.ExtraSize),
             });
@@ -39,7 +39,7 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
         private static Inventory ReadInventory(dynamic data) => new Inventory(data.Id, JsonConvert.DeserializeObject<Dictionary<InventoryTab, short>>(data.ExtraSize), DatabaseManager.Items.FindAllByInventoryId(data.Id));
     }

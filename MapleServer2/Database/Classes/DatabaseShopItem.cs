@@ -7,8 +7,8 @@ namespace MapleServer2.Database.Classes
     {
         public DatabaseShopItem(string tableName) : base(tableName) { }
 
-        public ShopItem FindByUid(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Get<ShopItem>().FirstOrDefault();
+        public ShopItem FindByUid(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Get<ShopItem>().FirstOrDefault();
 
-        public List<ShopItem> FindAllByShopUid(long shopUid) => DatabaseManager.QueryFactory.Query(TableName).Where("ShopUid", shopUid).Get<ShopItem>().ToList();
+        public List<ShopItem> FindAllByShopUid(long shopUid) => QueryFactory.Query(TableName).Where("ShopUid", shopUid).Get<ShopItem>().ToList();
     }
 }

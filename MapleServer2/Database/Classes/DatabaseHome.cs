@@ -11,7 +11,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Home home)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 home.AccountId,
                 home.MapId,
@@ -37,11 +37,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Home FindById(long id) => ReadHome(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public Home FindById(long id) => ReadHome(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
         public List<Home> FindAllByMapId(int mapId)
         {
-            IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query(TableName).Where("MapId", mapId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("MapId", mapId).Get();
             List<Home> homes = new List<Home>();
             foreach (dynamic data in results)
             {
@@ -52,7 +52,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Home home)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", home.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", home.Id).Update(new
             {
                 home.MapId,
                 home.PlotMapId,
@@ -87,7 +87,7 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
         private static Home ReadHome(dynamic data)
         {

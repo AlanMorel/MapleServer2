@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(CardReverseGame cardReverseGame)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 cardReverseGame.ItemId,
                 cardReverseGame.ItemRarity,
@@ -17,11 +17,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public List<CardReverseGame> FindAll() => DatabaseManager.QueryFactory.Query(TableName).Get<CardReverseGame>().ToList();
+        public List<CardReverseGame> FindAll() => QueryFactory.Query(TableName).Get<CardReverseGame>().ToList();
 
         public void Update(CardReverseGame cardReverseGame)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", cardReverseGame.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", cardReverseGame.Id).Update(new
             {
                 cardReverseGame.ItemId,
                 cardReverseGame.ItemRarity,
@@ -29,6 +29,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
     }
 }

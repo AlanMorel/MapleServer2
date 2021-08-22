@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
 
         public long Insert(Guild guild)
         {
-            return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
+            return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 guild.Name,
                 guild.CreationTimestamp,
@@ -32,13 +32,13 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Guild FindById(long id) => ReadGuild(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public Guild FindById(long id) => ReadGuild(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public bool NameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
 
         public List<Guild> FindAll()
         {
-            IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
             List<Guild> guilds = new List<Guild>();
             foreach (dynamic data in result)
             {
@@ -49,7 +49,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Guild guild)
         {
-            DatabaseManager.QueryFactory.Query(TableName).Where("Id", guild.Id).Update(new
+            QueryFactory.Query(TableName).Where("Id", guild.Id).Update(new
             {
                 guild.Name,
                 guild.CreationTimestamp,
@@ -71,7 +71,7 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
         private static Guild ReadGuild(dynamic data)
         {
