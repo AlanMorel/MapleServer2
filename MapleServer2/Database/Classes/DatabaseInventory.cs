@@ -5,9 +5,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseInventory
+    public class DatabaseInventory : DatabaseTable
     {
-        private readonly string TableName = "inventories";
+        public DatabaseInventory(string tableName) : base(tableName) { }
 
         public long Insert(Inventory inventory)
         {

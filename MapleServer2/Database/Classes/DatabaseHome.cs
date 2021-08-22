@@ -5,9 +5,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseHome
+    public class DatabaseHome : DatabaseTable
     {
-        private readonly string TableName = "Homes";
+        public DatabaseHome(string tableName) : base(tableName) { }
 
         public long Insert(Home home)
         {

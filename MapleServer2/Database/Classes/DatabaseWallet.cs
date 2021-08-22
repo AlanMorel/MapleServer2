@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseWallet
+    public class DatabaseWallet : DatabaseTable
     {
-        private readonly string TableName = "wallets";
+        public DatabaseWallet(string tableName) : base(tableName) { }
 
         public long Insert(Wallet wallet)
         {

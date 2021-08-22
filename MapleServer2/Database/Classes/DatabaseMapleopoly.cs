@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseMapleopoly
+    public class DatabaseMapleopoly : DatabaseTable
     {
-        private readonly string TableName = "mapleopolytiles";
+        public DatabaseMapleopoly(string tableName) : base(tableName) { }
 
         public List<MapleopolyTile> FindAllTiles() => DatabaseManager.QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
 

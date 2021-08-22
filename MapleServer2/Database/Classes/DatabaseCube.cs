@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseCube
+    public class DatabaseCube : DatabaseTable
     {
-        private readonly string TableName = "Cubes";
+        public DatabaseCube(string tableName) : base(tableName) { }
 
         public long Insert(Cube cube)
         {

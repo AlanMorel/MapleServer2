@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseCardReverseGame
+    public class DatabaseCardReverseGame : DatabaseTable
     {
-        private readonly string TableName = "CardReverseGame";
+        public DatabaseCardReverseGame(string tableName) : base(tableName) { }
 
         public long Insert(CardReverseGame cardReverseGame)
         {

@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseMeretMarket
+    public class DatabaseMeretMarket : DatabaseTable
     {
-        private readonly string TableName = "meretmarketitems";
+        public DatabaseMeretMarket(string tableName) : base(tableName) { }
 
         public List<MeretMarketItem> FindAllByCategoryId(MeretMarketCategory category)
         {

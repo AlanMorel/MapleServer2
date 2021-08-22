@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseGuildApplication
+    public class DatabaseGuildApplication : DatabaseTable
     {
-        private readonly string TableName = "guildapplications";
+        public DatabaseGuildApplication(string tableName) : base(tableName) { }
 
         public long Insert(GuildApplication guildApplication)
         {

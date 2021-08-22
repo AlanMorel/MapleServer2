@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseTrophy
+    public class DatabaseTrophy : DatabaseTable
     {
-        private readonly string TableName = "trophies";
+        public DatabaseTrophy(string tableName) : base(tableName) { }
 
         public long Insert(Trophy trophy)
         {

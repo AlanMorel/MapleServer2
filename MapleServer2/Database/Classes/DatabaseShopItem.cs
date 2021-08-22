@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseShopItem
+    public class DatabaseShopItem : DatabaseTable
     {
-        private readonly string TableName = "shopitems";
+        public DatabaseShopItem(string tableName) : base(tableName) { }
 
         public ShopItem FindByUid(long uid) => DatabaseManager.QueryFactory.Query(TableName).Where("Uid", uid).Get<ShopItem>().FirstOrDefault();
 

@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseHomeLayout
+    public class DatabaseHomeLayout : DatabaseTable
     {
-        private readonly string TableName = "HomeLayouts";
+        public DatabaseHomeLayout(string tableName) : base(tableName) { }
 
         public long Insert(HomeLayout homeLayout)
         {

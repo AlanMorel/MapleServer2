@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseShop
+    public class DatabaseShop : DatabaseTable
     {
-        private readonly string TableName = "shops";
+        public DatabaseShop(string tableName) : base(tableName) { }
 
         public Shop FindById(long id)
         {

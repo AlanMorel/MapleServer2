@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseQuest
+    public class DatabaseQuest : DatabaseTable
     {
-        private readonly string TableName = "quests";
+        public DatabaseQuest(string tableName) : base(tableName) { }
 
         public long Insert(QuestStatus questStatus)
         {

@@ -6,10 +6,11 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseItem
+    public class DatabaseItem : DatabaseTable
     {
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-        private readonly string TableName = "Items";
+
+        public DatabaseItem(string tableName) : base(tableName) { }
 
         public long Insert(Item item)
         {

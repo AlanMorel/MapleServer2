@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseLevels
+    public class DatabaseLevels : DatabaseTable
     {
-        private readonly string TableName = "Levels";
+        public DatabaseLevels(string tableName) : base(tableName) { }
 
         public long Insert(Levels levels)
         {

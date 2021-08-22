@@ -6,9 +6,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseCharacter
+    public class DatabaseCharacter : DatabaseTable
     {
-        private readonly string TableName = "Characters";
+        public DatabaseCharacter(string tableName) : base(tableName) { }
 
         public long Insert(Player player)
         {

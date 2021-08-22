@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseSkillTab
+    public class DatabaseSkillTab : DatabaseTable
     {
-        private readonly string TableName = "SkillTabs";
+        public DatabaseSkillTab(string tableName) : base(tableName) { }
 
         public long Insert(SkillTab skillTab, long characterId)
         {

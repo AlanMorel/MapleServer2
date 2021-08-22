@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseEvent
+    public class DatabaseEvent : DatabaseTable
     {
-        private readonly string TableName = "events";
+        public DatabaseEvent(string tableName) : base(tableName) { }
 
         public long Insert(GameEvent gameEvent)
         {

@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseHotbar
+    public class DatabaseHotbar : DatabaseTable
     {
-        private readonly string TableName = "hotbars";
+        public DatabaseHotbar(string tableName) : base(tableName) { }
 
         public long Insert(Hotbar hotbar, long gameOptionsId)
         {

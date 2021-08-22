@@ -3,9 +3,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseBanner
+    public class DatabaseBanner : DatabaseTable
     {
-        private readonly string TableName = "banners";
+        public DatabaseBanner(string tableName) : base(tableName) { }
 
         public List<Banner> FindAllBanners() => DatabaseManager.QueryFactory.Query(TableName).Get<Banner>().ToList();
 

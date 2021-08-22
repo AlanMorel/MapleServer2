@@ -4,9 +4,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
-    public class DatabaseGameOptions
+    public class DatabaseGameOptions : DatabaseTable
     {
-        private readonly string TableName = "GameOptions";
+        public DatabaseGameOptions(string tableName) : base(tableName) { }
 
         public long Insert(GameOptions gameOptions)
         {
