@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "inventories";
 
-        public long CreateInventory(Inventory inventory)
+        public long Insert(Inventory inventory)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

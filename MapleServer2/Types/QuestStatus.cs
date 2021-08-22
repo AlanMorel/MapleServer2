@@ -50,7 +50,7 @@ namespace MapleServer2.Types
             RewardItems = metadata.RewardItem;
             Started = started;
             StartTimestamp = startTimestamp;
-            Uid = DatabaseManager.Quests.CreateQuest(this);
+            Uid = DatabaseManager.Quests.Insert(this);
         }
 
         public void SetMetadataValues()

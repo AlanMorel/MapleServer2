@@ -15,7 +15,7 @@ namespace MapleServer2.Types
 
         public BankInventory()
         {
-            Id = DatabaseManager.BankInventories.CreateBankInventory(this);
+            Id = DatabaseManager.BankInventories.Insert(this);
         }
 
         public BankInventory(long id, int extraSize, List<Item> items)

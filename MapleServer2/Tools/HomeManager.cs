@@ -44,7 +44,7 @@ namespace MapleServer2.Tools
         {
             if (!MapIds.Contains(mapId))
             {
-                List<Home> homes = DatabaseManager.Homes.FindHomesOnMap(mapId);
+                List<Home> homes = DatabaseManager.Homes.FindAllByMapId(mapId);
                 foreach (Home home in homes)
                 {
                     home.InstanceId = IncrementCounter();

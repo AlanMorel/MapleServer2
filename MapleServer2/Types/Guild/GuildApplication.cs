@@ -15,7 +15,7 @@ namespace MapleServer2.Types
             CharacterId = player;
             GuildId = guild;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-            Id = DatabaseManager.GuildApplications.CreateGuildApplication(this);
+            Id = DatabaseManager.GuildApplications.Insert(this);
         }
 
         public void Add(Player player, Guild guild)

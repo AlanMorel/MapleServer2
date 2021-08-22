@@ -46,7 +46,7 @@ namespace MapleServer2.Types
             GameMeret = new Currency(CurrencyType.GameMeret, 0);
             EventMeret = new Currency(CurrencyType.EventMeret, 0);
 
-            Id = DatabaseManager.Accounts.CreateAccount(this);
+            Id = DatabaseManager.Accounts.Insert(this);
         }
 
         public bool RemoveMerets(long amount)

@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "BankInventories";
 
-        public long CreateBankInventory(BankInventory bankInventory)
+        public long Insert(BankInventory bankInventory)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

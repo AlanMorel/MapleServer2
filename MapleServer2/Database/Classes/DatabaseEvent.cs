@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "events";
 
-        public long CreateEvent(GameEvent gameEvent)
+        public long Insert(GameEvent gameEvent)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

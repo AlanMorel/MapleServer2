@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "CardReverseGame";
 
-        public long CreateCardReverseGame(CardReverseGame cardReverseGame)
+        public long Insert(CardReverseGame cardReverseGame)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

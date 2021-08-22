@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "hotbars";
 
-        public long CreateHotbar(Hotbar hotbar, long gameOptionsId)
+        public long Insert(Hotbar hotbar, long gameOptionsId)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

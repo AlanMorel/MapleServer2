@@ -16,7 +16,7 @@ namespace MapleServer2.Types
             {
                 Slots[i] = new QuickSlot();
             }
-            Id = DatabaseManager.Hotbars.CreateHotbar(this, gameOptionsId);
+            Id = DatabaseManager.Hotbars.Insert(this, gameOptionsId);
         }
 
         public Hotbar(QuickSlot[] slots, long id)

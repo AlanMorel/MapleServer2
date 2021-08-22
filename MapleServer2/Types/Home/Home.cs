@@ -86,7 +86,7 @@ namespace MapleServer2.Types
                 Height = templateMetadata.Height;
             }
 
-            Id = DatabaseManager.Homes.CreateHome(this);
+            Id = DatabaseManager.Homes.Insert(this);
             foreach (CubeTemplate cubeTemplate in templateMetadata.Cubes)
             {
                 Cube cube = new Cube(new Item(cubeTemplate.ItemId), 1, cubeTemplate.CoordF, cubeTemplate.Rotation, 0, Id);

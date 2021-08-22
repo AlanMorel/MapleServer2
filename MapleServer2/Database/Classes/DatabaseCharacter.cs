@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Characters";
 
-        public long CreatePlayer(Player player)
+        public long Insert(Player player)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

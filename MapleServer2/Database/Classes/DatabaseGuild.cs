@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Guilds";
 
-        public long CreateGuild(Guild guild)
+        public long Insert(Guild guild)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
@@ -34,9 +34,9 @@ namespace MapleServer2.Database.Classes
 
         public Guild FindById(long id) => ReadGuild(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public bool GuildNameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => DatabaseManager.QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
 
-        public List<Guild> GetAllGuilds()
+        public List<Guild> FindAll()
         {
             IEnumerable<dynamic> result = DatabaseManager.QueryFactory.Query(TableName).Get();
             List<Guild> guilds = new List<Guild>();
@@ -95,7 +95,7 @@ namespace MapleServer2.Database.Classes
                 Notice = data.Notice,
                 Ranks = JsonConvert.DeserializeObject<GuildRank[]>(data.Ranks),
                 Services = JsonConvert.DeserializeObject<List<GuildService>>(data.Services),
-                Members = DatabaseManager.GuildMembers.GetMembersByGuildId(data.Id),
+                Members = DatabaseManager.GuildMembers.FindAllByGuildId(data.Id),
                 Applications = DatabaseManager.GuildApplications.FindAllByGuildId(data.Id),
             };
         }

@@ -63,7 +63,7 @@ namespace MapleServer2.Types
             {
                 Buffs.Add(new GuildBuff(buffId));
             }
-            Id = DatabaseManager.Guilds.CreateGuild(this);
+            Id = DatabaseManager.Guilds.Insert(this);
 
             GuildMember guildMemberLeader = new GuildMember(leader, 0, Id);
             Members.Add(guildMemberLeader);

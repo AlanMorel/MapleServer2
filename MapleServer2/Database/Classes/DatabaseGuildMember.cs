@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "GuildMembers";
 
-        public void CreateGuildMember(GuildMember guildMember)
+        public void Insert(GuildMember guildMember)
         {
             DatabaseManager.QueryFactory.Query(TableName).Insert(new
             {
@@ -27,7 +27,7 @@ namespace MapleServer2.Database.Classes
 
         public GuildMember FindById(long id) => DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).Get<GuildMember>().FirstOrDefault();
 
-        public List<GuildMember> GetMembersByGuildId(long guildId)
+        public List<GuildMember> FindAllByGuildId(long guildId)
         {
             List<GuildMember> members = DatabaseManager.QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildMember>().ToList();
             foreach (GuildMember guildMember in members)

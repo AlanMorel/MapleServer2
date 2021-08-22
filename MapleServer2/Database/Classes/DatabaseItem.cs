@@ -11,7 +11,7 @@ namespace MapleServer2.Database.Classes
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
         private readonly string TableName = "Items";
 
-        public long CreateItem(Item item)
+        public long Insert(Item item)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

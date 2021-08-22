@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Name = name;
             ResetSkillTree(job);
             TabId = id;
-            Uid = DatabaseManager.SkillTabs.CreateSkillTab(this, characterId);
+            Uid = DatabaseManager.SkillTabs.Insert(this, characterId);
         }
 
         public SkillTab(string name, int jobId, long tabId, long uid, Dictionary<int, int> skillLevels)

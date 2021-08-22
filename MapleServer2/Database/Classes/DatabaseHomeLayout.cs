@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "HomeLayouts";
 
-        public long CreateHomeLayout(HomeLayout homeLayout)
+        public long Insert(HomeLayout homeLayout)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

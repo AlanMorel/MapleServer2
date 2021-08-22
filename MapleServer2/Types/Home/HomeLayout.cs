@@ -23,7 +23,7 @@ namespace MapleServer2.Types
             Size = size;
             Height = height;
             Timestamp = timestamp;
-            Uid = DatabaseManager.HomeLayouts.CreateHomeLayout(this);
+            Uid = DatabaseManager.HomeLayouts.Insert(this);
 
             foreach (Cube cube in cubes)
             {

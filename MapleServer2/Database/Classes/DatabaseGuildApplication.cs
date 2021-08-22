@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "guildapplications";
 
-        public long CreateGuildApplication(GuildApplication guildApplication)
+        public long Insert(GuildApplication guildApplication)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

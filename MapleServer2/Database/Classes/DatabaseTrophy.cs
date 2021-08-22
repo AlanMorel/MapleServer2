@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "trophies";
 
-        public long CreateTrophy(Trophy trophy)
+        public long Insert(Trophy trophy)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

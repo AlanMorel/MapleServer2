@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Levels";
 
-        public long CreateLevels(Levels levels)
+        public long Insert(Levels levels)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

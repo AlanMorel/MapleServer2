@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Cubes";
 
-        public long CreateCube(Cube cube)
+        public long Insert(Cube cube)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "quests";
 
-        public long CreateQuest(QuestStatus questStatus)
+        public long Insert(QuestStatus questStatus)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

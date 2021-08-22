@@ -31,7 +31,7 @@ namespace MapleServer2.Types
 
             if (id == 0)
             {
-                Id = DatabaseManager.Levels.CreateLevels(this);
+                Id = DatabaseManager.Levels.Insert(this);
                 return;
             }
             Id = id;

@@ -36,7 +36,7 @@ namespace MapleServer2.Types
             Motto = "";
             JoinTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
             GuildId = guildId;
-            DatabaseManager.GuildMembers.CreateGuildMember(this);
+            DatabaseManager.GuildMembers.Insert(this);
         }
 
         public void AddContribution(int contribution)

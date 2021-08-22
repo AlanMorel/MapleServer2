@@ -35,7 +35,7 @@ namespace MapleServer2.Types
             Type = TrophyMetadataStorage.GetMetadata(Id).Categories[0];
             IsDone = isDone;
             CharacterId = characterId;
-            Uid = DatabaseManager.Trophies.CreateTrophy(this);
+            Uid = DatabaseManager.Trophies.Insert(this);
         }
 
         public Trophy(long uid, int trophyId, int nextGrade, int maxGrade, long counter, long condition, bool isDone, string type, List<long> timestamps, long characterId)

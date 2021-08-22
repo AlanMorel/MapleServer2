@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public GameOptions()
         {
             KeyBinds = new Dictionary<int, KeyBind>();
-            Id = DatabaseManager.GameOptions.CreateGameOptions(this);
+            Id = DatabaseManager.GameOptions.Insert(this);
 
             Hotbars = new List<Hotbar>();
 

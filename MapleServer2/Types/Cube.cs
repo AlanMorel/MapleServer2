@@ -24,7 +24,7 @@ namespace MapleServer2.Types
             HomeId = homeId;
             LayoutUid = homeLayoutId;
 
-            Uid = DatabaseManager.Cubes.CreateCube(this);
+            Uid = DatabaseManager.Cubes.Insert(this);
         }
 
         public Cube(long uid, Item item, int plotNumber, CoordF coordF, float rotation, long homeLayoutUid = 0, long homeId = 0)

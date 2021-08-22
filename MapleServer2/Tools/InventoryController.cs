@@ -74,7 +74,7 @@ namespace MapleServer2.Tools
                     Amount = 1,
                     Uid = 0
                 };
-                newItem.Uid = DatabaseManager.Items.CreateItem(newItem);
+                newItem.Uid = DatabaseManager.Items.Insert(newItem);
 
                 if (!session.Player.Inventory.Add(newItem))
                 {

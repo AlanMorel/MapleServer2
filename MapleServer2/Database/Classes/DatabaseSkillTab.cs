@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "SkillTabs";
 
-        public long CreateSkillTab(SkillTab skillTab, long characterId)
+        public long Insert(SkillTab skillTab, long characterId)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

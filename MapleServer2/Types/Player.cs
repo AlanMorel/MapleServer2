@@ -201,7 +201,7 @@ namespace MapleServer2.Types
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
-            CharacterId = DatabaseManager.Characters.CreatePlayer(this);
+            CharacterId = DatabaseManager.Characters.Insert(this);
             SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, CharacterId, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
             ActiveSkillTabId = CharacterId;
         }

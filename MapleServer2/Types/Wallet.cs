@@ -27,7 +27,7 @@ namespace MapleServer2.Types
 
             if (id == 0)
             {
-                Id = DatabaseManager.Wallets.CreateWallet(this);
+                Id = DatabaseManager.Wallets.Insert(this);
                 return;
             }
             Id = id;

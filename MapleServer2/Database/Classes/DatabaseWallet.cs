@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "wallets";
 
-        public long CreateWallet(Wallet wallet)
+        public long Insert(Wallet wallet)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

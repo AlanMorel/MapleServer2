@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.GetMapleopolyTiles();
+            List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
 
             int tokenAmount = 0;
             Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
@@ -103,7 +103,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
 
-            MapleopolyTile currentTile = DatabaseManager.Mapleopoly.GetSingleMapleopolyTile(currentTilePosition + 1);
+            MapleopolyTile currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
 
             switch (currentTile.Type)
             {

@@ -9,7 +9,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Homes";
 
-        public long CreateHome(Home home)
+        public long Insert(Home home)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {
@@ -39,7 +39,7 @@ namespace MapleServer2.Database.Classes
 
         public Home FindById(long id) => ReadHome(DatabaseManager.QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
 
-        public List<Home> FindHomesOnMap(int mapId)
+        public List<Home> FindAllByMapId(int mapId)
         {
             IEnumerable<dynamic> results = DatabaseManager.QueryFactory.Query(TableName).Where("MapId", mapId).Get();
             List<Home> homes = new List<Home>();

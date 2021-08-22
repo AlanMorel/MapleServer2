@@ -47,7 +47,7 @@ namespace MapleServer2.Types
             {
                 SlotMaps[i] = new Dictionary<short, long>();
             }
-            Id = DatabaseManager.Inventories.CreateInventory(this);
+            Id = DatabaseManager.Inventories.Insert(this);
         }
 
         public Inventory(long id, Dictionary<InventoryTab, short> extraSize, List<Item> items)

@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "Accounts";
 
-        public long CreateAccount(Account account)
+        public long Insert(Account account)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

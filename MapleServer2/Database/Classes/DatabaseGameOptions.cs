@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly string TableName = "GameOptions";
 
-        public long CreateGameOptions(GameOptions gameOptions)
+        public long Insert(GameOptions gameOptions)
         {
             return DatabaseManager.QueryFactory.Query(TableName).InsertGetId<long>(new
             {

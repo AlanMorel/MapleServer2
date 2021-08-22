@@ -92,7 +92,7 @@ namespace MapleServer2.Types
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, ItemSlot, Level);
             CanRepackage = true; // If false, item becomes untradable
-            Uid = DatabaseManager.Items.CreateItem(this);
+            Uid = DatabaseManager.Items.Insert(this);
         }
 
         public Item(int id, int amount) : this(id)
@@ -165,7 +165,7 @@ namespace MapleServer2.Types
             Amount -= amount;
             splitItem.Amount = amount;
             splitItem.Slot = -1;
-            splitItem.Uid = DatabaseManager.Items.CreateItem(this);
+            splitItem.Uid = DatabaseManager.Items.Insert(this);
             return true;
         }
 
