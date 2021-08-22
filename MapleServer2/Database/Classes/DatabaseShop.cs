@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseShop : DatabaseTable
     {
-        public DatabaseShop(string tableName) : base(tableName) { }
+        public DatabaseShop() : base("Shops") { }
 
         public Shop FindById(long id)
         {

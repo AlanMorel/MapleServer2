@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHomeLayout : DatabaseTable
     {
-        public DatabaseHomeLayout(string tableName) : base(tableName) { }
+        public DatabaseHomeLayout() : base("HomeLayouts") { }
 
         public long Insert(HomeLayout homeLayout)
         {

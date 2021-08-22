@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuildApplication : DatabaseTable
     {
-        public DatabaseGuildApplication(string tableName) : base(tableName) { }
+        public DatabaseGuildApplication() : base("GuildApplications") { }
 
         public long Insert(GuildApplication guildApplication)
         {

@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseMapleopoly : DatabaseTable
     {
-        public DatabaseMapleopoly(string tableName) : base(tableName) { }
+        public DatabaseMapleopoly() : base("MapleopolyTiles") { }
 
         public List<MapleopolyTile> FindAllTiles() => QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
 

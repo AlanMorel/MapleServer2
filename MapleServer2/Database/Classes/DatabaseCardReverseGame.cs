@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseCardReverseGame : DatabaseTable
     {
-        public DatabaseCardReverseGame(string tableName) : base(tableName) { }
+        public DatabaseCardReverseGame() : base("CardReverseGame") { }
 
         public long Insert(CardReverseGame cardReverseGame)
         {

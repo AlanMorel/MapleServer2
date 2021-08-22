@@ -10,7 +10,7 @@ namespace MapleServer2.Database.Classes
     {
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
-        public DatabaseItem(string tableName) : base(tableName) { }
+        public DatabaseItem() : base("Items") { }
 
         public long Insert(Item item)
         {

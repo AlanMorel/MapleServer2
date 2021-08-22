@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseShopItem : DatabaseTable
     {
-        public DatabaseShopItem(string tableName) : base(tableName) { }
+        public DatabaseShopItem() : base("ShopItems") { }
 
         public ShopItem FindByUid(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Get<ShopItem>().FirstOrDefault();
 

@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseWallet : DatabaseTable
     {
-        public DatabaseWallet(string tableName) : base(tableName) { }
+        public DatabaseWallet() : base("Wallets") { }
 
         public long Insert(Wallet wallet)
         {

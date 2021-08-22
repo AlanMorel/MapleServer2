@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseSkillTab : DatabaseTable
     {
-        public DatabaseSkillTab(string tableName) : base(tableName) { }
+        public DatabaseSkillTab() : base("SkillTabs") { }
 
         public long Insert(SkillTab skillTab, long characterId)
         {

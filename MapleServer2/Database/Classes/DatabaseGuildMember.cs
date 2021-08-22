@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuildMember : DatabaseTable
     {
-        public DatabaseGuildMember(string tableName) : base(tableName) { }
+        public DatabaseGuildMember() : base("GuildMembers") { }
 
         public void Insert(GuildMember guildMember)
         {

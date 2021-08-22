@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseEvent : DatabaseTable
     {
-        public DatabaseEvent(string tableName) : base(tableName) { }
+        public DatabaseEvent() : base("Events") { }
 
         public long Insert(GameEvent gameEvent)
         {

@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHotbar : DatabaseTable
     {
-        public DatabaseHotbar(string tableName) : base(tableName) { }
+        public DatabaseHotbar() : base("Hotbars") { }
 
         public long Insert(Hotbar hotbar, long gameOptionsId)
         {

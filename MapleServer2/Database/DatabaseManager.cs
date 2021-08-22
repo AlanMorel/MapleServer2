@@ -19,31 +19,31 @@ namespace MapleServer2.Database
         private static readonly string User = Environment.GetEnvironmentVariable("DB_USER");
         private static readonly string Password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-        public static DatabaseAccount Accounts { get; private set; } = new DatabaseAccount("Accounts");
-        public static DatabaseBankInventory BankInventories { get; private set; } = new DatabaseBankInventory("BankInventories");
-        public static DatabaseBanner Banners { get; private set; } = new DatabaseBanner("Banners");
-        public static DatabaseCardReverseGame CardReverseGame { get; private set; } = new DatabaseCardReverseGame("CardReverseGame");
-        public static DatabaseCharacter Characters { get; private set; } = new DatabaseCharacter("Characters");
-        public static DatabaseCube Cubes { get; private set; } = new DatabaseCube("Cubes");
-        public static DatabaseEvent Events { get; private set; } = new DatabaseEvent("Events");
-        public static DatabaseGameOptions GameOptions { get; private set; } = new DatabaseGameOptions("GameOptions");
-        public static DatabaseGuild Guilds { get; private set; } = new DatabaseGuild("Guilds");
-        public static DatabaseGuildApplication GuildApplications { get; private set; } = new DatabaseGuildApplication("GuildApplications");
-        public static DatabaseGuildMember GuildMembers { get; private set; } = new DatabaseGuildMember("GuildMembers");
-        public static DatabaseHome Homes { get; private set; } = new DatabaseHome("Homes");
-        public static DatabaseHomeLayout HomeLayouts { get; private set; } = new DatabaseHomeLayout("HomeLayouts");
-        public static DatabaseHotbar Hotbars { get; private set; } = new DatabaseHotbar("Hotbars");
-        public static DatabaseInventory Inventories { get; private set; } = new DatabaseInventory("Inventories");
-        public static DatabaseItem Items { get; private set; } = new DatabaseItem("Items");
-        public static DatabaseLevels Levels { get; private set; } = new DatabaseLevels("Levels");
-        public static DatabaseMapleopoly Mapleopoly { get; private set; } = new DatabaseMapleopoly("Mapleopoly");
-        public static DatabaseMeretMarket MeretMarket { get; private set; } = new DatabaseMeretMarket("MeretMarketItems");
-        public static DatabaseQuest Quests { get; private set; } = new DatabaseQuest("Quests");
-        public static DatabaseShop Shops { get; private set; } = new DatabaseShop("Shops");
-        public static DatabaseShopItem ShopItems { get; private set; } = new DatabaseShopItem("ShopItems");
-        public static DatabaseSkillTab SkillTabs { get; private set; } = new DatabaseSkillTab("SkillTabs");
-        public static DatabaseTrophy Trophies { get; private set; } = new DatabaseTrophy("Trophies");
-        public static DatabaseWallet Wallets { get; private set; } = new DatabaseWallet("Wallets");
+        public static DatabaseAccount Accounts { get; private set; } = new DatabaseAccount();
+        public static DatabaseBankInventory BankInventories { get; private set; } = new DatabaseBankInventory();
+        public static DatabaseBanner Banners { get; private set; } = new DatabaseBanner();
+        public static DatabaseCardReverseGame CardReverseGame { get; private set; } = new DatabaseCardReverseGame();
+        public static DatabaseCharacter Characters { get; private set; } = new DatabaseCharacter();
+        public static DatabaseCube Cubes { get; private set; } = new DatabaseCube();
+        public static DatabaseEvent Events { get; private set; } = new DatabaseEvent();
+        public static DatabaseGameOptions GameOptions { get; private set; } = new DatabaseGameOptions();
+        public static DatabaseGuild Guilds { get; private set; } = new DatabaseGuild();
+        public static DatabaseGuildApplication GuildApplications { get; private set; } = new DatabaseGuildApplication();
+        public static DatabaseGuildMember GuildMembers { get; private set; } = new DatabaseGuildMember();
+        public static DatabaseHome Homes { get; private set; } = new DatabaseHome();
+        public static DatabaseHomeLayout HomeLayouts { get; private set; } = new DatabaseHomeLayout();
+        public static DatabaseHotbar Hotbars { get; private set; } = new DatabaseHotbar();
+        public static DatabaseInventory Inventories { get; private set; } = new DatabaseInventory();
+        public static DatabaseItem Items { get; private set; } = new DatabaseItem();
+        public static DatabaseLevels Levels { get; private set; } = new DatabaseLevels();
+        public static DatabaseMapleopoly Mapleopoly { get; private set; } = new DatabaseMapleopoly();
+        public static DatabaseMeretMarket MeretMarket { get; private set; } = new DatabaseMeretMarket();
+        public static DatabaseQuest Quests { get; private set; } = new DatabaseQuest();
+        public static DatabaseShop Shops { get; private set; } = new DatabaseShop();
+        public static DatabaseShopItem ShopItems { get; private set; } = new DatabaseShopItem();
+        public static DatabaseSkillTab SkillTabs { get; private set; } = new DatabaseSkillTab();
+        public static DatabaseTrophy Trophies { get; private set; } = new DatabaseTrophy();
+        public static DatabaseWallet Wallets { get; private set; } = new DatabaseWallet();
 
         static DatabaseManager()
         {

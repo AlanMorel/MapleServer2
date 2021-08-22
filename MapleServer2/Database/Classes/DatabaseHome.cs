@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHome : DatabaseTable
     {
-        public DatabaseHome(string tableName) : base(tableName) { }
+        public DatabaseHome() : base("Homes") { }
 
         public long Insert(Home home)
         {

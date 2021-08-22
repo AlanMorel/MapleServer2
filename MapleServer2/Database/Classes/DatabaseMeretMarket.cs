@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseMeretMarket : DatabaseTable
     {
-        public DatabaseMeretMarket(string tableName) : base(tableName) { }
+        public DatabaseMeretMarket() : base("MeretMarketItems") { }
 
         public List<MeretMarketItem> FindAllByCategoryId(MeretMarketCategory category)
         {

@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseLevels : DatabaseTable
     {
-        public DatabaseLevels(string tableName) : base(tableName) { }
+        public DatabaseLevels() : base("Levels") { }
 
         public long Insert(Levels levels)
         {

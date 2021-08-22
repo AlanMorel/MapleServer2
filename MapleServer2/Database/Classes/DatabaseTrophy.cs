@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseTrophy : DatabaseTable
     {
-        public DatabaseTrophy(string tableName) : base(tableName) { }
+        public DatabaseTrophy() : base("Trophies") { }
 
         public long Insert(Trophy trophy)
         {

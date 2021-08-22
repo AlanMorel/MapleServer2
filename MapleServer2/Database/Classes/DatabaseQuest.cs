@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseQuest : DatabaseTable
     {
-        public DatabaseQuest(string tableName) : base(tableName) { }
+        public DatabaseQuest() : base("Quests") { }
 
         public long Insert(QuestStatus questStatus)
         {

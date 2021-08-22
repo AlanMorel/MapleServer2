@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseCube : DatabaseTable
     {
-        public DatabaseCube(string tableName) : base(tableName) { }
+        public DatabaseCube() : base("Cubes") { }
 
         public long Insert(Cube cube)
         {

@@ -7,7 +7,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseInventory : DatabaseTable
     {
-        public DatabaseInventory(string tableName) : base(tableName) { }
+        public DatabaseInventory() : base("Inventories") { }
 
         public long Insert(Inventory inventory)
         {

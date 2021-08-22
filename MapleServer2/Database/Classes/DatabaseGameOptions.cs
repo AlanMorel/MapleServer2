@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGameOptions : DatabaseTable
     {
-        public DatabaseGameOptions(string tableName) : base(tableName) { }
+        public DatabaseGameOptions() : base("GameOptions") { }
 
         public long Insert(GameOptions gameOptions)
         {

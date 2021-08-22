@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseBanner : DatabaseTable
     {
-        public DatabaseBanner(string tableName) : base(tableName) { }
+        public DatabaseBanner() : base("Banners") { }
 
         public List<Banner> FindAllBanners() => QueryFactory.Query(TableName).Get<Banner>().ToList();
 

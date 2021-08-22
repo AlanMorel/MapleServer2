@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseAccount : DatabaseTable
     {
-        public DatabaseAccount(string tableName) : base(tableName) { }
+        public DatabaseAccount() : base("Accounts") { }
 
         public long Insert(Account account)
         {

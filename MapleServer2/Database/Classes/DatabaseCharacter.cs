@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseCharacter : DatabaseTable
     {
-        public DatabaseCharacter(string tableName) : base(tableName) { }
+        public DatabaseCharacter() : base("Characters") { }
 
         public long Insert(Player player)
         {
