@@ -41,9 +41,10 @@ namespace MapleServer2.PacketHandlers.Login
         private void HandleDelete(LoginSession session, PacketReader packet)
         {
             long characterId = packet.ReadLong();
-            if (!DatabaseManager.DeleteCharacter(characterId))
+            if (!DatabaseManager.Characters.SetCharacterDeleted(characterId))
             {
-                throw new ArgumentException("Could not delete character");
+                Logger.Error("Could not delete character");
+                return;
             }
             session.Send(CharacterListPacket.DeleteCharacter(characterId));
             Logger.Info($"Character id {characterId} deleted!");
@@ -166,7 +167,7 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            if (DatabaseManager.NameExists(name))
+            if (DatabaseManager.Characters.NameExists(name))
             {
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
@@ -175,13 +176,14 @@ namespace MapleServer2.PacketHandlers.Login
             Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
             foreach (Item item in cosmetics.Values)
             {
-                item.Owner = newCharacter;
+                item.OwnerCharacterId = newCharacter.CharacterId;
+                item.OwnerCharacterName = newCharacter.Name;
             }
             newCharacter.Inventory.Cosmetics = cosmetics;
-            DatabaseManager.UpdateCharacter(newCharacter);
+            DatabaseManager.Characters.Update(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
-            Account account = DatabaseManager.GetAccount(session.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)

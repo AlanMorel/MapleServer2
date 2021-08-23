@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -8,7 +9,7 @@ namespace MapleServer2.Types
     public class Levels
     {
         public readonly long Id;
-        public readonly Player Player;
+        public Player Player;
         public short Level { get; private set; }
         public long Exp { get; private set; }
         public long RestExp { get; private set; }
@@ -18,16 +19,21 @@ namespace MapleServer2.Types
 
         public Levels() { }
 
-        public Levels(Player player, short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
+        public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
             List<MasteryExp> masteryExp, long id = 0)
         {
-            Player = player;
             Level = playerLevel;
             Exp = exp;
             RestExp = restExp;
             PrestigeLevel = prestigeLevel;
             PrestigeExp = prestigeExp;
             MasteryExp = masteryExp;
+
+            if (id == 0)
+            {
+                Id = DatabaseManager.Levels.Insert(this);
+                return;
+            }
             Id = id;
         }
 

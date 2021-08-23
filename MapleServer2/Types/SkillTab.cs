@@ -12,30 +12,27 @@ namespace MapleServer2.Types
         public long TabId { get; set; }
         public string Name { get; set; }
 
-        public Player Player;
-
         public List<int> Order { get; private set; }
         public Dictionary<int, SkillMetadata> SkillJob { get; private set; }
         public Dictionary<int, int> SkillLevels { get; private set; }
 
         public SkillTab() { }
 
-        public SkillTab(Player player, Job job)
-        {
-            Name = $"Build {(player.SkillTabs == null ? "1" : player.SkillTabs.Count + 1)}";
-            ResetSkillTree(job);
-            Player = player;
-            TabId = player.CharacterId;
-            Uid = DatabaseManager.AddSkillTab(this);
-        }
-
-        public SkillTab(Player player, Job job, long id, string name)
+        public SkillTab(long characterId, Job job, long id, string name)
         {
             Name = name;
             ResetSkillTree(job);
-            Player = player;
             TabId = id;
-            Uid = DatabaseManager.AddSkillTab(this);
+            Uid = DatabaseManager.SkillTabs.Insert(this, characterId);
+        }
+
+        public SkillTab(string name, int jobId, long tabId, long uid, Dictionary<int, int> skillLevels)
+        {
+            Name = name;
+            TabId = tabId;
+            Uid = uid;
+            GenerateSkills((Job) jobId);
+            SkillLevels = skillLevels;
         }
 
         public static Dictionary<int, SkillMetadata> AddOnDictionary(Job job)
