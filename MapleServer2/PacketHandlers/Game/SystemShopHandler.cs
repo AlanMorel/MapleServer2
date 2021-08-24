@@ -60,7 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Shop shop = DatabaseManager.GetShop(item.ShopID);
+            Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
             if (shop == null)
             {
                 Console.WriteLine($"Unknown shop ID: {item.ShopID}");
@@ -101,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void OpenSystemShop(GameSession session, int shopId)
         {
-            Shop shop = DatabaseManager.GetShop(shopId);
+            Shop shop = DatabaseManager.Shops.FindById(shopId);
 
             session.Send(ShopPacket.Open(shop));
             foreach (ShopItem shopItem in shop.Items)

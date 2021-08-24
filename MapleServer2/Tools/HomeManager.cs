@@ -30,7 +30,7 @@ namespace MapleServer2.Tools
             HomeList.TryGetValue(id, out Home home);
             if (home == null)
             {
-                home = DatabaseManager.GetHome(id);
+                home = DatabaseManager.Homes.FindById(id);
                 if (home != null)
                 {
                     home.InstanceId = IncrementCounter();
@@ -44,7 +44,7 @@ namespace MapleServer2.Tools
         {
             if (!MapIds.Contains(mapId))
             {
-                List<Home> homes = DatabaseManager.GetHomesOnMap(mapId);
+                List<Home> homes = DatabaseManager.Homes.FindAllByMapId(mapId);
                 foreach (Home home in homes)
                 {
                     home.InstanceId = IncrementCounter();
@@ -63,7 +63,7 @@ namespace MapleServer2.Tools
                   {
                       foreach (KeyValuePair<long, Home> kvp in HomeList)
                       {
-                          DatabaseManager.UpdateHome(kvp.Value);
+                          DatabaseManager.Homes.Update(kvp.Value);
                       }
                       await Task.Delay(1000 * 60); // 1 minute
                       //   await Task.Delay(1000 * 60 * 30); // 30 minutes

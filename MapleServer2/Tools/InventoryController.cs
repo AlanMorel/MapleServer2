@@ -74,7 +74,7 @@ namespace MapleServer2.Tools
                     Amount = 1,
                     Uid = 0
                 };
-                newItem.Uid = DatabaseManager.AddItem(newItem);
+                newItem.Uid = DatabaseManager.Items.Insert(newItem);
 
                 if (!session.Player.Inventory.Add(newItem))
                 {
@@ -145,12 +145,12 @@ namespace MapleServer2.Tools
                 else if (remaining > 0) // Updates item
                 {
                     session.Send(ItemInventoryPacket.Update(uid, remaining));
-                    DatabaseManager.Update(session.Player.Inventory.Items.Values.First(x => x.Uid == uid));
+                    DatabaseManager.Items.Update(session.Player.Inventory.Items.Values.First(x => x.Uid == uid));
                 }
                 else // Removes item
                 {
                     session.Send(ItemInventoryPacket.Remove(uid));
-                    DatabaseManager.Delete(droppedItem);
+                    DatabaseManager.Items.Delete(droppedItem.Uid);
                 }
                 session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
             }
@@ -161,7 +161,7 @@ namespace MapleServer2.Tools
                     return; // Removal from inventory failed
                 }
                 session.Send(ItemInventoryPacket.Remove(uid));
-                DatabaseManager.Delete(droppedItem);
+                DatabaseManager.Items.Delete(droppedItem.Uid);
 
                 // Allow dropping bound items for now
                 session.FieldManager.AddItem(session, droppedItem);

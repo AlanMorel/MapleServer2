@@ -246,7 +246,8 @@ namespace MapleServer2.PacketHandlers.Game
             Player owner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
             if (owner != null)
             {
-                newGem.Owner = owner;
+                newGem.OwnerCharacterId = owner.CharacterId;
+                newGem.OwnerCharacterName = owner.Name;
             }
 
             Gemstone upgradedGemstone = new Gemstone()
@@ -373,10 +374,10 @@ namespace MapleServer2.PacketHandlers.Game
                 IsLocked = gemItem.IsLocked,
                 UnlockTime = gemItem.UnlockTime
             };
-            if (gemItem.Owner != null)
+            if (gemItem.OwnerCharacterId != 0)
             {
-                gemstone.OwnerId = gemItem.Owner.CharacterId;
-                gemstone.OwnerName = gemItem.Owner.Name;
+                gemstone.OwnerId = gemItem.OwnerCharacterId;
+                gemstone.OwnerName = gemItem.OwnerCharacterName;
             }
 
             equipItem.Stats.GemSockets[slot].Gemstone = gemstone;
@@ -418,7 +419,8 @@ namespace MapleServer2.PacketHandlers.Game
                 Player owner = GameServer.Storage.GetPlayerById(gemstone.OwnerId);
                 if (owner != null)
                 {
-                    gemstoneItem.Owner = owner;
+                    gemstoneItem.OwnerCharacterId = owner.CharacterId;
+                    gemstoneItem.OwnerCharacterName = owner.Name;
                 }
             }
 

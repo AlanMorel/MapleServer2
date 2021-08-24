@@ -137,7 +137,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleClose(Player player)
         {
-            DatabaseManager.UpdateCharacter(player);
+            DatabaseManager.Characters.Update(player);
         }
     }
 }
