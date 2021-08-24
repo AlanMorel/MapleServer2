@@ -134,8 +134,6 @@ namespace MapleServer2.Triggers
 
         public void SetEventUI(byte typeId, string script, int duration, string box)
         {
-            Console.WriteLine($"Setting Event UI: typeId:{typeId}, script:{script}, duration:{duration}, box:{box}");
-
             if (typeId != 0)
             {
                 EventBannerType type = EventBannerType.None;
@@ -167,7 +165,6 @@ namespace MapleServer2.Triggers
                 {
                     box = box[1..];
                     boxId = int.Parse(box);
-                    Console.WriteLine($"Finding !box: {boxId}");
                     triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
                     foreach (IFieldObject<Player> player in Field.State.Players.Values)
                     {

@@ -49,7 +49,6 @@ namespace MapleServer2.Commands.Game
                 }
             }
             GameServer.GlobalEventManager.AddEvent(globalEvent);
-            Console.WriteLine($"Creating event...Event ID: {globalEvent.Id}");
 
             _ = globalEvent.Start();
         }

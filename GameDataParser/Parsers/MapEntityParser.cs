@@ -162,12 +162,9 @@ namespace GameDataParser.Parsers
                             arriveAnimationTimes.Add((int) entry.Value);
                         }
                         metadata.PatrolDatas.Add(new PatrolData(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint, arriveAnimations, approachAnimations, arriveAnimationTimes));
-                        Console.WriteLine(metadata.PatrolDatas.Last());
-
                         break;
                     case IMS2WayPoint wayPoint:
                         metadata.WayPoints.Add(new WayPoint(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position), CoordS.FromVector3(wayPoint.Rotation)));
-                        Console.WriteLine(metadata.WayPoints.Last());
                         break;
                     // TODO: This can probably be more generally handled as IMS2RegionSkill
                     case IMS2HealingRegionSkillSound healingRegion:

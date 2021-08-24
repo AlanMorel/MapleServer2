@@ -105,7 +105,6 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(npc.ObjectId);
-            Console.WriteLine(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.WriteByte();
             pWriter.WriteInt(200);

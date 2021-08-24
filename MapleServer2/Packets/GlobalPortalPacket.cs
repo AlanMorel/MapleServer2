@@ -16,9 +16,9 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GLOBAL_PORTAL);
             pWriter.WriteEnum(GlobalPortalPacketMode.Notice);
-            pWriter.WriteInt(globalEvent.Id); // event ID
+            pWriter.WriteInt(globalEvent.Id);
             pWriter.WriteInt(144); // unk. seems to either be 144 or 145
-            pWriter.WriteUnicodeString("s_massive_event_message"); // message
+            pWriter.WriteUnicodeString("s_massive_event_message");
             pWriter.WriteUnicodeString("System_Quiz_Global_Portal"); // SystemSound key
             foreach (GlobalEventType eventMap in globalEvent.Events)
             {

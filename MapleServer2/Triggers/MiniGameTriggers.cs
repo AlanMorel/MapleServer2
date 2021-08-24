@@ -56,7 +56,6 @@ namespace MapleServer2.Triggers
 
         public void MiniGameCameraDirection(int boxId, int cameraId)
         {
-            Console.WriteLine("Setting Camera");
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
             List<IFieldObject<Player>> boxPlayers = new List<IFieldObject<Player>>();
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
@@ -71,8 +70,6 @@ namespace MapleServer2.Triggers
             int index = random.Next(boxPlayers.Count());
             IFieldObject<Player> randomPlayer = boxPlayers[index];
             Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));
-            Console.WriteLine("Camera set");
-
         }
 
         public void MiniGameGiveExp(int boxId, float expRate, bool isOutSide)

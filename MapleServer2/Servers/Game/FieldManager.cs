@@ -366,7 +366,6 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             triggerObjects.AddRange(State.TriggerActors.Values.ToList());
             sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
-            Console.Write($"Player ObjecTID: {player.ObjectId}");
             State.AddPlayer(player);
 
             if (MapLoopTask == null)
@@ -754,11 +753,9 @@ namespace MapleServer2.Servers.Game
             MapTimer existingTimer = MapTimers.FirstOrDefault(x => x.Id == timer.Id);
             if (existingTimer != null)
             {
-                Console.WriteLine("Found existing timer. Replacing...");
                 existingTimer = timer;
                 return;
             }
-            Console.WriteLine("No existing timer found. Adding new timer...");
 
             MapTimers.Add(timer);
         }

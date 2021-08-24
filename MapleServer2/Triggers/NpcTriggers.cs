@@ -51,7 +51,6 @@ namespace MapleServer2.Triggers
                         {
                             Mob mob = new Mob(id);
                             IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
-                            Console.WriteLine($" Field Mob ID: {fieldMob.ObjectId}");
                             fieldMob.Coord = spawnPoint.Position;
                             fieldMob.Rotation = spawnPoint.Rotation;
                             Field.AddMob(fieldMob);
