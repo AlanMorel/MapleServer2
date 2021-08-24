@@ -133,6 +133,7 @@ namespace MapleServer2.Triggers
                     return;
                 }
                 Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), int.Parse(ids[2])));
+                return;
             }
 
             EventBannerType type = EventBannerType.None;
