@@ -54,6 +54,7 @@ namespace MapleServer2.Servers.Game
 
                 if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
                 {
+                    SendNotice("Instanced destroyed");
                     //If instance is destroyed, reset dungeonSession
                     DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(FieldManager.InstanceId);
                     //check if the destroyed map was a dungeon map
@@ -80,14 +81,14 @@ namespace MapleServer2.Servers.Game
 
         public override void EndSession()
         {
+            FieldManager.RemovePlayer(this, FieldPlayer);
+            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
+            // Should we Join the thread to wait for it to complete?
+
             if (Player.Party != null)
             {
                 Player.Party.CheckOffineParty(Player);
             }
-
-            FieldManager.RemovePlayer(this, FieldPlayer);
-            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-            // Should we Join the thread to wait for it to complete?
         }
 
         public void ReleaseField(Player player)
