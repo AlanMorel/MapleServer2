@@ -78,11 +78,12 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(item.Uid);
             pWriter.WriteByte(1);
             pWriter.WriteInt(item.Id);
-            pWriter.WriteBool(item.Owner != null);
-            if (item.Owner != null)
+            bool isCharBound = item.OwnerCharacterId != 0;
+            pWriter.WriteBool(isCharBound);
+            if (isCharBound)
             {
-                pWriter.WriteLong(item.Owner.CharacterId);
-                pWriter.WriteUnicodeString(item.Owner.Name);
+                pWriter.WriteLong(item.OwnerCharacterId);
+                pWriter.WriteUnicodeString(item.OwnerCharacterName);
             }
             pWriter.WriteBool(item.IsLocked);
             if (item.IsLocked)

@@ -19,13 +19,24 @@ namespace MapleServer2.Types
         public QuestReward Reward { get; private set; }
         public List<QuestRewardItem> RewardItems { get; private set; }
 
-        public readonly Player Player;
+        public readonly long CharacterId;
 
-        public QuestStatus() { }
-
-        public QuestStatus(Player player, QuestMetadata metadata)
+        public QuestStatus(long uid, int id, long characterId, bool started, bool completed, long startTimestamp, long completeTimestamp, List<Condition> conditions)
         {
-            Player = player;
+            Uid = uid;
+            Id = id;
+            CharacterId = characterId;
+            Started = started;
+            Completed = completed;
+            StartTimestamp = startTimestamp;
+            CompleteTimestamp = completeTimestamp;
+            Condition = conditions;
+            SetMetadataValues();
+        }
+
+        public QuestStatus(Player player, QuestMetadata metadata, bool started = false, long startTimestamp = 0)
+        {
+            CharacterId = player.CharacterId;
             Id = metadata.Basic.Id;
             Basic = metadata.Basic;
             StartNpcId = metadata.StartNpc;
@@ -37,12 +48,14 @@ namespace MapleServer2.Types
             }
             Reward = metadata.Reward;
             RewardItems = metadata.RewardItem;
-            Uid = DatabaseManager.AddQuest(this);
+            Started = started;
+            StartTimestamp = startTimestamp;
+            Uid = DatabaseManager.Quests.Insert(this);
         }
 
-        public void SetMetadataValues(int id)
+        public void SetMetadataValues()
         {
-            QuestMetadata metadata = QuestMetadataStorage.GetMetadata(id);
+            QuestMetadata metadata = QuestMetadataStorage.GetMetadata(Id);
             Basic = metadata.Basic;
             StartNpcId = metadata.StartNpc;
             CompleteNpcId = metadata.CompleteNpc;

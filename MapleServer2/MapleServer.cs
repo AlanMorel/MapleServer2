@@ -32,7 +32,6 @@ namespace MapleServer2
                 throw new ArgumentException(".env file not found!");
             }
             DotEnv.Load(dotenv);
-
             InitDatabase();
 
             // Load Mob AI files
@@ -93,29 +92,31 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
-            if (DatabaseContext.Exists())
+            if (DatabaseManager.DatabaseExists())
             {
                 Logger.Info("Database already exists.");
                 return;
             }
-
             Logger.Info("Creating database...");
-            DatabaseContext.CreateDatabase();
+            DatabaseManager.CreateDatabase();
 
             Logger.Info("Seeding shops...");
-            ShopsSeeding.Seed();
+            DatabaseManager.SeedShops();
+
+            Logger.Info("Seeding shop items...");
+            DatabaseManager.SeedShopItems();
 
             Logger.Info("Seeding Meret Market...");
-            MeretMarketItemSeeding.Seed();
+            DatabaseManager.SeedMeretMarket();
 
             Logger.Info("Seeding Mapleopoly...");
-            MapleopolySeeding.Seed();
+            DatabaseManager.SeedMapleopoly();
 
             Logger.Info("Seeding events...");
-            GameEventSeeding.Seed();
+            DatabaseManager.SeedEvents();
 
             Logger.Info("Seeding card reverse game...");
-            CardReverseGameSeeding.Seed();
+            DatabaseManager.SeedCardReverseGame();
 
             Logger.Info("Database created.".Pastel("#aced66"));
         }

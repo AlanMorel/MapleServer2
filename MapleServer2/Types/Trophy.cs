@@ -20,11 +20,11 @@ namespace MapleServer2.Types
         public string Type { get; private set; }
         public List<long> Timestamps { get; private set; }
 
-        public readonly Player Player;
+        public readonly long CharacterId;
 
         public Trophy() { }
 
-        public Trophy(Player player, int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
+        public Trophy(long characterId, int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
         {
             Id = trophyId;
             NextGrade = grade;
@@ -34,8 +34,22 @@ namespace MapleServer2.Types
             Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
             Type = TrophyMetadataStorage.GetMetadata(Id).Categories[0];
             IsDone = isDone;
-            Player = player;
-            Uid = DatabaseManager.AddTrophy(this);
+            CharacterId = characterId;
+            Uid = DatabaseManager.Trophies.Insert(this);
+        }
+
+        public Trophy(long uid, int trophyId, int nextGrade, int maxGrade, long counter, long condition, bool isDone, string type, List<long> timestamps, long characterId)
+        {
+            Uid = uid;
+            Id = trophyId;
+            NextGrade = nextGrade;
+            MaxGrade = maxGrade;
+            Counter = counter;
+            Condition = condition;
+            IsDone = isDone;
+            Type = type;
+            Timestamps = timestamps;
+            CharacterId = characterId;
         }
 
         public TrophyPacket.GradeStatus GetGradeStatus()

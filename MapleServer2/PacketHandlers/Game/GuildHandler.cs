@@ -187,7 +187,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (DatabaseManager.GuildExists(guildName))
+            if (DatabaseManager.Guilds.NameExists(guildName))
             {
                 session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
                 return;
@@ -212,7 +212,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Guild guild = GameServer.GuildManager.GetGuildById(application.GuildId);
                 application.Remove(session.Player, guild);
             }
-            DatabaseManager.UpdateCharacter(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
         }
 
         private static void HandleDisband(GameSession session)
@@ -241,7 +241,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(GuildPacket.UpdateGuildTag(session.Player));
             guild.RemoveMember(session.Player);
             GameServer.GuildManager.RemoveGuild(guild);
-            DatabaseManager.Delete(guild);
+            DatabaseManager.Guilds.Delete(guild.Id);
         }
 
         private static void HandleInvite(GameSession session, PacketReader packet)
@@ -350,7 +350,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (targetPlayer.CharacterId == guild.Leader.CharacterId)
+            if (targetPlayer.CharacterId == guild.LeaderCharacterId)
             {
                 //TODO: Error packets
                 return;
@@ -383,7 +383,7 @@ namespace MapleServer2.PacketHandlers.Game
             byte rank = packet.ReadByte();
 
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null || session.Player != guild.Leader)
+            if (guild == null || session.Player.CharacterId != guild.LeaderCharacterId)
             {
                 return;
             }
@@ -466,7 +466,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player oldLeader = session.Player;
 
             Guild guild = GameServer.GuildManager.GetGuildByLeader(oldLeader);
-            if (guild == null || guild.Leader.CharacterId != oldLeader.CharacterId)
+            if (guild == null || guild.LeaderCharacterId != oldLeader.CharacterId)
             {
                 return;
             }
@@ -474,7 +474,9 @@ namespace MapleServer2.PacketHandlers.Game
             GuildMember oldLeaderMember = guild.Members.FirstOrDefault(x => x.Player.CharacterId == oldLeader.CharacterId);
             newLeaderMember.Rank = 0;
             oldLeaderMember.Rank = 1;
-            guild.Leader = newLeader;
+            guild.LeaderCharacterId = newLeader.CharacterId;
+            guild.LeaderAccountId = newLeader.AccountId;
+            guild.LeaderName = newLeader.Name;
 
             session.Send(GuildPacket.TransferLeaderConfirm(newLeader));
             guild.BroadcastPacketGuild(GuildPacket.AssignNewLeader(newLeader, oldLeader));
@@ -515,7 +517,7 @@ namespace MapleServer2.PacketHandlers.Game
             int rights = packet.ReadInt();
 
             Guild guild = GameServer.GuildManager.GetGuildByLeader(session.Player);
-            if (guild == null || guild.Leader != session.Player)
+            if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
             {
                 return;
             }
@@ -759,7 +761,7 @@ namespace MapleServer2.PacketHandlers.Game
             int themeId = packet.ReadInt();
 
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null || guild.Leader != session.Player)
+            if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
             {
                 return;
             }
@@ -789,7 +791,7 @@ namespace MapleServer2.PacketHandlers.Game
             int themeId = packet.ReadInt();
 
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null || guild.Leader != session.Player)
+            if (guild == null || guild.LeaderCharacterId != session.Player.CharacterId)
             {
                 return;
             }
