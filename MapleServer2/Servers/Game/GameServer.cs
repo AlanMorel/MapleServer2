@@ -28,7 +28,7 @@ namespace MapleServer2.Servers.Game
 
         public void Start()
         {
-            List<Guild> guilds = DatabaseManager.GetGuilds();
+            List<Guild> guilds = DatabaseManager.Guilds.FindAll();
             foreach (Guild guild in guilds)
             {
                 GuildManager.AddGuild(guild);

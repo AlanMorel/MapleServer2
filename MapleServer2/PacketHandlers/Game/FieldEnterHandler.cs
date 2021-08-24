@@ -44,7 +44,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
 
-            List<GameEvent> gameEvents = DatabaseManager.GetGameEvents();
+            List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
             session.Send(GameEventPacket.Load(gameEvents));
         }
     }

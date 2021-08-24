@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Common
             packet.Skip(-8);
             HandleCommon(session, packet);
 
-            Player player = DatabaseManager.GetCharacter(authData.CharacterId);
+            Player player = DatabaseManager.Characters.FindById(authData.CharacterId);
             if (player == default)
             {
                 throw new ArgumentException("Character not found!");
@@ -46,6 +46,7 @@ namespace MapleServer2.PacketHandlers.Common
             player.Account.Meret.Session = session;
             player.Account.GameMeret.Session = session;
             player.Account.EventMeret.Session = session;
+            player.Levels.Player = player;
 
             session.InitPlayer(player);
 
@@ -53,10 +54,11 @@ namespace MapleServer2.PacketHandlers.Common
 
             session.Send(LoginPacket.LoginRequired(accountId));
 
-            if (session.Player.Guild != null)
+            if (player.GuildId != 0)
             {
-                Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-                session.Player.Guild = guild;
+                Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
+                player.Guild = guild;
+                player.GuildMember = guild.Members.First(x => x.Id == player.CharacterId);
                 session.Send(GuildPacket.UpdateGuild(guild));
                 session.Send(GuildPacket.MemberJoin(player));
             }
@@ -86,7 +88,7 @@ namespace MapleServer2.PacketHandlers.Common
             pWriter.WriteByte();
             session.Send(pWriter);
             // 0x112, Prestige f(0x00, 0x07)
-            session.Send(PrestigePacket.Prestige(session.Player));
+            session.Send(PrestigePacket.Prestige(player));
 
             // Load inventory tabs
             foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
@@ -94,9 +96,10 @@ namespace MapleServer2.PacketHandlers.Common
                 InventoryController.LoadInventoryTab(session, tab);
             }
 
-            if (player.Account.Home != null)
+            if (player.Account.HomeId != 0)
             {
-                Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+                Home home = GameServer.HomeManager.GetHome(player.Account.HomeId);
+                player.Account.Home = home;
                 session.Send(WarehouseInventoryPacket.StartList());
                 int counter = 0;
                 foreach (KeyValuePair<long, Item> kvp in home.WarehouseInventory)
@@ -117,7 +120,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(QuestPacket.Packet1F());
             session.Send(QuestPacket.Packet20());
 
-            IEnumerable<List<QuestStatus>> packetCount = SplitList(session.Player.QuestList, 200); // Split the quest list in 200 quests per packet
+            IEnumerable<List<QuestStatus>> packetCount = SplitList(player.QuestList, 200); // Split the quest list in 200 quests per packet
             foreach (List<QuestStatus> item in packetCount)
             {
                 session.Send(QuestPacket.SendQuests(item));
@@ -125,7 +128,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(QuestPacket.EndList());
 
             session.Send(TrophyPacket.WriteTableStart());
-            List<Trophy> trophyList = new List<Trophy>(session.Player.TrophyData.Values);
+            List<Trophy> trophyList = new List<Trophy>(player.TrophyData.Values);
             IEnumerable<List<Trophy>> trophyListPackets = SplitList(trophyList, 60);
 
             foreach (List<Trophy> trophy in trophyListPackets)
@@ -148,16 +151,14 @@ namespace MapleServer2.PacketHandlers.Common
             // CharacterAbility
             // E1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
+            // Key bindings and skill slots would normally be loaded from a database
+            // If the character is not a new character, this is what we would send
             session.Send(KeyTablePacket.SendFullOptions(player.GameOptions));
 
-            if (player.MapId == 52000065) // tutorial map
+            if (player.MapId == (int) Map.UnknownLocation) // tutorial map
             {
                 session.Send(KeyTablePacket.AskKeyboardOrMouse());
             }
-
-            // Key bindings and skill slots would normally be loaded from a database
-            // If the character is not a new character, this is what we would send
-            // session.Send(KeyTablePacket.SendFullOptions(session.Player.Options));
 
             // SendKeyTable f(0x00), SendGuideRecord f(0x03), GameEvent f(0x00)
             // SendBannerList f(0x19), SendRoomDungeon f(0x05, 0x14, 0x17)
@@ -166,12 +167,12 @@ namespace MapleServer2.PacketHandlers.Common
             // 0xF0, ResponsePet P(0F 01)
             // RequestFieldEnter
             //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-            session.Send(FieldPacket.RequestEnter(session.Player));
+            session.Send(FieldPacket.RequestEnter(player));
 
-            Party party = GameServer.PartyManager.GetPartyByMember(session.Player.CharacterId);
+            Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
             if (party != null)
             {
-                session.Player.Party = party;
+                player.Party = party;
                 session.Send(PartyPacket.Create(party, false));
             }
 

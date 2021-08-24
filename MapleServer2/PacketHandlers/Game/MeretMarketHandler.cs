@@ -61,7 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleOpenPremium(GameSession session, PacketReader packet)
         {
             MeretMarketCategory category = (MeretMarketCategory) packet.ReadInt();
-            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(category);
+            List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(category);
             if (marketItems == null)
             {
                 return;
@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
             string unk6 = packet.ReadUnicodeString();
             long price = packet.ReadLong();
 
-            MeretMarketItem marketItem = DatabaseManager.GetMeretMarketItem(marketItemId);
+            MeretMarketItem marketItem = DatabaseManager.MeretMarket.FindById(marketItemId);
             if (marketItem == null)
             {
                 return;
@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleHome(GameSession session)
         {
-            List<MeretMarketItem> marketItems = DatabaseManager.GetMeretMarketItemsByCategory(MeretMarketCategory.Promo);
+            List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(MeretMarketCategory.Promo);
             if (marketItems == null)
             {
                 return;

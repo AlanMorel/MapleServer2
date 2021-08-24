@@ -15,15 +15,15 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            GameEvent gameEvent = DatabaseManager.GetSingleGameEvent(GameEventType.EventFieldPopup);
-            if (gameEvent == null)
+            FieldPopupEvent fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
+            if (fieldPopupEvent == null)
             {
                 return;
             }
 
             session.Player.ReturnCoord = session.FieldPlayer.Coord;
             session.Player.ReturnMapId = session.Player.MapId;
-            session.Player.Warp(gameEvent.FieldPopupEvent.MapId);
+            session.Player.Warp(fieldPopupEvent.MapId);
         }
     }
 }

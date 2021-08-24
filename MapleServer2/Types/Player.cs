@@ -18,18 +18,18 @@ namespace MapleServer2.Types
 
         public Account Account;
         // Constant Values
-        public long AccountId { get; private set; }
+        public long AccountId { get; set; }
         public long CharacterId { get; set; }
-        public long CreationTime { get; private set; }
+        public long CreationTime { get; set; }
         public bool IsDeleted;
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
         // Gender - 0 = male, 1 = female
-        public byte Gender { get; private set; }
+        public byte Gender { get; set; }
 
         // Job Group, according to jobgroupname.xml
-        public bool Awakened { get; private set; }
-        public Job Job { get; private set; }
+        public bool Awakened { get; set; }
+        public Job Job { get; set; }
         public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
 
         // Mutable Values
@@ -56,9 +56,6 @@ namespace MapleServer2.Types
         public int[] TrophyCount;
 
         public Dictionary<int, Trophy> TrophyData = new Dictionary<int, Trophy>();
-
-        // DB ONLY
-        public List<Trophy> Trophies;
 
         public List<ChatSticker> ChatSticker;
         public List<int> FavoriteStickers;
@@ -92,7 +89,7 @@ namespace MapleServer2.Types
         public List<SkillTab> SkillTabs;
         public StatDistribution StatPointDistribution;
 
-        public GameOptions GameOptions { get; private set; }
+        public GameOptions GameOptions { get; set; }
 
         public Inventory Inventory;
         public BankInventory BankInventory;
@@ -102,7 +99,7 @@ namespace MapleServer2.Types
 
         public Mailbox Mailbox;
 
-        public List<Buddy> BuddyList;
+        public List<Buddy> BuddyList = new();
 
         public Party Party;
         public long ClubId;
@@ -110,6 +107,8 @@ namespace MapleServer2.Types
 
         public int[] GroupChatId;
 
+        public long GuildId;
+        public long GuildMemberId;
         public Guild Guild;
         public GuildMember GuildMember;
         public List<GuildApplication> GuildApplications = new List<GuildApplication>();
@@ -160,9 +159,8 @@ namespace MapleServer2.Types
             Gender = gender;
             Job = job;
             GameOptions = new GameOptions();
-            GameOptions.Initialize();
             Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, mesoToken: 0, bank: 0);
-            Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
+            Levels = new Levels(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
             {
                 new MasteryExp(MasteryType.Fishing),
                 new MasteryExp(MasteryType.Performance),
@@ -203,9 +201,9 @@ namespace MapleServer2.Types
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
-            CharacterId = DatabaseManager.CreateCharacter(this);
-            SkillTabs = new List<SkillTab> { new SkillTab(this, job) };
-            ActiveSkillTabId = SkillTabs[0].TabId;
+            CharacterId = DatabaseManager.Characters.Insert(this);
+            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, CharacterId, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
+            ActiveSkillTabId = CharacterId;
         }
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
@@ -240,7 +238,7 @@ namespace MapleServer2.Types
                 UnlockedMaps.Add(MapId);
             }
 
-            DatabaseManager.UpdateCharacter(this);
+            DatabaseManager.Characters.Update(this);
             Session.Send(FieldPacket.RequestEnter(this));
         }
 
@@ -489,11 +487,12 @@ namespace MapleServer2.Types
         {
             if (!TrophyData.ContainsKey(trophyId))
             {
-                TrophyData[trophyId] = new Trophy(this, trophyId);
+                TrophyData[trophyId] = new Trophy(CharacterId, trophyId);
             }
             TrophyData[trophyId].AddCounter(Session, addAmount);
             if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
             {
+                DatabaseManager.Trophies.Update(TrophyData[trophyId]);
                 Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
             }
         }

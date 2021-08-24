@@ -32,13 +32,13 @@ namespace MapleServer2.PacketHandlers.Login
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            List<Banner> banners = DatabaseManager.GetBanners();
+            List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
             session.Send(BannerListPacket.SetBanner(banners));
             session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
-            List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
+            List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
-            Account account = DatabaseManager.GetAccount(session.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
             session.Send(CharacterListPacket.StartList());
             // Send each character data
