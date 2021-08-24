@@ -154,6 +154,10 @@ namespace MapleServer2.Triggers
             foreach (int boxId in boxIds)
             {
                 MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                if (box == null)
+                {
+                    return false;
+                }
 
                 foreach (IFieldObject<Player> player in players)
                 {
@@ -205,17 +209,18 @@ namespace MapleServer2.Triggers
 
         public bool WidgetCondition(WidgetType type, string name, string arg3)
         {
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
+            Widget widget = Field.GetWidget(type);
+            if (widget == null)
             {
-                Widget widget = Field.GetWidget(type);
-                if (widget == null)
-                {
-                    continue;
-                }
+                return false;
+            }
+
+            if (widget.Arg == "")
+            {
                 return widget.State == name;
             }
-            return false;
+
+            return widget.State == name && widget.Arg == arg3;
         }
     }
 }

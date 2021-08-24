@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
 
 namespace Maple2Storage.Types.Metadata

@@ -66,7 +66,8 @@ namespace GameDataParser
                 new HomeTemplateParser(resources),
                 new MasteryUGCHousingParser(resources),
                 new JobParser(resources),
-                new RewardContentParser(resources)
+                new RewardContentParser(resources),
+                new OXQuizParser()
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

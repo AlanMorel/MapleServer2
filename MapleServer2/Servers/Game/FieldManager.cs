@@ -166,7 +166,7 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
-            foreach(MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(mapId))
+            foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(mapId))
             {
                 if (mapTriggerLadder != null)
                 {
@@ -175,12 +175,21 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
-            foreach(MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(mapId))
+            foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(mapId))
             {
                 if (mapTriggerRope != null)
                 {
                     TriggerRope triggerRope = new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible);
                     State.AddTriggerObject(triggerRope);
+                }
+            }
+
+            foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(mapId))
+            {
+                if (mapTriggerSound != null)
+                {
+                    TriggerSound triggerSound = new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled);
+                    State.AddTriggerObject(triggerSound);
                 }
             }
 
@@ -357,7 +366,7 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             triggerObjects.AddRange(State.TriggerActors.Values.ToList());
             sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
-
+            Console.Write($"Player ObjecTID: {player.ObjectId}");
             State.AddPlayer(player);
 
             if (MapLoopTask == null)
@@ -396,13 +405,13 @@ namespace MapleServer2.Servers.Game
         public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
         {
             CoordF minCoord = CoordF.From(
-                    box.Position.X - box.Dimension.X,
-                    box.Position.Y - box.Dimension.Y,
-                    box.Position.Z - box.Dimension.Z);
+                    box.Position.X - box.Dimension.X / 2,
+                    box.Position.Y - box.Dimension.Y / 2,
+                    box.Position.Z - box.Dimension.Z / 2);
             CoordF maxCoord = CoordF.From(
-                box.Position.X + box.Dimension.X,
-                box.Position.Y + box.Dimension.Y,
-                box.Position.Z + box.Dimension.Z);
+                box.Position.X + box.Dimension.X / 2,
+                box.Position.Y + box.Dimension.Y / 2,
+                box.Position.Z + box.Dimension.Z / 2);
             bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
             bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
             return min && max;
@@ -742,6 +751,15 @@ namespace MapleServer2.Servers.Game
 
         public void AddMapTimer(MapTimer timer)
         {
+            MapTimer existingTimer = MapTimers.FirstOrDefault(x => x.Id == timer.Id);
+            if (existingTimer != null)
+            {
+                Console.WriteLine("Found existing timer. Replacing...");
+                existingTimer = timer;
+                return;
+            }
+            Console.WriteLine("No existing timer found. Adding new timer...");
+
             MapTimers.Add(timer);
         }
 

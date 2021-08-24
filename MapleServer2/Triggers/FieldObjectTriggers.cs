@@ -85,20 +85,31 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }
 
-        public void SetRandomMesh(int[] arg1, bool arg2, byte arg3, int arg4, int arg5)
+        public void SetRandomMesh(int[] meshIds, bool isVisible, byte arg3, int arg4, int arg5)
         {
+            foreach (int triggerMeshId in meshIds)
+            {
+                Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+            }
         }
 
-        public void SetRope(int arg1, bool arg2, bool arg3, byte arg4)
+        public void SetRope(int ropeId, bool isVisible, bool animationEffect, byte animationDelay)
         {
+            Field.State.TriggerRopes[ropeId].IsVisible = isVisible;
+            Field.State.TriggerRopes[ropeId].AnimationEffect = animationEffect;
+            Field.State.TriggerRopes[ropeId].AnimationDelay = animationDelay;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ropeId]));
         }
 
         public void SetSkill(int[] arg1, bool arg2)
         {
         }
 
-        public void SetSound(int arg1, bool arg2)
+        public void SetSound(int soundId, bool isEnabled)
         {
+            Field.State.TriggerSounds[soundId].IsEnabled = isEnabled;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerSounds[soundId]));
         }
 
         public void SetVisibleBreakableObject(int[] arg1, bool arg2)

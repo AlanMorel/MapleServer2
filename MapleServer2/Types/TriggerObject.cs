@@ -63,9 +63,17 @@
         }
     }
 
-    public class TriggerRope : TriggerLadder
+    public class TriggerRope : TriggerObject
     {
-        public TriggerRope(int id, bool isVisible) : base(id, isVisible) { }
+        public bool IsVisible;
+        public bool AnimationEffect;
+        public int AnimationDelay;
+        public TriggerRope(int id, bool isVisible) : base(id)
+        {
+            IsVisible = isVisible;
+            AnimationEffect = false;
+            AnimationDelay = 3;
+        }
     }
 
     public class TriggerCube : TriggerObject
@@ -74,6 +82,15 @@
         public TriggerCube(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
+        }
+    }
+
+    public class TriggerSound : TriggerObject
+    {
+        public bool IsEnabled;
+        public TriggerSound(int id, bool isEnabled) : base(id)
+        {
+            IsEnabled = isEnabled;
         }
     }
 }

@@ -30,24 +30,28 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 11)]
         public List<CoordS> HealingSpot;
         [XmlElement(Order = 12)]
-        public readonly List<MapTriggerMesh> TriggerMeshes;
+        public List<PatrolData> PatrolDatas;
         [XmlElement(Order = 13)]
-        public readonly List<MapTriggerEffect> TriggerEffects;
+        public List<WayPoint> WayPoints;
         [XmlElement(Order = 14)]
-        public readonly List<MapTriggerCamera> TriggerCameras;
+        public readonly List<MapTriggerMesh> TriggerMeshes;
         [XmlElement(Order = 15)]
-        public readonly List<MapTriggerBox> TriggerBoxes;
+        public readonly List<MapTriggerEffect> TriggerEffects;
         [XmlElement(Order = 16)]
-        public readonly List<MapTriggerLadder> TriggerLadders;
+        public readonly List<MapTriggerCamera> TriggerCameras;
         [XmlElement(Order = 17)]
-        public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
+        public readonly List<MapTriggerBox> TriggerBoxes;
         [XmlElement(Order = 18)]
-        public readonly List<MapTriggerActor> TriggerActors;
+        public readonly List<MapTriggerLadder> TriggerLadders;
         [XmlElement(Order = 19)]
-        public readonly List<MapTriggerCube> TriggerCubes;
+        public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
         [XmlElement(Order = 20)]
-        public readonly List<MapTriggerSound> TriggerSounds;
+        public readonly List<MapTriggerActor> TriggerActors;
         [XmlElement(Order = 21)]
+        public readonly List<MapTriggerCube> TriggerCubes;
+        [XmlElement(Order = 22)]
+        public readonly List<MapTriggerSound> TriggerSounds;
+        [XmlElement(Order = 23)]
         public readonly List<MapTriggerRope> TriggerRopes;
 
         // Required for deserialization
@@ -61,6 +65,8 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            PatrolDatas = new List<PatrolData>();
+            WayPoints = new List<WayPoint>();
             TriggerMeshes = new List<MapTriggerMesh>();
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
@@ -84,6 +90,8 @@ namespace Maple2Storage.Types.Metadata
             InteractObjects = new List<MapInteractObject>();
             InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
+            PatrolDatas = new List<PatrolData>();
+            WayPoints = new List<WayPoint>();
             TriggerMeshes = new List<MapTriggerMesh>();
             TriggerEffects = new List<MapTriggerEffect>();
             TriggerCameras = new List<MapTriggerCamera>();
@@ -511,6 +519,65 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
+    public class PatrolData
+    {
+        [XmlElement(Order = 1)]
+        public string Name;
+        [XmlElement(Order = 2)]
+        public List<string> WayPointIds;
+        [XmlElement(Order = 3)]
+        public int PatrolSpeed;
+        [XmlElement(Order = 4)]
+        public bool IsLoop;
+        [XmlElement(Order = 5)]
+        public bool IsAirWayPoint;
+        [XmlElement(Order = 6)]
+        public List<string> ArriveAnimations;
+        [XmlElement(Order = 7)]
+        public List<string> ApproachAnimations;
+        [XmlElement(Order = 8)]
+        public List<int> ArriveAnimationTimes;
+
+        public PatrolData() { }
+        public PatrolData(string name, List<string> wayPointIds, int patrolSpeed, bool isLoop, bool isAirWayPoint, List<string> arriveAnimations, List<string> approachAnimations, List<int> arriveAnimationTimes)
+        {
+            Name = name;
+            WayPointIds = wayPointIds;
+            PatrolSpeed = patrolSpeed;
+            IsLoop = isLoop;
+            IsAirWayPoint = isAirWayPoint;
+            ArriveAnimations = arriveAnimations;
+            ApproachAnimations = approachAnimations;
+            ArriveAnimationTimes = arriveAnimationTimes;
+        }
+
+        public override string ToString() => $"PatrolData(Name:{Name},PatrolSpeed:{PatrolSpeed},IsLoop:{IsLoop},IsAirWayPoint:{IsAirWayPoint})";
+    }
+
+    [XmlType]
+    public class WayPoint
+    {
+        [XmlElement(Order = 1)]
+        public string Id;
+        [XmlElement(Order = 2)]
+        public bool IsVisible;
+        [XmlElement(Order = 3)]
+        public CoordS Position;
+        [XmlElement(Order = 4)]
+        public CoordS Rotation;
+
+        public WayPoint() { }
+        public WayPoint(string id, bool isVisible, CoordS position, CoordS rotation)
+        {
+            Id = id;
+            IsVisible = isVisible;
+            Position = position;
+            Rotation = rotation;
+        }
+        public override string ToString() => $"PatrolData(Id:{Id},IsVisible:{IsVisible},Position:{Position},Rotation:{Rotation})";
+    }
+
+    [XmlType]
     [ProtoContract]
     public class MapEventNpcSpawnPoint
     {
@@ -673,10 +740,10 @@ namespace Maple2Storage.Types.Metadata
     public class MapTriggerSound : MapTriggerObject
     {
         [ProtoMember(18)]
-        public bool Enabled;
+        public bool IsEnabled;
         public MapTriggerSound(int id, bool enabled) : base(id)
         {
-            Enabled = enabled;
+            IsEnabled = enabled;
         }
 
         public MapTriggerSound() : base() { }

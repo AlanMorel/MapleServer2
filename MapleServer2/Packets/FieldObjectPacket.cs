@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
             UpdateEntity = 0x05,
             LoadNpc = 0x06,
             RemoveNpc = 0x07,
-            Unk1 = 0x08,
+            MoveNpc = 0x08,
             Unk2 = 0x0B,
         }
 
@@ -105,6 +105,7 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(npc.ObjectId);
+            Console.WriteLine(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.WriteByte();
             pWriter.WriteInt(200);
@@ -167,13 +168,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet MoveNpc(int objectId, CoordF coord)
+        public static Packet UpdateEntity(int objectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(objectId);
             pWriter.WriteByte();
-            pWriter.Write(coord);
+            pWriter.WriteShort();
             return pWriter;
         }
 
@@ -190,6 +191,16 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
             pWriter.WriteEnum(ProxyGameObjMode.RemoveNpc);
             pWriter.WriteInt(mob.ObjectId);
+            return pWriter;
+        }
+
+        public static Packet MoveNpc(IFieldObject<Npc> npc)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
+            pWriter.WriteEnum(ProxyGameObjMode.MoveNpc);
+            pWriter.WriteInt(npc.ObjectId);
+            pWriter.WriteByte();
+            pWriter.Write(npc.Coord);
             return pWriter;
         }
     }

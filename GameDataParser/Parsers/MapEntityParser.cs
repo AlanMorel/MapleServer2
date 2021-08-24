@@ -135,6 +135,40 @@ namespace GameDataParser.Parsers
                             metadata.BoundingBox1 = CoordS.FromVector3(bounding.Position);
                         }
                         break;
+                    case IMS2PatrolData patrolData:
+                        string patrolDataName = patrolData.EntityName.Replace("-", string.Empty);
+                        List<string> wayPointIds = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.WayPoints)
+                        {
+                            string wayPointId = entry.Value.Replace("-", string.Empty);
+                            wayPointIds.Add(wayPointId);
+                        }
+
+                        List<string> arriveAnimations = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.ArriveAnims)
+                        {
+                            arriveAnimations.Add(entry.Value);
+                        }
+
+                        List<string> approachAnimations = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.ApproachAnims)
+                        {
+                            approachAnimations.Add(entry.Value);
+                        }
+
+                        List<int> arriveAnimationTimes = new List<int>();
+                        foreach (KeyValuePair<string, uint> entry in patrolData.ArriveAnimsTime)
+                        {
+                            arriveAnimationTimes.Add((int) entry.Value);
+                        }
+                        metadata.PatrolDatas.Add(new PatrolData(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint, arriveAnimations, approachAnimations, arriveAnimationTimes));
+                        Console.WriteLine(metadata.PatrolDatas.Last());
+
+                        break;
+                    case IMS2WayPoint wayPoint:
+                        metadata.WayPoints.Add(new WayPoint(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position), CoordS.FromVector3(wayPoint.Rotation)));
+                        Console.WriteLine(metadata.WayPoints.Last());
+                        break;
                     // TODO: This can probably be more generally handled as IMS2RegionSkill
                     case IMS2HealingRegionSkillSound healingRegion:
                         if (healingRegion.Position == default)

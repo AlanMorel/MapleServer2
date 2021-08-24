@@ -23,6 +23,7 @@ namespace MapleServer2.Packets
             DisableBanner = 0x3,
             StartCutscene = 0x4,
             StopCutscene = 0x5,
+            SetAnimation = 0x8,
         }
 
         public static Packet LoadTriggers(List<TriggerObject> triggerObjects)
@@ -58,7 +59,6 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString("");
                     pWriter.WriteFloat(1); //constant
                     break;
-
                 case TriggerEffect triggerEffect:
                     pWriter.WriteInt(triggerEffect.Id);
                     pWriter.WriteBool(triggerEffect.IsVisible);
@@ -81,6 +81,16 @@ namespace MapleServer2.Packets
                     pWriter.WriteBool(triggerLadder.IsVisible);
                     pWriter.WriteBool(triggerLadder.AnimationEffect);
                     pWriter.WriteInt(triggerLadder.AnimationDelay);
+                    break;
+                case TriggerRope triggerRope:
+                    pWriter.WriteInt(triggerRope.Id);
+                    pWriter.WriteBool(triggerRope.IsVisible);
+                    pWriter.WriteBool(triggerRope.AnimationEffect);
+                    pWriter.WriteInt(triggerRope.AnimationDelay);
+                    break;
+                case TriggerSound triggerSound:
+                    pWriter.WriteInt(triggerSound.Id);
+                    pWriter.WriteBool(triggerSound.IsEnabled);
                     break;
             }
         }
@@ -121,6 +131,17 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(TriggerPacketMode.UI);
             pWriter.WriteEnum(TriggerUIMode.StopCutscene);
             pWriter.WriteInt(movieId);
+            return pWriter;
+        }
+
+        public static Packet SetAnimation(string animationState, int duration, bool loop)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+            pWriter.WriteEnum(TriggerPacketMode.UI);
+            pWriter.WriteEnum(TriggerUIMode.SetAnimation);
+            pWriter.WriteBool(loop);
+            pWriter.WriteInt(duration);
+            pWriter.WriteUnicodeString(animationState);
             return pWriter;
         }
 

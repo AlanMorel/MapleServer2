@@ -23,6 +23,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, TriggerCube> TriggerCubes;
         public readonly ConcurrentDictionary<int, TriggerLadder> TriggerLadders;
         public readonly ConcurrentDictionary<int, TriggerRope> TriggerRopes;
+        public readonly ConcurrentDictionary<int, TriggerSound> TriggerSounds;
 
         public FieldState()
         {
@@ -43,6 +44,7 @@ namespace MapleServer2.Types
             TriggerActors = new ConcurrentDictionary<int, TriggerActor>();
             TriggerCubes = new ConcurrentDictionary<int, TriggerCube>();
             TriggerRopes = new ConcurrentDictionary<int, TriggerRope>();
+            TriggerSounds = new ConcurrentDictionary<int, TriggerSound>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -185,9 +187,12 @@ namespace MapleServer2.Types
                 case TriggerLadder triggerLadder:
                     TriggerLadders[triggerLadder.Id] = triggerLadder;
                     break;
-                //case TriggerRope triggerRope:
-                //    TriggerRopes[triggerRope.Id] = triggerRope;
-                //    break;
+                case TriggerRope triggerRope:
+                    TriggerRopes[triggerRope.Id] = triggerRope;
+                    break;
+                case TriggerSound triggerSound:
+                    TriggerSounds[triggerSound.Id] = triggerSound;
+                    break;
             }
         }
     }

@@ -1,8 +1,6 @@
 ﻿using MapleServer2.Commands.Core;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using System;
 
 namespace MapleServer2.Commands.Game
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Maple2.Trigger.Enum;
+﻿using Maple2.Trigger.Enum;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -33,6 +31,11 @@ namespace MapleServer2.Triggers
                     {
                         PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == "gameStart");
                         player.Value.Triggers.Remove(trigger);
+                        player.Value.Session.Send(ResultsPacket.Rounds(1, 1));
+                    }
+                    else if (type == MiniGame.OXQuiz)
+                    {
+                        player.Value.Session.Send(ResultsPacket.Rounds(10, 10));
                     }
                 }
             }
@@ -40,20 +43,36 @@ namespace MapleServer2.Triggers
 
         public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
         {
-            // TODO: Properly implement results packet. 
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
-            List<IFieldObject<Player>> players = new List<IFieldObject<Player>>();
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
                 if (FieldManager.IsPlayerInBox(box, player))
                 {
-                    player.Value.Session.Send(ResultsPacket.Rounds(1, 1));
+                    // TODO: calculate correct amount of exp;
+                    player.Value.Levels.GainExp(10000);
                 }
             }
         }
 
         public void MiniGameCameraDirection(int boxId, int cameraId)
         {
+            Console.WriteLine("Setting Camera");
+            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            List<IFieldObject<Player>> boxPlayers = new List<IFieldObject<Player>>();
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(box, player))
+                {
+                    boxPlayers.Add(player);
+                }
+            }
+
+            Random random = new Random();
+            int index = random.Next(boxPlayers.Count());
+            IFieldObject<Player> randomPlayer = boxPlayers[index];
+            Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));
+            Console.WriteLine("Camera set");
+
         }
 
         public void MiniGameGiveExp(int boxId, float expRate, bool isOutSide)

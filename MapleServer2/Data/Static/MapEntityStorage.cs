@@ -16,6 +16,8 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
         private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
+        private static readonly Dictionary<int, List<PatrolData>> PatrolDatas = new Dictionary<int, List<PatrolData>>();
+        private static readonly Dictionary<int, List<WayPoint>> WayPoints = new Dictionary<int, List<WayPoint>>();
         private static readonly Dictionary<int, List<MapEventNpcSpawnPoint>> EventNpcSpawnPoints = new Dictionary<int, List<MapEventNpcSpawnPoint>>();
         private static readonly Dictionary<int, List<MapTriggerMesh>> TriggerMeshes = new Dictionary<int, List<MapTriggerMesh>>();
         private static readonly Dictionary<int, List<MapTriggerEffect>> TriggerEffects = new Dictionary<int, List<MapTriggerEffect>>();
@@ -25,6 +27,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapTriggerCube>> TriggerCubes = new Dictionary<int, List<MapTriggerCube>>();
         private static readonly Dictionary<int, List<MapTriggerLadder>> TriggerLadders = new Dictionary<int, List<MapTriggerLadder>>();
         private static readonly Dictionary<int, List<MapTriggerRope>> TriggerRopes = new Dictionary<int, List<MapTriggerRope>>();
+        private static readonly Dictionary<int, List<MapTriggerSound>> TriggerSounds = new Dictionary<int, List<MapTriggerSound>>();
 
         static MapEntityStorage()
         {
@@ -40,6 +43,8 @@ namespace MapleServer2.Data.Static
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
                 healthSpot.Add(entity.MapId, entity.HealingSpot);
+                PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
+                WayPoints.Add(entity.MapId, entity.WayPoints);
                 EventNpcSpawnPoints.Add(entity.MapId, entity.EventNpcSpawnPoints);
                 TriggerMeshes.Add(entity.MapId, entity.TriggerMeshes);
                 TriggerEffects.Add(entity.MapId, entity.TriggerEffects);
@@ -49,6 +54,7 @@ namespace MapleServer2.Data.Static
                 TriggerCubes.Add(entity.MapId, entity.TriggerCubes);
                 TriggerLadders.Add(entity.MapId, entity.TriggerLadders);
                 TriggerRopes.Add(entity.MapId, entity.TriggerRopes);
+                TriggerSounds.Add(entity.MapId, entity.TriggerSounds);
             }
         }
 
@@ -121,6 +127,16 @@ namespace MapleServer2.Data.Static
             return healthSpot.GetValueOrDefault(mapId);
         }
 
+        public static PatrolData GetPatrolData(int mapId, string patrolDataName)
+        {
+            return PatrolDatas.GetValueOrDefault(mapId).FirstOrDefault(x => x.Name == patrolDataName);
+        }
+
+        public static WayPoint GetWayPoint(int mapId, string id)
+        {
+            return WayPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == id);
+        }
+
         public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId)
         {
             return EventNpcSpawnPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == spawnPointId);
@@ -166,6 +182,11 @@ namespace MapleServer2.Data.Static
         public static List<MapTriggerRope> GetTriggerRopes(int mapId)
         {
             return TriggerRopes.GetValueOrDefault(mapId);
+        }
+
+        public static List<MapTriggerSound> GetTriggerSounds(int mapId)
+        {
+            return TriggerSounds.GetValueOrDefault(mapId);
         }
     }
 }

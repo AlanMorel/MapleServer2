@@ -62,8 +62,6 @@ namespace MapleServer2.PacketHandlers.Game
                     widget.State = "IsStop";
                     widget.Arg = arg.ToString();
                     session.Send(TriggerPacket.StopCutscene(arg));
-                    session.Send(CinematicPacket.HideUi(false));
-                    session.Send(CinematicPacket.View(2));
                     break;
                 case TriggerUIMode.Guide:
                     widget = session.FieldManager.GetWidget(WidgetType.Guide);
