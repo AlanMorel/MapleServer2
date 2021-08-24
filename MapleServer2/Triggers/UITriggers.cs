@@ -19,7 +19,6 @@ namespace MapleServer2.Triggers
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
         {
-            Console.WriteLine($"Doing Widget action on Widget Type: {type}. Action Name: {name}");
             Widget widget = Field.GetWidget(type);
             if (widget == null)
             {
@@ -66,7 +65,7 @@ namespace MapleServer2.Triggers
                     }
                     break;
                 default:
-                    Console.WriteLine($"Non implemented Widget Action. WidgetType: {type}");
+                    Logger.Warn($"Non implemented Widget Action. WidgetType: {type}");
                     break;
             }
         }
@@ -124,53 +123,51 @@ namespace MapleServer2.Triggers
 
         public void SetEventUI(byte typeId, string script, int duration, string box)
         {
-            if (typeId != 0)
+            if (typeId == 0)
             {
-                EventBannerType type = EventBannerType.None;
-                switch (typeId)
+                // EventUI is a Round Bar UI
+                string[] ids = script.Split(",");
+                if (ids.Length == 2)
                 {
-                    case 1:
-                        type = EventBannerType.None;
-                        break;
-                    case 3:
-                        type = EventBannerType.Winner;
-                        break;
-                    case 4:
-                        type = EventBannerType.Lose;
-                        break;
-                    case 6:
-                        type = EventBannerType.Bonus;
-                        break;
-                }
-
-                if (box == "0")
-                {
-                    Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
+                    Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), 1));
                     return;
                 }
+                Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), int.Parse(ids[2])));
+            }
 
-                MapTriggerBox triggerBox;
-                int boxId = 0;
-                if (box.Contains('!'))
-                {
-                    box = box[1..];
-                    boxId = int.Parse(box);
-                    triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-                    foreach (IFieldObject<Player> player in Field.State.Players.Values)
-                    {
-                        if (!FieldManager.IsPlayerInBox(triggerBox, player))
-                        {
-                            player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
-                        }
-                    }
-                    return;
-                }
+            EventBannerType type = EventBannerType.None;
+            switch (typeId)
+            {
+                case 1:
+                    type = EventBannerType.None;
+                    break;
+                case 3:
+                    type = EventBannerType.Winner;
+                    break;
+                case 4:
+                    type = EventBannerType.Lose;
+                    break;
+                case 6:
+                    type = EventBannerType.Bonus;
+                    break;
+            }
 
+            if (box == "0")
+            {
+                Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
+                return;
+            }
+
+            MapTriggerBox triggerBox;
+            int boxId = 0;
+            if (box.Contains('!'))
+            {
+                box = box[1..];
                 boxId = int.Parse(box);
                 triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
                 foreach (IFieldObject<Player> player in Field.State.Players.Values)
                 {
-                    if (FieldManager.IsPlayerInBox(triggerBox, player))
+                    if (!FieldManager.IsPlayerInBox(triggerBox, player))
                     {
                         player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
                     }
@@ -178,14 +175,15 @@ namespace MapleServer2.Triggers
                 return;
             }
 
-            // EventUI is a Round Bar UI
-            string[] ids = script.Split(",");
-            if (ids.Length == 2)
+            boxId = int.Parse(box);
+            triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
-                Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), 1));
-                return;
+                if (FieldManager.IsPlayerInBox(triggerBox, player))
+                {
+                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
+                }
             }
-            Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), int.Parse(ids[2])));
         }
 
         public void SetVisibleUI(string uiName, bool visible)

@@ -58,35 +58,17 @@ namespace MapleServer2.Data.Static
             }
         }
 
-        public static IEnumerable<MapNpc> GetNpcs(int mapId)
-        {
-            return npcs.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapNpc> GetNpcs(int mapId) => npcs.GetValueOrDefault(mapId);
 
-        public static IEnumerable<MapPortal> GetPortals(int mapId)
-        {
-            return portals.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapPortal> GetPortals(int mapId) => portals.GetValueOrDefault(mapId);
 
-        public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId)
-        {
-            return playerSpawns.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId) => playerSpawns.GetValueOrDefault(mapId);
 
-        public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId)
-        {
-            return mobSpawns.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId) => mobSpawns.GetValueOrDefault(mapId);
 
-        public static IEnumerable<MapObject> GetObjects(int mapId)
-        {
-            return objects.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapObject> GetObjects(int mapId) => objects.GetValueOrDefault(mapId);
 
-        public static IEnumerable<MapInteractObject> GetInteractObject(int mapId)
-        {
-            return interactObject.GetValueOrDefault(mapId);
-        }
+        public static IEnumerable<MapInteractObject> GetInteractObject(int mapId) => interactObject.GetValueOrDefault(mapId);
 
         public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
         {
@@ -106,10 +88,7 @@ namespace MapleServer2.Data.Static
             return items?.Count > 0 ? items[0] : null;
         }
 
-        public static CoordS[] GetBoundingBox(int mapId)
-        {
-            return boundingBox.GetValueOrDefault(mapId);
-        }
+        public static CoordS[] GetBoundingBox(int mapId) => boundingBox.GetValueOrDefault(mapId);
 
         public static bool HasSafePortal(int mapId)
         {
@@ -117,76 +96,34 @@ namespace MapleServer2.Data.Static
             return items.Count != 0;
         }
 
-        public static bool HasHealingSpot(int mapId)
-        {
-            return healthSpot.GetValueOrDefault(mapId).Count != 0;
-        }
+        public static bool HasHealingSpot(int mapId) => healthSpot.GetValueOrDefault(mapId).Count != 0;
 
-        public static List<CoordS> GetHealingSpot(int mapId)
-        {
-            return healthSpot.GetValueOrDefault(mapId);
-        }
+        public static List<CoordS> GetHealingSpot(int mapId) => healthSpot.GetValueOrDefault(mapId);
 
-        public static PatrolData GetPatrolData(int mapId, string patrolDataName)
-        {
-            return PatrolDatas.GetValueOrDefault(mapId).FirstOrDefault(x => x.Name == patrolDataName);
-        }
+        public static PatrolData GetPatrolData(int mapId, string patrolDataName) => PatrolDatas.GetValueOrDefault(mapId).FirstOrDefault(x => x.Name == patrolDataName);
 
-        public static WayPoint GetWayPoint(int mapId, string id)
-        {
-            return WayPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == id);
-        }
+        public static WayPoint GetWayPoint(int mapId, string id) => WayPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == id);
 
-        public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId)
-        {
-            return EventNpcSpawnPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == spawnPointId);
-        }
+        public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId) => EventNpcSpawnPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == spawnPointId);
 
-        public static List<MapTriggerMesh> GetTriggerMeshes(int mapId)
-        {
-            return TriggerMeshes.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerMesh> GetTriggerMeshes(int mapId) => TriggerMeshes.GetValueOrDefault(mapId);
 
-        public static List<MapTriggerEffect> GetTriggerEffects(int mapId)
-        {
-            return TriggerEffects.GetValueOrDefault(mapId);
-        }
-        public static List<MapTriggerCamera> GetTriggerCameras(int mapId)
-        {
-            return TriggerCameras.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerEffect> GetTriggerEffects(int mapId) => TriggerEffects.GetValueOrDefault(mapId);
 
-        public static MapTriggerBox GetTriggerBox(int mapId, int boxId)
-        {
-            return TriggerBoxes.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == boxId);
-        }
-        public static List<MapTriggerBox> GetTriggerBoxes(int mapId)
-        {
-            return TriggerBoxes.GetValueOrDefault(mapId);
-        }
-        public static List<MapTriggerActor> GetTriggerActors(int mapId)
-        {
-            return TriggerActors.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerCamera> GetTriggerCameras(int mapId) => TriggerCameras.GetValueOrDefault(mapId);
 
-        public static List<MapTriggerCube> GetTriggerCubes(int mapId)
-        {
-            return TriggerCubes.GetValueOrDefault(mapId);
-        }
+        public static MapTriggerBox GetTriggerBox(int mapId, int boxId) => TriggerBoxes.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == boxId);
 
-        public static List<MapTriggerLadder> GetTriggerLadders(int mapId)
-        {
-            return TriggerLadders.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerBox> GetTriggerBoxes(int mapId) => TriggerBoxes.GetValueOrDefault(mapId);
 
-        public static List<MapTriggerRope> GetTriggerRopes(int mapId)
-        {
-            return TriggerRopes.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerActor> GetTriggerActors(int mapId) => TriggerActors.GetValueOrDefault(mapId);
 
-        public static List<MapTriggerSound> GetTriggerSounds(int mapId)
-        {
-            return TriggerSounds.GetValueOrDefault(mapId);
-        }
+        public static List<MapTriggerCube> GetTriggerCubes(int mapId) => TriggerCubes.GetValueOrDefault(mapId);
+
+        public static List<MapTriggerLadder> GetTriggerLadders(int mapId) => TriggerLadders.GetValueOrDefault(mapId);
+
+        public static List<MapTriggerRope> GetTriggerRopes(int mapId) => TriggerRopes.GetValueOrDefault(mapId);
+
+        public static List<MapTriggerSound> GetTriggerSounds(int mapId) => TriggerSounds.GetValueOrDefault(mapId);
     }
 }

@@ -94,7 +94,6 @@ namespace MapleServer2.Triggers
             {
                 player.Value.Warp(mapId, dstPortal.Coord.ToFloat(), dstPortal.Rotation.ToFloat());
             }
-
         }
 
         public void MoveUserPath(string arg1)
@@ -175,7 +174,7 @@ namespace MapleServer2.Triggers
                             player.Value.TrophyUpdate(23400004, 1);
                             break;
                         default:
-                            Console.WriteLine($"Unhandled trophy set: {trophySet}");
+                            Logger.Warn($"Unhandled trophy set: {trophySet}");
                             break;
                     }
                 }

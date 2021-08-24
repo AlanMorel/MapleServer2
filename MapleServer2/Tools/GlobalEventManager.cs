@@ -11,24 +11,12 @@ namespace MapleServer2.Tools
             GlobalEventList = new Dictionary<int, GlobalEvent>();
         }
 
-        public void AddEvent(GlobalEvent globalEvent)
-        {
-            GlobalEventList.Add(globalEvent.Id, globalEvent);
-        }
+        public void AddEvent(GlobalEvent globalEvent) => GlobalEventList.Add(globalEvent.Id, globalEvent);
 
-        public void RemoveEvent(GlobalEvent globalEvent)
-        {
-            GlobalEventList.Remove(globalEvent.Id);
-        }
+        public void RemoveEvent(GlobalEvent globalEvent) => GlobalEventList.Remove(globalEvent.Id);
 
-        public int GetCount()
-        {
-            return GlobalEventList.Count;
-        }
+        public int GetCount() => GlobalEventList.Count;
 
-        public GlobalEvent GetEventById(int id)
-        {
-            return GlobalEventList.GetValueOrDefault(id);
-        }
+        public GlobalEvent GetEventById(int id) => GlobalEventList.GetValueOrDefault(id);
     }
 }

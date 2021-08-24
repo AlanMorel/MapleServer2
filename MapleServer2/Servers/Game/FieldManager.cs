@@ -247,10 +247,7 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject)
-        {
-            return WrapObject(wrappingObject);
-        }
+        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject) => WrapObject(wrappingObject);
 
         public void AddPlayer(GameSession sender, IFieldObject<Player> player)
         {
@@ -479,15 +476,9 @@ namespace MapleServer2.Servers.Game
             return true;
         }
 
-        public void AddGuide(IFieldObject<GuideObject> fieldGuide)
-        {
-            State.AddGuide(fieldGuide);
-        }
+        public void AddGuide(IFieldObject<GuideObject> fieldGuide) => State.AddGuide(fieldGuide);
 
-        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
-        {
-            return State.RemoveGuide(fieldGuide.ObjectId);
-        }
+        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide) => State.RemoveGuide(fieldGuide.ObjectId);
 
         public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
@@ -501,15 +492,9 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
         }
 
-        public void AddInstrument(IFieldObject<Instrument> instrument)
-        {
-            State.AddInstrument(instrument);
-        }
+        public void AddInstrument(IFieldObject<Instrument> instrument) => State.AddInstrument(instrument);
 
-        public bool RemoveInstrument(IFieldObject<Instrument> instrument)
-        {
-            return State.RemoveInstrument(instrument.ObjectId);
-        }
+        public bool RemoveInstrument(IFieldObject<Instrument> instrument) => State.RemoveInstrument(instrument.ObjectId);
 
         public void AddPortal(IFieldObject<Portal> portal)
         {
@@ -738,15 +723,9 @@ namespace MapleServer2.Servers.Game
             });
         }
 
-        public int Increment()
-        {
-            return Interlocked.Increment(ref PlayerCount);
-        }
+        public int Increment() => Interlocked.Increment(ref PlayerCount);
 
-        public int Decrement()
-        {
-            return Interlocked.Decrement(ref PlayerCount);
-        }
+        public int Decrement() => Interlocked.Decrement(ref PlayerCount);
 
         public void AddMapTimer(MapTimer timer)
         {
@@ -760,24 +739,12 @@ namespace MapleServer2.Servers.Game
             MapTimers.Add(timer);
         }
 
-        public MapTimer GetMapTimer(string id)
-        {
-            return MapTimers.FirstOrDefault(x => x.Id == id);
-        }
+        public MapTimer GetMapTimer(string id) => MapTimers.FirstOrDefault(x => x.Id == id);
 
-        public void AddWidget(Widget widget)
-        {
-            Widgets.Add(widget);
-        }
+        public void AddWidget(Widget widget) => Widgets.Add(widget);
 
-        public Widget GetWidget(WidgetType type)
-        {
-            return Widgets.FirstOrDefault(x => x.Type == type);
-        }
+        public Widget GetWidget(WidgetType type) => Widgets.FirstOrDefault(x => x.Type == type);
 
-        public void EnableSceneSkip(bool enable)
-        {
-            SkipScene = enable;
-        }
+        public void EnableSceneSkip(bool enable) => SkipScene = enable;
     }
 }

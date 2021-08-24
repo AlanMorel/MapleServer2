@@ -122,8 +122,7 @@ namespace MapleServer2.Triggers
             {
                 return 0;
             }
-            int value = player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
-            return value;
+            return player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
         }
     }
 }
