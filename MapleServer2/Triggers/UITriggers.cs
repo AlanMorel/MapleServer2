@@ -44,16 +44,6 @@ namespace MapleServer2.Triggers
                             // TODO: Use args to find a tier of a question
                             OXQuizMetadata question = OXQuizMetadataStorage.GetQuestion();
                             widget.OXQuizQuestion = new OXQuizQuestion(question.Category, question.QuestionText, question.AnswerText, question.Answer);
-                            if (question.Answer)
-                            {
-                                Field.BroadcastPacket(NoticePacket.Notice("Answer is true", NoticeType.ChatAndFastText));
-
-                            }
-                            else
-                            {
-                                Field.BroadcastPacket(NoticePacket.Notice("Answer is false", NoticeType.ChatAndFastText));
-
-                            }
                             break;
                         case "ShowQuiz":
                             Field.BroadcastPacket(QuizEventPacket.Question(widget.OXQuizQuestion.Category, widget.OXQuizQuestion.QuestionText, int.Parse(args)));
