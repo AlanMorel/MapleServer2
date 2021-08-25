@@ -61,8 +61,15 @@ namespace MapleServer2.Triggers
         {
             int msTime = time * 1000;
             int endTick = Environment.TickCount + msTime;
-            MapTimer timer = new MapTimer(id, endTick);
-            Field.AddMapTimer(timer);
+            MapTimer timer = Field.GetMapTimer(id);
+            if (timer == null)
+            {
+                MapTimer newTimer = new MapTimer(id, endTick);
+                Field.AddMapTimer(newTimer);
+                Field.BroadcastPacket(TriggerPacket.Timer(msTime, clearAtZero, display));
+                return;
+            }
+            timer.EndTick = endTick;
             Field.BroadcastPacket(TriggerPacket.Timer(msTime, clearAtZero, display));
         }
 

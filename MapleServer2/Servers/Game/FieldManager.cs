@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Maple2.Trigger;
+using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
@@ -29,9 +30,11 @@ namespace MapleServer2.Servers.Game
         public readonly CoordS[] BoundingBox;
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
-        private readonly TriggerScript[] Triggers;
+        public readonly TriggerScript[] Triggers;
         private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
+        private readonly List<Widget> Widgets = new List<Widget>();
+        public bool SkipScene;
         private Task MapLoopTask;
         private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private int PlayerCount;
@@ -154,6 +157,42 @@ namespace MapleServer2.Servers.Game
                 }
             }
 
+            foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(mapId))
+            {
+                if (mapTriggerCube != null)
+                {
+                    TriggerCube triggerCube = new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible);
+                    State.AddTriggerObject(triggerCube);
+                }
+            }
+
+            foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(mapId))
+            {
+                if (mapTriggerLadder != null)
+                {
+                    TriggerLadder triggerLadder = new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible);
+                    State.AddTriggerObject(triggerLadder);
+                }
+            }
+
+            foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(mapId))
+            {
+                if (mapTriggerRope != null)
+                {
+                    TriggerRope triggerRope = new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible);
+                    State.AddTriggerObject(triggerRope);
+                }
+            }
+
+            foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(mapId))
+            {
+                if (mapTriggerSound != null)
+                {
+                    TriggerSound triggerSound = new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled);
+                    State.AddTriggerObject(triggerSound);
+                }
+            }
+
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
@@ -208,10 +247,7 @@ namespace MapleServer2.Servers.Game
             }
         }
 
-        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject)
-        {
-            return WrapObject(wrappingObject);
-        }
+        public IFieldObject<T> RequestFieldObject<T>(T wrappingObject) => WrapObject(wrappingObject);
 
         public void AddPlayer(GameSession sender, IFieldObject<Player> player)
         {
@@ -326,8 +362,7 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             triggerObjects.AddRange(State.TriggerActors.Values.ToList());
-            sender.Send(TriggerPacket.SendTriggerObjects(triggerObjects));
-
+            sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
             State.AddPlayer(player);
 
             if (MapLoopTask == null)
@@ -350,6 +385,7 @@ namespace MapleServer2.Servers.Game
                 Sessions.Remove(sender);
             }
             State.RemovePlayer(player.ObjectId);
+            player.Value.Triggers.Clear();
 
             // Remove player
             Broadcast(session =>
@@ -364,13 +400,13 @@ namespace MapleServer2.Servers.Game
         public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
         {
             CoordF minCoord = CoordF.From(
-                    box.Position.X - box.Dimension.X,
-                    box.Position.Y - box.Dimension.Y,
-                    box.Position.Z - box.Dimension.Z);
+                    box.Position.X - box.Dimension.X / 2,
+                    box.Position.Y - box.Dimension.Y / 2,
+                    box.Position.Z - box.Dimension.Z / 2);
             CoordF maxCoord = CoordF.From(
-                box.Position.X + box.Dimension.X,
-                box.Position.Y + box.Dimension.Y,
-                box.Position.Z + box.Dimension.Z);
+                box.Position.X + box.Dimension.X / 2,
+                box.Position.Y + box.Dimension.Y / 2,
+                box.Position.Z + box.Dimension.Z / 2);
             bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
             bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
             return min && max;
@@ -439,15 +475,9 @@ namespace MapleServer2.Servers.Game
             return true;
         }
 
-        public void AddGuide(IFieldObject<GuideObject> fieldGuide)
-        {
-            State.AddGuide(fieldGuide);
-        }
+        public void AddGuide(IFieldObject<GuideObject> fieldGuide) => State.AddGuide(fieldGuide);
 
-        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide)
-        {
-            return State.RemoveGuide(fieldGuide.ObjectId);
-        }
+        public bool RemoveGuide(IFieldObject<GuideObject> fieldGuide) => State.RemoveGuide(fieldGuide.ObjectId);
 
         public void AddCube(IFieldObject<Cube> cube, int houseOwnerObjectId, int fieldPlayerObjectId)
         {
@@ -461,15 +491,9 @@ namespace MapleServer2.Servers.Game
             BroadcastPacket(ResponseCubePacket.RemoveCube(houseOwnerObjectId, fieldPlayerObjectId, cube.Coord.ToByte()));
         }
 
-        public void AddInstrument(IFieldObject<Instrument> instrument)
-        {
-            State.AddInstrument(instrument);
-        }
+        public void AddInstrument(IFieldObject<Instrument> instrument) => State.AddInstrument(instrument);
 
-        public bool RemoveInstrument(IFieldObject<Instrument> instrument)
-        {
-            return State.RemoveInstrument(instrument.ObjectId);
-        }
+        public bool RemoveInstrument(IFieldObject<Instrument> instrument) => State.RemoveInstrument(instrument.ObjectId);
 
         public void AddPortal(IFieldObject<Portal> portal)
         {
@@ -698,24 +722,28 @@ namespace MapleServer2.Servers.Game
             });
         }
 
-        public int Increment()
-        {
-            return Interlocked.Increment(ref PlayerCount);
-        }
+        public int Increment() => Interlocked.Increment(ref PlayerCount);
 
-        public int Decrement()
-        {
-            return Interlocked.Decrement(ref PlayerCount);
-        }
+        public int Decrement() => Interlocked.Decrement(ref PlayerCount);
 
         public void AddMapTimer(MapTimer timer)
         {
+            MapTimer existingTimer = MapTimers.FirstOrDefault(x => x.Id == timer.Id);
+            if (existingTimer != null)
+            {
+                existingTimer = timer;
+                return;
+            }
+
             MapTimers.Add(timer);
         }
 
-        public MapTimer GetMapTimer(string id)
-        {
-            return MapTimers.FirstOrDefault(x => x.Id == id);
-        }
+        public MapTimer GetMapTimer(string id) => MapTimers.FirstOrDefault(x => x.Id == id);
+
+        public void AddWidget(Widget widget) => Widgets.Add(widget);
+
+        public Widget GetWidget(WidgetType type) => Widgets.FirstOrDefault(x => x.Type == type);
+
+        public void EnableSceneSkip(bool enable) => SkipScene = enable;
     }
 }

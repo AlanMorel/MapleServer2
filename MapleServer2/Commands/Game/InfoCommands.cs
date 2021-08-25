@@ -63,6 +63,7 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice("No message provided.");
                 return;
             }
+
             string message = CommandHelpers.BuildString(args, trigger.Session.Player.Name);
             MapleServer.BroadcastPacketAll(NoticePacket.Notice(message));
         }

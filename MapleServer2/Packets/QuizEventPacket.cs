@@ -26,7 +26,7 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUIZ_EVENT);
             pWriter.WriteEnum(QuizEventPacketMode.Answer);
-            pWriter.WriteBool(answer); // 00 = X, 01 = O
+            pWriter.WriteBool(answer);
             pWriter.WriteUnicodeString(answerText);
             pWriter.WriteInt(duration);
             return pWriter;
