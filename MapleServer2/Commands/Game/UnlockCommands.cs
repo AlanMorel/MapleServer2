@@ -19,6 +19,10 @@ namespace MapleServer2.Commands.Game
             // Stickers
             for (int i = 1; i < 7; i++)
             {
+                if (player.ChatSticker.Any(x => x.GroupId == i))
+                {
+                    continue;
+                }
                 trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i, 9223372036854775807));
                 player.ChatSticker.Add(new ChatSticker((byte) i, 9223372036854775807));
             }
@@ -27,6 +31,10 @@ namespace MapleServer2.Commands.Game
             for (int i = 1; i < 146; i++)
             {
                 int emoteId = 90200000 + i;
+                if (player.Emotes.Contains(emoteId))
+                {
+                    continue;
+                }
                 player.Emotes.Add(emoteId);
 
                 trigger.Session.Send(EmotePacket.LearnEmote(emoteId));
@@ -36,6 +44,10 @@ namespace MapleServer2.Commands.Game
             for (int i = 1; i < 854; i++)
             {
                 int titleId = 10000000 + i;
+                if (player.Titles.Contains(titleId))
+                {
+                    continue;
+                }
                 player.Titles.Add(titleId);
 
                 trigger.Session.Send(UserEnvPacket.AddTitle(titleId));
