@@ -56,7 +56,7 @@ namespace MapleServer2.Types
 
             Level++;
             Player.StatPointDistribution.AddTotalStatPoints(5);
-            Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+            Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
             // TODO: Gain max HP
             Player.RecoverHp(Player.Stats[PlayerStatId.Hp].Max);
             Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));

@@ -130,14 +130,15 @@ namespace MapleServer2.Types
             }
         }
 
-        private List<GameSession> GetSessions()
+        public List<GameSession> GetSessions()
         {
             List<GameSession> sessions = new List<GameSession>();
             foreach (Player member in Members)
             {
-                if (member.Session.Connected())
+                GameSession playerSession = GameServer.Storage.GetPlayerById(member.CharacterId)?.Session;
+                if (playerSession != null)
                 {
-                    sessions.Add(GameServer.Storage.GetPlayerById(member.CharacterId).Session);
+                    sessions.Add(playerSession);
                 }
             }
             return sessions;

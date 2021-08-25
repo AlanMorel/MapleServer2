@@ -8,10 +8,12 @@ namespace MapleServer2.Types
         public WidgetType Type;
         public string State;
         public string Arg; // unclear what this is
+        public OXQuizQuestion OXQuizQuestion;
 
         public Widget(WidgetType type)
         {
             Type = type;
+            Arg = "";
         }
     }
 }

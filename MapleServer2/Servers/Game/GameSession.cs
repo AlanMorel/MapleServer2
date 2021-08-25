@@ -80,14 +80,14 @@ namespace MapleServer2.Servers.Game
 
         public override void EndSession()
         {
+            FieldManager.RemovePlayer(this, FieldPlayer);
+            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
+            // Should we Join the thread to wait for it to complete?
+
             if (Player.Party != null)
             {
                 Player.Party.CheckOffineParty(Player);
             }
-
-            FieldManager.RemovePlayer(this, FieldPlayer);
-            GameServer.Storage.RemovePlayer(FieldPlayer.Value);
-            // Should we Join the thread to wait for it to complete?
         }
 
         public void ReleaseField(Player player)
