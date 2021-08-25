@@ -41,8 +41,7 @@ namespace MapleServer2.Triggers
                             break;
                         case "PickQuiz":
                             // TODO: Use args to find a tier of a question
-                            OXQuizMetadata question = OXQuizMetadataStorage.GetQuestion();
-                            widget.OXQuizQuestion = new OXQuizQuestion(question.Category, question.QuestionText, question.AnswerText, question.Answer);
+                            widget.OXQuizQuestion = OXQuizMetadataStorage.GetQuestion();
                             break;
                         case "ShowQuiz":
                             Field.BroadcastPacket(QuizEventPacket.Question(widget.OXQuizQuestion.Category, widget.OXQuizQuestion.QuestionText, int.Parse(args)));

@@ -72,7 +72,7 @@ namespace MapleServer2.Triggers
             {
                 foreach (IFieldObject<Player> player in players)
                 {
-                    player.Value.Warp(player.Value.ReturnMapId, player.Value.ReturnCoord, player.Coord);
+                    player.Value.Warp(player.Value.ReturnMapId, player.Value.ReturnCoord);
                 }
                 return;
             }

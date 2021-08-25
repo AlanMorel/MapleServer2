@@ -196,7 +196,7 @@ namespace MapleServer2.Types
             QuestList = new List<QuestStatus>();
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
-            ReturnCoord = CoordF.From(-675, 525, 600);
+            ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
             GroupChatId = new int[3];
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
