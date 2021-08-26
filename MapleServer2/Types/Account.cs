@@ -16,12 +16,11 @@ namespace MapleServer2.Types
         public Currency Meret { get; set; }
         public Currency GameMeret { get; set; }
         public Currency EventMeret { get; set; }
+        public Currency MesoToken { get; private set; }
 
         public long HomeId;
         public Home Home;
-
         public BankInventory BankInventory;
-        public Currency MesoToken { get; private set; }
 
         public Account() { }
 
