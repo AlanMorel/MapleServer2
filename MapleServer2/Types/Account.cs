@@ -11,6 +11,7 @@ namespace MapleServer2.Types
         public long CreationTime { get; set; }
         public long LastLoginTime { get; set; }
         public int CharacterSlots { get; set; }
+        public long VIPExpiration { get; set; }
 
         public Currency Meret { get; set; }
         public Currency GameMeret { get; set; }
@@ -20,10 +21,7 @@ namespace MapleServer2.Types
         public Home Home;
 
         public BankInventory BankInventory;
-
         public Currency MesoToken { get; private set; }
-
-        public long VIPExpiration { get; set; }
 
         public Account() { }
 
