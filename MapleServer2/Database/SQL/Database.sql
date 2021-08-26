@@ -29,8 +29,13 @@ CREATE TABLE `accounts` (
   `Meret` bigint DEFAULT NULL,
   `GameMeret` bigint DEFAULT NULL,
   `EventMeret` bigint DEFAULT NULL,
+  `MesoToken` bigint DEFAULT NULL,
+  `BankInventoryId` bigint DEFAULT NULL,
+  `VIPExpiration` bigint NOT NULL,
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `IX_Accounts_Username` (`Username`)
+  UNIQUE KEY `IX_Accounts_Username` (`Username`),
+  KEY `accounts_bankinventoryid_FK` (`BankInventoryId`),
+  CONSTRAINT `accounts_bankinventoryid_FK` FOREIGN KEY (`BankInventoryId`) REFERENCES `bankinventories` (`Id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -41,6 +46,7 @@ DROP TABLE IF EXISTS `bankinventories`;
 CREATE TABLE `bankinventories` (
   `Id` bigint NOT NULL AUTO_INCREMENT,
   `ExtraSize` int NOT NULL,
+  `Mesos` bigint DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -86,12 +92,10 @@ CREATE TABLE `characters` (
   `InsigniaId` smallint NOT NULL,
   `Titles` text,
   `PrestigeRewardsClaimed` text,
-  `VIPExpiration` bigint NOT NULL,
   `MaxSkillTabs` int NOT NULL,
   `ActiveSkillTabId` bigint NOT NULL,
   `GameOptionsId` bigint DEFAULT NULL,
   `WalletId` bigint DEFAULT NULL,
-  `BankInventoryId` bigint DEFAULT NULL,
   `ChatSticker` text,
   `ClubId` bigint NOT NULL,
   `Coord` text NOT NULL,
@@ -118,7 +122,6 @@ CREATE TABLE `characters` (
   PRIMARY KEY (`CharacterId`),
   UNIQUE KEY `IX_Characters_Name` (`Name`),
   KEY `IX_Characters_AccountId` (`AccountId`),
-  KEY `IX_Characters_BankInventoryId` (`BankInventoryId`),
   KEY `IX_Characters_GameOptionsId` (`GameOptionsId`),
   KEY `IX_Characters_GuildId` (`GuildId`),
   KEY `IX_Characters_GuildMemberId` (`GuildMemberId`),
@@ -126,7 +129,6 @@ CREATE TABLE `characters` (
   KEY `IX_Characters_LevelsId` (`LevelsId`),
   KEY `IX_Characters_WalletId` (`WalletId`),
   CONSTRAINT `FK_Characters_Accounts_AccountId` FOREIGN KEY (`AccountId`) REFERENCES `accounts` (`Id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_Characters_BankInventories_BankInventoryId` FOREIGN KEY (`BankInventoryId`) REFERENCES `bankinventories` (`Id`) ON DELETE RESTRICT,
   CONSTRAINT `FK_Characters_GameOptions_GameOptionsId` FOREIGN KEY (`GameOptionsId`) REFERENCES `gameoptions` (`Id`) ON DELETE RESTRICT,
   CONSTRAINT `FK_Characters_GuildMembers_GuildMemberId` FOREIGN KEY (`GuildMemberId`) REFERENCES `guildmembers` (`Id`) ON DELETE RESTRICT,
   CONSTRAINT `FK_Characters_Guilds_GuildId` FOREIGN KEY (`GuildId`) REFERENCES `guilds` (`Id`) ON DELETE RESTRICT,
@@ -476,8 +478,6 @@ CREATE TABLE `wallets` (
   `Treva` bigint DEFAULT NULL,
   `Rue` bigint DEFAULT NULL,
   `HaviFruit` bigint DEFAULT NULL,
-  `MesoToken` bigint DEFAULT NULL,
-  `Bank` bigint DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

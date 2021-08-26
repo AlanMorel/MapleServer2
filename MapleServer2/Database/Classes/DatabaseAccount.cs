@@ -19,6 +19,9 @@ namespace MapleServer2.Database.Classes
                 Meret = account.Meret.Amount,
                 GameMeret = account.GameMeret.Amount,
                 EventMeret = account.EventMeret.Amount,
+                MesoToken = account.MesoToken.Amount,
+                BankInventoryId = account.BankInventory.Id,
+                account.VIPExpiration
             });
         }
 
@@ -56,12 +59,22 @@ namespace MapleServer2.Database.Classes
                 Meret = account.Meret.Amount,
                 GameMeret = account.GameMeret.Amount,
                 EventMeret = account.EventMeret.Amount,
+                MesoToken = account.MesoToken.Amount,
+                account.VIPExpiration
             });
+            DatabaseManager.BankInventories.Update(account.BankInventory);
         }
 
         public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
-        private static Account ReadAccount(dynamic data) => new Account(data.Username, data.PasswordHash, data.CreationTime, data.LastLoginTime, data.CharacterSlots, data.Meret, data.GameMeret, data.EventMeret, data.Id, data.HomeId ?? 0);
+        private static Account ReadAccount(dynamic data)
+        {
+            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId);
+
+            return new Account(data.Id, data.Username, data.PasswordHash, data.CreationTime, data.LastLoginTime,
+                data.CharacterSlots, data.Meret, data.GameMeret, data.EventMeret, data.MesoToken, data.HomeId ?? 0,
+                data.VIPExpiration, bankInventory);
+        }
 
         public override bool Equals(object obj)
         {

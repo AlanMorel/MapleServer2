@@ -11,6 +11,7 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
+                Mesos = bankInventory.Mesos.Amount,
                 bankInventory.ExtraSize,
             });
         }
@@ -21,6 +22,7 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("Id", bankInventory.Id).Update(new
             {
+                Mesos = bankInventory.Mesos.Amount,
                 bankInventory.ExtraSize,
             });
 
@@ -37,6 +39,6 @@ namespace MapleServer2.Database.Classes
 
         public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
 
-        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.Id, data.ExtraSize, DatabaseManager.Items.FindAllByBankInventoryId(data.Id));
+        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.Id, data.ExtraSize, DatabaseManager.Items.FindAllByBankInventoryId(data.Id), data.Mesos);
     }
 }

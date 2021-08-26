@@ -19,9 +19,18 @@ namespace MapleServer2.Types
         public long HomeId;
         public Home Home;
 
+        public BankInventory BankInventory;
+
+        public Currency MesoToken { get; private set; }
+
+        public long VIPExpiration { get; set; }
+
         public Account() { }
 
-        public Account(string username, string passwordHash, long creationTime, long lastLoginTime, int characterSlots, long meretAmount, long gameMeretAmount, long eventMeretAmount, long accountId, long homeId)
+        public Account(long accountId, string username, string passwordHash,
+            long creationTime, long lastLoginTime, int characterSlots, long meretAmount,
+            long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration,
+            BankInventory bankInventory)
         {
             Id = accountId;
             Username = username;
@@ -32,6 +41,9 @@ namespace MapleServer2.Types
             Meret = new Currency(CurrencyType.Meret, meretAmount);
             GameMeret = new Currency(CurrencyType.GameMeret, gameMeretAmount);
             EventMeret = new Currency(CurrencyType.EventMeret, eventMeretAmount);
+            MesoToken = new Currency(CurrencyType.MesoToken, mesoTokens);
+            BankInventory = bankInventory;
+            VIPExpiration = vipExpiration;
             HomeId = homeId;
         }
 
@@ -45,6 +57,8 @@ namespace MapleServer2.Types
             Meret = new Currency(CurrencyType.Meret, 0);
             GameMeret = new Currency(CurrencyType.GameMeret, 0);
             EventMeret = new Currency(CurrencyType.EventMeret, 0);
+            MesoToken = new Currency(CurrencyType.MesoToken, 0);
+            BankInventory = new BankInventory();
 
             Id = DatabaseManager.Accounts.Insert(this);
         }
@@ -67,6 +81,11 @@ namespace MapleServer2.Types
             }
 
             return false;
+        }
+
+        public bool IsVip()
+        {
+            return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
     }
 }

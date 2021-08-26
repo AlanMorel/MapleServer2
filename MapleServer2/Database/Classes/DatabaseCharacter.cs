@@ -26,12 +26,10 @@ namespace MapleServer2.Database.Classes
                 player.InsigniaId,
                 Titles = JsonConvert.SerializeObject(player.Titles),
                 PrestigeRewardsClaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
-                player.VIPExpiration,
                 player.MaxSkillTabs,
                 player.ActiveSkillTabId,
                 GameOptionsId = player.GameOptions.Id,
                 WalletId = player.Wallet.Id,
-                BankInventoryId = player.BankInventory.Id,
                 ChatSticker = JsonConvert.SerializeObject(player.ChatSticker),
                 player.ClubId,
                 Coord = JsonConvert.SerializeObject(player.Coord),
@@ -69,9 +67,9 @@ namespace MapleServer2.Database.Classes
             .Select(
                 "Characters.{*}",
                 "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}",
-                "Accounts.{Username, PasswordHash, CreationTime, LastLoginTime, CharacterSlots, Meret, GameMeret, EventMeret}",
+                "Accounts.{Username, PasswordHash, CreationTime, LastLoginTime, CharacterSlots, Meret, GameMeret, EventMeret, MesoToken, BankInventoryId, VIPExpiration}",
                 "GameOptions.{KeyBinds, ActiveHotbarId}",
-                "Wallets.{Meso, ValorToken, Treva, Rue, HaviFruit, MesoToken, Bank}",
+                "Wallets.{Meso, ValorToken, Treva, Rue, HaviFruit}",
                 "Homes.Id as HomeId")
             .FirstOrDefault());
         }
@@ -80,7 +78,11 @@ namespace MapleServer2.Database.Classes
         {
             List<Player> characters = new List<Player>();
 
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("AccountId", accountId)
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where(new
+            {
+                AccountId = accountId,
+                IsDeleted = false
+            })
             .Join("Levels", "Levels.Id", "Characters.LevelsId")
             .Select(
                 "Characters.{*}",
@@ -91,7 +93,6 @@ namespace MapleServer2.Database.Classes
                 characters.Add(new Player()
                 {
                     CharacterId = data.CharacterId,
-                    AccountId = data.AccountId,
                     CreationTime = data.CreationTime,
                     Name = data.Name,
                     Gender = data.Gender,
@@ -99,36 +100,12 @@ namespace MapleServer2.Database.Classes
                     Job = (Job) data.Job,
                     Levels = new Levels(data.Level, data.Exp, data.RestExp, data.PrestigeLevel, data.PrestigeExp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.MasteryExp), data.LevelsId),
                     MapId = data.MapId,
-                    TitleId = data.TitleId,
-                    InsigniaId = data.InsigniaId,
-                    Titles = JsonConvert.DeserializeObject<List<int>>(data.Titles),
-                    PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.PrestigeRewardsClaimed),
-                    VIPExpiration = data.VIPExpiration,
-                    MaxSkillTabs = data.MaxSkillTabs,
-                    ActiveSkillTabId = data.ActiveSkillTabId,
-                    BankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId),
-                    ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.ChatSticker),
-                    ClubId = data.ClubId,
-                    Coord = JsonConvert.DeserializeObject<CoordF>(data.Coord),
-                    Emotes = JsonConvert.DeserializeObject<List<int>>(data.Emotes),
-                    FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.FavoriteStickers),
-                    GroupChatId = JsonConvert.DeserializeObject<int[]>(data.GroupChatId),
-                    GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.GuildApplications),
-                    GuildId = data.GuildId ?? 0,
-                    Inventory = DatabaseManager.Inventories.FindById(data.InventoryId),
-                    IsDeleted = data.IsDeleted,
-                    Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.Mapleopoly),
-                    Motto = data.Motto,
-                    ProfileUrl = data.ProfileUrl,
-                    ReturnCoord = JsonConvert.DeserializeObject<CoordF>(data.ReturnCoord),
-                    ReturnMapId = data.ReturnMapId,
-                    SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.SkinColor),
-                    StatPointDistribution = JsonConvert.DeserializeObject<StatDistribution>(data.StatPointDistribution),
                     Stats = JsonConvert.DeserializeObject<PlayerStats>(data.Stats),
                     TrophyCount = JsonConvert.DeserializeObject<int[]>(data.TrophyCount),
-                    UnlockedMaps = JsonConvert.DeserializeObject<List<int>>(data.UnlockedMaps),
-                    UnlockedTaxis = JsonConvert.DeserializeObject<List<int>>(data.UnlockedTaxis),
-                    VisitingHomeId = data.VisitingHomeId
+                    Motto = data.Motto,
+                    ProfileUrl = data.ProfileUrl,
+                    Inventory = DatabaseManager.Inventories.FindById(data.InventoryId),
+                    SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.SkinColor),
                 });
             }
             return characters;
@@ -147,7 +124,6 @@ namespace MapleServer2.Database.Classes
                 player.InsigniaId,
                 Titles = JsonConvert.SerializeObject(player.Titles),
                 PrestigeRewardsClaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
-                player.VIPExpiration,
                 player.MaxSkillTabs,
                 player.ActiveSkillTabId,
                 ChatSticker = JsonConvert.SerializeObject(player.ChatSticker),
@@ -173,16 +149,12 @@ namespace MapleServer2.Database.Classes
                 UnlockedTaxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
                 player.VisitingHomeId
             });
+            DatabaseManager.Accounts.Update(player.Account);
 
             DatabaseManager.Levels.Update(player.Levels);
             DatabaseManager.Wallets.Update(player.Wallet);
-            if (player.Account != null)
-            {
-                DatabaseManager.Accounts.Update(player.Account);
-            }
             DatabaseManager.GameOptions.Update(player.GameOptions);
             DatabaseManager.Inventories.Update(player.Inventory);
-            DatabaseManager.BankInventories.Update(player.BankInventory);
 
             foreach (KeyValuePair<int, Trophy> trophy in player.TrophyData)
             {
@@ -215,7 +187,8 @@ namespace MapleServer2.Database.Classes
             {
                 CharacterId = data.CharacterId,
                 AccountId = data.AccountId,
-                Account = new Account(data.Username, data.PasswordHash, data.CreationTime, data.LastLoginTime, data.CharacterSlots, data.Meret, data.GameMeret, data.EventMeret, data.AccountId, data.HomeId ?? 0),
+                Account = new Account(data.AccountId, data.Username, data.PasswordHash, data.CreationTime, data.LastLoginTime, data.CharacterSlots,
+                    data.Meret, data.GameMeret, data.EventMeret, data.MesoToken, data.HomeId ?? 0, data.VIPExpiration, bankInventory),
                 CreationTime = data.CreationTime,
                 Name = data.Name,
                 Gender = data.Gender,
@@ -227,13 +200,11 @@ namespace MapleServer2.Database.Classes
                 InsigniaId = data.InsigniaId,
                 Titles = JsonConvert.DeserializeObject<List<int>>(data.Titles),
                 PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.PrestigeRewardsClaimed),
-                VIPExpiration = data.VIPExpiration,
                 MaxSkillTabs = data.MaxSkillTabs,
                 ActiveSkillTabId = data.ActiveSkillTabId,
                 GameOptions = new GameOptions(JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(data.KeyBinds), hotbars, data.ActiveHotbarId, data.GameOptionsId),
-                Wallet = new Wallet(data.Meso, data.ValorToken, data.Treva, data.Rue, data.HaviFruit, data.MesoToken, data.Bank, data.WalletId),
+                Wallet = new Wallet(data.Meso, data.ValorToken, data.Treva, data.Rue, data.HaviFruit, data.WalletId),
                 Inventory = inventory,
-                BankInventory = bankInventory,
                 ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.ChatSticker),
                 ClubId = data.ClubId,
                 Coord = JsonConvert.DeserializeObject<CoordF>(data.Coord),

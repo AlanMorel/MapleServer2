@@ -172,8 +172,8 @@ namespace MapleServer2.PacketHandlers.Login
                 session.Send(ResponseCharCreatePacket.NameTaken());
                 return;
             }
-
-            Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
+            Player newCharacter = new Player(account, name, gender, job, skinColor);
             foreach (Item item in cosmetics.Values)
             {
                 item.OwnerCharacterId = newCharacter.CharacterId;
@@ -183,7 +183,6 @@ namespace MapleServer2.PacketHandlers.Login
             DatabaseManager.Characters.Update(newCharacter);
 
             // Send updated CHAR_MAX_COUNT
-            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)
