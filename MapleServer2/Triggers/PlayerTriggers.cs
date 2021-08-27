@@ -1,6 +1,9 @@
 ﻿using System.Numerics;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -47,17 +50,49 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void MoveUser(int mapId, int triggerId, int arg3)
+        public void MoveUser(int mapId, int triggerId, int boxId)
         {
-            IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
-            if (portal == null)
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            if (boxId != 0)
             {
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                List<IFieldObject<Player>> boxedPlayers = new List<IFieldObject<Player>>();
+                foreach (IFieldObject<Player> player in players)
+                {
+                    if (FieldManager.IsPlayerInBox(box, player))
+                    {
+                        boxedPlayers.Add(player);
+                    }
+                }
+                players = boxedPlayers;
+            }
+
+            // move player back to return map
+            if (mapId == 0 && triggerId == 0)
+            {
+                foreach (IFieldObject<Player> player in players)
+                {
+                    player.Value.Warp(player.Value.ReturnMapId, player.Value.ReturnCoord);
+                }
                 return;
             }
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+
+            if (mapId == Field.MapId)
+            {
+                IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == triggerId);
+                foreach (IFieldObject<Player> player in players)
+                {
+                    player.Coord = portal.Coord;
+                    player.Rotation = portal.Rotation;
+                    player.Value.Session.Send(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation));
+                }
+                return;
+            }
+
+            MapPortal dstPortal = MapEntityStorage.GetPortals(mapId).FirstOrDefault(portal => portal.Id == triggerId);
             foreach (IFieldObject<Player> player in players)
             {
-                //       player.Value.Warp(mapId, portal.Coord, portal.Rotation);
+                player.Value.Warp(mapId, dstPortal.Coord.ToFloat(), dstPortal.Rotation.ToFloat());
             }
         }
 
@@ -81,8 +116,9 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetPcEmotionLoop(string arg1, float arg2, bool arg3)
+        public void SetPcEmotionLoop(string animationState, float duration, bool isLoop)
         {
+            Field.BroadcastPacket(TriggerPacket.SetAnimation(animationState, (int) duration, isLoop));
         }
 
         public void SetPcEmotionSequence(string arg1)
@@ -93,12 +129,61 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetAchievement(int arg1, string arg2, string arg3)
+        public void SetAchievement(int boxId, string type, string trophySet)
         {
+            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            if (boxId != 0)
+            {
+                MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                List<IFieldObject<Player>> boxedPlayers = new List<IFieldObject<Player>>();
+                foreach (IFieldObject<Player> player in players)
+                {
+                    if (FieldManager.IsPlayerInBox(box, player))
+                    {
+                        boxedPlayers.Add(player);
+                    }
+                }
+                players = boxedPlayers;
+            }
+
+            foreach (IFieldObject<Player> player in players)
+            {
+                if (type == "trigger")
+                {
+                    switch (trophySet)
+                    {
+                        case "oxquiz_start":
+                            player.Value.TrophyUpdate(23400009, 1);
+                            break;
+                        case "oxquiz_correct":
+                            player.Value.TrophyUpdate(23400010, 1);
+                            break;
+                        case "oxquiz_win":
+                            player.Value.TrophyUpdate(23400011, 1);
+                            break;
+                        case "trapmaster_start":
+                            player.Value.TrophyUpdate(23400001, 1);
+                            break;
+                        case "trapmaster_win":
+                            player.Value.TrophyUpdate(23400002, 1);
+                            break;
+                        case "finalsurvivor_start":
+                            player.Value.TrophyUpdate(23400003, 1);
+                            break;
+                        case "finalsurvivor_win":
+                            player.Value.TrophyUpdate(23400004, 1);
+                            break;
+                        default:
+                            Logger.Warn($"Unhandled trophy set: {trophySet}");
+                            break;
+                    }
+                }
+            }
         }
 
-        public void SetConversation(byte arg1, int arg2, string script, int arg4, byte arg5, Align align)
+        public void SetConversation(byte arg1, int npcId, string script, int delay, byte arg5, Align align)
         {
+            Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, delay * 1000, align));
         }
 
         public void SetOnetimeEffect(int id, bool enable, string path)
@@ -124,6 +209,15 @@ namespace MapleServer2.Triggers
 
         public void SetUserValue(int triggerId, string key, int value)
         {
+            PlayerTrigger playerTrigger = new PlayerTrigger(key)
+            {
+                TriggerId = triggerId,
+                Value = value
+            };
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                player.Value.Triggers.Add(playerTrigger);
+            }
         }
 
         public void SetUserValueFromDungeonRewardCount(string key, int dungeonRewardId)

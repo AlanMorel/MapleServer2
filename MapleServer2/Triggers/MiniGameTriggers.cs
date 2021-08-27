@@ -1,4 +1,11 @@
 ﻿using Maple2.Trigger.Enum;
+using Maple2Storage.Tools;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
+using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
 {
@@ -10,18 +17,60 @@ namespace MapleServer2.Triggers
 
         public void StartMiniGameRound(int boxId, byte round)
         {
+
         }
 
         public void EndMiniGame(int winnerBoxId, MiniGame type, bool isOnlyWinner)
         {
+            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+            List<IFieldObject<Player>> players = new List<IFieldObject<Player>>();
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(box, player))
+                {
+                    if (type == MiniGame.LudibriumEscape)
+                    {
+                        PlayerTrigger trigger = player.Value.Triggers.FirstOrDefault(x => x.Key == "gameStart");
+                        player.Value.Triggers.Remove(trigger);
+                        player.Value.Session.Send(ResultsPacket.Rounds(1, 1));
+                    }
+                    else if (type == MiniGame.OXQuiz)
+                    {
+                        player.Value.Session.Send(ResultsPacket.Rounds(10, 10));
+                    }
+                }
+            }
         }
 
         public void EndMiniGameRound(int winnerBoxId, float expRate, bool isOnlyWinner, bool isGainLoserBonus, bool meso, MiniGame type)
         {
+            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(box, player))
+                {
+                    // TODO: calculate correct amount of exp;
+                    player.Value.Levels.GainExp(10000);
+                }
+            }
         }
 
         public void MiniGameCameraDirection(int boxId, int cameraId)
         {
+            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+            List<IFieldObject<Player>> boxPlayers = new List<IFieldObject<Player>>();
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(box, player))
+                {
+                    boxPlayers.Add(player);
+                }
+            }
+
+            Random random = RandomProvider.Get();
+            int index = random.Next(boxPlayers.Count());
+            IFieldObject<Player> randomPlayer = boxPlayers[index];
+            Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));
         }
 
         public void MiniGameGiveExp(int boxId, float expRate, bool isOutSide)
@@ -30,6 +79,30 @@ namespace MapleServer2.Triggers
 
         public void MiniGameGiveReward(int winnerBoxId, string contentType, MiniGame type)
         {
+            MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, winnerBoxId);
+            List<IFieldObject<Player>> players = new List<IFieldObject<Player>>();
+            foreach (IFieldObject<Player> player in Field.State.Players.Values)
+            {
+                if (FieldManager.IsPlayerInBox(box, player))
+                {
+                    players.Add(player);
+                }
+            }
+            foreach (IFieldObject<Player> player in players)
+            {
+                if (contentType == "miniGame")
+                {
+                    List<Item> items = RewardContentMetadataStorage.GetRewardItems(3, player.Value.Levels.Level);
+                    foreach (Item item in items)
+                    {
+                        InventoryController.Add(player.Value.Session, item, true);
+                    }
+                }
+                else if (contentType == "UserOpenMiniGameExtraReward")
+                {
+
+                }
+            }
         }
 
         public void SetMiniGameAreaForHack(int boxId)

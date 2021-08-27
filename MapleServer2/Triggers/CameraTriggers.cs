@@ -9,8 +9,10 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(SetCameraPacket.Set(interpolationTime));
         }
 
-        public void CameraSelect(int arg1, bool arg2)
+        public void CameraSelect(int cameraId, bool enable)
         {
+            Field.State.TriggerCameras[cameraId].IsEnabled = enable;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerCameras[cameraId]));
         }
 
         public void CameraSelectPath(int[] pathIds, bool returnView)
@@ -20,6 +22,10 @@ namespace MapleServer2.Triggers
 
         public void SetLocalCamera(int cameraId, bool enable)
         {
+            if (!enable)
+            {
+                Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 0));
+            }
         }
     }
 }

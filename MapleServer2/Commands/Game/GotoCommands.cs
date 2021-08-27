@@ -48,7 +48,7 @@ namespace MapleServer2.Commands.Game
                 "goto"
             };
             Description = "Go to a player location.";
-            AddParameter<string>("name", "Name of the target player.");
+            AddParameter("name", "Name of the target player.", string.Empty);
         }
 
         public override void Execute(GameCommandTrigger trigger)

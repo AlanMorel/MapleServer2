@@ -47,6 +47,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleChangeCharacter(GameSession session)
         {
+            session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
             DatabaseManager.Characters.Update(session.Player);
             AuthData authData = AuthStorage.GetData(session.Player.AccountId);
@@ -56,6 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleQuit(GameSession session)
         {
+            session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
             DatabaseManager.Characters.Update(session.Player);
         }

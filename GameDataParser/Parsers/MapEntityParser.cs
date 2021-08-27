@@ -135,6 +135,37 @@ namespace GameDataParser.Parsers
                             metadata.BoundingBox1 = CoordS.FromVector3(bounding.Position);
                         }
                         break;
+                    case IMS2PatrolData patrolData:
+                        string patrolDataName = patrolData.EntityName.Replace("-", string.Empty);
+                        List<string> wayPointIds = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.WayPoints)
+                        {
+                            string wayPointId = entry.Value.Replace("-", string.Empty);
+                            wayPointIds.Add(wayPointId);
+                        }
+
+                        List<string> arriveAnimations = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.ArriveAnims)
+                        {
+                            arriveAnimations.Add(entry.Value);
+                        }
+
+                        List<string> approachAnimations = new List<string>();
+                        foreach (KeyValuePair<string, string> entry in patrolData.ApproachAnims)
+                        {
+                            approachAnimations.Add(entry.Value);
+                        }
+
+                        List<int> arriveAnimationTimes = new List<int>();
+                        foreach (KeyValuePair<string, uint> entry in patrolData.ArriveAnimsTime)
+                        {
+                            arriveAnimationTimes.Add((int) entry.Value);
+                        }
+                        metadata.PatrolDatas.Add(new PatrolData(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint, arriveAnimations, approachAnimations, arriveAnimationTimes));
+                        break;
+                    case IMS2WayPoint wayPoint:
+                        metadata.WayPoints.Add(new WayPoint(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position), CoordS.FromVector3(wayPoint.Rotation)));
+                        break;
                     // TODO: This can probably be more generally handled as IMS2RegionSkill
                     case IMS2HealingRegionSkillSound healingRegion:
                         if (healingRegion.Position == default)
@@ -149,7 +180,6 @@ namespace GameDataParser.Parsers
                         {
                             continue;
                         }
-
                         if (interact.ModelName.Contains("funct_extract_"))
                         {
                             metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
@@ -286,15 +316,24 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerBox triggerBox:
                                 metadata.TriggerBoxes.Add(new MapTriggerBox(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position), CoordF.FromVector3(triggerBox.ShapeDimensions)));
                                 break;
-                            //case IMS2TriggerLadder triggerLadder: //the packet uses int id, bool, bool, constant int: 3. The two bools are always both 0 or 1, not sure where they are coming from.
-                            //    metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder.TriggerObjectID));
-                            //    break;
+                            case IMS2TriggerLadder triggerLadder: // TODO: Find which parameters correspond to animationeffect (bool) and animation delay (int?)
+                                metadata.TriggerLadders.Add(new MapTriggerLadder(triggerLadder.TriggerObjectID, triggerLadder.IsVisible));
+                                break;
+                            case IMS2TriggerRope triggerRope: // TODO: Find which parameters correspond to animationeffect (bool) and animation delay (int?)
+                                metadata.TriggerRopes.Add(new MapTriggerRope(triggerRope.TriggerObjectID, triggerRope.IsVisible));
+                                break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
                                     triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                                 break;
                             case IMS2TriggerActor triggerActor:
                                 metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
+                                break;
+                            case IMS2TriggerCube triggerCube:
+                                metadata.TriggerCubes.Add(new MapTriggerCube(triggerCube.TriggerObjectID, triggerCube.IsVisible));
+                                break;
+                            case IMS2TriggerSound triggerSound:
+                                metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
                         }
                         break;

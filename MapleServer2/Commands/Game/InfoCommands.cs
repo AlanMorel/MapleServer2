@@ -3,7 +3,9 @@ using System.Text;
 using MapleServer2.Commands.Core;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game
 {
@@ -61,8 +63,28 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice("No message provided.");
                 return;
             }
+
             string message = CommandHelpers.BuildString(args, trigger.Session.Player.Name);
             MapleServer.BroadcastPacketAll(NoticePacket.Notice(message));
+        }
+    }
+
+    public class OnlineCommand : InGameCommand
+    {
+        public OnlineCommand()
+        {
+            Aliases = new[] { "online" };
+            Description = "See all online players.";
+        }
+
+        public override void Execute(GameCommandTrigger trigger)
+        {
+            List<Player> players = GameServer.Storage.GetAllPlayers();
+            StringBuilder stringBuilder = new();
+            stringBuilder.Append($"{CommandHelpers.Color(CommandHelpers.Bold("Online players:"), Color.DarkOrange)}\n");
+            stringBuilder.Append(string.Join(", ", players.Select(p => p.Name)));
+
+            trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
         }
     }
 }

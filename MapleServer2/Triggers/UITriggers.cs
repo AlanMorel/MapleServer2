@@ -14,24 +14,58 @@ namespace MapleServer2.Triggers
         public void CreateWidget(WidgetType type)
         {
             Widget widget = new Widget(type);
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
-            {
-                player.Value.Widgets.Add(widget);
-            }
+            Field.AddWidget(widget);
         }
 
         public void WidgetAction(WidgetType type, string name, string args, int widgetArgNum)
         {
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-            foreach (IFieldObject<Player> player in players)
+            Widget widget = Field.GetWidget(type);
+            if (widget == null)
             {
-                Widget widget = player.Value.Widgets.FirstOrDefault(x => x.Type == type);
-                if (widget == null)
-                {
-                    continue;
-                }
-                widget.State = name;
+                return;
+            }
+
+            switch (type)
+            {
+                case WidgetType.SceneMovie:
+                    if (name == "Clear")
+                    {
+                        // TODO
+                    }
+                    break;
+                case WidgetType.OxQuiz:
+                    switch (name)
+                    {
+                        case "DevMode":
+                            // TODO: Unknown
+                            break;
+                        case "PickQuiz":
+                            // TODO: Use args to find a tier of a question
+                            widget.OXQuizQuestion = OXQuizMetadataStorage.GetQuestion();
+                            break;
+                        case "ShowQuiz":
+                            Field.BroadcastPacket(QuizEventPacket.Question(widget.OXQuizQuestion.Category, widget.OXQuizQuestion.QuestionText, int.Parse(args)));
+                            break;
+                        case "PreJudge":
+                            if (widget.OXQuizQuestion.Answer)
+                            {
+                                widget.State = "Correct";
+                            }
+                            else
+                            {
+                                widget.State = "Incorrect";
+                            }
+                            break;
+                        case "ShowAnswer":
+                            Field.BroadcastPacket(QuizEventPacket.Answer(widget.OXQuizQuestion.Answer, widget.OXQuizQuestion.AnswerText, int.Parse(args)));
+                            break;
+                        case "Judge":
+                            break;
+                    }
+                    break;
+                default:
+                    Logger.Warn($"Non implemented Widget Action. WidgetType: {type}");
+                    break;
             }
         }
 
@@ -55,7 +89,6 @@ namespace MapleServer2.Triggers
 
         public void PlaySystemSoundInBox(int[] boxIds, string sound)
         {
-            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
             if (boxIds != null)
             {
                 foreach (int boxId in boxIds)
@@ -70,7 +103,9 @@ namespace MapleServer2.Triggers
                         }
                     }
                 }
+                return;
             }
+            Field.BroadcastPacket(SystemSoundPacket.Play(sound));
         }
 
         public void ScoreBoardCreate(string type, int maxScore)
@@ -87,11 +122,30 @@ namespace MapleServer2.Triggers
 
         public void SetEventUI(byte typeId, string script, int duration, string box)
         {
+            if (typeId == 0)
+            {
+                // EventUI is a Round Bar UI
+                string[] ids = script.Split(",");
+                if (ids.Length == 2)
+                {
+                    Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), 1));
+                    return;
+                }
+                Field.BroadcastPacket(MassiveEventPacket.RoundBar(int.Parse(ids[0]), int.Parse(ids[1]), int.Parse(ids[2])));
+                return;
+            }
+
             EventBannerType type = EventBannerType.None;
             switch (typeId)
             {
                 case 1:
                     type = EventBannerType.None;
+                    break;
+                case 3:
+                    type = EventBannerType.Winner;
+                    break;
+                case 4:
+                    type = EventBannerType.Lose;
                     break;
                 case 6:
                     type = EventBannerType.Bonus;
@@ -104,43 +158,31 @@ namespace MapleServer2.Triggers
                 return;
             }
 
+            MapTriggerBox triggerBox;
+            int boxId = 0;
             if (box.Contains('!'))
             {
                 box = box[1..];
-                int boxId = int.Parse(box);
-
-                List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
-                MapTriggerBox triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-
-                foreach (IFieldObject<Player> player in players)
+                boxId = int.Parse(box);
+                triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
+                foreach (IFieldObject<Player> player in Field.State.Players.Values)
                 {
-                    if (FieldManager.IsPlayerInBox(triggerBox, player))
+                    if (!FieldManager.IsPlayerInBox(triggerBox, player))
                     {
-                        players.Remove(player);
+                        player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
                     }
                 }
-                foreach (IFieldObject<Player> player in players)
-                {
-                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
-                }
-
                 return;
             }
 
-            int triggerBoxId = int.Parse(box);
-            List<IFieldObject<Player>> fieldPlayers = new List<IFieldObject<Player>>();
-            MapTriggerBox mapTriggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, triggerBoxId);
-
+            boxId = int.Parse(box);
+            triggerBox = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
             foreach (IFieldObject<Player> player in Field.State.Players.Values)
             {
-                if (FieldManager.IsPlayerInBox(mapTriggerBox, player))
+                if (FieldManager.IsPlayerInBox(triggerBox, player))
                 {
-                    fieldPlayers.Add(player);
+                    player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
                 }
-            }
-            foreach (IFieldObject<Player> player in fieldPlayers)
-            {
-                player.Value.Session.Send(MassiveEventPacket.TextBanner(type, script, duration));
             }
         }
 
@@ -188,6 +230,7 @@ namespace MapleServer2.Triggers
                     Field.BroadcastPacket(CinematicPacket.HideUi(true));
                     break;
                 case 2:
+                case 3:
                 case 4:
                     Field.BroadcastPacket(CinematicPacket.View(type));
                     break;
@@ -214,6 +257,7 @@ namespace MapleServer2.Triggers
         public void SetSceneSkip(TriggerState state, string arg2)
         {
             // TODO: Properly handle the trigger state
+            SkipSceneState = state;
             Field.BroadcastPacket(CinematicPacket.SetSceneSkip(arg2));
         }
 

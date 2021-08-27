@@ -80,8 +80,9 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void MoveNpc(int arg1, string arg2)
+        public void MoveNpc(int spawnTriggerId, string patrolDataName)
         {
+            PatrolData patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
         }
 
         public void MoveNpcToPos(int spawnPointId, Vector3 pos, Vector3 rot)

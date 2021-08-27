@@ -61,27 +61,28 @@ namespace MapleServer2.Tools
             }
         }
 
-        public void HandleCommand(CommandTrigger trigger)
+        public bool HandleCommand(CommandTrigger trigger)
         {
             if (trigger == null)
             {
                 Logger.Error("No CommandTrigger were pass.");
-                return;
+                return false;
             }
             // Assuming the first argument is the command:
             CommandBase command = GetCommand(trigger.Args[0]);
 
             if (command == null)
             {
-                Logger.Error("No Command were found with the current alias.");
-                return;
+                Logger.Warn("No Command were found with the current alias.");
+                return false;
             }
             if (!trigger.DefinedParametersCommand(command))
             {
-                Logger.Error("No Parameters to defined in this command.");
-                return;
+                Logger.Warn("No Parameters to defined in this command.");
+                return false;
             }
             command.Execute(trigger);
+            return true;
         }
 
         public static CommandBase GetCommand(string alias)
