@@ -68,7 +68,7 @@ namespace MapleServer2.Triggers
             }
 
             Random random = RandomProvider.Get();
-            int index = random.Next(boxPlayers.Count());
+            int index = random.Next(boxPlayers.Count);
             IFieldObject<Player> randomPlayer = boxPlayers[index];
             Field.BroadcastPacket(LocalCameraPacket.Camera(cameraId, 1, randomPlayer.ObjectId));
         }

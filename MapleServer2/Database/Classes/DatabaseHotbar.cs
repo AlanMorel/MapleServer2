@@ -1,4 +1,4 @@
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 

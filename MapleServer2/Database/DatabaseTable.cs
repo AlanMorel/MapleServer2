@@ -1,5 +1,4 @@
-
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using SqlKata.Compilers;
 using SqlKata.Execution;
 
