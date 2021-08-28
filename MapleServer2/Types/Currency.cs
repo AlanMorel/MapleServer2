@@ -57,7 +57,7 @@ namespace MapleServer2.Types
                 case CurrencyType.HaviFruit:
                     Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                     break;
-                case CurrencyType.Bank:
+                case CurrencyType.BankMesos:
                     Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                     break;
                 default:
