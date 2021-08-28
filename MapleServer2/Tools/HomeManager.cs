@@ -66,7 +66,6 @@ namespace MapleServer2.Tools
                         DatabaseManager.Homes.Update(kvp.Value);
                     }
                     await Task.Delay(1000 * 60); // 1 minute
-                    //   await Task.Delay(1000 * 60 * 30); // 30 minutes
                 }
             });
         }
