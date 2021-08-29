@@ -199,9 +199,9 @@ namespace MapleServer2.Types
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
+            ActiveSkillTabId = 1;
             CharacterId = DatabaseManager.Characters.Insert(this);
-            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, CharacterId, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
-            ActiveSkillTabId = CharacterId;
+            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, 1, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
         }
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
