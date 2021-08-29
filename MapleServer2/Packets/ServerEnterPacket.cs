@@ -31,7 +31,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteLong(session.Player.Wallet.MesoToken.Amount);
+            pWriter.WriteLong(session.Player.Account.MesoToken.Amount);
             pWriter.WriteUnicodeString(""); // Profile Url
             pWriter.WriteByte();
             pWriter.WriteByte();

@@ -41,11 +41,11 @@ namespace MapleServer2.PacketHandlers.Common
             player.Wallet.Treva.Session = session;
             player.Wallet.Rue.Session = session;
             player.Wallet.HaviFruit.Session = session;
-            player.Wallet.MesoToken.Session = session;
-            player.Wallet.Bank.Session = session;
             player.Account.Meret.Session = session;
             player.Account.GameMeret.Session = session;
             player.Account.EventMeret.Session = session;
+            player.Account.MesoToken.Session = session;
+            player.Account.BankInventory.Mesos.Session = session;
             player.Levels.Player = player;
 
             session.InitPlayer(player);
