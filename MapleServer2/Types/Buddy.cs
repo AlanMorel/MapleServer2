@@ -1,4 +1,4 @@
-﻿using MapleServer2.Tools;
+﻿using MapleServer2.Database;
 
 namespace MapleServer2.Types
 {
@@ -6,7 +6,7 @@ namespace MapleServer2.Types
     {
         public long Id { get; }
         public long SharedId { get; }
-        public Player Player { get; set; }
+        public long CharacterId { get; set; }
         public Player Friend { get; set; }
         public string Message { get; set; }
         public bool IsFriendRequest { get; set; }
@@ -15,12 +15,25 @@ namespace MapleServer2.Types
         public string BlockReason { get; set; }
         public long Timestamp { get; }
 
-        public Buddy() { }
-
-        public Buddy(long id, Player friend, Player player, string message, bool pending, bool accepted, bool blocked = false)
+        public Buddy(long id, long sharedId, long characterId, Player friend, string message, bool isFriendRequest, bool isPending,
+            bool blocked, string blockReason, long timestamp)
         {
-            Id = GuidGenerator.Long();
+            Id = id;
+            SharedId = sharedId;
+            CharacterId = characterId;
+            Friend = friend;
+            Message = message;
+            IsFriendRequest = isFriendRequest;
+            IsPending = isPending;
+            Blocked = blocked;
+            BlockReason = blockReason;
+            Timestamp = timestamp;
+        }
+
+        public Buddy(long id, long characterId, Player friend, string message, bool pending, bool accepted, bool blocked = false)
+        {
             SharedId = id;
+            CharacterId = characterId;
             Friend = friend;
             IsPending = pending;
             IsFriendRequest = accepted;
@@ -38,7 +51,7 @@ namespace MapleServer2.Types
                 BlockReason = "";
             }
 
-            player.BuddyList.Add(this);
+            Id = DatabaseManager.Buddies.Insert(this);
         }
     }
 }
