@@ -58,17 +58,16 @@ namespace MapleServer2.Tools
         private void SaveLoop()
         {
             Task.Run(async () =>
-              {
-                  while (true)
-                  {
-                      foreach (KeyValuePair<long, Home> kvp in HomeList)
-                      {
-                          DatabaseManager.Homes.Update(kvp.Value);
-                      }
-                      await Task.Delay(1000 * 60); // 1 minute
-                      //   await Task.Delay(1000 * 60 * 30); // 30 minutes
-                  }
-              });
+            {
+                while (true)
+                {
+                    foreach (KeyValuePair<long, Home> kvp in HomeList)
+                    {
+                        DatabaseManager.Homes.Update(kvp.Value);
+                    }
+                    await Task.Delay(1000 * 60); // 1 minute
+                }
+            });
         }
 
         // Each home have two instance id's, one for the home and one for the decor planner.
@@ -78,5 +77,7 @@ namespace MapleServer2.Tools
             Interlocked.Increment(ref InstanceCounter);
             return InstanceCounter;
         }
+
+        public List<Home> GetAllHomes() => HomeList.Values.ToList();
     }
 }

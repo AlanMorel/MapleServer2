@@ -7,6 +7,7 @@ using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using NLog;
 using Pastel;
 
@@ -21,6 +22,8 @@ namespace MapleServer2
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
+            currentDomain.ProcessExit += new EventHandler(SaveAll);
+
             // Force Globalization to en-US because we use periods instead of commas for decimals
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
@@ -159,7 +162,27 @@ namespace MapleServer2
         {
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
+        }
 
+        private static void SaveAll(object sender, EventArgs e)
+        {
+            List<Player> players = GameServer.Storage.GetAllPlayers();
+            foreach (Player item in players)
+            {
+                DatabaseManager.Characters.Update(item);
+            }
+
+            List<Guild> guilds = GameServer.GuildManager.GetAllGuilds();
+            foreach (Guild item in guilds)
+            {
+                DatabaseManager.Guilds.Update(item);
+            }
+
+            List<Home> homes = GameServer.HomeManager.GetAllHomes();
+            foreach (Home home in homes)
+            {
+                DatabaseManager.Homes.Update(home);
+            }
         }
     }
 }

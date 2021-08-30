@@ -48,7 +48,6 @@ namespace MapleServer2.Types
         public IFieldObject<GuideObject> Guide;
         public IFieldObject<Instrument> Instrument;
 
-        public long VIPExpiration { get; set; }
         public int SuperChat;
         public int ShopId; // current shop player is interacting
 
@@ -92,7 +91,6 @@ namespace MapleServer2.Types
         public GameOptions GameOptions { get; set; }
 
         public Inventory Inventory;
-        public BankInventory BankInventory;
         public DismantleInventory DismantleInventory = new DismantleInventory();
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
@@ -152,14 +150,15 @@ namespace MapleServer2.Types
         public Player() { }
 
         // Initializes all values to be saved into the database
-        public Player(long accountId, string name, byte gender, Job job, SkinColor skinColor)
+        public Player(Account account, string name, byte gender, Job job, SkinColor skinColor)
         {
-            AccountId = accountId;
+            AccountId = account.Id;
+            Account = account;
             Name = name;
             Gender = gender;
             Job = job;
             GameOptions = new GameOptions();
-            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, mesoToken: 0, bank: 0);
+            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0);
             Levels = new Levels(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
             {
                 new MasteryExp(MasteryType.Fishing),
@@ -190,7 +189,6 @@ namespace MapleServer2.Types
             Emotes = new List<int>() { 90200011, 90200004, 90200024, 90200041, 90200042, 90200057, 90200043, 90200022, 90200031, 90200005, 90200006, 90200003, 90200092, 90200077, 90200073, 90200023, 90200001, 90200019, 90200020, 90200021 };
             StatPointDistribution = new StatDistribution(20);
             Inventory = new Inventory();
-            BankInventory = new BankInventory();
             Mailbox = new Mailbox();
             BuddyList = new List<Buddy>();
             QuestList = new List<QuestStatus>();
@@ -201,9 +199,9 @@ namespace MapleServer2.Types
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
+            ActiveSkillTabId = 1;
             CharacterId = DatabaseManager.Characters.Insert(this);
-            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, CharacterId, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
-            ActiveSkillTabId = CharacterId;
+            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, 1, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
         }
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
@@ -476,11 +474,6 @@ namespace MapleServer2.Types
                 stat.Current += amount;
                 GatheringCount[recipeID] = stat;
             }
-        }
-
-        public bool IsVip()
-        {
-            return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
 
         public void TrophyUpdate(int trophyId, long addAmount, int sendUpdateInterval = 1)

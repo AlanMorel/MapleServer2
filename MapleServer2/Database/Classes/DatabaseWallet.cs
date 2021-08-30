@@ -16,8 +16,6 @@ namespace MapleServer2.Database.Classes
                 Treva = wallet.Treva.Amount,
                 Rue = wallet.Rue.Amount,
                 HaviFruit = wallet.HaviFruit.Amount,
-                MesoToken = wallet.MesoToken.Amount,
-                Bank = wallet.Bank.Amount,
             });
         }
 
@@ -30,8 +28,6 @@ namespace MapleServer2.Database.Classes
                 Treva = wallet.Treva.Amount,
                 Rue = wallet.Rue.Amount,
                 HaviFruit = wallet.HaviFruit.Amount,
-                MesoToken = wallet.MesoToken.Amount,
-                Bank = wallet.Bank.Amount,
             });
         }
 
