@@ -20,22 +20,30 @@ namespace MapleServer2.PacketHandlers.Login
 
         public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) { }
 
+        private enum CharacterManagementMode : byte
+        {
+            Login = 0x0,
+            Create = 0x1,
+            Delete = 2
+        }
+
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            CharacterManagementMode mode = (CharacterManagementMode) packet.ReadByte();
             switch (mode)
             {
-                case 0: // Login
+                case CharacterManagementMode.Login:
                     HandleSelect(session, packet);
                     break;
-                case 1: // Create
+                case CharacterManagementMode.Create:
                     HandleCreate(session, packet);
                     break;
-                case 2: // Delete
+                case CharacterManagementMode.Delete:
                     HandleDelete(session, packet);
                     break;
                 default:
-                    throw new ArgumentException($"Invalid Char select mode {mode}");
+                    IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                    break;
             }
         }
 
