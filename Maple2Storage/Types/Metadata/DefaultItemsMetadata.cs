@@ -1,0 +1,24 @@
+﻿using System.Xml.Serialization;
+
+namespace Maple2Storage.Types.Metadata
+{
+    [XmlType]
+    public class DefaultItemsMetadata
+    {
+        [XmlElement(Order = 1)]
+        public int JobCode;
+        [XmlElement(Order = 2)]
+        public List<DefaultItem> DefaultItems = new List<DefaultItem>();
+
+        public DefaultItemsMetadata() { }
+    }
+
+    [XmlType]
+    public class DefaultItem
+    {
+        [XmlElement(Order = 1)]
+        public ItemSlot ItemSlot;
+        [XmlElement(Order = 2)]
+        public int ItemId;
+    }
+}

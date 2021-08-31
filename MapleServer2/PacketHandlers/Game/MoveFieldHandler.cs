@@ -96,14 +96,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
 
-            if (!MapEntityStorage.HasSafePortal(srcMapId)) // map is instance only
+            if (!MapEntityStorage.HasSafePortal(srcMapId) || srcPortal.Target == 0) // map is instance only
             {
                 HandleLeaveInstance(session);
-                return;
-            }
-
-            if (srcPortal.Target == 0)
-            {
                 return;
             }
 
