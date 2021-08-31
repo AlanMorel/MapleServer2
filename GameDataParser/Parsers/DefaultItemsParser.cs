@@ -23,35 +23,18 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList keyNodes = document.GetElementsByTagName("key");
 
-                DefaultItemsMetadata allClasses = new DefaultItemsMetadata();
+                Dictionary<int, List<DefaultItem>> jobDictionary = new Dictionary<int, List<DefaultItem>>();
+
                 foreach (XmlNode keyNode in keyNodes)
                 {
                     int jobCode = int.Parse(keyNode.Attributes["jobCode"].Value);
-
-                    if (jobCode == 0) // for all jobs
-                    {
-                        foreach (XmlNode childNode in keyNode)
-                        {
-                            ItemSlot slot;
-                            _ = Enum.TryParse(childNode.Attributes["name"].Value, out slot);
-                            foreach (XmlNode itemNode in childNode)
-                            {
-                                DefaultItem defaultItem = new DefaultItem();
-                                defaultItem.ItemSlot = slot;
-                                defaultItem.ItemId = int.Parse(itemNode.Attributes["id"].Value);
-                                allClasses.DefaultItems.Add(defaultItem);
-                            }
-                        }
-                        continue;
-                    }
 
                     DefaultItemsMetadata metadata = new DefaultItemsMetadata();
                     metadata.JobCode = jobCode;
 
                     foreach (XmlNode childNode in keyNode)
                     {
-                        ItemSlot slot;
-                        _ = Enum.TryParse<ItemSlot>(childNode.Attributes["name"].Value, out slot);
+                        _ = Enum.TryParse(childNode.Attributes["name"].Value, out ItemSlot slot);
                         foreach (XmlNode itemNode in childNode)
                         {
                             DefaultItem defaultItem = new DefaultItem();
@@ -60,8 +43,23 @@ namespace GameDataParser.Parsers
                             metadata.DefaultItems.Add(defaultItem);
                         }
                     }
-                    metadata.DefaultItems.AddRange(allClasses.DefaultItems);
-                    items.Add(metadata);
+
+                    if (jobDictionary.ContainsKey(jobCode))
+                    {
+                        jobDictionary[jobCode].AddRange(metadata.DefaultItems);
+                    }
+                    else
+                    {
+                        jobDictionary[jobCode] = new List<DefaultItem>(metadata.DefaultItems);
+                    }
+                }
+
+                foreach (KeyValuePair<int, List<DefaultItem>> job in jobDictionary)
+                {
+                    DefaultItemsMetadata jobMetadata = new DefaultItemsMetadata();
+                    jobMetadata.JobCode = job.Key;
+                    jobMetadata.DefaultItems.AddRange(job.Value);
+                    items.Add(jobMetadata);
                 }
             }
             return items;

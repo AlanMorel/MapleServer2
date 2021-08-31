@@ -21,6 +21,10 @@ namespace MapleServer2.Data.Static
         public static bool IsValid(int job, int itemId)
         {
             DefaultItemsMetadata metadata = defaultItems.GetValueOrDefault(job);
+            if (!metadata.DefaultItems.Any(x => x.ItemId == itemId))
+            {
+                return defaultItems.GetValueOrDefault(0).DefaultItems.Any(x => x.ItemId == itemId);
+            }
             return metadata.DefaultItems.Any(x => x.ItemId == itemId);
         }
     }
