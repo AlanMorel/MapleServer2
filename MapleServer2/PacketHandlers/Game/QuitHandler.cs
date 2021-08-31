@@ -60,6 +60,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
             DatabaseManager.Characters.Update(session.Player);
+            session.Dispose();
         }
     }
 }

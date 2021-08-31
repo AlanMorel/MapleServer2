@@ -22,6 +22,7 @@ namespace MapleServer2.Database
         public static DatabaseAccount Accounts { get; private set; } = new DatabaseAccount();
         public static DatabaseBankInventory BankInventories { get; private set; } = new DatabaseBankInventory();
         public static DatabaseBanner Banners { get; private set; } = new DatabaseBanner();
+        public static DatabaseBuddy Buddies { get; private set; } = new DatabaseBuddy();
         public static DatabaseCardReverseGame CardReverseGame { get; private set; } = new DatabaseCardReverseGame();
         public static DatabaseCharacter Characters { get; private set; } = new DatabaseCharacter();
         public static DatabaseCube Cubes { get; private set; } = new DatabaseCube();

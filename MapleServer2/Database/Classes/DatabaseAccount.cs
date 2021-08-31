@@ -75,20 +75,5 @@ namespace MapleServer2.Database.Classes
                 data.CharacterSlots, data.Meret, data.GameMeret, data.EventMeret, data.MesoToken, data.HomeId ?? 0,
                 data.VIPExpiration, bankInventory);
         }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
     }
 }
