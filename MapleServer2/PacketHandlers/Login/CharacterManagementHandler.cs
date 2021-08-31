@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
@@ -94,12 +95,18 @@ namespace MapleServer2.PacketHandlers.Login
             for (int i = 0; i < equipCount; i++)
             {
                 uint id = packet.ReadUInt();
+                int id2 = Convert.ToInt32(id);
                 string typeStr = packet.ReadUnicodeString();
                 if (!Enum.TryParse(typeStr, out ItemSlot type))
                 {
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
                 EquipColor equipColor = packet.Read<EquipColor>();
+                //if (!DefaultItemsMetadataStorage.IsValid((int) job, id2))
+                //{
+                //    Console.WriteLine("INVALID ITEM");
+                //    continue;
+                //}
 
                 switch (type)
                 {
