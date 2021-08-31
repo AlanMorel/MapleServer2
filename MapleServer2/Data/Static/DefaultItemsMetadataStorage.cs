@@ -1,8 +1,5 @@
-﻿using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
-using MapleServer2.Types;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static

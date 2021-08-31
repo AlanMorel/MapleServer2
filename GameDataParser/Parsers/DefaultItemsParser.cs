@@ -30,7 +30,7 @@ namespace GameDataParser.Parsers
 
                     if (jobCode == 0) // for all jobs
                     {
-                        foreach(XmlNode childNode in keyNode)
+                        foreach (XmlNode childNode in keyNode)
                         {
                             ItemSlot slot;
                             _ = Enum.TryParse(childNode.Attributes["name"].Value, out slot);

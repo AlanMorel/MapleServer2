@@ -91,35 +91,34 @@ namespace MapleServer2.PacketHandlers.Login
             Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             Player newCharacter = new Player(account, name, gender, job, skinColor);
 
-            int equipCount = packet.ReadByte();
+            byte equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
             {
-                uint id = packet.ReadUInt();
-                int id2 = Convert.ToInt32(id);
+                int id = packet.ReadInt();
                 string typeStr = packet.ReadUnicodeString();
                 if (!Enum.TryParse(typeStr, out ItemSlot type))
                 {
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
+
                 EquipColor equipColor = packet.Read<EquipColor>();
-                //if (!DefaultItemsMetadataStorage.IsValid((int) job, id2))
-                //{
-                //    Console.WriteLine("INVALID ITEM");
-                //    continue;
-                //}
 
                 switch (type)
                 {
                     case ItemSlot.HR: // Hair
                         // Hair Length/Position
-                        float backLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        float backLength = packet.ReadFloat();
                         CoordF backPositionCoord = packet.Read<CoordF>();
                         CoordF backPositionRotation = packet.Read<CoordF>();
-                        float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        float frontLength = packet.ReadFloat();
                         CoordF frontPositionCoord = packet.Read<CoordF>();
                         CoordF frontPositionRotation = packet.Read<CoordF>();
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
 
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.HR, new Item(id)
                         {
                             Color = equipColor,
                             HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
@@ -128,7 +127,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -137,7 +141,13 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
+
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FD, new Item(id)
                         {
                             Color = equipColor,
                             FaceDecorationData = faceDecoration,
@@ -146,7 +156,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -154,7 +169,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -162,7 +182,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -170,8 +195,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.ER: // Ear
-                        // Assign ER
-                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
