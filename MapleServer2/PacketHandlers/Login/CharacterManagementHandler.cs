@@ -24,7 +24,7 @@ namespace MapleServer2.PacketHandlers.Login
         {
             Login = 0x0,
             Create = 0x1,
-            Delete = 2
+            Delete = 0x2
         }
 
         public override void Handle(LoginSession session, PacketReader packet)
