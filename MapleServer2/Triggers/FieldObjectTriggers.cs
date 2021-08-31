@@ -1,4 +1,5 @@
-﻿using MapleServer2.Packets;
+﻿using Maple2Storage.Tools;
+using MapleServer2.Packets;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -85,13 +86,19 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }
 
-        public void SetRandomMesh(int[] meshIds, bool isVisible, byte arg3, int arg4, int arg5)
+        public void SetRandomMesh(int[] meshIds, bool isVisible, byte meshCount, int arg4, int delayTime)
         {
-            foreach (int triggerMeshId in meshIds)
+            Random random = RandomProvider.Get();
+            int[] pickedMeshIds = meshIds.OrderBy(x => random.Next()).Take(meshCount).ToArray();
+            Task.Run(async () =>
             {
-                Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
-            }
+                foreach (int triggerMeshId in pickedMeshIds)
+                {
+                    Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+                    await Task.Delay(delayTime);
+                }
+            });
         }
 
         public void SetRope(int ropeId, bool isVisible, bool animationEffect, byte animationDelay)

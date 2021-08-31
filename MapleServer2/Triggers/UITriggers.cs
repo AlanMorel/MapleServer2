@@ -152,7 +152,7 @@ namespace MapleServer2.Triggers
                     break;
             }
 
-            if (box == "0")
+            if (box == "0" || box == "")
             {
                 Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
                 return;
