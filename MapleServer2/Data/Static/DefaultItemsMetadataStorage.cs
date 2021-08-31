@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static
 {
     public static class DefaultItemsMetadataStorage
     {
-        private static readonly Dictionary<int, DefaultItemsMetadata> defaultItems = new Dictionary<int, DefaultItemsMetadata>();
+        private static readonly Dictionary<int, DefaultItemsMetadata> jobs = new Dictionary<int, DefaultItemsMetadata>();
 
         static DefaultItemsMetadataStorage()
         {
@@ -14,16 +14,16 @@ namespace MapleServer2.Data.Static
             List<DefaultItemsMetadata> items = Serializer.Deserialize<List<DefaultItemsMetadata>>(stream);
             foreach (DefaultItemsMetadata item in items)
             {
-                defaultItems[item.JobCode] = item;
+                jobs[item.JobCode] = item;
             }
         }
 
         public static bool IsValid(int job, int itemId)
         {
-            DefaultItemsMetadata metadata = defaultItems.GetValueOrDefault(job);
+            DefaultItemsMetadata metadata = jobs.GetValueOrDefault(job);
             if (!metadata.DefaultItems.Any(x => x.ItemId == itemId))
             {
-                return defaultItems.GetValueOrDefault(0).DefaultItems.Any(x => x.ItemId == itemId);
+                return jobs.GetValueOrDefault(0).DefaultItems.Any(x => x.ItemId == itemId);
             }
             return metadata.DefaultItems.Any(x => x.ItemId == itemId);
         }
