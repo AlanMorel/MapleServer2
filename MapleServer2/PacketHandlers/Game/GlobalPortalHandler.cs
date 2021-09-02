@@ -88,10 +88,11 @@ namespace MapleServer2.PacketHandlers.Game
                     map = Map.HolidayDanceDanceStop;
                     break;
                 default:
-                    System.Console.WriteLine($"Unknown Global Event: {globalEvent.Events[selectionIndex]}");
+                    Console.WriteLine($"Unknown Global Event: {globalEvent.Events[selectionIndex]}");
                     return;
             }
 
+            session.Player.Mount = null;
             MapPortal portal = MapEntityStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
             session.Player.Warp((int) map, portal.Coord.ToFloat(), portal.Rotation.ToFloat());
         }
