@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using MapleServer2.Extensions;
 using NLog;
-using Pastel;
 
 namespace MapleServer2.Tools
 {
@@ -15,7 +15,7 @@ namespace MapleServer2.Tools
             List<Type> callingTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsAbstract && t.IsClass && t.Namespace == "MapleServer2.Data.Static").ToList();
             callingTypes.ForEach(type => type.GetMethod("Init")?.Invoke(null, null));
 
-            Logger.Info("Initializing Data...Complete!".Pastel("#aced66"));
+            Logger.Info("Initializing Data...Complete!".ColorGreen());
         }
     }
 }
