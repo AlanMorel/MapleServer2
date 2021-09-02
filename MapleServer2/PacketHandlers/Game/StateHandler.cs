@@ -33,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleJump(GameSession session)
         {
-            session.Player.TrophyUpdate(22100012, 1, 5);
+            session.Player.TrophyUpdate(22100012, 1, 1);
         }
     }
 }

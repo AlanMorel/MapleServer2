@@ -2,7 +2,7 @@
 {
     public enum RewardType : byte
     {
-        Unknown = 0x0,
+        None = 0x0,
         itemcoloring = 0x1,
         shop_ride = 0x2,
         title = 0x3,

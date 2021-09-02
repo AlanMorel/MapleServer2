@@ -10,12 +10,13 @@ namespace MapleServer2.Packets
         {
             TableStart = 0x0,
             TableContent = 0x1,
-            Update = 0x2
+            Update = 0x2,
+            Favorite = 0x04
         }
 
         public enum GradeStatus : byte
         {
-            NotFinalGrade = 0x0,
+            NotFinalGrade = 0x2,
             FinalGrade = 0x3
         }
 
@@ -54,21 +55,31 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet ToggleFavorite(Trophy trophy, bool favorited)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
+            pWriter.WriteEnum(TrophyPacketMode.Favorite);
+            pWriter.WriteInt(trophy.Id);
+            pWriter.WriteBool(favorited);
+
+            return pWriter;
+        }
+
         private static void WriteIndividualTrophy(PacketWriter pWriter, Trophy trophy)
         {
-            int tCount = trophy.Timestamps.Count;
+            int timestampsCount = trophy.Timestamps.Count;
 
             pWriter.WriteEnum(trophy.GetGradeStatus());
-            pWriter.WriteInt(1);
+            pWriter.WriteInt(trophy.IsDone ? 1 : 0);
             pWriter.WriteInt(trophy.NextGrade);
-            pWriter.WriteInt(trophy.MaxGrade);
-            pWriter.WriteByte(0);
+            pWriter.WriteInt(trophy.LastReward);
+            pWriter.WriteBool(trophy.Favorited);
             pWriter.WriteLong(trophy.Counter);
-            pWriter.WriteInt(tCount);
-            for (int t = 0; t < tCount; t++)
+            pWriter.WriteInt(timestampsCount);
+            for (int i = 0; i < timestampsCount; i++)
             {
-                pWriter.WriteInt(t + 1);
-                pWriter.WriteLong(trophy.Timestamps.ElementAt(t));
+                pWriter.WriteInt(i + 1);
+                pWriter.WriteLong(trophy.Timestamps[i]);
             }
         }
     }
