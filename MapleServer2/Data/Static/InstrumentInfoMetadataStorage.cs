@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, InsturmentInfoMetadata> package = new Dictionary<int, InsturmentInfoMetadata>();
 
-        static InstrumentInfoMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-instrument-info-metadata");
             List<InsturmentInfoMetadata> items = Serializer.Deserialize<List<InsturmentInfoMetadata>>(stream);

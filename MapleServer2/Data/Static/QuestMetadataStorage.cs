@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, QuestMetadata> map = new Dictionary<int, QuestMetadata>();
 
-        static QuestMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-quest-metadata");
             List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);

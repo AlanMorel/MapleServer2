@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, RecipeMetadata> recipes = new Dictionary<int, RecipeMetadata>();
 
-        static RecipeMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-recipe-metadata");
             List<RecipeMetadata> recipeList = Serializer.Deserialize<List<RecipeMetadata>>(stream);

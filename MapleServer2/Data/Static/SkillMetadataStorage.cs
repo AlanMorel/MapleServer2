@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, SkillMetadata> skill = new Dictionary<int, SkillMetadata>();
 
-        static SkillMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-skill-metadata");
             List<SkillMetadata> skillList = Serializer.Deserialize<List<SkillMetadata>>(stream);

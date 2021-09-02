@@ -160,17 +160,8 @@ namespace MapleServer2.Packets
             {
                 pWriter.WriteInt(trophyCount);
             }
-
-            if (player.Guild != null)
-            {
-                pWriter.WriteLong(player.Guild.Id);
-                pWriter.WriteUnicodeString(player.Guild.Name);
-            }
-            else
-            {
-                pWriter.WriteLong();
-                pWriter.WriteUnicodeString("");
-            }
+            pWriter.WriteLong(player.GuildId);
+            pWriter.WriteUnicodeString(player.Guild?.Name ?? "");
             pWriter.WriteUnicodeString(player.Motto);
 
             pWriter.WriteUnicodeString(player.ProfileUrl);

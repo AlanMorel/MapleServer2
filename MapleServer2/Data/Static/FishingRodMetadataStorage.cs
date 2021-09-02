@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, FishingRodMetadata> map = new Dictionary<int, FishingRodMetadata>();
 
-        static FishingRodMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-fishing-rod-metadata");
             List<FishingRodMetadata> items = Serializer.Deserialize<List<FishingRodMetadata>>(stream);

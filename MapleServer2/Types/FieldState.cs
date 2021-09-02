@@ -43,6 +43,7 @@ namespace MapleServer2.Types
             TriggerCameras = new ConcurrentDictionary<int, TriggerCamera>();
             TriggerActors = new ConcurrentDictionary<int, TriggerActor>();
             TriggerCubes = new ConcurrentDictionary<int, TriggerCube>();
+            TriggerLadders = new ConcurrentDictionary<int, TriggerLadder>();
             TriggerRopes = new ConcurrentDictionary<int, TriggerRope>();
             TriggerSounds = new ConcurrentDictionary<int, TriggerSound>();
         }

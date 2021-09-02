@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, MapMetadata> map = new Dictionary<int, MapMetadata>();
 
-        static MapMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-map-metadata");
             List<MapMetadata> items = Serializer.Deserialize<List<MapMetadata>>(stream);

@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, DungeonMetadata> Dungeons = new Dictionary<int, DungeonMetadata>();
 
-        static DungeonStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-dungeon-metadata");
             List<DungeonMetadata> dungeons = Serializer.Deserialize<List<DungeonMetadata>>(stream);

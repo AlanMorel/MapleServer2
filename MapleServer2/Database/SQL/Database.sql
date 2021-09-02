@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `buddies`;
 CREATE TABLE `buddies` (
   `Id` bigint NOT NULL AUTO_INCREMENT,
   `SharedId` bigint NOT NULL,
-  `PlayerCharacterId` bigint DEFAULT NULL,
+  `CharacterId` bigint DEFAULT NULL,
   `FriendCharacterId` bigint DEFAULT NULL,
   `Message` varchar(25) DEFAULT '',
   `IsFriendRequest` tinyint(1) NOT NULL,
@@ -68,9 +68,9 @@ CREATE TABLE `buddies` (
   `Timestamp` bigint NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `IX_Buddies_FriendCharacterId` (`FriendCharacterId`),
-  KEY `IX_Buddies_PlayerCharacterId` (`PlayerCharacterId`),
+  KEY `IX_Buddies_PlayerCharacterId` (`CharacterId`),
   CONSTRAINT `FK_Buddies_Characters_FriendCharacterId` FOREIGN KEY (`FriendCharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT,
-  CONSTRAINT `FK_Buddies_Characters_PlayerCharacterId` FOREIGN KEY (`PlayerCharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT
+  CONSTRAINT `FK_Buddies_Characters_PlayerCharacterId` FOREIGN KEY (`CharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

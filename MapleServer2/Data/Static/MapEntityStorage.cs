@@ -29,7 +29,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapTriggerRope>> TriggerRopes = new Dictionary<int, List<MapTriggerRope>>();
         private static readonly Dictionary<int, List<MapTriggerSound>> TriggerSounds = new Dictionary<int, List<MapTriggerSound>>();
 
-        static MapEntityStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-map-entity-metadata");
             List<MapEntityMetadata> entities = Serializer.Deserialize<List<MapEntityMetadata>>(stream);

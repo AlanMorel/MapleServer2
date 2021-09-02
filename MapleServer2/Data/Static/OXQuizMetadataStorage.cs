@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, OXQuizQuestion> questions = new Dictionary<int, OXQuizQuestion>();
 
-        static OXQuizMetadataStorage()
+        public static void Init()
         {
             string json = File.ReadAllText($"{Paths.JSON}/OXQuizQuestions.json");
             List<OXQuizQuestion> items = JsonConvert.DeserializeObject<List<OXQuizQuestion>>(json);

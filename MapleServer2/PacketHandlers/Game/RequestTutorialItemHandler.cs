@@ -21,10 +21,19 @@ namespace MapleServer2.PacketHandlers.Game
 
             foreach (TutorialItemMetadata tutorialItem in metadata)
             {
+                List<KeyValuePair<long, Item>> tutorialItems = session.Player.Inventory.Items.Where(x => x.Value.Id == tutorialItem.ItemId).ToList();
+
+                if (tutorialItems.Count >= tutorialItem.Amount)
+                {
+                    continue;
+                }
+
+                int amountRemaining = tutorialItem.Amount - tutorialItems.Count;
+
                 Item item = new Item(tutorialItem.ItemId)
                 {
                     Rarity = tutorialItem.Rarity,
-                    Amount = tutorialItem.Amount,
+                    Amount = amountRemaining,
                 };
                 InventoryController.Add(session, item, true);
             }
