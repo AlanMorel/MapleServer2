@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, InsigniaMetadata> map = new Dictionary<int, InsigniaMetadata>();
 
-        static InsigniaMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-insignia-metadata");
             List<InsigniaMetadata> items = Serializer.Deserialize<List<InsigniaMetadata>>(stream);

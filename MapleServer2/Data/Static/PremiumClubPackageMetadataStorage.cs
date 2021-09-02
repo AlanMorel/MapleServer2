@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, PremiumClubPackageMetadata> package = new Dictionary<int, PremiumClubPackageMetadata>();
 
-        static PremiumClubPackageMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-premium-club-package-metadata");
             List<PremiumClubPackageMetadata> items = Serializer.Deserialize<List<PremiumClubPackageMetadata>>(stream);

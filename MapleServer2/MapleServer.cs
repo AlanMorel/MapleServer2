@@ -3,13 +3,13 @@ using Autofac;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
+using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using NLog;
-using Pastel;
 
 namespace MapleServer2
 {
@@ -41,7 +41,8 @@ namespace MapleServer2
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
-            Logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
+            // Initialize all metadata.
+            MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -52,6 +53,8 @@ namespace MapleServer2
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
             GameServer = gameScope.Resolve<GameServer>();
             GameServer.Start();
+
+            Logger.Info("Server Started.".ColorGreen());
 
             // Input commands to the server
             while (true)
@@ -121,7 +124,7 @@ namespace MapleServer2
             Logger.Info("Seeding card reverse game...");
             DatabaseManager.SeedCardReverseGame();
 
-            Logger.Info("Database created.".Pastel("#aced66"));
+            Logger.Info("Database created.".ColorGreen());
         }
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)

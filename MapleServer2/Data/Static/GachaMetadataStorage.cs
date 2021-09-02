@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, GachaMetadata> gacha = new Dictionary<int, GachaMetadata>();
 
-        static GachaMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-gacha-metadata");
             List<GachaMetadata> items = Serializer.Deserialize<List<GachaMetadata>>(stream);

@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, RewardContentMetadata> rewards = new Dictionary<int, RewardContentMetadata>();
 
-        static RewardContentMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-reward-content-metadata");
             List<RewardContentMetadata> items = Serializer.Deserialize<List<RewardContentMetadata>>(stream);
