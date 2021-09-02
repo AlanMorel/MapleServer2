@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<string, AnimationMetadata> Animations = new Dictionary<string, AnimationMetadata>();
 
-        static AnimationStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-animation-metadata");
             List<AnimationMetadata> animations = Serializer.Deserialize<List<AnimationMetadata>>(stream);

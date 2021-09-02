@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, ExpMetadata> map = new Dictionary<int, ExpMetadata>();
 
-        static ExpMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-exp-metadata");
             List<ExpMetadata> items = Serializer.Deserialize<List<ExpMetadata>>(stream);

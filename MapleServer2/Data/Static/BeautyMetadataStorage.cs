@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, BeautyMetadata> shops = new Dictionary<int, BeautyMetadata>();
 
-        static BeautyMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-beauty-metadata");
             List<BeautyMetadata> shopList = Serializer.Deserialize<List<BeautyMetadata>>(stream);

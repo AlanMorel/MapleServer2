@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, NpcMetadata> Npcs = new Dictionary<int, NpcMetadata>();
 
-        static NpcMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-npc-metadata");
             List<NpcMetadata> npcList = Serializer.Deserialize<List<NpcMetadata>>(stream);

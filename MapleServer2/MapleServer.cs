@@ -41,7 +41,8 @@ namespace MapleServer2
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
-            Logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
+            // Initialize all metadata.
+            MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -52,6 +53,8 @@ namespace MapleServer2
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
             GameServer = gameScope.Resolve<GameServer>();
             GameServer.Start();
+
+            Logger.Info("Server Started.".Pastel("#aced66"));
 
             // Input commands to the server
             while (true)

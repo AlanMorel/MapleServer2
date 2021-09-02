@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, TrophyMetadata> map = new Dictionary<int, TrophyMetadata>();
 
-        static TrophyMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-trophy-metadata");
             List<TrophyMetadata> trophies = Serializer.Deserialize<List<TrophyMetadata>>(stream);

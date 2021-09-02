@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, ScriptMetadata> QuestScripts = new Dictionary<int, ScriptMetadata>();
         private static readonly Dictionary<int, ScriptMetadata> NpcScripts = new Dictionary<int, ScriptMetadata>();
 
-        static ScriptMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-script-metadata");
             List<ScriptMetadata> items = Serializer.Deserialize<List<ScriptMetadata>>(stream);
