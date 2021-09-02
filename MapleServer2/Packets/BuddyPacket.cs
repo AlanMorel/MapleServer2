@@ -20,18 +20,18 @@ namespace MapleServer2.Packets
             EditBlockReason = 0xA,
             AcceptNotification = 0xB,
             BlockNotification = 0xC,
-            LoginLogoutNotifcation = 0xE,
+            LoginLogoutNotification = 0xE,
             Initialize = 0xF,
             CancelRequest = 0x11,
             EndList = 0x13,
         }
 
-        public static Packet LoadList(Player player)
+        public static Packet LoadList(List<Buddy> buddyList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
             pWriter.WriteEnum(BuddyPacketMode.LoadList);
-            pWriter.WriteInt(player.BuddyList.Count);
-            foreach (Buddy buddy in player.BuddyList)
+            pWriter.WriteInt(buddyList.Count);
+            foreach (Buddy buddy in buddyList)
             {
                 WriteBuddy(buddy, pWriter);
             }
@@ -147,11 +147,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoginLogoutNotifcation(Buddy buddy)
+        public static Packet LoginLogoutNotification(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.LoginLogoutNotifcation);
-            pWriter.WriteBool(true); // TODO: Change to online check
+            pWriter.WriteEnum(BuddyPacketMode.LoginLogoutNotification);
+            pWriter.WriteBool(!buddy.Friend?.Session?.Connected() ?? true);
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteUnicodeString(buddy.Friend.Name);
             return pWriter;
@@ -196,7 +196,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(buddy.IsFriendRequest);
             pWriter.WriteBool(buddy.IsPending);
             pWriter.WriteBool(buddy.Blocked);
-            pWriter.WriteBool(true); // TODO: Change to online check
+            pWriter.WriteBool(buddy.Friend?.Session?.Connected() ?? false);
             pWriter.WriteByte(0);
             pWriter.WriteLong(buddy.Timestamp);
             pWriter.WriteUnicodeString(buddy.Friend.ProfileUrl);

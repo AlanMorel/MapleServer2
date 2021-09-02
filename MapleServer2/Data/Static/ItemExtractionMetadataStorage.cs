@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, ItemExtractionMetadata> map = new Dictionary<int, ItemExtractionMetadata>();
 
-        static ItemExtractionMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-extraction-metadata");
             List<ItemExtractionMetadata> items = Serializer.Deserialize<List<ItemExtractionMetadata>>(stream);

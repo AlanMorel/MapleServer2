@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, PrestigeReward> rewards = new Dictionary<int, PrestigeReward>();
 
-        static PrestigeMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-prestige-metadata");
             PrestigeMetadata metadata = Serializer.Deserialize<PrestigeMetadata>(stream);

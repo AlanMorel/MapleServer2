@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, ItemExchangeScrollMetadata> map = new Dictionary<int, ItemExchangeScrollMetadata>();
 
-        static ItemExchangeScrollMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-exchange-scroll-metadata");
             List<ItemExchangeScrollMetadata> items = Serializer.Deserialize<List<ItemExchangeScrollMetadata>>(stream);

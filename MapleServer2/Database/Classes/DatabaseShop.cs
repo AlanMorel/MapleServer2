@@ -10,6 +10,10 @@ namespace MapleServer2.Database.Classes
         public Shop FindById(long id)
         {
             Shop shop = QueryFactory.Query(TableName).Where("Id", id).Get<Shop>().FirstOrDefault();
+            if (shop == default)
+            {
+                return null;
+            }
             shop.Items = DatabaseManager.ShopItems.FindAllByShopUid(shop.Uid);
             return shop;
         }

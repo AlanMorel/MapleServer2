@@ -2,7 +2,6 @@
 using System.Reflection;
 using MapleServer2.Commands.Core;
 using NLog;
-using Pastel;
 
 namespace MapleServer2.Tools
 {
@@ -33,7 +32,6 @@ namespace MapleServer2.Tools
                     RegisterCommand(commandType);
                 }
             }
-            Logger.Info("Commands loaded.".Pastel("#aced66"));
         }
 
         private void RegisterCommand(Type commandType)

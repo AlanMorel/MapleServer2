@@ -4,11 +4,11 @@ using ProtoBuf;
 
 namespace MapleServer2.Data.Static
 {
-    public class MasteryUGCHousingMetadataStorage
+    public static class MasteryUGCHousingMetadataStorage
     {
         private static readonly Dictionary<byte, MasteryUGCHousingMetadata> masteryMetadata = new Dictionary<byte, MasteryUGCHousingMetadata>();
 
-        static MasteryUGCHousingMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-mastery-ugc-housing-metadata");
             List<MasteryUGCHousingMetadata> masteryMetadatas = Serializer.Deserialize<List<MasteryUGCHousingMetadata>>(stream);

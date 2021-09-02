@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, ItemGemstoneUpgradeMetadata> gem = new Dictionary<int, ItemGemstoneUpgradeMetadata>();
 
-        static ItemGemstoneUpgradeMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-gemstone-upgrade-metadata");
             List<ItemGemstoneUpgradeMetadata> items = Serializer.Deserialize<List<ItemGemstoneUpgradeMetadata>>(stream);

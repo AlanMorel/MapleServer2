@@ -95,9 +95,9 @@ namespace MapleServer2.Types
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
 
-        public Mailbox Mailbox;
+        public Mailbox Mailbox = new();
 
-        public List<Buddy> BuddyList = new();
+        public List<Buddy> BuddyList;
 
         public Party Party;
         public long ClubId;

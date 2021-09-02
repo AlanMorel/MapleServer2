@@ -2,16 +2,18 @@
 using System.Xml.Schema;
 using Maple2Storage.Enums;
 using MapleServer2.Types;
+using NLog;
 
 namespace MapleServer2.Tools
 {
     public static class MobAIManager
     {
         private static readonly Dictionary<string, MobAI> AiTable = new Dictionary<string, MobAI>();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static void Load(string dirPath, string schemaPath = null)
         {
-            Console.WriteLine("Loading Mob AI...");
+            Logger.Info("Loading Mob AI...");
             foreach (string filePath in Directory.GetFiles(dirPath, "*.xml", SearchOption.AllDirectories))
             {
                 string filename = Path.GetFileName(filePath);
@@ -27,20 +29,20 @@ namespace MapleServer2.Tools
                 }
                 catch (XmlException)
                 {
-                    Console.WriteLine($"Skipping {filename}");
+                    Logger.Warn($"Skipping {filename}");
                     continue;
                 }
                 catch (XmlSchemaValidationException e)
                 {
-                    Console.WriteLine($"{filename} is invalid:");
-                    Console.WriteLine(e);
+                    Logger.Warn($"{filename} is invalid:");
+                    Logger.Warn(e);
                     continue;
                 }
 
                 ParseAI(document);
-                Console.WriteLine($"Loaded {filename}");
+                Logger.Info($"Loaded {filename}");
             }
-            Console.WriteLine("Finished loading AI.");
+            Logger.Info("Finished loading AI.");
         }
 
         public static MobAI GetAI(string aiInfo)

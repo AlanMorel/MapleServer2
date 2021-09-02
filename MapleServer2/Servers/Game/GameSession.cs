@@ -38,11 +38,23 @@ namespace MapleServer2.Servers.Game
             FieldManager = FieldManagerFactory.GetManager(player.MapId, instanceId: 0);
             FieldPlayer = FieldManager.RequestFieldObject(player);
             GameServer.Storage.AddPlayer(player);
+            GameServer.BuddyManager.SetFriendSessions(player);
+
             Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
             if (party != null)
             {
                 party.BroadcastPacketParty(PartyPacket.LoginNotice(player), this);
             }
+
+            player.BuddyList.ForEach(buddy =>
+            {
+                if (buddy.Friend?.Session?.Connected() ?? false)
+                {
+                    Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
+                    buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
+                    buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
+                }
+            });
         }
 
         public void EnterField(Player player)
@@ -81,6 +93,8 @@ namespace MapleServer2.Servers.Game
 
         public override void EndSession()
         {
+            Player.Session = null;
+            GameServer.BuddyManager.SetFriendSessions(Player);
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
             // Should we Join the thread to wait for it to complete?
@@ -89,6 +103,16 @@ namespace MapleServer2.Servers.Game
             {
                 Player.Party.CheckOffineParty(Player);
             }
+
+            Player.BuddyList.ForEach(buddy =>
+            {
+                if (buddy.Friend?.Session?.Connected() ?? false)
+                {
+                    Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
+                    buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
+                    buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
+                }
+            });
         }
 
         public void ReleaseField(Player player)
