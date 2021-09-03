@@ -133,7 +133,7 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<ItemStat> basicNormalStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            List<NormalStat> basicNormalStats = stats.BasicStats.OfType<NormalStat>().ToList();
             pWriter.WriteShort((short) basicNormalStats.Count);
             foreach (NormalStat stat in basicNormalStats)
             {
@@ -142,7 +142,7 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteFloat(stat.Percent);
             }
 
-            List<ItemStat> basicSpecialStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            List<SpecialStat> basicSpecialStats = stats.BasicStats.OfType<SpecialStat>().ToList();
             pWriter.WriteShort((short) basicSpecialStats.Count);
             foreach (SpecialStat stat in basicSpecialStats)
             {
@@ -157,7 +157,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteShort();
             pWriter.WriteInt();
 
-            List<ItemStat> bonusNormalStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            List<NormalStat> bonusNormalStats = stats.BonusStats.OfType<NormalStat>().ToList();
             pWriter.WriteShort((short) bonusNormalStats.Count);
             foreach (NormalStat stat in bonusNormalStats)
             {
@@ -165,7 +165,7 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteInt(stat.Flat);
                 pWriter.WriteFloat(stat.Percent);
             }
-            List<ItemStat> bonusSpecialStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            List<SpecialStat> bonusSpecialStats = stats.BonusStats.OfType<SpecialStat>().ToList();
             pWriter.WriteShort((short) bonusSpecialStats.Count);
             foreach (SpecialStat stat in bonusSpecialStats)
             {
