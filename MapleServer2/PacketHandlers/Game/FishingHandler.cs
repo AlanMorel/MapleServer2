@@ -69,7 +69,6 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long fishingRodUid = packet.ReadLong();
             MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
-            session.Player.Levels.MasteryExp.Add(masteryExp);
 
             if (!FishingSpotMetadataStorage.CanFish(session.Player.MapId, masteryExp.CurrentExp))
             {
