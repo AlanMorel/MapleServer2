@@ -355,11 +355,6 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
             }
 
-            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
-            {
-                session.Player.ReturnCoord = session.FieldPlayer.Coord;
-                session.Player.ReturnMapId = session.Player.MapId;
-            }
             session.Player.Warp(mapId: (int) mapId, instanceId: session.Player.CharacterId);
         }
 

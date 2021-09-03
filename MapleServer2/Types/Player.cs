@@ -206,6 +206,11 @@ namespace MapleServer2.Types
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
+            if (MapEntityStorage.HasSafePortal(MapId))
+            {
+                ReturnCoord = Coord;
+                ReturnMapId = MapId;
+            }
             Coord = coord;
             Rotation = rotation;
             SafeBlock = coord;
