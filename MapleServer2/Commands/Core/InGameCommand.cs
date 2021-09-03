@@ -4,7 +4,7 @@
     {
         public override void Execute(CommandTrigger trigger)
         {
-            if (!(trigger is GameCommandTrigger))
+            if (trigger is not GameCommandTrigger)
             {
                 Logger.Error("This command can only be executed in game.");
                 return;
