@@ -28,7 +28,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case TriggerMode.SkipCutscene:
-                    HandleSkipCutscene(session, packet);
+                    HandleSkipCutscene(session);
                     break;
                 case TriggerMode.UpdateWidget:
                     HandleUpdateWidget(session, packet);
@@ -39,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleSkipCutscene(GameSession session, PacketReader packet)
+        private static void HandleSkipCutscene(GameSession session)
         {
             session.FieldManager.SkipScene = true;
             // TODO: Start the SkipScene state
