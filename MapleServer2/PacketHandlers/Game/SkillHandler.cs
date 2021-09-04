@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers.Game.Helpers;
@@ -22,7 +23,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Cast = 0x0,     // Start of a skill
             Damage = 0x1,   // Damaging part of a skill. one is sent per hit
-            Mode2 = 0x2,    // Cast continues skills
+            HoldCast = 0x2,    // Cast continues skills
             Mode3 = 0x3,
             Mode4 = 0x4,
         }
@@ -30,8 +31,8 @@ namespace MapleServer2.PacketHandlers.Game
         private enum DamagingMode : byte
         {
             TypeOfDamage = 0x0,
-            AoeDamage = 0x1,
-            TypeOfDamage2 = 0x2
+            Damage = 0x1,
+            RegionSkill = 0x2
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -43,13 +44,36 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleCast(session, packet);
                     break;
                 case SkillHandlerMode.Damage:
-                    HandleDamage(session, packet);
+                    HandleDamageMode(session, packet);
+                    break;
+                case SkillHandlerMode.HoldCast:
+                    HandleHoldCast(session, packet);
                     break;
                 case SkillHandlerMode.Mode3:
                     HandleMode3(packet);
                     break;
                 case SkillHandlerMode.Mode4:
                     HandleMode4(packet);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(mode);
+                    break;
+            }
+        }
+
+        private static void HandleDamageMode(GameSession session, PacketReader packet)
+        {
+            DamagingMode mode = (DamagingMode) packet.ReadByte();
+            switch (mode)
+            {
+                case DamagingMode.TypeOfDamage:
+                    HandleTypeOfDamage(packet);
+                    break;
+                case DamagingMode.Damage:
+                    HandleDamage(session, packet);
+                    break;
+                case DamagingMode.RegionSkill:
+                    HandleRegionSkills(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -65,34 +89,22 @@ namespace MapleServer2.PacketHandlers.Game
             short skillLevel = packet.ReadShort();
             packet.ReadByte();
             CoordF coords = packet.Read<CoordF>();
-            packet.ReadShort();
+            CoordF coords1 = packet.Read<CoordF>();
+            CoordF rotation = packet.Read<CoordF>();
+            packet.ReadInt();
+            int unkValue2 = packet.ReadInt();
 
-            SkillCast skillCast = session.Player.Cast(skillId, skillLevel, skillSN, unkValue);
+            SkillCast skillCast = session.FieldPlayer.Value.Cast(skillId, skillLevel, skillSN, unkValue);
             if (skillCast != null)
             {
-                session.Send(SkillUsePacket.SkillUse(skillCast, coords));
+                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, coords, rotation));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
         }
 
-        private static void HandleDamage(GameSession session, PacketReader packet)
+        private static void HandleHoldCast(GameSession session, PacketReader packet)
         {
-            DamagingMode mode = (DamagingMode) packet.ReadByte();
-            switch (mode)
-            {
-                case DamagingMode.TypeOfDamage:
-                    HandleTypeOfDamage(packet);
-                    break;
-                case DamagingMode.AoeDamage:
-                    HandleAoeDamage(session, packet);
-                    break;
-                case DamagingMode.TypeOfDamage2:
-                    HandleTypeOfDamage2(session, packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+
         }
 
         private static void HandleMode3(PacketReader packet)
@@ -123,7 +135,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleAoeDamage(GameSession session, PacketReader packet)
+        private static void HandleDamage(GameSession session, PacketReader packet)
         {
             List<(IFieldObject<Mob>, DamageHandler)> mobs = new List<(IFieldObject<Mob>, DamageHandler)>();
             long skillSN = packet.ReadLong();
@@ -143,27 +155,29 @@ namespace MapleServer2.PacketHandlers.Game
                 packet.ReadByte();
 
                 IFieldObject<Mob> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entity);
-                if (mob != null)
+                if (mob == null)
                 {
-                    DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.Value, mob.Value, isCrit);
+                    continue;
+                }
 
-                    mob.Value.Damage(damage.Damage);
-                    session.Send(StatPacket.UpdateMobStats(mob));
+                DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.Value, mob.Value, isCrit);
 
-                    if (mob.Value.IsDead)
-                    {
-                        HandleMobKill(session, mob);
-                    }
+                mob.Value.Damage(damage.Damage);
+                session.Send(StatPacket.UpdateMobStats(mob));
 
-                    mobs.Add((mob, damage));
+                if (mob.Value.IsDead)
+                {
+                    HandleMobKill(session, mob);
+                }
 
-                    // TODO: Check if the skill is a debuff for an entity
-                    SkillCast skillCast = session.FieldPlayer.Value.SkillCast;
-                    if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
-                    {
-                        Status status = new Status(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
-                        StatusHandler.Handle(session, status);
-                    }
+                mobs.Add((mob, damage));
+
+                // TODO: Check if the skill is a debuff for an entity
+                SkillCast skillCast = session.FieldPlayer.Value.SkillCast;
+                if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
+                {
+                    Status status = new Status(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
+                    StatusHandler.Handle(session, status);
                 }
             }
             // TODO: Verify if its the player or an ally
@@ -173,17 +187,17 @@ namespace MapleServer2.PacketHandlers.Game
                 StatusHandler.Handle(session, status);
 
                 // TODO: Heal based on stats
-                session.Send(SkillDamagePacket.ApplyHeal(status, 50));
+                session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, 50));
                 session.FieldPlayer.Value.Stats.Increase(PlayerStatId.Hp, 50);
                 session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
             }
             else
             {
-                session.Send(SkillDamagePacket.ApplyDamage(skillSN, unkValue, coords, session.FieldPlayer, mobs));
+                session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(session.FieldPlayer.Value.SkillCast.SkillSN, unkValue, coords, session.FieldPlayer, mobs));
             }
         }
 
-        private static void HandleTypeOfDamage2(GameSession session, PacketReader packet)
+        private static void HandleRegionSkills(GameSession session, PacketReader packet)
         {
             long skillSN = packet.ReadLong();
             byte mode = packet.ReadByte();
@@ -191,17 +205,20 @@ namespace MapleServer2.PacketHandlers.Game
             int unknown2 = packet.ReadInt();
             CoordF coord = packet.Read<CoordF>();
             CoordF coord1 = packet.Read<CoordF>();
-
+            SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
-            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
+            if (skillCast?.GetConditionSkill() == null)
             {
                 return;
             }
-            foreach (int skill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+            foreach (SkillAttack skill in skillCast.GetConditionSkill())
             {
-                SkillCast skillCast = session.Player.Cast(skill, 1, skillSN, unknown);
-                RegionSkillHandler.Handle(session, unknown, coord, skillCast);
+                if (!skill.Splash)
+                {
+                    continue;
+                }
+                RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, coord, skillCast);
             }
         }
 
