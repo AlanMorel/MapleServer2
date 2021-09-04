@@ -165,7 +165,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             if (item.Stats.BasicStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
+                foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
                 {
                     session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
                 }
@@ -173,7 +173,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (item.Stats.BonusStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
+                foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
                 {
                     session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
                 }
@@ -186,7 +186,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             if (item.Stats.BasicStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)))
+                foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
                 {
                     session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
                 }
@@ -194,7 +194,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (item.Stats.BonusStats.Count != 0)
             {
-                foreach (NormalStat stat in item.Stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)))
+                foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
                 {
                     session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
                 }

@@ -18,7 +18,7 @@ namespace MapleServer2
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);

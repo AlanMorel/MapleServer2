@@ -454,16 +454,17 @@ CREATE TABLE `trophies` (
   `Uid` bigint NOT NULL AUTO_INCREMENT,
   `Id` int NOT NULL,
   `NextGrade` int NOT NULL,
-  `MaxGrade` int NOT NULL,
   `Counter` bigint NOT NULL,
-  `Condition` bigint NOT NULL,
   `IsDone` tinyint(1) NOT NULL,
-  `Type` varchar(25) DEFAULT NULL,
+  `LastReward` tinyint unsigned NOT NULL,
   `Timestamps` text,
   `CharacterId` bigint DEFAULT NULL,
+  `AccountId` bigint DEFAULT NULL,
   PRIMARY KEY (`Uid`),
   KEY `IX_Trophies_CharacterId` (`CharacterId`),
-  CONSTRAINT `FK_Trophies_Characters_CharacterId` FOREIGN KEY (`CharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT
+  KEY `IX_Trophies_AccountId` (`AccountId`),
+  CONSTRAINT `FK_Trophies_Characters_CharacterId` FOREIGN KEY (`CharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT,
+  CONSTRAINT `FK_Trophies_Account_AccountId` FOREIGN KEY (`AccountId`) REFERENCES `accounts` (`Id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
