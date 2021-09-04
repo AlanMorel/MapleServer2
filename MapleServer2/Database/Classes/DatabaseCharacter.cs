@@ -82,6 +82,10 @@ namespace MapleServer2.Database.Classes
             Inventory inventory = DatabaseManager.Inventories.FindById(data.InventoryId);
             BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId);
             Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.CharacterId);
+            foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.AccountId))
+            {
+                trophies.Add(trophy.Key, trophy.Value);
+            }
             List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.CharacterId);
 
             return new Player()
@@ -187,6 +191,7 @@ namespace MapleServer2.Database.Classes
             {
                 characters.Add(new Player()
                 {
+                    AccountId = data.AccountId,
                     CharacterId = data.CharacterId,
                     CreationTime = data.CreationTime,
                     Name = data.Name,

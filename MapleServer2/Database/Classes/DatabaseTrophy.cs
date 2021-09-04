@@ -14,13 +14,12 @@ namespace MapleServer2.Database.Classes
             {
                 trophy.Id,
                 trophy.NextGrade,
-                trophy.MaxGrade,
                 trophy.Counter,
-                trophy.Condition,
                 trophy.IsDone,
-                trophy.Type,
+                trophy.LastReward,
                 Timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
-                trophy.CharacterId
+                CharacterId = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
+                AccountId = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
             });
         }
 
@@ -36,24 +35,35 @@ namespace MapleServer2.Database.Classes
             return trophies;
         }
 
+        public Dictionary<int, Trophy> FindAllByAccountId(long accountId)
+        {
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("AccountId", accountId).Get();
+            Dictionary<int, Trophy> trophies = new Dictionary<int, Trophy>();
+            foreach (dynamic data in results)
+            {
+                Trophy trophy = (Trophy) ReadTrophy(data);
+                trophies.Add(trophy.Id, trophy);
+            }
+            return trophies;
+        }
+
         public void Update(Trophy trophy)
         {
             QueryFactory.Query(TableName).Where("Uid", trophy.Uid).Update(new
             {
                 trophy.Id,
                 trophy.NextGrade,
-                trophy.MaxGrade,
                 trophy.Counter,
-                trophy.Condition,
                 trophy.IsDone,
-                trophy.Type,
+                trophy.LastReward,
                 Timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
-                trophy.CharacterId
+                CharacterId = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
+                AccountId = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
             });
         }
 
         public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
-        private static Trophy ReadTrophy(dynamic data) => new Trophy(data.Uid, data.Id, data.NextGrade, data.MaxGrade, data.Counter, data.Condition, data.IsDone, data.Type, JsonConvert.DeserializeObject<List<long>>(data.Timestamps), data.CharacterId);
+        private static Trophy ReadTrophy(dynamic data) => new Trophy(data.Uid, data.Id, data.NextGrade, data.Counter, data.IsDone, data.LastReward, JsonConvert.DeserializeObject<List<long>>(data.Timestamps), data.CharacterId ?? 0, data.AccountId ?? 0);
     }
 }

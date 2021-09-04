@@ -3,8 +3,8 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using static MapleServer2.Packets.TrophyPacket;
 
 namespace MapleServer2.Types
 {
@@ -16,117 +16,138 @@ namespace MapleServer2.Types
         public int MaxGrade { get; private set; }
         public long Counter { get; private set; }
         public long Condition { get; private set; }
+        public string ConditionType { get; private set; }
+        public string[] ConditionCodes { get; private set; }
+        public string[] ConditionTargets { get; private set; }
         public bool IsDone { get; private set; }
         public string Type { get; private set; }
         public List<long> Timestamps { get; private set; }
+        public byte LastReward { get; set; }
+        public bool Favorited { get; set; }
 
         public readonly long CharacterId;
+        public readonly long AccountId;
 
         public Trophy() { }
 
-        public Trophy(long characterId, int trophyId, int grade = 1, int counter = 0, List<long> timestamps = null, bool isDone = false)
+        public Trophy(long characterId, long accountId, int trophyId)
         {
+            TrophyMetadata trophyMetadata = TrophyMetadataStorage.GetMetadata(trophyId);
             Id = trophyId;
-            NextGrade = grade;
-            Counter = counter;
-            Timestamps = timestamps ?? new List<long>();
-            MaxGrade = TrophyMetadataStorage.GetNumGrades(Id);
-            Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
-            Type = TrophyMetadataStorage.GetMetadata(Id).Categories[0];
-            IsDone = isDone;
-            CharacterId = characterId;
+            LastReward = 1;
+            NextGrade = 1;
+            Timestamps = new List<long>();
+            MaxGrade = trophyMetadata.Grades.Count;
+            TrophyGradeMetadata trophyGradeMetadata = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
+            Condition = trophyGradeMetadata.Condition;
+            ConditionType = trophyGradeMetadata.ConditionType;
+            ConditionCodes = trophyGradeMetadata.ConditionCodes;
+            ConditionTargets = trophyGradeMetadata.ConditionTargets;
+            Type = trophyMetadata.Categories[0];
+            if (trophyMetadata.AccountWide)
+            {
+                AccountId = accountId;
+            }
+            else
+            {
+                CharacterId = characterId;
+            }
             Uid = DatabaseManager.Trophies.Insert(this);
         }
 
-        public Trophy(long uid, int trophyId, int nextGrade, int maxGrade, long counter, long condition, bool isDone, string type, List<long> timestamps, long characterId)
+        public Trophy(long uid, int trophyId, int nextGrade, long counter, bool isDone, byte lastReward, List<long> timestamps, long characterId, long accountId)
         {
+            TrophyMetadata trophyMetadata = TrophyMetadataStorage.GetMetadata(trophyId);
             Uid = uid;
             Id = trophyId;
             NextGrade = nextGrade;
-            MaxGrade = maxGrade;
+            MaxGrade = trophyMetadata.Grades.Count;
+            TrophyGradeMetadata trophyGradeMetadata = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
+            Condition = trophyGradeMetadata.Condition;
+            ConditionType = trophyGradeMetadata.ConditionType;
+            ConditionCodes = trophyGradeMetadata.ConditionCodes;
+            ConditionTargets = trophyGradeMetadata.ConditionTargets;
+            Type = trophyMetadata.Categories[0];
             Counter = counter;
-            Condition = condition;
             IsDone = isDone;
-            Type = type;
+            LastReward = lastReward;
             Timestamps = timestamps;
             CharacterId = characterId;
+            AccountId = accountId;
         }
 
-        public TrophyPacket.GradeStatus GetGradeStatus()
-        {
-            return IsDone ? TrophyPacket.GradeStatus.FinalGrade : TrophyPacket.GradeStatus.NotFinalGrade;
-        }
+        public GradeStatus GetGradeStatus() => IsDone ? GradeStatus.Finished : GradeStatus.InProgress;
 
         public void AddCounter(GameSession session, long amount)
         {
+            Counter += amount;
             if (IsDone)
             {
                 return;
             }
-            Counter += amount;
 
-            if (Counter >= Condition)
+            if (Counter < Condition)
             {
-                ProvideReward(session);
-                NextGrade++;
-                // level up but not completed
-                if (NextGrade <= MaxGrade)
+                return;
+            }
+
+            TrophyGradeMetadata grade = TrophyMetadataStorage.GetMetadata(Id).Grades.FirstOrDefault(x => x.Grade == NextGrade);
+            if (!RewardTypeRequiresClaim(grade.RewardType) && LastReward == NextGrade)
+            {
+                // Add stat points and skill points
+                switch (grade.RewardType)
                 {
-                    Condition = TrophyMetadataStorage.GetGrade(Id, NextGrade).Condition;
+                    case RewardType.statPoint:
+                        session.Player.AddStatPoint(grade.RewardValue, OtherStatsIndex.Trophy);
+                        break;
+                    case RewardType.skillPoint:
+                        // TODO: Add skill points
+                        break;
                 }
-                // level up and completed
-                else
+                LastReward++;
+            }
+            NextGrade++;
+            Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            // level up but not completed
+            if (NextGrade <= MaxGrade)
+            {
+                // Update condition
+                TrophyGradeMetadata trophyGradeMetadata = TrophyMetadataStorage.GetMetadata(Id).Grades.FirstOrDefault(x => x.Grade == NextGrade);
+                Condition = trophyGradeMetadata.Condition;
+                ConditionType = trophyGradeMetadata.ConditionType;
+                ConditionCodes = trophyGradeMetadata.ConditionCodes;
+                return;
+            }
+
+            // level up and completed
+            IsDone = true;
+            NextGrade--;
+            string[] categories = TrophyMetadataStorage.GetMetadata(Id).Categories;
+            foreach (string category in categories)
+            {
+                switch (category)
                 {
-                    IsDone = true;
-                    NextGrade--;
-                    string[] categories = TrophyMetadataStorage.GetMetadata(Id).Categories;
-                    foreach (string category in categories)
-                    {
-                        switch (category)
-                        {
-                            case string s when s.Contains("combat"):
-                                session.Player.TrophyCount[0] += 1;
-                                break;
-                            case string s when s.Contains("adventure"):
-                                session.Player.TrophyCount[1] += 1;
-                                break;
-                            case string s when s.Contains("lifestyle"):
-                                session.Player.TrophyCount[2] += 1;
-                                break;
-                        }
-                    }
+                    case string s when s.Contains("combat"):
+                        session.Player.TrophyCount[0] += 1;
+                        break;
+                    case string s when s.Contains("adventure"):
+                        session.Player.TrophyCount[1] += 1;
+                        break;
+                    case string s when s.Contains("lifestyle"):
+                        session.Player.TrophyCount[2] += 1;
+                        break;
                 }
-                Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             }
         }
 
-        private void ProvideReward(GameSession session)
+        private static bool RewardTypeRequiresClaim(RewardType type)
         {
-            TrophyGradeMetadata grade = TrophyMetadataStorage.GetGrade(Id, NextGrade);
-            RewardType type = (RewardType) grade.RewardType;
-            switch (type)
+            return type switch
             {
-                case RewardType.Unknown:
-                case RewardType.itemcoloring:
-                case RewardType.shop_ride:
-                case RewardType.title:
-                case RewardType.beauty_hair:
-                case RewardType.skillPoint:
-                case RewardType.beauty_makeup:
-                case RewardType.shop_build:
-                case RewardType.item:
-                case RewardType.shop_weapon:
-                case RewardType.dynamicaction:
-                case RewardType.etc:
-                case RewardType.beauty_skin:
-                    break;
-                case RewardType.statPoint:
-                    session.Player.StatPointDistribution.AddTotalStatPoints(grade.RewardValue, OtherStatsIndex.Trophy);
-                    session.Send(StatPointPacket.WriteTotalStatPoints(session.Player));
-                    break;
-                default:
-                    break;
-            }
+                RewardType.item or RewardType.title => true,
+                _ => false,
+            };
         }
     }
 }
