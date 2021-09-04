@@ -65,7 +65,7 @@ namespace MapleServer2.Types
 
         public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.MaxStack ?? 1;
 
-        public IEnumerable<int> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAttacks.ConditionSkillIds ?? null;
+        public IEnumerable<SkillAttack> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAttacks.ToList() ?? null;
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
@@ -84,7 +84,7 @@ namespace MapleServer2.Types
         public bool IsChainSkill()
         {
             SkillMetadata skillData = GetSkillMetadata();
-            return skillData != null && skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
+            return skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
         }
 
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
@@ -106,7 +106,7 @@ namespace MapleServer2.Types
             if (IsChainSkill())
             {
                 SkillAdditionalData skillAdditionalData = GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
-                if (skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue() && skillAdditionalData != null)
+                if (skillAdditionalData != null && skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue())
                 {
                     return true;
                 }

@@ -48,7 +48,7 @@ namespace GameDataParser.Parsers
 
                         // Getting all Attack attr in each level.
                         XmlNodeList attackListAttr = level.SelectNodes("motion/attack");
-                        List<int> conditionSkillIds = new List<int>();
+                        List<SkillAttack> skillAttacks = new List<SkillAttack>();
 
                         foreach (XmlNode attackAttr in attackListAttr)
                         {
@@ -58,13 +58,16 @@ namespace GameDataParser.Parsers
 
                             foreach (XmlNode conditionSkill in conditionSkillList)
                             {
-                                conditionSkillIds.Add(int.Parse(conditionSkill.Attributes["skillID"]?.Value ?? "0"));
+                                int conditionSkillId = int.Parse(conditionSkill.Attributes["skillID"]?.Value ?? "0");
+                                bool splash = conditionSkill.Attributes["splash"]?.Value == "1";
+
+                                SkillAttack skillAttack = new SkillAttack(skillId, splash);
+                                skillAttacks.Add(skillAttack);
                             }
                         }
 
                         SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
-                        SkillAttack skillAttack = new SkillAttack(conditionSkillIds);
-                        skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttack));
+                        skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks));
                     }
                     skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery));
                 }
@@ -175,8 +178,9 @@ namespace GameDataParser.Parsers
             int buffSubType = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["buffSubType"]?.Value ?? "0");
             int buffCategory = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["buffCategory"]?.Value ?? "0");
             int maxStack = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["maxBuffCount"]?.Value ?? "0");
+            byte keepCondition = byte.Parse(level.SelectSingleNode("BasicProperty").Attributes["keepCondition"]?.Value ?? "0");
 
-            return new SkillAdditionalData(duration, buffType, buffSubType, buffCategory, maxStack);
+            return new SkillAdditionalData(duration, buffType, buffSubType, buffCategory, maxStack, keepCondition);
         }
     }
 }

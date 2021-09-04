@@ -9,16 +9,18 @@ namespace MapleServer2.Packets
     {
         private enum SkillDamageMode : byte
         {
-            ApplyDamage = 0x1,
-            ApplyHeal = 0x4
+            Damage = 0x1,
+            Mode3 = 0x3,
+            Heal = 0x4,
+            Mode5 = 0x5
         }
 
-        public static Packet ApplyDamage(long skillSN, int unkValue, CoordF coords, IFieldObject<Player> player, List<(IFieldObject<Mob>, DamageHandler)> effects)
+        public static Packet Damage(long skillSN, int unkValue, CoordF coords, IFieldObject<Player> player, List<(IFieldObject<Mob>, DamageHandler)> effects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
             SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
 
-            pWriter.WriteEnum(SkillDamageMode.ApplyDamage);
+            pWriter.WriteEnum(SkillDamageMode.Damage);
             pWriter.WriteLong(skillSN);
             pWriter.WriteInt(unkValue);
             pWriter.WriteInt(player.ObjectId);
@@ -46,16 +48,41 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ApplyHeal(Status status, int healAmount)
+        public static Packet Mode3(int unkInt, int unkInt2, byte unkByte, int unkInt3, long damage)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+            pWriter.WriteEnum(SkillDamageMode.Mode3);
+            pWriter.WriteInt(unkInt);
+            pWriter.WriteInt(unkInt2);
+            pWriter.WriteByte(unkByte);
+            pWriter.WriteInt(unkInt3);
+            pWriter.WriteLong(damage);
+
+            return pWriter;
+        }
+
+        public static Packet Heal(Status status, int healAmount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
-            pWriter.WriteEnum(SkillDamageMode.ApplyHeal);
+            pWriter.WriteEnum(SkillDamageMode.Heal);
             pWriter.WriteInt(status.Source);
             pWriter.WriteInt(status.Target);
             pWriter.WriteInt(status.UniqueId);
             pWriter.WriteInt(healAmount);
             pWriter.WriteLong();
             pWriter.WriteByte(1);
+
+            return pWriter;
+        }
+
+        public static Packet Mode5(int objectId, int unkInt)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+            pWriter.WriteEnum(SkillDamageMode.Mode5);
+            pWriter.WriteLong();
+            pWriter.WriteInt(objectId);
+            pWriter.WriteInt(unkInt);
+            pWriter.WriteShort();
 
             return pWriter;
         }
