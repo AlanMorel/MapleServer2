@@ -16,8 +16,8 @@ namespace MapleServer2.Packets
 
         public enum GradeStatus : byte
         {
-            NotFinalGrade = 0x2,
-            FinalGrade = 0x3
+            InProgress = 0x2,
+            Finished = 0x3
         }
 
         public static Packet WriteTableStart()

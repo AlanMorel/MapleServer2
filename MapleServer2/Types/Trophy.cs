@@ -76,7 +76,7 @@ namespace MapleServer2.Types
             AccountId = accountId;
         }
 
-        public GradeStatus GetGradeStatus() => IsDone ? GradeStatus.FinalGrade : GradeStatus.NotFinalGrade;
+        public GradeStatus GetGradeStatus() => IsDone ? GradeStatus.Finished : GradeStatus.InProgress;
 
         public void AddCounter(GameSession session, long amount)
         {
