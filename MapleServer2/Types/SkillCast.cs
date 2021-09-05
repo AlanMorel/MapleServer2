@@ -29,7 +29,9 @@ namespace MapleServer2.Types
         public int EntityId { get; private set; }
         public int SkillId { get; private set; }
         public short SkillLevel { get; private set; }
-        public int UnkValue { get; private set; }
+        public int ServerTick { get; private set; }
+        public byte MotionPoint { get; private set; }
+        public byte AttackPoint { get; private set; }
 
         public SkillCast()
         {
@@ -37,15 +39,15 @@ namespace MapleServer2.Types
             SkillLevel = 1;
         }
 
-        public SkillCast(int id, short level, long skillSN, int unkValue)
+        public SkillCast(int id, short level, long skillSN, int serverTick)
         {
             SkillSN = skillSN;
             SkillId = id;
             SkillLevel = level;
-            UnkValue = unkValue;
+            ServerTick = serverTick;
         }
 
-        public SkillCast(int id, short level, long skillSN, int unkValue, int entityId) : this(id, level, skillSN, unkValue) => EntityId = entityId;
+        public SkillCast(int id, short level, long skillSN, int serverTick, int entityId) : this(id, level, skillSN, serverTick) => EntityId = entityId;
 
         public double GetDamageRate() => GetSkillMetadata()?.SkillLevels.Find(x => x.Level == SkillLevel).DamageRate ?? 0.1f;
 
@@ -65,7 +67,7 @@ namespace MapleServer2.Types
 
         public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.MaxStack ?? 1;
 
-        public IEnumerable<SkillAttack> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAttacks.ToList() ?? null;
+        public IEnumerable<SkillAttack> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAttacks?.ToList();
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 

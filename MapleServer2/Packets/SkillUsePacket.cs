@@ -10,18 +10,19 @@ namespace MapleServer2.Packets
     {
         public static readonly Dictionary<long, SkillCast> SkillCastMap = new Dictionary<long, SkillCast>();
 
-        public static Packet SkillUse(SkillCast skillCast, CoordF coords, CoordF rotation)
+        public static Packet SkillUse(SkillCast skillCast, CoordF position, CoordF direction, CoordF rotation, int entityId)
         {
             SkillCastMap[skillCast.SkillSN] = skillCast;
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+
             pWriter.WriteLong(skillCast.SkillSN);
-            pWriter.WriteInt(skillCast.UnkValue);
-            pWriter.WriteInt(skillCast.EntityId);
+            pWriter.WriteInt(skillCast.ServerTick);
+            pWriter.WriteInt(entityId);
             pWriter.WriteInt(skillCast.SkillId);
             pWriter.WriteShort(skillCast.SkillLevel);
             pWriter.WriteByte();
-            pWriter.Write(coords.ToShort());
-            pWriter.Write(CoordF.From(0, 0, 0)); //12
+            pWriter.Write(position.ToShort());
+            pWriter.Write(direction);
             pWriter.Write(rotation); // rotation
             pWriter.WriteShort();
             pWriter.WriteByte();

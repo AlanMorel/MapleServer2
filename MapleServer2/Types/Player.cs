@@ -272,9 +272,11 @@ namespace MapleServer2.Types
 
         public SkillCast Cast(int skillId, short skillLevel, long skillSN, int unkValue)
         {
-            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue, Session.FieldPlayer.ObjectId);
-            int spiritCost = skillCast.GetSpCost();
-            int staminaCost = skillCast.GetStaCost();
+            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
+
+            int spiritCost = 1;  // Comment out for debug. -- skillCast.GetSpCost();
+            int staminaCost = 1; // Comment out for debug. -- skillCast.GetStaCost();
+
             if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
             {
                 ConsumeSp(spiritCost);
