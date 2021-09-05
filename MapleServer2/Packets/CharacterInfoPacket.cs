@@ -26,7 +26,7 @@ namespace MapleServer2.Packets
             characterBuffer.WriteShort(player.Levels.Level);
             characterBuffer.WriteEnum(player.Job);
             characterBuffer.WriteEnum(player.JobCode);
-            characterBuffer.WriteInt();
+            characterBuffer.WriteInt(player.Gender);
             characterBuffer.WriteInt(player.Levels.PrestigeLevel);
             characterBuffer.WriteByte();
             WriteStats(characterBuffer, player);
