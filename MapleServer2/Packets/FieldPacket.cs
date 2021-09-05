@@ -99,20 +99,12 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteInt();
 
-            // This seems to be character appearance encoded as a blob
-            pWriter.WriteBool(true);
-            if (true)
+            bool appearance = true;
+            pWriter.WriteBool(appearance);
+            if (appearance)
             {
                 PacketWriter appearanceBuffer = new PacketWriter();
-                appearanceBuffer.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count)); // num equips
-                foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
-                {
-                    CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
-                }
-                foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
-                {
-                    CharacterListPacket.WriteEquip(slot, equip, appearanceBuffer);
-                }
+                CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player);
 
                 appearanceBuffer.WriteByte(1);
                 appearanceBuffer.WriteLong();
@@ -120,35 +112,55 @@ namespace MapleServer2.Packets
                 appearanceBuffer.WriteByte();
 
                 pWriter.WriteDeflated(appearanceBuffer.Buffer, 0, appearanceBuffer.Length);
-                pWriter.WriteByte(); // Separator?
-                pWriter.WriteDeflated(new byte[1], 0, 1); // Unknown
-                pWriter.WriteByte(); // Separator?
-                pWriter.WriteDeflated(new byte[1], 0, 1); // Badge appearances
-
-                JobPacket.WritePassiveSkills(pWriter, fieldPlayer);
-
-                pWriter.WriteInt();
-                pWriter.WriteInt();
-                pWriter.WriteByte();
-                pWriter.WriteInt();
-                pWriter.WriteByte();
-                pWriter.WriteByte();
-                pWriter.WriteInt(player.TitleId);
-                pWriter.WriteShort(player.InsigniaId);
-                pWriter.WriteByte();
-                pWriter.WriteInt();
-                pWriter.WriteByte();
-                pWriter.WriteLong(); // Another timestamp
-                pWriter.WriteInt(int.MaxValue);
-                pWriter.WriteByte();
-                pWriter.WriteInt(); // MushkingRoyale taileffect kill count
-                pWriter.WriteInt();
-                pWriter.WriteShort();
             }
             else
             {
-                //pWriter.WriteInt(); commented out to remove warning
+                pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
             }
+
+            bool unusuedBuffer = false;
+            pWriter.WriteBool(unusuedBuffer);
+            if (unusuedBuffer)
+            {
+                // kms2 outfits? Unsued buffer for gms2
+            }
+            else
+            {
+                pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
+            }
+
+            bool badge = true;
+            pWriter.WriteBool(badge);
+            if (badge)
+            {
+                PacketWriter badgesBuffer = new PacketWriter();
+                CharacterListPacket.WriteBadges(badgesBuffer, player);
+                pWriter.WriteDeflated(badgesBuffer.Buffer, 0, badgesBuffer.Length);
+            }
+            else
+            {
+                pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
+            }
+
+            JobPacket.WritePassiveSkills(pWriter, fieldPlayer);
+
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteInt(player.TitleId);
+            pWriter.WriteShort(player.InsigniaId);
+            pWriter.WriteByte();
+            pWriter.WriteInt();
+            pWriter.WriteByte();
+            pWriter.WriteLong(); // Another timestamp
+            pWriter.WriteInt(int.MaxValue);
+            pWriter.WriteByte();
+            pWriter.WriteInt(); // MushkingRoyale taileffect kill count
+            pWriter.WriteInt();
+            pWriter.WriteShort();
 
             return pWriter;
         }
