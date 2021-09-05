@@ -5,14 +5,14 @@ using MapleServer2.Extensions;
 
 namespace MapleServer2.Types
 {
-    public enum DamageTypeId : byte
+    public enum DamageType : byte
     {
         None = 0x00,
         Physical = 0x01,
         Magic = 0x02,
     }
 
-    public enum ElementId : byte
+    public enum Element : byte
     {
         None = 0x00,
         Fire = 0x01,
@@ -29,6 +29,7 @@ namespace MapleServer2.Types
         public int EntityId { get; private set; }
         public int SkillId { get; private set; }
         public short SkillLevel { get; private set; }
+        public int ClientTick { get; private set; }
         public int ServerTick { get; private set; }
         public byte MotionPoint { get; private set; }
         public byte AttackPoint { get; private set; }
@@ -47,7 +48,12 @@ namespace MapleServer2.Types
             ServerTick = serverTick;
         }
 
-        public SkillCast(int id, short level, long skillSN, int serverTick, int entityId) : this(id, level, skillSN, serverTick) => EntityId = entityId;
+        public SkillCast(int id, short level, long skillSN, int serverTick, int entityId, int clientTick, byte attackPoint) : this(id, level, skillSN, serverTick)
+        {
+            AttackPoint = attackPoint;
+            EntityId = entityId;
+            ClientTick = clientTick;
+        }
 
         public double GetDamageRate() => GetSkillMetadata()?.SkillLevels.Find(x => x.Level == SkillLevel).DamageRate ?? 0.1f;
 
@@ -57,9 +63,9 @@ namespace MapleServer2.Types
 
         public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).Stamina ?? 10;
 
-        public DamageTypeId GetSkillDamageType() => (DamageTypeId) (GetSkillMetadata()?.DamageType ?? 0);
+        public DamageType GetSkillDamageType() => (DamageType) (GetSkillMetadata()?.DamageType ?? 0);
 
-        public ElementId GetElement() => (ElementId) GetSkillMetadata().Element;
+        public Element GetElement() => (Element) GetSkillMetadata().Element;
 
         public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 

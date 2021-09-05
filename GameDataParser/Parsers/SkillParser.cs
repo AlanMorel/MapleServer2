@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Text.RegularExpressions;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
@@ -47,27 +48,36 @@ namespace GameDataParser.Parsers
                         string motionEffect = motionProperty?.Attributes["motionEffect"].Value ?? "";
 
                         // Getting all Attack attr in each level.
-                        XmlNodeList attackListAttr = level.SelectNodes("motion/attack");
                         List<SkillAttack> skillAttacks = new List<SkillAttack>();
+                        List<SkillCondition> skillConditions = new List<SkillCondition>();
 
+                        XmlNodeList conditionSkills = level.SelectNodes("motion/attack/conditionSkill") ?? level.SelectNodes("conditionSkill");
+                        foreach (XmlNode conditionSkill in conditionSkills)
+                        {
+                            int conditionSkillId = int.Parse(conditionSkill.Attributes["skillID"]?.Value ?? "0");
+                            short conditionSkillLevel = short.Parse(conditionSkill.Attributes["level"]?.Value ?? "0");
+                            bool splash = conditionSkill.Attributes["splash"]?.Value == "1";
+                            byte target = byte.Parse(conditionSkill.Attributes["skillTarget"].Value ?? "0");
+                            byte owner = byte.Parse(conditionSkill.Attributes["skillOwner"]?.Value ?? "0");
+                            SkillCondition skillCondition = new SkillCondition(conditionSkillId, conditionSkillLevel, splash, target, owner);
+
+                            skillConditions.Add(skillCondition);
+                        }
+
+                        XmlNodeList attackListAttr = level.SelectNodes("motion/attack");
                         foreach (XmlNode attackAttr in attackListAttr)
                         {
                             // Many skills has a condition to proc another skill.
                             // We capture that as a list, since each Attack attr has one at least.
-                            XmlNodeList conditionSkillList = attackAttr.SelectNodes("conditionSkill");
+                            byte attackPoint = byte.Parse(Regex.Match(attackAttr.Attributes["point"]?.Value, @"\d").Value);
+                            short targetCount = short.Parse(attackAttr.Attributes["targetCount"].Value);
+                            SkillAttack skillAttack = new SkillAttack(attackPoint, targetCount);
 
-                            foreach (XmlNode conditionSkill in conditionSkillList)
-                            {
-                                int conditionSkillId = int.Parse(conditionSkill.Attributes["skillID"]?.Value ?? "0");
-                                bool splash = conditionSkill.Attributes["splash"]?.Value == "1";
-
-                                SkillAttack skillAttack = new SkillAttack(skillId, splash);
-                                skillAttacks.Add(skillAttack);
-                            }
+                            skillAttacks.Add(skillAttack);
                         }
 
                         SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
-                        skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks));
+                        skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks, skillConditions));
                     }
                     skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery));
                 }

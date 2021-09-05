@@ -270,12 +270,10 @@ namespace MapleServer2.Types
             return gearItem;
         }
 
-        public SkillCast Cast(int skillId, short skillLevel, long skillSN, int unkValue)
+        public void Cast(SkillCast skillCast)
         {
-            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
-
-            int spiritCost = 1;  // Comment out for debug. -- skillCast.GetSpCost();
-            int staminaCost = 1; // Comment out for debug. -- skillCast.GetStaCost();
+            int spiritCost = skillCast.GetSpCost();
+            int staminaCost = skillCast.GetStaCost();
 
             if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
             {
@@ -300,10 +298,7 @@ namespace MapleServer2.Types
                 CombatCTS = new CancellationTokenSource();
                 CombatCTS.Token.Register(() => CombatCTS.Dispose());
                 StartCombatStance(CombatCTS);
-
-                return skillCast;
             }
-            return null;
         }
 
         private Task StartCombatStance(CancellationTokenSource ct)

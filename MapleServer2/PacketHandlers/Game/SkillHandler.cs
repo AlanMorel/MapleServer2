@@ -20,16 +20,16 @@ namespace MapleServer2.PacketHandlers.Game
 
         private enum SkillHandlerMode : byte
         {
-            Cast = 0x0,     // Start of a skill
-            Damage = 0x1,   // Damaging part of a skill. one is sent per hit
-            Sync = 0x2,    // Cast continues skills
+            Cast = 0x0,
+            Damage = 0x1,
+            Sync = 0x2,
             SyncTick = 0x3,
             Cancel = 0x4,
         }
 
         private enum DamagingMode : byte
         {
-            TypeOfDamage = 0x0,
+            SyncDamage = 0x0,
             Damage = 0x1,
             RegionSkill = 0x2
         }
@@ -65,8 +65,8 @@ namespace MapleServer2.PacketHandlers.Game
             DamagingMode mode = (DamagingMode) packet.ReadByte();
             switch (mode)
             {
-                case DamagingMode.TypeOfDamage:
-                    HandleTypeOfDamage(session, packet);
+                case DamagingMode.SyncDamage:
+                    HandleSyncDamage(session, packet);
                     break;
                 case DamagingMode.Damage:
                     HandleDamage(session, packet);
@@ -101,7 +101,9 @@ namespace MapleServer2.PacketHandlers.Game
                 string unkString = packet.ReadUnicodeString();
             }
 
-            SkillCast skillCast = session.FieldPlayer.Value.Cast(skillId, skillLevel, skillSN, serverTick);
+            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, serverTick, session.FieldPlayer.ObjectId, clientTick, attackPoint);
+            session.FieldPlayer.Value.Cast(skillCast);
+
             if (skillCast != null)
             {
                 session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation, session.FieldPlayer.ObjectId));
@@ -137,7 +139,7 @@ namespace MapleServer2.PacketHandlers.Game
             long skillSN = packet.ReadLong();
         }
 
-        private static void HandleTypeOfDamage(GameSession session, PacketReader packet)
+        private static void HandleSyncDamage(GameSession session, PacketReader packet)
         {
             long skillSN = packet.ReadLong();
             byte attackPoint = packet.ReadByte();
@@ -145,14 +147,21 @@ namespace MapleServer2.PacketHandlers.Game
             CoordF rotation = packet.Read<CoordF>();
             byte count = packet.ReadByte();
             packet.ReadInt();
+
+            List<int> atkCount = new List<int>();
+            List<int> sourceId = new List<int>();
+            List<int> targetId = new List<int>();
+            List<short> animation = new List<short>();
+            // TODO: Handle multiple projectiles
             for (int i = 0; i < count; i++)
             {
-                int atkCount = packet.ReadInt(); // increment +1 every count
-                int sourceId = packet.ReadInt();
-                int targetId = packet.ReadInt();
-                short animation = packet.ReadShort(); // increment +1 every count
-                session.FieldManager.BroadcastPacket(SkillDamagePacket.Mode0(skillSN, position, rotation, session.FieldPlayer, count, atkCount, session.FieldPlayer.ObjectId));
+                atkCount.Add(packet.ReadInt());
+                sourceId.Add(packet.ReadInt());
+                targetId.Add(packet.ReadInt());
+                animation.Add(packet.ReadShort());
             }
+
+            session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillSN, position, rotation, session.FieldPlayer, sourceId, count, atkCount, targetId, animation));
         }
 
         private static void HandleDamage(GameSession session, PacketReader packet)
@@ -228,8 +237,9 @@ namespace MapleServer2.PacketHandlers.Game
 
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
+            // TODO: Adding this implementation on another PullRequest
 
-            RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, session.FieldPlayer.Value.SkillCast);
+            //RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, session.FieldPlayer.Value.SkillCast);
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
