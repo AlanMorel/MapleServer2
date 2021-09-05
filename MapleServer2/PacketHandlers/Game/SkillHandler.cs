@@ -125,7 +125,7 @@ namespace MapleServer2.PacketHandlers.Game
             packet.ReadInt();
             packet.ReadByte();
 
-            session.Send(SkillSyncPacket.Sync(skillSN, session.FieldPlayer, position, rotation, toggle));
+            session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillSN, session.FieldPlayer, position, rotation, toggle), session);
         }
 
         private static void HandleSyncTick(PacketReader packet)
