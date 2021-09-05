@@ -569,14 +569,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Pickup item then set battle state to true
             session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, true));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
 
         private static void HandleDrop(GameSession session)
         {
             // Drop item then set battle state to false
             session.Send(ResponseCubePacket.Drop(session.FieldPlayer));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, false));
         }
 
         private static void HandleHomeName(GameSession session, PacketReader packet)

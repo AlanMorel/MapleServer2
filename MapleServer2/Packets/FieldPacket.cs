@@ -46,21 +46,14 @@ namespace MapleServer2.Packets
 
             // Coords
             pWriter.Write(fieldPlayer.Coord);
-            pWriter.Write(player.Rotation);
+            pWriter.Write(fieldPlayer.Rotation);
             pWriter.WriteByte();
 
             // Stats
             StatPacket.WriteFieldStats(pWriter, player.Stats);
 
             pWriter.WriteBool(player.CombatCTS != null);
-            if (player.Guide != null)
-            {
-                pWriter.WriteByte(player.Guide.Value.Type);
-            }
-            else
-            {
-                pWriter.WriteByte();
-            }
+            pWriter.WriteByte(player.Guide?.Value.Type ?? 0);
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong();
@@ -84,8 +77,8 @@ namespace MapleServer2.Packets
             }
 
             pWriter.WriteInt(1);
-            pWriter.Write<SkinColor>(player.SkinColor);
-            pWriter.WriteUnicodeString(player.ProfileUrl); // Profile URL
+            pWriter.Write(player.SkinColor);
+            pWriter.WriteUnicodeString(player.ProfileUrl);
 
             pWriter.WriteBool(player.Mount != null);
             if (player.Mount != null)
