@@ -297,15 +297,16 @@ namespace MapleServer2.Types
                 }
                 CombatCTS = new CancellationTokenSource();
                 CombatCTS.Token.Register(() => CombatCTS.Dispose());
-                StartCombatEnd(CombatCTS);
+                StartCombatStance(CombatCTS);
 
                 return skillCast;
             }
             return null;
         }
 
-        private Task StartCombatEnd(CancellationTokenSource ct)
+        private Task StartCombatStance(CancellationTokenSource ct)
         {
+            Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, true));
             return Task.Run(async () =>
             {
                 await Task.Delay(5000);
@@ -314,7 +315,7 @@ namespace MapleServer2.Types
                 {
                     CombatCTS = null;
                     ct.Dispose();
-                    Session.Send(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
+                    Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
                 }
             }, ct.Token);
         }
@@ -448,7 +449,7 @@ namespace MapleServer2.Types
 
                         // TODO: Check if regen-enabled
                         Stats[statId] = AddStatRegen(statId, regenStatId);
-                        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(Session.FieldPlayer, statId));
                         if (Party != null)
                         {
                             Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
