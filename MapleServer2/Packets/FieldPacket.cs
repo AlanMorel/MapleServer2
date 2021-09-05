@@ -122,7 +122,7 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(unusuedBuffer);
             if (unusuedBuffer)
             {
-                // kms2 outfits? Unsued buffer for gms2
+                // kms2 outfits? Unused buffer for gms2
             }
             else
             {
