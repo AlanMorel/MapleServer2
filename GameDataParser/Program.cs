@@ -67,7 +67,8 @@ namespace GameDataParser
                 new MasteryUGCHousingParser(resources),
                 new JobParser(resources),
                 new RewardContentParser(resources),
-                new DefaultItemsParser(resources)
+                new DefaultItemsParser(resources),
+                new ItemRepackageParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));

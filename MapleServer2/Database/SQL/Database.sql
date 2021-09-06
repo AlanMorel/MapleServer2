@@ -329,7 +329,7 @@ CREATE TABLE `items` (
   `PlayCount` int NOT NULL,
   `Amount` int NOT NULL,
   `BankInventoryId` bigint DEFAULT NULL,
-  `CanRepackage` tinyint(1) NOT NULL,
+  `RepackageCount` int NOT NULL,
   `Charges` int NOT NULL,
   `Color` text NOT NULL,
   `CreationTime` bigint NOT NULL,

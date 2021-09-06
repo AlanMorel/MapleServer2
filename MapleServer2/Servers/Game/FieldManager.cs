@@ -362,6 +362,10 @@ namespace MapleServer2.Servers.Game
             triggerObjects.AddRange(State.TriggerEffects.Values.ToList());
             triggerObjects.AddRange(State.TriggerCameras.Values.ToList());
             triggerObjects.AddRange(State.TriggerActors.Values.ToList());
+            triggerObjects.AddRange(State.TriggerCubes.Values.ToList());
+            triggerObjects.AddRange(State.TriggerLadders.Values.ToList());
+            triggerObjects.AddRange(State.TriggerRopes.Values.ToList());
+            triggerObjects.AddRange(State.TriggerSounds.Values.ToList());
             sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
             State.AddPlayer(player);
 

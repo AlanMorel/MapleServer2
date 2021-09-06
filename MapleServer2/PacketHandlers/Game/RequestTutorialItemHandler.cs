@@ -21,14 +21,16 @@ namespace MapleServer2.PacketHandlers.Game
 
             foreach (TutorialItemMetadata tutorialItem in metadata)
             {
-                List<KeyValuePair<long, Item>> tutorialItems = session.Player.Inventory.Items.Where(x => x.Value.Id == tutorialItem.ItemId).ToList();
+                int tutorialItemsCount = session.Player.Inventory.Items.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
+                tutorialItemsCount += session.Player.Inventory.Cosmetics.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
+                tutorialItemsCount += session.Player.Inventory.Equips.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
 
-                if (tutorialItems.Count >= tutorialItem.Amount)
+                if (tutorialItemsCount >= tutorialItem.Amount)
                 {
                     continue;
                 }
 
-                int amountRemaining = tutorialItem.Amount - tutorialItems.Count;
+                int amountRemaining = tutorialItem.Amount - tutorialItemsCount;
 
                 Item item = new Item(tutorialItem.ItemId)
                 {

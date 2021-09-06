@@ -109,6 +109,31 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).ShopID;
         }
 
+        public static bool IsSellablle(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Sellable;
+        }
+
+        public static TransferType GetTransferType(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).TransferType;
+        }
+
+        public static int GetTradeableCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).TradeableCount;
+        }
+
+        public static int GetRepackageCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).RepackageCount;
+        }
+
+        public static int GetRepackageConsumeCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).RepackageItemConsumeCount;
+        }
+
         public static List<Job> GetRecommendJobs(int itemId)
         {
             Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
