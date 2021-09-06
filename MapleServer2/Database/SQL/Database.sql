@@ -353,7 +353,7 @@ CREATE TABLE `items` (
   `PairedCharacterName` varchar(25) DEFAULT '',
   `PetSkinBadgeId` int NOT NULL,
   `RemainingGlamorForges` smallint NOT NULL,
-  'RemainingTrades' smallint NOT NULL,
+  `RemainingTrades` smallint NOT NULL,
   `Score` text,
   `Slot` smallint NOT NULL,
   `Stats` text,
