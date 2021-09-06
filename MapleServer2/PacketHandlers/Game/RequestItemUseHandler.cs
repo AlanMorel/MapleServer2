@@ -397,9 +397,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(CouponUsePacket.BeautyCoupon(session.FieldPlayer, item.Uid));
         }
 
-        public static void HandleRepackingScroll(GameSession session, Item item)
-        {
-            session.Send(ItemRepackagePacket.Open(item.Uid));
-        }
+        public static void HandleRepackingScroll(GameSession session, Item item) => session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 }
