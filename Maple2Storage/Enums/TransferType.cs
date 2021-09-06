@@ -1,6 +1,5 @@
 ﻿namespace MapleServer2.Enums
 {
-    [Flags]
     public enum TransferType : byte
     {
         Tradeable = 0,
