@@ -35,7 +35,7 @@ namespace MapleServer2.Packets
             pWriter.Write(rotation);
             pWriter.WriteByte();
             pWriter.WriteInt(skillCast.ServerTick);
-            pWriter.WriteByte(count); // Loop
+            pWriter.WriteByte(count);
             for (int i = 0; i < count; i++)
             {
                 pWriter.WriteLong();
@@ -128,7 +128,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(count2);
                 pWriter.Write(blockPosition);
                 pWriter.Write(direction);
-                for (int x = 0; x < count2; x++)
+                for (int j = 0; j < count2; j++)
                 {
                     pWriter.WriteEnum(damageType);
                     pWriter.WriteLong(damage);
@@ -154,7 +154,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteByte(count2);
                 pWriter.Write(position);
                 pWriter.Write(direction);
-                for (int x = 0; x < count2; x++)
+                for (int j = 0; j < count2; j++)
                 {
                     pWriter.WriteEnum(damageType);
                     pWriter.WriteLong(damage);
