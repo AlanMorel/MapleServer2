@@ -33,7 +33,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteBool(item.CanRepackage);
+            pWriter.WriteBool(item.RepackageCount > 0);
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
@@ -74,7 +74,7 @@ namespace MapleServer2.Packets.Helpers
             // Item Transfer Data 0x058AD00
             pWriter.WriteInt((int) item.TransferFlag);
             pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteInt(item.RemainingTrades);
             pWriter.WriteInt();
             pWriter.WriteByte();
             pWriter.WriteByte(); // 2nd flag, use to skip charbound
