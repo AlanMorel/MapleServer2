@@ -10,7 +10,6 @@ namespace MapleServer2.Servers.Login
         public static IContainer Configure()
         {
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterLogger();
             builder.RegisterType<LoginServer>()
                 .AsSelf()
                 .SingleInstance();

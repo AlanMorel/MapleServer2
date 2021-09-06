@@ -4,7 +4,6 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game
 {
@@ -21,7 +20,7 @@ namespace MapleServer2.Servers.Game
         public FieldManager FieldManager { get; private set; }
         private readonly FieldManagerFactory FieldManagerFactory;
 
-        public GameSession(FieldManagerFactory fieldManagerFactory, ILogger<GameSession> logger) : base(logger)
+        public GameSession(FieldManagerFactory fieldManagerFactory) : base()
         {
             FieldManagerFactory = fieldManagerFactory;
         }

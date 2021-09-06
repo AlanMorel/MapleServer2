@@ -3,7 +3,6 @@ using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -11,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.ENTER_EVENTFIELD;
 
-        public EnterEventFieldHandler(ILogger<EnterEventFieldHandler> logger) : base(logger) { }
+        public EnterEventFieldHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

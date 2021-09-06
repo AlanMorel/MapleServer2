@@ -7,7 +7,6 @@ using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.NPC_TALK;
 
-        public NpcTalkHandler(ILogger<NpcTalkHandler> logger) : base(logger) { }
+        public NpcTalkHandler() : base() { }
 
         private enum NpcTalkMode : byte
         {

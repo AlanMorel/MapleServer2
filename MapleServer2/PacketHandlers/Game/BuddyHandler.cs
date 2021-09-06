@@ -5,7 +5,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.BUDDY;
 
-        public BuddyHandler(ILogger<BuddyHandler> logger) : base(logger) { }
+        public BuddyHandler() : base() { }
 
         private enum BuddyMode : byte
         {

@@ -11,7 +11,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.BEAUTY;
 
-        public BeautyHandler(ILogger<BeautyHandler> logger) : base(logger) { }
+        public BeautyHandler() : base() { }
 
         private enum BeautyMode : byte
         {
@@ -351,7 +350,7 @@ namespace MapleServer2.PacketHandlers.Game
                     mapId = Map.DouglasDyeWorkshop;
                     break;
                 default:
-                    Console.WriteLine($"teleportId: {teleportId} not found");
+                    Logger.Warn($"teleportId: {teleportId} not found");
                     return;
             }
 

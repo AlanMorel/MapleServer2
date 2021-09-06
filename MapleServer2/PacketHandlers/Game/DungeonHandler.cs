@@ -5,7 +5,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.ROOM_DUNGEON;
 
-        public DungeonHandler(ILogger<DungeonHandler> logger) : base(logger) { }
+        public DungeonHandler() : base() { }
 
         private enum DungeonMode : byte
         {

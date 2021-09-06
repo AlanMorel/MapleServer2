@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.CONSTRUCT_RECIPE;
 
-        public MasteryHandler(ILogger<MasteryHandler> logger) : base(logger) { }
+        public MasteryHandler() : base() { }
 
         private enum MasteryMode : byte
         {
@@ -49,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleRewardBox(GameSession session, PacketReader packet)
+        private static void HandleRewardBox(GameSession session, PacketReader packet)
         {
             int rewardBoxDetails = packet.ReadInt();
             int type = rewardBoxDetails / 1000;
@@ -59,7 +58,7 @@ namespace MapleServer2.PacketHandlers.Game
             MasteryMetadata mastery = MasteryMetadataStorage.GetMastery(type);
             if (mastery == null)
             {
-                Logger.LogError($"Unknown mastery type {type} from user: {session.Player.Name}");
+                Logger.Error("Unknown mastery type {type} from user: {session.Player.Name}", type, session.Player.Name);
                 return;
             }
 
@@ -73,7 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, rewardBox));
         }
 
-        private void HandleCraftItem(GameSession session, PacketReader packet)
+        private static void HandleCraftItem(GameSession session, PacketReader packet)
         {
             int recipeId = packet.ReadInt();
 
@@ -81,7 +80,7 @@ namespace MapleServer2.PacketHandlers.Game
             RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
             if (recipe == null)
             {
-                Logger.LogError($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
+                Logger.Error("Unknown recipe ID {recipeId} from user: {session.Player.Name}", recipeId, session.Player.Name);
                 return;
             }
 

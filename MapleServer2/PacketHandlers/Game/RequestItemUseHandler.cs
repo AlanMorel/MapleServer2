@@ -11,7 +11,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-        public RequestItemUseHandler(ILogger<RequestItemUseHandler> logger) : base(logger) { }
+        public RequestItemUseHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -89,7 +88,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleBeautyVoucher(session, item);
                     break;
                 default:
-                    Console.WriteLine("Unhandled item function: " + item.Function.Name);
+                    Logger.Warn("Unhandled item function: " + item.Function.Name);
                     break;
             }
         }

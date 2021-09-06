@@ -2,19 +2,17 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace MapleServer2.Network
 {
     public class PacketRouter<T> where T : Session
     {
         private readonly ImmutableDictionary<RecvOp, IPacketHandler<T>> Handlers;
-        private readonly ILogger Logger;
+        protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers, ILogger<PacketRouter<T>> logger)
+        public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers)
         {
-            Logger = logger;
-
             ImmutableDictionary<RecvOp, IPacketHandler<T>>.Builder builder = ImmutableDictionary.CreateBuilder<RecvOp, IPacketHandler<T>>();
             foreach (IPacketHandler<T> packetHandler in packetHandlers)
             {

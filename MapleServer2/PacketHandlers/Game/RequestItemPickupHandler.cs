@@ -4,7 +4,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
 
-        public RequestItemPickupHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
+        public RequestItemPickupHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

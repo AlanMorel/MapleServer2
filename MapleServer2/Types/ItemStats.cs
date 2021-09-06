@@ -6,7 +6,7 @@ using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
 {
-    public interface ItemStat { }
+    public abstract class ItemStat { }
 
     public class NormalStat : ItemStat
     {

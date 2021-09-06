@@ -6,7 +6,6 @@ using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -16,7 +15,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override RecvOp OpCode => RecvOp.SKILL;
 
-        public SkillHandler(ILogger<SkillHandler> logger) : base(logger) { }
+        public SkillHandler() : base() { }
 
         private enum SkillHandlerMode : byte
         {

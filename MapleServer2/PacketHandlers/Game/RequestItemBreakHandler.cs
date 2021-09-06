@@ -2,7 +2,6 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_BREAK;
 
-        public RequestItemBreakHandler(ILogger<RequestItemBreakHandler> logger) : base(logger) { }
+        public RequestItemBreakHandler() : base() { }
 
         private enum ItemBreakMode : byte
         {

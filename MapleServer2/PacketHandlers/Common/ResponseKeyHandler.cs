@@ -3,14 +3,12 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
 using MapleServer2.Database;
-using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
 {
@@ -18,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 
-        public ResponseKeyHandler(ILogger<ResponseKeyHandler> logger) : base(logger) { }
+        public ResponseKeyHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -206,7 +204,7 @@ namespace MapleServer2.PacketHandlers.Common
             int tokenA = packet.ReadInt();
             int tokenB = packet.ReadInt();
 
-            Logger.Info($"LOGIN USER: {accountId}");
+            Logger.Info("LOGIN USER: {accountId}", accountId);
             AuthData authData = AuthStorage.GetData(accountId);
             if (authData == null)
             {

@@ -1,9 +1,7 @@
 ﻿using System.Text;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Extensions;
 using MapleServer2.Network;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
 {
@@ -12,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public override RecvOp OpCode => RecvOp.LOG_SEND;
 
-        public LogSendHandler(ILogger<LogSendHandler> logger) : base(logger) { }
+        public LogSendHandler() : base() { }
 
         protected override void HandleCommon(Session session, PacketReader packet)
         {
@@ -34,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Common
                     {
                         // Read remaining string
                         string debug = packet.ReadUnicodeString(packet.Available / 2);
-                        Logger.Error($"[{message}] {debug}");
+                        Logger.Error("[{message}] {debug}", message, debug);
 
                         session.OnError?.Invoke(session, debug);
                         return;
@@ -42,11 +40,11 @@ namespace MapleServer2.PacketHandlers.Common
 
                     builder.Append(message);
                 }
-                Logger.Warning($"Client Log: {builder}");
+                Logger.Warn("Client Log: {builder}", builder);
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error parsing DEBUG_MSG packet:{packet} f({function})", ex);
+                Logger.Error("Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}", packet, function, ex);
             }
         }
     }

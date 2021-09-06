@@ -5,7 +5,6 @@ using MapleServer2.Data;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
         public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
         private readonly IPEndPoint LoginEndpoint;
 
-        public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
+        public QuitHandler() : base()
         {
             string ipAddress = Environment.GetEnvironmentVariable("IP");
             int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));

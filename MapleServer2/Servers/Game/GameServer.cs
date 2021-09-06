@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game
 {
@@ -23,9 +22,7 @@ namespace MapleServer2.Servers.Game
         public static readonly CommandManager CommandManager = new();
         public static readonly GlobalEventManager GlobalEventManager = new();
 
-        public GameServer(PacketRouter<GameSession> router, ILogger<GameServer> logger, IComponentContext context) :
-            base(router, logger, context)
-        { }
+        public GameServer(PacketRouter<GameSession> router, IComponentContext context) : base(router, context) { }
 
         public void Start()
         {

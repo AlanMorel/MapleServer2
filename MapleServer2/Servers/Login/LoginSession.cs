@@ -1,7 +1,6 @@
 ﻿using Maple2Storage.Tools;
 using MapleServer2.Enums;
 using MapleServer2.Network;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Login
 {
@@ -11,9 +10,7 @@ namespace MapleServer2.Servers.Login
 
         public long AccountId;
 
-        public LoginSession(ILogger<LoginSession> logger) : base(logger)
-        {
-        }
+        public LoginSession() : base() { }
 
         public static int GetToken()
         {
