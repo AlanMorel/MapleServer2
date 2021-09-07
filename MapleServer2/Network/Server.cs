@@ -2,8 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Autofac;
-using MapleServer2.Extensions;
-using Microsoft.Extensions.Logging;
+using NLog;
 using ThreadState = System.Threading.ThreadState;
 
 namespace MapleServer2.Network
@@ -17,15 +16,14 @@ namespace MapleServer2.Network
         private readonly ManualResetEvent ClientConnected;
         private readonly PacketRouter<T> Router;
         private readonly List<T> Sessions;
-        private readonly ILogger Logger;
+        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IComponentContext Context;
 
-        public Server(PacketRouter<T> router, ILogger<Server<T>> logger, IComponentContext context)
+        public Server(PacketRouter<T> router, IComponentContext context)
         {
             Trace.Assert(context != null);
 
             Router = router;
-            Logger = logger;
             Context = context;
 
             Source = new CancellationTokenSource();
@@ -43,7 +41,7 @@ namespace MapleServer2.Network
                 while (!Source.IsCancellationRequested)
                 {
                     ClientConnected.Reset();
-                    Logger.Info($"{GetType().Name} started on Port:{port}");
+                    Logger.Info("{GetType().Name} started on Port:{port}", GetType().Name, port);
                     Listener.BeginAcceptTcpClient(AcceptTcpClient, null);
                     ClientConnected.WaitOne();
                 }
@@ -57,16 +55,16 @@ namespace MapleServer2.Network
             switch (ServerThread.ThreadState)
             {
                 case ThreadState.Unstarted:
-                    Logger.Info($"{GetType().Name} has not been started.");
+                    Logger.Info("{GetType().Name} has not been started.", GetType().Name);
                     break;
                 case ThreadState.Stopped:
-                    Logger.Info($"{GetType().Name} has already been stopped.");
+                    Logger.Info("{GetType().Name} has already been stopped.", GetType().Name);
                     break;
                 default:
                     Source.Cancel();
                     ClientConnected.Set();
                     ServerThread.Join();
-                    Logger.Info($"{GetType().Name} was stopped.");
+                    Logger.Info("{GetType().Name} was stopped.", GetType().Name);
                     break;
             }
         }
@@ -85,7 +83,7 @@ namespace MapleServer2.Network
             session.OnPacket += Router.OnPacket;
 
             Sessions.Add(session);
-            Logger.Info($"Client connected: {session}");
+            Logger.Info("Client connected: {session}", session);
             session.Start();
 
             ClientConnected.Set();

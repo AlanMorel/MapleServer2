@@ -1,12 +1,10 @@
 ﻿using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
 
-        public ItemEquipHandler(ILogger<ItemEquipHandler> logger) : base(logger) { }
+        public ItemEquipHandler() : base() { }
 
         private enum ItemEquipMode : byte
         {
@@ -37,13 +35,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleEquipItem(GameSession session, PacketReader packet)
+        private static void HandleEquipItem(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
             string equipSlotStr = packet.ReadUnicodeString();
             if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
             {
-                Logger.Warning("Unknown equip slot: " + equipSlotStr);
+                Logger.Warn("Unknown equip slot: {equipSlotStr}", equipSlotStr);
                 return;
             }
 
@@ -58,7 +56,7 @@ namespace MapleServer2.PacketHandlers.Game
             Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
             if (equippedInventory == null)
             {
-                Logger.Warning("equippedInventory was null: " + item.InventoryTab);
+                Logger.Warn("equippedInventory was null: {item.InventoryTab}", item.InventoryTab);
                 return;
             }
 

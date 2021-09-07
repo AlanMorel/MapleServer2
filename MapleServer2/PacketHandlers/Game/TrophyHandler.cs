@@ -8,7 +8,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -22,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
             Favorite = 0x04
         }
 
-        public TrophyHandler(ILogger<BreakableHandler> logger) : base(logger) { }
+        public TrophyHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

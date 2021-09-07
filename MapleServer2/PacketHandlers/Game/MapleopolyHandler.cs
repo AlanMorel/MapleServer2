@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
 
-        public MapleopolyHandler(ILogger<MapleopolyHandler> logger) : base(logger) { }
+        public MapleopolyHandler() : base() { }
 
         private enum MapleopolyMode : byte
         {
@@ -132,7 +131,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case MapleopolyTileType.Start:
                     break;
                 default:
-                    Console.WriteLine("Unsupported tile");
+                    Logger.Warn("Unsupported tile");
                     break;
             }
 

@@ -6,11 +6,9 @@ using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login
 {
@@ -18,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Login
     {
         public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) { }
+        public CharacterManagementHandler() : base() { }
 
         private enum CharacterManagementMode : byte
         {
@@ -56,14 +54,14 @@ namespace MapleServer2.PacketHandlers.Login
                 return;
             }
             session.Send(CharacterListPacket.DeleteCharacter(characterId));
-            Logger.Info($"Character id {characterId} deleted!");
+            Logger.Info("Character id {characterId} deleted!", characterId);
         }
 
         public void HandleSelect(LoginSession session, PacketReader packet)
         {
             long charId = packet.ReadLong();
             packet.ReadShort(); // 01 00
-            Logger.Info($"Logging in to game with char id: {charId}");
+            Logger.Info("Logging in to game with char id: {charId}", charId);
 
             string ipAddress = Environment.GetEnvironmentVariable("IP");
             int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));

@@ -10,15 +10,13 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
-
 namespace MapleServer2.PacketHandlers.Game
 {
     public class ShopHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.SHOP;
 
-        public ShopHandler(ILogger<ShopHandler> logger) : base(logger) { }
+        public ShopHandler() : base() { }
 
         private enum ShopMode : byte
         {
@@ -59,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
             Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
             if (shop == null)
             {
-                Console.WriteLine($"Unknown shop ID: {metadata.ShopId}");
+                Logger.Warn($"Unknown shop ID: {metadata.ShopId}");
                 return;
             }
 
@@ -168,7 +166,7 @@ namespace MapleServer2.PacketHandlers.Game
             Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
             if (shop == null)
             {
-                Console.WriteLine($"Unknown shop ID: {item.ShopID}");
+                Logger.Warn($"Unknown shop ID: {item.ShopID}");
                 return;
             }
 

@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.GLOBAL_PORTAL;
 
-        public GlobalPortalHandler(ILogger<GlobalPortalHandler> logger) : base(logger) { }
+        public GlobalPortalHandler() : base() { }
 
         private enum GlobalPortalMode : byte
         {
@@ -88,7 +87,7 @@ namespace MapleServer2.PacketHandlers.Game
                     map = Map.HolidayDanceDanceStop;
                     break;
                 default:
-                    Console.WriteLine($"Unknown Global Event: {globalEvent.Events[selectionIndex]}");
+                    Logger.Warn($"Unknown Global Event: {globalEvent.Events[selectionIndex]}");
                     return;
             }
 

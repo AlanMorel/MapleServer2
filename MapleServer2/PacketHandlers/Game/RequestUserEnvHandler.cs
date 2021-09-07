@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_USER_ENV;
 
-        public RequestUserEnvHandler(ILogger<RequestUserEnvHandler> logger) : base(logger) { }
+        public RequestUserEnvHandler() : base() { }
 
         private enum UserEnvMode : byte
         {

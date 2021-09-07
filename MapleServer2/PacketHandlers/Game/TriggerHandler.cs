@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 using static MapleServer2.Packets.TriggerPacket;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.TRIGGER;
 
-        public TriggerHandler(ILogger<TriggerHandler> logger) : base(logger) { }
+        public TriggerHandler() : base() { }
 
         private enum TriggerMode : byte
         {

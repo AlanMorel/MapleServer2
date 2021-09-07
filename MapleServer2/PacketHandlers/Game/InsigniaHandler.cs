@@ -3,7 +3,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -11,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.INSIGNIA;
 
-        public InsigniaHandler(ILogger<InsigniaHandler> logger) : base(logger) { }
+        public InsigniaHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -46,7 +45,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case "adventure_level":
                     return session.Player.Levels.PrestigeLevel >= 100;
                 default:
-                    Console.WriteLine("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
+                    Logger.Warn("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
                     return false;
             }
         }
