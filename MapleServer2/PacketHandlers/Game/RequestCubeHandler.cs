@@ -12,7 +12,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -20,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
-        public RequestCubeHandler(ILogger<RequestCubeHandler> logger) : base(logger) { }
+        public RequestCubeHandler() : base() { }
 
         private enum RequestCubeMode : byte
         {
@@ -569,14 +568,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Pickup item then set battle state to true
             session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, true));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
 
         private static void HandleDrop(GameSession session)
         {
             // Drop item then set battle state to false
             session.Send(ResponseCubePacket.Drop(session.FieldPlayer));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, false));
         }
 
         private static void HandleHomeName(GameSession session, PacketReader packet)

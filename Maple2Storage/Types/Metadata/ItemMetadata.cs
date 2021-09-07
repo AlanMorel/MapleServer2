@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using Maple2Storage.Enums;
+using MapleServer2.Enums;
 
 namespace Maple2Storage.Types.Metadata
 {
@@ -21,58 +22,68 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 7)]
         public bool EnableBreak;
         [XmlElement(Order = 8)]
-        public bool IsTwoHand;
+        public bool Sellable;
         [XmlElement(Order = 9)]
-        public bool IsDress;
+        public TransferType TransferType;
         [XmlElement(Order = 10)]
-        public bool IsTemplate;
+        public byte TradeableCount;
         [XmlElement(Order = 11)]
-        public byte Gender;
+        public byte RepackageCount;
         [XmlElement(Order = 12)]
-        public int PlayCount;
+        public byte RepackageItemConsumeCount;
         [XmlElement(Order = 13)]
-        public bool IsCustomScore;
+        public bool IsTwoHand;
+        [XmlElement(Order = 14)]
+        public bool IsDress;
         [XmlElement(Order = 15)]
-        public List<int> SellPrice = new List<int>();
+        public bool IsTemplate;
         [XmlElement(Order = 16)]
-        public List<int> SellPriceCustom = new List<int>();
+        public byte Gender;
         [XmlElement(Order = 17)]
-        public string FileName;
+        public int PlayCount;
         [XmlElement(Order = 18)]
-        public int SkillID;
+        public bool IsCustomScore;
         [XmlElement(Order = 19)]
-        public List<int> RecommendJobs = new List<int>();
+        public List<int> SellPrice = new List<int>();
         [XmlElement(Order = 20)]
-        public List<ItemContent> Content;
+        public List<int> SellPriceCustom = new List<int>();
         [XmlElement(Order = 21)]
-        public List<ItemBreakReward> BreakRewards;
+        public string FileName;
         [XmlElement(Order = 22)]
-        public ItemFunction FunctionData;
+        public int SkillID;
         [XmlElement(Order = 23)]
-        public AdBalloonData AdBalloonData;
+        public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 24)]
-        public string Tag;
+        public List<ItemContent> Content;
         [XmlElement(Order = 25)]
-        public int ShopID;
+        public List<ItemBreakReward> BreakRewards;
         [XmlElement(Order = 26)]
-        public int Level;
+        public ItemFunction FunctionData;
         [XmlElement(Order = 27)]
-        public List<HairPresets> HairPresets = new List<HairPresets>();
+        public AdBalloonData AdBalloonData;
         [XmlElement(Order = 28)]
-        public int ColorIndex;
+        public string Tag;
         [XmlElement(Order = 29)]
-        public int ColorPalette;
+        public int ShopID;
         [XmlElement(Order = 30)]
-        public int OptionStatic;
+        public int Level;
         [XmlElement(Order = 31)]
-        public int OptionRandom;
+        public List<HairPresets> HairPresets = new List<HairPresets>();
         [XmlElement(Order = 32)]
-        public int OptionConstant;
+        public int ColorIndex;
         [XmlElement(Order = 33)]
-        public int OptionLevelFactor;
+        public int ColorPalette;
         [XmlElement(Order = 34)]
-        public bool IsCubeSolid;
+        public int OptionStatic;
         [XmlElement(Order = 35)]
+        public int OptionRandom;
+        [XmlElement(Order = 36)]
+        public int OptionConstant;
+        [XmlElement(Order = 37)]
+        public int OptionLevelFactor;
+        [XmlElement(Order = 38)]
+        public bool IsCubeSolid;
+        [XmlElement(Order = 39)]
         public ItemHousingCategory HousingCategory;
 
         // Required for deserialization

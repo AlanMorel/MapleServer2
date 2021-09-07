@@ -1,15 +1,11 @@
 ﻿using Autofac;
 using MapleServer2.Network;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Login
 {
     public class LoginServer : Server<LoginSession>
     {
-        public LoginServer(PacketRouter<LoginSession> router, ILogger<LoginServer> logger, IComponentContext context)
-            : base(router, logger, context)
-        {
-        }
+        public LoginServer(PacketRouter<LoginSession> router, IComponentContext context) : base(router, context) { }
 
         public void Start()
         {

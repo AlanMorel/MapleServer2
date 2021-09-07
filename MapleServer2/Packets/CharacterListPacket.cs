@@ -88,27 +88,9 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(player.ProfileUrl);
             pWriter.WriteLong();
 
-            pWriter.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count)); // num equips
-            foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
-            {
-                WriteEquip(slot, equip, pWriter);
-            }
-            foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
-            {
-                WriteEquip(slot, equip, pWriter);
-            }
+            WriteEquipsAndCosmetics(pWriter, player);
 
-            byte badgeCount = 0;
-            pWriter.WriteByte(badgeCount);
-            for (int i = 0; i < badgeCount; i++)
-            {
-                pWriter.WriteByte();
-
-                pWriter.WriteInt(); // BRANCH HERE if Badge
-                // Badge data here is causing a LOT of potential branching...
-                pWriter.WriteLong();
-                pWriter.WriteInt();
-            }
+            WriteBadges(pWriter, player);
 
             bool boolValue = false;
             pWriter.WriteBool(boolValue);
@@ -236,11 +218,30 @@ namespace MapleServer2.Packets
             pWriter.WriteItem(item);
         }
 
-        public static void WriteBadge(PacketWriter pWriter)
+        public static void WriteEquipsAndCosmetics(PacketWriter pWriter, Player player)
         {
-            pWriter.WriteLong();
-            pWriter.WriteInt();
-            pWriter.WriteItem(new Item(70100000));
+            pWriter.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count));
+            foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
+            {
+                WriteEquip(slot, equip, pWriter);
+            }
+            foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
+            {
+                WriteEquip(slot, equip, pWriter);
+            }
+        }
+
+        public static void WriteBadges(PacketWriter pWriter, Player player)
+        {
+            pWriter.WriteByte((byte) player.Inventory.Badges.Count);
+            foreach (Item badge in player.Inventory.Badges)
+            {
+                pWriter.WriteByte((byte) badge.GemSlot);
+                pWriter.WriteInt(badge.Id);
+                pWriter.WriteLong(badge.Uid);
+                pWriter.WriteInt(badge.Rarity);
+                pWriter.WriteItem(badge);
+            }
         }
 
         public static Packet StartList()

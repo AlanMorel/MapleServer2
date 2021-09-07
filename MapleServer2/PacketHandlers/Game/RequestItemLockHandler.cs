@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_LOCK;
 
-        public RequestItemLockHandler(ILogger<RequestItemLockHandler> logger) : base(logger) { }
+        public RequestItemLockHandler() : base() { }
 
         private enum ItemLockMode : byte
         {

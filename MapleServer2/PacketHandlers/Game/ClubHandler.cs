@@ -4,7 +4,6 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.CLUB;
 
-        public ClubHandler(ILogger<ClubHandler> logger) : base(logger) { }
+        public ClubHandler() : base() { }
 
         private enum ClubMode : byte
         {

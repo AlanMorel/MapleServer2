@@ -19,9 +19,9 @@ namespace MapleServer2.Types
         public short Unknown3;
         public int Unknown4;
 
-        // Flag1
-        public int Flag1Unknown1;
-        public short Flag1Unknown2;
+        // Emotes
+        public int EmoteId;
+        public short EmoteUnk;
 
         // Flag2
         public CoordF Flag2Unknown1;

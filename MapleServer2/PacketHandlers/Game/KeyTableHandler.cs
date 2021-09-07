@@ -1,10 +1,8 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.KEY_TABLE;
 
-        public KeyTableHandler(ILogger<KeyTableHandler> logger) : base(logger) { }
+        public KeyTableHandler() : base() { }
 
         private enum KeyTableEnum : byte
         {
@@ -45,17 +43,17 @@ namespace MapleServer2.PacketHandlers.Game
                     SetActiveHotbar(session, packet);
                     break;
                 default:
-                    Logger.Warning($"Unknown request type {requestType}");
+                    IPacketHandler<GameSession>.LogUnknownMode(requestType);
                     break;
             }
         }
 
-        private void AddToQuickSlot(GameSession session, PacketReader packet)
+        private static void AddToQuickSlot(GameSession session, PacketReader packet)
         {
             short hotbarId = packet.ReadShort();
             if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
             {
-                Logger.Warning($"Invalid hotbar id {hotbarId}");
+                Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
                 return;
             }
 
@@ -78,12 +76,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void MoveQuickSlot(GameSession session, PacketReader packet)
+        private static void MoveQuickSlot(GameSession session, PacketReader packet)
         {
             short hotbarId = packet.ReadShort();
             if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
             {
-                Logger.Warning($"Invalid hotbar id {hotbarId}");
+                Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
                 return;
             }
 
@@ -95,12 +93,12 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
         }
 
-        private void RemoveQuickSlot(GameSession session, PacketReader packet)
+        private static void RemoveQuickSlot(GameSession session, PacketReader packet)
         {
             short hotbarId = packet.ReadShort();
             if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
             {
-                Logger.Warning($"Invalid hotbar id {hotbarId}");
+                Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
                 return;
             }
 

@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Maple2.Trigger.Enum;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -89,10 +90,24 @@ namespace MapleServer2.Triggers
                 return;
             }
 
+            CoordF moveCoord;
+            CoordF moveRotation;
             MapPortal dstPortal = MapEntityStorage.GetPortals(mapId).FirstOrDefault(portal => portal.Id == triggerId);
+            if (dstPortal == null)
+            {
+                MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+                moveCoord = spawn.Coord.ToFloat();
+                moveRotation = spawn.Rotation.ToFloat();
+            }
+            else
+            {
+                moveCoord = dstPortal.Coord.ToFloat();
+                moveRotation = dstPortal.Rotation.ToFloat();
+            }
+
             foreach (IFieldObject<Player> player in players)
             {
-                player.Value.Warp(mapId, dstPortal.Coord.ToFloat(), dstPortal.Rotation.ToFloat());
+                player.Value.Warp(mapId, moveCoord, moveRotation);
             }
         }
 

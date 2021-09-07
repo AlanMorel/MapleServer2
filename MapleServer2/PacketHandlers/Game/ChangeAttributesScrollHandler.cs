@@ -4,7 +4,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES_SCROLL;
 
-        public ChangeAttributesScrollHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
+        public ChangeAttributesScrollHandler() : base() { }
 
         private enum ChangeAttributeMode : byte
         {

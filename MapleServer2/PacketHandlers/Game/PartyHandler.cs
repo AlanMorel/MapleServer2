@@ -4,14 +4,13 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
     public class PartyHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.PARTY;
-        public PartyHandler(ILogger<PartyHandler> logger) : base(logger) { }
+        public PartyHandler() : base() { }
 
         private enum PartyMode : byte
         {
