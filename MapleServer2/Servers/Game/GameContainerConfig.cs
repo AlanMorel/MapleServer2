@@ -11,7 +11,6 @@ namespace MapleServer2.Servers.Game
         public static IContainer Configure()
         {
             ContainerBuilder builder = new ContainerBuilder();
-            builder.RegisterLogger();
             builder.RegisterType<GameServer>()
                 .AsSelf()
                 .SingleInstance();

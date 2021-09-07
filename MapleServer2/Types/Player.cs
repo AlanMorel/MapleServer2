@@ -270,11 +270,11 @@ namespace MapleServer2.Types
             return gearItem;
         }
 
-        public SkillCast Cast(int skillId, short skillLevel, long skillSN, int unkValue)
+        public void Cast(SkillCast skillCast)
         {
-            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
             int spiritCost = skillCast.GetSpCost();
             int staminaCost = skillCast.GetStaCost();
+
             if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
             {
                 ConsumeSp(spiritCost);
@@ -284,7 +284,7 @@ namespace MapleServer2.Types
 
                 // TODO: Move this and all others combat cases like recover sp to its own class.
                 // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield())
+                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
                 {
                     Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
                     StatusHandler.Handle(Session, status);
@@ -298,10 +298,7 @@ namespace MapleServer2.Types
                 CombatCTS = new CancellationTokenSource();
                 CombatCTS.Token.Register(() => CombatCTS.Dispose());
                 StartCombatStance(CombatCTS);
-
-                return skillCast;
             }
-            return null;
         }
 
         private Task StartCombatStance(CancellationTokenSource ct)

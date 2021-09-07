@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
-        public StateSkillHandler(ILogger<StateSkillHandler> logger) : base(logger) { }
+        public StateSkillHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

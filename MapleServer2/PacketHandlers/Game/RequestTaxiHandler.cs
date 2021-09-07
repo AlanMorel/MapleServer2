@@ -1,11 +1,9 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
-using Microsoft.Extensions.Logging;
 using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -14,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 
-        public RequestTaxiHandler(ILogger<RequestTaxiHandler> logger) : base(logger) { }
+        public RequestTaxiHandler() : base() { }
 
         private enum RequestTaxiMode : byte
         {
@@ -56,11 +54,11 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private void HandleCarTaxi(GameSession session, int mapId)
+        private static void HandleCarTaxi(GameSession session, int mapId)
         {
             if (!WorldMapGraphStorage.CanPathFind(mapOrigin: session.Player.MapId.ToString(), mapDestination: mapId.ToString(), out int mapCount))
             {
-                Logger.Warning("Path not found.");
+                Logger.Warn("Path not found.");
                 return;
             }
 

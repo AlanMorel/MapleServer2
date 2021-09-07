@@ -5,7 +5,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_STORAGE;
 
-        public RequestItemStorage(ILogger<RequestItemStorage> logger) : base(logger) { }
+        public RequestItemStorage() : base() { }
 
         private enum ItemStorageMode : byte
         {

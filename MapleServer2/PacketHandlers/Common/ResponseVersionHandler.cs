@@ -4,7 +4,6 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public override RecvOp OpCode => RecvOp.RESPONSE_VERSION;
 
-        public ResponseVersionHandler(ILogger<ResponseVersionHandler> logger) : base(logger) { }
+        public ResponseVersionHandler() : base() { }
 
         public override void Handle(LoginSession session, PacketReader packet)
         {

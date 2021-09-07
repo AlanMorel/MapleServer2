@@ -49,9 +49,10 @@ namespace MapleServer2.Types
         public int Enchants;
         // EnchantExp (10000 = 100%) for Peachy
         public int EnchantExp;
-        public bool CanRepackage;
+        public int RepackageCount;
         public int Charges;
         public TransferFlag TransferFlag;
+        public TransferType TransferType;
         public int RemainingTrades;
 
         // For friendship badges
@@ -91,7 +92,6 @@ namespace MapleServer2.Types
             Amount = 1;
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, ItemSlot, Level);
-            CanRepackage = true; // If false, item becomes untradable
             Uid = DatabaseManager.Items.Insert(this);
         }
 
@@ -133,7 +133,7 @@ namespace MapleServer2.Types
             GachaDismantleId = other.GachaDismantleId;
             Enchants = other.Enchants;
             EnchantExp = other.EnchantExp;
-            CanRepackage = other.CanRepackage;
+            RepackageCount = other.RepackageCount;
             Charges = other.Charges;
             TransferFlag = other.TransferFlag;
             RemainingTrades = other.RemainingTrades;
@@ -211,6 +211,9 @@ namespace MapleServer2.Types
             AdBalloon = ItemMetadataStorage.GetBalloonData(Id);
             Tag = ItemMetadataStorage.GetTag(Id);
             ShopID = ItemMetadataStorage.GetShopID(Id);
+            RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
+            TransferType = ItemMetadataStorage.GetTransferType(Id);
+            RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         }
     }
 }

@@ -4,11 +4,9 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login
 {
@@ -21,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Login
         private readonly ImmutableList<IPEndPoint> ServerIPs;
         private readonly string ServerName;
 
-        public LoginHandler(ILogger<LoginHandler> logger) : base(logger)
+        public LoginHandler() : base()
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             string ipAddress = Environment.GetEnvironmentVariable("IP");
@@ -54,7 +52,7 @@ namespace MapleServer2.PacketHandlers.Login
                 account = new Account(username, passwordHash); // Create a new account if username doesn't exist
             }
 
-            Logger.Debug($"Logging in with account ID: {account.Id}");
+            Logger.Debug("Logging in with account ID: {account.Id}", account.Id);
             session.AccountId = account.Id;
 
             switch (mode)
@@ -73,7 +71,7 @@ namespace MapleServer2.PacketHandlers.Login
                 case 2:
                     List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
-                    Logger.Debug($"Initializing login with account id: {session.AccountId}");
+                    Logger.Debug("Initializing login with account id: {session.AccountId}", session.AccountId);
                     session.Send(LoginResultPacket.InitLogin(session.AccountId));
                     session.Send(UgcPacket.SetEndpoint("http://localhost:3000/ws.asmx?wsdl", "http://localhost:3000"));
                     session.Send(CharacterListPacket.SetMax(account.CharacterSlots));

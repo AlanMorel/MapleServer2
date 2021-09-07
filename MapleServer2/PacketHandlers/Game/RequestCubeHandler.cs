@@ -12,7 +12,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -20,7 +19,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
-        public RequestCubeHandler(ILogger<RequestCubeHandler> logger) : base(logger) { }
+        public RequestCubeHandler() : base() { }
 
         private enum RequestCubeMode : byte
         {

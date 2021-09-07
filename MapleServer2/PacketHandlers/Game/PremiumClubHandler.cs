@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
 
-        public PremiumClubHandler(ILogger<PremiumClubHandler> logger) : base(logger) { }
+        public PremiumClubHandler() : base() { }
 
         private enum PremiumClubMode : byte
         {

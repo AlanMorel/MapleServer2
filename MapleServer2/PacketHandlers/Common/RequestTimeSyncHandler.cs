@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Network;
 using MapleServer2.Packets;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Common
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TIME_SYNC;
 
-        public RequestTimeSyncHandler(ILogger<RequestTimeSyncHandler> logger) : base(logger) { }
+        public RequestTimeSyncHandler() : base() { }
 
         protected override void HandleCommon(Session session, PacketReader packet)
         {

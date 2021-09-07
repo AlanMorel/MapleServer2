@@ -7,7 +7,6 @@ using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Login
         private readonly ImmutableList<IPEndPoint> ServerIPs;
         private readonly string ServerName;
 
-        public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
+        public ServerEnterPacketHandler() : base()
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             string ipAddress = Environment.GetEnvironmentVariable("IP");

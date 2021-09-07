@@ -3,7 +3,6 @@ using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -11,7 +10,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.UGC;
 
-        public UgcHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
+        public UgcHandler() : base() { }
 
         private enum UgcMode : byte
         {

@@ -25,8 +25,8 @@ namespace MapleServer2.Types
             double attackDamage = 300;
             double skillDamageRate = isCrit ? skill.GetCriticalDamage() : skill.GetDamageRate();
             double skillDamage = skillDamageRate * attackDamage;
-            double enemyRes = skill.GetSkillDamageType() == DamageTypeId.Physical ? mob.Stats.PhysRes.Total : mob.Stats.MagRes.Total;
-            double resPierce = skill.GetSkillDamageType() == DamageTypeId.Physical ? player.Stats[PlayerStatId.PhysAtk].Current : player.Stats[PlayerStatId.MagAtk].Current;
+            double enemyRes = skill.GetSkillDamageType() == DamageType.Physical ? mob.Stats.PhysRes.Total : mob.Stats.MagRes.Total;
+            double resPierce = skill.GetSkillDamageType() == DamageType.Physical ? player.Stats[PlayerStatId.PhysAtk].Current : player.Stats[PlayerStatId.MagAtk].Current;
             // TODO: Fix damage multiplier (add pet?)
             double numerator = skillDamage * (1 + player.Stats[PlayerStatId.BonusAtk].Current) * (1500 - (enemyRes - (resPierce * 15)));
 
