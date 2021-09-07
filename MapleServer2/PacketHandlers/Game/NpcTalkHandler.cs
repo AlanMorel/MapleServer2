@@ -222,6 +222,7 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
             session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
+            session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.FieldPlayer, false));
         }
 
         private static DialogType GetDialogType(ScriptMetadata scriptMetadata, NpcTalk npcTalk, bool hasNextScript)
