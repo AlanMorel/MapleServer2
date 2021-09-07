@@ -88,6 +88,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case "ItemChangeBeauty": // special beauty vouchers
                     HandleBeautyVoucher(session, item);
                     break;
+                case "ItemRePackingScroll":
+                    HandleRepackingScroll(session, item);
+                    break;
                 default:
                     Console.WriteLine("Unhandled item function: " + item.Function.Name);
                     break;
@@ -393,5 +396,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(CouponUsePacket.BeautyCoupon(session.FieldPlayer, item.Uid));
         }
+
+        public static void HandleRepackingScroll(GameSession session, Item item) => session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 }

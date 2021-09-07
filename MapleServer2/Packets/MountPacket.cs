@@ -45,13 +45,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet StartTwoPersonRide(int otherPlayerObjectId, int playerObjectId)
+        public static Packet StartTwoPersonRide(int otherPlayerObjectId, int playerObjectId, byte index)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_RIDE);
             pWriter.WriteEnum(MountPacketMode.StartTwoPersonRide);
             pWriter.WriteInt(otherPlayerObjectId);
             pWriter.WriteInt(playerObjectId);
-            pWriter.WriteByte();
+            pWriter.WriteByte(index);
             return pWriter;
         }
 
