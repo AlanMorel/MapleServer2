@@ -27,7 +27,32 @@ namespace MapleServer2.Data.Static
         // Get a List of Skills corresponding to the Job
         public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
         {
+
             List<SkillMetadata> jobSkill = new List<SkillMetadata>();
+            List<int> gmSkills = new List<int>
+            {
+            19900001,
+            19900011,
+            19900021,
+            19900031,
+            19900032,
+            19900041,
+            19900042,
+            19900051,
+            19900052,
+            19900061,
+            19999991,
+            };
+
+            if (Job.GameMaster == job)
+            {
+                foreach (int skillId in gmSkills)
+                {
+                    jobSkill.Add(skill[skillId]);
+                    jobSkill.First(skill => skill.SkillId == skillId).Learned = 1;
+                }
+                return jobSkill;
+            }
 
             foreach (KeyValuePair<int, SkillMetadata> skills in skill)
             {

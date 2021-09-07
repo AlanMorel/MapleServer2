@@ -3,6 +3,7 @@
     public enum Job : int
     {
         None = 0,
+        Beginner = 1,
         Knight = 10,
         Berserker = 20,
         Wizard = 30,
@@ -20,17 +21,29 @@
     public enum JobCode : int
     {
         None = 0,
-        Knight = 101,
-        Berserker = 201,
-        Wizard = 301,
-        Priest = 401,
-        Archer = 501,
-        HeavyGunner = 601,
-        Thief = 701,
-        Assassin = 801,
-        Runeblade = 901,
-        Striker = 1001,
-        SoulBinder = 1101,
+        Beginner = 10,
+        Knight = 100,
+        Knight2 = 101,
+        Berserker = 200,
+        Berserker2 = 201,
+        Wizard = 300,
+        Wizard2 = 301,
+        Priest = 400,
+        Priest2 = 401,
+        Archer = 500,
+        Archer2 = 501,
+        HeavyGunner = 600,
+        HeavyGunner2 = 601,
+        Thief = 700,
+        Thief2 = 701,
+        Assassin = 800,
+        Assassin2 = 801,
+        Runeblade = 900,
+        Runeblade2 = 901,
+        Striker = 1000,
+        Striker2 = 1001,
+        SoulBinder = 1100,
+        SoulBinder2 = 1101,
         GameMaster = 999
     }
 
@@ -48,7 +61,8 @@
         Runeblade = Assassin,
         Striker = 12,
         SoulBinder = 16,
-        GameMaster = None
+        GameMaster = 11,
+        Beginner = 1,
     }
 }
 
