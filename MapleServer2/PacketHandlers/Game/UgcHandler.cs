@@ -1,5 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using Microsoft.Extensions.Logging;
 
@@ -11,13 +13,32 @@ namespace MapleServer2.PacketHandlers.Game
 
         public UgcHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
 
+        private enum UgcMode : byte
+        {
+            ProfilePicture = 0x0B
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte function = packet.ReadByte();
-            if (function == 0x12)
+            UgcMode function = (UgcMode) packet.ReadByte();
+            switch (function)
             {
-                //session.Send(PacketWriter.Of(SendOp.UGC).WriteByte(0x12).WriteZero(12));
+                case UgcMode.ProfilePicture:
+                    HandleProfilePicture(session, packet);
+                    break;
+                default:
+                    IPacketHandler<GameSession>.LogUnknownMode(function);
+                    break;
             }
+        }
+
+        private static void HandleProfilePicture(GameSession session, PacketReader packet)
+        {
+            string path = packet.ReadUnicodeString();
+            session.Player.ProfileUrl = path;
+            DatabaseManager.Characters.UpdateProfileUrl(session.Player.CharacterId, path);
+
+            session.FieldManager.BroadcastPacket(UgcPacket.SetProfilePictureURL(session.FieldPlayer.ObjectId, session.Player.CharacterId, path));
         }
     }
 }

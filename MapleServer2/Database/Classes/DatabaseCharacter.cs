@@ -262,6 +262,8 @@ namespace MapleServer2.Database.Classes
             }
         }
 
+        public void UpdateProfileUrl(long characterId, string profileUrl) => QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new { ProfileUrl = profileUrl });
+
         public bool Delete(long id) => QueryFactory.Query(TableName).Where("CharacterId", id).Delete() == 1;
 
         public bool SetCharacterDeleted(long characterId)

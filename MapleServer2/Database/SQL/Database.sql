@@ -109,7 +109,7 @@ CREATE TABLE `characters` (
   `IsDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `Mapleopoly` text,
   `Motto` varchar(25) DEFAULT '',
-  `ProfileUrl` varchar(50) DEFAULT '',
+  `ProfileUrl` text NOT NULL,
   `ReturnCoord` text NOT NULL,
   `ReturnMapId` int NOT NULL,
   `SkinColor` text NOT NULL,
