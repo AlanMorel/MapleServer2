@@ -4,7 +4,7 @@ using Maple2Storage.Enums;
 using MapleServer2.Types;
 using NLog;
 
-namespace MapleServer2.Tools
+namespace MapleServer2.Managers
 {
     public static class MobAIManager
     {
