@@ -674,7 +674,7 @@ namespace MapleServer2.Servers.Game
                         Status status = new Status(new SkillCast(70000018, 1, 0, 1), target: player.ObjectId, source: healingSpot.ObjectId, stacks: 1);
 
                         player.Value.Session.Send(BuffPacket.SendBuff(0, status));
-                        BroadcastPacket(SkillDamagePacket.ApplyHeal(status, healAmount));
+                        BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
                         player.Value.Session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
                         player.Value.Session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));

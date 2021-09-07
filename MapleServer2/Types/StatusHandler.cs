@@ -9,7 +9,7 @@ namespace MapleServer2.Types
         // TODO: Handle Add Stacks to status.
         public static void Handle(GameSession session, Status status)
         {
-            session.Send(BuffPacket.SendBuff(0, status));
+            session.FieldManager.BroadcastPacket(BuffPacket.SendBuff(0, status));
             Remove(session, status);
         }
 
@@ -18,7 +18,7 @@ namespace MapleServer2.Types
             return Task.Run(async () =>
             {
                 await Task.Delay(status.Duration);
-                session.Send(BuffPacket.SendBuff(1, status));
+                session.FieldManager.BroadcastPacket(BuffPacket.SendBuff(1, status));
             });
         }
     }

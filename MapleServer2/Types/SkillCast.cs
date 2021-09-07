@@ -5,14 +5,14 @@ using MapleServer2.Extensions;
 
 namespace MapleServer2.Types
 {
-    public enum DamageTypeId : byte
+    public enum DamageType : byte
     {
         None = 0x00,
         Physical = 0x01,
         Magic = 0x02,
     }
 
-    public enum ElementId : byte
+    public enum Element : byte
     {
         None = 0x00,
         Fire = 0x01,
@@ -29,7 +29,10 @@ namespace MapleServer2.Types
         public int EntityId { get; private set; }
         public int SkillId { get; private set; }
         public short SkillLevel { get; private set; }
-        public int UnkValue { get; private set; }
+        public int ClientTick { get; private set; }
+        public int ServerTick { get; private set; }
+        public byte MotionPoint { get; private set; }
+        public byte AttackPoint { get; private set; }
 
         public SkillCast()
         {
@@ -37,15 +40,20 @@ namespace MapleServer2.Types
             SkillLevel = 1;
         }
 
-        public SkillCast(int id, short level, long skillSN, int unkValue)
+        public SkillCast(int id, short level, long skillSN, int serverTick)
         {
             SkillSN = skillSN;
             SkillId = id;
             SkillLevel = level;
-            UnkValue = unkValue;
+            ServerTick = serverTick;
         }
 
-        public SkillCast(int id, short level, long skillSN, int unkValue, int entityId) : this(id, level, skillSN, unkValue) => EntityId = entityId;
+        public SkillCast(int id, short level, long skillSN, int serverTick, int entityId, int clientTick, byte attackPoint) : this(id, level, skillSN, serverTick)
+        {
+            AttackPoint = attackPoint;
+            EntityId = entityId;
+            ClientTick = clientTick;
+        }
 
         public double GetDamageRate() => GetSkillMetadata()?.SkillLevels.Find(x => x.Level == SkillLevel).DamageRate ?? 0.1f;
 
@@ -55,9 +63,9 @@ namespace MapleServer2.Types
 
         public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).Stamina ?? 10;
 
-        public DamageTypeId GetSkillDamageType() => (DamageTypeId) (GetSkillMetadata()?.DamageType ?? 0);
+        public DamageType GetSkillDamageType() => (DamageType) (GetSkillMetadata()?.DamageType ?? 0);
 
-        public ElementId GetElement() => (ElementId) GetSkillMetadata().Element;
+        public Element GetElement() => (Element) GetSkillMetadata().Element;
 
         public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 
@@ -65,7 +73,7 @@ namespace MapleServer2.Types
 
         public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.MaxStack ?? 1;
 
-        public IEnumerable<int> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAttacks.ConditionSkillIds ?? null;
+        public IEnumerable<SkillAttack> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAttacks?.ToList();
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
@@ -84,7 +92,7 @@ namespace MapleServer2.Types
         public bool IsChainSkill()
         {
             SkillMetadata skillData = GetSkillMetadata();
-            return skillData != null && skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
+            return skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
         }
 
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
@@ -106,7 +114,7 @@ namespace MapleServer2.Types
             if (IsChainSkill())
             {
                 SkillAdditionalData skillAdditionalData = GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
-                if (skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue() && skillAdditionalData != null)
+                if (skillAdditionalData != null && skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue())
                 {
                     return true;
                 }
