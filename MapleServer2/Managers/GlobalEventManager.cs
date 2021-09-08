@@ -1,6 +1,6 @@
 ﻿using MapleServer2.Types;
 
-namespace MapleServer2.Tools
+namespace MapleServer2.Managers
 {
     public class GlobalEventManager
     {
