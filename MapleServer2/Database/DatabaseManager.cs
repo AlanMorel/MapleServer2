@@ -15,6 +15,7 @@ namespace MapleServer2.Database
 
         private static readonly string Server = Environment.GetEnvironmentVariable("DB_IP");
         private static readonly string Port = Environment.GetEnvironmentVariable("DB_PORT");
+        private static readonly string Database = Environment.GetEnvironmentVariable("DB_NAME");
         private static readonly string User = Environment.GetEnvironmentVariable("DB_USER");
         private static readonly string Password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
@@ -47,13 +48,13 @@ namespace MapleServer2.Database
 
         static DatabaseManager()
         {
-            ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE=Maple2DB;";
+            ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE={Database};";
         }
 
         public static bool DatabaseExists()
         {
             dynamic result = new QueryFactory(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), new MySqlCompiler())
-                .Select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'Maple2DB'")
+                .Select($"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{Database}'")
                 .FirstOrDefault();
 
             return result != null;
@@ -62,7 +63,7 @@ namespace MapleServer2.Database
         public static void CreateDatabase()
         {
             string fileLines = File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/SQL/Database.sql");
-            MySqlScript script = new MySqlScript(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), fileLines);
+            MySqlScript script = new MySqlScript(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), fileLines.Replace("DATABASE_NAME", Database));
             script.Execute();
         }
 
