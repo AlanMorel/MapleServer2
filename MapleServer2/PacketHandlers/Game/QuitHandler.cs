@@ -5,7 +5,6 @@ using MapleServer2.Data;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
         public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
         private readonly IPEndPoint LoginEndpoint;
 
-        public QuitHandler(ILogger<GamePacketHandler> logger) : base(logger)
+        public QuitHandler() : base()
         {
             string ipAddress = Environment.GetEnvironmentVariable("IP");
             int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
@@ -47,8 +46,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         private void HandleChangeCharacter(GameSession session)
         {
+            session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
-            DatabaseManager.UpdateCharacter(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
             AuthData authData = AuthStorage.GetData(session.Player.AccountId);
 
             session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, authData));
@@ -56,8 +56,10 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleQuit(GameSession session)
         {
+            session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
-            DatabaseManager.UpdateCharacter(session.Player);
+            DatabaseManager.Characters.Update(session.Player);
+            session.Dispose();
         }
     }
 }

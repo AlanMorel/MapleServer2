@@ -5,7 +5,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -13,7 +12,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_STORAGE;
 
-        public RequestItemStorage(ILogger<RequestItemStorage> logger) : base(logger) { }
+        public RequestItemStorage() : base() { }
 
         private enum ItemStorageMode : byte
         {
@@ -70,7 +69,7 @@ namespace MapleServer2.PacketHandlers.Game
             short slot = packet.ReadShort();
             int amount = packet.ReadInt();
 
-            session.Player.BankInventory.Add(session, uid, amount, slot);
+            session.Player.Account.BankInventory.Add(session, uid, amount, slot);
         }
 
         private static void HandleRemove(GameSession session, PacketReader packet)
@@ -79,7 +78,7 @@ namespace MapleServer2.PacketHandlers.Game
             long uid = packet.ReadLong();
             short slot = packet.ReadShort();
             int amount = packet.ReadInt();
-            if (!session.Player.BankInventory.Remove(session, uid, slot, amount, out Item item))
+            if (!session.Player.Account.BankInventory.Remove(session, uid, slot, amount, out Item item))
             {
                 return;
             }
@@ -93,7 +92,7 @@ namespace MapleServer2.PacketHandlers.Game
             long uid = packet.ReadLong();
             short slot = packet.ReadShort();
 
-            session.Player.BankInventory.Move(session, uid, slot);
+            session.Player.Account.BankInventory.Move(session, uid, slot);
         }
 
         private static void HandleMesos(GameSession session, PacketReader packet)
@@ -102,17 +101,18 @@ namespace MapleServer2.PacketHandlers.Game
             byte mode = packet.ReadByte();
             long amount = packet.ReadLong();
             Wallet wallet = session.Player.Wallet;
+            BankInventory bankInventory = session.Player.Account.BankInventory;
 
             if (mode == 1) // add mesos
             {
                 if (wallet.Meso.Modify(-amount))
                 {
-                    wallet.Bank.Modify(amount);
+                    bankInventory.Mesos.Modify(amount);
                 }
             }
             else if (mode == 0) // remove mesos
             {
-                if (wallet.Bank.Modify(-amount))
+                if (bankInventory.Mesos.Modify(-amount))
                 {
                     wallet.Meso.Modify(amount);
                 }
@@ -121,23 +121,23 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleExpand(GameSession session)
         {
-            session.Player.BankInventory.Expand(session);
+            session.Player.Account.BankInventory.Expand(session);
         }
 
         private static void HandleSort(GameSession session)
         {
             session.Send(StorageInventoryPacket.Update());
-            session.Player.BankInventory.Sort(session);
+            session.Player.Account.BankInventory.Sort(session);
         }
 
         private static void HandleLoadBank(GameSession session)
         {
-            session.Player.BankInventory.LoadBank(session);
+            session.Player.Account.BankInventory.LoadBank(session);
         }
 
         private static void HandleClose(Player player)
         {
-            DatabaseManager.UpdateCharacter(player);
+            DatabaseManager.Characters.Update(player);
         }
     }
 }

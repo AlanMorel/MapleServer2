@@ -50,10 +50,19 @@ namespace MapleServer2.Triggers
                         if (int.TryParse(npcId, out int id))
                         {
                             Mob mob = new Mob(id);
-                            IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
-                            fieldMob.Coord = spawnPoint.Position;
-                            fieldMob.Rotation = spawnPoint.Rotation;
-                            Field.AddMob(fieldMob);
+                            if (mob.Friendly != 2)
+                            {
+                                IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
+                                fieldMob.Coord = spawnPoint.Position;
+                                fieldMob.Rotation = spawnPoint.Rotation;
+                                Field.AddMob(fieldMob);
+                                continue;
+                            }
+
+                            IFieldObject<Npc> fieldNpc = Field.RequestFieldObject(new Npc(mob.Id));
+                            fieldNpc.Coord = spawnPoint.Position;
+                            fieldNpc.Rotation = spawnPoint.Rotation;
+                            Field.AddNpc(fieldNpc);
                         }
                     }
                 }
@@ -80,8 +89,9 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void MoveNpc(int arg1, string arg2)
+        public void MoveNpc(int spawnTriggerId, string patrolDataName)
         {
+            PatrolData patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
         }
 
         public void MoveNpcToPos(int spawnPointId, Vector3 pos, Vector3 rot)

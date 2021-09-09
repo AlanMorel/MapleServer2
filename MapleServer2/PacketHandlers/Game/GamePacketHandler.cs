@@ -1,7 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -9,12 +9,9 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public abstract RecvOp OpCode { get; }
 
-        protected readonly ILogger Logger;
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected GamePacketHandler(ILogger<GamePacketHandler> logger)
-        {
-            Logger = logger;
-        }
+        protected GamePacketHandler() { }
 
         public abstract void Handle(GameSession session, PacketReader packet);
 

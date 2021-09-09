@@ -11,7 +11,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-        public RequestItemUseHandler(ILogger<RequestItemUseHandler> logger) : base(logger) { }
+        public RequestItemUseHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -88,8 +87,11 @@ namespace MapleServer2.PacketHandlers.Game
                 case "ItemChangeBeauty": // special beauty vouchers
                     HandleBeautyVoucher(session, item);
                     break;
+                case "ItemRePackingScroll":
+                    HandleRepackingScroll(session, item);
+                    break;
                 default:
-                    Console.WriteLine("Unhandled item function: " + item.Function.Name);
+                    Logger.Warn("Unhandled item function: " + item.Function.Name);
                     break;
             }
         }
@@ -371,7 +373,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public static void HandleExpandCharacterSlot(GameSession session, Item item)
         {
-            Account account = DatabaseManager.GetAccount(session.Player.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
             if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
             {
                 session.Send(CouponUsePacket.MaxCharacterSlots());
@@ -379,7 +381,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             account.CharacterSlots++;
-            DatabaseManager.Update(account);
+            DatabaseManager.Accounts.Update(account);
             session.Send(CouponUsePacket.CharacterSlotAdded());
             InventoryController.Consume(session, item.Uid, 1);
         }
@@ -393,5 +395,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(CouponUsePacket.BeautyCoupon(session.FieldPlayer, item.Uid));
         }
+
+        public static void HandleRepackingScroll(GameSession session, Item item) => session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 }

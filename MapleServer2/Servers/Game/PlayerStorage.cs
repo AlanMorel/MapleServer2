@@ -43,5 +43,7 @@ namespace MapleServer2.Servers.Game
             Player player = CharacterId.Values.FirstOrDefault(p => p.AccountId == accountId);
             return player == default ? null : player;
         }
+
+        public List<Player> GetAllPlayers() => CharacterId.Values.ToList();
     }
 }

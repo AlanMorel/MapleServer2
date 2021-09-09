@@ -1,7 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -9,7 +8,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.STATE;
 
-        public StateHandler(ILogger<StateHandler> logger) : base(logger) { }
+        public StateHandler() : base() { }
 
         private enum StateHandlerMode : byte
         {
@@ -33,7 +32,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleJump(GameSession session)
         {
-            session.Player.TrophyUpdate(22100012, 1, 5);
+            session.Player.TrophyUpdate(22100012, 1, 1);
         }
     }
 }

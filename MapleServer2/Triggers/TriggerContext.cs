@@ -1,7 +1,7 @@
 ﻿using Maple2.Trigger;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Servers.Game;
+using MapleServer2.Managers;
 using MapleServer2.Types;
 using NLog;
 
@@ -10,8 +10,9 @@ namespace MapleServer2.Triggers
     public partial class TriggerContext : ITriggerContext
     {
         public int NextTick;
+        public TriggerState SkipSceneState;
 
-        private readonly FieldManager Field;
+        public readonly FieldManager Field;
         private readonly ILogger Logger;
 
         public TriggerContext(FieldManager field, ILogger logger)
@@ -116,7 +117,12 @@ namespace MapleServer2.Triggers
 
         public int GetUserValue(string key)
         {
-            return 0;
+            IFieldObject<Player> player = Field.State.Players.Values.FirstOrDefault(x => x.Value.Triggers.Any(x => x.Key == key));
+            if (player == null)
+            {
+                return 0;
+            }
+            return player.Value.Triggers.FirstOrDefault(x => x.Key == key).Value;
         }
     }
 }

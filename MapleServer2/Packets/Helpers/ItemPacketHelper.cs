@@ -33,7 +33,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteBool(item.CanRepackage);
+            pWriter.WriteBool(item.RepackageCount > 0);
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
@@ -74,18 +74,18 @@ namespace MapleServer2.Packets.Helpers
             // Item Transfer Data 0x058AD00
             pWriter.WriteInt((int) item.TransferFlag);
             pWriter.WriteByte();
-            pWriter.WriteInt();
+            pWriter.WriteInt(item.RemainingTrades);
             pWriter.WriteInt();
             pWriter.WriteByte();
             pWriter.WriteByte(); // 2nd flag, use to skip charbound
 
             // CharBound means untradable, unsellable, bound to char (ignores TransferFlag, but not 2nd flag!!)
-            bool isCharBound = item.Owner != null;
+            bool isCharBound = item.OwnerCharacterId != 0;
             pWriter.WriteBool(isCharBound);
             if (isCharBound)
             {
-                pWriter.WriteLong(item.Owner.CharacterId);
-                pWriter.WriteUnicodeString(item.Owner.Name);
+                pWriter.WriteLong(item.OwnerCharacterId);
+                pWriter.WriteUnicodeString(item.OwnerCharacterName);
             }
 
             pWriter.WriteSockets(item.Stats);
@@ -133,7 +133,7 @@ namespace MapleServer2.Packets.Helpers
         private static PacketWriter WriteStats(this PacketWriter pWriter, ItemStats stats)
         {
             pWriter.WriteByte(); // Not part of appearance sub!
-            List<ItemStat> basicNormalStats = stats.BasicStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            List<NormalStat> basicNormalStats = stats.BasicStats.OfType<NormalStat>().ToList();
             pWriter.WriteShort((short) basicNormalStats.Count);
             foreach (NormalStat stat in basicNormalStats)
             {
@@ -142,7 +142,7 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteFloat(stat.Percent);
             }
 
-            List<ItemStat> basicSpecialStats = stats.BasicStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            List<SpecialStat> basicSpecialStats = stats.BasicStats.OfType<SpecialStat>().ToList();
             pWriter.WriteShort((short) basicSpecialStats.Count);
             foreach (SpecialStat stat in basicSpecialStats)
             {
@@ -157,7 +157,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteShort();
             pWriter.WriteInt();
 
-            List<ItemStat> bonusNormalStats = stats.BonusStats.Where(x => x.GetType() == typeof(NormalStat)).ToList();
+            List<NormalStat> bonusNormalStats = stats.BonusStats.OfType<NormalStat>().ToList();
             pWriter.WriteShort((short) bonusNormalStats.Count);
             foreach (NormalStat stat in bonusNormalStats)
             {
@@ -165,7 +165,7 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteInt(stat.Flat);
                 pWriter.WriteFloat(stat.Percent);
             }
-            List<ItemStat> bonusSpecialStats = stats.BonusStats.Where(x => x.GetType() == typeof(SpecialStat)).ToList();
+            List<SpecialStat> bonusSpecialStats = stats.BonusStats.OfType<SpecialStat>().ToList();
             pWriter.WriteShort((short) bonusSpecialStats.Count);
             foreach (SpecialStat stat in bonusSpecialStats)
             {

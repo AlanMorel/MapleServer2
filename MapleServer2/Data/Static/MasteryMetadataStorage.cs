@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, MasteryMetadata> masteries = new Dictionary<int, MasteryMetadata>();
 
-        static MasteryMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-mastery-metadata");
             List<MasteryMetadata> masteryList = Serializer.Deserialize<List<MasteryMetadata>>(stream);

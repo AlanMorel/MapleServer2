@@ -11,7 +11,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.BEAUTY;
 
-        public BeautyHandler(ILogger<BeautyHandler> logger) : base(logger) { }
+        public BeautyHandler() : base() { }
 
         private enum BeautyMode : byte
         {
@@ -145,7 +144,8 @@ namespace MapleServer2.PacketHandlers.Game
                 Color = equipColor,
                 IsTemplate = false,
                 IsEquipped = true,
-                Owner = session.Player
+                OwnerCharacterId = session.Player.CharacterId,
+                OwnerCharacterName = session.Player.Name
             };
             BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(session.Player.ShopId);
 
@@ -254,7 +254,8 @@ namespace MapleServer2.PacketHandlers.Game
                 HairData = new HairData((float) chosenBackLength, (float) chosenFrontLength, chosenPreset.BackPositionCoord, chosenPreset.BackPositionRotation, chosenPreset.FrontPositionCoord, chosenPreset.FrontPositionRotation),
                 IsTemplate = false,
                 IsEquipped = true,
-                Owner = session.Player
+                OwnerCharacterId = session.Player.CharacterId,
+                OwnerCharacterName = session.Player.Name
             };
             Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
@@ -263,7 +264,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 previousHair.Slot = -1;
                 session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
-                DatabaseManager.Delete(previousHair);
+                DatabaseManager.Items.Delete(previousHair.Uid);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, previousHair));
             }
 
@@ -284,7 +285,7 @@ namespace MapleServer2.PacketHandlers.Game
                 if (cosmetics.Remove(ItemSlot.HR, out Item newHair))
                 {
                     newHair.Slot = -1;
-                    DatabaseManager.Delete(newHair);
+                    DatabaseManager.Items.Delete(newHair.Uid);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, newHair));
                 }
 
@@ -349,15 +350,10 @@ namespace MapleServer2.PacketHandlers.Game
                     mapId = Map.DouglasDyeWorkshop;
                     break;
                 default:
-                    Console.WriteLine($"teleportId: {teleportId} not found");
+                    Logger.Warn($"teleportId: {teleportId} not found");
                     return;
             }
 
-            if (MapEntityStorage.HasSafePortal(session.Player.MapId))
-            {
-                session.Player.ReturnCoord = session.FieldPlayer.Coord;
-                session.Player.ReturnMapId = session.Player.MapId;
-            }
             session.Player.Warp(mapId: (int) mapId, instanceId: session.Player.CharacterId);
         }
 
@@ -484,7 +480,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (cosmetics.Remove(itemSlot, out Item removeItem))
             {
                 removeItem.Slot = -1;
-                DatabaseManager.Delete(removeItem);
+                DatabaseManager.Items.Delete(removeItem.Uid);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
             }
             // equip new item

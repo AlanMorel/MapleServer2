@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
 
-        public PremiumClubHandler(ILogger<PremiumClubHandler> logger) : base(logger) { }
+        public PremiumClubHandler() : base() { }
 
         private enum PremiumClubMode : byte
         {
@@ -119,18 +118,19 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
 
-            if (!session.Player.IsVip())
+            Account account = session.Player.Account;
+            if (!account.IsVip())
             {
-                session.Player.VIPExpiration = expiration;
+                account.VIPExpiration = expiration;
                 session.Send(NoticePacket.Notice(SystemNotice.PremiumActivated, NoticeType.ChatAndFastText));
             }
             else
             {
-                session.Player.VIPExpiration += vipTime;
+                account.VIPExpiration += vipTime;
                 session.Send(NoticePacket.Notice(SystemNotice.PremiumExtended, NoticeType.ChatAndFastText));
             }
             session.Send(BuffPacket.SendBuff(0, new Status(100000014, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, (int) vipTime, 1)));
-            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, session.Player.VIPExpiration));
+            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, account.VIPExpiration));
         }
     }
 }

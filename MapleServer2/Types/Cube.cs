@@ -10,21 +10,32 @@ namespace MapleServer2.Types
         public int PlotNumber;
         public CoordF CoordF;
         public CoordF Rotation;
-        public Home Home;
-        public HomeLayout Layout;
+        public long HomeId;
+        public long LayoutUid;
 
         public Cube() { }
 
-        public Cube(Item item, int plotNumber, CoordF coordF, CoordF rotation, HomeLayout homeLayout = null, Home home = null)
+        public Cube(Item item, int plotNumber, CoordF coordF, CoordF rotation, long homeLayoutId = 0, long homeId = 0)
         {
             Item = item;
             PlotNumber = plotNumber;
             CoordF = coordF;
             Rotation = rotation;
-            Layout = homeLayout;
-            Home = home;
+            HomeId = homeId;
+            LayoutUid = homeLayoutId;
 
-            Uid = DatabaseManager.CreateCube(this);
+            Uid = DatabaseManager.Cubes.Insert(this);
+        }
+
+        public Cube(long uid, Item item, int plotNumber, CoordF coordF, float rotation, long homeLayoutUid = 0, long homeId = 0)
+        {
+            Uid = uid;
+            Item = item;
+            PlotNumber = plotNumber;
+            CoordF = coordF;
+            HomeId = homeId;
+            LayoutUid = homeLayoutUid;
+            Rotation = CoordF.From(0, 0, rotation);
         }
     }
 }

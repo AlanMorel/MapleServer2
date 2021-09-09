@@ -13,7 +13,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, ItemMetadata> map = new Dictionary<int, ItemMetadata>();
 
-        static ItemMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-metadata");
             List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
@@ -107,6 +107,31 @@ namespace MapleServer2.Data.Static
         public static int GetShopID(int itemId)
         {
             return map.GetValueOrDefault(itemId).ShopID;
+        }
+
+        public static bool IsSellablle(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Sellable;
+        }
+
+        public static TransferType GetTransferType(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).TransferType;
+        }
+
+        public static int GetTradeableCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).TradeableCount;
+        }
+
+        public static int GetRepackageCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).RepackageCount;
+        }
+
+        public static int GetRepackageConsumeCount(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).RepackageItemConsumeCount;
         }
 
         public static List<Job> GetRecommendJobs(int itemId)

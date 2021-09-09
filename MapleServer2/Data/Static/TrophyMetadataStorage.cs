@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, TrophyMetadata> map = new Dictionary<int, TrophyMetadata>();
 
-        static TrophyMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-trophy-metadata");
             List<TrophyMetadata> trophies = Serializer.Deserialize<List<TrophyMetadata>>(stream);
@@ -18,24 +18,8 @@ namespace MapleServer2.Data.Static
             }
         }
 
-        public static List<int> GetTrophyIds()
-        {
-            return new List<int>(map.Keys);
-        }
+        public static List<int> GetTrophyIds() => map.Keys.ToList();
 
-        public static TrophyMetadata GetMetadata(int id)
-        {
-            return map.GetValueOrDefault(id);
-        }
-
-        public static TrophyGradeMetadata GetGrade(int id, int grade)
-        {
-            return map.GetValueOrDefault(id).Grades.FirstOrDefault(x => x.Grade == grade);
-        }
-
-        public static int GetNumGrades(int id)
-        {
-            return map.GetValueOrDefault(id).Grades.Count;
-        }
+        public static TrophyMetadata GetMetadata(int id) => map.GetValueOrDefault(id);
     }
 }

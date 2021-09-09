@@ -20,6 +20,10 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, TriggerEffect> TriggerEffects;
         public readonly ConcurrentDictionary<int, TriggerCamera> TriggerCameras;
         public readonly ConcurrentDictionary<int, TriggerActor> TriggerActors;
+        public readonly ConcurrentDictionary<int, TriggerCube> TriggerCubes;
+        public readonly ConcurrentDictionary<int, TriggerLadder> TriggerLadders;
+        public readonly ConcurrentDictionary<int, TriggerRope> TriggerRopes;
+        public readonly ConcurrentDictionary<int, TriggerSound> TriggerSounds;
 
         public FieldState()
         {
@@ -38,6 +42,10 @@ namespace MapleServer2.Types
             TriggerEffects = new ConcurrentDictionary<int, TriggerEffect>();
             TriggerCameras = new ConcurrentDictionary<int, TriggerCamera>();
             TriggerActors = new ConcurrentDictionary<int, TriggerActor>();
+            TriggerCubes = new ConcurrentDictionary<int, TriggerCube>();
+            TriggerLadders = new ConcurrentDictionary<int, TriggerLadder>();
+            TriggerRopes = new ConcurrentDictionary<int, TriggerRope>();
+            TriggerSounds = new ConcurrentDictionary<int, TriggerSound>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -173,6 +181,18 @@ namespace MapleServer2.Types
                     break;
                 case TriggerActor triggerActor:
                     TriggerActors[triggerActor.Id] = triggerActor;
+                    break;
+                case TriggerCube triggerCube:
+                    TriggerCubes[triggerCube.Id] = triggerCube;
+                    break;
+                case TriggerLadder triggerLadder:
+                    TriggerLadders[triggerLadder.Id] = triggerLadder;
+                    break;
+                case TriggerRope triggerRope:
+                    TriggerRopes[triggerRope.Id] = triggerRope;
+                    break;
+                case TriggerSound triggerSound:
+                    TriggerSounds[triggerSound.Id] = triggerSound;
                     break;
             }
         }

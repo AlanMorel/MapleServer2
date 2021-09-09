@@ -1,4 +1,6 @@
-﻿using MapleServer2.Packets;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Database;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
@@ -9,22 +11,26 @@ namespace MapleServer2.Types
         public readonly long Id;
         private readonly int DEFAULT_SIZE = 36;
         public int ExtraSize;
+        public Currency Mesos;
 
         public Item[] Items = new Item[36];
-        public List<Item> DB_Items { get; set; }
 
-        public BankInventory() { }
-
-        public BankInventory(BankInventory bankInventory)
+        public BankInventory()
         {
-            Id = bankInventory.Id;
-            ExtraSize = bankInventory.ExtraSize;
-            Items = new Item[DEFAULT_SIZE + ExtraSize];
-            for (int i = 0; i < bankInventory.DB_Items.Count; i++)
-            {
-                Item item = bankInventory.DB_Items[i];
+            Mesos = new Currency(CurrencyType.BankMesos, 0);
+            Id = DatabaseManager.BankInventories.Insert(this);
+        }
 
-                item.SetMetadataValues(item.Id);
+        public BankInventory(long id, int extraSize, List<Item> items, long bankMesos)
+        {
+            Id = id;
+            ExtraSize = extraSize;
+            Items = new Item[DEFAULT_SIZE + ExtraSize];
+            Mesos = new Currency(CurrencyType.BankMesos, bankMesos);
+            for (int i = 0; i < items.Count; i++)
+            {
+                Item item = items[i];
+                item.SetMetadataValues();
                 Items[i] = item;
             }
         }
@@ -163,7 +169,7 @@ namespace MapleServer2.Types
             session.Send(StorageInventoryPacket.Update());
             session.Send(StorageInventoryPacket.Expand(ExtraSize));
             session.Send(StorageInventoryPacket.ExpandAnim());
-            session.Send(StorageInventoryPacket.UpdateMesos(session.Player.Wallet.Bank.Amount));
+            session.Send(StorageInventoryPacket.UpdateMesos(Mesos.Amount));
             LoadItems(session);
         }
 

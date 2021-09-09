@@ -3,13 +3,12 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Extensions;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login
 {
@@ -17,43 +16,52 @@ namespace MapleServer2.PacketHandlers.Login
     {
         public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-        public CharacterManagementHandler(ILogger<CharacterManagementHandler> logger) : base(logger) { }
+        public CharacterManagementHandler() : base() { }
+
+        private enum CharacterManagementMode : byte
+        {
+            Login = 0x0,
+            Create = 0x1,
+            Delete = 0x2
+        }
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            CharacterManagementMode mode = (CharacterManagementMode) packet.ReadByte();
             switch (mode)
             {
-                case 0: // Login
+                case CharacterManagementMode.Login:
                     HandleSelect(session, packet);
                     break;
-                case 1: // Create
+                case CharacterManagementMode.Create:
                     HandleCreate(session, packet);
                     break;
-                case 2: // Delete
+                case CharacterManagementMode.Delete:
                     HandleDelete(session, packet);
                     break;
                 default:
-                    throw new ArgumentException($"Invalid Char select mode {mode}");
+                    IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                    break;
             }
         }
 
         private void HandleDelete(LoginSession session, PacketReader packet)
         {
             long characterId = packet.ReadLong();
-            if (!DatabaseManager.DeleteCharacter(characterId))
+            if (!DatabaseManager.Characters.SetCharacterDeleted(characterId))
             {
-                throw new ArgumentException("Could not delete character");
+                Logger.Error("Could not delete character");
+                return;
             }
             session.Send(CharacterListPacket.DeleteCharacter(characterId));
-            Logger.Info($"Character id {characterId} deleted!");
+            Logger.Info("Character id {characterId} deleted!", characterId);
         }
 
         public void HandleSelect(LoginSession session, PacketReader packet)
         {
             long charId = packet.ReadLong();
             packet.ReadShort(); // 01 00
-            Logger.Info($"Logging in to game with char id: {charId}");
+            Logger.Info("Logging in to game with char id: {charId}", charId);
 
             string ipAddress = Environment.GetEnvironmentVariable("IP");
             int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
@@ -79,31 +87,44 @@ namespace MapleServer2.PacketHandlers.Login
             string name = packet.ReadUnicodeString();
             SkinColor skinColor = packet.Read<SkinColor>();
             packet.Skip(2);
-            Dictionary<ItemSlot, Item> cosmetics = new Dictionary<ItemSlot, Item>();
 
-            int equipCount = packet.ReadByte();
+            if (DatabaseManager.Characters.NameExists(name))
+            {
+                session.Send(ResponseCharCreatePacket.NameTaken());
+                return;
+            }
+
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
+            Player newCharacter = new Player(account, name, gender, job, skinColor);
+
+            byte equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)
             {
-                uint id = packet.ReadUInt();
+                int id = packet.ReadInt();
                 string typeStr = packet.ReadUnicodeString();
                 if (!Enum.TryParse(typeStr, out ItemSlot type))
                 {
                     throw new ArgumentException($"Unknown equip type: {typeStr}");
                 }
+
                 EquipColor equipColor = packet.Read<EquipColor>();
 
                 switch (type)
                 {
                     case ItemSlot.HR: // Hair
                         // Hair Length/Position
-                        float backLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        float backLength = packet.ReadFloat();
                         CoordF backPositionCoord = packet.Read<CoordF>();
                         CoordF backPositionRotation = packet.Read<CoordF>();
-                        float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
+                        float frontLength = packet.ReadFloat();
                         CoordF frontPositionCoord = packet.Read<CoordF>();
                         CoordF frontPositionRotation = packet.Read<CoordF>();
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
 
-                        cosmetics.Add(ItemSlot.HR, new Item(Convert.ToInt32(id))
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.HR, new Item(id)
                         {
                             Color = equipColor,
                             HairData = new HairData(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
@@ -112,7 +133,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.FA: // Face
-                        cosmetics.Add(ItemSlot.FA, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -121,7 +147,13 @@ namespace MapleServer2.PacketHandlers.Login
                         break;
                     case ItemSlot.FD: // Face Decoration
                         byte[] faceDecoration = packet.Read(16); // Face decoration position
-                        cosmetics.Add(ItemSlot.FD, new Item(Convert.ToInt32(id))
+
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.FD, new Item(id)
                         {
                             Color = equipColor,
                             FaceDecorationData = faceDecoration,
@@ -130,7 +162,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.CL: // Clothes
-                        cosmetics.Add(ItemSlot.CL, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -138,7 +175,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.PA: // Pants
-                        cosmetics.Add(ItemSlot.PA, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -146,7 +188,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.SH: // Shoes
-                        cosmetics.Add(ItemSlot.SH, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -154,8 +201,12 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.ER: // Ear
-                        // Assign ER
-                        cosmetics.Add(ItemSlot.ER, new Item(Convert.ToInt32(id))
+                        if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
+                        {
+                            continue;
+                        }
+
+                        newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new Item(id)
                         {
                             Color = equipColor,
                             IsTemplate = false,
@@ -166,22 +217,9 @@ namespace MapleServer2.PacketHandlers.Login
             }
             packet.ReadInt(); // const? (4)
 
-            if (DatabaseManager.NameExists(name))
-            {
-                session.Send(ResponseCharCreatePacket.NameTaken());
-                return;
-            }
-
-            Player newCharacter = new Player(session.AccountId, name, gender, job, skinColor);
-            foreach (Item item in cosmetics.Values)
-            {
-                item.Owner = newCharacter;
-            }
-            newCharacter.Inventory.Cosmetics = cosmetics;
-            DatabaseManager.UpdateCharacter(newCharacter);
+            DatabaseManager.Inventories.Update(newCharacter.Inventory);
 
             // Send updated CHAR_MAX_COUNT
-            Account account = DatabaseManager.GetAccount(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
 
             // Send CHARACTER_LIST for new character only (append)

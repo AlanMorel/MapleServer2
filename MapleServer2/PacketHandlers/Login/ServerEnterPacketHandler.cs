@@ -7,7 +7,6 @@ using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Login
 {
@@ -19,7 +18,7 @@ namespace MapleServer2.PacketHandlers.Login
         private readonly ImmutableList<IPEndPoint> ServerIPs;
         private readonly string ServerName;
 
-        public ServerEnterPacketHandler(ILogger<ServerEnterPacketHandler> logger) : base(logger)
+        public ServerEnterPacketHandler() : base()
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
             string ipAddress = Environment.GetEnvironmentVariable("IP");
@@ -32,13 +31,13 @@ namespace MapleServer2.PacketHandlers.Login
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            List<Banner> banners = DatabaseManager.GetBanners();
+            List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
             session.Send(BannerListPacket.SetBanner(banners));
             session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
-            List<Player> characters = DatabaseManager.GetAccountCharacters(session.AccountId);
+            List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
-            Account account = DatabaseManager.GetAccount(session.AccountId);
+            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
             session.Send(CharacterListPacket.StartList());
             // Send each character data

@@ -8,11 +8,11 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -20,7 +20,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
-        public RequestCubeHandler(ILogger<RequestCubeHandler> logger) : base(logger) { }
+        public RequestCubeHandler() : base() { }
 
         private enum RequestCubeMode : byte
         {
@@ -186,10 +186,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             //Check if sale event is active
             int price = land.Price;
-            GameEvent gameEvent = DatabaseManager.GetSingleGameEvent(GameEventType.UGCMapContractSale);
-            if (gameEvent != null)
+            UGCMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUGCMapContractSaleEvent();
+            if (ugcMapContractSale != null)
             {
-                int markdown = land.Price * (gameEvent.UGCMapContractSale.DiscountAmount / 100 / 100);
+                int markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);
                 price = land.Price - markdown;
             }
 
@@ -534,7 +534,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (oldFieldCube != null)
             {
                 furnishingInventory.Remove(oldFieldCube.Value.Uid);
-                DatabaseManager.Delete(oldFieldCube.Value);
+                DatabaseManager.Cubes.Delete(oldFieldCube.Value.Uid);
                 homeOwner.Value.Session.Send(FurnishingInventoryPacket.Remove(oldFieldCube.Value));
                 session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
             }
@@ -569,14 +569,14 @@ namespace MapleServer2.PacketHandlers.Game
 
             // Pickup item then set battle state to true
             session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, true));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
 
         private static void HandleDrop(GameSession session)
         {
             // Drop item then set battle state to false
             session.Send(ResponseCubePacket.Drop(session.FieldPlayer));
-            session.Send(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+            session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, false));
         }
 
         private static void HandleHomeName(GameSession session, PacketReader packet)
@@ -878,17 +878,17 @@ namespace MapleServer2.PacketHandlers.Game
             HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
             if (layout != default)
             {
-                DatabaseManager.DeleteLayout(layout);
+                DatabaseManager.HomeLayouts.Delete(layout.Uid);
                 home.Layouts.Remove(layout);
             }
 
             if (session.Player.IsInDecorPlanner)
             {
-                home.Layouts.Add(new HomeLayout(home, layoutId, layoutName, home.DecorPlannerSize, home.DecorPlannerHeight, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.DecorPlannerInventory.Values.ToList()));
+                home.Layouts.Add(new HomeLayout(home.Id, layoutId, layoutName, home.DecorPlannerSize, home.DecorPlannerHeight, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.DecorPlannerInventory.Values.ToList()));
             }
             else
             {
-                home.Layouts.Add(new HomeLayout(home, layoutId, layoutName, home.Size, home.Height, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.FurnishingInventory.Values.ToList()));
+                home.Layouts.Add(new HomeLayout(home.Id, layoutId, layoutName, home.Size, home.Height, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.FurnishingInventory.Values.ToList()));
             }
             session.Send(ResponseCubePacket.SaveLayout(home.AccountId, layoutId, layoutName, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         }
@@ -1315,7 +1315,7 @@ namespace MapleServer2.PacketHandlers.Game
             Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
             if (item == null || item.Amount <= 0)
             {
-                Cube cube = new Cube(new Item(itemId), plotNumber, coordF, rotation, home: home);
+                Cube cube = new Cube(new Item(itemId), plotNumber, coordF, rotation, homeId: home.Id);
 
                 fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coordF;
@@ -1329,7 +1329,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                Cube cube = new Cube(item, plotNumber, coordF, rotation, home: home);
+                Cube cube = new Cube(item, plotNumber, coordF, rotation, homeId: home.Id);
 
                 fieldCube = session.FieldManager.RequestFieldObject(cube);
                 fieldCube.Coord = coordF;
@@ -1365,7 +1365,7 @@ namespace MapleServer2.PacketHandlers.Game
             furnishingInventory.Remove(cube.Value.Uid);
             homeOwner.Value.Session.Send(FurnishingInventoryPacket.Remove(cube.Value));
 
-            DatabaseManager.Delete(cube.Value);
+            DatabaseManager.Cubes.Delete(cube.Value.Uid);
             _ = home.AddWarehouseItem(homeOwner.Value.Session, cube.Value.Item.Id, 1, cube.Value.Item);
             session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
         }

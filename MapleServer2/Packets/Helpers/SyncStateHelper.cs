@@ -16,8 +16,8 @@ namespace MapleServer2.Packets.Helpers
             state.Flag = (SyncStateFlag) packet.ReadByte();
             if (state.Flag.HasFlag(SyncStateFlag.Flag1))
             {
-                state.Flag1Unknown1 = packet.ReadInt();
-                state.Flag1Unknown2 = packet.ReadShort();
+                state.EmoteId = packet.ReadInt();
+                state.EmoteUnk = packet.ReadShort();
             }
 
             state.Coord = packet.Read<CoordS>();
@@ -25,8 +25,8 @@ namespace MapleServer2.Packets.Helpers
             state.Animation3 = packet.ReadByte();
             if (state.Animation3 > 127)
             { // if animation < 0 (signed)
-                state.UnknownFloat1 = packet.Read<float>();
-                state.UnknownFloat2 = packet.Read<float>();
+                state.UnknownFloat1 = packet.ReadFloat();
+                state.UnknownFloat2 = packet.ReadFloat();
             }
             state.Speed = packet.Read<CoordS>(); // XYZ Speed?
             state.Unknown1 = packet.ReadByte();
@@ -62,7 +62,6 @@ namespace MapleServer2.Packets.Helpers
             }
 
             state.Unknown4 = packet.ReadInt();
-
             return state;
         }
 
@@ -73,8 +72,8 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteByte((byte) entry.Flag);
             if (entry.Flag.HasFlag(SyncStateFlag.Flag1))
             {
-                pWriter.WriteInt(entry.Flag1Unknown1);
-                pWriter.WriteShort(entry.Flag1Unknown2);
+                pWriter.WriteInt(entry.EmoteId);
+                pWriter.WriteShort(entry.EmoteUnk);
             }
 
             pWriter.Write(entry.Coord);
@@ -83,8 +82,8 @@ namespace MapleServer2.Packets.Helpers
 
             if (entry.Animation3 > 127)
             {
-                pWriter.Write(entry.UnknownFloat1);
-                pWriter.Write(entry.UnknownFloat2);
+                pWriter.WriteFloat(entry.UnknownFloat1);
+                pWriter.WriteFloat(entry.UnknownFloat2);
             }
 
             pWriter.Write(entry.Speed);

@@ -3,12 +3,14 @@ using Autofac;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
+using MapleServer2.Extensions;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
+using MapleServer2.Managers;
+using MapleServer2.Types;
 using NLog;
-using Pastel;
 
 namespace MapleServer2
 {
@@ -17,10 +19,12 @@ namespace MapleServer2
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
+            currentDomain.ProcessExit += new EventHandler(SaveAll);
+
             // Force Globalization to en-US because we use periods instead of commas for decimals
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
@@ -32,14 +36,14 @@ namespace MapleServer2
                 throw new ArgumentException(".env file not found!");
             }
             DotEnv.Load(dotenv);
-
             InitDatabase();
 
             // Load Mob AI files
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
-            Logger.Info($"MapleServer started with {args.Length} args: {string.Join(", ", args)}");
+            // Initialize all metadata.
+            MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -50,6 +54,8 @@ namespace MapleServer2
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
             GameServer = gameScope.Resolve<GameServer>();
             GameServer.Start();
+
+            Logger.Info("Server Started.".ColorGreen());
 
             // Input commands to the server
             while (true)
@@ -93,31 +99,33 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
-            if (DatabaseContext.Exists())
+            if (DatabaseManager.DatabaseExists())
             {
                 Logger.Info("Database already exists.");
                 return;
             }
-
             Logger.Info("Creating database...");
-            DatabaseContext.CreateDatabase();
+            DatabaseManager.CreateDatabase();
 
             Logger.Info("Seeding shops...");
-            ShopsSeeding.Seed();
+            DatabaseManager.SeedShops();
+
+            Logger.Info("Seeding shop items...");
+            DatabaseManager.SeedShopItems();
 
             Logger.Info("Seeding Meret Market...");
-            MeretMarketItemSeeding.Seed();
+            DatabaseManager.SeedMeretMarket();
 
             Logger.Info("Seeding Mapleopoly...");
-            MapleopolySeeding.Seed();
+            DatabaseManager.SeedMapleopoly();
 
             Logger.Info("Seeding events...");
-            GameEventSeeding.Seed();
+            DatabaseManager.SeedEvents();
 
             Logger.Info("Seeding card reverse game...");
-            CardReverseGameSeeding.Seed();
+            DatabaseManager.SeedCardReverseGame();
 
-            Logger.Info("Database created.".Pastel("#aced66"));
+            Logger.Info("Database created.".ColorGreen());
         }
 
         public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
@@ -158,7 +166,27 @@ namespace MapleServer2
         {
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
+        }
 
+        private static void SaveAll(object sender, EventArgs e)
+        {
+            List<Player> players = GameServer.Storage.GetAllPlayers();
+            foreach (Player item in players)
+            {
+                DatabaseManager.Characters.Update(item);
+            }
+
+            List<Guild> guilds = GameServer.GuildManager.GetAllGuilds();
+            foreach (Guild item in guilds)
+            {
+                DatabaseManager.Guilds.Update(item);
+            }
+
+            List<Home> homes = GameServer.HomeManager.GetAllHomes();
+            foreach (Home home in homes)
+            {
+                DatabaseManager.Homes.Update(home);
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ using MapleServer2.Constants;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace MapleServer2.PacketHandlers.Common
 {
@@ -11,12 +11,9 @@ namespace MapleServer2.PacketHandlers.Common
     {
         public abstract RecvOp OpCode { get; }
 
-        protected readonly ILogger Logger;
+        protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected CommonPacketHandler(ILogger<CommonPacketHandler> logger)
-        {
-            Logger = logger;
-        }
+        protected CommonPacketHandler() { }
 
         public virtual void Handle(GameSession session, PacketReader packet)
         {

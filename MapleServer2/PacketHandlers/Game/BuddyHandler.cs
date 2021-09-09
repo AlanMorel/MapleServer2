@@ -1,10 +1,11 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Managers;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.BUDDY;
 
-        public BuddyHandler(ILogger<BuddyHandler> logger) : base(logger) { }
+        public BuddyHandler() : base() { }
 
         private enum BuddyMode : byte
         {
@@ -81,24 +82,32 @@ namespace MapleServer2.PacketHandlers.Game
             string otherPlayerName = packet.ReadUnicodeString();
             string message = packet.ReadUnicodeString();
 
-            Player targetPlayer = GameServer.Storage.GetPlayerByName(otherPlayerName);
-            if (targetPlayer == null) // TODO: Change this so it checks if player exists
+            if (!DatabaseManager.Characters.NameExists(otherPlayerName))
             {
+                session.Send(BuddyPacket.Notice((byte) BuddyNotice.CharacterNotFound, otherPlayerName));
                 return;
             }
 
-            if (targetPlayer == session.Player)
+            Player targetPlayer = GameServer.Storage.GetPlayerByName(otherPlayerName);
+            if (targetPlayer == null) // If the player is not online, get player data from database
+            {
+                targetPlayer = DatabaseManager.Characters.FindPartialPlayerByName(otherPlayerName);
+                targetPlayer.BuddyList = GameServer.BuddyManager.GetBuddies(targetPlayer.CharacterId);
+            }
+
+            if (targetPlayer.CharacterId == session.Player.CharacterId)
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotAddSelf, targetPlayer.Name));
                 return;
             }
 
-            if ((byte) session.Player.BuddyList.Count(b => !b.Blocked) >= 100) // 100 is friend limit
+            if (session.Player.BuddyList.Count(b => !b.Blocked) >= 100) // 100 is friend limit
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotAddFriends, targetPlayer.Name));
+                return;
             }
 
-            if ((byte) targetPlayer.BuddyList.Count(b => !b.Blocked) >= 100)
+            if (targetPlayer.BuddyList.Count(b => !b.Blocked) >= 100)
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.OtherUserCannotAddFriends, targetPlayer.Name));
                 return;
@@ -113,25 +122,23 @@ namespace MapleServer2.PacketHandlers.Game
             if (BuddyManager.IsFriend(session.Player, targetPlayer))
             {
                 session.Send(BuddyPacket.Notice((byte) BuddyNotice.AlreadyFriends, targetPlayer.Name));
+                return;
             }
 
             long id = GuidGenerator.Long();
-            Buddy buddy = new Buddy(id, targetPlayer, session.Player, message, true, false);
-            Buddy buddyTargetPlayer = new Buddy(id, session.Player, targetPlayer, message, false, true);
+            Buddy buddy = new Buddy(id, session.Player.CharacterId, targetPlayer, message, pending: true, accepted: false);
+            Buddy buddyTargetPlayer = new Buddy(id, targetPlayer.CharacterId, session.Player, message, pending: false, accepted: true);
             GameServer.BuddyManager.AddBuddy(buddy);
             GameServer.BuddyManager.AddBuddy(buddyTargetPlayer);
+            session.Player.BuddyList.Add(buddy);
 
             session.Send(BuddyPacket.Notice((byte) BuddyNotice.RequestSent, targetPlayer.Name));
+            session.Send(BuddyPacket.AddToList(buddy));
 
-            if (targetPlayer != null) // TODO: Change this to only send if player exists
+            if (targetPlayer.Session != null && targetPlayer.Session.Connected())
             {
-                session.Send(BuddyPacket.AddToList(buddy));
-            }
-
-            if (targetPlayer != null) // TODO: Change to send if online
-            {
+                targetPlayer.BuddyList.Add(buddyTargetPlayer);
                 targetPlayer.Session.Send(BuddyPacket.AddToList(buddyTargetPlayer));
-                return;
             }
         }
 
@@ -144,15 +151,18 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(BuddyPacket.RemoveFromList(buddy));
 
-            if (buddy.Friend != null) // TODO: Change to send if online
+            Player otherPlayer = GameServer.Storage.GetPlayerByName(buddy.Friend.Name);
+            if (otherPlayer != null)
             {
-                buddy.Friend.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                otherPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                otherPlayer.BuddyList.Remove(buddyFriend);
             }
 
             GameServer.BuddyManager.RemoveBuddy(buddy);
             GameServer.BuddyManager.RemoveBuddy(buddyFriend);
             session.Player.BuddyList.Remove(buddy);
-            buddy.Friend.BuddyList.Remove(buddyFriend);
+            DatabaseManager.Buddies.Delete(buddy.Id);
+            DatabaseManager.Buddies.Delete(buddyFriend.Id);
         }
 
         private static void HandleEditBlockReason(GameSession session, PacketReader packet)
@@ -169,6 +179,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             buddy.Message = newBlockReason;
             session.Send(BuddyPacket.EditBlockReason(buddy));
+            DatabaseManager.Buddies.Update(buddy);
         }
 
         private static void HandleAccept(GameSession session, PacketReader packet)
@@ -183,12 +194,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(BuddyPacket.AcceptRequest(buddy));
             session.Send(BuddyPacket.UpdateBuddy(buddy));
-            session.Send(BuddyPacket.LoginLogoutNotifcation(buddy));
+            session.Send(BuddyPacket.LoginLogoutNotification(buddy));
+            DatabaseManager.Buddies.Update(buddy);
+            DatabaseManager.Buddies.Update(buddyFriend);
 
-            if (buddy.Friend != null) // TODO: Change to send if online
+            Player otherPlayer = GameServer.Storage.GetPlayerByName(buddy.Friend.Name);
+            if (otherPlayer != null)
             {
-                buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(buddyFriend));
-                buddy.Friend.Session.Send(BuddyPacket.AcceptNotification(buddyFriend));
+                otherPlayer.Session.Send(BuddyPacket.UpdateBuddy(buddyFriend));
+                otherPlayer.Session.Send(BuddyPacket.AcceptNotification(buddyFriend));
             }
         }
 
@@ -201,36 +215,51 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(BuddyPacket.DeclineRequest(buddy));
 
-            if (buddy.Friend != null) // TODO: Change to send if online
+            Player otherPlayer = GameServer.Storage.GetPlayerByName(buddy.Friend.Name);
+            if (otherPlayer != null)
             {
-                buddy.Friend.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                otherPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                otherPlayer.BuddyList.Remove(buddyFriend);
             }
 
             GameServer.BuddyManager.RemoveBuddy(buddy);
             GameServer.BuddyManager.RemoveBuddy(buddyFriend);
             session.Player.BuddyList.Remove(buddy);
-            buddy.Friend.BuddyList.Remove(buddyFriend);
+            DatabaseManager.Buddies.Delete(buddy.Id);
+            DatabaseManager.Buddies.Delete(buddyFriend.Id);
         }
 
         private static void HandleBlock(GameSession session, PacketReader packet)
         {
             long buddyId = packet.ReadLong();
-            string target = packet.ReadUnicodeString();
+            string targetName = packet.ReadUnicodeString();
             string message = packet.ReadUnicodeString();
 
-            if ((byte) session.Player.BuddyList.Count(b => b.Blocked) >= 100)  // 100 is block limit
+            if (session.Player.BuddyList.Count(b => b.Blocked) >= 100)  // 100 is block limit
             {
-                session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotBlock, target));
+                session.Send(BuddyPacket.Notice((byte) BuddyNotice.CannotBlock, targetName));
                 return;
             }
 
-            Player targetPlayer = GameServer.Storage.GetPlayerByName(target);
+            if (!DatabaseManager.Characters.NameExists(targetName))
+            {
+                session.Send(BuddyPacket.Notice((byte) BuddyNotice.CharacterNotFound, targetName));
+                return;
+            }
+
+            Player targetPlayer = GameServer.Storage.GetPlayerByName(targetName);
+            if (targetPlayer == null) // If the player is not online, get player data from database
+            {
+                targetPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetName);
+                targetPlayer.BuddyList = GameServer.BuddyManager.GetBuddies(targetPlayer.CharacterId);
+            }
 
             if (buddyId == 0) // if buddy doesn't exist, create Buddy
             {
                 long id = GuidGenerator.Long();
-                Buddy buddy = new Buddy(id, targetPlayer, session.Player, message, false, false, true);
+                Buddy buddy = new Buddy(id, session.Player.CharacterId, targetPlayer, message, pending: false, accepted: false, blocked: true);
                 GameServer.BuddyManager.AddBuddy(buddy);
+                session.Player.BuddyList.Add(buddy);
 
                 session.Send(BuddyPacket.AddToList(buddy));
                 session.Send(BuddyPacket.Block(buddy));
@@ -239,18 +268,21 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
                 Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
-                if (buddy.Friend != null)  // TODO: Change to send if online
+
+                if (targetPlayer.Session != null && targetPlayer.Session.Connected())
                 {
-                    buddy.Friend.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                    targetPlayer.BuddyList.Remove(buddyFriend);
+                    targetPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
                 }
 
                 GameServer.BuddyManager.RemoveBuddy(buddyFriend);
-                buddy.Friend.BuddyList.Remove(buddyFriend);
 
                 buddy.BlockReason = message;
                 buddy.Blocked = true;
                 session.Send(BuddyPacket.UpdateBuddy(buddy));
                 session.Send(BuddyPacket.Block(buddy));
+                DatabaseManager.Buddies.Update(buddy);
+                DatabaseManager.Buddies.Delete(buddyFriend.Id);
             }
         }
 
@@ -265,6 +297,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             GameServer.BuddyManager.RemoveBuddy(buddy);
             session.Player.BuddyList.Remove(buddy);
+            DatabaseManager.Buddies.Delete(buddy.Id);
         }
 
         private static void HandleCancelRequest(GameSession session, PacketReader packet)
@@ -276,16 +309,19 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(BuddyPacket.CancelRequest(buddy));
 
-            if (buddy.Friend != null)  // TODO: Change to send if online
+            Player targetPlayer = GameServer.Storage.GetPlayerByName(buddy.Friend.Name);
+
+            if (targetPlayer != null)
             {
-                buddy.Friend.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                targetPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
+                targetPlayer.BuddyList.Remove(buddyFriend);
             }
 
             GameServer.BuddyManager.RemoveBuddy(buddy);
             GameServer.BuddyManager.RemoveBuddy(buddyFriend);
             session.Player.BuddyList.Remove(buddy);
-            buddy.Friend.BuddyList.Remove(buddyFriend);
+            DatabaseManager.Buddies.Delete(buddy.Id);
+            DatabaseManager.Buddies.Delete(buddyFriend.Id);
         }
-
     }
 }

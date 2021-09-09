@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
 
-        public MapleopolyHandler(ILogger<MapleopolyHandler> logger) : base(logger) { }
+        public MapleopolyHandler() : base() { }
 
         private enum MapleopolyMode : byte
         {
@@ -54,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            List<MapleopolyTile> tiles = DatabaseManager.GetMapleopolyTiles();
+            List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
 
             int tokenAmount = 0;
             Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
@@ -103,7 +102,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
 
-            MapleopolyTile currentTile = DatabaseManager.GetsingleMapleopolyTile(currentTilePosition + 1);
+            MapleopolyTile currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
 
             switch (currentTile.Type)
             {
@@ -132,7 +131,7 @@ namespace MapleServer2.PacketHandlers.Game
                 case MapleopolyTileType.Start:
                     break;
                 default:
-                    Console.WriteLine("Unsupported tile");
+                    Logger.Warn("Unsupported tile");
                     break;
             }
 
@@ -150,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             int difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
 
-            List<MapleopolyEvent> items = DatabaseManager.GetMapleopolyEvent();
+            List<MapleopolyEvent> items = DatabaseManager.Events.FindAllMapleopolyEvents();
             for (int i = 0; i < difference; i++)
             {
                 session.Player.Mapleopoly.TotalTrips++;

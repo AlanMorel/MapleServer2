@@ -1,4 +1,5 @@
-﻿using MoonSharp.Interpreter;
+﻿using MapleServer2.Constants;
+using MoonSharp.Interpreter;
 using NLog;
 
 namespace MapleServer2.Tools
@@ -19,7 +20,7 @@ namespace MapleServer2.Tools
             Script = new Script();
             try
             {
-                Script.DoFile($"Scripts/{scriptName}.lua");
+                Script.DoFile($"{Paths.SOLUTION_DIR}/MapleServer2/Scripts/{scriptName}.lua");
             }
             catch (Exception ex)
             {

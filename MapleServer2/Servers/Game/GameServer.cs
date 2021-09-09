@@ -3,9 +3,8 @@ using Autofac;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Network;
-using MapleServer2.Tools;
+using MapleServer2.Managers;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.Servers.Game
 {
@@ -21,14 +20,13 @@ namespace MapleServer2.Servers.Game
         public static readonly BuddyManager BuddyManager = new();
         public static readonly HomeManager HomeManager = new();
         public static readonly CommandManager CommandManager = new();
+        public static readonly GlobalEventManager GlobalEventManager = new();
 
-        public GameServer(PacketRouter<GameSession> router, ILogger<GameServer> logger, IComponentContext context) :
-            base(router, logger, context)
-        { }
+        public GameServer(PacketRouter<GameSession> router, IComponentContext context) : base(router, context) { }
 
         public void Start()
         {
-            List<Guild> guilds = DatabaseManager.GetGuilds();
+            List<Guild> guilds = DatabaseManager.Guilds.FindAll();
             foreach (Guild guild in guilds)
             {
                 GuildManager.AddGuild(guild);

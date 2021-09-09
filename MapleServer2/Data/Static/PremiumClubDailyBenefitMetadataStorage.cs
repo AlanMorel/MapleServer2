@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static
     {
         private static readonly Dictionary<int, PremiumClubDailyBenefitMetadata> benefit = new Dictionary<int, PremiumClubDailyBenefitMetadata>();
 
-        static PremiumClubDailyBenefitMetadataStorage()
+        public static void Init()
         {
             using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-premium-club-daily-benefit-metadata");
             List<PremiumClubDailyBenefitMetadata> items = Serializer.Deserialize<List<PremiumClubDailyBenefitMetadata>>(stream);

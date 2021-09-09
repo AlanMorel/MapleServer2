@@ -7,7 +7,6 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -15,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.CARD_REVERSE_GAME;
 
-        public CardReverseGameHandler(ILogger<CardReverseGameHandler> logger) : base(logger) { }
+        public CardReverseGameHandler() : base() { }
 
         private enum CardReverseGameMode : byte
         {
@@ -47,7 +46,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            List<CardReverseGame> cards = DatabaseManager.GetCardReverseGame();
+            List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
             session.Send(CardReverseGamePacket.Open(cards));
         }
 
@@ -69,7 +68,7 @@ namespace MapleServer2.PacketHandlers.Game
             // Unknown how this game works as to whether it's weighted or not
             // Currently being handled by each item having an equal chance
 
-            List<CardReverseGame> cards = DatabaseManager.GetCardReverseGame();
+            List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
 
             int index = RandomProvider.Get().Next(cards.Count);
 

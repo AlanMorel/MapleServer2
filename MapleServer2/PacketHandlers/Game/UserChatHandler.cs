@@ -5,8 +5,8 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Managers;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.USER_CHAT;
 
-        public UserChatHandler(ILogger<GamePacketHandler> logger) : base(logger) { }
+        public UserChatHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {
@@ -26,7 +26,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
             {
                 string[] args = message[1..].ToLower().Split(" ");
-                GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session));
+                if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
+                {
+                    session.SendNotice($"No command were found with alias: {args[0]}");
+                }
                 return;
             }
 

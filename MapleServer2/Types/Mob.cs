@@ -3,7 +3,7 @@ using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
-using MapleServer2.Tools;
+using MapleServer2.Managers;
 
 namespace MapleServer2.Types
 {

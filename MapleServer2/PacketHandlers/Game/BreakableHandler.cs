@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -10,7 +9,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.BREAKABLE;
 
-        public BreakableHandler(ILogger<BreakableHandler> logger) : base(logger) { }
+        public BreakableHandler() : base() { }
 
         public override void Handle(GameSession session, PacketReader packet)
         {

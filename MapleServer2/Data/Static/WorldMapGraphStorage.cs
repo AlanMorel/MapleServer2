@@ -3,11 +3,11 @@ using DijkstraAlgorithm.Pathing;
 
 namespace MapleServer2.Data.Static
 {
-    public class WorldMapGraphStorage
+    public static class WorldMapGraphStorage
     {
-        public static readonly Graph WorldMapGraph;
+        private static Graph WorldMapGraph { get; set; }
 
-        static WorldMapGraphStorage()
+        public static void Init()
         {
             GraphBuilder builder = new GraphBuilder();
 

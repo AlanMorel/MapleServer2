@@ -2,11 +2,11 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.QUEST;
 
-        public QuestHandler(ILogger<QuestHandler> logger) : base(logger) { }
+        public QuestHandler() : base() { }
 
         private enum QuestMode : byte
         {
@@ -61,6 +61,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             questStatus.Started = true;
             questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.AcceptQuest(questId));
         }
 
@@ -94,6 +95,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.CompleteQuest(questId, true));
 
             // Add next quest
@@ -128,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-
+            DatabaseManager.Quests.Update(questStatus);
             session.Send(QuestPacket.CompleteQuest(questId, false));
         }
 
@@ -146,11 +148,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
 
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                QuestStatus questStatus = new QuestStatus(session.Player, metadata)
-                {
-                    Started = true,
-                    StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds()
-                };
+                QuestStatus questStatus = new QuestStatus(session.Player, metadata, true, DateTimeOffset.Now.ToUnixTimeSeconds());
                 list.Add(questStatus);
                 session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
             }

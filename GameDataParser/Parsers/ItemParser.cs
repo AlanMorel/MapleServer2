@@ -6,6 +6,7 @@ using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 
 namespace GameDataParser.Parsers
 {
@@ -294,7 +295,7 @@ namespace GameDataParser.Parsers
 
                 // Badge slot
                 XmlNode gem = item.SelectSingleNode("gem");
-                bool gemResult = Enum.TryParse<GemSlot>(gem.Attributes["system"].Value, out metadata.Gem);
+                bool gemResult = Enum.TryParse(gem.Attributes["system"].Value, out metadata.Gem);
                 if (!gemResult && !string.IsNullOrEmpty(gem.Attributes["system"].Value))
                 {
                     Console.WriteLine($"Failed to parse badge slot for {itemId}: {gem.Attributes["system"].Value}");
@@ -309,6 +310,10 @@ namespace GameDataParser.Parsers
                     bool skin = byte.Parse(property.Attributes["skin"].Value) != 0;
                     metadata.Tab = GetTab(type, subType, skin);
                     metadata.IsTemplate = byte.Parse(property.Attributes["skinType"]?.Value ?? "0") == 99;
+                    metadata.TradeableCount = byte.Parse(property.Attributes["tradableCount"].Value);
+                    metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
+                    metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
+
 
                     // sales price
                     XmlNode sell = property.SelectSingleNode("sell");
@@ -454,18 +459,17 @@ namespace GameDataParser.Parsers
                     }
                     metadata.AdBalloonData = balloon;
                 }
-                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty")
+                else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty"
+                    || contentType == "ItemRePackingScroll")
                 {
                     metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
                 }
 
                 // Music score charges
                 XmlNode musicScore = item.SelectSingleNode("MusicScore");
-                int playCount = int.Parse(musicScore.Attributes["playCount"].Value);
-                metadata.PlayCount = playCount;
-                string fileName = musicScore.Attributes["fileName"].Value;
+                metadata.PlayCount = int.Parse(musicScore.Attributes["playCount"].Value);
+                metadata.FileName = musicScore.Attributes["fileName"].Value;
                 metadata.IsCustomScore = bool.Parse(musicScore.Attributes["isCustomNote"].Value);
-                metadata.FileName = fileName;
 
                 // Shop ID from currency items
                 if (item["Shop"] != null)
@@ -475,15 +479,13 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlNode skill = item.SelectSingleNode("skill");
-                int skillID = int.Parse(skill.Attributes["skillID"].Value);
-                metadata.SkillID = skillID;
+                metadata.SkillID = int.Parse(skill.Attributes["skillID"].Value);
 
                 XmlNode limit = item.SelectSingleNode("limit");
-                bool enableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
-                metadata.EnableBreak = enableBreak;
-
-                int level = int.Parse(limit.Attributes["levelLimit"].Value);
-                metadata.Level = level;
+                metadata.EnableBreak = byte.Parse(limit.Attributes["enableBreak"].Value) == 1;
+                metadata.Level = int.Parse(limit.Attributes["levelLimit"].Value);
+                metadata.TransferType = (TransferType) byte.Parse(limit.Attributes["transferType"].Value);
+                metadata.Sellable = byte.Parse(limit.Attributes["shopSell"].Value) == 1;
 
                 if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
                 {
@@ -497,8 +499,7 @@ namespace GameDataParser.Parsers
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 XmlNode installNode = item.SelectSingleNode("install");
-                bool isCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
-                metadata.IsCubeSolid = isCubeSolid;
+                metadata.IsCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
 
                 XmlNode housingNode = item.SelectSingleNode("housing");
                 string value = housingNode.Attributes["categoryTag"].Value;

@@ -1,4 +1,5 @@
-﻿using MapleServer2.Packets;
+﻿using Maple2Storage.Tools;
+using MapleServer2.Packets;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -9,22 +10,28 @@ namespace MapleServer2.Triggers
         {
             Field.State.TriggerActors[actorId].IsVisible = isVisible;
             Field.State.TriggerActors[actorId].StateName = stateName;
-            Field.BroadcastPacket(TriggerPacket.SetActorTrigger(actorId, isVisible, stateName));
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerActors[actorId]));
         }
 
         public void SetAgent(int[] arg1, bool arg2)
         {
         }
 
-        public void SetCube(int[] ids, bool isVisible, byte randomCount)
+        public void SetCube(int[] triggerIds, bool isVisible, byte randomCount)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                Field.State.TriggerCubes[triggerId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerCubes[triggerId]));
+            }
         }
 
         public void SetEffect(int[] triggerIds, bool isVisible, int arg3, byte arg4)
         {
             foreach (int triggerId in triggerIds)
             {
-                Field.BroadcastPacket(TriggerPacket.SetEffectTrigger(triggerId, isVisible));
+                Field.State.TriggerEffects[triggerId].IsVisible = isVisible;
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerEffects[triggerId]));
             }
         }
 
@@ -38,9 +45,12 @@ namespace MapleServer2.Triggers
             }
         }
 
-        public void SetLadder(int ladderId, bool arg2, bool arg3, byte arg4)
+        public void SetLadder(int ladderId, bool isVisible, bool animationEffect, byte animationDelay)
         {
-            //Field.BroadcastPacket(TriggerPacket.SetLadderTrigger(arg1, arg2, arg3))
+            Field.State.TriggerLadders[ladderId].IsVisible = isVisible;
+            Field.State.TriggerLadders[ladderId].AnimationEffect = animationEffect;
+            Field.State.TriggerLadders[ladderId].AnimationDelay = animationDelay;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ladderId]));
         }
 
         public void SetMesh(int[] meshIds, bool isVisible, int arg3, int arg4, float arg5)
@@ -48,7 +58,7 @@ namespace MapleServer2.Triggers
             foreach (int triggerMeshId in meshIds)
             {
                 Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.SetMeshTrigger(triggerMeshId, isVisible, arg5));
+                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
             }
         }
 
@@ -76,20 +86,37 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
         }
 
-        public void SetRandomMesh(int[] arg1, bool arg2, byte arg3, int arg4, int arg5)
+        public void SetRandomMesh(int[] meshIds, bool isVisible, byte meshCount, int arg4, int delayTime)
         {
+            Random random = RandomProvider.Get();
+            int[] pickedMeshIds = meshIds.OrderBy(x => random.Next()).Take(meshCount).ToArray();
+            Task.Run(async () =>
+            {
+                foreach (int triggerMeshId in pickedMeshIds)
+                {
+                    Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+                    await Task.Delay(delayTime);
+                }
+            });
         }
 
-        public void SetRope(int arg1, bool arg2, bool arg3, byte arg4)
+        public void SetRope(int ropeId, bool isVisible, bool animationEffect, byte animationDelay)
         {
+            Field.State.TriggerRopes[ropeId].IsVisible = isVisible;
+            Field.State.TriggerRopes[ropeId].AnimationEffect = animationEffect;
+            Field.State.TriggerRopes[ropeId].AnimationDelay = animationDelay;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ropeId]));
         }
 
         public void SetSkill(int[] arg1, bool arg2)
         {
         }
 
-        public void SetSound(int arg1, bool arg2)
+        public void SetSound(int soundId, bool isEnabled)
         {
+            Field.State.TriggerSounds[soundId].IsEnabled = isEnabled;
+            Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerSounds[soundId]));
         }
 
         public void SetVisibleBreakableObject(int[] arg1, bool arg2)

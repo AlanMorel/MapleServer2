@@ -4,14 +4,13 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
     public class MatchPartyHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.MATCH_PARTY;
-        public MatchPartyHandler(ILogger<MatchPartyHandler> logger) : base(logger) { }
+        public MatchPartyHandler() : base() { }
 
         private enum MatchPartyMode : byte
         {

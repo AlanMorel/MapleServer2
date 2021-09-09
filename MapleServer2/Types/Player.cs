@@ -18,18 +18,18 @@ namespace MapleServer2.Types
 
         public Account Account;
         // Constant Values
-        public long AccountId { get; private set; }
+        public long AccountId { get; set; }
         public long CharacterId { get; set; }
-        public long CreationTime { get; private set; }
+        public long CreationTime { get; set; }
         public bool IsDeleted;
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
         // Gender - 0 = male, 1 = female
-        public byte Gender { get; private set; }
+        public byte Gender { get; set; }
 
         // Job Group, according to jobgroupname.xml
-        public bool Awakened { get; private set; }
-        public Job Job { get; private set; }
+        public bool Awakened { get; set; }
+        public Job Job { get; set; }
         public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
 
         // Mutable Values
@@ -48,7 +48,6 @@ namespace MapleServer2.Types
         public IFieldObject<GuideObject> Guide;
         public IFieldObject<Instrument> Instrument;
 
-        public long VIPExpiration { get; set; }
         public int SuperChat;
         public int ShopId; // current shop player is interacting
 
@@ -56,9 +55,6 @@ namespace MapleServer2.Types
         public int[] TrophyCount;
 
         public Dictionary<int, Trophy> TrophyData = new Dictionary<int, Trophy>();
-
-        // DB ONLY
-        public List<Trophy> Trophies;
 
         public List<ChatSticker> ChatSticker;
         public List<int> FavoriteStickers;
@@ -92,15 +88,14 @@ namespace MapleServer2.Types
         public List<SkillTab> SkillTabs;
         public StatDistribution StatPointDistribution;
 
-        public GameOptions GameOptions { get; private set; }
+        public GameOptions GameOptions { get; set; }
 
         public Inventory Inventory;
-        public BankInventory BankInventory;
         public DismantleInventory DismantleInventory = new DismantleInventory();
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
 
-        public Mailbox Mailbox;
+        public Mailbox Mailbox = new();
 
         public List<Buddy> BuddyList;
 
@@ -110,6 +105,8 @@ namespace MapleServer2.Types
 
         public int[] GroupChatId;
 
+        public long GuildId;
+        public long GuildMemberId;
         public Guild Guild;
         public GuildMember GuildMember;
         public List<GuildApplication> GuildApplications = new List<GuildApplication>();
@@ -134,7 +131,7 @@ namespace MapleServer2.Types
         public List<string> GmFlags = new List<string>();
         public int DungeonSessionId = -1;
 
-        public List<Widget> Widgets = new List<Widget>();
+        public List<PlayerTrigger> Triggers = new List<PlayerTrigger>();
 
         private class TimeInfo
         {
@@ -153,16 +150,16 @@ namespace MapleServer2.Types
         public Player() { }
 
         // Initializes all values to be saved into the database
-        public Player(long accountId, string name, byte gender, Job job, SkinColor skinColor)
+        public Player(Account account, string name, byte gender, Job job, SkinColor skinColor)
         {
-            AccountId = accountId;
+            AccountId = account.Id;
+            Account = account;
             Name = name;
             Gender = gender;
             Job = job;
             GameOptions = new GameOptions();
-            GameOptions.Initialize();
-            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, mesoToken: 0, bank: 0);
-            Levels = new Levels(this, playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
+            Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0);
+            Levels = new Levels(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
             {
                 new MasteryExp(MasteryType.Fishing),
                 new MasteryExp(MasteryType.Performance),
@@ -192,24 +189,28 @@ namespace MapleServer2.Types
             Emotes = new List<int>() { 90200011, 90200004, 90200024, 90200041, 90200042, 90200057, 90200043, 90200022, 90200031, 90200005, 90200006, 90200003, 90200092, 90200077, 90200073, 90200023, 90200001, 90200019, 90200020, 90200021 };
             StatPointDistribution = new StatDistribution(20);
             Inventory = new Inventory();
-            BankInventory = new BankInventory();
             Mailbox = new Mailbox();
             BuddyList = new List<Buddy>();
             QuestList = new List<QuestStatus>();
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
-            ReturnCoord = CoordF.From(-675, 525, 600);
+            ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
             GroupChatId = new int[3];
             SkinColor = skinColor;
             UnlockedTaxis = new List<int>();
             UnlockedMaps = new List<int>();
-            CharacterId = DatabaseManager.CreateCharacter(this);
-            SkillTabs = new List<SkillTab> { new SkillTab(this, job) };
-            ActiveSkillTabId = SkillTabs[0].TabId;
+            ActiveSkillTabId = 1;
+            CharacterId = DatabaseManager.Characters.Insert(this);
+            SkillTabs = new List<SkillTab> { new SkillTab(CharacterId, job, 1, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}") };
         }
 
         public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
         {
+            if (MapEntityStorage.HasSafePortal(MapId))
+            {
+                ReturnCoord = Coord;
+                ReturnMapId = MapId;
+            }
             Coord = coord;
             Rotation = rotation;
             SafeBlock = coord;
@@ -240,7 +241,7 @@ namespace MapleServer2.Types
                 UnlockedMaps.Add(MapId);
             }
 
-            DatabaseManager.UpdateCharacter(this);
+            DatabaseManager.Characters.Update(this);
             Session.Send(FieldPacket.RequestEnter(this));
         }
 
@@ -269,11 +270,11 @@ namespace MapleServer2.Types
             return gearItem;
         }
 
-        public SkillCast Cast(int skillId, short skillLevel, long skillSN, int unkValue)
+        public void Cast(SkillCast skillCast)
         {
-            SkillCast skillCast = new SkillCast(skillId, skillLevel, skillSN, unkValue);
             int spiritCost = skillCast.GetSpCost();
             int staminaCost = skillCast.GetStaCost();
+
             if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
             {
                 ConsumeSp(spiritCost);
@@ -283,7 +284,7 @@ namespace MapleServer2.Types
 
                 // TODO: Move this and all others combat cases like recover sp to its own class.
                 // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield())
+                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
                 {
                     Status status = new Status(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
                     StatusHandler.Handle(Session, status);
@@ -296,15 +297,13 @@ namespace MapleServer2.Types
                 }
                 CombatCTS = new CancellationTokenSource();
                 CombatCTS.Token.Register(() => CombatCTS.Dispose());
-                StartCombatEnd(CombatCTS);
-
-                return skillCast;
+                StartCombatStance(CombatCTS);
             }
-            return null;
         }
 
-        private Task StartCombatEnd(CancellationTokenSource ct)
+        private Task StartCombatStance(CancellationTokenSource ct)
         {
+            Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, true));
             return Task.Run(async () =>
             {
                 await Task.Delay(5000);
@@ -313,7 +312,7 @@ namespace MapleServer2.Types
                 {
                     CombatCTS = null;
                     ct.Dispose();
-                    Session.Send(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
+                    Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
                 }
             }, ct.Token);
         }
@@ -447,7 +446,7 @@ namespace MapleServer2.Types
 
                         // TODO: Check if regen-enabled
                         Stats[statId] = AddStatRegen(statId, regenStatId);
-                        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, statId));
+                        Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(Session.FieldPlayer, statId));
                         if (Party != null)
                         {
                             Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
@@ -480,20 +479,16 @@ namespace MapleServer2.Types
             }
         }
 
-        public bool IsVip()
-        {
-            return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        }
-
         public void TrophyUpdate(int trophyId, long addAmount, int sendUpdateInterval = 1)
         {
             if (!TrophyData.ContainsKey(trophyId))
             {
-                TrophyData[trophyId] = new Trophy(this, trophyId);
+                TrophyData[trophyId] = new Trophy(CharacterId, AccountId, trophyId);
             }
             TrophyData[trophyId].AddCounter(Session, addAmount);
             if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
             {
+                DatabaseManager.Trophies.Update(TrophyData[trophyId]);
                 Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
             }
         }
@@ -510,6 +505,12 @@ namespace MapleServer2.Types
                     TrophyUpdate(23100001, 1);
                 }
             });
+        }
+
+        public void AddStatPoint(int amount, OtherStatsIndex index)
+        {
+            StatPointDistribution.AddTotalStatPoints(amount, index);
+            Session.Send(StatPointPacket.WriteTotalStatPoints(this));
         }
     }
 }

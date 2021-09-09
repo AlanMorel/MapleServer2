@@ -3,9 +3,8 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
+using MapleServer2.Managers;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -13,15 +12,15 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_RIDE;
 
-        public RideHandler(ILogger<RideHandler> logger) : base(logger) { }
+        public RideHandler() : base() { }
 
         private enum RideMode : byte
         {
             StartRide = 0x0,
             StopRide = 0x1,
             ChangeRide = 0x2,
-            StartTwoPersonRide = 0x3,
-            StopTwoPersonRide = 0x4,
+            StartMultiPersonRide = 0x3,
+            StopMultiPersonRide = 0x4,
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -39,11 +38,11 @@ namespace MapleServer2.PacketHandlers.Game
                 case RideMode.ChangeRide:
                     HandleChangeRide(session, packet);
                     break;
-                case RideMode.StartTwoPersonRide:
-                    HandleStartTwoPersonRide(session, packet);
+                case RideMode.StartMultiPersonRide:
+                    HandleStartMultiPersonRide(session, packet);
                     break;
-                case RideMode.StopTwoPersonRide:
-                    HandleStopTwoPersonRide(session);
+                case RideMode.StopMultiPersonRide:
+                    HandleStopMultiPersonRide(session);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -71,7 +70,8 @@ namespace MapleServer2.PacketHandlers.Game
                     Id = mountId,
                     Uid = mountUid,
                 });
-            fieldMount.Value.Players.Add(session.FieldPlayer);
+
+            fieldMount.Value.Players[0] = session.FieldPlayer;
             session.Player.Mount = fieldMount;
 
             Packet startPacket = MountPacket.StartRide(session.FieldPlayer);
@@ -102,7 +102,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.BroadcastPacket(changePacket);
         }
 
-        private static void HandleStartTwoPersonRide(GameSession session, PacketReader packet)
+        private static void HandleStartMultiPersonRide(GameSession session, PacketReader packet)
         {
             int otherPlayerObjectId = packet.ReadInt();
 
@@ -122,14 +122,15 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            otherPlayer.Value.Mount.Value.Players.Add(session.FieldPlayer);
+            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x == null);
+            otherPlayer.Value.Mount.Value.Players[index] = session.FieldPlayer;
             session.Player.Mount = otherPlayer.Value.Mount;
-            session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.FieldPlayer.ObjectId));
+            session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.FieldPlayer.ObjectId, (byte) (index - 1)));
         }
 
-        private static void HandleStopTwoPersonRide(GameSession session)
+        private static void HandleStopMultiPersonRide(GameSession session)
         {
-            IFieldObject<Player> otherPlayer = session.Player.Mount.Value.Players.FirstOrDefault(x => x.ObjectId != session.FieldPlayer.ObjectId);
+            IFieldObject<Player> otherPlayer = session.Player.Mount.Value.Players[0];
             if (otherPlayer == null)
             {
                 return;
@@ -140,7 +141,8 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.Mount = null;
             if (otherPlayer.Value.Mount != null)
             {
-                otherPlayer.Value.Mount.Value.Players.Remove(session.FieldPlayer);
+                int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.FieldPlayer.ObjectId);
+                otherPlayer.Value.Mount.Value.Players[index] = null;
             }
         }
     }

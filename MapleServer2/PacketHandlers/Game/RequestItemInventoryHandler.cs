@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using Microsoft.Extensions.Logging;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -12,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game
     {
         public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
-        public RequestItemInventoryHandler(ILogger<RequestItemInventoryHandler> logger) : base(logger) { }
+        public RequestItemInventoryHandler() : base() { }
 
         private enum RequestItemInventoryMode : byte
         {
