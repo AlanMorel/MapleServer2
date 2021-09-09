@@ -164,7 +164,6 @@ namespace MapleServer2
 
         private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            SaveAll(sender, args);
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
         }
