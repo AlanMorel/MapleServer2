@@ -15,7 +15,6 @@ namespace MapleServer2.Database
 
         private static readonly string Server = Environment.GetEnvironmentVariable("DB_IP");
         private static readonly string Port = Environment.GetEnvironmentVariable("DB_PORT");
-        private static readonly string Database = Environment.GetEnvironmentVariable("DB_NAME");
         private static readonly string User = Environment.GetEnvironmentVariable("DB_USER");
         private static readonly string Password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
@@ -48,7 +47,7 @@ namespace MapleServer2.Database
 
         static DatabaseManager()
         {
-            ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE={Database};";
+            ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE=Maple2DB;";
         }
 
         public static bool DatabaseExists()
