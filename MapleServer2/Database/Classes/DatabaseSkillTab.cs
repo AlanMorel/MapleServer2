@@ -25,7 +25,7 @@ namespace MapleServer2.Database.Classes
             List<SkillTab> skillTabs = new List<SkillTab>();
             foreach (dynamic item in skillTabsResult)
             {
-                skillTabs.Add(new SkillTab(item.Name, jobId, item.TabId, item.Uid, JsonConvert.DeserializeObject<Dictionary<int, int>>(item.SkillLevels)));
+                skillTabs.Add(new SkillTab(item.Name, jobId, item.TabId, item.Uid, JsonConvert.DeserializeObject<Dictionary<int, short>>(item.SkillLevels)));
             }
             return skillTabs;
         }

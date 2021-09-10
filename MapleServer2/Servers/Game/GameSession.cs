@@ -26,9 +26,9 @@ namespace MapleServer2.Servers.Game
             FieldManagerFactory = fieldManagerFactory;
         }
 
-        public void SendNotice(string message)
+        public void SendNotice(object message)
         {
-            Send(ChatPacket.Send(Player, message, ChatType.NoticeAlert));
+            Send(ChatPacket.Send(Player, message.ToString(), ChatType.NoticeAlert));
         }
 
         // Called first time when starting a new session
