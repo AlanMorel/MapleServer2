@@ -149,13 +149,14 @@ namespace MapleServer2.Commands.Game
         public override void Execute(GameCommandTrigger trigger)
         {
             int id = trigger.Get<int>("id");
-            if (id == 0)
+            short level = trigger.Get<short>("level") > 0 ? trigger.Get<short>("level") : (short) 1;
+            if (SkillMetadataStorage.GetSkill(id) == null)
             {
                 trigger.Session.SendNotice($"Skill with id: {id} is not defined.");
                 return;
             }
 
-            SkillCast skillCast = new SkillCast(trigger.Get<int>("id"), 1, GuidGenerator.Long(), 1);
+            SkillCast skillCast = new SkillCast(id, level, GuidGenerator.Long(), trigger.Session.ServerTick);
             CoordF empty = CoordF.From(0, 0, 0);
             IFieldObject<Player> player = trigger.Session.FieldPlayer;
 
