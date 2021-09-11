@@ -27,13 +27,13 @@ namespace MapleServer2.Commands.Core
             return stringBuilder.ToString();
         }
 
-        internal static string Bold(string message) => "<b>" + message + " </b>";
+        internal static string Bold(string message) => "<b>" + message + "</b>";
 
-        internal static string Italic(string message) => "<i>" + message + " </i>";
+        internal static string Italic(string message) => "<i>" + message + "</i>";
 
-        internal static string Underline(string message) => "<u>" + message + " </u>";
+        internal static string Underline(string message) => "<u>" + message + "</u>";
 
-        internal static string Color(string message, Color color) => "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + message + " </font>";
+        internal static string Color(string message, Color color) => "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + message + "</font>";
 
         internal static string Underline(object obj) => Underline(obj.ToString());
 

@@ -45,52 +45,21 @@ namespace MapleServer2.Packets
 
             // Ordered list of skill ids (must be sent in this order)
             List<int> ids = skillTab.Order;
-
             byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(player.Job));
             int countId = ids[ids.Count - split]; // Split to last skill id
-
-            if (player.Job == Job.GameMaster)
-            {
-                pWriter.WriteByte((byte) ids.Count);
-            }
-            else
-            {
-                pWriter.WriteByte((byte) (ids.Count - split)); // Skill count minus split
-            }
+            pWriter.WriteByte((byte) (ids.Count - split)); // Skill count minus split
 
             // List of Skills to display on the client
             foreach (int id in ids)
             {
                 if (id == countId)
                 {
-                    if (player.Job == Job.GameMaster)
-                    {
-                        pWriter.WriteByte(11);
-                    }
-                    else
-                    {
-                        pWriter.WriteByte(split); // Write that there are (split) skills left
-                    }
-                    
+                    pWriter.WriteByte(split); // Write that there are (split) skills left
                 }
                 pWriter.WriteByte();
-                try
-                {
-                    pWriter.WriteBool(skills[id] > 0);  // Is it learned?
-                }
-                catch {
-                    pWriter.WriteBool(false);
-                }
+                pWriter.WriteBool(skills[id] > 0);  // Is it learned?
                 pWriter.WriteInt(id);               // Skill to display
-                try
-                {
-                    pWriter.WriteInt(Math.Clamp(skills[id], skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault(), int.MaxValue));    // Level to display
-                }
-                catch
-                {
-                    pWriter.WriteInt(1);
-                }
-
+                pWriter.WriteInt(Math.Clamp(skills[id], skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault(), int.MaxValue));    // Level to display
                 pWriter.WriteByte();
             }
             pWriter.WriteShort(); // Ends with zero short
@@ -125,17 +94,56 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
             pWriter.WriteInt(character.ObjectId);
-            if (character.Value.Job != Job.GameMaster)
-            {
-                pWriter.WriteByte(2); //2 = second job?
-                pWriter.WriteEnum(character.Value.JobCode);
-            }
-
+            pWriter.WriteByte(2); //2 = second job? // might be a header for awakened = true
+            pWriter.WriteEnum(character.Value.JobCode);
             pWriter.WriteByte(1); //1 = first job?
             pWriter.WriteEnum(character.Value.Job);
             pWriter.WriteSkills(character.Value);
 
             return pWriter;
         }
+
+        //public static Packet SendJobTest(IFieldObject<Player> character)
+        //{
+        //    PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+        //    pWriter.WriteInt(character.ObjectId);
+        //    pWriter.WriteByte(2); //2 = second job?
+        //    pWriter.WriteInt(999);
+        //    pWriter.WriteByte(1); //1 = first job?
+        //    pWriter.WriteInt(999);
+        //    pWriter.WriteSkillsTest(character.Value);
+
+        //    return pWriter;
+        //}
+
+        //public static Packet WriteSkillsTest(this PacketWriter pWriter, Player player)
+        //{
+        //    SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
+        //    Dictionary<int, SkillMetadata> skillData = skillTab.SkillJob;
+        //    Dictionary<int, int> skills = skillTab.SkillLevels;
+
+        //    // Ordered list of skill ids (must be sent in this order)
+        //    List<int> ids = skillTab.Order;
+        //    byte split = (byte) Enum.Parse<JobSkillSplit>(Enum.GetName(player.Job));
+        //    int countId = ids[ids.Count - split]; // Split to last skill id
+        //    pWriter.WriteByte((byte) (ids.Count - split)); // Skill count minus split
+
+        //    // List of Skills to display on the client
+        //    foreach (int id in ids)
+        //    {
+        //        if (id == countId)
+        //        {
+        //            pWriter.WriteByte(split); // Write that there are (split) skills left
+        //        }
+        //        pWriter.WriteByte();
+        //        pWriter.WriteBool(skills[id] > 0);  // Is it learned?
+        //        pWriter.WriteInt(id);               // Skill to display
+        //        pWriter.WriteInt(Math.Clamp(skills[id], skillData[id].SkillLevels.Select(x => x.Level).FirstOrDefault(), int.MaxValue));    // Level to display
+        //        pWriter.WriteByte();
+        //    }
+        //    pWriter.WriteShort(); // Ends with zero short
+
+        //    return pWriter;
+        //}
     }
 }

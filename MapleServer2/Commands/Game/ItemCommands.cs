@@ -9,7 +9,7 @@ namespace MapleServer2.Commands.Game
     {
         public ItemCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "item"
             };

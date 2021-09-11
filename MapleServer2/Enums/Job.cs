@@ -61,7 +61,7 @@
         Runeblade = Assassin,
         Striker = 12,
         SoulBinder = 16,
-        GameMaster = 11,
+        GameMaster = 1,
         Beginner = 1,
     }
 }

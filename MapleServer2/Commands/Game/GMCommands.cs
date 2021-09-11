@@ -1,6 +1,8 @@
-﻿using MapleServer2.Commands.Core;
+﻿using System.Drawing;
+using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
 using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game
@@ -9,7 +11,7 @@ namespace MapleServer2.Commands.Game
     {
         public OneShotCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "oneshot"
             };
@@ -33,55 +35,58 @@ namespace MapleServer2.Commands.Game
     {
         public SetJobCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setJob",
                 "sj"
             };
-            Description = "Sets job";
+            Description = "Sets character's job, e.g. /setJob assassin 1";
             AddParameter<string>("job", "Classname, e.g.: striker");
             AddParameter<byte>("awakened", "Awakened = 1, Unawakened = 0");
         }
 
         public override void Execute(GameCommandTrigger trigger)
         {
-            Player player = trigger.Session.Player;
+
             string jobName = trigger.Get<string>("job");
+            byte awakened = trigger.Get<byte>("awakened");
 
-            player.Awakened = trigger.Get<byte>("awakened") == 1;
-
+            Player player = trigger.Session.Player;
             IFieldObject<Player> fieldPlayer = trigger.Session.FieldPlayer;
+
             long activeSkillTabId = player.ActiveSkillTabId;
             SkillTab skillTab = player.SkillTabs.First(tab => tab.TabId == activeSkillTabId);
 
-            Job jobValue = Job.None;
-            if (Enum.TryParse(jobName, out jobValue))
+            Job job = Job.None;
+
+
+            if (!Enum.TryParse(jobName, true, out job))
             {
-                if (Enum.IsDefined(typeof(Job), jobValue) | jobValue.ToString().Contains(","))
-                {
-                    Console.WriteLine("Converted {0} to {1}", jobName, jobValue.ToString());
-
-                    //if (jobName.ToLower().Contains("gamemaster"))
-                    //{
-                    //    jobCode = JobCode.GameMaster;
-                    //}
-                }
-                else 
-                { }
-                    Console.WriteLine("{0} is not an underlying value of the Job enumeration.", jobName);
+                player.Session.SendNotice($"{jobName} is not a valid class name");
+                return;
             }
-            else
-                Console.WriteLine("{0} is not a member of the Job enumeration", jobName);
 
-            if (jobValue != Job.None)
+            if (Job.None == job)
+            {
+                string[] classes = Enum.GetNames(typeof(Job));
+
+                player.Session.Send(NoticePacket.Notice($"{CommandHelpers.Color(CommandHelpers.Bold("You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n"), Color.DarkOrange)}" +
+                    $"{CommandHelpers.Color(string.Join(", ", classes), Color.Aquamarine)}", NoticeType.Chat));
+
+                return;
+            }
+
+            JobCode jobCode = (JobCode) ((int) job * 10 + awakened);
+            player.JobCode = jobCode;
+
+            if (job != Job.None && job != player.Job)
             {
                 DatabaseManager.SkillTabs.Delete(skillTab.Uid);
-                SkillTab newSkillTab = new SkillTab(player.CharacterId, jobValue, skillTab.TabId, skillTab.Name);
-                
-                player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
-                player.Job = jobValue;
-            }
+                SkillTab newSkillTab = new SkillTab(player.CharacterId, job, skillTab.TabId, skillTab.Name);
 
+                player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
+                player.Job = job;
+            }
             trigger.Session.Send(Packets.JobPacket.SendJob(fieldPlayer));
         }
 

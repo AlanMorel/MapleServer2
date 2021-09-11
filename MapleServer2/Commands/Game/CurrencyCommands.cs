@@ -10,7 +10,7 @@ namespace MapleServer2.Commands.Game
     {
         public CurrencyCommands()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "currency"
             };

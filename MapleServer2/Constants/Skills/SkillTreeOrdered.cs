@@ -107,18 +107,9 @@ namespace MapleServer2.Constants.Skills
         };
         private static readonly List<int> GameMaster = new List<int>
         {
-            19900001,
-            19900011,
-            19900021,
-            19900031,
-            19900032,
-            19900041,
-            19900042,
-            19900051,
-            19900052,
-            19900061,
-            19999991,
-       };
+            19900001,19900011,19900021,19900031,19900032,19900041,19900042,19900051,19900052,19900061,
+            19999991
+        };
         private static readonly List<int> Beginner = new List<int>
         {
             10000001,

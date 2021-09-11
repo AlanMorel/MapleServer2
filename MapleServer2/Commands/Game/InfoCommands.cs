@@ -13,7 +13,7 @@ namespace MapleServer2.Commands.Game
     {
         public InfoCommands()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "commands"
             };
@@ -29,13 +29,22 @@ namespace MapleServer2.Commands.Game
             {
                 foreach (string alias in command.Aliases)
                 {
-                    stringBuilder.Append(CommandHelpers.Color(CommandHelpers.Bold(alias), Color.DarkOrange));
+                    stringBuilder.Append(CommandHelpers.Color(CommandHelpers.Bold(alias), Color.DarkOrange) + " ");
                 }
 
                 stringBuilder.Append($"{CommandHelpers.Color(command.Description, Color.Wheat)}\n");
+                //if (command != commandList.Last())
+                //{
+                //    stringBuilder.Append('\n');
+                //}
                 foreach (IParameter param in command.Parameters)
                 {
-                    stringBuilder.Append($" - {CommandHelpers.Color(param.Name, Color.Aquamarine)} {CommandHelpers.Color(param.Description, Color.Wheat)}\n");
+
+                    stringBuilder.Append($"    -{CommandHelpers.Color(param.Name, Color.Aquamarine)} {CommandHelpers.Color(param.Description, Color.Wheat)}");
+                    if (command.Parameters.IndexOf(param) != command.Parameters.Count - 1 || command != commandList.Last())
+                    {
+                        stringBuilder.Append('\n');
+                    }
                 }
             }
             trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
@@ -46,7 +55,7 @@ namespace MapleServer2.Commands.Game
     {
         public SendNoticeCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "notice"
             };
@@ -73,7 +82,7 @@ namespace MapleServer2.Commands.Game
     {
         public OnlineCommand()
         {
-            Aliases = new[] { "online" };
+            Aliases = new() { "online" };
             Description = "See all online players.";
         }
 

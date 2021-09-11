@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
+using MapleServer2.Constants.Skills;
 using MapleServer2.Enums;
 using ProtoBuf;
 
@@ -29,20 +30,7 @@ namespace MapleServer2.Data.Static
         {
 
             List<SkillMetadata> jobSkill = new List<SkillMetadata>();
-            List<int> gmSkills = new List<int>
-            {
-            19900001,
-            19900011,
-            19900021,
-            19900031,
-            19900032,
-            19900041,
-            19900042,
-            19900051,
-            19900052,
-            19900061,
-            19999991,
-            };
+            List<int> gmSkills = SkillTreeOrdered.GetListOrdered(Job.GameMaster);
 
             if (Job.GameMaster == job)
             {
