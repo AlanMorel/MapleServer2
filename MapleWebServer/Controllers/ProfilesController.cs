@@ -32,7 +32,7 @@ namespace MapleWebServer.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Post()
+        public async Task<IActionResult> PostAsync()
         {
             Stream bodyStream = Request.Body;
             if (bodyStream == null)
@@ -40,8 +40,7 @@ namespace MapleWebServer.Controllers
                 return BadRequest();
             }
 
-            MemoryStream memoryStream = new MemoryStream();
-            CopyStream(bodyStream, memoryStream);
+            MemoryStream memoryStream = await CopyStream(bodyStream);
             byte[] array = memoryStream.ToArray();
             long accountId = (long) BitConverter.ToUInt64(array.Skip(8).Take(8).ToArray(), 0);
             long characterId = (long) BitConverter.ToUInt64(array.Skip(16).Take(8).ToArray(), 0);
@@ -62,17 +61,19 @@ namespace MapleWebServer.Controllers
             return Ok($"0,data/profiles/avatar/{characterId}/{md5Hash}.png");
         }
 
-        public static async void CopyStream(Stream input, Stream output)
+        private static async Task<MemoryStream> CopyStream(Stream input)
         {
+            MemoryStream output = new MemoryStream();
             byte[] buffer = new byte[16 * 1024];
             int read;
             while ((read = await input.ReadAsync(buffer)) > 0)
             {
                 output.Write(buffer, 0, read);
             }
+            return output;
         }
 
-        public static string CreateMD5(string input)
+        private static string CreateMD5(string input)
         {
             // Use input string to calculate MD5 hash
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
