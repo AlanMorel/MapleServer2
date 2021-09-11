@@ -8,13 +8,13 @@ namespace MapleWebServer
         public static void Main(string[] args)
         {
             // Load .env file
-            string filePath = Path.Combine(Paths.SOLUTION_DIR, ".env");
+            string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
 
-            if (!File.Exists(filePath))
+            if (!File.Exists(dotenv))
             {
                 throw new ArgumentException(".env file not found!");
             }
-            DotEnv.Load(filePath);
+            DotEnv.Load(dotenv);
 
             CreateHostBuilder(args).Build().Run();
         }
