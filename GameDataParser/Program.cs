@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using GameDataParser.Files;
-using GameDataParser.Parsers;
+using Maple2Storage.Extensions;
+using Maple2Storage.Tools;
 
 namespace GameDataParser
 {
@@ -8,77 +10,47 @@ namespace GameDataParser
     {
         private static async Task Main()
         {
+            Spinner spinner = new Spinner();
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Create Resources folders if they don't exist
             Directory.CreateDirectory(Paths.INPUT);
             Directory.CreateDirectory(Paths.OUTPUT);
 
-            Spinner spinner = new Spinner();
-            spinner.Start();
+            object resources = Activator.CreateInstance(typeof(MetadataResources));
+            List<Task> tasks = new();
+            List<Type> callingTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
 
-            MetadataResources resources = new MetadataResources();
-
-            IEnumerable<MetadataExporter> exporters = new List<MetadataExporter>()
+            foreach (Type type in callingTypes)
             {
-                new AnimationParser(resources),
-                new DungeonParser(resources),
-                new ItemParser(resources),
-                new ItemOptionConstantParser(resources),
-                new ItemOptionStaticParser(resources),
-                new ItemOptionRandomParser(resources),
-                new ItemOptionRangeParser(resources),
-                new ItemSocketParser(resources),
-                new ItemGemstoneUpgradeParser(resources),
-                new MapEntityParser(resources),
-                new MapParser(resources),
-                new SkillParser(resources),
-                new InsigniaParser(resources),
-                new ExpParser(resources),
-                new QuestParser(resources),
-                new ScriptParser(resources),
-                new GuildContributionParser(resources),
-                new GuildBuffParser(resources),
-                new GuildPropertyParser(resources),
-                new GuildServiceParser(resources),
-                new GuildHouseParser(resources),
-                new PrestigeParser(resources),
-                new TrophyParser(resources),
-                new RecipeParser(resources),
-                new MasteryParser(resources),
-                new NpcParser(resources),
-                new ChatStickerParser(resources),
-                new ItemExchangeScrollParser(resources),
-                new MasteryFactorParser(resources),
-                new PremiumClubPackageParser(resources),
-                new PremiumClubDailyBenefitParser(resources),
-                new InstrumentInfoParser(resources),
-                new InstrumentCategoryInfoParser(resources),
-                new BeautyParser(),
-                new ColorPaletteParser(resources),
-                new GachaParser(resources),
-                new ItemExtractionParser(resources),
-                new FishParser(resources),
-                new FishingSpotParser(resources),
-                new FishingRodParser(resources),
-                new UGCMapParser(resources),
-                new FurnishingShopParser(resources),
-                new HomeTemplateParser(resources),
-                new MasteryUGCHousingParser(resources),
-                new JobParser(resources),
-                new RewardContentParser(resources),
-                new DefaultItemsParser(resources),
-                new ItemRepackageParser(resources)
-            };
+                // Initialize the constructor of the class.
+                ConstructorInfo ctor = type.GetConstructor(new Type[] { typeof(MetadataResources) });
 
-            IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));
+                // Initialize and get all params for the constructor.
+                object parser = ctor != null ? ctor.Invoke(ctor.GetParameters().Select(param => param.HasDefaultValue ? param.DefaultValue : param.ParameterType.IsValueType
+                    && Nullable.GetUnderlyingType(param.ParameterType) == null ? Activator.CreateInstance(param.ParameterType) : null).ToArray()) : Activator.CreateInstance(type);
+
+                // Initialize the instances of the type with the constructor and parameter.
+                MetadataExporter exporter = (MetadataExporter) (ctor != null ? Activator.CreateInstance(parser.GetType(), resources) : Activator.CreateInstance(parser.GetType()));
+
+                // Add the exporter in a task list for later be called in async.
+                tasks.Add(Task.Run(() => exporter.Export()));
+            }
+
+            int count = 0;
+            foreach (Task task in tasks)
+            {
+                task.Wait();
+                count++;
+                ConsoleUtility.WriteProgressBar((float) count / tasks.Count * 100f);
+            }
 
             await Task.WhenAll(tasks);
-
             spinner.Stop();
             TimeSpan runtime = spinner.GetRuntime();
 
-            Console.WriteLine($"\rExporting finished in {runtime.Minutes} minutes and {runtime.Seconds} seconds");
+            Console.WriteLine("\nExporting Data Successfully!".ColorGreen());
+            Console.WriteLine($"\nIt finished exporting in {runtime.Minutes} minutes and {runtime.Seconds} seconds");
         }
     }
 }
