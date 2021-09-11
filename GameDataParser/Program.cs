@@ -27,8 +27,27 @@ namespace GameDataParser
                 ConstructorInfo ctor = type.GetConstructor(new Type[] { typeof(MetadataResources) });
 
                 // Initialize and get all params for the constructor.
-                object parser = ctor != null ? ctor.Invoke(ctor.GetParameters().Select(param => param.HasDefaultValue ? param.DefaultValue : param.ParameterType.IsValueType
-                    && Nullable.GetUnderlyingType(param.ParameterType) == null ? Activator.CreateInstance(param.ParameterType) : null).ToArray()) : Activator.CreateInstance(type);
+                object parser = new object();
+                if (ctor != null)
+                {
+                    ParameterInfo[] paramsInfo = ctor.GetParameters();
+                    foreach (ParameterInfo param in paramsInfo)
+                    {
+                        Type paramType = Nullable.GetUnderlyingType(param.ParameterType);
+                        if (paramType == null && param.HasDefaultValue)
+                        {
+                            parser = param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null;
+                        }
+                        else
+                        {
+                            parser = Activator.CreateInstance(type, resources);
+                        }
+                    }
+                }
+                else
+                {
+                    parser = Activator.CreateInstance(type);
+                }
 
                 // Initialize the instances of the type with the constructor and parameter.
                 MetadataExporter exporter = (MetadataExporter) (ctor != null ? Activator.CreateInstance(parser.GetType(), resources) : Activator.CreateInstance(parser.GetType()));
