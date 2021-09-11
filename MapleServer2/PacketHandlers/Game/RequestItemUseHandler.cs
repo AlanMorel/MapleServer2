@@ -107,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (item.Function.Duration == 0) // if no duration was set, set it to not expire
             {
-                expiration = 9223372036854775807;
+                expiration = long.MaxValue;
             }
 
             if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.Id))
@@ -126,16 +126,32 @@ namespace MapleServer2.PacketHandlers.Game
             short boxType = packet.ReadShort();
             int index = packet.ReadShort() - 0x30;
 
-            if (item.Content.Count <= 0)
+
+            SelectItemBox box = item.Function.SelectItemBox;
+            ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+            if (metadata == null)
             {
+                session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
                 return;
             }
 
             InventoryController.Consume(session, item.Uid, 1);
 
-            if (index < item.Content.Count)
+            DropGroup dropGroup = metadata.DropGroups.FirstOrDefault(x => x.Id == box.GroupId);
+            DropGroupContent dropContents = dropGroup.Contents[index];
+
+            Random rng = RandomProvider.Get();
+            int amount = rng.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
+            foreach (int id in dropContents.ItemIds)
             {
-                ItemUseHelper.GiveItem(session, item.Content[index]);
+                Item newItem = new Item(id)
+                {
+                    Enchants = dropContents.EnchantLevel,
+                    Amount = amount,
+                    Rarity = dropContents.Rarity
+
+                };
+                InventoryController.Add(session, newItem, true);
             }
         }
 
@@ -143,8 +159,97 @@ namespace MapleServer2.PacketHandlers.Game
         {
             short boxType = packet.ReadShort();
 
-            InventoryController.Consume(session, item.Uid, 1);
-            ItemUseHelper.OpenBox(session, item.Content);
+            OpenItemBox box = item.Function.OpenItemBox;
+            ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+            if (metadata == null)
+            {
+                session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
+                return;
+            }
+
+            if (box.AmountRequired > item.Amount)
+            {
+                return;
+            }
+
+            if (box.RequiredItemId > 0)
+            {
+                Item requiredItem = session.Player.Inventory.Items[box.RequiredItemId];
+                if (requiredItem == null)
+                {
+                    return;
+                }
+
+                InventoryController.Consume(session, requiredItem.Uid, 1);
+            }
+
+            InventoryController.Consume(session, item.Uid, box.AmountRequired);
+
+            Random rng = RandomProvider.Get();
+
+            if (box.ReceiveOneItem) // Receive one item from each drop group
+            {
+                foreach (DropGroup group in metadata.DropGroups)
+                {
+                    //randomize the contents
+                    List<DropGroupContent> contentList = group.Contents.OrderBy(x => rng.Next()).ToList();
+                    foreach (DropGroupContent dropContent in contentList)
+                    {
+                        Item newItem = GetItemFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
+                        if (newItem != null)
+                        {
+                            InventoryController.Add(session, newItem, true);
+                            break;
+                        }
+                    }
+                }
+                return;
+            }
+
+            // receive all items from each drop group
+            foreach (DropGroup group in metadata.DropGroups)
+            {
+                foreach (DropGroupContent dropContent in group.Contents)
+                {
+                    Item newItem = GetItemFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
+                    if (newItem == null)
+                    {
+                        continue;
+                    }
+                    InventoryController.Add(session, newItem, true);
+                }
+            }
+        }
+
+        private static Item GetItemFromDropGroup(DropGroupContent dropContent, byte playerGender, Job job)
+        {
+            Random rng = RandomProvider.Get();
+            int amount = rng.Next((int) dropContent.MinAmount, (int) dropContent.MaxAmount);
+            foreach (int id in dropContent.ItemIds)
+            {
+                if (dropContent.SmartGender)
+                {
+                    byte itemGender = ItemMetadataStorage.GetGender(id);
+                    if (itemGender != playerGender || itemGender != 2)
+                    {
+                        continue;
+                    }
+                }
+
+                List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+                if (recommendJobs.Contains(job) || recommendJobs.Contains(Job.None))
+                {
+                    Item newItem = new Item(id)
+                    {
+                        Enchants = dropContent.EnchantLevel,
+                        Amount = amount,
+                        Rarity = dropContent.Rarity
+
+                    };
+                    return newItem;
+                }
+            }
+            return null;
         }
 
         private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)

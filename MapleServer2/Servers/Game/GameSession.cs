@@ -83,12 +83,6 @@ namespace MapleServer2.Servers.Game
             FieldManager.AddPlayer(this, FieldPlayer); // Add player
         }
 
-        public void SyncTicks()
-        {
-            ServerTick = Environment.TickCount;
-            Send(RequestPacket.TickSync(ServerTick));
-        }
-
         public override void EndSession()
         {
             Player.Session = null;

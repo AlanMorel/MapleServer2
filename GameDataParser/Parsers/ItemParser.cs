@@ -16,54 +16,6 @@ namespace GameDataParser.Parsers
 
         protected override List<ItemMetadata> Parse()
         {
-            // Item boxes
-            Dictionary<string, List<ItemContent>> itemDrops = new Dictionary<string, List<ItemContent>>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files)
-            {
-                if (!entry.Name.StartsWith("table/individualitemdrop") && !entry.Name.StartsWith("table/na/individualitemdrop"))
-                {
-                    continue;
-                }
-
-                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList individualBoxItems = innerDocument.SelectNodes($"/ms2/individualDropBox");
-                foreach (XmlNode individualBoxItem in individualBoxItems)
-                {
-                    // Skip locales other than NA and null
-                    string locale = string.IsNullOrEmpty(individualBoxItem.Attributes["locale"]?.Value) ? "" : individualBoxItem.Attributes["locale"].Value;
-
-                    if (locale != "NA" && locale != "")
-                    {
-                        continue;
-                    }
-
-                    if (individualBoxItem.Attributes["minCount"].Value.Contains('.'))
-                    {
-                        continue;
-                    }
-
-                    string box = individualBoxItem.Attributes["individualDropBoxID"].Value;
-                    int id = int.Parse(individualBoxItem.Attributes["item"].Value);
-                    int minAmount = int.Parse(individualBoxItem.Attributes["minCount"].Value);
-                    int maxAmount = int.Parse(individualBoxItem.Attributes["maxCount"].Value);
-                    int dropGroup = int.Parse(individualBoxItem.Attributes["dropGroup"].Value);
-                    int smartDropRate = string.IsNullOrEmpty(individualBoxItem.Attributes["smartDropRate"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["smartDropRate"].Value);
-                    int contentRarity = string.IsNullOrEmpty(individualBoxItem.Attributes["PackageUIShowGrade"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["PackageUIShowGrade"].Value);
-                    int enchant = string.IsNullOrEmpty(individualBoxItem.Attributes["enchantLevel"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["enchantLevel"].Value);
-                    int id2 = string.IsNullOrEmpty(individualBoxItem.Attributes["item2"]?.Value) ? 0 : int.Parse(individualBoxItem.Attributes["item2"].Value);
-
-                    ItemContent content = new ItemContent(id, minAmount, maxAmount, dropGroup, smartDropRate, contentRarity, enchant, id2);
-                    if (itemDrops.ContainsKey(box))
-                    {
-                        itemDrops[box].Add(content);
-                    }
-                    else
-                    {
-                        itemDrops[box] = new List<ItemContent>() { content };
-                    }
-                }
-            }
-
             // Item breaking ingredients
             Dictionary<int, List<ItemBreakReward>> rewards = new Dictionary<int, List<ItemBreakReward>>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
@@ -313,6 +265,7 @@ namespace GameDataParser.Parsers
                     metadata.TradeableCount = byte.Parse(property.Attributes["tradableCount"].Value);
                     metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                     metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
+                    metadata.GroupId = int.Parse(property.Attributes["itemGroup"].Value);
 
 
                     // sales price
@@ -333,32 +286,46 @@ namespace GameDataParser.Parsers
                 metadata.OptionConstant = int.Parse(option.Attributes["constant"].Value);
                 metadata.OptionLevelFactor = int.Parse(option.Attributes["optionLevelFactor"].Value);
 
-                // Item boxes
                 XmlNode function = item.SelectSingleNode("function");
                 string contentType = function.Attributes["name"].Value;
                 metadata.FunctionData.Name = contentType;
-                if (contentType == "OpenItemBox" || contentType == "SelectItemBox")
+
+                // Item boxes
+                if (contentType == "OpenItemBox")
                 {
                     // selection boxes are SelectItemBox and 1,boxid
                     // normal boxes are OpenItemBox and 0,1,0,boxid
                     // fragments are OpenItemBox and 0,1,0,boxid,required_amount
-                    List<string> parameters = new List<string>(function.Attributes["parameter"].Value.Split(","));
-                    // Remove empty params
-                    parameters.RemoveAll(param => param.Length == 0);
-
-                    if (parameters.Count >= 2)
+                    if (function.Attributes["parameter"].Value.Contains('l'))
                     {
-                        string boxId = contentType == "OpenItemBox" ? parameters[3] : parameters[1];
-
-                        foreach (KeyValuePair<string, List<ItemContent>> box in itemDrops) // Search for box id and set the rewards previously parsed
-                        {
-                            if (box.Key == boxId)
-                            {
-                                metadata.Content = box.Value;
-                                break;
-                            }
-                        }
+                        continue; // TODO: Implement these CN items. Skipping for now
                     }
+
+                    List<string> parameters = new List<string>(function.Attributes["parameter"].Value.Split(","));
+                    OpenItemBox box = new OpenItemBox();
+                    box.RequiredItemId = int.Parse(parameters[0]);
+                    box.ReceiveOneItem = parameters[1] == "1";
+                    box.BoxId = int.Parse(parameters[3]);
+                    box.AmountRequired = 1;
+                    if (parameters.Count == 5)
+                    {
+                        box.AmountRequired = int.Parse(parameters[4]);
+                    }
+                    metadata.FunctionData.OpenItemBox = box;
+                }
+                else if (contentType == "SelectItemBox")
+                {
+                    if (function.Attributes["parameter"].Value.Contains('l'))
+                    {
+                        continue; // TODO: Implement these CN items. Skipping for now
+                    }
+
+                    List<string> parameters = new List<string>(function.Attributes["parameter"].Value.Split(","));
+                    parameters.RemoveAll(param => param.Length == 0);
+                    SelectItemBox box = new SelectItemBox();
+                    box.GroupId = int.Parse(parameters[0]);
+                    box.BoxId = int.Parse(parameters[1]);
+                    metadata.FunctionData.SelectItemBox = box;
                 }
                 else if (contentType == "ChatEmoticonAdd")
                 {

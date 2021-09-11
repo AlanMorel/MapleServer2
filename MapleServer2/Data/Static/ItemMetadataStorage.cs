@@ -134,16 +134,16 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).RepackageItemConsumeCount;
         }
 
+        public static int GetGroupId(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).GroupId;
+        }
+
         public static List<Job> GetRecommendJobs(int itemId)
         {
             Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
 
             return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
-        }
-
-        public static List<ItemContent> GetContent(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Content;
         }
 
         public static int GetSellPrice(int itemId)

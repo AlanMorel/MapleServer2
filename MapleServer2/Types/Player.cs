@@ -179,7 +179,7 @@ namespace MapleServer2.Types
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
-            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
             TitleId = 0;
             InsigniaId = 0;
             Titles = new List<int>();
@@ -317,6 +317,30 @@ namespace MapleServer2.Types
             }, ct.Token);
         }
 
+        public Task TimeSyncLoop()
+        {
+            return Task.Run(async () =>
+            {
+                while (Session != null)
+                {
+                    Session.Send(TimeSyncPacket.Request());
+                    await Task.Delay(1000);
+                }
+            });
+        }
+
+        public Task ClientTickSyncLoop()
+        {
+            return Task.Run(async () =>
+            {
+                while (Session != null)
+                {
+                    Session.Send(RequestPacket.TickSync());
+                    await Task.Delay(300 * 1000); // every 5 minutes
+                }
+            });
+        }
+
         public void RecoverHp(int amount)
         {
             if (amount <= 0)
@@ -439,6 +463,7 @@ namespace MapleServer2.Types
 
                     lock (Stats)
                     {
+
                         if (Stats[statId].Current >= Stats[statId].Max)
                         {
                             return;
