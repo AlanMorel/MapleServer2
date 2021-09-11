@@ -9,12 +9,13 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Triggers;
 using MapleServer2.Types;
 using NLog;
 
-namespace MapleServer2.Servers.Game
+namespace MapleServer2.Managers
 {
     // TODO: This needs to be thread safe
     // TODO: FieldManager probably needs its own thread to send updates about user position

@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -15,6 +16,10 @@ namespace MapleServer2.PacketHandlers.Game
             if (session.Player.OnAirMount)
             {
                 session.Player.OnAirMount = false;
+            }
+            if (session.Player.Mount != null)
+            {
+                session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.FieldPlayer, false));
             }
         }
     }
