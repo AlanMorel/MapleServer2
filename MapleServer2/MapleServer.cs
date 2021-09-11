@@ -9,6 +9,7 @@ using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
+using MapleServer2.Managers;
 using MapleServer2.Types;
 using NLog;
 
@@ -165,6 +166,7 @@ namespace MapleServer2
 
         private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
         {
+            SaveAll(sender, args);
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
         }

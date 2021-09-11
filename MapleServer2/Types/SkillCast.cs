@@ -40,11 +40,15 @@ namespace MapleServer2.Types
             SkillLevel = 1;
         }
 
-        public SkillCast(int id, short level, long skillSN, int serverTick)
+        public SkillCast(int id, short level)
         {
-            SkillSN = skillSN;
             SkillId = id;
             SkillLevel = level;
+        }
+
+        public SkillCast(int id, short level, long skillSN, int serverTick) : this(id, level)
+        {
+            SkillSN = skillSN;
             ServerTick = serverTick;
         }
 
@@ -59,9 +63,9 @@ namespace MapleServer2.Types
 
         public double GetCriticalDamage() => 2 * GetDamageRate();
 
-        public int GetSpCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).Spirit ?? 15;
+        public int GetSpCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.Spirit ?? 15;
 
-        public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).Stamina ?? 10;
+        public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.Stamina ?? 10;
 
         public DamageType GetSkillDamageType() => (DamageType) (GetSkillMetadata()?.DamageType ?? 0);
 
@@ -69,13 +73,19 @@ namespace MapleServer2.Types
 
         public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 
-        public int DurationTick() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.Duration ?? 5000;
+        public int DurationTick() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData.Duration ?? 5000;
 
-        public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData.MaxStack ?? 1;
+        public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData.MaxStack ?? 1;
 
-        public IEnumerable<SkillAttack> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAttacks?.ToList();
+        public IEnumerable<SkillCondition> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillConditions.ToList();
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
+
+        public bool IsHealFromBuff() => VerifySkillTypeOf(BuffType.Buff, BuffSubType.Recovery);
+
+        public bool IsGM() => VerifySkillTypeOf(SkillType.GM, SkillSubType.GM, BuffType.Buff, BuffSubType.Recovery);
+
+        public bool IsGlobal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Global);
 
         public bool IsBuffToOwner() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Owner);
 
@@ -93,6 +103,16 @@ namespace MapleServer2.Types
         {
             SkillMetadata skillData = GetSkillMetadata();
             return skillData.Type == SkillType.None.GetValue() && skillData.SubType == SkillType.None.GetValue();
+        }
+
+        private bool VerifySkillTypeOf(SkillType type, SkillSubType subType)
+        {
+            SkillMetadata skillData = GetSkillMetadata();
+            if (skillData != null && skillData.Type == type.GetValue() && skillData.SubType == subType.GetValue())
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool VerifySkillTypeOf(SkillType type, SkillSubType subType, BuffType buffType, BuffSubType buffSubType)
@@ -113,7 +133,7 @@ namespace MapleServer2.Types
         {
             if (IsChainSkill())
             {
-                SkillAdditionalData skillAdditionalData = GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel).SkillAdditionalData;
+                SkillAdditionalData skillAdditionalData = GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData;
                 if (skillAdditionalData != null && skillAdditionalData.BuffType == buffType.GetValue() && skillAdditionalData.BuffSubType == buffSubType.GetValue())
                 {
                     return true;

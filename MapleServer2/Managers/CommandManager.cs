@@ -3,7 +3,7 @@ using System.Reflection;
 using MapleServer2.Commands.Core;
 using NLog;
 
-namespace MapleServer2.Tools
+namespace MapleServer2.Managers
 {
     public class CommandManager
     {
