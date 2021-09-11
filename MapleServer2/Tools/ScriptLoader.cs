@@ -1,4 +1,4 @@
-﻿using MapleServer2.Constants;
+﻿using Maple2Storage.Types;
 using MoonSharp.Interpreter;
 using NLog;
 

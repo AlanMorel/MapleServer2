@@ -19,6 +19,12 @@ namespace MapleServer2.PacketHandlers.Login
         private readonly ImmutableList<IPEndPoint> ServerIPs;
         private readonly string ServerName;
 
+        private enum LoginMode : byte
+        {
+            Banners = 0x01,
+            SendCharacters = 0x02,
+        }
+
         public LoginHandler() : base()
         {
             ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
@@ -32,7 +38,7 @@ namespace MapleServer2.PacketHandlers.Login
 
         public override void Handle(LoginSession session, PacketReader packet)
         {
-            byte mode = packet.ReadByte();
+            LoginMode mode = (LoginMode) packet.ReadByte();
             string username = packet.ReadUnicodeString();
             string password = packet.ReadUnicodeString();
 
@@ -57,30 +63,39 @@ namespace MapleServer2.PacketHandlers.Login
 
             switch (mode)
             {
-                case 1:
-                    PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
-                    pWriter.WriteLong();
-                    pWriter.WriteUnicodeString(account.Username);
-
-                    session.Send(pWriter);
-
-                    List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
-                    session.Send(BannerListPacket.SetBanner(banners));
-                    session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
+                case LoginMode.Banners:
+                    SendBanners(session, account);
                     break;
-                case 2:
-                    List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
-
-                    Logger.Debug("Initializing login with account id: {session.AccountId}", session.AccountId);
-                    session.Send(LoginResultPacket.InitLogin(session.AccountId));
-                    session.Send(UgcPacket.SetEndpoint("http://localhost:3000/ws.asmx?wsdl", "http://localhost:3000"));
-                    session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
-                    session.Send(CharacterListPacket.StartList());
-                    // Send each character data
-                    session.Send(CharacterListPacket.AddEntries(characters));
-                    session.Send(CharacterListPacket.EndList());
+                case LoginMode.SendCharacters:
+                    SendCharacters(session, account);
                     break;
             }
+        }
+
+        private void SendBanners(LoginSession session, Account account)
+        {
+            List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
+            session.Send(NpsInfoPacket.SendUsername(account.Username));
+            session.Send(BannerListPacket.SetBanner(banners));
+            session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
+        }
+
+        private void SendCharacters(LoginSession session, Account account)
+        {
+            string serverIp = Environment.GetEnvironmentVariable("IP");
+            string webServerPort = Environment.GetEnvironmentVariable("WEB_PORT");
+            string url = $"http://{serverIp}:{webServerPort}";
+
+            List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
+
+            Logger.Debug("Initializing login with account id: {session.AccountId}", session.AccountId);
+            session.Send(LoginResultPacket.InitLogin(session.AccountId));
+            session.Send(UgcPacket.SetEndpoint($"{url}/ws.asmx?wsdl", url));
+            session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
+            session.Send(CharacterListPacket.StartList());
+            // Send each character data
+            session.Send(CharacterListPacket.AddEntries(characters));
+            session.Send(CharacterListPacket.EndList());
         }
     }
 }

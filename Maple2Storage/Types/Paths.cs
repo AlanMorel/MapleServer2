@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Constants
+﻿namespace Maple2Storage.Types
 {
     public static class Paths
     {

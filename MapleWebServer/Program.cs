@@ -1,34 +1,30 @@
-﻿namespace MapleWebServer
+﻿using Maple2Storage.Tools;
+using MapleWebServer.Constants;
+
+namespace MapleWebServer
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            // Load .env file
+            string filePath = Path.Combine(Paths.SOLUTION_DIR, ".env");
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            builder.Services.AddSwaggerGen(c =>
+            if (!File.Exists(filePath))
             {
-                c.SwaggerDoc("v1", new() { Title = "MapleWebServer", Version = "v1" });
-            });
-
-            WebApplication app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (builder.Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MapleWebServer v1"));
+                throw new ArgumentException(".env file not found!");
             }
+            DotEnv.Load(filePath);
 
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
+            CreateHostBuilder(args).Build().Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>()
+                    .UseUrls(urls: $"http://*:{Environment.GetEnvironmentVariable("WEB_PORT")}");
+                });
     }
 }

@@ -11,14 +11,14 @@ namespace MapleWebServer.Controllers
 
         public ProfilesController(ILogger<ProfilesController> logger) => Logger = logger;
 
-        [Route("profiles/ms2/emu/{characterId}/{hash}.png")]
+        [Route("data/profiles/avatar/{characterId}/{hash}.png")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileStream))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Get(string characterId, string hash)
         {
             string requestImagePath = HttpContext.Request.Path;
-            string fullPath = $"{Paths.IMAGES}/profiles/ms2/emu/{characterId}/{hash}.png".Replace("$", "");
+            string fullPath = $"{Paths.DATA}/profiles/{characterId}/{hash}.png".Replace("$", "");
             if (!System.IO.File.Exists(fullPath))
             {
                 return BadRequest();
@@ -46,7 +46,7 @@ namespace MapleWebServer.Controllers
             long accountId = (long) BitConverter.ToUInt64(array.Skip(8).Take(8).ToArray(), 0);
             long characterId = (long) BitConverter.ToUInt64(array.Skip(16).Take(8).ToArray(), 0);
 
-            string filePath = $"{Paths.IMAGES}/profiles/ms2/emu/{characterId}/";
+            string filePath = $"{Paths.DATA}/profiles/{characterId}/";
             Directory.CreateDirectory(filePath);
 
             byte[] fileBytes = array.Skip(48).ToArray();
@@ -54,12 +54,12 @@ namespace MapleWebServer.Controllers
             string md5Hash = CreateMD5(Encoding.UTF8.GetString(fileBytes));
             if (System.IO.File.Exists($"{filePath}/{md5Hash}.png"))
             {
-                return Ok($"0,profiles/ms2/emu/${characterId}/${md5Hash}.png");
+                return Ok($"0,data/profiles/avatar/{characterId}/{md5Hash}.png");
             }
 
             System.IO.File.WriteAllBytes($"{filePath}/{md5Hash}.png", fileBytes);
 
-            return Ok($"0,profiles/ms2/emu/${characterId}/${md5Hash}.png");
+            return Ok($"0,data/profiles/avatar/{characterId}/{md5Hash}.png");
         }
 
         public static async void CopyStream(Stream input, Stream output)

@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using Autofac;
+using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Extensions;
 using MapleServer2.Network;
@@ -28,13 +29,14 @@ namespace MapleServer2
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Load .env file
-            string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+            string filePath = Path.Combine(Paths.SOLUTION_DIR, ".env");
 
-            if (!File.Exists(dotenv))
+            if (!File.Exists(filePath))
             {
                 throw new ArgumentException(".env file not found!");
             }
-            DotEnv.Load(dotenv);
+            DotEnv.Load(filePath);
+
             InitDatabase();
 
             // Load Mob AI files
