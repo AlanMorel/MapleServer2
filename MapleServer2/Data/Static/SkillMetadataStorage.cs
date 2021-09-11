@@ -28,7 +28,6 @@ namespace MapleServer2.Data.Static
         // Get a List of Skills corresponding to the Job
         public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
         {
-
             List<SkillMetadata> jobSkill = new List<SkillMetadata>();
             List<int> gmSkills = SkillTreeOrdered.GetListOrdered(Job.GameMaster);
 

@@ -33,13 +33,8 @@ namespace MapleServer2.Commands.Game
                 }
 
                 stringBuilder.Append($"{CommandHelpers.Color(command.Description, Color.Wheat)}\n");
-                //if (command != commandList.Last())
-                //{
-                //    stringBuilder.Append('\n');
-                //}
                 foreach (IParameter param in command.Parameters)
                 {
-
                     stringBuilder.Append($"    -{CommandHelpers.Color(param.Name, Color.Aquamarine)} {CommandHelpers.Color(param.Description, Color.Wheat)}");
                     if (command.Parameters.IndexOf(param) != command.Parameters.Count - 1 || command != commandList.Last())
                     {

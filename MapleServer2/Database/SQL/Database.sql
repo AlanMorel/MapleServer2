@@ -84,6 +84,7 @@ CREATE TABLE `characters` (
   `CreationTime` bigint NOT NULL,
   `Name` varchar(25) NOT NULL,
   `Gender` tinyint unsigned NOT NULL,
+  `Awakened` tinyint(1) NOT NULL,
   `Job` int NOT NULL,
   `LevelsId` bigint DEFAULT NULL,
   `MapId` int NOT NULL,

@@ -39,7 +39,7 @@ namespace MapleServer2.Packets
             CharacterListPacket.WriteCharacter(player, pWriter);
 
             // Skills
-            pWriter.WriteEnum(fieldPlayer.Value.JobCode);
+            pWriter.WriteEnum(player.JobCode);
             pWriter.WriteByte(1);
             pWriter.WriteEnum(player.Job);
             JobPacket.WriteSkills(pWriter, player);

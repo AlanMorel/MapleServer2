@@ -47,7 +47,6 @@ namespace MapleServer2.Commands.Game
 
         public override void Execute(GameCommandTrigger trigger)
         {
-
             string jobName = trigger.Get<string>("job");
             byte awakened = trigger.Get<byte>("awakened");
 
@@ -57,16 +56,7 @@ namespace MapleServer2.Commands.Game
             long activeSkillTabId = player.ActiveSkillTabId;
             SkillTab skillTab = player.SkillTabs.First(tab => tab.TabId == activeSkillTabId);
 
-            Job job = Job.None;
-
-
-            if (!Enum.TryParse(jobName, true, out job))
-            {
-                player.Session.SendNotice($"{jobName} is not a valid class name");
-                return;
-            }
-
-            if (Job.None == job)
+            if (String.IsNullOrEmpty(jobName))
             {
                 string[] classes = Enum.GetNames(typeof(Job));
 
@@ -76,10 +66,21 @@ namespace MapleServer2.Commands.Game
                 return;
             }
 
-            JobCode jobCode = (JobCode) ((int) job * 10 + awakened);
-            player.JobCode = jobCode;
+            Job job = Job.None;
+            if (!Enum.TryParse(jobName, true, out job))
+            {
 
-            if (job != Job.None && job != player.Job)
+                player.Session.SendNotice($"{jobName} is not a valid class name");
+                return;
+            }
+
+            if (job == Job.None)
+            {
+                player.Session.SendNotice("None is not a valid class");
+                return;
+            }
+
+            if (job != player.Job)
             {
                 DatabaseManager.SkillTabs.Delete(skillTab.Uid);
                 SkillTab newSkillTab = new SkillTab(player.CharacterId, job, skillTab.TabId, skillTab.Name);
@@ -87,8 +88,10 @@ namespace MapleServer2.Commands.Game
                 player.SkillTabs[player.SkillTabs.IndexOf(skillTab)] = newSkillTab;
                 player.Job = job;
             }
+
+            player.Awakened = awakened == 1;
+
             trigger.Session.Send(Packets.JobPacket.SendJob(fieldPlayer));
         }
-
     }
 }

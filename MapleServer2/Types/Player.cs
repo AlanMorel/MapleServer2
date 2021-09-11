@@ -27,9 +27,21 @@ namespace MapleServer2.Types
         // Gender - 0 = male, 1 = female
         public byte Gender { get; set; }
 
+        public bool Awakened { get; set; }
+
         // Job Group, according to jobgroupname.xml
         public Job Job { get; set; }
-        public JobCode JobCode { get; set; }
+        public JobCode JobCode
+        {
+            get
+            {
+                if (Job == Job.GameMaster)
+                {
+                    return JobCode.GameMaster;
+                }
+                return (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+            }
+        }
 
         // Mutable Values
         public Levels Levels { get; set; }
@@ -156,7 +168,6 @@ namespace MapleServer2.Types
             Name = name;
             Gender = gender;
             Job = job;
-            JobCode = (JobCode) ((int) job * 10);
             GameOptions = new GameOptions();
             Wallet = new Wallet(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0);
             Levels = new Levels(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, new List<MasteryExp>()
