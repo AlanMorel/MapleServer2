@@ -137,7 +137,7 @@ namespace MapleServer2.Commands.Game
     {
         public SkillCommand()
         {
-            Aliases = new[]
+            Aliases = new()
 {
                 "skill"
             };
@@ -168,7 +168,7 @@ namespace MapleServer2.Commands.Game
     {
         public BuffCommand()
         {
-            Aliases = new[]
+            Aliases = new()
 {
                 "buff"
             };

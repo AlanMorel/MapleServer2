@@ -36,7 +36,7 @@ namespace MapleServer2.Data.Static
                 foreach (int skillId in gmSkills)
                 {
                     jobSkill.Add(skill[skillId]);
-                    jobSkill.First(skill => skill.SkillId == skillId).Learned = 1;
+                    jobSkill.First(skill => skill.SkillId == skillId).CurrentLevel = 1;
                 }
                 return jobSkill;
             }
