@@ -1,10 +1,12 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -236,9 +238,22 @@ namespace MapleServer2.PacketHandlers.Game
 
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
-            // TODO: Adding this implementation on another PullRequest
+            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
+            {
+                return;
+            }
 
-            //RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, session.FieldPlayer.Value.SkillCast);
+            foreach (SkillCondition conditionSkill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+            {
+                if (!conditionSkill.Splash)
+                {
+                    continue;
+                }
+
+                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick);
+                SkillUsePacket.SkillUse(skillCast, position, CoordF.From(0, 0, 0), rotation, session.FieldPlayer.ObjectId);
+                RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, skillCast);
+            }
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)

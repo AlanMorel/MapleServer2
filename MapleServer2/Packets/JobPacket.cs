@@ -41,7 +41,7 @@ namespace MapleServer2.Packets
         {
             SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
             Dictionary<int, SkillMetadata> skillData = skillTab.SkillJob;
-            Dictionary<int, int> skills = skillTab.SkillLevels;
+            Dictionary<int, short> skills = skillTab.SkillLevels;
 
             // Ordered list of skill ids (must be sent in this order)
             List<int> ids = skillTab.Order;
@@ -70,7 +70,7 @@ namespace MapleServer2.Packets
         public static Packet WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
         {
             // The x.Value.Learned == 1 is to filter for now, the skills by level 1 until player can be save on db.
-            List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type == 1 && x.Value.Learned == 1).Select(x => x.Value).ToList();
+            List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type == 1 && x.Value.CurrentLevel == 1).Select(x => x.Value).ToList();
 
             pWriter.WriteShort((short) passiveSkillList.Count); // Passive skills learned count, has to be retrieve from player db.
             // foreach passive skill learned, add it to the player

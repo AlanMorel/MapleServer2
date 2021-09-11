@@ -50,12 +50,12 @@ namespace MapleServer2.Data.Static
                 else if (skills.Value.SkillId == 20000001) // Swiming
                 {
                     jobSkill.Add(skills.Value);
-                    skills.Value.Learned = 1;
+                    skills.Value.CurrentLevel = 1;
                 }
                 else if (skills.Value.SkillId == 20000011) // Climbing walls
                 {
                     jobSkill.Add(skills.Value);
-                    skills.Value.Learned = 1;
+                    skills.Value.CurrentLevel = 1;
                 }
             }
             return jobSkill;
