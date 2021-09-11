@@ -28,9 +28,9 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(skillTab.TabId);
                 pWriter.WriteUnicodeString(skillTab.Name);
 
-                Dictionary<int, int> skills = skillTab.SkillLevels.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
+                Dictionary<int, short> skills = skillTab.SkillLevels.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
                 pWriter.WriteInt(skills.Count);
-                foreach (KeyValuePair<int, int> p in skills)
+                foreach (KeyValuePair<int, short> p in skills)
                 {
                     pWriter.WriteInt(p.Key);
                     pWriter.WriteInt(p.Value);

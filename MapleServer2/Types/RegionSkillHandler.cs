@@ -8,7 +8,7 @@ namespace MapleServer2.Types
     {
         public static void Handle(GameSession session, int sourceId, CoordF coord, SkillCast skillCast)
         {
-            session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, coord.ToShort(), skillCast));
+            session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, Block.ClosestBlock(coord).ToShort(), skillCast));
             Remove(session, skillCast, sourceId);
         }
 
