@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
-using MapleServer2.Extensions;
+using Maple2Storage.Extensions;
+using Maple2Storage.Tools;
 using NLog;
 
 namespace MapleServer2.Tools
@@ -10,10 +11,16 @@ namespace MapleServer2.Tools
 
         public static void InitializeAll()
         {
-            Logger.Info("Initializing Data...Please Wait");
-
+            Logger.Info("Initializing Data...Please Wait".ColorYellow());
             List<Type> callingTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsAbstract && t.IsClass && t.Namespace == "MapleServer2.Data.Static").ToList();
-            callingTypes.ForEach(type => type.GetMethod("Init")?.Invoke(null, null));
+            int count = 0;
+
+            foreach (Type type in callingTypes)
+            {
+                type.GetMethod("Init")?.Invoke(null, null);
+                count++;
+                ConsoleUtility.WriteProgressBar((float) count / callingTypes.Count * 100);
+            }
 
             Logger.Info("Initializing Data...Complete!".ColorGreen());
         }

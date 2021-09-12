@@ -11,7 +11,12 @@ namespace GameDataParser.Files
         private readonly Thread Thread;
         private readonly Stopwatch Stopwatch = new Stopwatch();
 
-        public Spinner(int delay = 500)
+        public Spinner()
+        {
+            Stopwatch.Start();
+        }
+
+        public Spinner(int delay)
         {
             Delay = delay;
             Thread = new Thread(Spin);

@@ -5,7 +5,7 @@ using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
-using MapleServer2.Extensions;
+using Maple2Storage.Extensions;
 using NLog;
 
 namespace MapleServer2.Network
