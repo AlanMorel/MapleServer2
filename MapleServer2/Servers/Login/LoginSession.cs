@@ -10,19 +10,15 @@ namespace MapleServer2.Servers.Login
         protected override SessionType Type => SessionType.Login;
 
         public long AccountId;
+        public long CharacterId;
         public int ServerTick;
         public int ClientTick;
 
         public LoginSession() : base() { }
 
-        public static int GetToken()
-        {
-            return RandomProvider.Get().Next();
-        }
+        public static int GetToken() => RandomProvider.Get().Next();
 
-        public override void EndSession()
-        {
-        }
+        public override void EndSession() { }
 
         public Task HeartbeatLoop()
         {

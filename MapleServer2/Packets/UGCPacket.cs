@@ -5,6 +5,11 @@ namespace MapleServer2.Packets
 {
     public static class UgcPacket
     {
+        public enum UgcMode : byte
+        {
+            ProfilePicture = 0x0B
+        }
+
         public static Packet SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
@@ -72,14 +77,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown11()
+        public static Packet SetProfilePictureURL(int objectId, long characterId, string url)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-            pWriter.WriteByte(0x0B);
-            pWriter.WriteInt();
-            pWriter.WriteLong();
-            pWriter.WriteUnicodeString("");
-            // Too many missing functions, idk...
+            pWriter.WriteEnum(UgcMode.ProfilePicture);
+            pWriter.WriteInt(objectId);
+            pWriter.WriteLong(characterId);
+            pWriter.WriteUnicodeString(url);
 
             return pWriter;
         }
