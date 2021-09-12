@@ -32,58 +32,56 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 12)]
         public byte RepackageItemConsumeCount;
         [XmlElement(Order = 13)]
-        public int GroupId;
-        [XmlElement(Order = 14)]
         public bool IsTwoHand;
-        [XmlElement(Order = 15)]
+        [XmlElement(Order = 14)]
         public bool IsDress;
-        [XmlElement(Order = 16)]
+        [XmlElement(Order = 15)]
         public bool IsTemplate;
-        [XmlElement(Order = 17)]
+        [XmlElement(Order = 16)]
         public byte Gender;
-        [XmlElement(Order = 18)]
+        [XmlElement(Order = 17)]
         public int PlayCount;
-        [XmlElement(Order = 19)]
+        [XmlElement(Order = 18)]
         public bool IsCustomScore;
-        [XmlElement(Order = 20)]
+        [XmlElement(Order = 19)]
         public List<int> SellPrice = new List<int>();
-        [XmlElement(Order = 21)]
+        [XmlElement(Order = 20)]
         public List<int> SellPriceCustom = new List<int>();
-        [XmlElement(Order = 22)]
+        [XmlElement(Order = 21)]
         public string FileName;
-        [XmlElement(Order = 23)]
+        [XmlElement(Order = 22)]
         public int SkillID;
-        [XmlElement(Order = 24)]
+        [XmlElement(Order = 23)]
         public List<int> RecommendJobs = new List<int>();
-        [XmlElement(Order = 25)]
+        [XmlElement(Order = 24)]
         public List<ItemBreakReward> BreakRewards;
-        [XmlElement(Order = 26)]
+        [XmlElement(Order = 25)]
         public ItemFunction FunctionData;
-        [XmlElement(Order = 27)]
+        [XmlElement(Order = 26)]
         public AdBalloonData AdBalloonData;
-        [XmlElement(Order = 28)]
+        [XmlElement(Order = 27)]
         public string Tag;
-        [XmlElement(Order = 29)]
+        [XmlElement(Order = 28)]
         public int ShopID;
-        [XmlElement(Order = 30)]
+        [XmlElement(Order = 29)]
         public int Level;
-        [XmlElement(Order = 31)]
+        [XmlElement(Order = 30)]
         public List<HairPresets> HairPresets = new List<HairPresets>();
-        [XmlElement(Order = 32)]
+        [XmlElement(Order = 31)]
         public int ColorIndex;
-        [XmlElement(Order = 33)]
+        [XmlElement(Order = 32)]
         public int ColorPalette;
-        [XmlElement(Order = 34)]
+        [XmlElement(Order = 33)]
         public int OptionStatic;
-        [XmlElement(Order = 35)]
+        [XmlElement(Order = 34)]
         public int OptionRandom;
-        [XmlElement(Order = 36)]
+        [XmlElement(Order = 35)]
         public int OptionConstant;
-        [XmlElement(Order = 37)]
+        [XmlElement(Order = 36)]
         public int OptionLevelFactor;
-        [XmlElement(Order = 38)]
+        [XmlElement(Order = 37)]
         public bool IsCubeSolid;
-        [XmlElement(Order = 39)]
+        [XmlElement(Order = 38)]
         public ItemHousingCategory HousingCategory;
 
         // Required for deserialization

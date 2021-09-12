@@ -12,10 +12,8 @@ namespace MapleServer2.Tools
         // Adds item
         public static void Add(GameSession session, Item item, bool isNew)
         {
-            int itemGroupId = ItemMetadataStorage.GetGroupId(item.Id);
-
             // item is currency
-            if (itemGroupId == 99)
+            if (item.Id.ToString().StartsWith("9"))
             {
                 switch (item.Id)
                 {
@@ -50,6 +48,23 @@ namespace MapleServer2.Tools
                         break;
 
                 }
+                return;
+            }
+            else if (item.Id.ToString().StartsWith("5"))
+            {
+                if (session.Player.Account.Home == null)
+                {
+                    return;
+                }
+
+                Home home = GameServer.HomeManager.GetHome(session.Player.Account.Home.Id);
+                if (home == null)
+                {
+                    return;
+                }
+
+                _ = home.AddWarehouseItem(session, item.Id, item.Amount, item);
+                session.Send(WarehouseInventoryPacket.GainItemMessage(item, item.Amount));
                 return;
             }
 

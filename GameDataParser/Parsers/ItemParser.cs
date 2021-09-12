@@ -265,8 +265,6 @@ namespace GameDataParser.Parsers
                     metadata.TradeableCount = byte.Parse(property.Attributes["tradableCount"].Value);
                     metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                     metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
-                    metadata.GroupId = int.Parse(property.Attributes["itemGroup"].Value);
-
 
                     // sales price
                     XmlNode sell = property.SelectSingleNode("sell");

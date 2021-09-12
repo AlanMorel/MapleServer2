@@ -81,7 +81,6 @@ namespace MapleServer2.Data.Static
         public static bool GetIsCustomScore(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsCustomScore;
-
         }
 
         public static byte GetGender(int itemId)
@@ -132,11 +131,6 @@ namespace MapleServer2.Data.Static
         public static int GetRepackageConsumeCount(int itemId)
         {
             return map.GetValueOrDefault(itemId).RepackageItemConsumeCount;
-        }
-
-        public static int GetGroupId(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).GroupId;
         }
 
         public static List<Job> GetRecommendJobs(int itemId)
