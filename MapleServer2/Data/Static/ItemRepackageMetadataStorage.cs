@@ -32,7 +32,6 @@ namespace MapleServer2.Data.Static
             }
 
             // TODO: Check if slot is valid. Unsure where slot values are assigned in each item
-
             return true;
         }
     }

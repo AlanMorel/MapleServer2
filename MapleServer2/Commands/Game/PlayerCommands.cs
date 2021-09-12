@@ -12,7 +12,7 @@ namespace MapleServer2.Commands.Game
     {
         public HandicraftCommand()
         {
-            Aliases = new string[]
+            Aliases = new()
             {
                 "sethandicraft"
             };
@@ -37,7 +37,7 @@ namespace MapleServer2.Commands.Game
     {
         public PrestigeExpCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "gainprestigeexp"
             };
@@ -62,7 +62,7 @@ namespace MapleServer2.Commands.Game
     {
         public GainExpCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "gainexp"
             };
@@ -87,7 +87,7 @@ namespace MapleServer2.Commands.Game
     {
         public PrestigeLevelCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setprestigelevel"
             };
@@ -112,7 +112,7 @@ namespace MapleServer2.Commands.Game
     {
         public LevelCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setlevel"
             };
@@ -137,7 +137,7 @@ namespace MapleServer2.Commands.Game
     {
         public SkillCommand()
         {
-            Aliases = new[]
+            Aliases = new()
 {
                 "skill"
             };
@@ -168,7 +168,7 @@ namespace MapleServer2.Commands.Game
     {
         public BuffCommand()
         {
-            Aliases = new[]
+            Aliases = new()
 {
                 "buff"
             };

@@ -80,7 +80,6 @@ namespace MapleServer2.Data.Static
         public static bool GetIsCustomScore(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsCustomScore;
-
         }
 
         public static byte GetGender(int itemId)
@@ -138,11 +137,6 @@ namespace MapleServer2.Data.Static
             Converter<int, Job> converter = new Converter<int, Job>((integer) => (Job) integer);
 
             return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
-        }
-
-        public static List<ItemContent> GetContent(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Content;
         }
 
         public static int GetSellPrice(int itemId)
