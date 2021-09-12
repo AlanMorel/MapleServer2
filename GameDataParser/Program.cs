@@ -45,10 +45,10 @@ namespace GameDataParser
                 }
 
                 MetadataExporter exporter = (MetadataExporter) (newConstructor != null ? Activator.CreateInstance(currentParser.GetType(), resources) : Activator.CreateInstance(currentParser.GetType()));
-                count++;
-                await Task.Run(() => exporter.Export()).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count / parserClassList.Count * 100f));
+                tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count++ / parserClassList.Count * 100f)));
             }
 
+            await Task.WhenAll(tasks);
             spinner.Stop();
             TimeSpan runtime = spinner.GetRuntime();
 
