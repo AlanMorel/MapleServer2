@@ -88,8 +88,6 @@ namespace GameDataParser.Parsers
             XBlockParser parser = new XBlockParser(Resources.ExportedReader, new FlatTypeIndex(Resources.ExportedReader));
             parser.Parse(BuildMetadata);
 
-            Console.Out.WriteLine($"Parsed {Entities.Count} entities");
-
             // Since parsing is done in parallel, sort at the end for deterministic order.
             Entities.Sort((metadata1, metadata2) => metadata1.MapId.CompareTo(metadata2.MapId));
             return Entities;
@@ -361,13 +359,11 @@ namespace GameDataParser.Parsers
                         catch (FormatException)
                         {
                             // ignored
-                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
                             //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
                             //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }
-                        catch (OverflowException ex)
+                        catch (OverflowException)
                         {
-                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
                             //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
                             //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
                         }

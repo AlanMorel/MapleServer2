@@ -56,7 +56,7 @@ namespace MapleServer2.Commands.Game
             long activeSkillTabId = player.ActiveSkillTabId;
             SkillTab skillTab = player.SkillTabs.First(tab => tab.TabId == activeSkillTabId);
 
-            if (String.IsNullOrEmpty(jobName))
+            if (string.IsNullOrEmpty(jobName))
             {
                 string[] classes = Enum.GetNames(typeof(Job));
 

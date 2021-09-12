@@ -26,7 +26,6 @@ namespace MapleServer2.Types
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
         public ItemFunction Function { get; set; }
-        public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
         public ItemHousingCategory HousingCategory;
@@ -118,7 +117,6 @@ namespace MapleServer2.Types
             PlayCount = other.PlayCount;
             FileName = other.FileName;
             Function = other.Function;
-            AdBalloon = other.AdBalloon;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
@@ -205,7 +203,6 @@ namespace MapleServer2.Types
             SkillId = ItemMetadataStorage.GetSkillID(Id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
             Function = ItemMetadataStorage.GetFunction(Id);
-            AdBalloon = ItemMetadataStorage.GetBalloonData(Id);
             Tag = ItemMetadataStorage.GetTag(Id);
             ShopID = ItemMetadataStorage.GetShopID(Id);
             RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
