@@ -54,7 +54,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             OpenItemBox openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
-            HandleOpenBox(session, items, openBox, amount);
+            HandleOpenBox(session, items, /*openBox,*/ amount);
         }
 
         private static void HandleSelectBox(GameSession session, Dictionary<long, Item> items, SelectItemBox box, int index, int amount)
@@ -80,7 +80,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
         }
 
-        private static void HandleOpenBox(GameSession session, Dictionary<long, Item> items, OpenItemBox box, int amount)
+        private static void HandleOpenBox(GameSession session, Dictionary<long, Item> items, /*OpenItemBox box,*/ int amount)
         {
             int opened = 0;
             foreach (KeyValuePair<long, Item> kvp in items)

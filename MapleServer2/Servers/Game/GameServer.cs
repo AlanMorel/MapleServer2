@@ -2,8 +2,8 @@
 using Autofac;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
-using MapleServer2.Network;
 using MapleServer2.Managers;
+using MapleServer2.Network;
 using MapleServer2.Types;
 
 namespace MapleServer2.Servers.Game
