@@ -20,7 +20,7 @@ namespace MapleServer2
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void Main()
+        public static async Task Main()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
@@ -45,7 +45,7 @@ namespace MapleServer2
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
             // Initialize all metadata.
-            MetadataHelper.InitializeAll();
+            await MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
