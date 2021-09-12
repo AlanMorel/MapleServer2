@@ -68,7 +68,8 @@ namespace GameDataParser
                 new JobParser(resources),
                 new RewardContentParser(resources),
                 new DefaultItemsParser(resources),
-                new ItemRepackageParser(resources)
+                new ItemRepackageParser(resources),
+                new ItemDropParser(resources)
             };
 
             IEnumerable<Task> tasks = exporters.Select(exporter => Task.Run(() => exporter.Export()));
