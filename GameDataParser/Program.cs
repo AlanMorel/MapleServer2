@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using System.Diagnostics;
 using GameDataParser.Files;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
@@ -15,14 +16,13 @@ namespace GameDataParser
             // Create Resources folders if they don't exist
             Directory.CreateDirectory(Paths.INPUT);
             Directory.CreateDirectory(Paths.OUTPUT);
-
-            Spinner spinner = new Spinner();
+            Stopwatch runtime = Stopwatch.StartNew();
 
             object resources = Activator.CreateInstance(typeof(MetadataResources));
             List<Task> tasks = new();
             List<Type> parserClassList = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsAbstract && !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
 
-            int count = 0;
+            int count = 1;
             foreach (Type parserClass in parserClassList)
             {
                 ConstructorInfo newConstructor = parserClass.GetConstructor(new Type[] { typeof(MetadataResources) });
@@ -49,11 +49,9 @@ namespace GameDataParser
             }
 
             await Task.WhenAll(tasks);
-            spinner.Stop();
-            TimeSpan runtime = spinner.GetRuntime();
-
+            runtime.Stop();
             Console.WriteLine("\nExporting Data Successfully!".ColorGreen());
-            Console.WriteLine($"\nIt finished exporting in {runtime.Minutes} minutes and {runtime.Seconds} seconds");
+            Console.WriteLine($"\nIt finished exporting in {runtime.Elapsed.Minutes} minutes and {runtime.Elapsed.Seconds} seconds");
         }
     }
 }
