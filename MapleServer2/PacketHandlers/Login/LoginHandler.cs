@@ -81,7 +81,6 @@ namespace MapleServer2.PacketHandlers.Login
                     session.Send(CharacterListPacket.EndList());
                     break;
             }
-            // session.HeartbeatLoop(); // errors out ??
         }
     }
 }

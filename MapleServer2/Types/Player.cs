@@ -463,7 +463,6 @@ namespace MapleServer2.Types
 
                     lock (Stats)
                     {
-
                         if (Stats[statId].Current >= Stats[statId].Max)
                         {
                             return;
