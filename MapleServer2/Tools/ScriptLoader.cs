@@ -29,7 +29,7 @@ namespace MapleServer2.Tools
 
             if (session != null)
             {
-                // Register script helper as an proxy object
+                // Register script manager as an proxy object
                 // Documentation: https://www.moonsharp.org/proxy.html
                 UserData.RegisterProxyType<ScriptManager, GameSession>(r => new ScriptManager(r));
                 Script.Globals["Helper"] = new ScriptManager(session);

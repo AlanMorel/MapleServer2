@@ -12,7 +12,7 @@ namespace MapleServer2.Commands.Game
     {
         public GuildExpCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setguildexp"
             };
@@ -47,7 +47,7 @@ namespace MapleServer2.Commands.Game
     {
         public GuildFundCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setguildfund"
             };

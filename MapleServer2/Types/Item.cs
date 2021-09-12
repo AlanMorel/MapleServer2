@@ -25,7 +25,6 @@ namespace MapleServer2.Types
         public string FileName { get; set; }
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
-        public List<ItemContent> Content { get; private set; }
         public ItemFunction Function { get; set; }
         public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
@@ -118,7 +117,6 @@ namespace MapleServer2.Types
             IsCustomScore = other.IsCustomScore;
             PlayCount = other.PlayCount;
             FileName = other.FileName;
-            Content = other.Content;
             Function = other.Function;
             AdBalloon = other.AdBalloon;
             Uid = other.Uid;
@@ -206,7 +204,6 @@ namespace MapleServer2.Types
             FileName = ItemMetadataStorage.GetFileName(Id);
             SkillId = ItemMetadataStorage.GetSkillID(Id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
-            Content = ItemMetadataStorage.GetContent(Id);
             Function = ItemMetadataStorage.GetFunction(Id);
             AdBalloon = ItemMetadataStorage.GetBalloonData(Id);
             Tag = ItemMetadataStorage.GetTag(Id);

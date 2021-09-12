@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Common
 
             //session.Send(0x27, 0x01); // Meret market related...?
 
-            session.Send(LoginPacket.LoginRequired(accountId));
+            session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
 
             if (player.GuildId != 0)
             {
@@ -78,8 +78,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(StatPacket.SetStats(session.FieldPlayer));
             // TODO: Grab Hp/Spirit/Stam from last login
             player.Stats.InitializePools(player.Stats[PlayerStatId.Hp].Max, player.Stats[PlayerStatId.Spirit].Max, player.Stats[PlayerStatId.Stamina].Max);
-
-            session.SyncTicks();
+            session.Player.ClientTickSyncLoop();
             session.Send(DynamicChannelPacket.DynamicChannel());
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
@@ -178,8 +177,7 @@ namespace MapleServer2.PacketHandlers.Common
             // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
             // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
-            // Client is supposed to request SetSessionServerTick packet but it is not.
-            // As a temporary fix, we're sending the packet to set it
+            session.Player.TimeSyncLoop();
             session.Send(TimeSyncPacket.SetSessionServerTick(0));
             //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
             session.Send(ServerEnterPacket.Confirm());
@@ -224,6 +222,18 @@ namespace MapleServer2.PacketHandlers.Common
             {
                 yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i));
             }
+        }
+
+        public static Task TimeSyncLoop(Session session)
+        {
+            return Task.Run(async () =>
+            {
+                while (session != null)
+                {
+                    session.Send(TimeSyncPacket.Request());
+                    await Task.Delay(1000);
+                }
+            });
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MapleServer2.Commands.Game
     {
         public GotoMapCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "map"
             };
@@ -43,7 +43,7 @@ namespace MapleServer2.Commands.Game
     {
         public GotoPlayerCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "goto"
             };
@@ -76,7 +76,7 @@ namespace MapleServer2.Commands.Game
     {
         public GotoCoordCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "coord"
             };

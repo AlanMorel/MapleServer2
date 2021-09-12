@@ -89,5 +89,18 @@ namespace MapleServer2.Packets
             }
             return pWriter;
         }
+
+        public static Packet SendJob(IFieldObject<Player> character)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
+            pWriter.WriteInt(character.ObjectId);
+            pWriter.WriteByte(2); //2 = second job? might be a header for awakened = true
+            pWriter.WriteEnum(character.Value.JobCode);
+            pWriter.WriteByte(1); //1 = first job?
+            pWriter.WriteEnum(character.Value.Job);
+            pWriter.WriteSkills(character.Value);
+
+            return pWriter;
+        }
     }
 }
