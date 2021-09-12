@@ -3,12 +3,12 @@ using Autofac;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
-using Maple2Storage.Extensions;
+using MapleServer2.Extensions;
+using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
-using MapleServer2.Managers;
 using MapleServer2.Types;
 using NLog;
 

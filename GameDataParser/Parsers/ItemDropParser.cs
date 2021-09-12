@@ -36,8 +36,10 @@ namespace GameDataParser.Parsers
 
                     DropGroupContent contents = new DropGroupContent();
 
-                    List<int> itemIds = new List<int>();
-                    itemIds.Add(int.Parse(node.Attributes["item"].Value));
+                    List<int> itemIds = new List<int>
+                    {
+                        int.Parse(node.Attributes["item"].Value)
+                    };
                     if (node.Attributes["item2"] != null)
                     {
                         itemIds.Add(int.Parse(node.Attributes["item2"].Value));

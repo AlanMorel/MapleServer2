@@ -19,7 +19,7 @@ namespace MapleServer2.Packets
             ClaimRewards = 0x23,
         }
 
-        public static PacketWriter MatchFound(long accountId)
+        public static PacketWriter MatchFound()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
             pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.MatchFound);
