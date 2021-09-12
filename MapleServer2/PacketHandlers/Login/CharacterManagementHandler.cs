@@ -96,6 +96,7 @@ namespace MapleServer2.PacketHandlers.Login
 
             Account account = DatabaseManager.Accounts.FindById(session.AccountId);
             Player newCharacter = new Player(account, name, gender, job, skinColor);
+            session.CharacterId = newCharacter.CharacterId;
 
             byte equipCount = packet.ReadByte();
             for (int i = 0; i < equipCount; i++)

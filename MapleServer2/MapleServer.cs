@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
 using Autofac;
 using Maple2Storage.Extensions;
+using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Managers;
 using MapleServer2.Network;
@@ -36,6 +37,7 @@ namespace MapleServer2
                 throw new ArgumentException(".env file not found!");
             }
             DotEnv.Load(dotenv);
+
             InitDatabase();
 
             // Load Mob AI files

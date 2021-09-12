@@ -1,5 +1,5 @@
 ﻿
-using MapleServer2.Constants;
+using Maple2Storage.Types;
 using MapleServer2.Database.Classes;
 using MySql.Data.MySqlClient;
 using NLog;

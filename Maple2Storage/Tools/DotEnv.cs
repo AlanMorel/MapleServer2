@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Tools
+﻿namespace Maple2Storage.Tools
 {
     public static class DotEnv
     {
