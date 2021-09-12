@@ -224,7 +224,7 @@ namespace MapleServer2.PacketHandlers.Common
             }
         }
 
-        public Task TimeSyncLoop(Session session)
+        public static Task TimeSyncLoop(Session session)
         {
             return Task.Run(async () =>
             {

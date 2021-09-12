@@ -62,7 +62,7 @@
         Striker = 12,
         SoulBinder = 16,
         GameMaster = 1,
-        Beginner = 1,
+        Beginner = GameMaster
     }
 }
 
