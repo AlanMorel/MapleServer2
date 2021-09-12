@@ -49,7 +49,12 @@ namespace MapleServer2.Tools
                 }
                 return;
             }
-            else if (item.Id.ToString().StartsWith("5"))
+            // TODO: Find a way to categorize items appropriately
+            else if (item.Id.ToString().StartsWith("501") ||
+                item.Id.ToString().StartsWith("502") ||
+                item.Id.ToString().StartsWith("503") ||
+                item.Id.ToString().StartsWith("504") ||
+                item.Id.ToString().StartsWith("505"))
             {
                 if (session.Player.Account.Home == null)
                 {

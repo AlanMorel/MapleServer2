@@ -173,11 +173,6 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).FunctionData;
         }
 
-        public static AdBalloonData GetBalloonData(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).AdBalloonData;
-        }
-
         public static string GetTag(int itemId)
         {
             return map.GetValueOrDefault(itemId).Tag;
