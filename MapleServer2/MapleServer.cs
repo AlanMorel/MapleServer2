@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using Autofac;
+using Maple2Storage.Extensions;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
-using MapleServer2.Extensions;
 using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;

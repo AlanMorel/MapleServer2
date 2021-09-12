@@ -58,30 +58,28 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 25)]
         public ItemFunction FunctionData;
         [XmlElement(Order = 26)]
-        public AdBalloonData AdBalloonData;
-        [XmlElement(Order = 27)]
         public string Tag;
-        [XmlElement(Order = 28)]
+        [XmlElement(Order = 27)]
         public int ShopID;
-        [XmlElement(Order = 29)]
+        [XmlElement(Order = 28)]
         public int Level;
-        [XmlElement(Order = 30)]
+        [XmlElement(Order = 29)]
         public List<HairPresets> HairPresets = new List<HairPresets>();
-        [XmlElement(Order = 31)]
+        [XmlElement(Order = 30)]
         public int ColorIndex;
-        [XmlElement(Order = 32)]
+        [XmlElement(Order = 31)]
         public int ColorPalette;
-        [XmlElement(Order = 33)]
+        [XmlElement(Order = 32)]
         public int OptionStatic;
-        [XmlElement(Order = 34)]
+        [XmlElement(Order = 33)]
         public int OptionRandom;
-        [XmlElement(Order = 35)]
+        [XmlElement(Order = 34)]
         public int OptionConstant;
-        [XmlElement(Order = 36)]
+        [XmlElement(Order = 35)]
         public int OptionLevelFactor;
-        [XmlElement(Order = 37)]
+        [XmlElement(Order = 36)]
         public bool IsCubeSolid;
-        [XmlElement(Order = 38)]
+        [XmlElement(Order = 37)]
         public ItemHousingCategory HousingCategory;
 
         // Required for deserialization
@@ -94,7 +92,7 @@ namespace Maple2Storage.Types.Metadata
         public override string ToString() =>
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
             $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
-            $"AdBalloonData:{AdBalloonData},Tag:{Tag},ShopID:{ShopID}";
+            $"Tag:{Tag},ShopID:{ShopID}";
 
         protected bool Equals(ItemMetadata other)
         {
@@ -166,23 +164,23 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public int Id;
         [XmlElement(Order = 3)]
-        public int Duration;
-        [XmlElement(Order = 4)]
-        public int FieldId;
-        [XmlElement(Order = 5)]
-        public byte Capacity;
-        [XmlElement(Order = 6)]
-        public byte TargetLevel;
-        [XmlElement(Order = 7)]
-        public short Count;
-        [XmlElement(Order = 8)]
-        public byte TotalUser;
-        [XmlElement(Order = 9)]
-        public byte Rarity;
-        [XmlElement(Order = 10)]
         public OpenItemBox OpenItemBox;
-        [XmlElement(Order = 11)]
+        [XmlElement(Order = 4)]
         public SelectItemBox SelectItemBox;
+        [XmlElement(Order = 5)]
+        public ChatEmoticonAdd ChatEmoticonAdd;
+        [XmlElement(Order = 6)]
+        public OpenMassiveEvent OpenMassiveEvent;
+        [XmlElement(Order = 7)]
+        public LevelPotion LevelPotion;
+        [XmlElement(Order = 8)]
+        public VIPCoupon VIPCoupon;
+        [XmlElement(Order = 9)]
+        public HongBaoData HongBao;
+        [XmlElement(Order = 10)]
+        public OpenCoupleEffectBox OpenCoupleEffectBox;
+        [XmlElement(Order = 11)]
+        public InstallBillboard InstallBillboard;
 
         public ItemFunction() { }
 
@@ -192,20 +190,12 @@ namespace Maple2Storage.Types.Metadata
             Id = id;
         }
 
-        public override string ToString() => $"Function(Name: {Name}, Id: {Id}, " +
-            $"Duration: {Duration}, FieldId: {FieldId}), Capacity:{Capacity}, TargetLevel:{TargetLevel}, Count:{Count}, TotalUser:{TotalUser}, Rarity:{Rarity}";
+        public override string ToString() => $"Function(Name: {Name}, Id: {Id}";
 
         protected bool Equals(ItemFunction other)
         {
             return Name == other.Name &&
-                Id == other.Id &&
-                Duration == other.Duration &&
-                FieldId == other.FieldId &&
-                Capacity == other.Capacity &&
-                TargetLevel == other.TargetLevel &&
-                Count == other.Count &&
-                TotalUser == other.TotalUser &&
-                Rarity == other.Rarity;
+                Id == other.Id;
         }
 
         public override bool Equals(object obj)
@@ -271,7 +261,75 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class AdBalloonData
+    public class ChatEmoticonAdd
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public int Duration;
+
+        public ChatEmoticonAdd() { }
+    }
+
+    [XmlType]
+    public class OpenMassiveEvent
+    {
+        [XmlElement(Order = 1)]
+        public int FieldId;
+        [XmlElement(Order = 2)]
+        public int Capacity;
+        [XmlElement(Order = 3)]
+        public int Duration;
+
+        public OpenMassiveEvent() { }
+    }
+
+    [XmlType]
+    public class LevelPotion
+    {
+        [XmlElement(Order = 1)]
+        public short TargetLevel;
+
+        public LevelPotion() { }
+    }
+
+    [XmlType]
+    public class VIPCoupon
+    {
+        [XmlElement(Order = 1)]
+        public int Duration;
+
+        public VIPCoupon() { }
+    }
+
+    [XmlType]
+    public class HongBaoData
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public short Count;
+        [XmlElement(Order = 3)]
+        public byte TotalUsers;
+        [XmlElement(Order = 4)]
+        public int Duration;
+
+        public HongBaoData() { }
+    }
+
+    [XmlType]
+    public class OpenCoupleEffectBox
+    {
+        [XmlElement(Order = 1)]
+        public int Id;
+        [XmlElement(Order = 2)]
+        public int Rarity;
+
+        public OpenCoupleEffectBox() { }
+    }
+
+    [XmlType]
+    public class InstallBillboard
     {
         [XmlElement(Order = 1)]
         public int InteractId;
@@ -288,9 +346,9 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 7)]
         public int Duration;
 
-        public AdBalloonData() { }
+        public InstallBillboard() { }
 
-        protected bool Equals(AdBalloonData other)
+        protected bool Equals(InstallBillboard other)
         {
             return InteractId == other.InteractId &&
                 Model == other.Model &&

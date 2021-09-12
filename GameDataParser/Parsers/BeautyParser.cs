@@ -4767,8 +4767,8 @@ namespace GameDataParser.Parsers
                 BeautyCategory = BeautyCategory.Dye,
                 BeautyType = BeautyShopType.Dye,
                 VoucherId = 20300038,
-                TokenType = ShopCurrencyType.Meret,
-                TokenCost = 150
+                TokenType = ShopCurrencyType.Meso,
+                TokenCost = 10000
             };
 
             shops.Add(douglas);
