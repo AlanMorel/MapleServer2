@@ -22,12 +22,21 @@ namespace MapleServer2.Commands.Game
         public override void Execute(GameCommandTrigger trigger)
         {
             int questId = trigger.Get<int>("id");
-            QuestStatus questStatus = trigger.Session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-
-            if (questStatus == null)
+            if (questId == 0)
+            {
+                trigger.Session.SendNotice("Please type an quest id");
+                return;
+            }
+            if (QuestMetadataStorage.IsValid(questId))
             {
                 trigger.Session.SendNotice($"Quest not found with id: <font color='#93f5eb'>{questId}</font>.");
                 return;
+            }
+            QuestStatus questStatus = trigger.Session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
+            {
+                questStatus = new QuestStatus(trigger.Session.Player, QuestMetadataStorage.GetMetadata(questId));
+                trigger.Session.Player.QuestList.Add(questStatus);
             }
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();

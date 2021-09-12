@@ -1,4 +1,6 @@
 ﻿using MapleServer2.Constants;
+using MapleServer2.Managers;
+using MapleServer2.Servers.Game;
 using MoonSharp.Interpreter;
 using NLog;
 
@@ -14,13 +16,28 @@ namespace MapleServer2.Tools
         /// <summary>
         /// Loads an script from the Scripts folder.
         /// </summary>
-        public ScriptLoader(string scriptName)
+        public ScriptLoader(string scriptName, GameSession session = null)
         {
+            string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";
+            if (!File.Exists(scriptPath))
+            {
+                return;
+            }
+
             ScriptName = scriptName;
             Script = new Script();
+
+            if (session != null)
+            {
+                // Register script helper as an proxy object
+                // Documentation: https://www.moonsharp.org/proxy.html
+                UserData.RegisterProxyType<ScriptManager, GameSession>(r => new ScriptManager(r));
+                Script.Globals["Helper"] = new ScriptManager(session);
+            }
+
             try
             {
-                Script.DoFile($"{Paths.SOLUTION_DIR}/MapleServer2/Scripts/{scriptName}.lua");
+                Script.DoFile(scriptPath);
             }
             catch (Exception ex)
             {
@@ -34,6 +51,11 @@ namespace MapleServer2.Tools
         /// <returns>Returns DynValue or null if function was not found</returns>
         public DynValue Call(params object[] args)
         {
+            if (Script.Globals[ScriptName] == null)
+            {
+                return null;
+            }
+
             try
             {
                 return Script.Call(Script.Globals[ScriptName], args);
@@ -51,6 +73,11 @@ namespace MapleServer2.Tools
         /// <exception cref="ArgumentException"></exception>
         public DynValue Call(string functionName, params object[] args)
         {
+            if (Script.Globals[functionName] == null)
+            {
+                return null;
+            }
+
             try
             {
                 return Script.Call(Script.Globals[functionName], args);
