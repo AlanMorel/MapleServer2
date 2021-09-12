@@ -9,19 +9,20 @@ namespace MapleServer2.Tools
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void InitializeAll()
+        public static async Task InitializeAll()
         {
             Logger.Info("Initializing Data...Please Wait".ColorYellow());
-            List<Type> callingTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsAbstract && t.IsClass && t.Namespace == "MapleServer2.Data.Static").ToList();
-            int count = 0;
 
-            foreach (Type type in callingTypes)
+            List<Task> tasks = new();
+            List<Type> listStaticClass = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsAbstract && t.IsClass && t.Namespace == "MapleServer2.Data.Static").ToList();
+
+            int count = 1;
+            foreach (Type staticClass in listStaticClass)
             {
-                type.GetMethod("Init")?.Invoke(null, null);
-                count++;
-                ConsoleUtility.WriteProgressBar((float) count / callingTypes.Count * 100);
+                tasks.Add(Task.Run(() => staticClass.GetMethod("Init")?.Invoke(null, null)).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count++ / listStaticClass.Count * 100)));
             }
 
+            await Task.WhenAll(tasks);
             Logger.Info("Initializing Data...Complete!".ColorGreen());
         }
     }
