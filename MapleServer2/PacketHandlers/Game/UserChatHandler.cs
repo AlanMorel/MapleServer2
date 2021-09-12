@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
             {
-                string[] args = message[1..].ToLower().Split(" ");
+                string[] args = message[1..].Split(" ");
                 if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
                 {
                     session.SendNotice($"No command were found with alias: {args[0]}");

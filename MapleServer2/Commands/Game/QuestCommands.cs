@@ -11,7 +11,7 @@ namespace MapleServer2.Commands.Game
     {
         public QuestCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "completequest"
             };

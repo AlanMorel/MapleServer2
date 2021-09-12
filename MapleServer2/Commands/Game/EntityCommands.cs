@@ -10,7 +10,7 @@ namespace MapleServer2.Commands.Game
     {
         public NpcCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "npc"
             };
@@ -55,7 +55,7 @@ namespace MapleServer2.Commands.Game
     {
         public MobCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "mob"
             };

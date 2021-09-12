@@ -107,8 +107,12 @@ namespace MapleServer2.Constants.Skills
         };
         private static readonly List<int> GameMaster = new List<int>
         {
-            0
+            20000001,20000011,19900001,19900011,19900021,19900032,19900042,19900052,19900061,19999991
         };
+        private static readonly List<int> Beginner = new List<int>
+        {
+            20000001,20000011,10000001,10000011,10000021,10000031,10000041,10000051,10000061
+       };
         #endregion
 
         private static readonly Dictionary<Job, List<int>> ListOrdered = new Dictionary<Job, List<int>>()
@@ -126,6 +130,7 @@ namespace MapleServer2.Constants.Skills
             {Job.Striker, Striker },
             {Job.SoulBinder, SoulBinder },
             {Job.GameMaster, GameMaster },
+            {Job.Beginner, Beginner }
         };
         /// <summary>
         /// Get the specific ordered skill list of each Job. Requiered for SkillBookTree

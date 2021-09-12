@@ -107,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (item.Function.Duration == 0) // if no duration was set, set it to not expire
             {
-                expiration = 9223372036854775807;
+                expiration = long.MaxValue;
             }
 
             if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.Id))
@@ -126,25 +126,14 @@ namespace MapleServer2.PacketHandlers.Game
             short boxType = packet.ReadShort();
             int index = packet.ReadShort() - 0x30;
 
-            if (item.Content.Count <= 0)
-            {
-                return;
-            }
-
-            InventoryController.Consume(session, item.Uid, 1);
-
-            if (index < item.Content.Count)
-            {
-                ItemUseHelper.GiveItem(session, item.Content[index]);
-            }
+            ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
         }
 
         private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
         {
             short boxType = packet.ReadShort();
 
-            InventoryController.Consume(session, item.Uid, 1);
-            ItemUseHelper.OpenBox(session, item.Content);
+            ItemBoxHelper.GiveItemFromOpenBox(session, item);
         }
 
         private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)

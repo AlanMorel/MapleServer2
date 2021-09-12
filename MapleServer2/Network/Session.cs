@@ -231,6 +231,7 @@ namespace MapleServer2.Network
                         case RecvOp.KEY_TABLE:
                         case RecvOp.RIDE_SYNC:
                         case RecvOp.GUIDE_OBJECT_SYNC:
+                        case RecvOp.REQUEST_TIME_SYNC:
                         case RecvOp.STATE:
                         case RecvOp.STATE_FALL_DAMAGE:
                             break;
@@ -285,6 +286,7 @@ namespace MapleServer2.Network
                 case SendOp.STORAGE_INVENTORY:
                 case SendOp.TROPHY:
                 case SendOp.INTERACT_OBJECT:
+                case SendOp.RESPONSE_TIME_SYNC:
                     break;
                 default:
                     string packetString = packet.ToHexString(' ');

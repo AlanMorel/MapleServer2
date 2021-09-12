@@ -8,7 +8,7 @@ namespace MapleServer2.Commands.Game
     {
         public EventCommands()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "event"
             };

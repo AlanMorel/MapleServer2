@@ -1,17 +1,17 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Network;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Common
+namespace MapleServer2.PacketHandlers.Game
 {
-    public class RequestTimeSyncHandler : CommonPacketHandler
+    public class RequestTimeSyncHandler : GamePacketHandler
     {
         public override RecvOp OpCode => RecvOp.REQUEST_TIME_SYNC;
 
         public RequestTimeSyncHandler() : base() { }
 
-        protected override void HandleCommon(Session session, PacketReader packet)
+        public override void Handle(GameSession session, PacketReader packet)
         {
             int key = packet.ReadInt();
 
