@@ -327,12 +327,13 @@ namespace GameDataParser.Parsers
                 }
                 else if (contentType == "ChatEmoticonAdd")
                 {
+                    ChatEmoticonAdd sticker = new ChatEmoticonAdd();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.Id = byte.Parse(functionParameters.Attributes["id"].Value);
+                    sticker.Id = byte.Parse(functionParameters.Attributes["id"].Value);
 
                     int durationSec = 0;
 
@@ -340,10 +341,12 @@ namespace GameDataParser.Parsers
                     {
                         durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
                     }
-                    metadata.FunctionData.Duration = durationSec;
+                    sticker.Duration = durationSec;
+                    metadata.FunctionData.ChatEmoticonAdd = sticker;
                 }
                 else if (contentType == "OpenMassive")
                 {
+                    OpenMassiveEvent massiveEvent = new OpenMassiveEvent();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
                     string decodedParameter = HttpUtility.HtmlDecode(cleanParameter);
@@ -351,39 +354,46 @@ namespace GameDataParser.Parsers
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
-                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
-                    metadata.FunctionData.Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
+                    massiveEvent.FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
+                    massiveEvent.Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
+                    massiveEvent.Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
+                    metadata.FunctionData.OpenMassiveEvent = massiveEvent;
                 }
                 else if (contentType == "LevelPotion")
                 {
+                    LevelPotion levelPotion = new LevelPotion();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                    levelPotion.TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
+                    metadata.FunctionData.LevelPotion = levelPotion;
                 }
                 else if (contentType == "VIPCoupon")
                 {
+                    VIPCoupon coupon = new VIPCoupon();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["period"].Value);
+                    coupon.Duration = int.Parse(functionParameters.Attributes["period"].Value);
+                    metadata.FunctionData.VIPCoupon = coupon;
                 }
                 else if (contentType == "HongBao")
                 {
+                    HongBaoData hongBao = new HongBaoData();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                    metadata.FunctionData.Id = int.Parse(functionParameters.Attributes["itemId"].Value);
-                    metadata.FunctionData.Count = short.Parse(functionParameters.Attributes["totalCount"].Value);
-                    metadata.FunctionData.TotalUser = byte.Parse(functionParameters.Attributes["totalUser"].Value);
-                    metadata.FunctionData.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    hongBao.Id = int.Parse(functionParameters.Attributes["itemId"].Value);
+                    hongBao.Count = short.Parse(functionParameters.Attributes["totalCount"].Value);
+                    hongBao.TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"].Value);
+                    hongBao.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
+                    metadata.FunctionData.HongBao = hongBao;
                 }
                 else if (contentType == "SuperWorldChat")
                 {
@@ -397,13 +407,15 @@ namespace GameDataParser.Parsers
                 }
                 else if (contentType == "OpenCoupleEffectBox")
                 {
+                    OpenCoupleEffectBox box = new OpenCoupleEffectBox();
                     string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                    metadata.FunctionData.Id = int.Parse(parameters[0]);
-                    metadata.FunctionData.Rarity = byte.Parse(parameters[1]);
+                    box.Id = int.Parse(parameters[0]);
+                    box.Rarity = byte.Parse(parameters[1]);
+                    metadata.FunctionData.OpenCoupleEffectBox = box;
                 }
                 else if (contentType == "InstallBillBoard")
                 {
-                    AdBalloonData balloon = new AdBalloonData();
+                    InstallBillboard balloon = new InstallBillboard();
                     string rawParameter = function.Attributes["parameter"].Value;
                     string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
                     XmlDocument xmlParameter = new XmlDocument();
@@ -422,7 +434,7 @@ namespace GameDataParser.Parsers
                     {
                         balloon.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
                     }
-                    metadata.AdBalloonData = balloon;
+                    metadata.FunctionData.InstallBillboard = balloon;
                 }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty"
                     || contentType == "ItemRePackingScroll")

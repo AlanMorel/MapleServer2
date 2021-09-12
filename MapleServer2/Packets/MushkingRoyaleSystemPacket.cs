@@ -82,13 +82,13 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
             pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.LoadStats);
             pWriter.WriteLong(accountId);
-            pWriter.WriteInt(50);
+            pWriter.WriteInt();
             pWriter.WriteByte();
-            pWriter.WriteLong(60); // exp
+            pWriter.WriteLong(); // exp
             pWriter.WriteInt(1); // royal level
-            pWriter.WriteInt(70);
-            pWriter.WriteInt(80);
-            pWriter.WriteLong(90);
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteLong(); // exp gained
 
             return pWriter;
         }
