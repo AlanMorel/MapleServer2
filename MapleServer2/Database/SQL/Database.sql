@@ -425,6 +425,7 @@ CREATE TABLE `quests` (
   `CompleteTimestamp` bigint NOT NULL,
   `Condition` text,
   `CharacterId` bigint DEFAULT NULL,
+  `Tracked` tinyint(1) NOT NULL,
   PRIMARY KEY (`Uid`),
   KEY `IX_Quests_CharacterId` (`CharacterId`),
   CONSTRAINT `FK_Quests_Characters_CharacterId` FOREIGN KEY (`CharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT

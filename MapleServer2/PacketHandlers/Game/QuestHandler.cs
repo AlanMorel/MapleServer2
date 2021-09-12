@@ -21,6 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
             AcceptQuest = 0x02,
             CompleteQuest = 0x04,
             ExplorationQuests = 0x08,
+            ToggleTracking = 0x09,
             CompleteNavigator = 0x18,
         }
 
@@ -41,6 +42,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case QuestMode.CompleteNavigator:
                     HandleCompleteNavigator(session, packet);
+                    break;
+                case QuestMode.ToggleTracking:
+                    HandleToggleTracking(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -154,6 +158,21 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Player.QuestList.AddRange(list);
+        }
+
+        private static void HandleToggleTracking(GameSession session, PacketReader packet)
+        {
+            int questId = packet.ReadInt();
+            bool tracked = packet.ReadBool();
+
+            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+            if (questStatus == null)
+            {
+                return;
+            }
+            questStatus.Tracked = tracked;
+            DatabaseManager.Quests.Update(questStatus);
+            session.Send(QuestPacket.ToggleTracking(questId, tracked));
         }
     }
 }
