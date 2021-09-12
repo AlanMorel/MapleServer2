@@ -10,61 +10,45 @@ namespace GameDataParser
     {
         private static async Task Main()
         {
-            Spinner spinner = new Spinner();
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Create Resources folders if they don't exist
             Directory.CreateDirectory(Paths.INPUT);
             Directory.CreateDirectory(Paths.OUTPUT);
 
+            Spinner spinner = new Spinner();
+
             object resources = Activator.CreateInstance(typeof(MetadataResources));
             List<Task> tasks = new();
-            List<Type> callingTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
+            List<Type> parserClassList = Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsAbstract && !t.IsNested && t.IsClass && t.Namespace == "GameDataParser.Parsers").ToList();
 
-            foreach (Type type in callingTypes)
+            int count = 0;
+            foreach (Type parserClass in parserClassList)
             {
-                // Initialize the constructor of the class.
-                ConstructorInfo ctor = type.GetConstructor(new Type[] { typeof(MetadataResources) });
+                ConstructorInfo newConstructor = parserClass.GetConstructor(new Type[] { typeof(MetadataResources) });
 
-                // Initialize and get all params for the constructor.
-                object parser = new object();
-                if (ctor != null)
+                object currentParser = new object();
+
+                // Verify if the new constructor doesn't need a parameter so can create an instances without a parameter.
+                if (newConstructor != null)
                 {
-                    ParameterInfo[] paramsInfo = ctor.GetParameters();
-                    foreach (ParameterInfo param in paramsInfo)
+                    ParameterInfo[] newParameters = newConstructor.GetParameters();
+
+                    foreach (ParameterInfo currentParameter in newParameters)
                     {
-                        Type paramType = Nullable.GetUnderlyingType(param.ParameterType);
-                        if (paramType == null && param.HasDefaultValue)
-                        {
-                            parser = param.ParameterType.IsValueType ? Activator.CreateInstance(param.ParameterType) : null;
-                        }
-                        else
-                        {
-                            parser = Activator.CreateInstance(type, resources);
-                        }
+                        currentParser = Activator.CreateInstance(parserClass, resources);
                     }
                 }
                 else
                 {
-                    parser = Activator.CreateInstance(type);
+                    currentParser = Activator.CreateInstance(parserClass);
                 }
 
-                // Initialize the instances of the type with the constructor and parameter.
-                MetadataExporter exporter = (MetadataExporter) (ctor != null ? Activator.CreateInstance(parser.GetType(), resources) : Activator.CreateInstance(parser.GetType()));
-
-                // Add the exporter in a task list for later be called in async.
-                tasks.Add(Task.Run(() => exporter.Export()));
-            }
-
-            int count = 0;
-            foreach (Task task in tasks)
-            {
-                task.Wait();
+                MetadataExporter exporter = (MetadataExporter) (newConstructor != null ? Activator.CreateInstance(currentParser.GetType(), resources) : Activator.CreateInstance(currentParser.GetType()));
                 count++;
-                ConsoleUtility.WriteProgressBar((float) count / tasks.Count * 100f);
+                await Task.Run(() => exporter.Export()).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count / parserClassList.Count * 100f));
             }
 
-            await Task.WhenAll(tasks);
             spinner.Stop();
             TimeSpan runtime = spinner.GetRuntime();
 
