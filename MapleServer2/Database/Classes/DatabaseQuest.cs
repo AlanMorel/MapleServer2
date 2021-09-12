@@ -17,6 +17,7 @@ namespace MapleServer2.Database.Classes
                 questStatus.Completed,
                 questStatus.StartTimestamp,
                 questStatus.CompleteTimestamp,
+                questStatus.Tracked,
                 Condition = JsonConvert.SerializeObject(questStatus.Condition),
                 questStatus.CharacterId
             });
@@ -43,6 +44,7 @@ namespace MapleServer2.Database.Classes
                 questStatus.Completed,
                 questStatus.StartTimestamp,
                 questStatus.CompleteTimestamp,
+                questStatus.Tracked,
                 Condition = JsonConvert.SerializeObject(questStatus.Condition),
                 questStatus.CharacterId
             });
@@ -50,6 +52,6 @@ namespace MapleServer2.Database.Classes
 
         public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
 
-        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.Uid, data.Id, data.CharacterId, data.Started, data.Completed, data.StartTimestamp, data.CompleteTimestamp, JsonConvert.DeserializeObject<List<Condition>>(data.Condition));
+        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.Uid, data.Id, data.CharacterId, data.Tracked, data.Started, data.Completed, data.StartTimestamp, data.CompleteTimestamp, JsonConvert.DeserializeObject<List<Condition>>(data.Condition));
     }
 }
