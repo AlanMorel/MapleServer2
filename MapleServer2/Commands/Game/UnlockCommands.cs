@@ -9,7 +9,7 @@ namespace MapleServer2.Commands.Game
     {
         public UnlockAll()
         {
-            Aliases = new[] { "unlock" };
+            Aliases = new() { "unlock" };
             Description = "Unlocks a bunch of emotes, stickers, and titles!";
         }
 
@@ -60,7 +60,7 @@ namespace MapleServer2.Commands.Game
     {
         public UnlockTrophy()
         {
-            Aliases = new[] { "trophy" };
+            Aliases = new() { "trophy" };
             Description = "Unlock an trophy!";
             AddParameter("trophyId", "The trophy id to unlock;", 0);
             AddParameter("amount", "The amount of trophy goals.", 1);

@@ -27,10 +27,21 @@ namespace MapleServer2.Types
         // Gender - 0 = male, 1 = female
         public byte Gender { get; set; }
 
-        // Job Group, according to jobgroupname.xml
         public bool Awakened { get; set; }
+
+        // Job Group, according to jobgroupname.xml
         public Job Job { get; set; }
-        public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+        public JobCode JobCode
+        {
+            get
+            {
+                if (Job == Job.GameMaster)
+                {
+                    return JobCode.GameMaster;
+                }
+                return (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+            }
+        }
 
         // Mutable Values
         public Levels Levels { get; set; }
