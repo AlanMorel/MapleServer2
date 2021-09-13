@@ -234,6 +234,7 @@ namespace MapleServer2.Network
                         case RecvOp.REQUEST_TIME_SYNC:
                         case RecvOp.STATE:
                         case RecvOp.STATE_FALL_DAMAGE:
+                        case RecvOp.VIBRATE:
                             break;
                         default:
                             string packetString = packet.ToString();
@@ -287,6 +288,7 @@ namespace MapleServer2.Network
                 case SendOp.TROPHY:
                 case SendOp.INTERACT_OBJECT:
                 case SendOp.RESPONSE_TIME_SYNC:
+                case SendOp.VIBRATE:
                     break;
                 default:
                     string packetString = packet.ToHexString(' ');

@@ -16,6 +16,7 @@ namespace MapleServer2.Commands.Game
                 "oneshot"
             };
             Description = "Enables oneshot mode.";
+            Usage = "/oneshot";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -40,9 +41,13 @@ namespace MapleServer2.Commands.Game
                 "setJob",
                 "sj"
             };
-            Description = "Sets character's job, e.g. /setJob assassin 1";
-            AddParameter<string>("job", "Classname, e.g.: striker");
-            AddParameter<byte>("awakened", "Awakened = 1, Unawakened = 0");
+            Description = "Sets character's job.";
+            Parameters = new()
+            {
+                new Parameter<string>("job", "Classname, e.g.: striker"),
+                new Parameter<byte>("awakened", "Awakened = 1, Unawakened = 0"),
+            };
+            Usage = "/setJob [job] [awakened]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -91,7 +96,7 @@ namespace MapleServer2.Commands.Game
 
             player.Awakened = awakened == 1;
 
-            trigger.Session.Send(Packets.JobPacket.SendJob(fieldPlayer));
+            trigger.Session.Send(JobPacket.SendJob(fieldPlayer));
         }
     }
 }

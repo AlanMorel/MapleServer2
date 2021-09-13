@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using System.Drawing;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
@@ -7,16 +8,20 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game
 {
-    public class QuestCommand : InGameCommand
+    public class CompleteQuestCommand : InGameCommand
     {
-        public QuestCommand()
+        public CompleteQuestCommand()
         {
             Aliases = new()
             {
                 "completequest"
             };
             Description = "Complete a Quest by id.";
-            AddParameter<int>("id", "The id of the Quest.");
+            Parameters = new()
+            {
+                new Parameter<int>("id", "The id of the Quest.")
+            };
+            Usage = "/completequest [id]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -26,7 +31,7 @@ namespace MapleServer2.Commands.Game
 
             if (questStatus == null)
             {
-                trigger.Session.SendNotice($"Quest not found with id: <font color='#93f5eb'>{questId}</font>.");
+                trigger.Session.SendNotice($"Quest not found with id: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
                 return;
             }
             questStatus.Completed = true;
@@ -54,6 +59,46 @@ namespace MapleServer2.Commands.Game
             {
                 trigger.Session.Player.QuestList.Add(new QuestStatus(trigger.Session.Player, kvp.Value));
             }
+        }
+    }
+
+    public class StartQuestCommand : InGameCommand
+    {
+        public StartQuestCommand()
+        {
+            Aliases = new()
+            {
+                "startquest"
+            };
+            Description = "Start a Quest by id.";
+            Parameters = new()
+            {
+                new Parameter<int>("id", "The id of the Quest.")
+            };
+            Usage = "/startquest [id]";
+        }
+
+        public override void Execute(GameCommandTrigger trigger)
+        {
+            int questId = trigger.Get<int>("id");
+            if (questId == 0)
+            {
+                trigger.Session.SendNotice("Type an quest id.");
+                return;
+            }
+            QuestMetadata quest = QuestMetadataStorage.GetMetadata(questId);
+            if (quest == null)
+            {
+                trigger.Session.SendNotice($"Quest not found with id: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
+                return;
+            }
+            if (trigger.Session.Player.QuestList.Any(x => x.Basic.Id == questId))
+            {
+                trigger.Session.SendNotice($"You already have quest: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
+                return;
+            }
+            trigger.Session.Player.QuestList.Add(new QuestStatus(trigger.Session.Player, quest, true, DateTimeOffset.Now.ToUnixTimeSeconds()));
+            trigger.Session.Send(QuestPacket.AcceptQuest(questId));
         }
     }
 }

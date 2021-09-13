@@ -15,8 +15,12 @@ namespace MapleServer2.Commands.Game
                 "currency"
             };
             Description = "Set the amount of the currency type specified.";
-            AddParameter<string>("name", "Type of the currency you want to add.");
-            AddParameter<long>("amount", "Amount of the currency type.");
+            Parameters = new()
+            {
+                new Parameter<string>("name", "Type of the currency you want to add."),
+                new Parameter<long>("amount", "Amount of the currency type.")
+            };
+            Usage = "/currency [name] [amount]";
         }
 
         public override void Execute(GameCommandTrigger trigger)

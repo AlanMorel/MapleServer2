@@ -15,10 +15,14 @@ namespace MapleServer2.Commands.Game
                 "npc"
             };
             Description = "Spawn a NPC from id.";
-            AddParameter("id", "The id of the NPC.", 11003146);
-            AddParameter("ani", "The animation of the NPC.", 1);
-            AddParameter("dir", "The rotation of the NPC.", 2700);
-            AddParameter("coord", "The position of the NPC.", CoordF.From(0, 0, 0));
+            Parameters = new()
+            {
+                new Parameter<int>("id", "The id of the NPC.", 11003146),
+                new Parameter<short>("ani", "The animation of the NPC.", 1),
+                new Parameter<short>("dir", "The rotation of the NPC.", 2700),
+                new Parameter<CoordF>("coord", "The position of the NPC.", CoordF.From(0, 0, 0)),
+            };
+            Usage = "/npc [id] [ani] [dir] [coord]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -60,10 +64,14 @@ namespace MapleServer2.Commands.Game
                 "mob"
             };
             Description = "Spawn a MOB from id.";
-            AddParameter("id", "The id of the MOB.", 21000001);
-            AddParameter("ani", "The animation of the MOB.", 1);
-            AddParameter("dir", "The rotation of the MOB.", 2700);
-            AddParameter("coord", "The position of the MOB.", CoordF.From(0, 0, 0));
+            Parameters = new()
+            {
+                new Parameter<int>("id", "The id of the MOB.", 21000001),
+                new Parameter<short>("ani", "The animation of the MOB.", 1),
+                new Parameter<short>("dir", "The rotation of the MOB.", 2700),
+                new Parameter<CoordF>("coord", "The position of the MOB.", CoordF.From(0, 0, 0)),
+            };
+            Usage = "/mob [id] [ani] [dir] [coord]";
         }
 
         public override void Execute(GameCommandTrigger trigger)

@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Commands.Core;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
@@ -11,6 +12,7 @@ namespace MapleServer2.Commands.Game
         {
             Aliases = new() { "unlock" };
             Description = "Unlocks a bunch of emotes, stickers, and titles!";
+            Usage = "/unlock";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -52,18 +54,24 @@ namespace MapleServer2.Commands.Game
 
                 trigger.Session.Send(UserEnvPacket.AddTitle(titleId));
             }
+
+            DatabaseManager.Characters.Update(player);
             trigger.Session.Send(NoticePacket.Notice("Done!", NoticeType.Chat));
         }
     }
 
-    public class UnlockTrophy : InGameCommand
+    public class UnlockTrophyCommand : InGameCommand
     {
-        public UnlockTrophy()
+        public UnlockTrophyCommand()
         {
             Aliases = new() { "trophy" };
             Description = "Unlock an trophy!";
-            AddParameter("trophyId", "The trophy id to unlock;", 0);
-            AddParameter("amount", "The amount of trophy goals.", 1);
+            Parameters = new()
+            {
+                new Parameter<int>("trophyId", "The trophy id to unlock;", 0),
+                new Parameter<int>("amount", "The amount of trophy goals.", 1),
+            };
+            Usage = "/trophy [trophyId] [amount]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -75,8 +83,14 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.Send(NoticePacket.Notice("Type an trophy id!", NoticeType.Chat));
                 return;
             }
+            if (trigger.Session.Player.TrophyData.TryGetValue(trophyId, out Trophy trophy))
+            {
+                trigger.Session.Send(NoticePacket.Notice("You already have this trophy!", NoticeType.Chat));
+                return;
+            }
 
             trigger.Session.Player.TrophyUpdate(trophyId, amount);
+            DatabaseManager.Trophies.Update(trophy);
             trigger.Session.Send(NoticePacket.Notice("Done!", NoticeType.Chat));
         }
     }

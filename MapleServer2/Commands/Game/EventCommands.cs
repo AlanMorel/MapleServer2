@@ -1,4 +1,6 @@
 ﻿using MapleServer2.Commands.Core;
+using MapleServer2.Enums;
+using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -13,7 +15,11 @@ namespace MapleServer2.Commands.Game
                 "event"
             };
             Description = "Create a global event";
-            AddParameter<string[]>("id", "Event Id");
+            Parameters = new()
+            {
+                new Parameter<string[]>("id", "Event Id")
+            };
+            Usage = "/event [id],[id],[id]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -22,7 +28,7 @@ namespace MapleServer2.Commands.Game
 
             if (args == null || args.Length <= 1)
             {
-                trigger.Session.SendNotice("No events provided. Choose 3 events. 1 = OX Quiz \n" +
+                trigger.Session.Send(NoticePacket.Notice("No events provided. Choose 3 events. 1 = OX Quiz \n" +
                     "2 = Trap Master \n" +
                     "3 = Spring Beach \n" +
                     "4 = Crazy Runner \n" +
@@ -34,7 +40,7 @@ namespace MapleServer2.Commands.Game
                     "10 = Red Arena \n" +
                     "11 = Blood Mine \n" +
                     "12 = Treasure Island \n" +
-                    "13 = Christmas Dance Dance Stop");
+                    "13 = Christmas Dance Dance Stop", NoticeType.Chat));
                 return;
             }
 

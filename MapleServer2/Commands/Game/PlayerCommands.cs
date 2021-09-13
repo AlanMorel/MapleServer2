@@ -17,7 +17,11 @@ namespace MapleServer2.Commands.Game
                 "sethandicraft"
             };
             Description = "Set Exp for handicraft.";
-            AddParameter<int>("exp", "Amount of exp for handicraft.");
+            Parameters = new()
+            {
+                new Parameter<int>("exp", "Amount of exp for handicraft."),
+            };
+            Usage = "/sethandicraft [exp]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -42,7 +46,11 @@ namespace MapleServer2.Commands.Game
                 "gainprestigeexp"
             };
             Description = "Set Exp for prestige.";
-            AddParameter<long>("exp", "Amount of exp for prestige");
+            Parameters = new()
+            {
+                new Parameter<long>("exp", "Amount of exp for prestige"),
+            };
+            Usage = "/gainprestigeexp [exp]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -67,7 +75,11 @@ namespace MapleServer2.Commands.Game
                 "gainexp"
             };
             Description = "Give Exp for the Player";
-            AddParameter<int>("exp", "Amount of exp for player");
+            Parameters = new()
+            {
+                new Parameter<int>("exp", "Amount of exp for player"),
+            };
+            Usage = "/gainexp [exp]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -92,7 +104,11 @@ namespace MapleServer2.Commands.Game
                 "setprestigelevel"
             };
             Description = "Set the level for prestige";
-            AddParameter<int>("level", "The number of level for prestige");
+            Parameters = new()
+            {
+                new Parameter<int>("level", "The number of level for prestige"),
+            };
+            Usage = "/setprestigelevel [level]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -117,7 +133,11 @@ namespace MapleServer2.Commands.Game
                 "setlevel"
             };
             Description = "Set the Player level.";
-            AddParameter<short>("level", "The number of the level to get.");
+            Parameters = new()
+            {
+                new Parameter<short>("level", "The number of the level to get."),
+            };
+            Usage = "/setlevel [level]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -142,8 +162,12 @@ namespace MapleServer2.Commands.Game
                 "skill"
             };
             Description = "Cast an specific skill.";
-            AddParameter<int>("id", "ID of the skill.");
-            AddParameter<short>("level", "The level of the skill.");
+            Parameters = new()
+            {
+                new Parameter<int>("id", "ID of the skill."),
+                new Parameter<short>("level", "The level of the skill."),
+            };
+            Usage = "/skill <id> [level]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -173,10 +197,14 @@ namespace MapleServer2.Commands.Game
                 "buff"
             };
             Description = "Level up all the skills available.";
-            AddParameter<int>("id", "ID of the status.");
-            AddParameter<short>("level", "The level of the status. (OPTIONAL)");
-            AddParameter<int>("duration", "Duration for the status in seconds. (OPTIONAL)");
-            AddParameter<int>("stacks", "Stacks for the status. (OPTIONAL)");
+            Parameters = new()
+            {
+                new Parameter<int>("id", "ID of the status."),
+                new Parameter<short>("level", "The level of the status. (OPTIONAL)"),
+                new Parameter<int>("duration", "Duration for the status in seconds. (OPTIONAL)"),
+                new Parameter<int>("stacks", "Stacks for the status. (OPTIONAL)"),
+            };
+            Usage = "/buff [id] [level] [duration] [stacks]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
