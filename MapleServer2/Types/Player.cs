@@ -83,7 +83,7 @@ namespace MapleServer2.Types
         // Appearance
         public SkinColor SkinColor;
 
-        public string ProfileUrl; // profile/e2/5a/2755104031905685000/637207943431921205.png
+        public string ProfileUrl;
         public string Motto;
 
         public long VisitingHomeId;
