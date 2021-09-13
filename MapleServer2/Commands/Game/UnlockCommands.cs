@@ -83,13 +83,9 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.Send(NoticePacket.Notice("Type an trophy id!", NoticeType.Chat));
                 return;
             }
-            if (trigger.Session.Player.TrophyData.TryGetValue(trophyId, out Trophy trophy))
-            {
-                trigger.Session.Send(NoticePacket.Notice("You already have this trophy!", NoticeType.Chat));
-                return;
-            }
-
             trigger.Session.Player.TrophyUpdate(trophyId, amount);
+
+            trigger.Session.Player.TrophyData.TryGetValue(trophyId, out Trophy trophy);
             DatabaseManager.Trophies.Update(trophy);
             trigger.Session.Send(NoticePacket.Notice("Done!", NoticeType.Chat));
         }
