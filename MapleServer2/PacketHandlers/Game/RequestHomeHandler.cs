@@ -79,11 +79,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
 
-            if (player.MapId != (int) Map.PrivateResidence)
-            {
-                player.ReturnMapId = player.MapId;
-                player.ReturnCoord = player.SafeBlock;
-            }
             player.VisitingHomeId = player.Account.Home.Id;
             player.Guide = null;
             session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));

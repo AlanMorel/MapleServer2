@@ -186,12 +186,6 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            if (player.MapId != (int) Map.PrivateResidence)
-            {
-                player.ReturnMapId = player.MapId;
-                player.ReturnCoord = player.SafeBlock;
-            }
-
             player.VisitingHomeId = home.Id;
             session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
 
