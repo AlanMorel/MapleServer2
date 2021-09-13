@@ -32,8 +32,7 @@ namespace MapleServer2.Managers
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         public readonly TriggerScript[] Triggers;
-        private readonly List<BreakableObject> Breakables = new List<BreakableObject>(); // is this needed?
-        private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>(); // is this needed?
+        private readonly List<BreakableObject> Breakables = new List<BreakableObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private readonly List<Widget> Widgets = new List<Widget>();
         public bool SkipScene;
@@ -195,7 +194,6 @@ namespace MapleServer2.Managers
                 }
             }
 
-
             // Load breakables
             foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(mapId))
             {
@@ -206,7 +204,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach(MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(mapId))
+            foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(mapId))
             {
                 if (mapNif != null)
                 {
