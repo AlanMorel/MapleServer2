@@ -102,14 +102,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
-                .FirstOrDefault(portal => portal.Target == srcMapId); //target map portal, that has a portal to the source map
-            if (dstPortal == default)
-            {
-                session.Player.ReturnCoord = session.FieldPlayer.Coord;
-                session.Player.ReturnMapId = session.Player.MapId;
-            }
-
-            dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
             .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId); // target map's portal id == source portal's targetPortalId
             if (dstPortal == default)
             {
