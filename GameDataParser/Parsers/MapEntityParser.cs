@@ -293,11 +293,16 @@ namespace GameDataParser.Parsers
                         metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
                             CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
-
-                    case IMS2Breakable:
-                        // case IMS2BreakableActor
-                        // TODO: Do we need to parse these as some special NPC object?
-                        // "mixinMS2Breakable"  But not "mixinMS2BreakableActor", as in ke_fi_prop_buoy_A01_ or el_move_woodbox_B04_
+                    case IMS2Breakable breakable:
+                        switch (breakable)
+                        {
+                            case IMS2BreakableNIF nif:
+                                metadata.Breakables.Add(new MapBreakableNif(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID));
+                                break;
+                            default:
+                                metadata.Breakables.Add(new MapBreakable(breakable.EntityId, breakable.Enabled));
+                                break;
+                        }
                         break;
                     case IMS2TriggerObject triggerObject:
                         switch (triggerObject)

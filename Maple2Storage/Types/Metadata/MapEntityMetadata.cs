@@ -53,6 +53,9 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerSound> TriggerSounds;
         [XmlElement(Order = 23)]
         public readonly List<MapTriggerRope> TriggerRopes;
+        [XmlElement(Order = 24)]
+        public readonly List<MapBreakable> Breakables;
+
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -77,6 +80,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerCubes = new List<MapTriggerCube>();
             TriggerSounds = new List<MapTriggerSound>();
             TriggerRopes = new List<MapTriggerRope>();
+            Breakables = new List<MapBreakable>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -102,6 +106,7 @@ namespace Maple2Storage.Types.Metadata
             TriggerCubes = new List<MapTriggerCube>();
             TriggerSounds = new List<MapTriggerSound>();
             TriggerRopes = new List<MapTriggerRope>();
+            Breakables = new List<MapBreakable>();
         }
 
         public override string ToString() =>
@@ -761,5 +766,37 @@ namespace Maple2Storage.Types.Metadata
         }
 
         private MapTriggerRope() : base() { }
+    }
+
+    [ProtoContract, ProtoInclude(20, typeof(MapTriggerMesh))]
+    [ProtoInclude(11, typeof(MapTriggerEffect))]
+    public class MapBreakable
+    {
+        [XmlElement(Order = 1)]
+        public string EntityId;
+        [XmlElement(Order = 2)]
+        public bool IsEnabled;
+
+        public MapBreakable() { }
+
+        public MapBreakable(string entityId, bool isEnabled)
+        {
+            EntityId = entityId;
+            IsEnabled = isEnabled;
+        }
+    }
+
+    [ProtoContract]
+    public class MapBreakableNif : MapBreakable
+    {
+        [XmlElement(Order = 3)]
+        public int TriggerId;
+
+        public MapBreakableNif() { }
+
+        public MapBreakableNif(string id, bool isEnabled, int triggerId) : base(id, isEnabled)
+        {
+            TriggerId = triggerId;
+        }
     }
 }
