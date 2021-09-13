@@ -32,7 +32,7 @@ namespace MapleServer2.Commands.Game
             if (string.IsNullOrEmpty(currencyName))
             {
                 session.SendNotice("No currency type were found. Try one of the list.");
-                session.Send(NoticePacket.Notice(CommandHelpers.Color("valor, treva, rue, havi, meso, meret", Color.DarkOrange), NoticeType.Chat));
+                session.Send(NoticePacket.Notice("valor, treva, rue, havi, meso, meret".Color(Color.DarkOrange), NoticeType.Chat));
                 return;
             }
             if (amount <= 0)

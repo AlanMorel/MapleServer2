@@ -1,6 +1,8 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
+using MapleServer2.Packets;
 using MapleServer2.Types;
 using Color = System.Drawing.Color;
 
@@ -31,7 +33,7 @@ namespace MapleServer2.Commands.Game
 
             if (NpcMetadataStorage.GetNpc(npcId) == null)
             {
-                trigger.Session.SendNotice($"No NPC was found with the id: {CommandHelpers.Color(npcId, Color.DarkOliveGreen)}");
+                trigger.Session.Send(NoticePacket.Notice($"No NPC was found with the id: {npcId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
                 return;
             }
             Npc npc = new Npc(npcId)
@@ -80,7 +82,7 @@ namespace MapleServer2.Commands.Game
 
             if (NpcMetadataStorage.GetNpc(mobId) == null)
             {
-                trigger.Session.SendNotice($"No MOB was found with the id: {CommandHelpers.Color(mobId, Color.DarkOliveGreen)}");
+                trigger.Session.Send(NoticePacket.Notice($"No MOB was found with the id: {mobId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
                 return;
             }
             Mob mob = new Mob(mobId)

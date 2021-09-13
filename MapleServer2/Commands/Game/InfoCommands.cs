@@ -29,13 +29,14 @@ namespace MapleServer2.Commands.Game
             foreach (IGrouping<string, CommandBase> commandGroup in commandList)
             {
                 string aliases = string.Empty;
-                if (commandGroup.First().Aliases.Skip(1).Any())
+                CommandBase commandBase = commandGroup.First();
+                if (commandBase.Aliases.Skip(1).Any())
                 {
-                    aliases = $" [{string.Join(", ", commandGroup.First().Aliases.Skip(1))}]";
+                    aliases = $" [{string.Join(", ", commandBase.Aliases.Skip(1))}]";
                 }
-                stringBuilder.Append(CommandHelpers.Color(CommandHelpers.Bold(commandGroup.First().Aliases.First() + aliases), Color.DarkOrange) + " ");
+                stringBuilder.Append((commandBase.Aliases.First() + aliases).Color(Color.DarkOrange).Bold() + " ");
 
-                stringBuilder.Append($"{CommandHelpers.Color(commandGroup.First().Usage, Color.Wheat)}\n");
+                stringBuilder.Append($"{commandBase.Usage.Color(Color.Wheat)}\n");
             }
             trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
         }
@@ -79,14 +80,14 @@ namespace MapleServer2.Commands.Game
             {
                 aliases = $" [{string.Join(", ", commandBase.Aliases.Skip(1))}]";
             }
-            stringBuilder.Append(CommandHelpers.Color(CommandHelpers.Bold(commandBase.Aliases.First() + aliases), Color.DarkOrange) + " ");
+            stringBuilder.Append((commandBase.Aliases.First() + aliases).Color(Color.DarkOrange).Bold() + " ");
 
-            stringBuilder.Append($"{CommandHelpers.Color(commandBase.Description, Color.Wheat)}\n");
-            stringBuilder.Append($"{CommandHelpers.Color(commandBase.Usage, Color.Wheat)}\n");
+            stringBuilder.Append($"{commandBase.Description.Color(Color.Wheat)}\n");
+            stringBuilder.Append($"{commandBase.Usage.Color(Color.Wheat)}\n");
 
             foreach (IParameter param in commandBase.Parameters)
             {
-                stringBuilder.Append($"    -{CommandHelpers.Color(param.Name, Color.Aquamarine)} {CommandHelpers.Color(param.Description, Color.Wheat)}");
+                stringBuilder.Append($"    -{param.Name.Color(Color.Aquamarine)} {param.Description.Color(Color.Wheat)}");
                 if (commandBase.Parameters.Last() != param)
                 {
                     stringBuilder.Append('\n');
@@ -139,7 +140,7 @@ namespace MapleServer2.Commands.Game
             {
                 List<Player> players = GameServer.Storage.GetAllPlayers();
                 StringBuilder stringBuilder = new();
-                stringBuilder.Append($"{CommandHelpers.Color(CommandHelpers.Bold("Online players:"), Color.DarkOrange)}\n");
+                stringBuilder.Append($"Online players:".Color(Color.DarkOrange).Bold() + "\n");
                 stringBuilder.Append(string.Join(", ", players.Select(p => p.Name)));
 
                 trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));

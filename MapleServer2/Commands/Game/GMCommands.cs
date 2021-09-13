@@ -65,8 +65,8 @@ namespace MapleServer2.Commands.Game
             {
                 string[] classes = Enum.GetNames(typeof(Job));
 
-                player.Session.Send(NoticePacket.Notice($"{CommandHelpers.Color(CommandHelpers.Bold("You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n"), Color.DarkOrange)}" +
-                    $"{CommandHelpers.Color(string.Join(", ", classes), Color.Aquamarine)}", NoticeType.Chat));
+                player.Session.Send(NoticePacket.Notice($"You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
+                    $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
 
                 return;
             }

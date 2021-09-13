@@ -2,6 +2,7 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -31,7 +32,7 @@ namespace MapleServer2.Commands.Game
 
             if (questStatus == null)
             {
-                trigger.Session.SendNotice($"Quest not found with id: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
+                trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
                 return;
             }
             questStatus.Completed = true;
@@ -89,12 +90,12 @@ namespace MapleServer2.Commands.Game
             QuestMetadata quest = QuestMetadataStorage.GetMetadata(questId);
             if (quest == null)
             {
-                trigger.Session.SendNotice($"Quest not found with id: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
+                trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
                 return;
             }
             if (trigger.Session.Player.QuestList.Any(x => x.Basic.Id == questId))
             {
-                trigger.Session.SendNotice($"You already have quest: {CommandHelpers.Color(questId, Color.Aquamarine)}.");
+                trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
                 return;
             }
             trigger.Session.Player.QuestList.Add(new QuestStatus(trigger.Session.Player, quest, true, DateTimeOffset.Now.ToUnixTimeSeconds()));
