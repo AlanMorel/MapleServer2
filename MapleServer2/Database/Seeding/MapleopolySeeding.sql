@@ -4,23 +4,23 @@
 DROP TABLE IF EXISTS `mapleopolytiles`;
 
 CREATE TABLE `mapleopolytiles` (
-  `TilePosition` int NOT NULL AUTO_INCREMENT,
-  `ItemAmount` int NOT NULL,
-  `ItemId` int NOT NULL,
-  `ItemRarity` tinyint unsigned NOT NULL,
-  `TileParameter` int NOT NULL,
-  `Type` smallint NOT NULL,
-  PRIMARY KEY (`TilePosition`)
+  `tileposition` int NOT NULL AUTO_INCREMENT,
+  `itemamount` int NOT NULL,
+  `itemid` int NOT NULL,
+  `itemrarity` tinyint unsigned NOT NULL,
+  `tileparameter` int NOT NULL,
+  `type` smallint NOT NULL,
+  PRIMARY KEY (`tileposition`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 INSERT INTO
   `mapleopolytiles` (
-    `TilePosition`,
-    `ItemAmount`,
-    `ItemId`,
-    `ItemRarity`,
-    `TileParameter`,
-    `Type`
+    `tileposition`,
+    `itemamount`,
+    `itemid`,
+    `itemrarity`,
+    `tileparameter`,
+    `type`
   )
 VALUES
   (1, 0, 0, 0, 0, 6),

@@ -4,16 +4,16 @@
 
 DROP TABLE IF EXISTS `shops`;
 CREATE TABLE `shops` (
-  `Uid` int NOT NULL AUTO_INCREMENT,
-  `Id` int NOT NULL,
-  `Category` int NOT NULL,
-  `Name` varchar(25) DEFAULT NULL,
-  `ShopType` tinyint unsigned NOT NULL,
-  `RestrictSales` tinyint(1) NOT NULL,
-  `CanRestock` tinyint(1) NOT NULL,
-  `NextRestock` bigint NOT NULL,
-  `AllowBuyback` tinyint(1) NOT NULL,
-  PRIMARY KEY (`Uid`)
+  `uid` int NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL,
+  `category` int NOT NULL,
+  `name` varchar(25) DEFAULT NULL,
+  `shoptype` tinyint unsigned NOT NULL,
+  `restrictsales` tinyint(1) NOT NULL,
+  `canrestock` tinyint(1) NOT NULL,
+  `nextrestock` bigint NOT NULL,
+  `allowbuyback` tinyint(1) NOT NULL,
+  PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `shops` VALUES

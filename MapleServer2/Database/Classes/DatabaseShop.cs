@@ -5,11 +5,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseShop : DatabaseTable
     {
-        public DatabaseShop() : base("Shops") { }
+        public DatabaseShop() : base("shops") { }
 
         public Shop FindById(long id)
         {
-            Shop shop = QueryFactory.Query(TableName).Where("Id", id).Get<Shop>().FirstOrDefault();
+            Shop shop = QueryFactory.Query(TableName).Where("id", id).Get<Shop>().FirstOrDefault();
             if (shop == default)
             {
                 return null;

@@ -13,7 +13,7 @@ namespace MapleServer2.Database.Classes
             {
                 buddy.SharedId,
                 buddy.CharacterId,
-                FriendCharacterId = buddy.Friend.CharacterId,
+                friendcharacterid = buddy.Friend.CharacterId,
                 buddy.Message,
                 buddy.IsFriendRequest,
                 buddy.IsPending,
@@ -39,11 +39,11 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Buddy buddy)
         {
-            QueryFactory.Query(TableName).Where("Id", buddy.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", buddy.Id).Update(new
             {
                 buddy.SharedId,
                 buddy.CharacterId,
-                FriendCharacterId = buddy.Friend.CharacterId,
+                friendcharacterid = buddy.Friend.CharacterId,
                 buddy.Message,
                 buddy.IsFriendRequest,
                 buddy.IsPending,
@@ -53,6 +53,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long buddyId) => QueryFactory.Query(TableName).Where("Id", buddyId).Delete() == 1;
+        public bool Delete(long buddyId) => QueryFactory.Query(TableName).Where("id", buddyId).Delete() == 1;
     }
 }

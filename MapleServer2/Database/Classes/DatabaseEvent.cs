@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseEvent : DatabaseTable
     {
-        public DatabaseEvent() : base("Events") { }
+        public DatabaseEvent() : base("events") { }
 
         public long Insert(GameEvent gameEvent)
         {
@@ -21,75 +21,75 @@ namespace MapleServer2.Database.Classes
         {
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
-                Type = GameEventType.EventFieldPopup,
-                Active = true
+                type = GameEventType.EventFieldPopup,
+                active = true
             }).Get<GameEvent>().FirstOrDefault();
             if (gameEvent == null)
             {
                 return null;
             }
-            return QueryFactory.Query("event_fieldpopup").Where("GameEventId", gameEvent.Id).Get<FieldPopupEvent>().FirstOrDefault();
+            return QueryFactory.Query("event_fieldpopup").Where("gameeventid", gameEvent.Id).Get<FieldPopupEvent>().FirstOrDefault();
         }
 
         public List<MapleopolyEvent> FindAllMapleopolyEvents()
         {
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
-                Type = GameEventType.BlueMarble,
-                Active = true
+                type = GameEventType.BlueMarble,
+                active = true
             }).Get<GameEvent>().FirstOrDefault();
             if (gameEvent == null)
             {
                 return null;
             }
-            return QueryFactory.Query("event_mapleopoly").Where("GameEventId", gameEvent.Id).Get<MapleopolyEvent>().ToList();
+            return QueryFactory.Query("event_mapleopoly").Where("gameeventid", gameEvent.Id).Get<MapleopolyEvent>().ToList();
         }
 
         public UGCMapContractSaleEvent FindUGCMapContractSaleEvent()
         {
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
-                Type = GameEventType.UGCMapContractSale,
-                Active = true
+                type = GameEventType.UGCMapContractSale,
+                active = true
             }).Get<GameEvent>().FirstOrDefault();
             if (gameEvent == null)
             {
                 return null;
             }
-            return QueryFactory.Query("event_ugcmapcontractsale").Where("GameEventId", gameEvent.Id).Get<UGCMapContractSaleEvent>().FirstOrDefault();
+            return QueryFactory.Query("event_ugcmapcontractsale").Where("gameeventid", gameEvent.Id).Get<UGCMapContractSaleEvent>().FirstOrDefault();
         }
 
         public UGCMapExtensionSaleEvent FindUGCMapExtensionSaleEvent()
         {
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
-                Type = GameEventType.UGCMapExtensionSale,
-                Active = true
+                type = GameEventType.UGCMapExtensionSale,
+                active = true
             }).Get<GameEvent>().FirstOrDefault();
             if (gameEvent == null)
             {
                 return null;
             }
-            return QueryFactory.Query("event_ugcmapextensionsale").Where("GameEventId", gameEvent.Id).Get<UGCMapExtensionSaleEvent>().FirstOrDefault();
+            return QueryFactory.Query("event_ugcmapextensionsale").Where("gameeventid", gameEvent.Id).Get<UGCMapExtensionSaleEvent>().FirstOrDefault();
         }
 
         public List<StringBoardEvent> FindAllStringBoardEvent()
         {
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
-                Type = GameEventType.StringBoard,
-                Active = true
+                type = GameEventType.StringBoard,
+                active = true
             }).Get<GameEvent>().FirstOrDefault();
             if (gameEvent == null)
             {
                 return null;
             }
-            return QueryFactory.Query("event_stringboards").Where("GameEventId", gameEvent.Id).Get<StringBoardEvent>().ToList();
+            return QueryFactory.Query("event_stringboards").Where("gameeventid", gameEvent.Id).Get<StringBoardEvent>().ToList();
         }
 
         public List<GameEvent> FindAll()
         {
-            List<GameEvent> gameEvents = QueryFactory.Query(TableName).Where("Active", true).Get<GameEvent>().ToList();
+            List<GameEvent> gameEvents = QueryFactory.Query(TableName).Where("active", true).Get<GameEvent>().ToList();
             foreach (GameEvent gameEvent in gameEvents)
             {
                 switch (gameEvent.Type)

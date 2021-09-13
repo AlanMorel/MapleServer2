@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuild : DatabaseTable
     {
-        public DatabaseGuild() : base("Guilds") { }
+        public DatabaseGuild() : base("guilds") { }
 
         public long Insert(Guild guild)
         {
@@ -21,20 +21,20 @@ namespace MapleServer2.Database.Classes
                 guild.Funds,
                 guild.Exp,
                 guild.Searchable,
-                Buffs = JsonConvert.SerializeObject(guild.Buffs),
+                buffs = JsonConvert.SerializeObject(guild.Buffs),
                 guild.Emblem,
                 guild.FocusAttributes,
                 guild.HouseRank,
                 guild.HouseTheme,
                 guild.Notice,
-                Ranks = JsonConvert.SerializeObject(guild.Ranks),
-                Services = JsonConvert.SerializeObject(guild.Services),
+                ranks = JsonConvert.SerializeObject(guild.Ranks),
+                services = JsonConvert.SerializeObject(guild.Services),
             });
         }
 
-        public Guild FindById(long id) => ReadGuild(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public Guild FindById(long id) => ReadGuild(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
 
-        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("name", name).AsCount().FirstOrDefault().count == 1;
 
         public List<Guild> FindAll()
         {
@@ -49,7 +49,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Guild guild)
         {
-            QueryFactory.Query(TableName).Where("Id", guild.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", guild.Id).Update(new
             {
                 guild.Name,
                 guild.CreationTimestamp,
@@ -60,43 +60,43 @@ namespace MapleServer2.Database.Classes
                 guild.Funds,
                 guild.Exp,
                 guild.Searchable,
-                Buffs = JsonConvert.SerializeObject(guild.Buffs),
+                buffs = JsonConvert.SerializeObject(guild.Buffs),
                 guild.Emblem,
                 guild.FocusAttributes,
                 guild.HouseRank,
                 guild.HouseTheme,
                 guild.Notice,
-                Ranks = JsonConvert.SerializeObject(guild.Ranks),
-                Services = JsonConvert.SerializeObject(guild.Services),
+                ranks = JsonConvert.SerializeObject(guild.Ranks),
+                services = JsonConvert.SerializeObject(guild.Services),
             });
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
 
         private static Guild ReadGuild(dynamic data)
         {
             return new Guild()
             {
-                Id = data.Id,
-                Name = data.Name,
-                CreationTimestamp = data.CreationTimestamp,
-                LeaderAccountId = data.LeaderAccountId,
-                LeaderCharacterId = data.LeaderCharacterId,
-                LeaderName = data.LeaderName,
-                Capacity = data.Capacity,
-                Funds = data.Funds,
-                Exp = data.Exp,
-                Searchable = data.Searchable,
-                Buffs = JsonConvert.DeserializeObject<List<GuildBuff>>(data.Buffs),
-                Emblem = data.Emblem,
-                FocusAttributes = data.FocusAttributes,
-                HouseRank = data.HouseRank,
-                HouseTheme = data.HouseTheme,
-                Notice = data.Notice,
-                Ranks = JsonConvert.DeserializeObject<GuildRank[]>(data.Ranks),
-                Services = JsonConvert.DeserializeObject<List<GuildService>>(data.Services),
-                Members = DatabaseManager.GuildMembers.FindAllByGuildId(data.Id),
-                Applications = DatabaseManager.GuildApplications.FindAllByGuildId(data.Id),
+                Id = data.id,
+                Name = data.name,
+                CreationTimestamp = data.creationtimestamp,
+                LeaderAccountId = data.leaderaccountid,
+                LeaderCharacterId = data.leadercharacterid,
+                LeaderName = data.leadername,
+                Capacity = data.capacity,
+                Funds = data.funds,
+                Exp = data.exp,
+                Searchable = data.searchable,
+                Buffs = JsonConvert.DeserializeObject<List<GuildBuff>>(data.buffs),
+                Emblem = data.emblem,
+                FocusAttributes = data.focusattributes,
+                HouseRank = data.houserank,
+                HouseTheme = data.housetheme,
+                Notice = data.notice,
+                Ranks = JsonConvert.DeserializeObject<GuildRank[]>(data.ranks),
+                Services = JsonConvert.DeserializeObject<List<GuildService>>(data.services),
+                Members = DatabaseManager.GuildMembers.FindAllByGuildId(data.id),
+                Applications = DatabaseManager.GuildApplications.FindAllByGuildId(data.id),
             };
         }
     }

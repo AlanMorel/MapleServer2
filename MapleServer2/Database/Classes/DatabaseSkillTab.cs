@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseSkillTab : DatabaseTable
     {
-        public DatabaseSkillTab() : base("SkillTabs") { }
+        public DatabaseSkillTab() : base("skilltabs") { }
 
         public long Insert(SkillTab skillTab, long characterId)
         {
@@ -14,32 +14,32 @@ namespace MapleServer2.Database.Classes
             {
                 skillTab.TabId,
                 skillTab.Name,
-                SkillLevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
+                skilllevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
                 characterId
             });
         }
 
         public List<SkillTab> FindAllByCharacterId(long characterId, int jobId)
         {
-            IEnumerable<dynamic> skillTabsResult = QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> skillTabsResult = QueryFactory.Query(TableName).Where("characterid", characterId).Get();
             List<SkillTab> skillTabs = new List<SkillTab>();
-            foreach (dynamic item in skillTabsResult)
+            foreach (dynamic data in skillTabsResult)
             {
-                skillTabs.Add(new SkillTab(item.Name, jobId, item.TabId, item.Uid, JsonConvert.DeserializeObject<Dictionary<int, short>>(item.SkillLevels)));
+                skillTabs.Add(new SkillTab(data.name, jobId, data.tabid, data.uid, JsonConvert.DeserializeObject<Dictionary<int, short>>(data.skilllevels)));
             }
             return skillTabs;
         }
 
         public void Update(SkillTab skillTab)
         {
-            QueryFactory.Query(TableName).Where("Uid", skillTab.Uid).Update(new
+            QueryFactory.Query(TableName).Where("uid", skillTab.Uid).Update(new
             {
                 skillTab.TabId,
                 skillTab.Name,
-                SkillLevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
+                skilllevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
     }
 }

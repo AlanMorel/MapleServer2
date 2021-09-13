@@ -5,24 +5,24 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseBankInventory : DatabaseTable
     {
-        public DatabaseBankInventory() : base("BankInventories") { }
+        public DatabaseBankInventory() : base("bankinventories") { }
 
         public long Insert(BankInventory bankInventory)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                Mesos = bankInventory.Mesos.Amount,
+                mesos = bankInventory.Mesos.Amount,
                 bankInventory.ExtraSize,
             });
         }
 
-        public BankInventory FindById(long id) => ReadBankInventory(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public BankInventory FindById(long id) => ReadBankInventory(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
 
         public void Update(BankInventory bankInventory)
         {
-            QueryFactory.Query(TableName).Where("Id", bankInventory.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", bankInventory.Id).Update(new
             {
-                Mesos = bankInventory.Mesos.Amount,
+                mesos = bankInventory.Mesos.Amount,
                 bankInventory.ExtraSize,
             });
 
@@ -37,8 +37,8 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
 
-        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.Id, data.ExtraSize, DatabaseManager.Items.FindAllByBankInventoryId(data.Id), data.Mesos);
+        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.id, data.extrasize, DatabaseManager.Items.FindAllByBankInventoryId(data.id), data.mesos);
     }
 }

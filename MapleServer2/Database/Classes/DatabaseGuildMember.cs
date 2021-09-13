@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGuildMember : DatabaseTable
     {
-        public DatabaseGuildMember() : base("GuildMembers") { }
+        public DatabaseGuildMember() : base("guildmembers") { }
 
         public void Insert(GuildMember guildMember)
         {
@@ -23,11 +23,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public GuildMember FindById(long id) => QueryFactory.Query(TableName).Where("Id", id).Get<GuildMember>().FirstOrDefault();
+        public GuildMember FindById(long id) => QueryFactory.Query(TableName).Where("id", id).Get<GuildMember>().FirstOrDefault();
 
         public List<GuildMember> FindAllByGuildId(long guildId)
         {
-            List<GuildMember> members = QueryFactory.Query(TableName).Where("GuildId", guildId).Get<GuildMember>().ToList();
+            List<GuildMember> members = QueryFactory.Query(TableName).Where("guildid", guildId).Get<GuildMember>().ToList();
             foreach (GuildMember guildMember in members)
             {
                 guildMember.Player = DatabaseManager.Characters.FindPartialPlayerById(guildMember.Id);
@@ -37,7 +37,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(GuildMember guildMember)
         {
-            QueryFactory.Query(TableName).Where("Id", guildMember.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", guildMember.Id).Update(new
             {
                 guildMember.Rank,
                 guildMember.DailyContribution,
@@ -50,6 +50,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 }

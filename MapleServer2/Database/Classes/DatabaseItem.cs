@@ -10,56 +10,56 @@ namespace MapleServer2.Database.Classes
     {
         private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
 
-        public DatabaseItem() : base("Items") { }
+        public DatabaseItem() : base("items") { }
 
         public long Insert(Item item)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 item.Level,
-                ItemSlot = (byte) item.ItemSlot,
+                itemslot = (byte) item.ItemSlot,
                 item.Rarity,
                 item.PlayCount,
                 item.Amount,
-                BankInventoryId = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                bankinventoryid = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
                 item.RepackageCount,
                 item.Charges,
-                Color = JsonConvert.SerializeObject(item.Color),
+                color = JsonConvert.SerializeObject(item.Color),
                 item.CreationTime,
                 item.EnchantExp,
                 item.Enchants,
                 item.ExpiryTime,
-                FaceDecorationData = JsonConvert.SerializeObject(item.FaceDecorationData),
+                facedecorationdata = JsonConvert.SerializeObject(item.FaceDecorationData),
                 item.GachaDismantleId,
-                HairData = JsonConvert.SerializeObject(item.HairData),
-                HatData = JsonConvert.SerializeObject(item.HatData),
-                HomeId = item.HomeId == 0 ? null : (int?) item.HomeId,
+                hairdata = JsonConvert.SerializeObject(item.HairData),
+                hatdata = JsonConvert.SerializeObject(item.HatData),
+                homeid = item.HomeId == 0 ? null : (int?) item.HomeId,
                 item.Id,
-                InventoryId = item.InventoryId == 0 ? null : (int?) item.InventoryId,
+                inventoryid = item.InventoryId == 0 ? null : (int?) item.InventoryId,
                 item.IsEquipped,
                 item.IsLocked,
-                OwnerCharacterId = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
+                ownercharacterid = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
                 item.OwnerCharacterName,
                 item.PairedCharacterId,
                 item.PairedCharacterName,
                 item.PetSkinBadgeId,
                 item.RemainingGlamorForges,
                 item.RemainingTrades,
-                Score = JsonConvert.SerializeObject(item.Score),
+                score = JsonConvert.SerializeObject(item.Score),
                 item.Slot,
-                Stats = JsonConvert.SerializeObject(item.Stats, Settings),
+                stats = JsonConvert.SerializeObject(item.Stats, Settings),
                 item.TimesAttributesChanged,
                 item.TransferFlag,
-                TransparencyBadgeBools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
+                transparencybadgebools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
                 item.UnlockTime
             });
         }
 
-        public Item FindByUid(long uid) => ReadItem(QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
+        public Item FindByUid(long uid) => ReadItem(QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault());
 
         public List<Item> FindAllByInventoryId(long inventoryId)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("InventoryId", inventoryId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("inventoryid", inventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -70,7 +70,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Item> FindAllByBankInventoryId(long bankInventoryId)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("BankInventoryId", bankInventoryId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("bankinventoryid", bankInventoryId).Get();
             List<Item> items = new List<Item>();
             foreach (dynamic data in result)
             {
@@ -81,7 +81,7 @@ namespace MapleServer2.Database.Classes
 
         public Dictionary<long, Item> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("homeid", homeId).Get();
             Dictionary<long, Item> items = new Dictionary<long, Item>();
             foreach (dynamic data in result)
             {
@@ -93,90 +93,90 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Item item)
         {
-            QueryFactory.Query(TableName).Where("Uid", item.Uid).Update(new
+            QueryFactory.Query(TableName).Where("uid", item.Uid).Update(new
             {
                 item.Level,
-                ItemSlot = (byte) item.ItemSlot,
+                itemslot = (byte) item.ItemSlot,
                 item.Rarity,
                 item.PlayCount,
                 item.Amount,
-                BankInventoryId = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                bankinventoryid = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
                 item.RepackageCount,
                 item.Charges,
-                Color = JsonConvert.SerializeObject(item.Color),
+                color = JsonConvert.SerializeObject(item.Color),
                 item.CreationTime,
                 item.EnchantExp,
                 item.Enchants,
                 item.ExpiryTime,
-                FaceDecorationData = JsonConvert.SerializeObject(item.FaceDecorationData),
+                facedecorationdata = JsonConvert.SerializeObject(item.FaceDecorationData),
                 item.GachaDismantleId,
-                HairData = JsonConvert.SerializeObject(item.HairData),
-                HatData = JsonConvert.SerializeObject(item.HatData),
-                HomeId = item.HomeId == 0 ? null : (int?) item.HomeId,
+                hairdata = JsonConvert.SerializeObject(item.HairData),
+                hatdata = JsonConvert.SerializeObject(item.HatData),
+                homeid = item.HomeId == 0 ? null : (int?) item.HomeId,
                 item.Id,
-                InventoryId = item.InventoryId == 0 ? null : (int?) item.InventoryId,
+                inventoryid = item.InventoryId == 0 ? null : (int?) item.InventoryId,
                 item.IsEquipped,
                 item.IsLocked,
-                OwnerCharacterId = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
+                ownercharacterid = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
                 item.OwnerCharacterName,
                 item.PairedCharacterId,
                 item.PairedCharacterName,
                 item.PetSkinBadgeId,
                 item.RemainingGlamorForges,
                 item.RemainingTrades,
-                Score = JsonConvert.SerializeObject(item.Score),
+                score = JsonConvert.SerializeObject(item.Score),
                 item.Slot,
-                Stats = JsonConvert.SerializeObject(item.Stats, Settings),
+                stats = JsonConvert.SerializeObject(item.Stats, Settings),
                 item.TimesAttributesChanged,
                 item.TransferFlag,
-                TransparencyBadgeBools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
+                transparencybadgebools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
                 item.UnlockTime
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
         private Item ReadItem(dynamic data)
         {
             return new Item()
             {
-                Uid = data.Uid,
-                Level = data.Level,
-                ItemSlot = (ItemSlot) data.ItemSlot,
-                Rarity = data.Rarity,
-                PlayCount = data.PlayCount,
-                Amount = data.Amount,
-                RepackageCount = data.RepackageCount,
-                Charges = data.Charges,
-                Color = JsonConvert.DeserializeObject<EquipColor>(data.Color),
-                CreationTime = data.CreationTime,
-                EnchantExp = data.EnchantExp,
-                Enchants = data.Enchants,
-                ExpiryTime = data.ExpiryTime,
-                FaceDecorationData = JsonConvert.DeserializeObject<byte[]>(data.FaceDecorationData),
-                GachaDismantleId = data.GachaDismantleId,
-                HairData = JsonConvert.DeserializeObject<HairData>(data.HairData),
-                HatData = JsonConvert.DeserializeObject<HatData>(data.HatData),
-                Id = data.Id,
-                IsEquipped = data.IsEquipped,
-                IsLocked = data.IsLocked,
-                OwnerCharacterId = data.OwnerCharacterId ?? 0,
-                OwnerCharacterName = data.OwnerCharacterName ?? "",
-                PairedCharacterId = data.PairedCharacterId,
-                PairedCharacterName = data.PairedCharacterName,
-                PetSkinBadgeId = data.PetSkinBadgeId,
-                RemainingGlamorForges = data.RemainingGlamorForges,
-                RemainingTrades = data.RemainingTrades,
-                Score = JsonConvert.DeserializeObject<MusicScore>(data.Score),
-                Slot = data.Slot,
-                Stats = JsonConvert.DeserializeObject<ItemStats>(data.Stats, Settings),
-                TimesAttributesChanged = data.TimesAttributesChanged,
-                TransferFlag = (TransferFlag) data.TransferFlag,
-                TransparencyBadgeBools = JsonConvert.DeserializeObject<byte[]>(data.TransparencyBadgeBools),
-                UnlockTime = data.UnlockTime,
-                InventoryId = data.InventoryId ?? 0,
-                BankInventoryId = data.BankInventoryId ?? 0,
-                HomeId = data.HomeId ?? 0,
+                Uid = data.uid,
+                Level = data.level,
+                ItemSlot = (ItemSlot) data.itemslot,
+                Rarity = data.rarity,
+                PlayCount = data.playcount,
+                Amount = data.amount,
+                RepackageCount = data.repackagecount,
+                Charges = data.charges,
+                Color = JsonConvert.DeserializeObject<EquipColor>(data.color),
+                CreationTime = data.creationtime,
+                EnchantExp = data.enchantexp,
+                Enchants = data.enchants,
+                ExpiryTime = data.expirytime,
+                FaceDecorationData = JsonConvert.DeserializeObject<byte[]>(data.facedecorationdata),
+                GachaDismantleId = data.gachadismantleid,
+                HairData = JsonConvert.DeserializeObject<HairData>(data.hairdata),
+                HatData = JsonConvert.DeserializeObject<HatData>(data.hatdata),
+                Id = data.id,
+                IsEquipped = data.isequipped,
+                IsLocked = data.islocked,
+                OwnerCharacterId = data.ownercharacterid ?? 0,
+                OwnerCharacterName = data.ownercharactername ?? "",
+                PairedCharacterId = data.pairedcharacterid,
+                PairedCharacterName = data.pairedcharactername,
+                PetSkinBadgeId = data.petskinbadgeid,
+                RemainingGlamorForges = data.remainingglamorforges,
+                RemainingTrades = data.remainingtrades,
+                Score = JsonConvert.DeserializeObject<MusicScore>(data.score),
+                Slot = data.slot,
+                Stats = JsonConvert.DeserializeObject<ItemStats>(data.stats, Settings),
+                TimesAttributesChanged = data.timesattributeschanged,
+                TransferFlag = (TransferFlag) data.transferflag,
+                TransparencyBadgeBools = JsonConvert.DeserializeObject<byte[]>(data.transparencybadgebools),
+                UnlockTime = data.unlocktime,
+                InventoryId = data.inventoryid ?? 0,
+                BankInventoryId = data.bankinventoryid ?? 0,
+                HomeId = data.homeid ?? 0,
             };
         }
     }

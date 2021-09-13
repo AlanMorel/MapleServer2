@@ -6,11 +6,11 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseMeretMarket : DatabaseTable
     {
-        public DatabaseMeretMarket() : base("MeretMarketItems") { }
+        public DatabaseMeretMarket() : base("meretmarketitems") { }
 
         public List<MeretMarketItem> FindAllByCategoryId(MeretMarketCategory category)
         {
-            List<MeretMarketItem> items = QueryFactory.Query(TableName).Where("Category", (int) category).Get<MeretMarketItem>().ToList();
+            List<MeretMarketItem> items = QueryFactory.Query(TableName).Where("category", (int) category).Get<MeretMarketItem>().ToList();
             foreach (MeretMarketItem item in items.Where(x => x.BannerId != 0))
             {
                 item.Banner = DatabaseManager.Banners.FindById(item.BannerId);
@@ -18,6 +18,6 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
-        public MeretMarketItem FindById(int id) => QueryFactory.Query(TableName).Where("MarketId", id).Get<MeretMarketItem>().FirstOrDefault();
+        public MeretMarketItem FindById(int id) => QueryFactory.Query(TableName).Where("marketid", id).Get<MeretMarketItem>().FirstOrDefault();
     }
 }

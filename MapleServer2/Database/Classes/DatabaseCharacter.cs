@@ -8,7 +8,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseCharacter : DatabaseTable
     {
-        public DatabaseCharacter() : base("Characters") { }
+        public DatabaseCharacter() : base("characters") { }
 
         public long Insert(Player player)
         {
@@ -19,39 +19,39 @@ namespace MapleServer2.Database.Classes
                 player.Name,
                 player.Gender,
                 player.Awakened,
-                Job = (int) player.Job,
-                LevelsId = player.Levels.Id,
+                job = (int) player.Job,
+                levelsid = player.Levels.Id,
                 player.MapId,
                 player.TitleId,
                 player.InsigniaId,
-                Titles = JsonConvert.SerializeObject(player.Titles),
-                PrestigeRewardsClaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
+                titles = JsonConvert.SerializeObject(player.Titles),
+                prestigerewardsclaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
                 player.MaxSkillTabs,
                 player.ActiveSkillTabId,
-                GameOptionsId = player.GameOptions.Id,
-                WalletId = player.Wallet.Id,
-                ChatSticker = JsonConvert.SerializeObject(player.ChatSticker),
+                gameoptionsid = player.GameOptions.Id,
+                walletid = player.Wallet.Id,
+                chatsticker = JsonConvert.SerializeObject(player.ChatSticker),
                 player.ClubId,
-                Coord = JsonConvert.SerializeObject(player.Coord),
-                Emotes = JsonConvert.SerializeObject(player.Emotes),
-                FavoriteStickers = JsonConvert.SerializeObject(player.FavoriteStickers),
-                GroupChatId = JsonConvert.SerializeObject(player.GroupChatId),
-                GuildApplications = JsonConvert.SerializeObject(player.GuildApplications),
-                GuildId = player.Guild?.Id,
-                GuildMemberId = player.GuildMember?.Id,
-                InventoryId = player.Inventory.Id,
+                coord = JsonConvert.SerializeObject(player.Coord),
+                emotes = JsonConvert.SerializeObject(player.Emotes),
+                favoritestickers = JsonConvert.SerializeObject(player.FavoriteStickers),
+                groupchatid = JsonConvert.SerializeObject(player.GroupChatId),
+                guildapplications = JsonConvert.SerializeObject(player.GuildApplications),
+                guildid = player.Guild?.Id,
+                guildmemberid = player.GuildMember?.Id,
+                inventoryid = player.Inventory.Id,
                 player.IsDeleted,
-                Mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
+                mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
                 player.Motto,
                 player.ProfileUrl,
-                ReturnCoord = JsonConvert.SerializeObject(player.ReturnCoord),
+                returncoord = JsonConvert.SerializeObject(player.ReturnCoord),
                 player.ReturnMapId,
-                SkinColor = JsonConvert.SerializeObject(player.SkinColor),
-                StatPointDistribution = JsonConvert.SerializeObject(player.StatPointDistribution),
-                Stats = JsonConvert.SerializeObject(player.Stats),
-                TrophyCount = JsonConvert.SerializeObject(player.TrophyCount),
-                UnlockedMaps = JsonConvert.SerializeObject(player.UnlockedMaps),
-                UnlockedTaxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
+                skincolor = JsonConvert.SerializeObject(player.SkinColor),
+                statpointdistribution = JsonConvert.SerializeObject(player.StatPointDistribution),
+                stats = JsonConvert.SerializeObject(player.Stats),
+                trophycount = JsonConvert.SerializeObject(player.TrophyCount),
+                unlockedmaps = JsonConvert.SerializeObject(player.UnlockedMaps),
+                unlockedtaxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
                 player.VisitingHomeId
             });
         }
@@ -62,75 +62,75 @@ namespace MapleServer2.Database.Classes
         /// <returns>Player</returns>
         public Player FindPlayerById(long characterId)
         {
-            dynamic data = QueryFactory.Query(TableName).Where("CharacterId", characterId)
-                .Join("Levels", "Levels.Id", "Characters.LevelsId")
-                .Join("Accounts", "Accounts.Id", "Characters.AccountId")
-                .Join("GameOptions", "GameOptions.Id", "Characters.GameOptionsId")
-                .Join("Wallets", "Wallets.Id", "Characters.WalletId")
-                .LeftJoin("Homes", "Homes.AccountId", "Accounts.Id")
+            dynamic data = QueryFactory.Query(TableName).Where("characterid", characterId)
+                .Join("levels", "levels.id", "characters.levelsid")
+                .Join("accounts", "accounts.id", "characters.accountid")
+                .Join("gameoptions", "gameoptions.id", "characters.gameoptionsid")
+                .Join("wallets", "wallets.id", "characters.walletid")
+                .LeftJoin("homes", "homes.accountid", "accounts.id")
                 .Select(
-                    "Characters.{*}",
-                    "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}",
-                    "Accounts.{Username, PasswordHash, CreationTime, LastLoginTime, CharacterSlots, Meret, GameMeret, EventMeret, MesoToken, BankInventoryId, VIPExpiration}",
-                    "GameOptions.{KeyBinds, ActiveHotbarId}",
-                    "Wallets.{Meso, ValorToken, Treva, Rue, HaviFruit}",
-                    "Homes.Id as HomeId")
+                    "characters.{*}",
+                    "levels.{level, exp, restexp, prestigelevel, prestigeexp, masteryexp}",
+                    "accounts.{username, passwordhash, creationtime, lastlogintime, characterslots, meret, gamemeret, eventmeret, mesotoken, bankinventoryid, vipexpiration}",
+                    "gameoptions.{keybinds, activehotbarid}",
+                    "wallets.{meso, valortoken, treva, rue, havifruit}",
+                    "homes.id as homeid")
                 .FirstOrDefault();
 
-            List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.GameOptionsId);
-            List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.CharacterId, data.Job);
-            Inventory inventory = DatabaseManager.Inventories.FindById(data.InventoryId);
-            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.BankInventoryId);
-            Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.CharacterId);
-            foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.AccountId))
+            List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.gameoptionsid);
+            List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.characterid, data.job);
+            Inventory inventory = DatabaseManager.Inventories.FindById(data.inventoryid);
+            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bankinventoryid);
+            Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.characterid);
+            foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.accountid))
             {
                 trophies.Add(trophy.Key, trophy.Value);
             }
-            List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.CharacterId);
+            List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.characterid);
 
             return new Player()
             {
-                CharacterId = data.CharacterId,
-                AccountId = data.AccountId,
-                Account = new Account(data.AccountId, data.Username, data.PasswordHash, data.CreationTime, data.LastLoginTime, data.CharacterSlots,
-                    data.Meret, data.GameMeret, data.EventMeret, data.MesoToken, data.HomeId ?? 0, data.VIPExpiration, bankInventory),
-                CreationTime = data.CreationTime,
-                Name = data.Name,
-                Gender = data.Gender,
-                Awakened = data.Awakened,
-                Job = (Job) data.Job,
-                Levels = new Levels(data.Level, data.Exp, data.RestExp, data.PrestigeLevel, data.PrestigeExp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.MasteryExp), data.LevelsId),
-                MapId = data.MapId,
-                TitleId = data.TitleId,
-                InsigniaId = data.InsigniaId,
-                Titles = JsonConvert.DeserializeObject<List<int>>(data.Titles),
-                PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.PrestigeRewardsClaimed),
-                MaxSkillTabs = data.MaxSkillTabs,
-                ActiveSkillTabId = data.ActiveSkillTabId,
-                GameOptions = new GameOptions(JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(data.KeyBinds), hotbars, data.ActiveHotbarId, data.GameOptionsId),
-                Wallet = new Wallet(data.Meso, data.ValorToken, data.Treva, data.Rue, data.HaviFruit, data.WalletId),
+                CharacterId = data.characterid,
+                AccountId = data.accountid,
+                Account = new Account(data.accountid, data.username, data.passwordhash, data.creationtime, data.lastlogintime, data.characterslots,
+                    data.meret, data.gamemeret, data.eventmeret, data.mesotoken, data.homeid ?? 0, data.vipexpiration, bankInventory),
+                CreationTime = data.creationtime,
+                Name = data.name,
+                Gender = data.gender,
+                Awakened = data.awakened,
+                Job = (Job) data.job,
+                Levels = new Levels(data.level, data.exp, data.restexp, data.prestigelevel, data.prestigeexp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.masteryexp), data.levelsid),
+                MapId = data.mapid,
+                TitleId = data.titleid,
+                InsigniaId = data.insigniaid,
+                Titles = JsonConvert.DeserializeObject<List<int>>(data.titles),
+                PrestigeRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.prestigerewardsclaimed),
+                MaxSkillTabs = data.maxskilltabs,
+                ActiveSkillTabId = data.activeskilltabid,
+                GameOptions = new GameOptions(JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(data.keybinds), hotbars, data.activehotbarid, data.gameoptionsid),
+                Wallet = new Wallet(data.meso, data.valortoken, data.treva, data.rue, data.havifruit, data.walletid),
                 Inventory = inventory,
-                ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.ChatSticker),
-                ClubId = data.ClubId,
-                Coord = JsonConvert.DeserializeObject<CoordF>(data.Coord),
-                Emotes = JsonConvert.DeserializeObject<List<int>>(data.Emotes),
-                FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.FavoriteStickers),
-                GroupChatId = JsonConvert.DeserializeObject<int[]>(data.GroupChatId),
-                GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.GuildApplications),
-                GuildId = data.GuildId ?? 0,
-                IsDeleted = data.IsDeleted,
-                Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.Mapleopoly),
-                Motto = data.Motto,
-                ProfileUrl = data.ProfileUrl,
-                ReturnCoord = JsonConvert.DeserializeObject<CoordF>(data.ReturnCoord),
-                ReturnMapId = data.ReturnMapId,
-                SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.SkinColor),
-                StatPointDistribution = JsonConvert.DeserializeObject<StatDistribution>(data.StatPointDistribution),
-                Stats = JsonConvert.DeserializeObject<PlayerStats>(data.Stats),
-                TrophyCount = JsonConvert.DeserializeObject<int[]>(data.TrophyCount),
-                UnlockedMaps = JsonConvert.DeserializeObject<List<int>>(data.UnlockedMaps),
-                UnlockedTaxis = JsonConvert.DeserializeObject<List<int>>(data.UnlockedTaxis),
-                VisitingHomeId = data.VisitingHomeId,
+                ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.chatsticker),
+                ClubId = data.clubid,
+                Coord = JsonConvert.DeserializeObject<CoordF>(data.coord),
+                Emotes = JsonConvert.DeserializeObject<List<int>>(data.emotes),
+                FavoriteStickers = JsonConvert.DeserializeObject<List<int>>(data.favoritestickers),
+                GroupChatId = JsonConvert.DeserializeObject<int[]>(data.groupchatid),
+                GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guildapplications),
+                GuildId = data.guildid ?? 0,
+                IsDeleted = data.isdeleted,
+                Mapleopoly = JsonConvert.DeserializeObject<Mapleopoly>(data.mapleopoly),
+                Motto = data.motto,
+                ProfileUrl = data.profileurl,
+                ReturnCoord = JsonConvert.DeserializeObject<CoordF>(data.returncoord),
+                ReturnMapId = data.returnmapid,
+                SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.skincolor),
+                StatPointDistribution = JsonConvert.DeserializeObject<StatDistribution>(data.statpointdistribution),
+                Stats = JsonConvert.DeserializeObject<PlayerStats>(data.stats),
+                TrophyCount = JsonConvert.DeserializeObject<int[]>(data.trophycount),
+                UnlockedMaps = JsonConvert.DeserializeObject<List<int>>(data.unlockedmaps),
+                UnlockedTaxis = JsonConvert.DeserializeObject<List<int>>(data.unlockedtaxis),
+                VisitingHomeId = data.visitinghomeid,
                 SkillTabs = skillTabs,
                 TrophyData = trophies,
                 QuestList = questList
@@ -143,15 +143,15 @@ namespace MapleServer2.Database.Classes
         /// <returns>Player</returns>
         public Player FindPartialPlayerById(long characterId)
         {
-            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("CharacterId", characterId)
-                .Join("Levels", "Levels.Id", "Characters.LevelsId")
-                .Join("Accounts", "Accounts.Id", "Characters.AccountId")
-                .LeftJoin("Homes", "Homes.AccountId", "Accounts.Id")
+            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("characterid", characterId)
+                .Join("levels", "levels.id", "characters.levelsid")
+                .Join("accounts", "accounts.id", "characters.accountid")
+                .LeftJoin("homes", "homes.accountid", "accounts.id")
                 .Select(
-                    "Characters.{*}",
-                    "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}",
-                    "Accounts.{Username, PasswordHash, CreationTime, LastLoginTime, CharacterSlots, Meret, GameMeret, EventMeret}",
-                    "Homes.{PlotMapId, PlotNumber, ApartmentNumber, Expiration, Id as HomeId}")
+                    "characters.{*}",
+                    "levels.{level, exp, restexp, prestigelevel, prestigeexp, masteryexp}",
+                    "accounts.{username, passwordhash, creationtime, lastlogintime, characterslots, meret, gamemeret, eventmeret}",
+                    "homes.{plotmapid, plotnumber, apartmentnumber, expiration, id as homeid}")
                 .FirstOrDefault());
         }
 
@@ -161,15 +161,15 @@ namespace MapleServer2.Database.Classes
         /// <returns>Player</returns>
         public Player FindPartialPlayerByName(string name)
         {
-            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("Characters.Name", name)
-                            .Join("Levels", "Levels.Id", "Characters.LevelsId")
-                            .Join("Accounts", "Accounts.Id", "Characters.AccountId")
-                            .LeftJoin("Homes", "Homes.AccountId", "Accounts.Id")
+            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("characters.name", name)
+                            .Join("levels", "levels.id", "characters.levelsid")
+                            .Join("accounts", "accounts.id", "characters.accountid")
+                            .LeftJoin("homes", "homes.accountid", "accounts.id")
                             .Select(
-                                "Characters.{*}",
-                                "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}",
-                                "Accounts.{Username, PasswordHash, CreationTime, LastLoginTime, CharacterSlots, Meret, GameMeret, EventMeret}",
-                                "Homes.{PlotMapId, PlotNumber, ApartmentNumber, Expiration, Id as HomeId}")
+                                "characters.{*}",
+                                "levels.{level, exp, restexp, prestigelevel, prestigeexp, masteryexp}",
+                                "accounts.{username, passwordhash, creationtime, lastlogintime, characterslots, meret, gamemeret, eventmeret}",
+                                "homes.{plotmapid, plotnumber, apartmentnumber, expiration, id as homeid}")
                             .FirstOrDefault());
         }
 
@@ -182,30 +182,30 @@ namespace MapleServer2.Database.Classes
                 AccountId = accountId,
                 IsDeleted = false
             })
-            .Join("Levels", "Levels.Id", "Characters.LevelsId")
+            .Join("levels", "levels.id", "characters.levelsid")
             .Select(
-                "Characters.{*}",
-                "Levels.{Level, Exp, RestExp, PrestigeLevel, PrestigeExp, MasteryExp}").Get();
+                "characters.{*}",
+                "levels.{level, exp, restexp, prestigelevel, prestigeexp, masteryexp}").Get();
 
             foreach (dynamic data in result)
             {
                 characters.Add(new Player()
                 {
-                    AccountId = data.AccountId,
-                    CharacterId = data.CharacterId,
-                    CreationTime = data.CreationTime,
-                    Name = data.Name,
-                    Gender = data.Gender,
-                    Awakened = data.Awakened,
-                    Job = (Job) data.Job,
-                    Levels = new Levels(data.Level, data.Exp, data.RestExp, data.PrestigeLevel, data.PrestigeExp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.MasteryExp), data.LevelsId),
-                    MapId = data.MapId,
-                    Stats = JsonConvert.DeserializeObject<PlayerStats>(data.Stats),
-                    TrophyCount = JsonConvert.DeserializeObject<int[]>(data.TrophyCount),
-                    Motto = data.Motto,
-                    ProfileUrl = data.ProfileUrl,
-                    Inventory = DatabaseManager.Inventories.FindById(data.InventoryId),
-                    SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.SkinColor),
+                    AccountId = data.accountid,
+                    CharacterId = data.characterid,
+                    CreationTime = data.creationtime,
+                    Name = data.name,
+                    Gender = data.gender,
+                    Awakened = data.awakened,
+                    Job = (Job) data.job,
+                    Levels = new Levels(data.level, data.exp, data.restexp, data.prestigelevel, data.prestigeexp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.masteryexp), data.levelsid),
+                    MapId = data.mapid,
+                    Stats = JsonConvert.DeserializeObject<PlayerStats>(data.stats),
+                    TrophyCount = JsonConvert.DeserializeObject<int[]>(data.trophycount),
+                    Motto = data.motto,
+                    ProfileUrl = data.profileurl,
+                    Inventory = DatabaseManager.Inventories.FindById(data.inventoryid),
+                    SkinColor = JsonConvert.DeserializeObject<SkinColor>(data.skincolor),
                 });
             }
             return characters;
@@ -213,40 +213,40 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Player player)
         {
-            QueryFactory.Query(TableName).Where("CharacterId", player.CharacterId).Update(new
+            QueryFactory.Query(TableName).Where("characterid", player.CharacterId).Update(new
             {
                 player.Name,
                 player.Gender,
                 player.Awakened,
-                Job = (int) player.Job,
+                job = (int) player.Job,
                 player.MapId,
                 player.TitleId,
                 player.InsigniaId,
-                Titles = JsonConvert.SerializeObject(player.Titles),
-                PrestigeRewardsClaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
+                titles = JsonConvert.SerializeObject(player.Titles),
+                prestigerewardsclaimed = JsonConvert.SerializeObject(player.PrestigeRewardsClaimed),
                 player.MaxSkillTabs,
                 player.ActiveSkillTabId,
-                ChatSticker = JsonConvert.SerializeObject(player.ChatSticker),
+                chatsticker = JsonConvert.SerializeObject(player.ChatSticker),
                 player.ClubId,
-                Coord = JsonConvert.SerializeObject(player.Coord),
-                Emotes = JsonConvert.SerializeObject(player.Emotes),
-                FavoriteStickers = JsonConvert.SerializeObject(player.FavoriteStickers),
-                GroupChatId = JsonConvert.SerializeObject(player.GroupChatId),
-                GuildApplications = JsonConvert.SerializeObject(player.GuildApplications),
-                GuildId = player.Guild?.Id,
-                GuildMemberId = player.GuildMember?.Id,
+                coord = JsonConvert.SerializeObject(player.Coord),
+                emotes = JsonConvert.SerializeObject(player.Emotes),
+                favoritestickers = JsonConvert.SerializeObject(player.FavoriteStickers),
+                groupchatid = JsonConvert.SerializeObject(player.GroupChatId),
+                guildapplications = JsonConvert.SerializeObject(player.GuildApplications),
+                guildid = player.Guild?.Id,
+                guildmemberid = player.GuildMember?.Id,
                 player.IsDeleted,
-                Mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
+                mapleopoly = JsonConvert.SerializeObject(player.Mapleopoly),
                 player.Motto,
                 player.ProfileUrl,
-                ReturnCoord = JsonConvert.SerializeObject(player.ReturnCoord),
+                returncoord = JsonConvert.SerializeObject(player.ReturnCoord),
                 player.ReturnMapId,
-                SkinColor = JsonConvert.SerializeObject(player.SkinColor),
-                StatPointDistribution = JsonConvert.SerializeObject(player.StatPointDistribution),
-                Stats = JsonConvert.SerializeObject(player.Stats),
-                TrophyCount = JsonConvert.SerializeObject(player.TrophyCount),
-                UnlockedMaps = JsonConvert.SerializeObject(player.UnlockedMaps),
-                UnlockedTaxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
+                skincolor = JsonConvert.SerializeObject(player.SkinColor),
+                statpointdistribution = JsonConvert.SerializeObject(player.StatPointDistribution),
+                stats = JsonConvert.SerializeObject(player.Stats),
+                trophycount = JsonConvert.SerializeObject(player.TrophyCount),
+                unlockedmaps = JsonConvert.SerializeObject(player.UnlockedMaps),
+                unlockedtaxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
                 player.VisitingHomeId
             });
             DatabaseManager.Accounts.Update(player.Account);
@@ -262,54 +262,54 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public void UpdateProfileUrl(long characterId, string profileUrl) => QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new { ProfileUrl = profileUrl });
+        public void UpdateProfileUrl(long characterId, string profileUrl) => QueryFactory.Query(TableName).Where("characterid", characterId).Update(new { ProfileUrl = profileUrl });
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("CharacterId", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("characterid", id).Delete() == 1;
 
         public bool SetCharacterDeleted(long characterId)
         {
-            return QueryFactory.Query(TableName).Where("CharacterId", characterId).Update(new
+            return QueryFactory.Query(TableName).Where("characterid", characterId).Update(new
             {
                 IsDeleted = true
             }) == 1;
         }
 
-        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("Name", name).AsCount().FirstOrDefault().count == 1;
+        public bool NameExists(string name) => QueryFactory.Query(TableName).Where("name", name).AsCount().FirstOrDefault().count == 1;
 
         private static Player ReadPartialPlayer(dynamic data)
         {
             Home home = null;
-            if (data.HomeId != null)
+            if (data.homeid != null)
             {
                 home = new Home()
                 {
-                    Id = data.HomeId,
-                    AccountId = data.AccountId,
-                    PlotMapId = data.PlotMapId,
-                    PlotNumber = data.PlotNumber,
-                    ApartmentNumber = data.ApartmentNumber,
-                    Expiration = data.Expiration
+                    Id = data.homeid,
+                    AccountId = data.accountid,
+                    PlotMapId = data.plotmapid,
+                    PlotNumber = data.plotnumber,
+                    ApartmentNumber = data.apartmentnumber,
+                    Expiration = data.expiration
                 };
             }
             return new Player()
             {
-                CharacterId = data.CharacterId,
-                AccountId = data.AccountId,
+                CharacterId = data.characterid,
+                AccountId = data.accountid,
                 Account = new Account()
                 {
                     Home = home
                 },
-                CreationTime = data.CreationTime,
-                Name = data.Name,
-                Gender = data.Gender,
-                Awakened = data.Awakened,
-                Job = (Job) data.Job,
-                Levels = new Levels(data.Level, data.Exp, data.RestExp, data.PrestigeLevel, data.PrestigeExp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.MasteryExp), data.LevelsId),
-                MapId = data.MapId,
-                GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.GuildApplications),
-                Motto = data.Motto,
-                ProfileUrl = data.ProfileUrl,
-                TrophyCount = JsonConvert.DeserializeObject<int[]>(data.TrophyCount),
+                CreationTime = data.creationtime,
+                Name = data.name,
+                Gender = data.gender,
+                Awakened = data.awakened,
+                Job = (Job) data.job,
+                Levels = new Levels(data.level, data.exp, data.restexp, data.prestigelevel, data.prestigeexp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.masteryexp), data.levelsid),
+                MapId = data.mapid,
+                GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guildapplications),
+                Motto = data.motto,
+                ProfileUrl = data.profileurl,
+                TrophyCount = JsonConvert.DeserializeObject<int[]>(data.trophycount),
             };
         }
     }

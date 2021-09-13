@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseQuest : DatabaseTable
     {
-        public DatabaseQuest() : base("Quests") { }
+        public DatabaseQuest() : base("quests") { }
 
         public long Insert(QuestStatus questStatus)
         {
@@ -18,14 +18,14 @@ namespace MapleServer2.Database.Classes
                 questStatus.StartTimestamp,
                 questStatus.CompleteTimestamp,
                 questStatus.Tracked,
-                Condition = JsonConvert.SerializeObject(questStatus.Condition),
+                condition = JsonConvert.SerializeObject(questStatus.Condition),
                 questStatus.CharacterId
             });
         }
 
         public List<QuestStatus> FindAllByCharacterId(long characterId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("characterid", characterId).Get();
             List<QuestStatus> questStatusList = new List<QuestStatus>();
             foreach (dynamic data in results)
             {
@@ -37,7 +37,7 @@ namespace MapleServer2.Database.Classes
 
         public void Update(QuestStatus questStatus)
         {
-            QueryFactory.Query(TableName).Where("Id", questStatus.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", questStatus.Id).Update(new
             {
                 questStatus.Id,
                 questStatus.Started,
@@ -45,13 +45,13 @@ namespace MapleServer2.Database.Classes
                 questStatus.StartTimestamp,
                 questStatus.CompleteTimestamp,
                 questStatus.Tracked,
-                Condition = JsonConvert.SerializeObject(questStatus.Condition),
+                condition = JsonConvert.SerializeObject(questStatus.Condition),
                 questStatus.CharacterId
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.Uid, data.Id, data.CharacterId, data.Tracked, data.Started, data.Completed, data.StartTimestamp, data.CompleteTimestamp, JsonConvert.DeserializeObject<List<Condition>>(data.Condition));
+        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.uid, data.id, data.characterid, data.tracked, data.started, data.completed, data.starttimestamp, data.completetimestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
     }
 }

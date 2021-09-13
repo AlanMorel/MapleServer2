@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseTrophy : DatabaseTable
     {
-        public DatabaseTrophy() : base("Trophies") { }
+        public DatabaseTrophy() : base("trophies") { }
 
         public long Insert(Trophy trophy)
         {
@@ -17,15 +17,15 @@ namespace MapleServer2.Database.Classes
                 trophy.Counter,
                 trophy.IsDone,
                 trophy.LastReward,
-                Timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
-                CharacterId = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
-                AccountId = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
+                timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
+                characterid = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
+                accountid = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
             });
         }
 
         public Dictionary<int, Trophy> FindAllByCharacterId(long characterId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("CharacterId", characterId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("characterid", characterId).Get();
             Dictionary<int, Trophy> trophies = new Dictionary<int, Trophy>();
             foreach (dynamic data in results)
             {
@@ -37,7 +37,7 @@ namespace MapleServer2.Database.Classes
 
         public Dictionary<int, Trophy> FindAllByAccountId(long accountId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("AccountId", accountId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("accountid", accountId).Get();
             Dictionary<int, Trophy> trophies = new Dictionary<int, Trophy>();
             foreach (dynamic data in results)
             {
@@ -49,21 +49,21 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Trophy trophy)
         {
-            QueryFactory.Query(TableName).Where("Uid", trophy.Uid).Update(new
+            QueryFactory.Query(TableName).Where("uid", trophy.Uid).Update(new
             {
                 trophy.Id,
                 trophy.NextGrade,
                 trophy.Counter,
                 trophy.IsDone,
                 trophy.LastReward,
-                Timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
-                CharacterId = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
-                AccountId = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
+                timestamps = JsonConvert.SerializeObject(trophy.Timestamps),
+                characterid = trophy.CharacterId == 0 ? null : (long?) trophy.CharacterId,
+                accountid = trophy.AccountId == 0 ? null : (long?) trophy.AccountId
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static Trophy ReadTrophy(dynamic data) => new Trophy(data.Uid, data.Id, data.NextGrade, data.Counter, data.IsDone, data.LastReward, JsonConvert.DeserializeObject<List<long>>(data.Timestamps), data.CharacterId ?? 0, data.AccountId ?? 0);
+        private static Trophy ReadTrophy(dynamic data) => new Trophy(data.uid, data.id, data.nextgrade, data.counter, data.isdone, data.lastreward, JsonConvert.DeserializeObject<List<long>>(data.timestamps), data.characterid ?? 0, data.accountid ?? 0);
     }
 }
