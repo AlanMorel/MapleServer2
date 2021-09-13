@@ -12,19 +12,19 @@ namespace MapleServer2.Packets
             Interact = 0x1,
         }
 
-        public static Packet LoadBreakables(List<Breakable> breakables)
+        public static Packet LoadBreakables(List<BreakableObject> breakables)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BREAKABLE);
             pWriter.WriteEnum(BreakablePacketMode.LoadBreakables);
             pWriter.WriteInt(breakables.Count);
-            foreach (Breakable breakable in breakables)
+            foreach (BreakableObject breakable in breakables)
             {
                 WriteBreakable(pWriter, breakable);
             }
             return pWriter;
         }
 
-        public static Packet Interact(Breakable breakable)
+        public static Packet Interact(BreakableObject breakable)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BREAKABLE);
             pWriter.WriteEnum(BreakablePacketMode.Interact);
@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        private static void WriteBreakable(PacketWriter pWriter, Breakable breakable)
+        private static void WriteBreakable(PacketWriter pWriter, BreakableObject breakable)
         {
             pWriter.WriteMapleString(breakable.Id);
             pWriter.WriteEnum(breakable.State);

@@ -27,6 +27,9 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapTriggerLadder>> TriggerLadders = new Dictionary<int, List<MapTriggerLadder>>();
         private static readonly Dictionary<int, List<MapTriggerRope>> TriggerRopes = new Dictionary<int, List<MapTriggerRope>>();
         private static readonly Dictionary<int, List<MapTriggerSound>> TriggerSounds = new Dictionary<int, List<MapTriggerSound>>();
+        private static readonly Dictionary<int, List<MapBreakableActorObject>> BreakableActors = new Dictionary<int, List<MapBreakableActorObject>>();
+        private static readonly Dictionary<int, List<MapBreakableNifObject>> BreakableNifs = new Dictionary<int, List<MapBreakableNifObject>>();
+        private static readonly Dictionary<int, List<MapVibrateObject>> VibrateObjects = new Dictionary<int, List<MapVibrateObject>>();
 
         public static void Init()
         {
@@ -54,6 +57,9 @@ namespace MapleServer2.Data.Static
                 TriggerLadders.Add(entity.MapId, entity.TriggerLadders);
                 TriggerRopes.Add(entity.MapId, entity.TriggerRopes);
                 TriggerSounds.Add(entity.MapId, entity.TriggerSounds);
+                BreakableActors.Add(entity.MapId, entity.BreakableActors);
+                BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
+                VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
             }
         }
 
@@ -124,5 +130,15 @@ namespace MapleServer2.Data.Static
         public static List<MapTriggerRope> GetTriggerRopes(int mapId) => TriggerRopes.GetValueOrDefault(mapId);
 
         public static List<MapTriggerSound> GetTriggerSounds(int mapId) => TriggerSounds.GetValueOrDefault(mapId);
+
+        public static List<MapBreakableActorObject> GetBreakableActors(int mapId) => BreakableActors.GetValueOrDefault(mapId);
+
+        public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
+
+        public static bool IsVibrateObject(int mapId, string entityId)
+        {
+            MapVibrateObject vibrateObject = VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId);
+            return vibrateObject != default;
+        }
     }
 }

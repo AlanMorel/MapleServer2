@@ -296,11 +296,11 @@ namespace GameDataParser.Parsers
                     case IMS2Breakable breakable:
                         switch (breakable)
                         {
-                            case IMS2BreakableNIF nif:
-                                metadata.Breakables.Add(new MapBreakableNif(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID));
+                            case IMS2BreakableActor actor:
+                                metadata.BreakableActors.Add(new MapBreakableActorObject(actor.EntityId, actor.Enabled, actor.hideTimer, actor.resetTimer));
                                 break;
-                            default:
-                                metadata.Breakables.Add(new MapBreakable(breakable.EntityId, breakable.Enabled));
+                            case IMS2BreakableNIF nif:
+                                metadata.BreakableNifs.Add(new MapBreakableNifObject(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID, nif.hideTimer, nif.resetTimer));
                                 break;
                         }
                         break;
@@ -339,6 +339,9 @@ namespace GameDataParser.Parsers
                                 metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
                         }
+                        break;
+                    case IMS2Vibrate vibrate:
+                        metadata.VibrateObjects.Add(new MapVibrateObject(vibrate.EntityId));
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
                         // These are objects which you can place in the world
