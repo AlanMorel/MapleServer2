@@ -46,28 +46,6 @@ namespace MapleServer2.Tools
         }
 
         /// <summary>
-        /// Calls the function with the same name as the script.
-        /// </summary>
-        /// <returns>Returns DynValue or null if function was not found</returns>
-        public DynValue Call(params object[] args)
-        {
-            if (Script.Globals[ScriptName] == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                return Script.Call(Script.Globals[ScriptName], args);
-            }
-            catch (ArgumentException ex)
-            {
-                Logger.Error(ex.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Calls the specified function.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>

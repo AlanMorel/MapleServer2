@@ -79,7 +79,7 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
             session.Player.NpcTalk = new NpcTalk(npc.Value, npcQuests);
-            ScriptLoader scriptLoader = new ScriptLoader(npc.Value.Id.ToString(), session);
+            ScriptLoader scriptLoader = new ScriptLoader($"Npcs/{npc.Value.Id}", session);
 
             // If NPC is a shop, load and open the shop
             if (npc.Value.IsShop())
@@ -150,7 +150,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            ScriptLoader scriptLoader = new ScriptLoader(npcTalk.Npc.Id.ToString(), session);
+            ScriptLoader scriptLoader = new ScriptLoader($"Npcs/{npcTalk.Npc.Id}", session);
 
             // index is quest
             if (index <= npcTalk.Quests.Count - 1 && npcTalk.ScriptId == 0)

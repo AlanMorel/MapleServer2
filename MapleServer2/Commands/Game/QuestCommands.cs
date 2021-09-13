@@ -27,7 +27,7 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.SendNotice("Please type an quest id");
                 return;
             }
-            if (QuestMetadataStorage.IsValid(questId))
+            if (!QuestMetadataStorage.IsValid(questId))
             {
                 trigger.Session.SendNotice($"Quest not found with id: <font color='#93f5eb'>{questId}</font>.");
                 return;
