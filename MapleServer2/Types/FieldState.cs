@@ -24,6 +24,8 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, TriggerLadder> TriggerLadders;
         public readonly ConcurrentDictionary<int, TriggerRope> TriggerRopes;
         public readonly ConcurrentDictionary<int, TriggerSound> TriggerSounds;
+        public readonly ConcurrentDictionary<string, BreakableActorObject> BreakableActors;
+        public readonly ConcurrentDictionary<string, BreakableNifObject> BreakableNifs;
 
         public FieldState()
         {
@@ -46,6 +48,8 @@ namespace MapleServer2.Types
             TriggerLadders = new ConcurrentDictionary<int, TriggerLadder>();
             TriggerRopes = new ConcurrentDictionary<int, TriggerRope>();
             TriggerSounds = new ConcurrentDictionary<int, TriggerSound>();
+            BreakableActors = new ConcurrentDictionary<string, BreakableActorObject>();
+            BreakableNifs = new ConcurrentDictionary<string, BreakableNifObject>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -193,6 +197,19 @@ namespace MapleServer2.Types
                     break;
                 case TriggerSound triggerSound:
                     TriggerSounds[triggerSound.Id] = triggerSound;
+                    break;
+            }
+        }
+
+        public void AddBreakable(BreakableObject breakable)
+        {
+            switch (breakable)
+            {
+                case BreakableActorObject actor:
+                    BreakableActors[actor.Id] = actor;
+                    break;
+                case BreakableNifObject nif:
+                    BreakableNifs[nif.Id] = nif;
                     break;
             }
         }

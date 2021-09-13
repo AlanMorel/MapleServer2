@@ -20,8 +20,6 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            session.Player.ReturnCoord = session.FieldPlayer.Coord;
-            session.Player.ReturnMapId = session.Player.MapId;
             session.Player.Warp(fieldPopupEvent.MapId);
         }
     }

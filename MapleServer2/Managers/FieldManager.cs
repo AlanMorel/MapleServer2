@@ -32,7 +32,7 @@ namespace MapleServer2.Managers
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         public readonly TriggerScript[] Triggers;
-        private readonly List<TriggerObject> TriggerObjects = new List<TriggerObject>();
+        private readonly List<BreakableObject> Breakables = new List<BreakableObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private readonly List<Widget> Widgets = new List<Widget>();
         public bool SkipScene;
@@ -191,6 +191,25 @@ namespace MapleServer2.Managers
                 {
                     TriggerSound triggerSound = new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled);
                     State.AddTriggerObject(triggerSound);
+                }
+            }
+
+            // Load breakables
+            foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(mapId))
+            {
+                if (mapActor != null)
+                {
+                    BreakableActorObject actor = new BreakableActorObject(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration);
+                    State.AddBreakable(actor);
+                }
+            }
+
+            foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(mapId))
+            {
+                if (mapNif != null)
+                {
+                    BreakableNifObject nif = new BreakableNifObject(mapNif.EntityId, mapNif.IsEnabled, mapNif.TriggerId, mapNif.HideDuration, mapNif.ResetDuration);
+                    State.AddBreakable(nif);
                 }
             }
 
@@ -357,6 +376,11 @@ namespace MapleServer2.Managers
                     sender.Send(InstrumentPacket.PlayScore(instrument));
                 }
             }
+
+            List<BreakableObject> breakables = new List<BreakableObject>();
+            breakables.AddRange(State.BreakableActors.Values.ToList());
+            breakables.AddRange(State.BreakableNifs.Values.ToList());
+            sender.Send(BreakablePacket.LoadBreakables(breakables));
 
             List<TriggerObject> triggerObjects = new List<TriggerObject>();
             triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());

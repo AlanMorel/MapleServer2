@@ -15,13 +15,14 @@ namespace MapleServer2.Types
         public long CompleteTimestamp { get; set; }
         public long StartNpcId { get; private set; }
         public long CompleteNpcId { get; private set; }
+        public bool Tracked { get; set; }
         public List<Condition> Condition { get; set; }
         public QuestReward Reward { get; private set; }
         public List<QuestRewardItem> RewardItems { get; private set; }
 
         public readonly long CharacterId;
 
-        public QuestStatus(long uid, int id, long characterId, bool started, bool completed, long startTimestamp, long completeTimestamp, List<Condition> conditions)
+        public QuestStatus(long uid, int id, long characterId, bool tracked, bool started, bool completed, long startTimestamp, long completeTimestamp, List<Condition> conditions)
         {
             Uid = uid;
             Id = id;
@@ -31,6 +32,7 @@ namespace MapleServer2.Types
             StartTimestamp = startTimestamp;
             CompleteTimestamp = completeTimestamp;
             Condition = conditions;
+            Tracked = tracked;
             SetMetadataValues();
         }
 
@@ -50,6 +52,7 @@ namespace MapleServer2.Types
             RewardItems = metadata.RewardItem;
             Started = started;
             StartTimestamp = startTimestamp;
+            Tracked = true;
             Uid = DatabaseManager.Quests.Insert(this);
         }
 
