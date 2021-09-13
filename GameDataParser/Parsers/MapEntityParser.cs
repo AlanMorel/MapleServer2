@@ -293,11 +293,16 @@ namespace GameDataParser.Parsers
                         metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
                             CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
                         break;
-
-                    case IMS2Breakable:
-                        // case IMS2BreakableActor
-                        // TODO: Do we need to parse these as some special NPC object?
-                        // "mixinMS2Breakable"  But not "mixinMS2BreakableActor", as in ke_fi_prop_buoy_A01_ or el_move_woodbox_B04_
+                    case IMS2Breakable breakable:
+                        switch (breakable)
+                        {
+                            case IMS2BreakableActor actor:
+                                metadata.BreakableActors.Add(new MapBreakableActorObject(actor.EntityId, actor.Enabled, actor.hideTimer, actor.resetTimer));
+                                break;
+                            case IMS2BreakableNIF nif:
+                                metadata.BreakableNifs.Add(new MapBreakableNifObject(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID, nif.hideTimer, nif.resetTimer));
+                                break;
+                        }
                         break;
                     case IMS2TriggerObject triggerObject:
                         switch (triggerObject)
@@ -334,6 +339,9 @@ namespace GameDataParser.Parsers
                                 metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
                         }
+                        break;
+                    case IMS2Vibrate vibrate:
+                        metadata.VibrateObjects.Add(new MapVibrateObject(vibrate.EntityId));
                         break;
                     case IPlaceable placeable: // TODO: placeable might be too generic
                         // These are objects which you can place in the world
