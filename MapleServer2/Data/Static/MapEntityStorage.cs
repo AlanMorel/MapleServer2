@@ -135,10 +135,6 @@ namespace MapleServer2.Data.Static
 
         public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
 
-        public static bool IsVibrateObject(int mapId, string entityId)
-        {
-            MapVibrateObject vibrateObject = VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId);
-            return vibrateObject != default;
-        }
+        public static bool IsVibrateObject(int mapId, string entityId) => VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
     }
 }
