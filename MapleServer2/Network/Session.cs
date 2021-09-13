@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using Maple2Storage.Extensions;
 using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
-using Maple2Storage.Extensions;
 using NLog;
 
 namespace MapleServer2.Network
