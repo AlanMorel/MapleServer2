@@ -14,9 +14,13 @@ namespace MapleServer2.Commands.Game
                 "item"
             };
             Description = "Give an item to the current player.";
-            AddParameter("id", "Item id", 20000027);
-            AddParameter("amount", "Amount of the same item.", 1);
-            AddParameter<int>("rarity", "Item rarity.");
+            Parameters = new()
+            {
+                new Parameter<int>("id", "Item id", 20000027),
+                new Parameter<int>("amount", "Amount of the same item.", 1),
+                new Parameter<int>("rarity", "Item rarity."),
+            };
+            Usage = "/item [id] [amount] [rarity]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
