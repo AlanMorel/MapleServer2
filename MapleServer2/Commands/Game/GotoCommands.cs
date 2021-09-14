@@ -16,8 +16,12 @@ namespace MapleServer2.Commands.Game
                 "map"
             };
             Description = "Give informations about a map";
-            AddParameter<int>("id", "The map id.");
-            AddParameter<int>("instance", "The instance id.");
+            Parameters = new()
+            {
+                new Parameter<int>("id", "The map id."),
+                new Parameter<int>("instance", "The instance id."),
+            };
+            Usage = "/map [id] [instance]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -48,7 +52,11 @@ namespace MapleServer2.Commands.Game
                 "goto"
             };
             Description = "Go to a player location.";
-            AddParameter("name", "Name of the target player.", string.Empty);
+            Parameters = new()
+            {
+                new Parameter<string>("name", "Name of the target player.", string.Empty),
+            };
+            Usage = "/goto [player name]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -81,7 +89,11 @@ namespace MapleServer2.Commands.Game
                 "coord"
             };
             Description = "Get the current coord of the player.";
-            AddParameter("pos", "The position in map.", CoordF.From(0, 0, 0));
+            Parameters = new()
+            {
+                new Parameter<CoordF>("pos", "The position in map.", CoordF.From(0, 0, 0)),
+            };
+            Usage = "/coord [x], [y], [z]";
         }
 
         public override void Execute(GameCommandTrigger trigger)

@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers
@@ -45,14 +46,13 @@ namespace GameDataParser.Parsers
                     }
 
                     ScriptType type = ScriptType.Script;
-                    List<int> gotoList = new List<int>();
-                    List<int> gotoFailList = new List<int>();
                     if (node.Name == "select")
                     {
                         type = ScriptType.Select;
                     }
                     int id = int.Parse(node.Attributes["id"].Value);
-                    int amountContent = 0;
+                    string buttonSet = node.Attributes["buttonSet"]?.Value;
+                    List<Content> contents = new List<Content>();
                     if (type == ScriptType.Script)
                     {
                         foreach (XmlNode content in node.ChildNodes)
@@ -61,8 +61,9 @@ namespace GameDataParser.Parsers
                             {
                                 continue;
                             }
-                            amountContent++;
 
+                            List<int> gotoList = new List<int>();
+                            List<int> gotoFailList = new List<int>();
                             foreach (XmlNode distractor in content.ChildNodes)
                             {
                                 if (distractor.Name != "distractor")
@@ -79,9 +80,13 @@ namespace GameDataParser.Parsers
                                     gotoFailList.AddRange(distractor.Attributes["gotoFail"].Value.Split(",").Select(int.Parse).ToList());
                                 }
                             }
+
+                            string functionId = content.Attributes["functionID"]?.Value;
+                            DialogType dialogType = string.IsNullOrEmpty(content.Attributes["buttonSet"]?.Value) ? DialogType.None : (DialogType) int.Parse(content.Attributes["buttonSet"].Value);
+                            contents.Add(new Content(gotoList, gotoFailList, functionId, dialogType));
                         }
                     }
-                    metadata.Options.Add(new Option(type, id, gotoList, gotoFailList, amountContent));
+                    metadata.Options.Add(new Option(type, id, contents, buttonSet));
                 }
 
                 metadata.Id = npcId;
@@ -120,20 +125,20 @@ namespace GameDataParser.Parsers
 
                     ScriptMetadata metadata = new ScriptMetadata();
                     int questId = int.Parse(questNode.Attributes["id"].Value);
+                    string buttonSet = questNode.Attributes["buttonSet"]?.Value;
                     foreach (XmlNode script in questNode.ChildNodes)
                     {
-                        List<int> gotoList = new List<int>();
-                        List<int> gotoFailList = new List<int>();
                         int id = int.Parse(script.Attributes["id"].Value);
-                        int amountContent = 0;
+                        List<Content> contents = new List<Content>();
                         foreach (XmlNode content in script.ChildNodes)
                         {
                             if (content.Name != "content")
                             {
                                 continue;
                             }
-                            amountContent++;
 
+                            List<int> gotoList = new List<int>();
+                            List<int> gotoFailList = new List<int>();
                             foreach (XmlNode distractor in content.ChildNodes)
                             {
                                 if (distractor.Name != "distractor")
@@ -149,8 +154,12 @@ namespace GameDataParser.Parsers
                                     gotoFailList.AddRange(distractor.Attributes["gotoFail"].Value.Split(",").Select(int.Parse).ToList());
                                 }
                             }
+
+                            string functionId = content.Attributes["functionID"]?.Value;
+                            DialogType dialogType = string.IsNullOrEmpty(content.Attributes["buttonSet"]?.Value) ? DialogType.None : (DialogType) int.Parse(content.Attributes["buttonSet"].Value);
+                            contents.Add(new Content(gotoList, gotoFailList, functionId, dialogType));
                         }
-                        metadata.Options.Add(new Option(ScriptType.Script, id, gotoList, gotoFailList, amountContent));
+                        metadata.Options.Add(new Option(ScriptType.Script, id, contents, buttonSet));
                     }
                     metadata.Id = questId;
                     metadata.IsQuestScript = true;

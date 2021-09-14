@@ -73,6 +73,7 @@ namespace MapleServer2.Types
         public string[] Codes { get; set; }
         public int Goal { get; set; }
         public int Current { get; set; }
+        public bool Completed { get; set; }
         public List<string> Target;
 
         public Condition(string type, string[] codes, int goal, int current, List<string> target)

@@ -1,6 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
-using System.Diagnostics;
 using GameDataParser.Files;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
@@ -26,25 +26,18 @@ namespace GameDataParser
             foreach (Type parserClass in parserClassList)
             {
                 ConstructorInfo newConstructor = parserClass.GetConstructor(new Type[] { typeof(MetadataResources) });
-
-                object currentParser = new object();
+                MetadataExporter exporter;
 
                 // Verify if the new constructor doesn't need a parameter so can create an instances without a parameter.
                 if (newConstructor != null)
                 {
-                    ParameterInfo[] newParameters = newConstructor.GetParameters();
-
-                    foreach (ParameterInfo currentParameter in newParameters)
-                    {
-                        currentParser = Activator.CreateInstance(parserClass, resources);
-                    }
+                    exporter = (MetadataExporter) Activator.CreateInstance(parserClass, resources);
                 }
                 else
                 {
-                    currentParser = Activator.CreateInstance(parserClass);
+                    exporter = (MetadataExporter) Activator.CreateInstance(parserClass);
                 }
 
-                MetadataExporter exporter = (MetadataExporter) (newConstructor != null ? Activator.CreateInstance(currentParser.GetType(), resources) : Activator.CreateInstance(currentParser.GetType()));
                 tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count++ / parserClassList.Count * 100f)));
             }
 
