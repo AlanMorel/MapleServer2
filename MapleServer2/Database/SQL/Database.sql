@@ -9,10 +9,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-DROP DATABASE IF EXISTS `Maple2DB`;
+DROP DATABASE IF EXISTS `DATABASE_NAME`;
 
-CREATE DATABASE `Maple2DB`;
-USE `Maple2DB`;
+CREATE DATABASE `DATABASE_NAME`;
+USE `DATABASE_NAME`;
 
 --
 -- Table structure for table `accounts`
@@ -109,7 +109,7 @@ CREATE TABLE `characters` (
   `IsDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `Mapleopoly` text,
   `Motto` varchar(25) DEFAULT '',
-  `ProfileUrl` varchar(50) DEFAULT '',
+  `ProfileUrl` text NOT NULL,
   `ReturnCoord` text NOT NULL,
   `ReturnMapId` int NOT NULL,
   `SkinColor` text NOT NULL,
@@ -425,6 +425,7 @@ CREATE TABLE `quests` (
   `CompleteTimestamp` bigint NOT NULL,
   `Condition` text,
   `CharacterId` bigint DEFAULT NULL,
+  `Tracked` tinyint(1) NOT NULL,
   PRIMARY KEY (`Uid`),
   KEY `IX_Quests_CharacterId` (`CharacterId`),
   CONSTRAINT `FK_Quests_Characters_CharacterId` FOREIGN KEY (`CharacterId`) REFERENCES `characters` (`CharacterId`) ON DELETE RESTRICT

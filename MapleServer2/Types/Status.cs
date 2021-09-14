@@ -25,7 +25,7 @@ namespace MapleServer2.Types
             Target = target;
             Source = source;
             Level = skillCast.SkillLevel;
-            Stacks = stacks;
+            Stacks = stacks > 0 && stacks <= skillCast.MaxStack() ? stacks : skillCast.MaxStack();
             SkillCast = skillCast;
             Start = Environment.TickCount;
             Duration = skillCast.DurationTick();

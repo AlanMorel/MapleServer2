@@ -23,10 +23,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet TickSync(int serverTick)
+        public static Packet TickSync()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_CLIENTTICK_SYNC);
-            pWriter.WriteInt(serverTick);
+            pWriter.WriteInt(Environment.TickCount);
 
             return pWriter;
         }

@@ -433,14 +433,15 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                if (item.ItemSlot == ItemSlot.CP)
-                {
-                    hatData[i] = packet.Read<HatData>();
-                }
-
                 if (!HandleShopPay(session, beautyShop, useVoucher[i]))
                 {
                     return;
+                }
+
+                if (item.ItemSlot == ItemSlot.CP)
+                {
+                    hatData[i] = packet.Read<HatData>();
+                    item.HatData = hatData[i];
                 }
 
                 item.Color = equipColor[i];

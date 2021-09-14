@@ -1,14 +1,15 @@
 ﻿using System.Globalization;
 using Autofac;
+using Maple2Storage.Extensions;
+using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using MapleServer2.Constants;
 using MapleServer2.Database;
-using MapleServer2.Extensions;
+using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
-using MapleServer2.Managers;
 using MapleServer2.Types;
 using NLog;
 
@@ -19,7 +20,7 @@ namespace MapleServer2
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void Main()
+        public static async Task Main()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
@@ -36,6 +37,7 @@ namespace MapleServer2
                 throw new ArgumentException(".env file not found!");
             }
             DotEnv.Load(dotenv);
+
             InitDatabase();
 
             // Load Mob AI files
@@ -43,7 +45,7 @@ namespace MapleServer2
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
             // Initialize all metadata.
-            MetadataHelper.InitializeAll();
+            await MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -164,6 +166,7 @@ namespace MapleServer2
 
         private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
         {
+            SaveAll(sender, args);
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
         }

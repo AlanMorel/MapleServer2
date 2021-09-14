@@ -2,7 +2,6 @@
 using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants;
 using MapleServer2.Enums;
 using ProtoBuf;
 
@@ -81,7 +80,6 @@ namespace MapleServer2.Data.Static
         public static bool GetIsCustomScore(int itemId)
         {
             return map.GetValueOrDefault(itemId).IsCustomScore;
-
         }
 
         public static byte GetGender(int itemId)
@@ -141,11 +139,6 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId).RecommendJobs.ConvertAll(converter);
         }
 
-        public static List<ItemContent> GetContent(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).Content;
-        }
-
         public static int GetSellPrice(int itemId)
         {
             // get random selling price from price points
@@ -177,11 +170,6 @@ namespace MapleServer2.Data.Static
         public static ItemFunction GetFunction(int itemId)
         {
             return map.GetValueOrDefault(itemId).FunctionData;
-        }
-
-        public static AdBalloonData GetBalloonData(int itemId)
-        {
-            return map.GetValueOrDefault(itemId).AdBalloonData;
         }
 
         public static string GetTag(int itemId)

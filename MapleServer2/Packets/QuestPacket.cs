@@ -10,8 +10,9 @@ namespace MapleServer2.Packets
         {
             Dialog = 0x01,
             AcceptQuest = 0x02,
-            CompleteExplorationGoal = 0x03,
+            UpdateCondition = 0x03,
             CompleteQuest = 0x04,
+            ToggleTracking = 0x09,
             StartList = 0x15,
             SendQuests = 0x16, // send the status of every quest
             EndList = 0x17,
@@ -45,13 +46,16 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateCondition(int questId, int conditionIndex, int value)
+        public static Packet UpdateCondition(int questId, List<Condition> conditions)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
+            pWriter.WriteEnum(QuestType.UpdateCondition);
             pWriter.WriteInt(questId);
-            pWriter.WriteInt(conditionIndex);
-            pWriter.WriteInt(value);
+            pWriter.WriteInt(conditions.Count);
+            foreach (Condition condition in conditions)
+            {
+                pWriter.WriteInt(condition.Current);
+            }
 
             return pWriter;
         }
@@ -64,6 +68,16 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(questId);
             pWriter.WriteInt(animation ? 1 : 0);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+            return pWriter;
+        }
+
+        public static Packet ToggleTracking(int questId, bool tracked)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+            pWriter.WriteEnum(QuestType.ToggleTracking);
+            pWriter.WriteInt(questId);
+            pWriter.WriteBool(tracked);
 
             return pWriter;
         }
@@ -105,7 +119,7 @@ namespace MapleServer2.Packets
 
                 pWriter.WriteLong(quest.StartTimestamp);
                 pWriter.WriteLong(quest.CompleteTimestamp);
-                pWriter.WriteByte(quest.Basic.AutoStart); // unsure need more testing
+                pWriter.WriteBool(quest.Tracked);
                 pWriter.WriteInt(quest.Condition.Count);
 
                 for (int j = 0; j < quest.Condition.Count; j++)

@@ -1,5 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants;
+﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -32,7 +32,6 @@ namespace MapleServer2.Data.Static
             }
 
             // TODO: Check if slot is valid. Unsure where slot values are assigned in each item
-
             return true;
         }
     }

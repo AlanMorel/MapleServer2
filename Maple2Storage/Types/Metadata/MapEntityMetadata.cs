@@ -53,6 +53,13 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerSound> TriggerSounds;
         [XmlElement(Order = 23)]
         public readonly List<MapTriggerRope> TriggerRopes;
+        [XmlElement(Order = 24)]
+        public readonly List<MapBreakableActorObject> BreakableActors;
+        [XmlElement(Order = 25)]
+        public readonly List<MapBreakableNifObject> BreakableNifs;
+        [XmlElement(Order = 26)]
+        public readonly List<MapVibrateObject> VibrateObjects;
+
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -77,6 +84,9 @@ namespace Maple2Storage.Types.Metadata
             TriggerCubes = new List<MapTriggerCube>();
             TriggerSounds = new List<MapTriggerSound>();
             TriggerRopes = new List<MapTriggerRope>();
+            BreakableActors = new List<MapBreakableActorObject>();
+            BreakableNifs = new List<MapBreakableNifObject>();
+            VibrateObjects = new List<MapVibrateObject>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -102,6 +112,9 @@ namespace Maple2Storage.Types.Metadata
             TriggerCubes = new List<MapTriggerCube>();
             TriggerSounds = new List<MapTriggerSound>();
             TriggerRopes = new List<MapTriggerRope>();
+            BreakableActors = new List<MapBreakableActorObject>();
+            BreakableNifs = new List<MapBreakableNifObject>();
+            VibrateObjects = new List<MapVibrateObject>();
         }
 
         public override string ToString() =>
@@ -761,5 +774,64 @@ namespace Maple2Storage.Types.Metadata
         }
 
         private MapTriggerRope() : base() { }
+    }
+
+    [ProtoContract, ProtoInclude(20, typeof(MapBreakableNifObject))]
+    [ProtoInclude(21, typeof(MapBreakableActorObject))]
+    public class MapBreakableObject
+    {
+        [ProtoMember(22)]
+        public string EntityId;
+        [ProtoMember(23)]
+        public bool IsEnabled;
+        [ProtoMember(24)]
+        public int HideDuration;
+        [ProtoMember(25)]
+        public int ResetDuration;
+
+        public MapBreakableObject() { }
+
+        public MapBreakableObject(string entityId, bool isEnabled, int hideDuration, int resetDuration)
+        {
+            EntityId = entityId;
+            IsEnabled = isEnabled;
+            HideDuration = hideDuration;
+            ResetDuration = resetDuration;
+        }
+    }
+
+    [ProtoContract]
+    public class MapBreakableNifObject : MapBreakableObject
+    {
+        [ProtoMember(26)]
+        public int TriggerId;
+
+        public MapBreakableNifObject() { }
+
+        public MapBreakableNifObject(string id, bool isEnabled, int triggerId, int hideDuration, int resetDuration) : base(id, isEnabled, hideDuration, resetDuration)
+        {
+            TriggerId = triggerId;
+        }
+    }
+
+    [ProtoContract]
+    public class MapBreakableActorObject : MapBreakableObject
+    {
+        public MapBreakableActorObject() { }
+
+        public MapBreakableActorObject(string id, bool isEnabled, int hideDuration, int resetDuration) : base(id, isEnabled, hideDuration, resetDuration) { }
+    }
+
+    [XmlType]
+    public class MapVibrateObject
+    {
+        [XmlElement(Order = 1)]
+        public string EntityId;
+
+        public MapVibrateObject() { }
+        public MapVibrateObject(string id)
+        {
+            EntityId = id;
+        }
     }
 }

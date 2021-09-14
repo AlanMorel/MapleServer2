@@ -3,13 +3,16 @@
     public enum SkillType : int
     {
         None = 0,
-        Attack = 1
+        Attack = 1,
+        GM = 3
     }
 
     public enum SkillSubType : int
     {
         None = 0,
-        Status = 2
+        Status = 2,
+        GM = 5,
+        Global = 6
     }
 
     public enum BuffType : int

@@ -10,13 +10,17 @@ namespace MapleServer2.Commands.Game
     {
         public CurrencyCommands()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "currency"
             };
             Description = "Set the amount of the currency type specified.";
-            AddParameter<string>("name", "Type of the currency you want to add.");
-            AddParameter<long>("amount", "Amount of the currency type.");
+            Parameters = new()
+            {
+                new Parameter<string>("name", "Type of the currency you want to add."),
+                new Parameter<long>("amount", "Amount of the currency type.")
+            };
+            Usage = "/currency [name] [amount]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -28,7 +32,7 @@ namespace MapleServer2.Commands.Game
             if (string.IsNullOrEmpty(currencyName))
             {
                 session.SendNotice("No currency type were found. Try one of the list.");
-                session.Send(NoticePacket.Notice(CommandHelpers.Color("valor, treva, rue, havi, meso, meret", Color.DarkOrange), NoticeType.Chat));
+                session.Send(NoticePacket.Notice("valor, treva, rue, havi, meso, meret".Color(Color.DarkOrange), NoticeType.Chat));
                 return;
             }
             if (amount <= 0)

@@ -1,19 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <AssemblyName>Maple2Storage</AssemblyName>
-        <RootNamespace>Maple2Storage</RootNamespace>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>10</LangVersion>
-    </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>Maple2Storage</AssemblyName>
+    <RootNamespace>Maple2Storage</RootNamespace>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="protobuf-net" Version="3.0.73" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Pastel" Version="2.1.0" />
+    <PackageReference Include="protobuf-net" Version="3.0.73" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Properties\" />
-      <Folder Include="Resources" />
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Resources" />
+  </ItemGroup>
 
 </Project>

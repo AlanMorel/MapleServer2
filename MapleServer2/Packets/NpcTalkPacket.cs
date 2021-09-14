@@ -1,18 +1,24 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
     public static class NpcTalkPacket
     {
-        // Unsure about how to handle the "DialogType" part of the packet.
-        // When this is wrong, the game is stuck with an invisible dialog.
+        private enum NpcTalkMode : byte
+        {
+            Close = 0x00,
+            Respond = 0x01,
+            Continue = 0x02,
+            Action = 0x03,
+        }
+
         public static Packet Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteByte(0x01);
+            pWriter.WriteEnum(NpcTalkMode.Respond);
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteEnum(npcType);
             pWriter.WriteInt(scriptId);
@@ -25,7 +31,7 @@ namespace MapleServer2.Packets
         public static Packet ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteByte(0x02);
+            pWriter.WriteEnum(NpcTalkMode.Continue);
             pWriter.WriteEnum(responseType);
             pWriter.WriteInt(questId);
             pWriter.WriteInt(scriptId);
@@ -38,7 +44,7 @@ namespace MapleServer2.Packets
         public static Packet Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteByte(0x03);
+            pWriter.WriteEnum(NpcTalkMode.Action);
             pWriter.WriteEnum(actionType);
             switch (actionType)
             {
@@ -50,13 +56,14 @@ namespace MapleServer2.Packets
                     pWriter.WriteUnicodeString(parameters);
                     break;
             }
+
             return pWriter;
         }
 
         public static Packet Close()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteByte(0x00);
+            pWriter.WriteEnum(NpcTalkMode.Close);
 
             return pWriter;
         }

@@ -27,10 +27,21 @@ namespace MapleServer2.Types
         // Gender - 0 = male, 1 = female
         public byte Gender { get; set; }
 
-        // Job Group, according to jobgroupname.xml
         public bool Awakened { get; set; }
+
+        // Job Group, according to jobgroupname.xml
         public Job Job { get; set; }
-        public JobCode JobCode => (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+        public JobCode JobCode
+        {
+            get
+            {
+                if (Job == Job.GameMaster)
+                {
+                    return JobCode.GameMaster;
+                }
+                return (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
+            }
+        }
 
         // Mutable Values
         public Levels Levels { get; set; }
@@ -72,7 +83,7 @@ namespace MapleServer2.Types
         // Appearance
         public SkinColor SkinColor;
 
-        public string ProfileUrl; // profile/e2/5a/2755104031905685000/637207943431921205.png
+        public string ProfileUrl;
         public string Motto;
 
         public long VisitingHomeId;
@@ -179,7 +190,7 @@ namespace MapleServer2.Types
             Stats = new PlayerStats(strBase: 10, dexBase: 10, intBase: 10, lukBase: 10, hpBase: 500, critRateBase: 10);
             Motto = "Motto";
             ProfileUrl = "";
-            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount;
+            CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
             TitleId = 0;
             InsigniaId = 0;
             Titles = new List<int>();
@@ -315,6 +326,30 @@ namespace MapleServer2.Types
                     Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
                 }
             }, ct.Token);
+        }
+
+        public Task TimeSyncLoop()
+        {
+            return Task.Run(async () =>
+            {
+                while (Session != null)
+                {
+                    Session.Send(TimeSyncPacket.Request());
+                    await Task.Delay(1000);
+                }
+            });
+        }
+
+        public Task ClientTickSyncLoop()
+        {
+            return Task.Run(async () =>
+            {
+                while (Session != null)
+                {
+                    Session.Send(RequestPacket.TickSync());
+                    await Task.Delay(300 * 1000); // every 5 minutes
+                }
+            });
         }
 
         public void RecoverHp(int amount)
