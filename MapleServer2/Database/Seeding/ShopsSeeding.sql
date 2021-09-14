@@ -8,11 +8,11 @@ CREATE TABLE `shops` (
   `id` int NOT NULL,
   `category` int NOT NULL,
   `name` varchar(25) DEFAULT NULL,
-  `shoptype` tinyint unsigned NOT NULL,
-  `restrictsales` tinyint(1) NOT NULL,
-  `canrestock` tinyint(1) NOT NULL,
-  `nextrestock` bigint NOT NULL,
-  `allowbuyback` tinyint(1) NOT NULL,
+  `shop_type` tinyint unsigned NOT NULL,
+  `restrict_sales` tinyint(1) NOT NULL,
+  `can_restock` tinyint(1) NOT NULL,
+  `next_restock` bigint NOT NULL,
+  `allow_buyback` tinyint(1) NOT NULL,
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

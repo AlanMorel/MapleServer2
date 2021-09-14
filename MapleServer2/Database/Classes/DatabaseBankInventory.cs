@@ -5,14 +5,14 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseBankInventory : DatabaseTable
     {
-        public DatabaseBankInventory() : base("bankinventories") { }
+        public DatabaseBankInventory() : base("bank_inventories") { }
 
         public long Insert(BankInventory bankInventory)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 mesos = bankInventory.Mesos.Amount,
-                bankInventory.ExtraSize,
+                extra_size = bankInventory.ExtraSize,
             });
         }
 
@@ -23,7 +23,7 @@ namespace MapleServer2.Database.Classes
             QueryFactory.Query(TableName).Where("id", bankInventory.Id).Update(new
             {
                 mesos = bankInventory.Mesos.Amount,
-                bankInventory.ExtraSize,
+                extra_size = bankInventory.ExtraSize,
             });
 
             List<Item> items = new List<Item>();
@@ -39,6 +39,6 @@ namespace MapleServer2.Database.Classes
 
         public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
 
-        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.id, data.extrasize, DatabaseManager.Items.FindAllByBankInventoryId(data.id), data.mesos);
+        private static BankInventory ReadBankInventory(dynamic data) => new BankInventory(data.id, data.extra_size, DatabaseManager.Items.FindAllByBankInventoryId(data.id), data.mesos);
     }
 }

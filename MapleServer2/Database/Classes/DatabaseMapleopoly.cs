@@ -5,10 +5,22 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseMapleopoly : DatabaseTable
     {
-        public DatabaseMapleopoly() : base("mapleopolytiles") { }
+        public DatabaseMapleopoly() : base("mapleopoly_tiles") { }
 
-        public List<MapleopolyTile> FindAllTiles() => QueryFactory.Query(TableName).Get<MapleopolyTile>().OrderBy(x => x.TilePosition).ToList();
+        public List<MapleopolyTile> FindAllTiles()
+        {
+            List<MapleopolyTile> tiles = new List<MapleopolyTile>();
 
-        public MapleopolyTile FindTileByPosition(int tilePosition) => QueryFactory.Query(TableName).Where("tileposition", tilePosition).Get<MapleopolyTile>().FirstOrDefault();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Get();
+            foreach (dynamic result in results)
+            {
+                tiles.Add(ReadMapleopolyTile(result));
+            }
+            return tiles.OrderBy(x => x.TilePosition).ToList();
+        }
+
+        public MapleopolyTile FindTileByPosition(int tilePosition) => ReadMapleopolyTile(QueryFactory.Query(TableName).Where("tile_position", tilePosition).Get().FirstOrDefault());
+
+        private static MapleopolyTile ReadMapleopolyTile(dynamic data) => new MapleopolyTile(data.tile_position, data.item_amount, data.item_id, data.item_rarity, data.tile_parameter, data.type);
     }
 }

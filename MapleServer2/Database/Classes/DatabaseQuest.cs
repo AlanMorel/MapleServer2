@@ -15,17 +15,17 @@ namespace MapleServer2.Database.Classes
                 questStatus.Id,
                 questStatus.Started,
                 questStatus.Completed,
-                questStatus.StartTimestamp,
-                questStatus.CompleteTimestamp,
+                start_timestamp = questStatus.StartTimestamp,
+                complete_timestamp = questStatus.CompleteTimestamp,
                 questStatus.Tracked,
                 condition = JsonConvert.SerializeObject(questStatus.Condition),
-                questStatus.CharacterId
+                character_id = questStatus.CharacterId
             });
         }
 
         public List<QuestStatus> FindAllByCharacterId(long characterId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("characterid", characterId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
             List<QuestStatus> questStatusList = new List<QuestStatus>();
             foreach (dynamic data in results)
             {
@@ -42,16 +42,16 @@ namespace MapleServer2.Database.Classes
                 questStatus.Id,
                 questStatus.Started,
                 questStatus.Completed,
-                questStatus.StartTimestamp,
-                questStatus.CompleteTimestamp,
+                start_timestamp = questStatus.StartTimestamp,
+                complete_timestamp = questStatus.CompleteTimestamp,
                 questStatus.Tracked,
                 condition = JsonConvert.SerializeObject(questStatus.Condition),
-                questStatus.CharacterId
+                character_id = questStatus.CharacterId
             });
         }
 
         public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.uid, data.id, data.characterid, data.tracked, data.started, data.completed, data.starttimestamp, data.completetimestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
+        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.started, data.completed, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
     }
 }

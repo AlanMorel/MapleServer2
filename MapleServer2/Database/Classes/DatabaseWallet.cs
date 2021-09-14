@@ -12,10 +12,10 @@ namespace MapleServer2.Database.Classes
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 meso = wallet.Meso.Amount,
-                valortoken = wallet.ValorToken.Amount,
+                valor_token = wallet.ValorToken.Amount,
                 treva = wallet.Treva.Amount,
                 rue = wallet.Rue.Amount,
-                havifruit = wallet.HaviFruit.Amount,
+                havi_fruit = wallet.HaviFruit.Amount,
             });
         }
 
@@ -24,10 +24,10 @@ namespace MapleServer2.Database.Classes
             QueryFactory.Query(TableName).Where("id", wallet.Id).Update(new
             {
                 meso = wallet.Meso.Amount,
-                valortoken = wallet.ValorToken.Amount,
+                valor_token = wallet.ValorToken.Amount,
                 treva = wallet.Treva.Amount,
                 rue = wallet.Rue.Amount,
-                havifruit = wallet.HaviFruit.Amount,
+                havi_fruit = wallet.HaviFruit.Amount,
             });
         }
 

@@ -14,10 +14,10 @@ namespace MapleServer2.Database.Classes
             {
                 levels.Level,
                 levels.Exp,
-                levels.RestExp,
-                levels.PrestigeLevel,
-                levels.PrestigeExp,
-                masteryexp = JsonConvert.SerializeObject(levels.MasteryExp)
+                rest_exp = levels.RestExp,
+                prestige_level = levels.PrestigeLevel,
+                prestige_exp = levels.PrestigeExp,
+                mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
             });
         }
 
@@ -27,10 +27,10 @@ namespace MapleServer2.Database.Classes
             {
                 levels.Level,
                 levels.Exp,
-                levels.RestExp,
-                levels.PrestigeLevel,
-                levels.PrestigeExp,
-                masteryexp = JsonConvert.SerializeObject(levels.MasteryExp)
+                rest_exp = levels.RestExp,
+                prestige_level = levels.PrestigeLevel,
+                prestige_exp = levels.PrestigeExp,
+                mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
             });
         }
 

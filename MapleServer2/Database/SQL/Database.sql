@@ -22,30 +22,30 @@ DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `username` varchar(25) NOT NULL,
-  `passwordhash` varchar(255) NOT NULL,
-  `creationtime` bigint NOT NULL,
-  `lastlogintime` bigint NOT NULL,
-  `characterslots` int NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `creation_time` bigint NOT NULL,
+  `last_login_time` bigint NOT NULL,
+  `character_slots` int NOT NULL,
   `meret` bigint DEFAULT NULL,
-  `gamemeret` bigint DEFAULT NULL,
-  `eventmeret` bigint DEFAULT NULL,
-  `mesotoken` bigint DEFAULT NULL,
-  `bankinventoryid` bigint DEFAULT NULL,
-  `vipexpiration` bigint NOT NULL,
+  `game_meret` bigint DEFAULT NULL,
+  `event_meret` bigint DEFAULT NULL,
+  `meso_token` bigint DEFAULT NULL,
+  `bank_inventory_id` bigint DEFAULT NULL,
+  `vip_expiration` bigint NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_accounts_username` (`username`),
-  KEY `accounts_bankinventoryid_fk` (`bankinventoryid`),
-  CONSTRAINT `accounts_bankinventoryid_fk` FOREIGN KEY (`bankinventoryid`) REFERENCES `bankinventories` (`id`) ON DELETE RESTRICT
+  KEY `accounts_bankinventoryid_fk` (`bank_inventory_id`),
+  CONSTRAINT `accounts_bankinventoryid_fk` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `bankinventories`
 --
 
-DROP TABLE IF EXISTS `bankinventories`;
-CREATE TABLE `bankinventories` (
+DROP TABLE IF EXISTS `bank_inventories`;
+CREATE TABLE `bank_inventories` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `extrasize` int NOT NULL,
+  `extra_size` int NOT NULL,
   `mesos` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -57,20 +57,20 @@ CREATE TABLE `bankinventories` (
 DROP TABLE IF EXISTS `buddies`;
 CREATE TABLE `buddies` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `sharedid` bigint NOT NULL,
-  `characterid` bigint DEFAULT NULL,
-  `friendcharacterid` bigint DEFAULT NULL,
+  `shared_id` bigint NOT NULL,
+  `character_id` bigint DEFAULT NULL,
+  `friend_character_id` bigint DEFAULT NULL,
   `message` varchar(25) DEFAULT '',
-  `isfriendrequest` tinyint(1) NOT NULL,
-  `ispending` tinyint(1) NOT NULL,
+  `is_friend_request` tinyint(1) NOT NULL,
+  `is_pending` tinyint(1) NOT NULL,
   `blocked` tinyint(1) NOT NULL,
-  `blockreason` varchar(25) DEFAULT '',
+  `block_reason` varchar(25) DEFAULT '',
   `timestamp` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `ix_buddies_friendcharacterid` (`friendcharacterid`),
-  KEY `ix_buddies_playercharacterid` (`characterid`),
-  CONSTRAINT `fk_buddies_characters_friendcharacterid` FOREIGN KEY (`friendcharacterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_buddies_characters_playercharacterid` FOREIGN KEY (`characterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT
+  KEY `ix_buddies_friendcharacterid` (`friend_character_id`),
+  KEY `ix_buddies_playercharacterid` (`character_id`),
+  CONSTRAINT `fk_buddies_characters_friendcharacterid` FOREIGN KEY (`friend_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_buddies_characters_playercharacterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -79,62 +79,62 @@ CREATE TABLE `buddies` (
 
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE `characters` (
-  `characterid` bigint NOT NULL AUTO_INCREMENT,
-  `accountid` bigint NOT NULL,
-  `creationtime` bigint NOT NULL,
+  `character_id` bigint NOT NULL AUTO_INCREMENT,
+  `account_id` bigint NOT NULL,
+  `creation_time` bigint NOT NULL,
   `name` varchar(25) NOT NULL,
   `gender` tinyint unsigned NOT NULL,
   `awakened` tinyint(1) NOT NULL,
   `job` int NOT NULL,
-  `levelsid` bigint DEFAULT NULL,
-  `mapid` int NOT NULL,
-  `titleid` int NOT NULL,
-  `insigniaid` smallint NOT NULL,
+  `levels_id` bigint DEFAULT NULL,
+  `map_id` int NOT NULL,
+  `title_id` int NOT NULL,
+  `insignia_id` smallint NOT NULL,
   `titles` text,
-  `prestigerewardsclaimed` text,
-  `maxskilltabs` int NOT NULL,
-  `activeskilltabid` bigint NOT NULL,
-  `gameoptionsid` bigint DEFAULT NULL,
-  `walletid` bigint DEFAULT NULL,
-  `chatsticker` text,
-  `clubid` bigint NOT NULL,
+  `prestige_rewards_claimed` text,
+  `max_skill_tabs` int NOT NULL,
+  `active_skill_tab_id` bigint NOT NULL,
+  `game_options_id` bigint DEFAULT NULL,
+  `wallet_id` bigint DEFAULT NULL,
+  `chat_sticker` text,
+  `club_id` bigint NOT NULL,
   `coord` text NOT NULL,
   `emotes` text,
-  `favoritestickers` text,
-  `groupchatid` text,
-  `guildapplications` text,
-  `guildid` bigint DEFAULT NULL,
-  `guildmemberid` bigint DEFAULT NULL,
-  `inventoryid` bigint DEFAULT NULL,
-  `isdeleted` tinyint(1) NOT NULL DEFAULT '0',
+  `favorite_stickers` text,
+  `group_chat_id` text,
+  `guild_applications` text,
+  `guild_id` bigint DEFAULT NULL,
+  `guild_member_id` bigint DEFAULT NULL,
+  `inventory_id` bigint DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `mapleopoly` text,
   `motto` varchar(25) DEFAULT '',
-  `profileurl` text NOT NULL,
-  `returncoord` text NOT NULL,
-  `returnmapid` int NOT NULL,
-  `skincolor` text NOT NULL,
-  `statpointdistribution` text,
+  `profile_url` text NOT NULL,
+  `return_coord` text NOT NULL,
+  `return_map_id` int NOT NULL,
+  `skin_color` text NOT NULL,
+  `statpoint_distribution` text,
   `stats` text,
-  `trophycount` text,
-  `unlockedmaps` text,
-  `unlockedtaxis` text,
-  `visitinghomeid` bigint NOT NULL,
-  PRIMARY KEY (`characterid`),
+  `trophy_count` text,
+  `unlocked_maps` text,
+  `unlocked_taxis` text,
+  `visiting_home_id` bigint NOT NULL,
+  PRIMARY KEY (`character_id`),
   UNIQUE KEY `ix_characters_name` (`name`),
-  KEY `ix_characters_accountid` (`accountid`),
-  KEY `ix_characters_gameoptionsid` (`gameoptionsid`),
-  KEY `ix_characters_guildid` (`guildid`),
-  KEY `ix_characters_guildmemberid` (`guildmemberid`),
-  KEY `ix_characters_inventoryid` (`inventoryid`),
-  KEY `ix_characters_levelsid` (`levelsid`),
-  KEY `ix_characters_walletid` (`walletid`),
-  CONSTRAINT `fk_characters_accounts_accountid` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_characters_gameoptions_gameoptionsid` FOREIGN KEY (`gameoptionsid`) REFERENCES `gameoptions` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_characters_guildmembers_guildmemberid` FOREIGN KEY (`guildmemberid`) REFERENCES `guildmembers` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_characters_guilds_guildid` FOREIGN KEY (`guildid`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_characters_inventories_inventoryid` FOREIGN KEY (`inventoryid`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_characters_levels_levelsid` FOREIGN KEY (`levelsid`) REFERENCES `levels` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_characters_wallets_walletid` FOREIGN KEY (`walletid`) REFERENCES `wallets` (`id`) ON DELETE RESTRICT
+  KEY `ix_characters_accountid` (`account_id`),
+  KEY `ix_characters_gameoptionsid` (`game_options_id`),
+  KEY `ix_characters_guildid` (`guild_id`),
+  KEY `ix_characters_guildmemberid` (`guild_member_id`),
+  KEY `ix_characters_inventoryid` (`inventory_id`),
+  KEY `ix_characters_levelsid` (`levels_id`),
+  KEY `ix_characters_walletid` (`wallet_id`),
+  CONSTRAINT `fk_characters_accounts_accountid` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_characters_gameoptions_gameoptionsid` FOREIGN KEY (`game_options_id`) REFERENCES `game_options` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_characters_guildmembers_guildmemberid` FOREIGN KEY (`guild_member_id`) REFERENCES `guild_members` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_characters_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_characters_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_characters_levels_levelsid` FOREIGN KEY (`levels_id`) REFERENCES `levels` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_characters_wallets_walletid` FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -144,32 +144,32 @@ CREATE TABLE `characters` (
 DROP TABLE IF EXISTS `cubes`;
 CREATE TABLE `cubes` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
-  `coordx` float NOT NULL,
-  `coordy` float NOT NULL,
-  `coordz` float NOT NULL,
-  `homeid` bigint DEFAULT NULL,
-  `itemuid` bigint DEFAULT NULL,
-  `layoutuid` bigint DEFAULT NULL,
-  `plotnumber` int NOT NULL,
+  `coord_x` float NOT NULL,
+  `coord_y` float NOT NULL,
+  `coord_z` float NOT NULL,
+  `home_id` bigint DEFAULT NULL,
+  `item_uid` bigint DEFAULT NULL,
+  `layout_uid` bigint DEFAULT NULL,
+  `plot_number` int NOT NULL,
   `rotation` float NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_cubes_homeid` (`homeid`),
-  KEY `ix_cubes_itemuid` (`itemuid`),
-  KEY `ix_cubes_layoutuid` (`layoutuid`),
-  CONSTRAINT `fk_cubes_homelayouts_layoutuid` FOREIGN KEY (`layoutuid`) REFERENCES `homelayouts` (`uid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_cubes_homes_homeid` FOREIGN KEY (`homeid`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_cubes_items_itemuid` FOREIGN KEY (`itemuid`) REFERENCES `items` (`uid`) ON DELETE RESTRICT
+  KEY `ix_cubes_homeid` (`home_id`),
+  KEY `ix_cubes_itemuid` (`item_uid`),
+  KEY `ix_cubes_layoutuid` (`layout_uid`),
+  CONSTRAINT `fk_cubes_homelayouts_layoutuid` FOREIGN KEY (`layout_uid`) REFERENCES `home_layouts` (`uid`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_cubes_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_cubes_items_itemuid` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `gameoptions`
 --
 
-DROP TABLE IF EXISTS `gameoptions`;
-CREATE TABLE `gameoptions` (
+DROP TABLE IF EXISTS `game_options`;
+CREATE TABLE `game_options` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `keybinds` text,
-  `activehotbarid` smallint NOT NULL,
+  `active_hotbar_id` smallint NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -177,36 +177,36 @@ CREATE TABLE `gameoptions` (
 -- Table structure for table `guildapplications`
 --
 
-DROP TABLE IF EXISTS `guildapplications`;
-CREATE TABLE `guildapplications` (
+DROP TABLE IF EXISTS `guild_applications`;
+CREATE TABLE `guild_applications` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `guildid` bigint NOT NULL,
-  `characterid` bigint NOT NULL,
-  `creationtimestamp` bigint NOT NULL,
+  `guild_id` bigint NOT NULL,
+  `character_id` bigint NOT NULL,
+  `creation_timestamp` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `ix_guildapplications_guildid` (`guildid`),
-  CONSTRAINT `fk_guildapplications_guilds_guildid` FOREIGN KEY (`guildid`) REFERENCES `guilds` (`id`) ON DELETE CASCADE
+  KEY `ix_guildapplications_guildid` (`guild_id`),
+  CONSTRAINT `fk_guildapplications_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `guildmembers`
 --
 
-DROP TABLE IF EXISTS `guildmembers`;
-CREATE TABLE `guildmembers` (
+DROP TABLE IF EXISTS `guild_members`;
+CREATE TABLE `guild_members` (
   `id` bigint NOT NULL,
   `rank` tinyint unsigned NOT NULL,
-  `dailycontribution` int NOT NULL,
-  `contributiontotal` int NOT NULL,
-  `dailydonationcount` tinyint unsigned NOT NULL,
-  `attendancetimestamp` bigint NOT NULL,
-  `jointimestamp` bigint NOT NULL,
-  `guildid` bigint DEFAULT NULL,
+  `daily_contribution` int NOT NULL,
+  `contribution_total` int NOT NULL,
+  `daily_donation_count` tinyint unsigned NOT NULL,
+  `attendance_timestamp` bigint NOT NULL,
+  `join_timestamp` bigint NOT NULL,
+  `guild_id` bigint DEFAULT NULL,
   `motto` varchar(50) DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `ix_guildmembers_guildid` (`guildid`),
-  CONSTRAINT `fk_guildmembers_characters_id` FOREIGN KEY (`id`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_guildmembers_guilds_guildid` FOREIGN KEY (`guildid`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT
+  KEY `ix_guildmembers_guildid` (`guild_id`),
+  CONSTRAINT `fk_guildmembers_characters_id` FOREIGN KEY (`id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_guildmembers_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -217,45 +217,45 @@ DROP TABLE IF EXISTS `guilds`;
 CREATE TABLE `guilds` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(12) NOT NULL,
-  `creationtimestamp` bigint NOT NULL,
-  `leaderaccountid` bigint NOT NULL,
-  `leadercharacterid` bigint NOT NULL,
-  `leadername` varchar(50) NOT NULL,
+  `creation_timestamp` bigint NOT NULL,
+  `leader_account_id` bigint NOT NULL,
+  `leader_character_id` bigint NOT NULL,
+  `leader_name` varchar(50) NOT NULL,
   `capacity` tinyint unsigned NOT NULL,
   `funds` int NOT NULL,
   `exp` int NOT NULL,
   `searchable` tinyint(1) NOT NULL,
   `buffs` text,
   `emblem` varchar(50) DEFAULT '',
-  `focusattributes` int NOT NULL,
-  `houserank` int NOT NULL,
-  `housetheme` int NOT NULL,
+  `focus_attributes` int NOT NULL,
+  `house_rank` int NOT NULL,
+  `house_theme` int NOT NULL,
   `notice` varchar(300) DEFAULT '',
   `ranks` text,
   `services` text,
   PRIMARY KEY (`id`),
-  KEY `ix_guilds_leadercharacterid` (`leadercharacterid`),
-  KEY `ix_guilds_leaderaccountid` (`leaderaccountid`),
-  CONSTRAINT `fk_guilds_characters_leadercharacterid` FOREIGN KEY (`leadercharacterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_guilds_characters_leaderaccountid` FOREIGN KEY (`leaderaccountid`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
+  KEY `ix_guilds_leadercharacterid` (`leader_character_id`),
+  KEY `ix_guilds_leaderaccountid` (`leader_account_id`),
+  CONSTRAINT `fk_guilds_characters_leadercharacterid` FOREIGN KEY (`leader_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_guilds_characters_leaderaccountid` FOREIGN KEY (`leader_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `homelayouts`
 --
 
-DROP TABLE IF EXISTS `homelayouts`;
-CREATE TABLE `homelayouts` (
+DROP TABLE IF EXISTS `home_layouts`;
+CREATE TABLE `home_layouts` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
   `height` tinyint unsigned NOT NULL,
-  `homeid` bigint DEFAULT NULL,
+  `home_id` bigint DEFAULT NULL,
   `id` int NOT NULL,
   `name` text,
   `size` tinyint unsigned NOT NULL,
   `timestamp` bigint NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_homelayouts_homeid` (`homeid`),
-  CONSTRAINT `fk_homelayouts_homes_homeid` FOREIGN KEY (`homeid`) REFERENCES `homes` (`id`) ON DELETE RESTRICT
+  KEY `ix_homelayouts_homeid` (`home_id`),
+  CONSTRAINT `fk_homelayouts_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -265,30 +265,30 @@ CREATE TABLE `homelayouts` (
 DROP TABLE IF EXISTS `homes`;
 CREATE TABLE `homes` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `accountid` bigint NOT NULL,
-  `mapid` int NOT NULL,
-  `plotmapid` int NOT NULL,
-  `plotnumber` int NOT NULL,
-  `apartmentnumber` int NOT NULL,
+  `account_id` bigint NOT NULL,
+  `map_id` int NOT NULL,
+  `plot_map_id` int NOT NULL,
+  `plot_number` int NOT NULL,
+  `apartment_number` int NOT NULL,
   `expiration` bigint NOT NULL,
   `name` varchar(16) DEFAULT NULL,
   `description` varchar(100) DEFAULT NULL,
   `size` tinyint unsigned NOT NULL,
   `height` tinyint unsigned NOT NULL,
-  `architectscorecurrent` int NOT NULL,
-  `architectscoretotal` int NOT NULL,
-  `decorationexp` bigint NOT NULL,
-  `decorationlevel` bigint NOT NULL,
-  `decorationrewardtimestamp` bigint NOT NULL,
-  `interiorrewardsclaimed` text,
+  `architect_score_current` int NOT NULL,
+  `architect_score_total` int NOT NULL,
+  `decoration_exp` bigint NOT NULL,
+  `decoration_level` bigint NOT NULL,
+  `decoration_reward_timestamp` bigint NOT NULL,
+  `interior_rewards_claimed` text,
   `lighting` tinyint unsigned NOT NULL,
   `background` tinyint unsigned NOT NULL,
   `camera` tinyint unsigned NOT NULL,
   `password` text,
   `permissions` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_homes_accountid` (`accountid`),
-  CONSTRAINT `fk_homes_accounts_accountid` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `ix_homes_accountid` (`account_id`),
+  CONSTRAINT `fk_homes_accounts_accountid` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -297,12 +297,12 @@ CREATE TABLE `homes` (
 
 DROP TABLE IF EXISTS `hotbars`;
 CREATE TABLE `hotbars` (
-  `hotbarid` bigint NOT NULL AUTO_INCREMENT,
+  `hotbar_id` bigint NOT NULL AUTO_INCREMENT,
   `slots` text,
-  `gameoptionsid` bigint DEFAULT NULL,
-  PRIMARY KEY (`hotbarid`),
-  KEY `ix_hotbars_gameoptionsid` (`gameoptionsid`),
-  CONSTRAINT `fk_hotbars_gameoptions_gameoptionsid` FOREIGN KEY (`gameoptionsid`) REFERENCES `gameoptions` (`id`) ON DELETE RESTRICT
+  `game_options_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`hotbar_id`),
+  KEY `ix_hotbars_gameoptionsid` (`game_options_id`),
+  CONSTRAINT `fk_hotbars_gameoptions_gameoptionsid` FOREIGN KEY (`game_options_id`) REFERENCES `game_options` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -312,7 +312,7 @@ CREATE TABLE `hotbars` (
 DROP TABLE IF EXISTS `inventories`;
 CREATE TABLE `inventories` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `extrasize` text,
+  `extra_size` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -324,56 +324,56 @@ DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
   `level` int NOT NULL,
-  `itemslot` tinyint unsigned NOT NULL,
+  `item_slot` tinyint unsigned NOT NULL,
   `rarity` int NOT NULL,
-  `playcount` int NOT NULL,
+  `play_count` int NOT NULL,
   `amount` int NOT NULL,
-  `bankinventoryid` bigint DEFAULT NULL,
-  `repackagecount` smallint NOT NULL,
+  `bank_inventory_id` bigint DEFAULT NULL,
+  `repackage_count` smallint NOT NULL,
   `charges` int NOT NULL,
   `color` text NOT NULL,
-  `creationtime` bigint NOT NULL,
-  `enchantexp` int NOT NULL,
+  `creation_time` bigint NOT NULL,
+  `enchant_exp` int NOT NULL,
   `enchants` int NOT NULL,
-  `expirytime` bigint NOT NULL,
-  `facedecorationdata` text,
-  `gachadismantleid` int NOT NULL,
-  `guildid` bigint DEFAULT NULL,
-  `hairdata` text NOT NULL,
-  `hatdata` text NOT NULL,
-  `homeid` bigint DEFAULT NULL,
+  `expiry_time` bigint NOT NULL,
+  `face_decoration_data` text,
+  `gacha_dismantle_id` int NOT NULL,
+  `guild_id` bigint DEFAULT NULL,
+  `hair_data` text NOT NULL,
+  `hat_data` text NOT NULL,
+  `home_id` bigint DEFAULT NULL,
   `id` int NOT NULL,
-  `inventoryid` bigint DEFAULT NULL,
-  `isequipped` tinyint(1) NOT NULL,
-  `islocked` tinyint(1) NOT NULL,
-  `mailuid` int DEFAULT NULL,
-  `ownercharacterid` bigint DEFAULT NULL,
-  `ownercharactername` varchar(25) DEFAULT '',
-  `pairedcharacterid` bigint NOT NULL,
-  `pairedcharactername` varchar(25) DEFAULT '',
-  `petskinbadgeid` int NOT NULL,
-  `remainingglamorforges` smallint NOT NULL,
-  `remainingtrades` smallint NOT NULL,
+  `inventory_id` bigint DEFAULT NULL,
+  `is_equipped` tinyint(1) NOT NULL,
+  `is_locked` tinyint(1) NOT NULL,
+  `mail_uid` int DEFAULT NULL,
+  `owner_character_id` bigint DEFAULT NULL,
+  `owner_character_name` varchar(25) DEFAULT '',
+  `paired_character_id` bigint NOT NULL,
+  `paired_character_name` varchar(25) DEFAULT '',
+  `pet_skin_badge_id` int NOT NULL,
+  `remaining_glamor_forges` smallint NOT NULL,
+  `remaining_trades` smallint NOT NULL,
   `score` text,
   `slot` smallint NOT NULL,
   `stats` text,
-  `timesattributeschanged` int NOT NULL,
-  `transferflag` tinyint unsigned NOT NULL,
-  `transparencybadgebools` text,
-  `unlocktime` bigint NOT NULL,
+  `times_attributes_changed` int NOT NULL,
+  `transfer_flag` tinyint unsigned NOT NULL,
+  `transparency_badge_bools` text,
+  `unlock_time` bigint NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_items_bankinventoryid` (`bankinventoryid`),
-  KEY `ix_items_guildid` (`guildid`),
-  KEY `ix_items_homeid` (`homeid`),
-  KEY `ix_items_inventoryid` (`inventoryid`),
-  KEY `ix_items_mailuid` (`mailuid`),
-  KEY `ix_items_ownercharacterid` (`ownercharacterid`),
-  CONSTRAINT `fk_items_bankinventories_bankinventoryid` FOREIGN KEY (`bankinventoryid`) REFERENCES `bankinventories` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_items_characters_ownercharacterid` FOREIGN KEY (`ownercharacterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guildid`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`homeid`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventoryid`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_items_mails_mailuid` FOREIGN KEY (`mailuid`) REFERENCES `mails` (`uid`) ON DELETE RESTRICT
+  KEY `ix_items_bankinventoryid` (`bank_inventory_id`),
+  KEY `ix_items_guildid` (`guild_id`),
+  KEY `ix_items_homeid` (`home_id`),
+  KEY `ix_items_inventoryid` (`inventory_id`),
+  KEY `ix_items_mailuid` (`mail_uid`),
+  KEY `ix_items_ownercharacterid` (`owner_character_id`),
+  CONSTRAINT `fk_items_bankinventories_bankinventoryid` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_items_characters_ownercharacterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_items_mails_mailuid` FOREIGN KEY (`mail_uid`) REFERENCES `mails` (`uid`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -385,10 +385,10 @@ CREATE TABLE `levels` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `level` smallint NOT NULL,
   `exp` bigint NOT NULL,
-  `restexp` bigint NOT NULL,
-  `prestigelevel` int NOT NULL,
-  `prestigeexp` bigint NOT NULL,
-  `masteryexp` text,
+  `rest_exp` bigint NOT NULL,
+  `prestige_level` int NOT NULL,
+  `prestige_exp` bigint NOT NULL,
+  `mastery_exp` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -400,15 +400,15 @@ DROP TABLE IF EXISTS `mails`;
 CREATE TABLE `mails` (
   `uid` int NOT NULL AUTO_INCREMENT,
   `type` tinyint unsigned NOT NULL,
-  `playerid` bigint NOT NULL,
-  `sendername` varchar(25) DEFAULT '',
+  `player_id` bigint NOT NULL,
+  `sender_name` varchar(25) DEFAULT '',
   `title` varchar(25) DEFAULT '',
   `body` text,
-  `readtimestamp` bigint NOT NULL,
-  `senttimestamp` bigint NOT NULL,
+  `read_timestamp` bigint NOT NULL,
+  `sent_timestamp` bigint NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_mails_playerid` (`playerid`),
-  CONSTRAINT `fk_mails_characters_playerid` FOREIGN KEY (`playerid`) REFERENCES `characters` (`characterid`) ON DELETE CASCADE
+  KEY `ix_mails_playerid` (`player_id`),
+  CONSTRAINT `fk_mails_characters_playerid` FOREIGN KEY (`player_id`) REFERENCES `characters` (`character_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -421,30 +421,30 @@ CREATE TABLE `quests` (
   `id` int NOT NULL,
   `started` tinyint(1) NOT NULL,
   `completed` tinyint(1) NOT NULL,
-  `starttimestamp` bigint NOT NULL,
-  `completetimestamp` bigint NOT NULL,
+  `start_timestamp` bigint NOT NULL,
+  `complete_timestamp` bigint NOT NULL,
   `condition` text,
-  `characterid` bigint DEFAULT NULL,
+  `character_id` bigint DEFAULT NULL,
   `tracked` tinyint(1) NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_quests_characterid` (`characterid`),
-  CONSTRAINT `fk_quests_characters_characterid` FOREIGN KEY (`characterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT
+  KEY `ix_quests_characterid` (`character_id`),
+  CONSTRAINT `fk_quests_characters_characterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `skilltabs`
 --
 
-DROP TABLE IF EXISTS `skilltabs`;
-CREATE TABLE `skilltabs` (
+DROP TABLE IF EXISTS `skill_tabs`;
+CREATE TABLE `skill_tabs` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
-  `tabid` bigint NOT NULL,
+  `tab_id` bigint NOT NULL,
   `name` varchar(25) DEFAULT '',
-  `skilllevels` text,
-  `characterid` bigint DEFAULT NULL,
+  `skill_levels` text,
+  `character_id` bigint DEFAULT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_skilltabs_characterid` (`characterid`),
-  CONSTRAINT `fk_skilltabs_characters_characterid` FOREIGN KEY (`characterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT
+  KEY `ix_skilltabs_characterid` (`character_id`),
+  CONSTRAINT `fk_skilltabs_characters_characterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -455,18 +455,18 @@ DROP TABLE IF EXISTS `trophies`;
 CREATE TABLE `trophies` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
   `id` int NOT NULL,
-  `nextgrade` int NOT NULL,
+  `next_grade` int NOT NULL,
   `counter` bigint NOT NULL,
-  `isdone` tinyint(1) NOT NULL,
-  `lastreward` tinyint unsigned NOT NULL,
+  `is_done` tinyint(1) NOT NULL,
+  `last_reward` tinyint unsigned NOT NULL,
   `timestamps` text,
-  `characterid` bigint DEFAULT NULL,
-  `accountid` bigint DEFAULT NULL,
+  `character_id` bigint DEFAULT NULL,
+  `account_id` bigint DEFAULT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_trophies_characterid` (`characterid`),
-  KEY `ix_trophies_accountid` (`accountid`),
-  CONSTRAINT `fk_trophies_characters_characterid` FOREIGN KEY (`characterid`) REFERENCES `characters` (`characterid`) ON DELETE RESTRICT,
-  CONSTRAINT `fk_trophies_account_accountid` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
+  KEY `ix_trophies_characterid` (`character_id`),
+  KEY `ix_trophies_accountid` (`account_id`),
+  CONSTRAINT `fk_trophies_characters_characterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_trophies_account_accountid` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -477,10 +477,10 @@ DROP TABLE IF EXISTS `wallets`;
 CREATE TABLE `wallets` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `meso` bigint DEFAULT NULL,
-  `valortoken` bigint DEFAULT NULL,
+  `valor_token` bigint DEFAULT NULL,
   `treva` bigint DEFAULT NULL,
   `rue` bigint DEFAULT NULL,
-  `havifruit` bigint DEFAULT NULL,
+  `havi_fruit` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

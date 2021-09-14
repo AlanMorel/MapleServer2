@@ -12,13 +12,13 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                coordx = cube.CoordF.X,
-                coordy = cube.CoordF.Y,
-                coordz = cube.CoordF.Z,
-                homeid = cube.HomeId == 0 ? null : (long?) cube.HomeId,
-                itemuid = cube.Item.Uid,
-                layoutuid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
-                cube.PlotNumber,
+                coord_x = cube.CoordF.X,
+                coord_y = cube.CoordF.Y,
+                coord_z = cube.CoordF.Z,
+                home_id = cube.HomeId == 0 ? null : (long?) cube.HomeId,
+                item_uid = cube.Item.Uid,
+                layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
+                plot_number = cube.PlotNumber,
                 rotation = cube.Rotation.Z
             });
         }
@@ -27,7 +27,7 @@ namespace MapleServer2.Database.Classes
 
         public Dictionary<long, Cube> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("homeid", homeId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("home_id", homeId).Get();
             Dictionary<long, Cube> cubes = new Dictionary<long, Cube>();
             foreach (dynamic data in result)
             {
@@ -39,7 +39,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Cube> FindAllByLayoutUid(long layoutUid)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("layoutuid", layoutUid).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("layout_uid", layoutUid).Get();
             List<Cube> cubes = new List<Cube>();
             foreach (dynamic data in result)
             {
@@ -52,19 +52,19 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("uid", cube.Uid).Update(new
             {
-                coordx = cube.CoordF.X,
-                coordy = cube.CoordF.Y,
-                coordz = cube.CoordF.Z,
-                homeid = cube.HomeId == 0 ? null : (long?) cube.HomeId,
-                itemuid = cube.Item.Uid,
-                layoutuid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
-                cube.PlotNumber,
+                coord_x = cube.CoordF.X,
+                coord_y = cube.CoordF.Y,
+                coord_z = cube.CoordF.Z,
+                home_id = cube.HomeId == 0 ? null : (long?) cube.HomeId,
+                item_uid = cube.Item.Uid,
+                layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
+                plot_number = cube.PlotNumber,
                 rotation = cube.Rotation.Z
             });
         }
 
         public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static Cube ReadCube(dynamic data) => new Cube(data.uid, DatabaseManager.Items.FindByUid(data.itemuid), data.plotnumber, CoordF.From(data.coordx, data.coordy, data.coordz), data.rotation, data.homelayoutid ?? 0, data.homeid ?? 0);
+        private static Cube ReadCube(dynamic data) => new Cube(data.uid, DatabaseManager.Items.FindByUid(data.item_uid), data.plot_number, CoordF.From(data.coord_x, data.coord_y, data.coord_z), data.rotation, data.home_layout_id ?? 0, data.home_id ?? 0);
     }
 }

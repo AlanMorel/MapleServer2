@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHomeLayout : DatabaseTable
     {
-        public DatabaseHomeLayout() : base("homelayouts") { }
+        public DatabaseHomeLayout() : base("home_layouts") { }
 
         public long Insert(HomeLayout homeLayout)
         {
@@ -14,7 +14,7 @@ namespace MapleServer2.Database.Classes
                 homeLayout.Id,
                 homeLayout.Size,
                 homeLayout.Height,
-                homeLayout.HomeId,
+                home_id = homeLayout.HomeId,
                 homeLayout.Name,
                 homeLayout.Timestamp,
             });
@@ -22,7 +22,7 @@ namespace MapleServer2.Database.Classes
 
         public List<HomeLayout> FindAllByHomeId(long homeId)
         {
-            List<HomeLayout> homeLayouts = QueryFactory.Query(TableName).Where("homeid", homeId).Get<HomeLayout>().ToList();
+            List<HomeLayout> homeLayouts = QueryFactory.Query(TableName).Where("home_id", homeId).Get<HomeLayout>().ToList();
             foreach (HomeLayout homeLayout in homeLayouts)
             {
                 homeLayout.Cubes = DatabaseManager.Cubes.FindAllByLayoutUid(homeLayout.Uid);
@@ -37,7 +37,7 @@ namespace MapleServer2.Database.Classes
                 homeLayout.Id,
                 homeLayout.Size,
                 homeLayout.Height,
-                homeLayout.HomeId,
+                home_id = homeLayout.HomeId,
                 homeLayout.Name,
                 homeLayout.Timestamp,
             });

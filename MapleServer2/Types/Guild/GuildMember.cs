@@ -5,7 +5,7 @@ namespace MapleServer2.Types
     public class GuildMember
     {
         public long Id;
-        public Player Player { get; set; }
+        public Player Player { get; private set; }
         public string Motto;
         public byte Rank { get; set; } // by index of guild ranks
         public int DailyContribution { get; set; }
@@ -15,7 +15,7 @@ namespace MapleServer2.Types
         public long JoinTimestamp { get; set; }
         public long GuildId;
 
-        public GuildMember(long id, byte rank, int dailyContribution, int contributionTotal, byte dailyDonationCount, long attendanceTimestamp, long joinTimestamp, long guildId, string motto)
+        public GuildMember(long id, byte rank, int dailyContribution, int contributionTotal, byte dailyDonationCount, long attendanceTimestamp, long joinTimestamp, long guildId, string motto, Player player)
         {
             Id = id;
             Motto = motto;
@@ -26,6 +26,7 @@ namespace MapleServer2.Types
             AttendanceTimestamp = attendanceTimestamp;
             JoinTimestamp = joinTimestamp;
             GuildId = guildId;
+            Player = player;
         }
 
         public GuildMember(Player player, byte rank, long guildId)

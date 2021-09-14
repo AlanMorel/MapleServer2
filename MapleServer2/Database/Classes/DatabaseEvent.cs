@@ -28,11 +28,12 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            return QueryFactory.Query("event_fieldpopup").Where("gameeventid", gameEvent.Id).Get<FieldPopupEvent>().FirstOrDefault();
+            return ReadFieldPopupEvent(QueryFactory.Query("event_field_popup").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
         }
 
         public List<MapleopolyEvent> FindAllMapleopolyEvents()
         {
+            List<MapleopolyEvent> mapleopolyEvents = new List<MapleopolyEvent>();
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
                 type = GameEventType.BlueMarble,
@@ -42,7 +43,12 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            return QueryFactory.Query("event_mapleopoly").Where("gameeventid", gameEvent.Id).Get<MapleopolyEvent>().ToList();
+            IEnumerable<dynamic> results = QueryFactory.Query("event_mapleopoly").Where("game_event_id", gameEvent.Id).Get();
+            foreach (dynamic result in results)
+            {
+                mapleopolyEvents.Add(ReadMapleopolyEvent(result));
+            }
+            return mapleopolyEvents;
         }
 
         public UGCMapContractSaleEvent FindUGCMapContractSaleEvent()
@@ -56,7 +62,7 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            return QueryFactory.Query("event_ugcmapcontractsale").Where("gameeventid", gameEvent.Id).Get<UGCMapContractSaleEvent>().FirstOrDefault();
+            return ReadUGCMapContractSaleEvent(QueryFactory.Query("event_ugc_map_contract_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
         }
 
         public UGCMapExtensionSaleEvent FindUGCMapExtensionSaleEvent()
@@ -70,11 +76,12 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            return QueryFactory.Query("event_ugcmapextensionsale").Where("gameeventid", gameEvent.Id).Get<UGCMapExtensionSaleEvent>().FirstOrDefault();
+            return ReadUGCMapExtensionSaleEvent(QueryFactory.Query("event_ugc_map_extension_sale").Where("game_event_id", gameEvent.Id).Get().FirstOrDefault());
         }
 
         public List<StringBoardEvent> FindAllStringBoardEvent()
         {
+            List<StringBoardEvent> stringBoardEvents = new List<StringBoardEvent>();
             GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
             {
                 type = GameEventType.StringBoard,
@@ -84,7 +91,12 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            return QueryFactory.Query("event_stringboards").Where("gameeventid", gameEvent.Id).Get<StringBoardEvent>().ToList();
+            IEnumerable<dynamic> results = QueryFactory.Query("event_string_boards").Where("game_event_id", gameEvent.Id).Get();
+            foreach (dynamic data in results)
+            {
+                stringBoardEvents.Add(ReadStringBoardEvent(data));
+            }
+            return stringBoardEvents;
         }
 
         public List<GameEvent> FindAll()
@@ -113,5 +125,17 @@ namespace MapleServer2.Database.Classes
             }
             return gameEvents;
         }
+
+        private static StringBoardEvent ReadStringBoardEvent(dynamic data) => new StringBoardEvent(data.id, data.message_id, data.message);
+
+        private static FieldPopupEvent ReadFieldPopupEvent(dynamic data) => new FieldPopupEvent(data.id, data.map_id);
+
+        private static MapleopolyEvent ReadMapleopolyEvent(dynamic data) => new MapleopolyEvent(data.id, data.trip_amount, data.item_id, data.item_rarity, data.item_amount);
+
+        private static UGCMapContractSaleEvent ReadUGCMapContractSaleEvent(dynamic data) => new UGCMapContractSaleEvent(data.id, data.discount_amount);
+
+        private static UGCMapExtensionSaleEvent ReadUGCMapExtensionSaleEvent(dynamic data) => new UGCMapExtensionSaleEvent(data.id, data.discount_amount);
+
+
     }
 }

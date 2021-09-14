@@ -2,38 +2,38 @@
 -- Table structure for table `shopitems`
 --
 
-DROP TABLE IF EXISTS `shopitems`;
-CREATE TABLE `shopitems` (
+DROP TABLE IF EXISTS `shop_items`;
+CREATE TABLE `shop_items` (
   `uid` int NOT NULL AUTO_INCREMENT,
-  `autopreviewequip` tinyint(1) NOT NULL,
+  `auto_preview_equip` tinyint(1) NOT NULL,
   `category` varchar(25) DEFAULT NULL,
   `flag` tinyint unsigned NOT NULL,
-  `guildtrophy` int NOT NULL,
-  `itemid` int NOT NULL,
-  `itemrank` tinyint unsigned NOT NULL,
+  `guild_trophy` int NOT NULL,
+  `item_id` int NOT NULL,
+  `item_rank` tinyint unsigned NOT NULL,
   `price` int NOT NULL,
   `quantity` smallint NOT NULL,
-  `requiredachievementgrade` int NOT NULL,
-  `requiredachievementid` int NOT NULL,
-  `requiredchampionshipgrade` tinyint unsigned NOT NULL,
-  `requiredchampionshipjoincount` smallint NOT NULL,
-  `requiredfamegrade` int NOT NULL,
-  `requiredguildmerchantlevel` smallint NOT NULL,
-  `requiredguildmerchanttype` tinyint unsigned NOT NULL,
-  `requireditemid` int NOT NULL,
-  `requiredquestalliance` smallint NOT NULL,
-  `saleprice` int NOT NULL,
-  `shopuid` int DEFAULT NULL,
-  `stockcount` int NOT NULL,
-  `stockpurchased` int NOT NULL,
-  `templatename` varchar(25) DEFAULT NULL,
-  `tokentype` tinyint unsigned NOT NULL,
+  `required_achievement_grade` int NOT NULL,
+  `required_achievement_id` int NOT NULL,
+  `required_championship_grade` tinyint unsigned NOT NULL,
+  `required_championship_join_count` smallint NOT NULL,
+  `required_fame_grade` int NOT NULL,
+  `required_guild_merchant_level` smallint NOT NULL,
+  `required_guild_merchant_type` tinyint unsigned NOT NULL,
+  `required_item_id` int NOT NULL,
+  `required_quest_alliance` smallint NOT NULL,
+  `sale_price` int NOT NULL,
+  `shop_uid` int DEFAULT NULL,
+  `stock_count` int NOT NULL,
+  `stock_purchased` int NOT NULL,
+  `template_name` varchar(25) DEFAULT NULL,
+  `token_type` tinyint unsigned NOT NULL,
   PRIMARY KEY (`uid`),
-  KEY `ix_shopitems_shopuid` (`shopuid`),
-  CONSTRAINT `fk_shopitems_shops_shopuid` FOREIGN KEY (`shopuid`) REFERENCES `shops` (`uid`) ON DELETE RESTRICT
+  KEY `ix_shopitems_shopuid` (`shop_uid`),
+  CONSTRAINT `fk_shopitems_shops_shopuid` FOREIGN KEY (`shop_uid`) REFERENCES `shops` (`uid`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `shopitems` (`autopreviewequip`, `category`, `flag`, `guildtrophy`, `itemid`, `itemrank`, `price`, `quantity`, `requiredachievementgrade`, `requiredachievementid`, `requiredchampionshipgrade`, `requiredchampionshipjoincount`, `requiredfamegrade`, `requiredguildmerchantlevel`, `requiredguildmerchanttype`, `requireditemid`, `requiredquestalliance`, `saleprice`, `shopuid`, `stockcount`, `stockpurchased`, `templatename`, `tokentype`) VALUES
+INSERT INTO `shop_items` (`auto_preview_equip`, `category`, `flag`, `guild_trophy`, `item_id`, `item_rank`, `price`, `quantity`, `required_achievement_grade`, `required_achievement_id`, `required_championship_grade`, `required_championship_join_count`, `required_fame_grade`, `required_guild_merchant_level`, `required_guild_merchant_type`, `required_item_id`, `required_quest_alliance`, `sale_price`, `shop_uid`, `stock_count`, `stock_purchased`, `template_name`, `token_type`) VALUES
 
 (0, 'PS', 0, 0, 63000000, 1, 1000, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, '', 0),
 (1, 'Excellecnt02', 0, 0, 11720040, 4, 33, 1, 0, 0, 0, 0, 0, 0, 0, 22201010, 0, 0, 2, 0, 0, '22201001', 1),

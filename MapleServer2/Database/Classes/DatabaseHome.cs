@@ -13,27 +13,27 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                home.AccountId,
-                home.MapId,
-                home.PlotMapId,
-                home.PlotNumber,
-                home.ApartmentNumber,
+                account_id = home.AccountId,
+                map_id = home.MapId,
+                plot_map_id = home.PlotMapId,
+                plot_number = home.PlotNumber,
+                apartment_number = home.ApartmentNumber,
                 home.Expiration,
                 home.Name,
                 home.Description,
                 home.Size,
                 home.Height,
-                home.ArchitectScoreCurrent,
-                home.ArchitectScoreTotal,
-                home.DecorationExp,
-                home.DecorationLevel,
-                home.DecorationRewardTimestamp,
+                architect_score_current = home.ArchitectScoreCurrent,
+                architect_score_total = home.ArchitectScoreTotal,
+                decoration_exp = home.DecorationExp,
+                decoration_level = home.DecorationLevel,
+                decoration_reward_timestamp = home.DecorationRewardTimestamp,
                 home.Lighting,
                 home.Background,
                 home.Camera,
                 home.Password,
                 permissions = JsonConvert.SerializeObject(home.Permissions),
-                interiorrewardsclaimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
+                interior_rewards_claimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
             });
         }
 
@@ -41,7 +41,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Home> FindAllByMapId(int mapId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("mapid", mapId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("map_id", mapId).Get();
             List<Home> homes = new List<Home>();
             foreach (dynamic data in results)
             {
@@ -54,26 +54,26 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("id", home.Id).Update(new
             {
-                home.MapId,
-                home.PlotMapId,
-                home.PlotNumber,
-                home.ApartmentNumber,
+                map_id = home.MapId,
+                plot_map_id = home.PlotMapId,
+                plot_number = home.PlotNumber,
+                apartment_number = home.ApartmentNumber,
                 home.Expiration,
                 home.Name,
                 home.Description,
                 home.Size,
                 home.Height,
-                home.ArchitectScoreCurrent,
-                home.ArchitectScoreTotal,
-                home.DecorationExp,
-                home.DecorationLevel,
-                home.DecorationRewardTimestamp,
+                architect_score_current = home.ArchitectScoreCurrent,
+                architect_score_total = home.ArchitectScoreTotal,
+                decoration_exp = home.DecorationExp,
+                decoration_level = home.DecorationLevel,
+                decoration_reward_timestamp = home.DecorationRewardTimestamp,
                 home.Lighting,
                 home.Background,
                 home.Camera,
                 home.Password,
                 permissions = JsonConvert.SerializeObject(home.Permissions),
-                interiorrewardsclaimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
+                interior_rewards_claimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
             });
 
             foreach (Item item in home.WarehouseInventory.Where(item => item.Value != null).Select(x => x.Value))
@@ -101,27 +101,27 @@ namespace MapleServer2.Database.Classes
             return new Home()
             {
                 Id = data.id,
-                AccountId = data.accountid,
-                MapId = data.mapid,
-                PlotMapId = data.plotmapid,
-                PlotNumber = data.plotnumber,
-                ApartmentNumber = data.apartmentnumber,
+                AccountId = data.account_id,
+                MapId = data.map_id,
+                PlotMapId = data.plot_map_id,
+                PlotNumber = data.plot_number,
+                ApartmentNumber = data.apartment_number,
                 Expiration = data.expiration,
                 Name = data.name,
                 Description = data.description,
                 Size = data.size,
                 Height = data.height,
-                ArchitectScoreCurrent = data.architectscorecurrent,
-                ArchitectScoreTotal = data.architectscoretotal,
-                DecorationExp = data.decorationexp,
-                DecorationLevel = data.decorationlevel,
-                DecorationRewardTimestamp = data.decorationrewardtimestamp,
+                ArchitectScoreCurrent = data.architect_score_current,
+                ArchitectScoreTotal = data.architect_score_total,
+                DecorationExp = data.decoration_exp,
+                DecorationLevel = data.decoration_level,
+                DecorationRewardTimestamp = data.decoration_reward_timestamp,
                 Lighting = data.lighting,
                 Background = data.background,
                 Camera = data.camera,
                 Password = data.password,
                 Permissions = JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(data.permissions),
-                InteriorRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.interiorrewardsclaimed),
+                InteriorRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.interior_rewards_claimed),
                 FurnishingInventory = furnishingCubes,
                 WarehouseInventory = warehouseItems,
                 Layouts = layouts

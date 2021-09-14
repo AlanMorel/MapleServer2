@@ -5,15 +5,15 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseCardReverseGame : DatabaseTable
     {
-        public DatabaseCardReverseGame() : base("cardreversegame") { }
+        public DatabaseCardReverseGame() : base("card_reverse_game") { }
 
         public long Insert(CardReverseGame cardReverseGame)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                cardReverseGame.ItemId,
-                cardReverseGame.ItemRarity,
-                cardReverseGame.ItemAmount
+                item_id = cardReverseGame.ItemId,
+                item_rarity = cardReverseGame.ItemRarity,
+                item_amount = cardReverseGame.ItemAmount
             });
         }
 
@@ -23,9 +23,9 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("id", cardReverseGame.Id).Update(new
             {
-                cardReverseGame.ItemId,
-                cardReverseGame.ItemRarity,
-                cardReverseGame.ItemAmount
+                item_id = cardReverseGame.ItemId,
+                item_rarity = cardReverseGame.ItemRarity,
+                item_amount = cardReverseGame.ItemAmount
             });
         }
 

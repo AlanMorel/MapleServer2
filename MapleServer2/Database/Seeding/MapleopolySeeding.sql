@@ -1,25 +1,25 @@
 --
 -- Table structure for table `mapleopolytiles`
 --
-DROP TABLE IF EXISTS `mapleopolytiles`;
+DROP TABLE IF EXISTS `mapleopoly_tiles`;
 
-CREATE TABLE `mapleopolytiles` (
-  `tileposition` int NOT NULL AUTO_INCREMENT,
-  `itemamount` int NOT NULL,
-  `itemid` int NOT NULL,
-  `itemrarity` tinyint unsigned NOT NULL,
-  `tileparameter` int NOT NULL,
+CREATE TABLE `mapleopoly_tiles` (
+  `tile_position` int NOT NULL AUTO_INCREMENT,
+  `item_amount` int NOT NULL,
+  `item_id` int NOT NULL,
+  `item_rarity` tinyint unsigned NOT NULL,
+  `tile_parameter` int NOT NULL,
   `type` smallint NOT NULL,
-  PRIMARY KEY (`tileposition`)
+  PRIMARY KEY (`tile_position`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 INSERT INTO
-  `mapleopolytiles` (
-    `tileposition`,
-    `itemamount`,
-    `itemid`,
-    `itemrarity`,
-    `tileparameter`,
+  `mapleopoly_tiles` (
+    `tile_position`,
+    `item_amount`,
+    `item_id`,
+    `item_rarity`,
+    `tile_parameter`,
     `type`
   )
 VALUES

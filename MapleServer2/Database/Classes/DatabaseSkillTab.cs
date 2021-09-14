@@ -6,26 +6,26 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseSkillTab : DatabaseTable
     {
-        public DatabaseSkillTab() : base("skilltabs") { }
+        public DatabaseSkillTab() : base("skill_tabs") { }
 
         public long Insert(SkillTab skillTab, long characterId)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                skillTab.TabId,
+                tab_id = skillTab.TabId,
                 skillTab.Name,
-                skilllevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
-                characterId
+                skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels),
+                character_id = characterId
             });
         }
 
         public List<SkillTab> FindAllByCharacterId(long characterId, int jobId)
         {
-            IEnumerable<dynamic> skillTabsResult = QueryFactory.Query(TableName).Where("characterid", characterId).Get();
+            IEnumerable<dynamic> skillTabsResult = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
             List<SkillTab> skillTabs = new List<SkillTab>();
             foreach (dynamic data in skillTabsResult)
             {
-                skillTabs.Add(new SkillTab(data.name, jobId, data.tabid, data.uid, JsonConvert.DeserializeObject<Dictionary<int, short>>(data.skilllevels)));
+                skillTabs.Add(new SkillTab(data.name, jobId, data.tab_id, data.uid, JsonConvert.DeserializeObject<Dictionary<int, short>>(data.skill_levels)));
             }
             return skillTabs;
         }
@@ -34,9 +34,9 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("uid", skillTab.Uid).Update(new
             {
-                skillTab.TabId,
+                tab_id = skillTab.TabId,
                 skillTab.Name,
-                skilllevels = JsonConvert.SerializeObject(skillTab.SkillLevels),
+                skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels),
             });
         }
 

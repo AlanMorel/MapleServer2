@@ -11,25 +11,25 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                account.Username,
-                account.PasswordHash,
-                account.CreationTime,
-                account.LastLoginTime,
-                account.CharacterSlots,
+                username = account.Username,
+                password_hash = account.PasswordHash,
+                creation_time = account.CreationTime,
+                last_login_time = account.LastLoginTime,
+                character_slots = account.CharacterSlots,
                 meret = account.Meret.Amount,
-                gamemeret = account.GameMeret.Amount,
-                eventmeret = account.EventMeret.Amount,
-                mesotoken = account.MesoToken.Amount,
-                bankinventoryid = account.BankInventory.Id,
-                account.VIPExpiration
+                game_meret = account.GameMeret.Amount,
+                event_meret = account.EventMeret.Amount,
+                meso_token = account.MesoToken.Amount,
+                bank_inventory_id = account.BankInventory.Id,
+                vip_expiration = account.VIPExpiration
             });
         }
 
         public Account FindById(long id)
         {
             return ReadAccount(QueryFactory.Query(TableName).Where("accounts.id", id)
-            .LeftJoin("homes", "homes.accountid", "accounts.id")
-            .Select("accounts.{*}", "homes.id as homeid")
+            .LeftJoin("homes", "homes.account_id", "accounts.id")
+            .Select("accounts.{*}", "homes.id as home_id")
             .FirstOrDefault());
         }
 
@@ -54,13 +54,13 @@ namespace MapleServer2.Database.Classes
         {
             QueryFactory.Query(TableName).Where("id", account.Id).Update(new
             {
-                account.LastLoginTime,
-                account.CharacterSlots,
+                last_login_time = account.LastLoginTime,
+                character_slots = account.CharacterSlots,
                 meret = account.Meret.Amount,
-                gamemeret = account.GameMeret.Amount,
-                eventmeret = account.EventMeret.Amount,
-                mesotoken = account.MesoToken.Amount,
-                account.VIPExpiration
+                game_meret = account.GameMeret.Amount,
+                event_meret = account.EventMeret.Amount,
+                meso_token = account.MesoToken.Amount,
+                vip_expiration = account.VIPExpiration
             });
             DatabaseManager.BankInventories.Update(account.BankInventory);
         }
@@ -69,11 +69,11 @@ namespace MapleServer2.Database.Classes
 
         private static Account ReadAccount(dynamic data)
         {
-            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bankinventoryid);
+            BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
 
-            return new Account(data.id, data.username, data.passwordhash, data.creationtime, data.lastlogintime,
-                data.characterslots, data.meret, data.gamemeret, data.eventmeret, data.mesotoken, data.homeid ?? 0,
-                data.vipexpiration, bankInventory);
+            return new Account(data.id, data.username, data.password_hash, data.creation_time, data.last_login_time,
+                data.character_slots, data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0,
+                data.vip_expiration, bankInventory);
         }
     }
 }

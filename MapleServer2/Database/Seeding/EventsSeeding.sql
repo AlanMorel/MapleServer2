@@ -13,15 +13,15 @@ CREATE TABLE `events` (
 --
 -- Table structure for table `event_fieldpopup`
 --
-DROP TABLE IF EXISTS `event_fieldpopup`;
+DROP TABLE IF EXISTS `event_field_popup`;
 
-CREATE TABLE `event_fieldpopup` (
+CREATE TABLE `event_field_popup` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `mapid` int NOT NULL,
-  `gameeventid` int NOT NULL,
+  `map_id` int NOT NULL,
+  `game_event_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `event_fieldpopup_fk` (`gameeventid`),
-  CONSTRAINT `event_fieldpopup_fk` FOREIGN KEY (`gameeventid`) REFERENCES `events` (`id`)
+  KEY `event_fieldpopup_fk` (`game_event_id`),
+  CONSTRAINT `event_fieldpopup_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
@@ -31,57 +31,57 @@ DROP TABLE IF EXISTS `event_mapleopoly`;
 
 CREATE TABLE `event_mapleopoly` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tripamount` int NOT NULL,
-  `itemid` int NOT NULL,
-  `itemrarity` tinyint unsigned NOT NULL,
-  `itemamount` int NOT NULL,
-  `gameeventid` int DEFAULT NULL,
+  `trip_amount` int NOT NULL,
+  `item_id` int NOT NULL,
+  `item_rarity` tinyint unsigned NOT NULL,
+  `item_amount` int NOT NULL,
+  `game_event_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `ix_event_mapleopoly_gameeventid` (`gameeventid`),
-  CONSTRAINT `fk_event_mapleopoly_events_gameeventid` FOREIGN KEY (`gameeventid`) REFERENCES `events` (`id`) ON DELETE RESTRICT
+  KEY `ix_event_mapleopoly_gameeventid` (`game_event_id`),
+  CONSTRAINT `fk_event_mapleopoly_events_gameeventid` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `event_stringboards`
 --
-DROP TABLE IF EXISTS `event_stringboards`;
+DROP TABLE IF EXISTS `event_string_boards`;
 
-CREATE TABLE `event_stringboards` (
+CREATE TABLE `event_string_boards` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `stringid` int NOT NULL,
-  `string` text,
-  `gameeventid` int DEFAULT NULL,
+  `message_id` int NOT NULL,
+  `message` text,
+  `game_event_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `ix_event_stringboards_gameeventid` (`gameeventid`),
-  CONSTRAINT `fk_event_stringboards_events_gameeventid` FOREIGN KEY (`gameeventid`) REFERENCES `events` (`id`) ON DELETE RESTRICT
+  KEY `ix_event_stringboards_gameeventid` (`game_event_id`),
+  CONSTRAINT `fk_event_stringboards_events_gameeventid` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `event_ugcmapcontractsale`
 --
-DROP TABLE IF EXISTS `event_ugcmapcontractsale`;
+DROP TABLE IF EXISTS `event_ugc_map_contract_sale`;
 
-CREATE TABLE `event_ugcmapcontractsale` (
+CREATE TABLE `event_ugc_map_contract_sale` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `discountamount` int NOT NULL,
-  `gameeventid` int NOT NULL,
+  `discount_amount` int NOT NULL,
+  `game_event_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `event_ugcmapcontractsale_fk` (`gameeventid`),
-  CONSTRAINT `event_ugcmapcontractsale_fk` FOREIGN KEY (`gameeventid`) REFERENCES `events` (`id`)
+  KEY `event_ugcmapcontractsale_fk` (`game_event_id`),
+  CONSTRAINT `event_ugcmapcontractsale_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `event_ugcmapextensionsale`
 --
-DROP TABLE IF EXISTS `event_ugcmapextensionsale`;
+DROP TABLE IF EXISTS `event_ugc_map_extension_sale`;
 
-CREATE TABLE `event_ugcmapextensionsale` (
+CREATE TABLE `event_ugc_map_extension_sale` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `discountamount` int NOT NULL,
-  `gameeventid` int NOT NULL,
+  `discount_amount` int NOT NULL,
+  `game_event_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `event_ugcmapextensionsale_fk` (`gameeventid`),
-  CONSTRAINT `event_ugcmapextensionsale_fk` FOREIGN KEY (`gameeventid`) REFERENCES `events` (`id`)
+  KEY `event_ugcmapextensionsale_fk` (`game_event_id`),
+  CONSTRAINT `event_ugcmapextensionsale_fk` FOREIGN KEY (`game_event_id`) REFERENCES `events` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 INSERT INTO
@@ -94,7 +94,7 @@ VALUES
   (5, 1, 12);
 
 INSERT INTO
-  `event_stringboards` (`stringid`, `string`, `gameeventid`)
+  `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES
   (
     0,
@@ -104,11 +104,11 @@ VALUES
 
 INSERT INTO
   `event_mapleopoly` (
-    `tripamount`,
-    `itemid`,
-    `itemrarity`,
-    `itemamount`,
-    `gameeventid`
+    `trip_amount`,
+    `item_id`,
+    `item_rarity`,
+    `item_amount`,
+    `game_event_id`
   )
 VALUES
   (0, 40100050, 1, 300, 2),
@@ -119,16 +119,16 @@ VALUES
   (50, 20302524, 1, 1, 2);
 
 INSERT INTO
-  `event_ugcmapcontractsale` (`discountamount`, `gameeventid`)
+  `event_ugc_map_contract_sale` (`discount_amount`, `game_event_id`)
 VALUES
   (9000, 3);
 
 INSERT INTO
-  `event_ugcmapextensionsale` (`discountamount`, `gameeventid`)
+  `event_ugc_map_extension_sale` (`discount_amount`, `game_event_id`)
 VALUES
   (9000, 4);
 
 INSERT INTO
-  `event_fieldpopup` (`mapid`, `gameeventid`)
+  `event_field_popup` (`map_id`, `game_event_id`)
 VALUES
   (63000049, 5);

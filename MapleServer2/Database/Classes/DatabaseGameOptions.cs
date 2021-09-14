@@ -6,14 +6,14 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGameOptions : DatabaseTable
     {
-        public DatabaseGameOptions() : base("gameoptions") { }
+        public DatabaseGameOptions() : base("game_options") { }
 
         public long Insert(GameOptions gameOptions)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
                 keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
-                gameOptions.ActiveHotbarId
+                active_hotbar_id = gameOptions.ActiveHotbarId
             });
         }
 
@@ -22,7 +22,7 @@ namespace MapleServer2.Database.Classes
             QueryFactory.Query(TableName).Where("id", gameOptions.Id).Update(new
             {
                 keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
-                gameOptions.ActiveHotbarId
+                active_hotbar_id = gameOptions.ActiveHotbarId
             });
             foreach (Hotbar hotbar in gameOptions.Hotbars)
             {

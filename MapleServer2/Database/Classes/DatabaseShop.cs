@@ -9,13 +9,17 @@ namespace MapleServer2.Database.Classes
 
         public Shop FindById(long id)
         {
-            Shop shop = QueryFactory.Query(TableName).Where("id", id).Get<Shop>().FirstOrDefault();
-            if (shop == default)
+            dynamic data = QueryFactory.Query(TableName).Where("id", id).Get().FirstOrDefault();
+            if (data == null)
             {
                 return null;
             }
+            Shop shop = ReadShop(data);
             shop.Items = DatabaseManager.ShopItems.FindAllByShopUid(shop.Uid);
             return shop;
         }
+
+        private static Shop ReadShop(dynamic data) =>
+            new Shop(data.uid, data.id, data.category, data.name, data.shop_type, data.restrict_sales, data.can_restock, data.next_restock, data.allow_buyback);
     }
 }
