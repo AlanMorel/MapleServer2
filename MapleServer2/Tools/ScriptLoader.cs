@@ -1,6 +1,6 @@
-﻿using MapleServer2.Managers;
+﻿using Maple2Storage.Types;
+using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
-using Maple2Storage.Types;
 using MoonSharp.Interpreter;
 using NLog;
 
