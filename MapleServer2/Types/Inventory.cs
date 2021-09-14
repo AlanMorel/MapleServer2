@@ -13,7 +13,7 @@ namespace MapleServer2.Types
         public readonly Dictionary<long, Item> Items;
         public Dictionary<ItemSlot, Item> Equips;
         public Dictionary<ItemSlot, Item> Cosmetics;
-        public List<Item> Badges;
+        public Item[] Badges;
 
         // Map of Slot to Uid for each inventory
         private readonly Dictionary<short, long>[] SlotMaps;
@@ -39,7 +39,7 @@ namespace MapleServer2.Types
         {
             Equips = new Dictionary<ItemSlot, Item>();
             Cosmetics = new Dictionary<ItemSlot, Item>();
-            Badges = new List<Item>();
+            Badges = new Item[12];
             Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
             SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -54,7 +54,7 @@ namespace MapleServer2.Types
         {
             Equips = new Dictionary<ItemSlot, Item>();
             Cosmetics = new Dictionary<ItemSlot, Item>();
-            Badges = new List<Item>();
+            Badges = new Item[12];
             Items = new Dictionary<long, Item>();
             byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
             SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -64,6 +64,7 @@ namespace MapleServer2.Types
             }
             Id = id;
             ExtraSize = extraSize;
+            int badgeIndex = 0;
             foreach (Item item in items)
             {
                 item.SetMetadataValues();
@@ -75,7 +76,8 @@ namespace MapleServer2.Types
                     }
                     else if (item.InventoryTab == InventoryTab.Badge)
                     {
-                        Badges.Add(item);
+                        Badges[badgeIndex] = item;
+                        badgeIndex++;
                     }
                     else
                     {

@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public int Level { get; set; }
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; set; }
-        public GemSlot GemSlot { get; private set; }
+        public GemSlot GemSlot { get; set; }
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
         public bool EnableBreak { get; private set; }

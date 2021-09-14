@@ -129,9 +129,9 @@ namespace MapleServer2.Packets
                 pWriter.WriteDeflated(new byte[1], 0, 1); // Empty buffer
             }
 
-            bool badge = true;
-            pWriter.WriteBool(badge);
-            if (badge)
+            List<Item> badges = player.Inventory.Badges.Where(x => x != null).ToList();
+            pWriter.WriteBool(badges.Count > 0);
+            if (badges.Count > 0)
             {
                 PacketWriter badgesBuffer = new PacketWriter();
                 CharacterListPacket.WriteBadges(badgesBuffer, player);
