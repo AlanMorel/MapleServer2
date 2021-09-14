@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
         {
             Dialog = 0x01,
             AcceptQuest = 0x02,
-            CompleteExplorationGoal = 0x03,
+            UpdateCondition = 0x03,
             CompleteQuest = 0x04,
             ToggleTracking = 0x09,
             StartList = 0x15,
@@ -46,13 +46,16 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateCondition(int questId, int conditionIndex, int value)
+        public static Packet UpdateCondition(int questId, List<Condition> conditions)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.CompleteExplorationGoal);
+            pWriter.WriteEnum(QuestType.UpdateCondition);
             pWriter.WriteInt(questId);
-            pWriter.WriteInt(conditionIndex);
-            pWriter.WriteInt(value);
+            pWriter.WriteInt(conditions.Count);
+            foreach (Condition condition in conditions)
+            {
+                pWriter.WriteInt(condition.Current);
+            }
 
             return pWriter;
         }

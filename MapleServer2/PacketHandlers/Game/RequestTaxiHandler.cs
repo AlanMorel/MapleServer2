@@ -62,9 +62,9 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            ScriptLoader scriptLoader = new ScriptLoader("calcTaxiCost");
+            ScriptLoader scriptLoader = new ScriptLoader("Functions/calcTaxiCost");
 
-            DynValue result = scriptLoader.Call(mapCount, session.Player.Levels.Level);
+            DynValue result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
             if (result == null)
             {
                 return;
@@ -79,9 +79,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeso(GameSession session, int mapId)
         {
-            ScriptLoader scriptLoader = new ScriptLoader("calcAirTaxiCost");
+            ScriptLoader scriptLoader = new ScriptLoader("Functions/calcAirTaxiCost");
 
-            DynValue result = scriptLoader.Call(session.Player.Levels.Level);
+            DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
             if (result == null)
             {
                 return;

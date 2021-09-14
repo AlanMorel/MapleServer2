@@ -1,4 +1,4 @@
-﻿namespace MapleServer2.Enums
+﻿namespace Maple2Storage.Enums
 {
     public enum NpcType : byte
     {
@@ -22,7 +22,7 @@
         AcceptDecline = 6, // Decline - Esc || Accept - Space
         QuestReward = 7,
         Close2 = 8, // Close - Escape
-        CloseNext1 = 9, // Close - Esc || Next - Space // accept distractors
+        CloseNextWithDistractor = 9, // Close - Esc || Next - Space // accept distractors
         Beauty = 10,
         JobAdv = 11, // Nevermind - ESC || Perform Job Advancement
         AcceptDecline2 = 12, // Decline - Esc || Accept - Space
