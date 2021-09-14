@@ -224,8 +224,7 @@ namespace MapleServer2.Tools
                 session.Send(ItemInventoryPacket.Remove(uid));
                 DatabaseManager.Items.Delete(droppedItem.Uid);
 
-                // Allow dropping bound items for now
-                session.FieldManager.AddItem(session, droppedItem);
+                Remove(session, uid, out droppedItem);
             }
         }
 
