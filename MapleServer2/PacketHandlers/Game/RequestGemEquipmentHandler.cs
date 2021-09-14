@@ -83,10 +83,6 @@ namespace MapleServer2.PacketHandlers.Game
             byte index = packet.ReadByte();
 
             Item[] badges = session.Player.Inventory.Badges;
-            if (badges.Length == 0)
-            {
-                return;
-            }
 
             Item item = badges[index];
             if (item == null)
