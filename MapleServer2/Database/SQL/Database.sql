@@ -325,6 +325,7 @@ CREATE TABLE `items` (
   `Uid` bigint NOT NULL AUTO_INCREMENT,
   `Level` int NOT NULL,
   `ItemSlot` tinyint unsigned NOT NULL,
+  `GemSlot` tinyint unsigned NOT NULL,
   `Rarity` int NOT NULL,
   `PlayCount` int NOT NULL,
   `Amount` int NOT NULL,
