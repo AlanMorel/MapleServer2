@@ -29,7 +29,7 @@ namespace MapleServer2.Database.Classes
             List<Item> items = new List<Item>();
             items.AddRange(inventory.Items.Values.Where(x => x != null).ToList());
             items.AddRange(inventory.Equips.Values.Where(x => x != null).ToList());
-            items.AddRange(inventory.Badges);
+            items.AddRange(inventory.Badges.Where(x => x != null).ToList());
             items.AddRange(inventory.Cosmetics.Values.Where(x => x != null).ToList());
             foreach (Item item in items)
             {

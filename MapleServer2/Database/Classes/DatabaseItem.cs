@@ -18,6 +18,7 @@ namespace MapleServer2.Database.Classes
             {
                 item.Level,
                 item_slot = (byte) item.ItemSlot,
+                gem_slot = (byte) item.GemSlot,
                 item.Rarity,
                 play_count = item.PlayCount,
                 item.Amount,
@@ -97,6 +98,7 @@ namespace MapleServer2.Database.Classes
             {
                 item.Level,
                 item_slot = (byte) item.ItemSlot,
+                gem_slot = (byte) item.GemSlot,
                 item.Rarity,
                 play_count = item.PlayCount,
                 item.Amount,
@@ -143,6 +145,7 @@ namespace MapleServer2.Database.Classes
                 Uid = data.uid,
                 Level = data.level,
                 ItemSlot = (ItemSlot) data.item_slot,
+                GemSlot = (GemSlot) data.gem_slot,
                 Rarity = data.rarity,
                 PlayCount = data.play_count,
                 Amount = data.amount,
