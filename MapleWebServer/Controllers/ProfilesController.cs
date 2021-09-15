@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using MapleWebServer.Constants;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace MapleWebServer.Controllers
 {

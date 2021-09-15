@@ -1,5 +1,7 @@
 ﻿using Maple2Storage.Tools;
 using MapleWebServer.Constants;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace MapleWebServer
 {
