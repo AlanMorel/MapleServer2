@@ -8,5 +8,12 @@
 
         // if stringId = 0, a string is required to display custom text. Otherwise the id needs to match one in /table/stringboardtext.xml
         public StringBoardEvent() { }
+
+        public StringBoardEvent(dynamic id, dynamic stringId, dynamic text)
+        {
+            Id = id;
+            StringId = stringId;
+            String = text;
+        }
     }
 }

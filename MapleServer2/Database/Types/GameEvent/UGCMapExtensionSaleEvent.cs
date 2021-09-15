@@ -6,5 +6,11 @@
         public int DiscountAmount { get; set; }
 
         public UGCMapExtensionSaleEvent() { }
+
+        public UGCMapExtensionSaleEvent(int id, int discountAmount)
+        {
+            Id = id;
+            DiscountAmount = discountAmount;
+        }
     }
 }

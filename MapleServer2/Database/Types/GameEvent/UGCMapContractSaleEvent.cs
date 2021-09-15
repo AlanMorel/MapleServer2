@@ -6,5 +6,11 @@
         public int DiscountAmount { get; set; }
 
         public UGCMapContractSaleEvent() { }
+
+        public UGCMapContractSaleEvent(dynamic id, dynamic discountAmount)
+        {
+            Id = id;
+            DiscountAmount = discountAmount;
+        }
     }
 }

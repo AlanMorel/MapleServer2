@@ -4,64 +4,64 @@
 
 DROP TABLE IF EXISTS `banners`;
 CREATE TABLE `banners` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `Name` text,
-  `Type` text NOT NULL,
-  `SubType` text NOT NULL,
-  `ImageUrl` text,
-  `Language` int NOT NULL,
-  `BeginTime` bigint NOT NULL,
-  `EndTime` bigint NOT NULL,
-  PRIMARY KEY (`Id`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `type` text NOT NULL,
+  `sub_type` text NOT NULL,
+  `image_url` text,
+  `language` int NOT NULL,
+  `begin_time` bigint NOT NULL,
+  `end_time` bigint NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `meretmarketitems`
 --
 
-DROP TABLE IF EXISTS `meretmarketitems`;
-CREATE TABLE `meretmarketitems` (
-  `MarketId` int NOT NULL AUTO_INCREMENT,
-  `BannerId` int DEFAULT NULL,
-  `BonusQuantity` int NOT NULL,
-  `Category` int NOT NULL,
-  `Duration` int NOT NULL,
-  `Flag` tinyint unsigned NOT NULL,
-  `ItemId` int NOT NULL,
-  `ItemName` text,
-  `JobRequirement` int NOT NULL,
-  `MaxLevelRequirement` smallint NOT NULL,
-  `MeretMarketItemMarketId` int DEFAULT NULL,
-  `MinLevelRequirement` smallint NOT NULL,
-  `PCCafe` tinyint(1) NOT NULL,
-  `ParentMarketId` int NOT NULL,
-  `Price` bigint NOT NULL,
-  `PromoBannerBeginTime` bigint NOT NULL,
-  `PromoBannerEndTime` bigint NOT NULL,
-  `PromoFlag` int NOT NULL,
-  `PromoName` text,
-  `Quantity` int NOT NULL,
-  `Rarity` tinyint unsigned NOT NULL,
-  `RequiredAchievementGrade` int NOT NULL,
-  `RequiredAchievementId` int NOT NULL,
-  `RestockUnavailable` tinyint(1) NOT NULL,
-  `SalePrice` bigint NOT NULL,
-  `SellBeginTime` bigint NOT NULL,
-  `SellEndTime` bigint NOT NULL,
-  `ShowSaleTime` tinyint(1) NOT NULL,
-  `TokenType` tinyint unsigned NOT NULL,
-  PRIMARY KEY (`MarketId`),
-  KEY `IX_MeretMarketItems_BannerId` (`BannerId`),
-  KEY `IX_MeretMarketItems_MeretMarketItemMarketId` (`MeretMarketItemMarketId`),
-  CONSTRAINT `FK_MeretMarketItems_Banners_BannerId` FOREIGN KEY (`BannerId`) REFERENCES `banners` (`Id`) ON DELETE RESTRICT,
-  CONSTRAINT `FK_MeretMarketItems_MeretMarketItems_MeretMarketItemMarketId` FOREIGN KEY (`MeretMarketItemMarketId`) REFERENCES `meretmarketitems` (`MarketId`) ON DELETE RESTRICT
+DROP TABLE IF EXISTS `meret_market_items`;
+CREATE TABLE `meret_market_items` (
+  `market_id` int NOT NULL AUTO_INCREMENT,
+  `banner_id` int DEFAULT NULL,
+  `bonus_quantity` int NOT NULL,
+  `category` int NOT NULL,
+  `duration` int NOT NULL,
+  `flag` tinyint unsigned NOT NULL,
+  `item_id` int NOT NULL,
+  `item_name` text,
+  `job_requirement` int NOT NULL,
+  `max_level_requirement` smallint NOT NULL,
+  `meret_market_item_market_id` int DEFAULT NULL,
+  `min_level_requirement` smallint NOT NULL,
+  `pc_cafe` tinyint(1) NOT NULL,
+  `parent_market_id` int NOT NULL,
+  `price` bigint NOT NULL,
+  `promo_banner_begin_time` bigint NOT NULL,
+  `promo_banner_end_time` bigint NOT NULL,
+  `promo_flag` int NOT NULL,
+  `promo_name` text,
+  `quantity` int NOT NULL,
+  `rarity` tinyint unsigned NOT NULL,
+  `required_achievement_grade` int NOT NULL,
+  `required_achievement_id` int NOT NULL,
+  `restock_unavailable` tinyint(1) NOT NULL,
+  `sale_price` bigint NOT NULL,
+  `sell_begin_time` bigint NOT NULL,
+  `sell_end_time` bigint NOT NULL,
+  `show_sale_time` tinyint(1) NOT NULL,
+  `token_type` tinyint unsigned NOT NULL,
+  PRIMARY KEY (`market_id`),
+  KEY `ix_meretmarketitems_bannerid` (`banner_id`),
+  KEY `ix_meretmarketitems_meretmarketitemmarketid` (`meret_market_item_market_id`),
+  CONSTRAINT `fk_meretmarketitems_banners_bannerid` FOREIGN KEY (`banner_id`) REFERENCES `banners` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_meretmarketitems_meretmarketitems_meretmarketitemmarketid` FOREIGN KEY (`meret_market_item_market_id`) REFERENCES `meret_market_items` (`market_id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `banners` (`Id`, `Name`, `Type`, `SubType`, `ImageUrl`, `Language`, `BeginTime`, `EndTime`) VALUES
+INSERT INTO `banners` (`id`, `name`, `type`, `sub_type`, `image_url`, `language`, `begin_time`, `end_time`) VALUES
 
 (1, 'homeproduct_emulator','merat','cash','https://i.imgur.com/TV47C2m.png',-1,1262304000,4102444800);
 
-INSERT INTO `meretmarketitems` (`MarketId`, `BannerId`, `BonusQuantity`, `Category`, `Duration`, `Flag`, `ItemId`, `ItemName`, `JobRequirement`, `MaxLevelRequirement`, `MeretMarketItemMarketId`, `MinLevelRequirement`, `PCCafe`, `ParentMarketId`, `Price`, `PromoBannerBeginTime`, `PromoBannerEndTime`, `PromoFlag`, `PromoName`, `Quantity`, `Rarity`, `RequiredAchievementGrade`, `RequiredAchievementId`, `RestockUnavailable`, `SalePrice`, `SellBeginTime`, `SellEndTime`, `ShowSaleTime`, `TokenType`) VALUES
+INSERT INTO `meret_market_items` (`market_id`, `banner_id`, `bonus_quantity`, `category`, `duration`, `flag`, `item_id`, `item_name`, `job_requirement`, `max_level_requirement`, `meret_market_item_market_id`, `min_level_requirement`, `pc_cafe`, `parent_market_id`, `price`, `promo_banner_begin_time`, `promo_banner_end_time`, `promo_flag`, `promo_name`, `quantity`, `rarity`, `required_achievement_grade`, `required_achievement_id`, `restock_unavailable`, `sale_price`, `sell_begin_time`, `sell_end_time`, `show_sale_time`, `token_type`) VALUES
 
 (10000000,1,0,10,0,0,22002001,'',4095,0,NULL,0,0,0,120,1262304000,4102444800,0,'',1,4,0,0,0,100,1262304000,4102444800,1,1),
 (10000001,NULL,0,0,0,0,22002001,'',4095,0,10000000,0,0,10000000,1200,0,0,0,'',10,4,0,0,0,900,1262304000,4102444800,0,1),

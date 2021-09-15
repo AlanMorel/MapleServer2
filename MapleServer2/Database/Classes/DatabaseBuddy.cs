@@ -11,14 +11,14 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                buddy.SharedId,
-                buddy.CharacterId,
-                FriendCharacterId = buddy.Friend.CharacterId,
+                shared_id = buddy.SharedId,
+                character_id = buddy.CharacterId,
+                friend_character_id = buddy.Friend.CharacterId,
                 buddy.Message,
-                buddy.IsFriendRequest,
-                buddy.IsPending,
+                is_friend_request = buddy.IsFriendRequest,
+                is_pending = buddy.IsPending,
                 buddy.Blocked,
-                buddy.BlockReason,
+                block_reason = buddy.BlockReason,
                 buddy.Timestamp
             });
         }
@@ -29,30 +29,30 @@ namespace MapleServer2.Database.Classes
             IEnumerable<dynamic> results = QueryFactory.Query(TableName).Get();
             foreach (dynamic result in results)
             {
-                buddyList.Add(new Buddy(result.Id, result.SharedId, result.CharacterId,
-                    DatabaseManager.Characters.FindPartialPlayerById(result.FriendCharacterId),
-                    result.Message, result.IsFriendRequest, result.IsPending, result.Blocked,
-                    result.BlockReason, result.Timestamp));
+                buddyList.Add(new Buddy(result.id, result.shared_id, result.character_id,
+                    DatabaseManager.Characters.FindPartialPlayerById(result.friend_character_id),
+                    result.message, result.is_friend_request, result.is_pending, result.blocked,
+                    result.block_reason, result.timestamp));
             }
             return buddyList;
         }
 
         public void Update(Buddy buddy)
         {
-            QueryFactory.Query(TableName).Where("Id", buddy.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", buddy.Id).Update(new
             {
-                buddy.SharedId,
-                buddy.CharacterId,
-                FriendCharacterId = buddy.Friend.CharacterId,
+                shared_id = buddy.SharedId,
+                character_id = buddy.CharacterId,
+                friend_character_id = buddy.Friend.CharacterId,
                 buddy.Message,
-                buddy.IsFriendRequest,
-                buddy.IsPending,
+                is_friend_request = buddy.IsFriendRequest,
+                is_pending = buddy.IsPending,
                 buddy.Blocked,
-                buddy.BlockReason,
+                block_reason = buddy.BlockReason,
                 buddy.Timestamp
             });
         }
 
-        public bool Delete(long buddyId) => QueryFactory.Query(TableName).Where("Id", buddyId).Delete() == 1;
+        public bool Delete(long buddyId) => QueryFactory.Query(TableName).Where("id", buddyId).Delete() == 1;
     }
 }
