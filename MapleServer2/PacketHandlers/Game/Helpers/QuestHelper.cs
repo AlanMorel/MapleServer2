@@ -13,26 +13,29 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
         public static void UpdateExplorationQuest(GameSession session, string code, string type)
         {
             List<QuestStatus> questList = session.Player.QuestList;
-            foreach (QuestStatus quest in questList.Where(x => x.Basic.QuestType == QuestType.Exploration && x.Condition != null))
+            foreach (QuestStatus quest in questList.Where(x => x.Basic.QuestType == QuestType.Exploration && x.Condition != null && !x.Completed && x.Started))
             {
                 Condition condition = quest.Condition.Where(x => x.Type == type)
-                    .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(code));
+                    .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(code) && !x.Completed);
                 if (condition == null)
                 {
                     continue;
                 }
 
-                if (condition.Goal != condition.Current)
+                condition.Current++;
+
+                if (condition.Current >= condition.Goal)
                 {
-                    condition.Current++;
+                    condition.Completed = true;
                 }
 
                 session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
 
-                if (condition.Goal != condition.Current) // Quest completed
+                if (!condition.Completed)
                 {
                     return;
                 }
+
                 quest.Completed = true;
                 quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 DatabaseManager.Quests.Update(quest);
@@ -46,11 +49,11 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
 
         public static void UpdateQuest(GameSession session, string code, string type, string target = "")
         {
-            List<QuestStatus> questList = session.Player.QuestList.Where(x => x.Condition != null && x.Condition.Any(x => x.Type == type)).ToList();
+            List<QuestStatus> questList = session.Player.QuestList.Where(x => x.Condition != null && x.Condition.Any(x => x.Type == type) && x.Started && !x.Completed).ToList();
             foreach (QuestStatus quest in questList)
             {
                 Condition condition = quest.Condition
-                    .FirstOrDefault(x => x.Codes != null && x.Codes.Length != 0 && x.Codes.Contains(code) && x.Target.Contains(target));
+                    .FirstOrDefault(x => x.Codes != null && x.Codes.Length != 0 && x.Codes.Contains(code) && x.Target.Contains(target) && !x.Completed);
                 if (condition == null)
                 {
                     continue;
