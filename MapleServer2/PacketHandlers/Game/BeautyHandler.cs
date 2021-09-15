@@ -477,15 +477,19 @@ namespace MapleServer2.PacketHandlers.Game
             ItemSlot itemSlot = ItemMetadataStorage.GetSlot(beautyItem.Id);
             Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
-            // remove current item
-            if (cosmetics.Remove(itemSlot, out Item removeItem))
+            if (cosmetics.TryGetValue(itemSlot, out Item removeItem))
             {
-                removeItem.Slot = -1;
-                DatabaseManager.Items.Delete(removeItem.Uid);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
+                // Only remove if it isn't the same item
+                if (removeItem.Uid != beautyItem.Uid)
+                {
+                    cosmetics.Remove(itemSlot);
+                    removeItem.Slot = -1;
+                    DatabaseManager.Items.Delete(removeItem.Uid);
+                    session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
+                }
             }
-            // equip new item
 
+            // equip & update new item
             switch (itemSlot)
             {
                 case ItemSlot.HR:
@@ -503,7 +507,6 @@ namespace MapleServer2.PacketHandlers.Game
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
                     break;
                 case ItemSlot.FA:
-
                     cosmetics[itemSlot] = beautyItem;
 
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
