@@ -74,7 +74,7 @@ namespace MapleServer2.Types
 
         public Item() { }
 
-        public Item(int id)
+        public Item(int id, bool saveToDatabase = true)
         {
             Id = id;
             SetMetadataValues();
@@ -90,10 +90,13 @@ namespace MapleServer2.Types
             Amount = 1;
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, ItemSlot, Level);
-            Uid = DatabaseManager.Items.Insert(this);
+            if (saveToDatabase)
+            {
+                Uid = DatabaseManager.Items.Insert(this);
+            }
         }
 
-        public Item(int id, int amount) : this(id)
+        public Item(int id, int amount, bool saveToDatabase = true) : this(id, saveToDatabase)
         {
             Amount = amount;
         }
@@ -147,6 +150,11 @@ namespace MapleServer2.Types
             HatData = other.HatData;
             Score = new MusicScore();
             Stats = new ItemStats(other.Stats);
+        }
+
+        internal static Item Of(int itemId, short quantity)
+        {
+            throw new NotImplementedException();
         }
 
         public bool TrySplit(int amount, out Item splitItem)
