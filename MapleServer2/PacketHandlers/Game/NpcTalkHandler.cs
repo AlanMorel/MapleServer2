@@ -94,6 +94,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else if (npc.Value.IsBeauty())
             {
+                NpcMetadata npcTarget = NpcMetadataStorage.GetNpc(session.Player.NpcTalk.Npc.Id);
+                if (npcTarget.ShopId == 507) // mirror
+                {
+                    session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 0));
+                    HandleBeauty(session);
+                    return;
+                }
+
                 session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 1));
                 return;
             }
