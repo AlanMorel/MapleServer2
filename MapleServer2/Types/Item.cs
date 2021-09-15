@@ -152,11 +152,6 @@ namespace MapleServer2.Types
             Stats = new ItemStats(other.Stats);
         }
 
-        internal static Item Of(int itemId, short quantity)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool TrySplit(int amount, out Item splitItem)
         {
             if (Amount <= amount)
