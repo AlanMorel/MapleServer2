@@ -81,6 +81,10 @@ namespace MapleServer2.Types
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             Level = ItemMetadataStorage.GetLevel(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
+            if (GemSlot == GemSlot.TRANS)
+            {
+                TransparencyBadgeBools = new byte[10];
+            }
             Rarity = ItemMetadataStorage.GetRarity(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             Color = ItemMetadataStorage.GetEquipColor(id);
@@ -189,10 +193,6 @@ namespace MapleServer2.Types
         {
             InventoryTab = ItemMetadataStorage.GetTab(Id);
             GemSlot = ItemMetadataStorage.GetGem(Id);
-            if (GemSlot == GemSlot.TRANS)
-            {
-                TransparencyBadgeBools = new byte[10];
-            }
             StackLimit = ItemMetadataStorage.GetStackLimit(Id);
             EnableBreak = ItemMetadataStorage.GetEnableBreak(Id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(Id);
