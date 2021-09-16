@@ -83,6 +83,11 @@ namespace MapleServer2.Types
         {
             int index = Array.FindIndex(Slots, 0, Slots.Length, x => x != null && x.Item1 == uid);
 
+            if (index == -1)
+            {
+                return;
+            }
+
             Slots[index] = null;
             session.Send(ItemBreakPacket.Remove(uid));
             UpdateRewards(session);
