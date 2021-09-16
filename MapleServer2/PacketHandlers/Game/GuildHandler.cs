@@ -442,6 +442,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(GuildPacket.CheckInBegin());
             Item guildCoins = new Item(30000861)
             {
+                Rarity = 4,
                 Amount = property.AttendGuildCoin
             };
 
@@ -857,6 +858,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Item coins = new Item(30000861)
             {
+                Rarity = 4,
                 Amount = guildProperty.DonateGuildCoin * donateQuantity
             };
 
