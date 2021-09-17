@@ -197,7 +197,7 @@ namespace GameDataParser.Parsers
                             if (InteractRecipeMap.TryGetValue(interact.interactID, out int recipeId))
                             {
                                 metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                    InteractObjectType.Gathering, recipeId));
+                                    InteractObjectType.Gathering, interact.interactID, recipeId));
                             }
                             continue;
                         }
