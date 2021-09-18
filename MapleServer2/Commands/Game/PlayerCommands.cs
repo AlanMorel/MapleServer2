@@ -180,11 +180,11 @@ namespace MapleServer2.Commands.Game
                 return;
             }
 
-            SkillCast skillCast = new SkillCast(id, level, GuidGenerator.Long(), trigger.Session.ServerTick);
+            SkillCast skillCast = new SkillCast(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.FieldPlayer.ObjectId, trigger.Session.ClientTick);
             CoordF empty = CoordF.From(0, 0, 0);
             IFieldObject<Player> player = trigger.Session.FieldPlayer;
 
-            trigger.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, player.Coord, empty, empty, player.ObjectId));
+            trigger.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, player.Coord, empty, empty));
         }
     }
 

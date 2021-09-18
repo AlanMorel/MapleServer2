@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -16,22 +17,31 @@ namespace MapleServer2.Packets
         public static Packet Send(int sourceObjectId, CoordS effectCoord, SkillCast skill)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
-            byte tileCount = 1; // TODO: add amount of tiles affected to SkillCast?
+            SkillCast parentSkill = skill.ParentSkill;
+            List<MagicPathMove> skillMoves = parentSkill?.GetMagicPaths().MagicPathMoves ?? null;
+            byte tileCount = (byte) (skillMoves != null ? skillMoves.Count : 1);
+
             pWriter.WriteEnum(RegionSkillMode.Add);
             pWriter.WriteInt(sourceObjectId);
             pWriter.WriteInt(sourceObjectId);
             pWriter.WriteInt();
-            if (tileCount != 0)
+            pWriter.WriteByte(tileCount);
+            if (tileCount == 0)
             {
-                pWriter.WriteByte(tileCount);
-                for (int i = 0; i < tileCount; i++)
-                {
-                    pWriter.Write(effectCoord.ToFloat());
-                }
-                pWriter.WriteInt(skill.SkillId);
-                pWriter.WriteShort(skill.SkillLevel);
-                pWriter.WriteLong();
+                return pWriter;
             }
+
+            for (int i = 0; i < tileCount; i++)
+            {
+                CoordF currentSkillCoord = skillMoves != null ? skillMoves[i].FireOffsetPosition : CoordF.From(0, 0, 0);
+                CoordF castPosition = Block.ClosestBlock(currentSkillCoord + effectCoord.ToFloat());
+
+                pWriter.Write(castPosition);
+            }
+            pWriter.WriteInt(skill.SkillId);
+            pWriter.WriteShort(skill.SkillLevel);
+            pWriter.WriteLong();
+
 
             return pWriter;
         }

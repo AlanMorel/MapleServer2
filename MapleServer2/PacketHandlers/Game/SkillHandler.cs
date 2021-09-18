@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -107,7 +108,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (skillCast != null)
             {
-                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation, session.FieldPlayer.ObjectId));
+                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
         }
@@ -238,21 +239,22 @@ namespace MapleServer2.PacketHandlers.Game
 
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
-            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
+            SkillCast parentSkill = SkillUsePacket.SkillCastMap[skillSN];
+
+            if (parentSkill.GetConditionSkill() == null)
             {
                 return;
             }
 
-            foreach (SkillCondition conditionSkill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+            foreach (SkillCondition conditionSkill in parentSkill.GetConditionSkill())
             {
                 if (!conditionSkill.Splash)
                 {
                     continue;
                 }
 
-                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick);
-                SkillUsePacket.SkillUse(skillCast, position, CoordF.From(0, 0, 0), rotation, session.FieldPlayer.ObjectId);
-                RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, skillCast);
+                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick, parentSkill);
+                RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.FieldPlayer.Coord, skillCast);
             }
         }
 
