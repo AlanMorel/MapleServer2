@@ -160,16 +160,22 @@ namespace Maple2Storage.Types.Metadata
         public readonly byte AttackPoint;
         [XmlElement(Order = 2)]
         public readonly short TargetCount;
+        [XmlElement(Order = 3)]
+        public readonly long MagicPathId;
+        [XmlElement(Order = 4)]
+        public readonly long CubeMagicPathId;
 
         public SkillAttack() { }
 
-        public SkillAttack(byte attackPoint, short targetCount)
+        public SkillAttack(byte attackPoint, short targetCount, long magicPathId, long cubeMagicPathId)
         {
             AttackPoint = attackPoint;
             TargetCount = targetCount;
+            MagicPathId = magicPathId;
+            CubeMagicPathId = cubeMagicPathId;
         }
 
-        public override string ToString() => $"Point:{AttackPoint}, TargetCount:{TargetCount}";
+        public override string ToString() => $"Point:{AttackPoint}, TargetCount:{TargetCount}, MagicPathId:{MagicPathId}";
     }
 
     [XmlType]

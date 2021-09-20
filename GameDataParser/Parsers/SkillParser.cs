@@ -84,7 +84,9 @@ namespace GameDataParser.Parsers
                             // We capture that as a list, since each Attack attr has one at least.
                             byte attackPoint = byte.Parse(Regex.Match(attackAttr.Attributes["point"]?.Value, @"\d").Value);
                             short targetCount = short.Parse(attackAttr.Attributes["targetCount"].Value);
-                            SkillAttack skillAttack = new SkillAttack(attackPoint, targetCount);
+                            long magicPathId = long.Parse(attackAttr.Attributes["magicPathID"]?.Value ?? "0");
+                            long cubeMagicPathId = long.Parse(attackAttr.Attributes["cubeMagicPathID"]?.Value ?? "0");
+                            SkillAttack skillAttack = new SkillAttack(attackPoint, targetCount, magicPathId, cubeMagicPathId);
 
                             skillAttacks.Add(skillAttack);
                         }
