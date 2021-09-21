@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -11,99 +10,82 @@ namespace MapleServer2.Packets
         private enum InteractObjectMode : byte
         {
             Use = 0x05,
-            Activate = 0x06, //could also just be lever object
-            AddInteractObject = 0x08,
+            SetInteractObject = 0x06,
+            LoadInteractObject = 0x08,
             AddAdBalloons = 0x09,
-            Extra = 0x0D
+            Interact = 0x0D
         }
 
-        private enum InteractStatus : byte
-        {
-            Disabled = 0x00,
-            Enabled = 0x01
-        }
-
-        public static Packet ActivateInteractObject(int interactObjectId)
+        public static Packet Use(InteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.Activate);
-            pWriter.WriteInt(interactObjectId);
-            pWriter.WriteEnum(InteractStatus.Enabled);
+            pWriter.WriteEnum(InteractObjectMode.Use);
+            pWriter.WriteMapleString(interactObject.Id);
+            pWriter.WriteEnum(interactObject.Type);
             return pWriter;
         }
 
-        public static Packet AddInteractObjects(ICollection<IFieldObject<InteractObject>> objects)
+        public static Packet SetInteractObject(InteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+            pWriter.WriteEnum(InteractObjectMode.SetInteractObject);
+            pWriter.WriteInt(interactObject.InteractId);
+            pWriter.WriteEnum(interactObject.State);
+            return pWriter;
+        }
 
-            pWriter.WriteEnum(InteractObjectMode.AddInteractObject);
-            pWriter.WriteInt(objects.Count);
-            foreach (IFieldObject<InteractObject> interactObject in objects)
+        public static Packet LoadInteractObject(List<InteractObject> interactObjects)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+            pWriter.WriteEnum(InteractObjectMode.LoadInteractObject);
+            pWriter.WriteInt(interactObjects.Count);
+            foreach (InteractObject interactObject in interactObjects)
             {
-                pWriter.WriteMapleString(interactObject.Value.Uuid);
-                pWriter.WriteEnum(InteractStatus.Enabled);
-                pWriter.WriteEnum(interactObject.Value.Type);
-                if (interactObject.Value.Type == InteractObjectType.Gathering)
-                {
-                    pWriter.WriteInt();
-                }
+                WriteInteractObject(pWriter, interactObject);
             }
 
             return pWriter;
         }
 
-        public static Packet AddAdBallons(IFieldObject<InteractObject> balloon)
+        public static void WriteInteractObject(PacketWriter pWriter, InteractObject interactObject)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-
-            pWriter.WriteEnum(InteractObjectMode.AddAdBalloons);
-            pWriter.WriteMapleString(balloon.Value.Name);
-            pWriter.WriteByte(1);
-            pWriter.WriteEnum(balloon.Value.Type);
-            pWriter.WriteInt(balloon.Value.Balloon.InteractId);
-            pWriter.Write(balloon.Coord);
-            pWriter.Write(balloon.Rotation);
-            pWriter.WriteUnicodeString(balloon.Value.Balloon.Model);
-            pWriter.WriteUnicodeString(balloon.Value.Balloon.Asset);
-            pWriter.WriteUnicodeString(balloon.Value.Balloon.NormalState);
-            pWriter.WriteUnicodeString(balloon.Value.Balloon.Reactable);
-            pWriter.WriteFloat(balloon.Value.Balloon.Scale);
-            pWriter.WriteByte();
-            pWriter.WriteLong(balloon.Value.Balloon.Owner.CharacterId);
-            pWriter.WriteUnicodeString(balloon.Value.Balloon.Owner.Name);
-            return pWriter;
-        }
-
-        public static Packet UseObject(MapInteractObject interactObject, short result = 0, int numDrops = 0)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-
-            pWriter.WriteEnum(InteractObjectMode.Use);
-            pWriter.WriteShort((short) interactObject.Uuid.Length);
-            pWriter.WriteString(interactObject.Uuid);
+            pWriter.WriteMapleString(interactObject.Id);
+            pWriter.WriteEnum(interactObject.State);
             pWriter.WriteEnum(interactObject.Type);
-
             if (interactObject.Type == InteractObjectType.Gathering)
             {
-                pWriter.WriteShort(result);
-                pWriter.WriteInt(numDrops);
+                pWriter.WriteInt();
             }
+        }
 
+        public static Packet LoadAdBallon(AdBalloon balloon)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+            pWriter.WriteEnum(InteractObjectMode.AddAdBalloons);
+            pWriter.WriteMapleString(balloon.Id);
+            pWriter.WriteEnum(balloon.State);
+            pWriter.WriteEnum(balloon.Type);
+            pWriter.WriteInt(balloon.InteractId);
+            pWriter.Write(balloon.Position);
+            pWriter.Write(balloon.Rotation);
+            pWriter.WriteUnicodeString(balloon.Model);
+            pWriter.WriteUnicodeString(balloon.Asset);
+            pWriter.WriteUnicodeString(balloon.NormalState);
+            pWriter.WriteUnicodeString(balloon.Reactable);
+            pWriter.WriteFloat(balloon.Scale);
+            pWriter.WriteByte();
+            pWriter.WriteLong(balloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(balloon.Owner.Name);
             return pWriter;
         }
 
-        // for binoculars this shows "You get a good look at the area"
-        // for extractor it does nothing
-        public static Packet Extra(MapInteractObject interactObject)
+        public static Packet Interact(InteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-
-            pWriter.WriteEnum(InteractObjectMode.Extra);
+            pWriter.WriteEnum(InteractObjectMode.Interact);
             pWriter.WriteByte();
-            pWriter.WriteShort((short) interactObject.Uuid.Length);
-            pWriter.WriteString(interactObject.Uuid);
+            pWriter.WriteMapleString(interactObject.Id);
             pWriter.WriteEnum(interactObject.Type);
-
             return pWriter;
         }
     }

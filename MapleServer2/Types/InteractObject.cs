@@ -1,51 +1,66 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types
 {
     public class InteractObject
     {
-        public string Uuid;
-        public string Name;
+        public string Id;
+        public int InteractId;
+        public InteractObjectState State;
         public InteractObjectType Type;
-        public AdBalloon Balloon;
 
-        public InteractObject(string uuid, string name, InteractObjectType type)
+        public InteractObject(string id, int interactId, InteractObjectType type, InteractObjectState state)
         {
-            Uuid = uuid;
-            Name = name;
+            Id = id;
+            InteractId = interactId;
+            State = state;
+            // enabling all interact objects. Seems like the default status in the xblock/flat files has it disabled.
+            // TODO: find out where these are actually turned on?
             Type = type;
+
         }
     }
 
-    public class AdBalloon
+    public enum InteractObjectState : byte
     {
-        public int InteractId;
+        Disable = 0,
+        Default = 1,
+        Activated = 2
+    }
+
+    public class AdBalloon : InteractObject
+    {
         public string Model;
         public string Asset;
         public string NormalState;
         public string Reactable;
         public float Scale;
         public Player Owner;
+        public CoordF Position;
+        public CoordF Rotation;
         public string Title;
         public string Description;
         public bool PublicHouse;
         public long CreationTimestamp;
         public long ExpirationTimestamp; // TODO: Remove from field if expired
 
-        public AdBalloon(Player owner, Item item, string title, string description, bool publicHouse)
+        public AdBalloon(string id, int interactId, InteractObjectState state, InteractObjectType type, IFieldObject<Player> owner, InstallBillboard metadata, string title, string description, bool publicHouse) : base(id, interactId, type, state)
         {
-            Owner = owner;
-            InteractId = item.Function.InstallBillboard.InteractId;
-            Model = item.Function.InstallBillboard.Model;
-            Asset = item.Function.InstallBillboard.Asset;
-            NormalState = item.Function.InstallBillboard.NormalState;
-            Reactable = item.Function.InstallBillboard.Reactable;
-            Scale = item.Function.InstallBillboard.Scale;
+            Owner = owner.Value;
+            Position = owner.Coord;
+            Rotation = owner.Rotation;
+            Model = metadata.Model;
+            Asset = metadata.Asset;
+            NormalState = metadata.NormalState;
+            Reactable = metadata.Reactable;
+            Scale = metadata.Scale;
             Title = title;
             Description = description;
             PublicHouse = publicHouse;
             CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-            ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + item.Function.InstallBillboard.Duration;
+            ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + metadata.Duration;
         }
     }
 }

@@ -24,6 +24,12 @@ namespace GameDataParser.Parsers
 
                 foreach (XmlNode recipe in recipes)
                 {
+                    string locale = string.IsNullOrEmpty(recipe.Attributes["locale"]?.Value) ? "" : recipe.Attributes["locale"].Value;
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+
                     RecipeMetadata newRecipe = new RecipeMetadata();
                     newRecipe.Id = string.IsNullOrEmpty(recipe.Attributes["id"]?.Value) ? 0 : int.Parse(recipe.Attributes["id"].Value);
                     if (!string.IsNullOrEmpty(recipe.Attributes["masteryType"].Value))
@@ -51,17 +57,36 @@ namespace GameDataParser.Parsers
                     newRecipe.GatheringTime = recipe.Attributes["gatheringTime"].Value;
                     newRecipe.HighPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["highPropLimitCount"]?.Value) ? 0 : int.Parse(recipe.Attributes["highPropLimitCount"].Value);
                     newRecipe.NormalPropLimitCount = string.IsNullOrEmpty(recipe.Attributes["normalPropLimitCount"]?.Value) ? 0 : int.Parse(recipe.Attributes["normalPropLimitCount"].Value);
-                    newRecipe.RequireItem1 = recipe.Attributes["requireItem1"].Value;
-                    newRecipe.RequireItem2 = recipe.Attributes["requireItem2"].Value;
-                    newRecipe.RequireItem3 = recipe.Attributes["requireItem3"].Value;
-                    newRecipe.RequireItem4 = recipe.Attributes["requireItem4"].Value;
-                    newRecipe.RequireItem5 = recipe.Attributes["requireItem5"].Value;
+
+                    for (int i = 1; i < 6; i++) // 6 being the max amount of required items there can be
+                    {
+                        if (recipe.Attributes["requireItem" + i.ToString()].Value != "")
+                        {
+                            RecipeItem requiredItem = new RecipeItem();
+                            List<int> itemMetadata = new List<int>();
+                            itemMetadata.AddRange(Array.ConvertAll(recipe.Attributes["requireItem" + i.ToString()].Value.Split(","), int.Parse));
+                            requiredItem.ItemId = itemMetadata[0];
+                            requiredItem.Rarity = itemMetadata[1];
+                            requiredItem.Amount = itemMetadata[2];
+                            newRecipe.RequiredItems.Add(requiredItem);
+                        }
+                    }
+
+                    for (int i = 1; i < 6; i++) // 6 being the max amount of required items there can be
+                    {
+                        if (recipe.Attributes["requireItem" + i.ToString()].Value != "")
+                        {
+                            RecipeItem rewardItem = new RecipeItem();
+                            List<int> itemMetadata = new List<int>();
+                            itemMetadata.AddRange(Array.ConvertAll(recipe.Attributes["requireItem" + i.ToString()].Value.Split(","), int.Parse));
+                            rewardItem.ItemId = itemMetadata[0];
+                            rewardItem.Rarity = itemMetadata[1];
+                            rewardItem.Amount = itemMetadata[2];
+                            newRecipe.RewardItems.Add(rewardItem);
+                        }
+                    }
+
                     newRecipe.HabitatMapId = string.IsNullOrEmpty(recipe.Attributes["habitatMapId"]?.Value) ? 0 : int.Parse(recipe.Attributes["habitatMapId"].Value);
-                    newRecipe.RewardItem1 = recipe.Attributes["rewardItem1"].Value;
-                    newRecipe.RewardItem2 = recipe.Attributes["rewardItem2"].Value;
-                    newRecipe.RewardItem3 = recipe.Attributes["rewardItem3"].Value;
-                    newRecipe.RewardItem4 = recipe.Attributes["rewardItem4"].Value;
-                    newRecipe.RewardItem5 = recipe.Attributes["rewardItem5"].Value;
                     recipeList.Add(newRecipe);
                 }
             }

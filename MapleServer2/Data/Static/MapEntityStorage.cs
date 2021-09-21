@@ -30,6 +30,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapBreakableActorObject>> BreakableActors = new Dictionary<int, List<MapBreakableActorObject>>();
         private static readonly Dictionary<int, List<MapBreakableNifObject>> BreakableNifs = new Dictionary<int, List<MapBreakableNifObject>>();
         private static readonly Dictionary<int, List<MapVibrateObject>> VibrateObjects = new Dictionary<int, List<MapVibrateObject>>();
+        private static readonly Dictionary<int, List<MapInteractObject>> InteractObjects = new Dictionary<int, List<MapInteractObject>>();
 
         public static void Init()
         {
@@ -41,7 +42,6 @@ namespace MapleServer2.Data.Static
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
                 mobSpawns.Add(entity.MapId, entity.MobSpawns);
-                interactObject.Add(entity.MapId, entity.InteractObjects);
                 objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
                 healthSpot.Add(entity.MapId, entity.HealingSpot);
@@ -60,6 +60,7 @@ namespace MapleServer2.Data.Static
                 BreakableActors.Add(entity.MapId, entity.BreakableActors);
                 BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
                 VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
+                InteractObjects.Add(entity.MapId, entity.InteractObjects);
             }
         }
 
@@ -136,5 +137,7 @@ namespace MapleServer2.Data.Static
         public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
 
         public static bool IsVibrateObject(int mapId, string entityId) => VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
+
+        public static List<MapInteractObject> GetInteractObjects(int mapId) => InteractObjects.GetValueOrDefault(mapId);
     }
 }

@@ -16,32 +16,41 @@ namespace GameDataParser.Parsers
     public class MapEntityParser : Exporter<List<MapEntityMetadata>>
     {
         private List<MapEntityMetadata> Entities;
-        private Dictionary<int, int> InteractRecipeMap;
         private Dictionary<string, Dictionary<int, SpawnMetadata>> SpawnTagMap;
         private Dictionary<string, string> Maps;
+        private Dictionary<int, InteractObjectType> InteractTypes;
 
         public MapEntityParser(MetadataResources resources) : base(resources, "map-entity") { }
 
         protected override List<MapEntityMetadata> Parse()
         {
-            Entities = new List<MapEntityMetadata>();
-
-            // fetch interactID and recipeID relation from xml (can be expanded to parse other xml info)
-            InteractRecipeMap = new Dictionary<int, int>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files
-                .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success))
+            // Get InteractObject Types
+            InteractTypes = new Dictionary<int, InteractObjectType>();
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList interactNodes = document.SelectNodes("/ms2/interact");
+                if (!entry.Name.StartsWith("table/interactobject"))
+                {
+                    continue;
+                }
 
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+                XmlNodeList interactNodes = document.GetElementsByTagName("interact");
                 foreach (XmlNode node in interactNodes)
                 {
-                    int interactID = int.Parse(node.Attributes["id"].Value);
-                    XmlNode gatheringNode = node.SelectSingleNode("gathering");
-                    int recipeID = int.Parse(gatheringNode.Attributes["receipeID"].Value);
-                    InteractRecipeMap[interactID] = recipeID;
+                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+
+                    int interactId = int.Parse(node.Attributes["id"].Value);
+                    _ = Enum.TryParse(node.Attributes["type"].Value, out InteractObjectType objectType);
+
+                    InteractTypes[interactId] = objectType;
                 }
             }
+
+            Entities = new List<MapEntityMetadata>();
 
             // Get mob spawn ID and mob spawn information from xml (can be expanded to parse other xml info)
             SpawnTagMap = new Dictionary<string, Dictionary<int, SpawnMetadata>>();
@@ -104,7 +113,7 @@ namespace GameDataParser.Parsers
             if (!isParsableField.Success)
             {
                 // TODO: Handle these later, if we need them. They're xblock files with some other names like
-                //  character_test.xblock, login.xblock, 
+                //  character_test.xblock, login.xblock,
                 return;
             }
 
@@ -173,49 +182,30 @@ namespace GameDataParser.Parsers
 
                         metadata.HealingSpot.Add(CoordS.FromVector3(healingRegion.Position));
                         break;
-                    case IMS2InteractObject interact: // TODO: this one is kinda fucked
-                        if (interact.interactID == 0)
+                    case IMS2InteractObject interact:
+                        InteractObjectType type = GetInteractObjectType(interact.interactID);
+                        if (type == InteractObjectType.None)
                         {
                             continue;
                         }
-                        if (interact.ModelName.Contains("funct_extract_"))
+                        switch (interact)
                         {
-                            metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                InteractObjectType.Extractor, interact.interactID));
-                            continue;
+                            case IMS2SimpleUiObject uiObject:
+                                metadata.InteractObjects.Add(new MapInteractObject(uiObject.EntityId, uiObject.interactID, uiObject.Enabled, type));
+                                break;
+                            case IMS2InteractMesh interactMesh:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactMesh.EntityId, interactMesh.interactID, interactMesh.IsVisible, type));
+                                break;
+                            case IMS2Telescope telescope:
+                                metadata.InteractObjects.Add(new MapInteractObject(telescope.EntityId, telescope.interactID, telescope.Enabled, type));
+                                break;
+                            case IMS2InteractActor interactActor:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactActor.EntityId, interactActor.interactID, interactActor.IsVisible, type));
+                                break;
+                            case IMS2InteractDisplay interactDisplay:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactDisplay.EntityId, interactDisplay.interactID, interactDisplay.IsVisible, type));
+                                break;
                         }
-
-                        if (entity is IMS2Telescope)
-                        {
-                            metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                InteractObjectType.Binoculars, interact.interactID));
-                            continue;
-                        }
-
-                        if (interact.ModelName.EndsWith("hub") || interact.ModelName.EndsWith("vein"))
-                        {
-                            if (InteractRecipeMap.TryGetValue(interact.interactID, out int recipeId))
-                            {
-                                metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                    InteractObjectType.Gathering, interact.interactID, recipeId));
-                            }
-                            continue;
-                        }
-
-                        if (entity is IMS2InteractDisplay)
-                        {
-                            // TODO: Implement Interactive Displays like 02000183, Dark Wind Wanted Board (7bb334fe41f94182a9569ab884004c32)
-                            // "mixinMS2InteractDisplay" ("ID_19100003_")
-                        }
-
-                        if (entity is IMS2InteractMesh)
-                        {
-                            // TODO: InteractMesh IS InteractObject, maybe shouldn't separate them...
-                            metadata.InteractMeshes.Add(new MapInteractMesh(entity.EntityId, entity.EntityName));
-                        }
-
-                        metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                            InteractObjectType.Unknown, interact.interactID));
                         break;
                     case ISpawnPoint spawn:
                         switch (spawn)
@@ -387,15 +377,15 @@ namespace GameDataParser.Parsers
                      *  "mixinMS2SalePost" - is for sale signs. Does a packet need to respond to this item?
                      */
                 /*
-                
+
                 // Unhandled Items:
-                // "mixinEventSpawnPointNPC", 
+                // "mixinEventSpawnPointNPC",
                 // "mixinMS2Actor" as in "fa_fi_funct_irondoor_A01_"
                 // MS2RegionSkill as in "SkillObj_co_Crepper_C03_" (Only on 8xxxx and 9xxxxx maps)
                 // "mixinMS2FunctionCubeKFM" as in "ry_functobj_lamp_B01_", "ke_functobj_bath_B01_"
                 // "mixinMS2FunctionCubeNIF"
-                // "MS2MapProperties"->"MS2PhysXProp" that's not a weapon. Standard 
-                
+                // "MS2MapProperties"->"MS2PhysXProp" that's not a weapon. Standard
+
                 /*
                  * if (Regex.Match(modelName, @"^\d{8}_").Success && Regex.Match(name, @"\d{1,3}").Success)
                  * {
@@ -419,6 +409,16 @@ namespace GameDataParser.Parsers
             }
 
             Entities.Add(metadata);
+        }
+
+        private InteractObjectType GetInteractObjectType(int interactId)
+        {
+            if (InteractTypes.ContainsKey(interactId))
+            {
+                return InteractTypes[interactId];
+            }
+            Console.WriteLine($"Did not find InteractId: {interactId}");
+            return InteractObjectType.None;
         }
     }
 }
