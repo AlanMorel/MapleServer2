@@ -417,7 +417,6 @@ namespace GameDataParser.Parsers
             {
                 return InteractTypes[interactId];
             }
-            Console.WriteLine($"Did not find InteractId: {interactId}");
             return InteractObjectType.None;
         }
     }
