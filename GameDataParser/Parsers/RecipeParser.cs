@@ -72,13 +72,13 @@ namespace GameDataParser.Parsers
                         }
                     }
 
-                    for (int i = 1; i < 6; i++) // 6 being the max amount of required items there can be
+                    for (int i = 1; i < 6; i++) // 6 being the max amount of reward items there can be
                     {
-                        if (recipe.Attributes["requireItem" + i.ToString()].Value != "")
+                        if (recipe.Attributes["rewardItem" + i.ToString()].Value != "")
                         {
                             RecipeItem rewardItem = new RecipeItem();
                             List<int> itemMetadata = new List<int>();
-                            itemMetadata.AddRange(Array.ConvertAll(recipe.Attributes["requireItem" + i.ToString()].Value.Split(","), int.Parse));
+                            itemMetadata.AddRange(Array.ConvertAll(recipe.Attributes["rewardItem" + i.ToString()].Value.Split(","), int.Parse));
                             rewardItem.ItemId = itemMetadata[0];
                             rewardItem.Rarity = itemMetadata[1];
                             rewardItem.Amount = itemMetadata[2];
