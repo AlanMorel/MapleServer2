@@ -87,7 +87,7 @@ namespace MapleServer2.Types
             }
 
             Id = DatabaseManager.Homes.Insert(this);
-            
+
             if (templateMetadata == null)
             {
                 return;
