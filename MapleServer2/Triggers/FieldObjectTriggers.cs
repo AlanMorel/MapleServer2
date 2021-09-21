@@ -73,7 +73,7 @@ namespace MapleServer2.Triggers
 
         public void SetBreakable(int[] triggerIds, bool isEnabled)
         {
-            foreach(int triggerId in triggerIds)
+            foreach (int triggerId in triggerIds)
             {
                 BreakableNifObject breakable = Field.State.BreakableNifs.Values.FirstOrDefault(x => x.TriggerId == triggerId);
                 if (breakable == null)
