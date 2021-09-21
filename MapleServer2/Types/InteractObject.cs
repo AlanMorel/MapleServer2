@@ -19,7 +19,6 @@ namespace MapleServer2.Types
             // enabling all interact objects. Seems like the default status in the xblock/flat files has it disabled.
             // TODO: find out where these are actually turned on?
             Type = type;
-
         }
     }
 
