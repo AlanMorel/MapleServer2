@@ -99,9 +99,6 @@ namespace MapleServer2.Managers
                 AddPortal(fieldPortal);
             }
 
-            // Load default InteractObjects
-
-
             MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
             if (mapMetadata != null)
             {
