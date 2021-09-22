@@ -134,12 +134,7 @@ namespace MapleServer2.PacketHandlers.Game
             foreach (RecipeItem ingredient in ingredients)
             {
                 Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
-                if (item == null)
-                {
-                    return false;
-                }
-
-                if (item.Amount < ingredient.Amount)
+                if (item == null || item.Amount < ingredient.Amount)
                 {
                     return false;
                 }
@@ -193,12 +188,7 @@ namespace MapleServer2.PacketHandlers.Game
             foreach (RecipeItem ingredient in ingredients)
             {
                 Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
-                if (item == null)
-                {
-                    return false;
-                }
-
-                if (item.Amount < ingredient.Amount)
+                if (item == null || item.Amount < ingredient.Amount)
                 {
                     return false;
                 }

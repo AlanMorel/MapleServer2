@@ -125,7 +125,6 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 for (int i = 0; i < item.Amount; i++)
                 {
-
                     session.FieldManager.AddItem(session, new Item(item.ItemId)
                     {
                         Rarity = item.Rarity,
@@ -134,11 +133,13 @@ namespace MapleServer2.PacketHandlers.Game
                 }
                 numDrop += item.Amount;
             }
-            if (numDrop > 0)
+            if (numDrop <= 0)
             {
-                session.Player.IncrementGatheringCount(recipe.Id, numDrop);
-                session.Player.Levels.GainMasteryExp((MasteryType) recipe.MasteryType, recipe.RewardMastery);
+                return;
             }
+
+            session.Player.IncrementGatheringCount(recipe.Id, numDrop);
+            session.Player.Levels.GainMasteryExp((MasteryType) recipe.MasteryType, recipe.RewardMastery);
         }
     }
 }
