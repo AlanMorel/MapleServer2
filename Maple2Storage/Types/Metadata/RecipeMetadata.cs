@@ -28,69 +28,30 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 11)]
         public int NormalPropLimitCount;
         [XmlElement(Order = 12)]
-        public string RequireItem1;
-        [XmlElement(Order = 13)]
-        public string RequireItem2;
-        [XmlElement(Order = 14)]
-        public string RequireItem3;
-        [XmlElement(Order = 15)]
-        public string RequireItem4;
-        [XmlElement(Order = 16)]
-        public string RequireItem5;
+        public List<RecipeItem> RequiredItems;
         [XmlElement(Order = 17)]
         public int HabitatMapId;
         [XmlElement(Order = 18)]
-        public string RewardItem1;
-        [XmlElement(Order = 19)]
-        public string RewardItem2;
-        [XmlElement(Order = 20)]
-        public string RewardItem3;
-        [XmlElement(Order = 21)]
-        public string RewardItem4;
-        [XmlElement(Order = 22)]
-        public string RewardItem5;
+        public List<RecipeItem> RewardItems;
 
         // Required for deserialization
         public RecipeMetadata()
         {
+            RequiredItems = new List<RecipeItem>();
+            RewardItems = new List<RecipeItem>();
         }
+    }
 
-        public override string ToString() =>
-            $"RecipeMetadata(Id:{Id}, MasteryType:{MasteryType}, RequireItem1: {RequireItem1}, RewardItem1: {RewardItem1}, NormalPropLimitCount: {NormalPropLimitCount}, HighPropLimitCount: {HighPropLimitCount}";
+    [XmlType]
+    public class RecipeItem
+    {
+        [XmlElement(Order = 1)]
+        public int ItemId;
+        [XmlElement(Order = 2)]
+        public int Amount;
+        [XmlElement(Order = 3)]
+        public int Rarity;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((RecipeMetadata) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, MasteryType, RequireItem1, RewardItem1);
-        }
-
-        public static bool operator ==(RecipeMetadata left, RecipeMetadata right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(RecipeMetadata left, RecipeMetadata right)
-        {
-            return !Equals(left, right);
-        }
+        public RecipeItem() { }
     }
 }

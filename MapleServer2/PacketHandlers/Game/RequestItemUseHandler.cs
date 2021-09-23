@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Tools;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -348,15 +349,10 @@ namespace MapleServer2.PacketHandlers.Game
             bool publicHouse = parameters[2].Equals("1");
 
             int balloonUid = GuidGenerator.Int();
-            string uuid = "AdBalloon_" + balloonUid.ToString();
-            InteractObject balloon = new InteractObject(uuid, uuid, Maple2Storage.Enums.InteractObjectType.AdBalloon);
-            balloon.Balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
-            IFieldObject<InteractObject> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
-            fieldBalloon.Coord = session.FieldPlayer.Coord;
-            fieldBalloon.Rotation = session.FieldPlayer.Rotation;
-            session.FieldManager.AddBalloon(fieldBalloon);
-
-            session.Send(PlayerHostPacket.AdBalloonPlace());
+            string id = "AdBalloon_" + balloonUid.ToString();
+            AdBalloon balloon = new AdBalloon(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
+            session.FieldManager.State.AddInteractObject(balloon);
+            session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));
             InventoryController.Consume(session, item.Uid, 1);
         }
 

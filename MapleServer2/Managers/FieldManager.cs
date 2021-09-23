@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
-using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -32,7 +31,6 @@ namespace MapleServer2.Managers
         public readonly FieldState State = new FieldState();
         private readonly HashSet<GameSession> Sessions = new HashSet<GameSession>();
         public readonly TriggerScript[] Triggers;
-        private readonly List<BreakableObject> Breakables = new List<BreakableObject>();
         private readonly List<MapTimer> MapTimers = new List<MapTimer>();
         private readonly List<Widget> Widgets = new List<Widget>();
         public bool SkipScene;
@@ -100,15 +98,6 @@ namespace MapleServer2.Managers
                 fieldPortal.Coord = portal.Coord.ToFloat();
                 AddPortal(fieldPortal);
             }
-
-            // Load default InteractObjects
-            List<IFieldObject<InteractObject>> actors = new List<IFieldObject<InteractObject>> { };
-            foreach (MapInteractObject interactObject in MapEntityStorage.GetInteractObject(mapId))
-            {
-                // TODO: Group these fieldActors by their correct packet type.
-                actors.Add(RequestFieldObject(new InteractObject(interactObject.Uuid, interactObject.Name, interactObject.Type) { }));
-            }
-            AddInteractObject(actors);
 
             MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(mapId);
             if (mapMetadata != null)
@@ -213,6 +202,16 @@ namespace MapleServer2.Managers
                 }
             }
 
+            // Load interact objects
+            foreach (MapInteractObject mapInteract in MapEntityStorage.GetInteractObjects(mapId))
+            {
+                if (mapInteract != null)
+                {
+                    InteractObject interactObject = new InteractObject(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default);
+                    State.AddInteractObject(interactObject);
+                }
+            }
+
             if (MapEntityStorage.HasHealingSpot(MapId))
             {
                 List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
@@ -304,22 +303,6 @@ namespace MapleServer2.Managers
                 sender.Send(FieldPacket.AddMob(existingMob));
                 sender.Send(FieldObjectPacket.LoadMob(existingMob));
             }
-            if (State.InteractObjects.Values.Count > 0)
-            {
-                ICollection<IFieldObject<InteractObject>> balloons = State.InteractObjects.Values.Where(x => x.Value.Type == InteractObjectType.AdBalloon).ToList();
-                if (balloons.Count > 0)
-                {
-                    foreach (IFieldObject<InteractObject> balloon in balloons)
-                    {
-                        sender.Send(InteractObjectPacket.AddAdBallons(balloon));
-                    }
-                }
-                ICollection<IFieldObject<InteractObject>> objects = State.InteractObjects.Values.Where(x => x.Value.Type != InteractObjectType.AdBalloon).ToList();
-                if (objects.Count > 0)
-                {
-                    sender.Send(InteractObjectPacket.AddInteractObjects(objects));
-                }
-            }
 
             if (State.Cubes.IsEmpty && !player.Value.IsInDecorPlanner)
             {
@@ -381,6 +364,17 @@ namespace MapleServer2.Managers
             breakables.AddRange(State.BreakableActors.Values.ToList());
             breakables.AddRange(State.BreakableNifs.Values.ToList());
             sender.Send(BreakablePacket.LoadBreakables(breakables));
+
+            List<InteractObject> interactObjects = new List<InteractObject>();
+            interactObjects.AddRange(State.InteractObjects.Values.Where(t => t is not AdBalloon).ToList());
+            sender.Send(InteractObjectPacket.LoadInteractObject(interactObjects));
+
+            List<AdBalloon> adBalloons = new List<AdBalloon>();
+            adBalloons.AddRange(State.InteractObjects.Values.OfType<AdBalloon>().ToList());
+            foreach (AdBalloon balloon in adBalloons)
+            {
+                sender.Send(InteractObjectPacket.LoadAdBallon(balloon));
+            }
 
             List<TriggerObject> triggerObjects = new List<TriggerObject>();
             triggerObjects.AddRange(State.TriggerMeshes.Values.ToList());
@@ -528,37 +522,6 @@ namespace MapleServer2.Managers
         {
             State.AddPortal(portal);
             BroadcastPacket(FieldPacket.AddPortal(portal));
-        }
-
-        public void AddInteractObject(ICollection<IFieldObject<InteractObject>> objects)
-        {
-            foreach (IFieldObject<InteractObject> interactObject in objects)
-            {
-                State.AddInteractObject(interactObject);
-            }
-
-            if (objects.Count > 0)
-            {
-                Broadcast(session =>
-                {
-                    session.Send(InteractObjectPacket.AddInteractObjects(objects));
-                });
-            }
-        }
-
-        public void AddBalloon(IFieldObject<InteractObject> balloon)
-        {
-            State.AddBalloon(balloon);
-
-            Broadcast(session =>
-            {
-                session.Send(InteractObjectPacket.AddAdBallons(balloon));
-            });
-        }
-
-        public bool RemoveBalloon(IFieldObject<InteractObject> balloon)
-        {
-            return State.RemoveBalloon(balloon.Value.Name);
         }
 
         public void SendChat(Player player, string message, ChatType type)
