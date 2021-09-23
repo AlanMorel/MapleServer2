@@ -352,8 +352,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 fishingTick = 20000; // if tick is over the base fishing tick, it will fail
             }
-
-            session.Send(FishingPacket.Start(session.ClientTick + fishingTick, minigame));
+            session.Send(FishingPacket.Start(session.ServerTick + fishingTick, minigame));
         }
 
         private static void HandleFailMinigame()
@@ -363,7 +362,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleCatchItem(GameSession session)
         {
-            // hardcoding the catch items for now
             Random rnd = RandomProvider.Get();
 
             int itemChance = rnd.Next(0, 100);
@@ -372,72 +370,22 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            List<int> trash = new List<int>()
+            FishingItemType type = rnd.NextDouble() switch
             {
-                30000487,
-                30000488,
-                30000489,
-                30000490,
-                30000491,
+                >= 0 and < 0.825 => FishingItemType.Trash,
+                >= 0.825 and < 0.975 => FishingItemType.LightBox,
+                >= 0.975 and < 0.995 => FishingItemType.HeavyBox,
+                >= 0.95 => FishingItemType.Skin,
+                _ => FishingItemType.Trash
             };
 
-            List<int> lightBoxes = new List<int>()
+            FishingRewardItem fishingItem = FishingRewardsMetadataStorage.GetFishingRewardItem(type);
+
+            Item item = new Item(fishingItem.Id)
             {
-                59200199,
-                59200201
+                Amount = fishingItem.Amount,
+                Rarity = fishingItem.Rarity,
             };
-
-            List<int> heavyBoxes = new List<int>()
-            {
-                59200200,
-                59200202
-            };
-
-            List<int> skins = new List<int>()
-            {
-                15100141,
-                13400141,
-                15000148,
-                15300141,
-                13200144,
-                14100132,
-                13300143,
-                15400109,
-                15600504,
-                13100148,
-                15200147,
-                11300424
-            };
-
-            string itemGroup = rnd.NextDouble() switch
-            {
-                >= 0 and < 0.825 => "trash",
-                >= 0.825 and < 0.975 => "lightBox",
-                >= 0.975 and < 0.995 => "heavyBox",
-                >= 0.95 => "skins",
-                _ => "trash",
-            };
-
-            List<int> selectedGroup = new List<int>();
-            switch (itemGroup)
-            {
-                case "trash":
-                    selectedGroup.AddRange(trash);
-                    break;
-                case "lightBox":
-                    selectedGroup.AddRange(lightBoxes);
-                    break;
-                case "heavyBox":
-                    selectedGroup.AddRange(heavyBoxes);
-                    break;
-                case "skins":
-                    selectedGroup.AddRange(skins);
-                    break;
-            }
-
-            int selectItemIndex = rnd.Next(selectedGroup.Count);
-
-            Item item = new Item(selectedGroup[selectItemIndex]) { };
             List<Item> items = new List<Item>() { item };
             session.Send(FishingPacket.CatchItem(items));
             InventoryController.Add(session, item, true);
