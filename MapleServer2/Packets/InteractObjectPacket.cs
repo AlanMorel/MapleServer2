@@ -16,12 +16,18 @@ namespace MapleServer2.Packets
             Interact = 0x0D
         }
 
-        public static Packet Use(InteractObject interactObject)
+        public static Packet Use(InteractObject interactObject, short result = 0, int numDrops = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
             pWriter.WriteEnum(InteractObjectMode.Use);
             pWriter.WriteMapleString(interactObject.Id);
             pWriter.WriteEnum(interactObject.Type);
+
+            if (interactObject.Type == InteractObjectType.Gathering)
+            {
+                pWriter.WriteShort(result);
+                pWriter.WriteInt(numDrops);
+            }
             return pWriter;
         }
 
