@@ -423,15 +423,18 @@ namespace MapleServer2.Managers
         public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
         {
             CoordF minCoord = CoordF.From(
-                    box.Position.X - box.Dimension.X / 2,
-                    box.Position.Y - box.Dimension.Y / 2,
-                    box.Position.Z - box.Dimension.Z / 2);
+                box.Position.X - box.Dimension.X / 2,
+                box.Position.Y - box.Dimension.Y / 2,
+                box.Position.Z - box.Dimension.Z / 2);
+
             CoordF maxCoord = CoordF.From(
                 box.Position.X + box.Dimension.X / 2,
                 box.Position.Y + box.Dimension.Y / 2,
                 box.Position.Z + box.Dimension.Z / 2);
+
             bool min = player.Coord.X >= minCoord.X && player.Coord.Y >= minCoord.Y && player.Coord.Z >= minCoord.Z;
             bool max = player.Coord.X <= maxCoord.X && player.Coord.Y <= maxCoord.Y && player.Coord.Z <= maxCoord.Z;
+
             return min && max;
         }
 
@@ -524,13 +527,7 @@ namespace MapleServer2.Managers
             BroadcastPacket(FieldPacket.AddPortal(portal));
         }
 
-        public void SendChat(Player player, string message, ChatType type)
-        {
-            Broadcast(session =>
-            {
-                session.Send(ChatPacket.Send(player, message, type));
-            });
-        }
+        public void SendChat(Player player, string message, ChatType type) => Broadcast(session => session.Send(ChatPacket.Send(player, message, type)));
 
         public void AddItem(GameSession sender, Item item)
         {
@@ -545,17 +542,7 @@ namespace MapleServer2.Managers
             });
         }
 
-        public bool RemoveItem(int objectId, out Item item)
-        {
-            if (!State.RemoveItem(objectId, out Item itemResult))
-            {
-                item = itemResult;
-                return false;
-            }
-            item = itemResult;
-
-            return true;
-        }
+        public bool RemoveItem(int objectId, out Item item) => State.RemoveItem(objectId, out item);
 
         public void AddResource(Item item, IFieldObject<Mob> source, IFieldObject<Player> targetPlayer)
         {
