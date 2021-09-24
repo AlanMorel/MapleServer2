@@ -2,23 +2,39 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.0.x'
-        include-prerelease: true
-    - name: Build
-      run: dotnet build
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+          include-prerelease: true
+      - name: Build
+        run: dotnet build
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+  dotnet-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Add dotnet-format problem matcher
+        uses: xt0rted/dotnet-format-problem-matcher@v1
+
+      - name: Restore dotnet tools
+        uses: xt0rted/dotnet-tool-restore@v1
+
+      - name: Run dotnet format
+        uses: xt0rted/dotnet-format@v1
+        with:
+          only-changed-files: "true"
