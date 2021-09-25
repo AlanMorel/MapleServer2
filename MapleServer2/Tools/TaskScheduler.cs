@@ -1,4 +1,4 @@
-namespace MapleServer2.Tools
+﻿namespace MapleServer2.Tools
 {
     public class TaskScheduler
     {

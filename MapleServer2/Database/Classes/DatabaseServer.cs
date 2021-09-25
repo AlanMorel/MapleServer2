@@ -1,4 +1,4 @@
-using SqlKata.Execution;
+﻿using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
