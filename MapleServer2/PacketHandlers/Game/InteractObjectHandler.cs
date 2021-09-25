@@ -80,17 +80,17 @@ namespace MapleServer2.PacketHandlers.Game
                     session.Send(PlayerHostPacket.AdBalloonWindow((AdBalloon) interactObject));
                     break;
                 case InteractObjectType.Gathering:
-                    HandleGathering(session, metadata);
+                    HandleGathering(session, metadata, out int numDrop);
+                    session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
                     break;
-
             }
 
             session.Send(InteractObjectPacket.Interact(interactObject));
         }
 
-        private static void HandleGathering(GameSession session, InteractObjectMetadata objectMetadata)
+        private static void HandleGathering(GameSession session, InteractObjectMetadata objectMetadata, out int numDrop)
         {
-            int numDrop = 0;
+            numDrop = 0;
             RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(objectMetadata.Gathering.RecipeId);
             if (recipe == null)
             {
