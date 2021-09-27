@@ -59,6 +59,8 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapBreakableNifObject> BreakableNifs;
         [XmlElement(Order = 26)]
         public readonly List<MapVibrateObject> VibrateObjects;
+        [XmlElement(Order = 27)]
+        public readonly List<MapTriggerSkill> TriggerSkills;
 
 
         // Required for deserialization
@@ -87,7 +89,8 @@ namespace Maple2Storage.Types.Metadata
             BreakableActors = new List<MapBreakableActorObject>();
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
-        }
+            TriggerSkills = new List<MapTriggerSkill>();
+    }
 
         public MapEntityMetadata(int mapId)
         {
@@ -115,6 +118,7 @@ namespace Maple2Storage.Types.Metadata
             BreakableActors = new List<MapBreakableActorObject>();
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
+            TriggerSkills = new List<MapTriggerSkill>();
         }
 
         public override string ToString() =>
@@ -629,15 +633,16 @@ namespace Maple2Storage.Types.Metadata
         }
     }
 
-    [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
-    [ProtoInclude(11, typeof(MapTriggerEffect))]
-    [ProtoInclude(12, typeof(MapTriggerCamera))]
-    [ProtoInclude(13, typeof(MapTriggerBox))]
-    [ProtoInclude(14, typeof(MapTriggerLadder))]
-    [ProtoInclude(15, typeof(MapTriggerActor))]
-    [ProtoInclude(16, typeof(MapTriggerCube))]
-    [ProtoInclude(17, typeof(MapTriggerSound))]
-    [ProtoInclude(18, typeof(MapTriggerRope))]
+    [ProtoContract, ProtoInclude(50, typeof(MapTriggerMesh))]
+    [ProtoInclude(51, typeof(MapTriggerEffect))]
+    [ProtoInclude(52, typeof(MapTriggerCamera))]
+    [ProtoInclude(53, typeof(MapTriggerBox))]
+    [ProtoInclude(54, typeof(MapTriggerLadder))]
+    [ProtoInclude(55, typeof(MapTriggerActor))]
+    [ProtoInclude(56, typeof(MapTriggerCube))]
+    [ProtoInclude(57, typeof(MapTriggerSound))]
+    [ProtoInclude(58, typeof(MapTriggerRope))]
+    [ProtoInclude(59, typeof(MapTriggerSkill))]
     public class MapTriggerObject
     {
         [ProtoMember(8)]
@@ -812,6 +817,29 @@ namespace Maple2Storage.Types.Metadata
         {
             TriggerId = triggerId;
         }
+    }
+
+    [ProtoContract]
+    public class MapTriggerSkill : MapTriggerObject
+    {
+        [ProtoMember(27)]
+        public CoordF Position;
+        [ProtoMember(28)]
+        public byte Count;
+        [ProtoMember(29)]
+        public short SkillLevel;
+        [ProtoMember(30)]
+        public int SkillId;
+
+        public MapTriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position) : base(id)
+        {
+            Position = position;
+            Count = count;
+            SkillLevel = skillLevel;
+            SkillId = skillId;
+        }
+
+        public MapTriggerSkill() : base() { }
     }
 
     [ProtoContract]

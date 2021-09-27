@@ -30,6 +30,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapBreakableActorObject>> BreakableActors = new Dictionary<int, List<MapBreakableActorObject>>();
         private static readonly Dictionary<int, List<MapBreakableNifObject>> BreakableNifs = new Dictionary<int, List<MapBreakableNifObject>>();
         private static readonly Dictionary<int, List<MapVibrateObject>> VibrateObjects = new Dictionary<int, List<MapVibrateObject>>();
+        private static readonly Dictionary<int, List<MapTriggerSkill>> TriggerSkills = new Dictionary<int, List<MapTriggerSkill>>();
 
         public static void Init()
         {
@@ -60,6 +61,7 @@ namespace MapleServer2.Data.Static
                 BreakableActors.Add(entity.MapId, entity.BreakableActors);
                 BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
                 VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
+                TriggerSkills.Add(entity.MapId, entity.TriggerSkills);
             }
         }
 
@@ -136,5 +138,7 @@ namespace MapleServer2.Data.Static
         public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
 
         public static bool IsVibrateObject(int mapId, string entityId) => VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
+
+        public static List<MapTriggerSkill> GetTriggerSkills(int mapId) => TriggerSkills.GetValueOrDefault(mapId);
     }
 }

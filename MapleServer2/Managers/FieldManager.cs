@@ -194,6 +194,18 @@ namespace MapleServer2.Managers
                 }
             }
 
+            foreach (MapTriggerSkill mapTriggerSkill in MapEntityStorage.GetTriggerSkills(mapId))
+            {
+                if (mapTriggerSkill != null)
+                {
+                    TriggerSkill triggerSkill = new TriggerSkill(mapTriggerSkill.Id, mapTriggerSkill.SkillId, mapTriggerSkill.SkillLevel, mapTriggerSkill.Count, mapTriggerSkill.Position);
+                    IFieldObject<TriggerSkill> fieldTriggerSkill = RequestFieldObject(triggerSkill);
+                    fieldTriggerSkill.Coord = fieldTriggerSkill.Value.Position;
+
+                    State.AddTriggerSkills(fieldTriggerSkill);
+                }
+            }
+
             // Load breakables
             foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(mapId))
             {
@@ -251,7 +263,7 @@ namespace MapleServer2.Managers
             }
             foreach (TriggerScript trigger in Triggers)
             {
-                trigger.Next();
+                //trigger.Next();
             }
             return updates;
         }

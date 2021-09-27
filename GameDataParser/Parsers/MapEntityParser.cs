@@ -338,6 +338,10 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerSound triggerSound:
                                 metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
+                            case IMS2TriggerSkill triggerSkill:
+                                metadata.TriggerSkills.Add(new MapTriggerSkill(triggerSkill.TriggerObjectID, triggerSkill.skillID,
+                                    (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
+                                break;
                         }
                         break;
                     case IMS2Vibrate vibrate:
