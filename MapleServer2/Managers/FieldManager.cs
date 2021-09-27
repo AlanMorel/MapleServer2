@@ -285,6 +285,14 @@ namespace MapleServer2.Managers
                 sender.Send(FieldPacket.AddPlayer(existingPlayer));
                 sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
             }
+
+            State.AddPlayer(player);
+            Broadcast(session =>
+            {
+                session.Send(FieldPacket.AddPlayer(player));
+                session.Send(FieldObjectPacket.LoadPlayer(player));
+            });
+
             foreach (IFieldObject<Item> existingItem in State.Items.Values)
             {
                 sender.Send(FieldPacket.AddItem(existingItem, 123456));
@@ -386,7 +394,6 @@ namespace MapleServer2.Managers
             triggerObjects.AddRange(State.TriggerRopes.Values.ToList());
             triggerObjects.AddRange(State.TriggerSounds.Values.ToList());
             sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
-            State.AddPlayer(player);
 
             if (MapLoopTask == null)
             {
@@ -394,11 +401,6 @@ namespace MapleServer2.Managers
             }
 
             // Broadcast new player to all players in map
-            Broadcast(session =>
-            {
-                session.Send(FieldPacket.AddPlayer(player));
-                session.Send(FieldObjectPacket.LoadPlayer(player));
-            });
         }
 
         public void RemovePlayer(GameSession sender, IFieldObject<Player> player)

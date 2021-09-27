@@ -206,7 +206,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Pickup(GameSession session, int weaponId, byte[] coords)
+        public static Packet Pickup(GameSession session, int weaponId, CoordB coords)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.Pickup);

@@ -330,41 +330,19 @@ namespace GameDataParser.Parsers
                                 break;
                         }
                         break;
+                    case IMS2Liftable liftable:
+                        metadata.LiftableObjects.Add(new MapLiftableObject(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState));
+                        break;
+                    case IMS2CubeProp prop:
+                        if (prop.IsObjectWeapon)
+                        {
+                            List<int> weaponIds = new List<int>();
+                            weaponIds.AddRange(Array.ConvertAll(prop.ObjectWeaponItemCode.Split(","), int.Parse));
+                            metadata.WeaponObjects.Add(new MapWeaponObject(CoordB.FromVector3(prop.Position), weaponIds));
+                        }
+                        break;
                     case IMS2Vibrate vibrate:
                         metadata.VibrateObjects.Add(new MapVibrateObject(vibrate.EntityId));
-                        break;
-                    case IPlaceable placeable: // TODO: placeable might be too generic
-                        // These are objects which you can place in the world
-                        string nameCoord = placeable.EntityName.ToLower();
-                        Match coordMatch = Regex.Match(nameCoord, @"-?\d+, -?\d+, -?\d+");
-                        if (!coordMatch.Success)
-                        {
-                            continue;
-                        }
-
-                        // Only MS2MapProperties has ObjectWeaponItemCode
-                        if (entity is not IMS2MapProperties mapProperties)
-                        {
-                            continue;
-                        }
-
-                        try
-                        //TODO: The parser will output errors here, which are non-critical, yet need resolving later.
-                        {
-                            CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
-                            metadata.Objects.Add(new MapObject(coord, int.Parse(mapProperties.ObjectWeaponItemCode)));
-                        }
-                        catch (FormatException)
-                        {
-                            // ignored
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
-                        catch (OverflowException)
-                        {
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
                         break;
                 }
 

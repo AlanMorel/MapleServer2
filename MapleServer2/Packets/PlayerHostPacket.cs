@@ -78,7 +78,7 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);
             pWriter.WriteLong(balloon.Owner.AccountId);
             pWriter.WriteLong(balloon.Owner.CharacterId);
-            pWriter.WriteUnicodeString(balloon.Owner.Name);
+            pWriter.WriteUnicodeString(balloon.Owner.ProfileUrl);
             pWriter.WriteUnicodeString(balloon.Owner.Name);
             pWriter.WriteShort(balloon.Owner.Levels.Level);
             pWriter.WriteInt();

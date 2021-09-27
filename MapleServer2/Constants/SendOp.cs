@@ -112,6 +112,7 @@
         FOLLOW_NPC = 0x0072,
         NOTICE = 0x0073,
         RELOCATE_WORLD = 0x0074,
+        LIFTABLE = 0x0075,
         ITEM_FUSION = 0x0076,
         VIBRATE = 0x0077,
         HIDE_VIBRATE = 0x0078,
