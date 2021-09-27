@@ -40,6 +40,19 @@ namespace MapleServer2
 
             InitDatabase();
 
+            DateTimeOffset lastReset = DatabaseManager.ServerInfo.GetLastDailyReset();
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            DateTime lastMidnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, 0);
+
+            // Check if lastReset is before lastMidnight
+            if (lastReset < lastMidnight)
+            {
+                DailyReset();
+            }
+
+            // Schedule daily reset and repeat every 24 hours
+            Tools.TaskScheduler.Instance.ScheduleTask(0, 0, 24, () => DailyReset());
+
             // Load Mob AI files
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
@@ -97,6 +110,11 @@ namespace MapleServer2
                         break;
                 }
             }
+        }
+
+        private static void DailyReset()
+        {
+            DatabaseManager.ServerInfo.SetLastDailyReset(DateTimeOffset.UtcNow.UtcDateTime);
         }
 
         private static void InitDatabase()
