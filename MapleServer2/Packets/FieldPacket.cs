@@ -53,7 +53,7 @@ namespace MapleServer2.Packets
             StatPacket.WriteFieldStats(pWriter, player.Stats);
 
             pWriter.WriteBool(player.CombatCTS != null);
-            pWriter.WriteByte(player.Guide?.Value.Type ?? 0);
+            pWriter.WriteBool(player.Guide?.Value.Type == 0);
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong();
@@ -294,7 +294,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.Write(npc.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
+            pWriter.Write(npc.Rotation);
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsNpc(pWriter);
@@ -332,12 +332,13 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
-            pWriter.Write(CoordF.From(0, 0, 0)); // Rotation
+            pWriter.Write(mob.Rotation);
             pWriter.WriteMapleString(mob.Value.Model); // StrA - kfm model string
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsMob(pWriter, mob);
 
+            pWriter.WriteByte();
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteInt();

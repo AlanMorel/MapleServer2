@@ -11,7 +11,6 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
         public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
         public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
-        public readonly ConcurrentDictionary<string, IFieldObject<InteractObject>> InteractObjects;
         public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
         public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
         public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
@@ -27,6 +26,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<string, BreakableActorObject> BreakableActors;
         public readonly ConcurrentDictionary<string, BreakableNifObject> BreakableNifs;
         public readonly ConcurrentDictionary<int, IFieldObject<TriggerSkill>> TriggerSkills;
+        public readonly ConcurrentDictionary<string, InteractObject> InteractObjects;
 
         public FieldState()
         {
@@ -36,7 +36,6 @@ namespace MapleServer2.Types
             Portals = new ConcurrentDictionary<int, IFieldObject<Portal>>();
             MobSpawns = new ConcurrentDictionary<int, IFieldObject<MobSpawn>>();
             Mobs = new ConcurrentDictionary<int, IFieldObject<Mob>>();
-            InteractObjects = new ConcurrentDictionary<string, IFieldObject<InteractObject>>();
             Guide = new ConcurrentDictionary<int, IFieldObject<GuideObject>>();
             Cubes = new ConcurrentDictionary<int, IFieldObject<Cube>>();
             HealingSpots = new ConcurrentDictionary<int, IFieldObject<HealingSpot>>();
@@ -52,6 +51,7 @@ namespace MapleServer2.Types
             BreakableActors = new ConcurrentDictionary<string, BreakableActorObject>();
             BreakableNifs = new ConcurrentDictionary<string, BreakableNifObject>();
             TriggerSkills = new ConcurrentDictionary<int, IFieldObject<TriggerSkill>>();
+            InteractObjects = new ConcurrentDictionary<string, InteractObject>();
         }
 
         public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -100,16 +100,6 @@ namespace MapleServer2.Types
         public bool RemovePortal(int objectId)
         {
             return Portals.Remove(objectId, out _);
-        }
-
-        public void AddInteractObject(IFieldObject<InteractObject> interactObject)
-        {
-            InteractObjects[interactObject.Value.Uuid] = interactObject;
-        }
-
-        public void AddBalloon(IFieldObject<InteractObject> balloon)
-        {
-            InteractObjects[balloon.Value.Name] = balloon;
         }
 
         public bool RemoveBalloon(string name)
@@ -224,6 +214,11 @@ namespace MapleServer2.Types
         public IFieldObject<TriggerSkill> GetTriggerSkill(int triggerId)
         {
             return TriggerSkills.FirstOrDefault(skill => skill.Value.Value.Id == triggerId).Value;
+        }
+
+        public void AddInteractObject(InteractObject interactObject)
+        {
+            InteractObjects[interactObject.Id] = interactObject;
         }
     }
 }

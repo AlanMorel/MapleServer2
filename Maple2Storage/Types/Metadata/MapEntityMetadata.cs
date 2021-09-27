@@ -24,44 +24,42 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 8)]
         public CoordS BoundingBox1;
         [XmlElement(Order = 9)]
-        public readonly List<MapInteractObject> InteractObjects;
-        [XmlElement(Order = 10)]
-        public readonly List<MapInteractMesh> InteractMeshes;
-        [XmlElement(Order = 11)]
         public List<CoordS> HealingSpot;
-        [XmlElement(Order = 12)]
+        [XmlElement(Order = 10)]
         public List<PatrolData> PatrolDatas;
-        [XmlElement(Order = 13)]
+        [XmlElement(Order = 11)]
         public List<WayPoint> WayPoints;
-        [XmlElement(Order = 14)]
+        [XmlElement(Order = 12)]
         public readonly List<MapTriggerMesh> TriggerMeshes;
-        [XmlElement(Order = 15)]
+        [XmlElement(Order = 13)]
         public readonly List<MapTriggerEffect> TriggerEffects;
-        [XmlElement(Order = 16)]
+        [XmlElement(Order = 14)]
         public readonly List<MapTriggerCamera> TriggerCameras;
-        [XmlElement(Order = 17)]
+        [XmlElement(Order = 15)]
         public readonly List<MapTriggerBox> TriggerBoxes;
-        [XmlElement(Order = 18)]
+        [XmlElement(Order = 16)]
         public readonly List<MapTriggerLadder> TriggerLadders;
-        [XmlElement(Order = 19)]
+        [XmlElement(Order = 17)]
         public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
-        [XmlElement(Order = 20)]
+        [XmlElement(Order = 18)]
         public readonly List<MapTriggerActor> TriggerActors;
-        [XmlElement(Order = 21)]
+        [XmlElement(Order = 19)]
         public readonly List<MapTriggerCube> TriggerCubes;
-        [XmlElement(Order = 22)]
+        [XmlElement(Order = 20)]
         public readonly List<MapTriggerSound> TriggerSounds;
-        [XmlElement(Order = 23)]
+        [XmlElement(Order = 21)]
         public readonly List<MapTriggerRope> TriggerRopes;
-        [XmlElement(Order = 24)]
+        [XmlElement(Order = 22)]
         public readonly List<MapBreakableActorObject> BreakableActors;
-        [XmlElement(Order = 25)]
+        [XmlElement(Order = 23)]
         public readonly List<MapBreakableNifObject> BreakableNifs;
-        [XmlElement(Order = 26)]
+        [XmlElement(Order = 24)]
         public readonly List<MapVibrateObject> VibrateObjects;
         [XmlElement(Order = 27)]
         public readonly List<MapTriggerSkill> TriggerSkills;
 
+        [XmlElement(Order = 25)]
+        public readonly List<MapInteractObject> InteractObjects;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -71,8 +69,6 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractObjects = new List<MapInteractObject>();
-            InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
             PatrolDatas = new List<PatrolData>();
             WayPoints = new List<WayPoint>();
@@ -90,7 +86,8 @@ namespace Maple2Storage.Types.Metadata
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
             TriggerSkills = new List<MapTriggerSkill>();
-    }
+            InteractObjects = new List<MapInteractObject>();
+        }
 
         public MapEntityMetadata(int mapId)
         {
@@ -100,8 +97,6 @@ namespace Maple2Storage.Types.Metadata
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
             Objects = new List<MapObject>();
-            InteractObjects = new List<MapInteractObject>();
-            InteractMeshes = new List<MapInteractMesh>();
             HealingSpot = new List<CoordS>();
             PatrolDatas = new List<PatrolData>();
             WayPoints = new List<WayPoint>();
@@ -119,6 +114,7 @@ namespace Maple2Storage.Types.Metadata
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
             TriggerSkills = new List<MapTriggerSkill>();
+            InteractObjects = new List<MapInteractObject>();
         }
 
         public override string ToString() =>
@@ -491,51 +487,6 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class MapInteractObject
-    {
-        [XmlElement(Order = 1)]
-        public readonly string Uuid;
-        [XmlElement(Order = 2)]
-        public readonly string Name;
-        [XmlElement(Order = 3)]
-        public readonly InteractObjectType Type;
-        [XmlElement(Order = 4)]
-        public readonly int InteractId;
-        [XmlElement(Order = 5)]
-        public readonly int RecipeId;
-
-        public MapInteractObject() { }
-        public MapInteractObject(string uuid, string name, InteractObjectType type, int interactId, int recipeId = 0)
-        {
-            Uuid = uuid;
-            Name = name;
-            Type = type;
-            InteractId = interactId;
-            RecipeId = recipeId;
-        }
-        public override string ToString() =>
-            $"MapInteractObject(UUID:{Uuid},Name:{Name},Type:{Type},InteractId:{InteractId},RecipeId:{RecipeId})";
-    }
-
-    [XmlType]
-    public class MapInteractMesh
-    {
-        [XmlElement(Order = 1)]
-        public readonly string Uuid;
-        [XmlElement(Order = 2)]
-        public readonly string Name;
-
-        public MapInteractMesh() { }
-        public MapInteractMesh(string uuid, string name)
-        {
-            Uuid = uuid;
-            Name = name;
-        }
-        public override string ToString() =>
-            $"MapInteractMesh(UUID:{Uuid},Name:{Name})";
-    }
-
-    [XmlType]
     public class PatrolData
     {
         [XmlElement(Order = 1)]
@@ -860,6 +811,29 @@ namespace Maple2Storage.Types.Metadata
         public MapVibrateObject(string id)
         {
             EntityId = id;
+        }
+    }
+
+    [XmlType]
+    public class MapInteractObject
+    {
+        [XmlElement(Order = 1)]
+        public string EntityId;
+        [XmlElement(Order = 2)]
+        public int InteractId;
+        [XmlElement(Order = 3)]
+        public bool IsEnabled; // or Visible
+        [XmlElement(Order = 4)]
+        public InteractObjectType Type;
+
+        public MapInteractObject() { }
+
+        public MapInteractObject(string entityId, int interactId, bool isEnabled, InteractObjectType type)
+        {
+            EntityId = entityId;
+            InteractId = interactId;
+            IsEnabled = isEnabled;
+            Type = type;
         }
     }
 }

@@ -52,15 +52,18 @@ namespace MapleWebServer.Controllers
 
             byte[] fileBytes = array.Skip(48).ToArray();
 
-            string md5Hash = CreateMD5(Encoding.UTF8.GetString(fileBytes));
-            if (System.IO.File.Exists($"{filePath}/{md5Hash}.png"))
+            // Adding timestamp to the file name to prevent caching, client doesn't refresh the image if the url is already cached
+            string fileHash = CreateMD5(Encoding.UTF8.GetString(fileBytes) + DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+
+            // Deleting old files in the character folder
+            DirectoryInfo di = new DirectoryInfo(filePath);
+            foreach (FileInfo file in di.GetFiles())
             {
-                return Ok($"0,data/profiles/avatar/{characterId}/{md5Hash}.png");
+                file.Delete();
             }
 
-            System.IO.File.WriteAllBytes($"{filePath}/{md5Hash}.png", fileBytes);
-
-            return Ok($"0,data/profiles/avatar/{characterId}/{md5Hash}.png");
+            System.IO.File.WriteAllBytes($"{filePath}/{fileHash}.png", fileBytes);
+            return Ok($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
         }
 
         private static async Task<MemoryStream> CopyStream(Stream input)

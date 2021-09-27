@@ -107,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (skillCast != null)
             {
-                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation, session.FieldPlayer.ObjectId));
+                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
         }
@@ -238,21 +238,22 @@ namespace MapleServer2.PacketHandlers.Game
 
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
-            if (SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill() == null)
+            SkillCast parentSkill = SkillUsePacket.SkillCastMap[skillSN];
+
+            if (parentSkill.GetConditionSkill() == null)
             {
                 return;
             }
 
-            foreach (SkillCondition conditionSkill in SkillUsePacket.SkillCastMap[skillSN].GetConditionSkill())
+            foreach (SkillCondition conditionSkill in parentSkill.GetConditionSkill())
             {
                 if (!conditionSkill.Splash)
                 {
                     continue;
                 }
 
-                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick);
-                SkillUsePacket.SkillUse(skillCast, position, CoordF.From(0, 0, 0), rotation, session.FieldPlayer.ObjectId);
-                RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, skillCast);
+                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick, parentSkill);
+                RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.FieldPlayer.Coord, skillCast);
             }
         }
 
@@ -293,8 +294,16 @@ namespace MapleServer2.PacketHandlers.Game
             // Gain Mob EXP
             session.Player.Levels.GainExp(mob.Value.Experience);
             // Send achieves (2)
+
+            string mapId = session.Player.MapId.ToString();
+            // Prepend zero if map id is equal to 7 digits
+            if (mapId.Length == 7)
+            {
+                mapId = $"0{mapId}";
+            }
+
             // Quest Check
-            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc");
+            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
         }
     }
 }

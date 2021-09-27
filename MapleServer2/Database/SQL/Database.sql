@@ -433,6 +433,16 @@ CREATE TABLE `quests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `server`
+--
+
+DROP TABLE IF EXISTS `server`;
+CREATE TABLE `server` (
+	last_daily_reset datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `server` VALUES ('2021-01-01 00:00:00');
+--
 -- Table structure for table `skilltabs`
 --
 

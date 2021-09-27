@@ -33,6 +33,7 @@ namespace MapleServer2.Types
         public int ServerTick { get; private set; }
         public byte MotionPoint { get; private set; }
         public byte AttackPoint { get; private set; }
+        public SkillCast ParentSkill { get; private set; }
 
         public SkillCast()
         {
@@ -52,6 +53,17 @@ namespace MapleServer2.Types
             ServerTick = serverTick;
         }
 
+        public SkillCast(int id, short level, long skillSN, int serverTick, SkillCast parentSkill) : this(id, level, skillSN, serverTick)
+        {
+            ParentSkill = parentSkill;
+        }
+
+        public SkillCast(int id, short level, long skillSN, int serverTick, int entityId, int clientTick) : this(id, level, skillSN, serverTick)
+        {
+            EntityId = entityId;
+            ClientTick = clientTick;
+        }
+
         public SkillCast(int id, short level, long skillSN, int serverTick, int entityId, int clientTick, byte attackPoint) : this(id, level, skillSN, serverTick)
         {
             AttackPoint = attackPoint;
@@ -59,13 +71,13 @@ namespace MapleServer2.Types
             ClientTick = clientTick;
         }
 
-        public double GetDamageRate() => GetSkillMetadata()?.SkillLevels.Find(x => x.Level == SkillLevel).DamageRate ?? 0.1f;
+        public double GetDamageRate() => GetCurrentLevel()?.DamageRate ?? 0.1f;
 
         public double GetCriticalDamage() => 2 * GetDamageRate();
 
-        public int GetSpCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.Spirit ?? 15;
+        public int GetSpCost() => GetCurrentLevel()?.Spirit ?? 15;
 
-        public int GetStaCost() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.Stamina ?? 10;
+        public int GetStaCost() => GetCurrentLevel()?.Stamina ?? 10;
 
         public DamageType GetSkillDamageType() => (DamageType) (GetSkillMetadata()?.DamageType ?? 0);
 
@@ -73,11 +85,11 @@ namespace MapleServer2.Types
 
         public bool IsSpRecovery() => GetSkillMetadata().IsSpRecovery;
 
-        public int DurationTick() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData.Duration ?? 5000;
+        public int DurationTick() => GetCurrentLevel()?.SkillAdditionalData.Duration ?? 5000;
 
-        public int MaxStack() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillAdditionalData.MaxStack ?? 1;
+        public int MaxStack() => GetCurrentLevel()?.SkillAdditionalData.MaxStack ?? 1;
 
-        public IEnumerable<SkillCondition> GetConditionSkill() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel)?.SkillConditions.ToList();
+        public IEnumerable<SkillCondition> GetConditionSkill() => GetCurrentLevel()?.SkillConditions;
 
         public bool IsHeal() => VerifySkillTypeOf(SkillType.None, SkillSubType.Status, BuffType.Buff, BuffSubType.Recovery);
 
@@ -143,5 +155,13 @@ namespace MapleServer2.Types
         }
 
         private SkillMetadata GetSkillMetadata() => SkillMetadataStorage.GetSkill(SkillId);
+
+        private SkillLevel GetCurrentLevel() => GetSkillMetadata()?.SkillLevels.Find(s => s.Level == SkillLevel);
+
+        public MagicPathMetadata GetMagicPaths()
+        {
+            long cubeMagicPath = GetCurrentLevel()?.SkillAttacks.FirstOrDefault().CubeMagicPathId ?? 0;
+            return MagicPathMetadataStorage.GetMagicPath(cubeMagicPath);
+        }
     }
 }

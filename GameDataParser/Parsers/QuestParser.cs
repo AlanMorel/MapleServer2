@@ -213,7 +213,6 @@ namespace GameDataParser.Parsers
                             if (!string.IsNullOrEmpty(node.Attributes["target"]?.Value))
                             {
                                 targets = new List<string>(node.Attributes["target"].Value.Split(","));
-
                             }
                             metadata.Condition.Add(new QuestCondition(type, codes, value, targets));
                         }

@@ -45,11 +45,14 @@ namespace MapleServer2.Database
         public static DatabaseSkillTab SkillTabs { get; private set; } = new DatabaseSkillTab();
         public static DatabaseTrophy Trophies { get; private set; } = new DatabaseTrophy();
         public static DatabaseWallet Wallets { get; private set; } = new DatabaseWallet();
+        public static DatabaseServer ServerInfo { get; private set; } = new DatabaseServer();
 
         static DatabaseManager()
         {
             ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE={Database};";
         }
+
+        public static void RunQuery(string query) => new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
 
         public static bool DatabaseExists()
         {

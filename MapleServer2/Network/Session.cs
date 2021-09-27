@@ -286,7 +286,6 @@ namespace MapleServer2.Network
                 case SendOp.QUEST:
                 case SendOp.STORAGE_INVENTORY:
                 case SendOp.TROPHY:
-                case SendOp.INTERACT_OBJECT:
                 case SendOp.RESPONSE_TIME_SYNC:
                 case SendOp.VIBRATE:
                     break;

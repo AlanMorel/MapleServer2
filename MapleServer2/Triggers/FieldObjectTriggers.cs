@@ -41,11 +41,16 @@ namespace MapleServer2.Triggers
 
         public void SetInteractObject(int[] interactObjectIds, byte state, bool arg4, bool arg3)
         {
-            //This should be correct, but the current way of parsing interactObjects does not comply with triggerScripts. Needs changing.
+            InteractObjectState objectState = (InteractObjectState) state;
             foreach (int interactObjectId in interactObjectIds)
             {
-                //Field.State.InteractObjects[interactObjectId].Id = state
-                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+                InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactObjectId);
+                if (interactObject == null)
+                {
+                    continue;
+                }
+                interactObject.State = objectState;
+                Field.BroadcastPacket(InteractObjectPacket.SetInteractObject(interactObject));
             }
         }
 
@@ -73,8 +78,18 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetBreakable(int[] arg1, bool arg2)
+        public void SetBreakable(int[] triggerIds, bool isEnabled)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                BreakableNifObject breakable = Field.State.BreakableNifs.Values.FirstOrDefault(x => x.TriggerId == triggerId);
+                if (breakable == null)
+                {
+                    continue;
+                }
+                breakable.IsEnabled = isEnabled;
+                Field.BroadcastPacket(BreakablePacket.Interact(breakable));
+            }
         }
 
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)

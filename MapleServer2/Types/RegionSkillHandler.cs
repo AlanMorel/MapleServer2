@@ -6,18 +6,18 @@ namespace MapleServer2.Types
 {
     public class RegionSkillHandler
     {
-        public static void Handle(GameSession session, int sourceId, CoordF coord, SkillCast skillCast)
+        public static void Handle(GameSession session, int sourceId, CoordF coords, SkillCast skillCast)
         {
-            session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, Block.ClosestBlock(coord).ToShort(), skillCast));
+            session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, coords.ToShort(), skillCast));
             Remove(session, skillCast, sourceId);
         }
 
-        private static Task Remove(GameSession session, SkillCast skillCast, int sourceId)
+        private static void Remove(GameSession session, SkillCast skillCast, int sourceId)
         {
-            return Task.Run(async () =>
+            Task.Run(async () =>
             {
                 // TODO: Get the correct Region Skill Duration when calling chain Skills
-                await Task.Delay(skillCast.DurationTick() + 2000);
+                await Task.Delay(skillCast.DurationTick() + 5000);
                 session.FieldManager.BroadcastPacket(RegionSkillPacket.Remove(sourceId));
             });
         }

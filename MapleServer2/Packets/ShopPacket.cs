@@ -122,7 +122,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(product.RequiredFameGrade);
             pWriter.WriteBool(product.AutoPreviewEquip);
             pWriter.WriteByte();
-            pWriter.WriteItem(new Item(product.ItemId, product.Quantity));
+            pWriter.WriteItem(new Item(product.ItemId, product.Quantity, saveToDatabase: false));
 
             return pWriter;
         }
