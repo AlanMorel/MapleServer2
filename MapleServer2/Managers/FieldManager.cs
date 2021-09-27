@@ -262,7 +262,7 @@ namespace MapleServer2.Managers
             }
             foreach (TriggerScript trigger in Triggers)
             {
-                //trigger.Next();
+                trigger.Next();
             }
             return updates;
         }

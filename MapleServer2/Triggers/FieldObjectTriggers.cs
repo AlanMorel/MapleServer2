@@ -131,7 +131,7 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ropeId]));
         }
 
-        public void SetSkill(int[] triggerIds, bool arg)
+        public void SetSkill(int[] triggerIds, bool arg2)
         {
             foreach (int triggerId in triggerIds)
             {
