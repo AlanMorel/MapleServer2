@@ -55,10 +55,10 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapBreakableNifObject> BreakableNifs;
         [XmlElement(Order = 24)]
         public readonly List<MapVibrateObject> VibrateObjects;
-        [XmlElement(Order = 27)]
+        [XmlElement(Order = 25)]
         public readonly List<MapTriggerSkill> TriggerSkills;
 
-        [XmlElement(Order = 25)]
+        [XmlElement(Order = 26)]
         public readonly List<MapInteractObject> InteractObjects;
 
         // Required for deserialization
