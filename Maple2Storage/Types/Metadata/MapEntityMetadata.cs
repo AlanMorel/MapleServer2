@@ -57,7 +57,6 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapVibrateObject> VibrateObjects;
         [XmlElement(Order = 25)]
         public readonly List<MapTriggerSkill> TriggerSkills;
-
         [XmlElement(Order = 26)]
         public readonly List<MapInteractObject> InteractObjects;
 
