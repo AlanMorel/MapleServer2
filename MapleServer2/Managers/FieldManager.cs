@@ -185,7 +185,7 @@ namespace MapleServer2.Managers
                 }
             }
 
-            foreach (MapTriggerSkill mapTriggerSkill in MapEntityStorage.GetTriggerSkills(mapId))
+            foreach (MapTriggerSkill mapTriggerSkill in MapEntityStorage.GetTriggerSkills(MapId))
             {
                 if (mapTriggerSkill != null)
                 {

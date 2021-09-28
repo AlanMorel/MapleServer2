@@ -224,7 +224,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(player.Account.Home.PlotNumber, 0, player.Account.Home.Expiration));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePlotFurnishing(player));
-            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player), session);
             session.Send(ResponseCubePacket.CompletePurchase());
         }
@@ -259,7 +259,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(ResponseCubePacket.ForfeitPlot(plotNumber, apartmentNumber, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             session.Send(ResponseCubePacket.RemovePlot(plotNumber, apartmentNumber));
-            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
             session.Send(ResponseCubePacket.RemovePlot2(plotMapId, plotNumber));
             // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
         }
@@ -587,7 +587,7 @@ namespace MapleServer2.PacketHandlers.Game
             home.Name = name;
             GameServer.HomeManager.GetHomeById(home.Id).Name = name;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player));
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
         }
 
         private static void HandleHomePassword(GameSession session, PacketReader packet)
@@ -604,7 +604,7 @@ namespace MapleServer2.PacketHandlers.Game
             home.Password = password;
             GameServer.HomeManager.GetHomeById(home.Id).Password = password;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangePassword());
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
         }
 
         private static void HandleNominateHouse(GameSession session)

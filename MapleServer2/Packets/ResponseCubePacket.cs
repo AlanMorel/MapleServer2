@@ -230,19 +230,17 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadHome(IFieldObject<Player> fieldPlayer)
+        public static Packet LoadHome(int playerObjectId, Home home)
         {
-            Player player = fieldPlayer.Value;
-
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
             pWriter.WriteEnum(ResponseCubePacketMode.LoadHome);
-            pWriter.WriteInt(fieldPlayer.ObjectId);
-            pWriter.WriteInt(player.Account.Home?.MapId ?? 0);
-            pWriter.WriteInt(player.Account.Home?.PlotMapId ?? 0);
-            pWriter.WriteInt(player.Account.Home?.PlotNumber ?? 0);
-            pWriter.WriteInt(player.Account.Home?.ApartmentNumber ?? 0);
-            pWriter.WriteUnicodeString(player.Account.Home?.Name ?? "");
-            pWriter.WriteLong(player.Account.Home?.Expiration ?? 0);
+            pWriter.WriteInt(playerObjectId);
+            pWriter.WriteInt(home?.MapId ?? 0);
+            pWriter.WriteInt(home?.PlotMapId ?? 0);
+            pWriter.WriteInt(home?.PlotNumber ?? 0);
+            pWriter.WriteInt(home?.ApartmentNumber ?? 0);
+            pWriter.WriteUnicodeString(home?.Name ?? "");
+            pWriter.WriteLong(home?.Expiration ?? 0);
             pWriter.WriteLong();
             pWriter.WriteByte(1);
 
