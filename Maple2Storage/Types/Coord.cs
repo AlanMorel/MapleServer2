@@ -361,6 +361,14 @@ namespace Maple2Storage.Types
                 (short) (Z * Block.BLOCK_SIZE));
         }
 
+        public static CoordB FromVector3(Vector3 vector3)
+        {
+            return From(
+                (sbyte) (vector3.X / Block.BLOCK_SIZE),
+                (sbyte) (vector3.Y / Block.BLOCK_SIZE),
+                (sbyte) (vector3.Z / Block.BLOCK_SIZE));
+        }
+
         public static bool operator ==(CoordB left, CoordB right)
         {
             return Equals(left, right);
