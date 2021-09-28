@@ -102,7 +102,6 @@ namespace MapleServer2.Packets.Helpers
             }
             if (entry.Flag.HasFlag(SyncStateFlag.InteractableObject))
             {
-                // pWriter.WriteEnum(SyncStateFlag.InteractableObject);
                 pWriter.WriteUnicodeString(entry.InteractableObjectCoord ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag5))
