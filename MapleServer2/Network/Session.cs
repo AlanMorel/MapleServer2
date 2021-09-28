@@ -269,7 +269,7 @@ namespace MapleServer2.Network
 
             switch (sendOp)
             {
-                // case SendOp.USER_SYNC:
+                case SendOp.USER_SYNC:
                 case SendOp.KEY_TABLE:
                 case SendOp.STAT:
                 case SendOp.EMOTION:
