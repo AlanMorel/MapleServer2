@@ -287,6 +287,7 @@ namespace MapleServer2.Managers
             }
 
             State.AddPlayer(player);
+            // Broadcast new player to all players in map
             Broadcast(session =>
             {
                 session.Send(FieldPacket.AddPlayer(player));
@@ -399,8 +400,6 @@ namespace MapleServer2.Managers
             {
                 MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
             }
-
-            // Broadcast new player to all players in map
         }
 
         public void RemovePlayer(GameSession sender, IFieldObject<Player> player)
