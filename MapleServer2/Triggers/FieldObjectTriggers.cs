@@ -31,10 +31,10 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerId in triggerIds)
             {
-                if (Field.State.TriggerEffects.ContainsKey(triggerId))
+                if (Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
                 {
-                    Field.State.TriggerEffects[triggerId].IsVisible = isVisible;
-                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerEffects[triggerId]));
+                    triggerEffect.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerEffect));
                 }
             }
         }
@@ -66,10 +66,10 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerMeshId in meshIds)
             {
-                if (Field.State.TriggerMeshes.ContainsKey(triggerMeshId))
+                if (Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
                 {
-                    Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+                    triggerMesh.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerMesh));
                 }
             }
         }
