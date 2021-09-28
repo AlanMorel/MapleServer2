@@ -59,7 +59,7 @@ namespace Maple2Storage.Types.Metadata
         public readonly List<MapTriggerSkill> TriggerSkills;
         [XmlElement(Order = 26)]
         public readonly List<MapInteractObject> InteractObjects;
-        [XmlElement(Order = 26)]
+        [XmlElement(Order = 27)]
         public readonly List<MapLiftableObject> LiftableObjects;
 
         // Required for deserialization
