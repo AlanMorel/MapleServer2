@@ -136,11 +136,7 @@ namespace MapleServer2.Types
         {
             MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == type);
 
-            if (masteryExp == null)
-            {
-                return;
-            }
-            if (amount <= 0)
+            if (masteryExp == null || amount <= 0)
             {
                 return;
             }

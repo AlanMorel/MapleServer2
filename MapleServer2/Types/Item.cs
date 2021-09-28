@@ -211,6 +211,7 @@ namespace MapleServer2.Types
             RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
             TransferType = ItemMetadataStorage.GetTransferType(Id);
             RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+            HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         }
     }
 }

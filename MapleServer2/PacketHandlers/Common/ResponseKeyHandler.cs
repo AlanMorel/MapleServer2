@@ -96,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Common
 
             if (player.Account.HomeId != 0)
             {
-                Home home = GameServer.HomeManager.GetHome(player.Account.HomeId);
+                Home home = GameServer.HomeManager.GetHomeById(player.Account.HomeId);
                 player.Account.Home = home;
                 session.Send(WarehouseInventoryPacket.StartList());
                 int counter = 0;
@@ -138,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(UserEnvPacket.SetTitles(player));
             session.Send(UserEnvPacket.Send04());
             session.Send(UserEnvPacket.Send05());
-            session.Send(UserEnvPacket.Send08());
+            session.Send(UserEnvPacket.UpdateLifeSkills(player.GatheringCount));
             session.Send(UserEnvPacket.Send09());
             session.Send(UserEnvPacket.Send10());
             session.Send(UserEnvPacket.Send12());

@@ -9,9 +9,10 @@ namespace MapleServer2.Packets
 {
     public static class FieldPacket
     {
-        public enum PortalType : byte
+        private enum PortalType : byte
         {
             AddPortal = 0x00,
+            RemovePortal = 0x01,
             UpdatePortal = 0x02
         }
 
@@ -395,30 +396,43 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddPortal(IFieldObject<Portal> portal)
+        public static Packet AddPortal(IFieldObject<Portal> fieldPortal)
         {
+            Portal portal = fieldPortal.Value;
+            CoordF coord = fieldPortal.Coord;
+            coord.Z -= 75; // Looks like every portal coord is offset by 75
+
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
             pWriter.WriteEnum(PortalType.AddPortal);
-            pWriter.WriteInt(portal.Value.Id);
-            pWriter.WriteBool(portal.Value.IsVisible);
-            pWriter.WriteBool(portal.Value.IsEnabled);
-            pWriter.Write(portal.Coord);
-            pWriter.Write(portal.Value.Rotation);
-            pWriter.Write<CoordF>(default); // not sure (200,200,250) was used a lot
+            pWriter.WriteInt(portal.Id);
+            pWriter.WriteBool(portal.IsVisible);
+            pWriter.WriteBool(portal.IsEnabled);
+            pWriter.Write(coord);
+            pWriter.Write(portal.Rotation);
+            pWriter.Write(CoordF.From(150, 150, 150)); // not sure (200,200,250) was used a lot
             pWriter.WriteUnicodeString("");
-            pWriter.WriteInt(portal.Value.TargetMapId);
-            pWriter.WriteInt(portal.ObjectId);
-            pWriter.WriteInt();
-            pWriter.WriteBool(portal.Value.IsMinimapVisible);
-            pWriter.WriteLong();
-            pWriter.WriteByte(portal.Value.PortalType);
-            pWriter.WriteInt(portal.Value.Duration);
+            pWriter.WriteInt(portal.TargetMapId);
+            pWriter.WriteInt(fieldPortal.ObjectId);
+            pWriter.WriteInt((int) portal.UGCPortalMethod);
+            pWriter.WriteBool(portal.IsMinimapVisible);
+            pWriter.WriteLong(portal.TargetHomeAccountId);
+            pWriter.WriteEnum(portal.PortalType);
+            pWriter.WriteInt(portal.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
-            pWriter.WriteBool(portal.Value.IsPassEnabled);
+            pWriter.WriteBool(portal.IsPassEnabled);
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
+
+            return pWriter;
+        }
+
+        public static Packet RemovePortal(Portal portal)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
+            pWriter.WriteEnum(PortalType.RemovePortal);
+            pWriter.WriteInt(portal.Id);
 
             return pWriter;
         }

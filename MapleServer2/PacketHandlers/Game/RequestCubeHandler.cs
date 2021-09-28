@@ -216,7 +216,7 @@ namespace MapleServer2.PacketHandlers.Game
                 player.Account.Home.PlotNumber = land.Id;
                 player.Account.Home.Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (land.ContractDate * (24 * 60 * 60));
 
-                Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+                Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
                 home.PlotMapId = player.Account.Home.PlotMapId;
                 home.PlotNumber = player.Account.Home.PlotNumber;
                 home.Expiration = player.Account.Home.Expiration;
@@ -245,7 +245,7 @@ namespace MapleServer2.PacketHandlers.Game
             player.Account.Home.ApartmentNumber = 0;
             player.Account.Home.Expiration = 32503561200; // year 2999
 
-            Home home = GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
             home.PlotMapId = 0;
             home.PlotNumber = 0;
             home.ApartmentNumber = 0;
@@ -277,7 +277,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
             int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
             if (plotNumber <= 0)
@@ -359,6 +359,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             homeOwner.Value.Session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
             session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+
+            AddFunctionCube(session, coord, fieldCube);
         }
 
         private static void HandleRemoveCube(GameSession session, PacketReader packet)
@@ -367,7 +369,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
             IFieldObject<Player> homeOwner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.AccountId == home.AccountId);
             if (player.Account.Id != home.AccountId)
@@ -399,7 +401,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
             if (player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(player.Account.Id))
             {
                 return;
@@ -432,7 +434,7 @@ namespace MapleServer2.PacketHandlers.Game
             Player player = session.Player;
 
             bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-            Home home = mapIsHome ? GameServer.HomeManager.GetHome(player.VisitingHomeId) : GameServer.HomeManager.GetHome(player.Account.Home.Id);
+            Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
             int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
             if (plotNumber <= 0)
@@ -546,6 +548,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(homeOwner.ObjectId, session.FieldPlayer.ObjectId, newFieldCube, sendOnlyObjectId: false));
             session.FieldManager.AddCube(newFieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+
+            AddFunctionCube(session, coord, newFieldCube);
         }
 
         private static void HandlePickup(GameSession session, PacketReader packet)
@@ -581,7 +585,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             home.Name = name;
-            GameServer.HomeManager.GetHome(home.Id).Name = name;
+            GameServer.HomeManager.GetHomeById(home.Id).Name = name;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player));
             session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
         }
@@ -598,7 +602,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             home.Password = password;
-            GameServer.HomeManager.GetHome(home.Id).Password = password;
+            GameServer.HomeManager.GetHomeById(home.Id).Password = password;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangePassword());
             session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer));
         }
@@ -606,7 +610,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleNominateHouse(GameSession session)
         {
             Player player = session.Player;
-            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
 
             home.ArchitectScoreCurrent++;
             home.ArchitectScoreTotal++;
@@ -631,13 +635,13 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             home.Description = description;
-            GameServer.HomeManager.GetHome(home.Id).Description = description;
+            GameServer.HomeManager.GetHomeById(home.Id).Description = description;
             session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeDescription(description));
         }
 
         private static void HandleClearInterior(GameSession session)
         {
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null)
             {
                 return;
@@ -659,7 +663,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null)
             {
                 return;
@@ -715,7 +719,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int layoutId = packet.ReadInt();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
 
             if (layout == default)
@@ -751,7 +755,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int layoutId = packet.ReadInt();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
 
             if (layout == default)
@@ -787,7 +791,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleModifySize(GameSession session, RequestCubeMode mode)
         {
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -864,7 +868,7 @@ namespace MapleServer2.PacketHandlers.Game
             int layoutId = packet.ReadInt();
             string layoutName = packet.ReadUnicodeString();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
             if (layout != default)
             {
@@ -893,7 +897,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {ItemHousingCategory.Fences, 2}, {ItemHousingCategory.NaturalTerrain, 4},
             };
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null || session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -966,7 +970,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleInteriorDesingReward(GameSession session, PacketReader packet)
         {
             byte rewardId = packet.ReadByte();
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null || session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -990,7 +994,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleKickEveryone(GameSession session)
         {
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -1019,7 +1023,7 @@ namespace MapleServer2.PacketHandlers.Game
             HomePermission permission = (HomePermission) packet.ReadByte();
             bool enabled = packet.ReadBool();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -1042,7 +1046,7 @@ namespace MapleServer2.PacketHandlers.Game
             HomePermission permission = (HomePermission) packet.ReadByte();
             byte setting = packet.ReadByte();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -1060,7 +1064,7 @@ namespace MapleServer2.PacketHandlers.Game
             long mesos = packet.ReadLong();
             long merets = packet.ReadLong();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null || session.Player.AccountId != home.AccountId)
             {
                 return;
@@ -1076,7 +1080,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             byte value = packet.ReadByte();
 
-            Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             switch (mode)
             {
                 case RequestCubeMode.ChangeBackground:
@@ -1099,7 +1103,7 @@ namespace MapleServer2.PacketHandlers.Game
             string characterName = packet.ReadUnicodeString();
 
             Player player = session.Player;
-            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
             if (player.AccountId != home.AccountId)
             {
                 return;
@@ -1124,7 +1128,7 @@ namespace MapleServer2.PacketHandlers.Game
             string characterName = packet.ReadUnicodeString();
 
             Player player = session.Player;
-            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
             if (player.AccountId != home.AccountId)
             {
                 return;
@@ -1358,6 +1362,11 @@ namespace MapleServer2.PacketHandlers.Game
             DatabaseManager.Cubes.Delete(cube.Value.Uid);
             _ = home.AddWarehouseItem(homeOwner.Value.Session, cube.Value.Item.Id, 1, cube.Value.Item);
             session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+            if (cube.Value.Item.Id == 50400158) // portal cube
+            {
+                session.FieldManager.State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal> fieldPortal);
+                session.FieldManager.RemovePortal(fieldPortal);
+            }
         }
 
         private static void NotEnoughMoney(GameSession session, FurnishingShopMetadata shopMetadata)
@@ -1388,6 +1397,19 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
             }
             session.SendNotice($"Budget doesn't have enough {currency}!");
+        }
+
+        private static void AddFunctionCube(GameSession session, CoordB coord, IFieldObject<Cube> newFieldCube)
+        {
+            if (newFieldCube.Value.Item.HousingCategory is ItemHousingCategory.Ranching or ItemHousingCategory.Farming)
+            {
+                session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 1, 0));
+                session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 2, 1));
+            }
+            if (newFieldCube.Value.Item.Id == 50400158) // portal cube
+            {
+                session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 0, 0));
+            }
         }
     }
 }

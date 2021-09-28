@@ -52,7 +52,8 @@ namespace MapleServer2.Database.Classes
                 trophy_count = JsonConvert.SerializeObject(player.TrophyCount),
                 unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
                 unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
-                visiting_home_id = player.VisitingHomeId
+                visiting_home_id = player.VisitingHomeId,
+                gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
             });
         }
 
@@ -133,7 +134,8 @@ namespace MapleServer2.Database.Classes
                 VisitingHomeId = data.visiting_home_id,
                 SkillTabs = skillTabs,
                 TrophyData = trophies,
-                QuestList = questList
+                QuestList = questList,
+                GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count)
             };
         }
 
@@ -247,7 +249,8 @@ namespace MapleServer2.Database.Classes
                 trophy_count = JsonConvert.SerializeObject(player.TrophyCount),
                 unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
                 unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
-                visiting_home_id = player.VisitingHomeId
+                visiting_home_id = player.VisitingHomeId,
+                gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
             });
             DatabaseManager.Accounts.Update(player.Account);
 

@@ -133,7 +133,8 @@ namespace MapleServer2.Types
         private Task SpRegenThread;
         private Task StaRegenThread;
         private readonly TimeInfo Timestamps;
-        public Dictionary<int, PlayerStat> GatheringCount = new Dictionary<int, PlayerStat>();
+
+        public List<GatheringCount> GatheringCount;
 
         public List<Status> StatusContainer = new List<Status>();
         public List<int> UnlockedTaxis;
@@ -203,6 +204,7 @@ namespace MapleServer2.Types
             Mailbox = new Mailbox();
             BuddyList = new List<Buddy>();
             QuestList = new List<QuestStatus>();
+            GatheringCount = new List<GatheringCount>();
             TrophyCount = new int[3] { 0, 0, 0 };
             ReturnMapId = (int) Map.Tria;
             ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
@@ -501,16 +503,17 @@ namespace MapleServer2.Types
 
         public void IncrementGatheringCount(int recipeID, int amount)
         {
-            if (!GatheringCount.ContainsKey(recipeID))
+            GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeID);
+            if (gatheringCount is null)
             {
                 int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount * 1.4);
-                GatheringCount[recipeID] = new PlayerStat(maxLimit, 0, 0);
+                gatheringCount = new GatheringCount(recipeID, 0, maxLimit);
+                GatheringCount.Add(gatheringCount);
             }
-            if ((GatheringCount[recipeID].Current + amount) <= GatheringCount[recipeID].Max)
+
+            if (gatheringCount.CurrentCount + amount <= gatheringCount.MaxCount)
             {
-                PlayerStat stat = GatheringCount[recipeID];
-                stat.Current += amount;
-                GatheringCount[recipeID] = stat;
+                gatheringCount.CurrentCount += amount;
             }
         }
 

@@ -29,7 +29,7 @@ namespace MapleServer2.PacketHandlers.Game
             List<Home> homes;
             if (mapIsHome)
             {
-                Home home = GameServer.HomeManager.GetHome(session.Player.VisitingHomeId);
+                Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
                 if (home == null)
                 {
                     session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(false));
