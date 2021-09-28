@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Tools;
-using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
