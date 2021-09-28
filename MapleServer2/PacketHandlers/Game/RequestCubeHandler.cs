@@ -550,24 +550,14 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandlePickup(GameSession session, PacketReader packet)
         {
-            byte[] coords = packet.Read(3);
+            CoordB coords = packet.Read<CoordB>();
 
-            // Convert to signed byte array
-            sbyte[] sCoords = Array.ConvertAll(coords, b => unchecked((sbyte) b));
-            // Default to rainbow tree
-            int weaponId = 18000004;
-
-            // Find matching mapObject
-            foreach (MapObject mapObject in MapEntityStorage.GetObjects(session.Player.MapId))
+            int weaponId = MapEntityStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
+            if (weaponId == 0)
             {
-                if (mapObject.Coord.Equals(CoordB.From(sCoords[0], sCoords[1], sCoords[2])))
-                {
-                    weaponId = mapObject.WeaponId;
-                    break;
-                }
+                return;
             }
 
-            // Pickup item then set battle state to true
             session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
             session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, true));
         }
