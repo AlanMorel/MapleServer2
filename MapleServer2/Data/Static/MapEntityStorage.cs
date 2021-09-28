@@ -29,6 +29,7 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapBreakableActorObject>> BreakableActors = new Dictionary<int, List<MapBreakableActorObject>>();
         private static readonly Dictionary<int, List<MapBreakableNifObject>> BreakableNifs = new Dictionary<int, List<MapBreakableNifObject>>();
         private static readonly Dictionary<int, List<MapVibrateObject>> VibrateObjects = new Dictionary<int, List<MapVibrateObject>>();
+        private static readonly Dictionary<int, List<MapTriggerSkill>> TriggerSkills = new Dictionary<int, List<MapTriggerSkill>>();
         private static readonly Dictionary<int, List<MapInteractObject>> InteractObjects = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, List<MapWeaponObject>> WeaponObjects = new Dictionary<int, List<MapWeaponObject>>();
 
@@ -59,6 +60,7 @@ namespace MapleServer2.Data.Static
                 BreakableActors.Add(entity.MapId, entity.BreakableActors);
                 BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
                 VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
+                TriggerSkills.Add(entity.MapId, entity.TriggerSkills);
                 InteractObjects.Add(entity.MapId, entity.InteractObjects);
                 WeaponObjects.Add(entity.MapId, entity.WeaponObjects);
             }
@@ -136,6 +138,7 @@ namespace MapleServer2.Data.Static
 
         public static bool IsVibrateObject(int mapId, string entityId) => VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
 
+        public static List<MapTriggerSkill> GetTriggerSkills(int mapId) => TriggerSkills.GetValueOrDefault(mapId);
         public static List<MapInteractObject> GetInteractObjects(int mapId) => InteractObjects.GetValueOrDefault(mapId);
 
         public static int GetWeaponObjectItemId(int mapId, CoordB coord)

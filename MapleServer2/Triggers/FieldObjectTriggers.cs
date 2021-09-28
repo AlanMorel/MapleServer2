@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -30,8 +31,11 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerId in triggerIds)
             {
-                Field.State.TriggerEffects[triggerId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerEffects[triggerId]));
+                if (Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
+                {
+                    triggerEffect.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerEffect));
+                }
             }
         }
 
@@ -62,8 +66,11 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerMeshId in meshIds)
             {
-                Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+                if (Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
+                {
+                    triggerMesh.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerMesh));
+                }
             }
         }
 
@@ -124,8 +131,19 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ropeId]));
         }
 
-        public void SetSkill(int[] arg1, bool arg2)
+        public void SetSkill(int[] triggerIds, bool arg2)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                IFieldObject<TriggerSkill> triggerSkill = Field.State.GetTriggerSkill(triggerId);
+                if (triggerSkill != null)
+                {
+                    //TODO: Do skillcast once skill manager can cast skills by id
+                    //eventually we want to be able to do something like:
+                    //SkillManager.SkillCast(id) and the skillcast function takes care 
+                    //of sending the correct skill type / packet
+                }
+            }
         }
 
         public void SetSound(int soundId, bool isEnabled)
