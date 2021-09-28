@@ -37,7 +37,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(HomeCommandPacket.LoadHome(player));
             session.Send(ResponseCubePacket.DecorationScore(account.Home));
-            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
             session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
 
             IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == 1

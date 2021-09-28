@@ -175,6 +175,24 @@ namespace MapleServer2.Database.Classes
                             .FirstOrDefault());
         }
 
+        /// <summary>
+        /// Return the player with the given account id with the minimal amount of data needed for Buddy list and Guild members.
+        /// </summary>
+        /// <returns>Player</returns>
+        public Player FindPartialPlayerByAccountId(long accountId)
+        {
+            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("characters.account_id", accountId)
+                            .Join("levels", "levels.id", "characters.levels_id")
+                            .Join("accounts", "accounts.id", "characters.account_id")
+                            .LeftJoin("homes", "homes.account_id", "accounts.id")
+                            .Select(
+                                "characters.{*}",
+                                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
+                                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
+                                "homes.{plotmap_id, plot_number, apartment_number, expiration, id as home_id}")
+                            .FirstOrDefault());
+        }
+
         public List<Player> FindAllByAccountId(long accountId)
         {
             List<Player> characters = new List<Player>();

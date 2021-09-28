@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -192,10 +193,18 @@ namespace MapleServer2.PacketHandlers.Game
             string password = packet.ReadUnicodeString();
 
             Player target = GameServer.Storage.GetPlayerByAccountId(accountId);
+            if (target is null)
+            {
+                target = DatabaseManager.Characters.FindPartialPlayerById(accountId);
+                if (target is null)
+                {
+                    return;
+                }
+            }
             Player player = session.Player;
 
-            Home home = target.Account.Home;
-            if (target == null || home == null)
+            Home home = GameServer.HomeManager.GetHomeByAccountId(accountId);
+            if (home == null)
             {
                 session.SendNotice("This player does not have a home!");
                 return;
@@ -223,7 +232,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             player.VisitingHomeId = home.Id;
-            session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, home));
 
             player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);
         }
