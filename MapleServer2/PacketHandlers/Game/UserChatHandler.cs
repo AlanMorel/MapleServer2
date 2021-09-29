@@ -36,31 +36,10 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             Packet itemLinkPacket = null;
-
             // '<' signals a message containing an item link
             if (message.Contains("<A"))
             {
-                string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
-                    .Cast<Match>()
-                    .Select(m => m.Value)
-                    .ToArray();
-                List<Item> items = new();
-
-                foreach (string itemLinkMessage in itemLinkMessages)
-                {
-                    string[] itemLinkMessageSplit = itemLinkMessage.Split(',');
-                    long itemUid = long.Parse(itemLinkMessageSplit[1]);
-
-                    Item item = DatabaseManager.Items.FindByUid(itemUid);
-                    if (item != null)
-                    {
-                        items.Add(item);
-                    }
-                }
-                if (items.Count > 0)
-                {
-                    itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
-                }
+                itemLinkPacket = GetItemLink(message);
             }
 
             switch (type)
@@ -240,6 +219,34 @@ namespace MapleServer2.PacketHandlers.Game
                 session.FieldManager.BroadcastPacket(itemLinkPacket);
             }
             session.FieldManager.SendChat(session.Player, message, type);
+        }
+
+        private static Packet GetItemLink(string message)
+        {
+            Packet itemLinkPacket = null;
+
+            string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
+                .Cast<Match>()
+                .Select(m => m.Value)
+                .ToArray();
+            List<Item> items = new();
+
+            foreach (string itemLinkMessage in itemLinkMessages)
+            {
+                string[] itemLinkMessageSplit = itemLinkMessage.Split(',');
+                long itemUid = long.Parse(itemLinkMessageSplit[1]);
+
+                Item item = DatabaseManager.Items.FindByUid(itemUid);
+                if (item != null)
+                {
+                    items.Add(item);
+                }
+            }
+            if (items.Count > 0)
+            {
+                itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
+            }
+            return itemLinkPacket;
         }
     }
 }
