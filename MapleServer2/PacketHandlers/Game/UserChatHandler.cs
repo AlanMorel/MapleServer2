@@ -37,7 +37,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             Packet itemLinkPacket = null;
             // '<' signals a message containing an item link
-            if (message.Contains("<"))
+            if (message.Contains('<'))
             {
                 itemLinkPacket = GetItemLink(message);
             }
