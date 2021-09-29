@@ -73,18 +73,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Sell(int itemId, int quantity)
+        public static Packet Sell(Item item, int quantity)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.Sell);
             pWriter.WriteInt(quantity);
             pWriter.WriteShort();
-            pWriter.WriteInt(itemId);
+            pWriter.WriteInt(item.Id);
             pWriter.WriteByte(1);
             pWriter.WriteByte(1);
             pWriter.WriteByte();
             pWriter.WriteInt();
-            pWriter.WriteItem(new Item(itemId, quantity));
+            pWriter.WriteInt(item.Amount);
+            pWriter.WriteInt();
+            pWriter.WriteItem(item);
+            //TODO: check whether creating new item is neccessary
 
             return pWriter;
         }
@@ -122,6 +125,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(product.RequiredFameGrade);
             pWriter.WriteBool(product.AutoPreviewEquip);
             pWriter.WriteByte();
+            pWriter.WriteInt(product.Quantity);
+            pWriter.WriteInt();
             pWriter.WriteItem(new Item(product.ItemId, product.Quantity, saveToDatabase: false));
 
             return pWriter;
