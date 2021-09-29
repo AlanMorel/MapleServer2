@@ -35,12 +35,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Packet itemLinkPacket = null;
-            // '<' signals a message containing an item link
-            if (message.Contains('<'))
-            {
-                itemLinkPacket = GetItemLink(message);
-            }
+            Packet itemLinkPacket = GetItemLink(message);
 
             switch (type)
             {
@@ -223,6 +218,11 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static Packet GetItemLink(string message)
         {
+            // '<' signals a message containing an item link
+            if (!message.Contains('<'))
+            {
+                return null;
+            }
             Packet itemLinkPacket = null;
 
             string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
