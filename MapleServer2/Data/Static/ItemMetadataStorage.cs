@@ -239,5 +239,10 @@ namespace MapleServer2.Data.Static
         {
             return map.GetValueOrDefault(itemId).HousingCategory;
         }
+
+        public static int GetObjectId(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).ObjectId;
+        }
     }
 }

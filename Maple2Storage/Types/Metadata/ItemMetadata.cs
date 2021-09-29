@@ -81,6 +81,8 @@ namespace Maple2Storage.Types.Metadata
         public bool IsCubeSolid;
         [XmlElement(Order = 37)]
         public ItemHousingCategory HousingCategory;
+        [XmlElement(Order = 38)]
+        public int ObjectId;
 
         // Required for deserialization
         public ItemMetadata()
