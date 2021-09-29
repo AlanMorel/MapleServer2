@@ -44,18 +44,22 @@ namespace MapleServer2.PacketHandlers.Game
                     .Cast<Match>()
                     .Select(m => m.Value)
                     .ToArray();
-                List<Item> item = new();
+                List<Item> items = new();
 
                 foreach (string itemLinkMessage in itemLinkMessages)
                 {
                     string[] itemLinkMessageSplit = itemLinkMessage.Split(',');
                     long itemUid = long.Parse(itemLinkMessageSplit[1]);
 
-                    item.Add(DatabaseManager.Items.FindByUid(itemUid));
+                    Item item = DatabaseManager.Items.FindByUid(itemUid);
                     if (item != null)
                     {
-                        itemLinkPacket = ItemLinkPacket.SendLinkItem(item);
+                        items.Add(item);
                     }
+                }
+                if (items.Count > 0)
+                {
+                    itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
                 }
             }
 
