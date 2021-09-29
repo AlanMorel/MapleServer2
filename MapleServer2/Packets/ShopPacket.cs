@@ -84,10 +84,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte(1);
             pWriter.WriteByte();
             pWriter.WriteInt();
-            pWriter.WriteInt(item.Amount);
-            pWriter.WriteInt();
             pWriter.WriteItem(item);
-            //TODO: check whether creating new item is neccessary
 
             return pWriter;
         }
@@ -125,8 +122,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(product.RequiredFameGrade);
             pWriter.WriteBool(product.AutoPreviewEquip);
             pWriter.WriteByte();
-            pWriter.WriteInt(product.Quantity);
-            pWriter.WriteInt();
             pWriter.WriteItem(new Item(product.ItemId, product.Quantity, saveToDatabase: false));
 
             return pWriter;
