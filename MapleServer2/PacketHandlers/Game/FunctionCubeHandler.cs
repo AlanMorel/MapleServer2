@@ -57,7 +57,9 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 case ItemHousingCategory.Ranching:
                 case ItemHousingCategory.Farming:
-                    GatheringHelper.HandleGathering(session, FunctionCubeMetadataStorage.GetRecipeId(fieldCube.Value.Item.Id), out int numDrops);
+                    int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
+                    int recipeId = FunctionCubeMetadataStorage.GetRecipeId(objectId);
+                    GatheringHelper.HandleGathering(session, recipeId, out int numDrops);
                     session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, 1, 1));
                     if (numDrops > 0)
                     {
