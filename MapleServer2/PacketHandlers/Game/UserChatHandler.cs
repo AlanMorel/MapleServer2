@@ -2,6 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
@@ -225,6 +226,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             Packet itemLinkPacket = null;
 
+            Match a = Regex.Match(message, @"<A (.*?)>");
             string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
                 .Cast<Match>()
                 .Select(m => m.Value)
@@ -234,9 +236,30 @@ namespace MapleServer2.PacketHandlers.Game
             foreach (string itemLinkMessage in itemLinkMessages)
             {
                 string[] itemLinkMessageSplit = itemLinkMessage.Split(',');
-                long itemUid = long.Parse(itemLinkMessageSplit[1]);
+                string itemLinkType = Regex.Match(itemLinkMessageSplit[0], @"(?<=:)(.*)").Value;
 
-                Item item = DatabaseManager.Items.FindByUid(itemUid);
+                long itemUid = long.Parse(itemLinkMessageSplit[1]);
+                Item item = null;
+                switch (itemLinkType)
+                {
+                    case "itemTooltip":
+                        int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
+                        if (itemToolTipType == 2) // quest/navigator items
+                        {
+                            if (ItemMetadataStorage.IsValid((int) itemUid))
+                            {
+                                item = new Item((int) itemUid, false)
+                                {
+                                    Uid = itemUid
+                                };
+                            }
+                        }
+                        else if (itemToolTipType == 3) // normal item
+                        {
+                            item = DatabaseManager.Items.FindByUid(itemUid);
+                        }
+                        break;
+                }
                 if (item != null)
                 {
                     items.Add(item);
