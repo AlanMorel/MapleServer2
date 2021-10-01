@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
@@ -226,19 +227,18 @@ namespace MapleServer2.PacketHandlers.Game
             }
             Packet itemLinkPacket = null;
 
-            string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
-                .Cast<Match>()
-                .Select(m => m.Value)
-                .ToArray();
+            XmlDocument itemLinkMessages = new XmlDocument();
+            itemLinkMessages.LoadXml("<xml>" + message + "</xml>");
+
             List<Item> items = new();
 
-            foreach (string itemLinkMessage in itemLinkMessages)
+            foreach (XmlNode itemLinkMessage in itemLinkMessages.SelectNodes("//A"))
             {
-                string[] itemLinkMessageSplit = itemLinkMessage.Split(',');
-                string itemLinkType = Regex.Match(itemLinkMessageSplit[0], @"(?<=:)(.*)").Value;
-
+                string[] itemLinkMessageSplit = itemLinkMessage.Attributes["HREF"].Value.Split(",");
+                string itemLinkType = itemLinkMessageSplit[0].Split(":")[1];
                 long itemUid = long.Parse(itemLinkMessageSplit[1]);
                 Item item = null;
+
                 if (itemLinkType == "itemTooltip")
                 {
                     int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
