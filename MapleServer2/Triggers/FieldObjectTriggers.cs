@@ -30,18 +30,26 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerId in triggerIds)
             {
-                Field.State.TriggerEffects[triggerId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerEffects[triggerId]));
+                if (Field.State.TriggerEffects.TryGetValue(triggerId, out TriggerEffect triggerEffect))
+                {
+                    triggerEffect.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerEffect));
+                }
             }
         }
 
         public void SetInteractObject(int[] interactObjectIds, byte state, bool arg4, bool arg3)
         {
-            //This should be correct, but the current way of parsing interactObjects does not comply with triggerScripts. Needs changing.
+            InteractObjectState objectState = (InteractObjectState) state;
             foreach (int interactObjectId in interactObjectIds)
             {
-                //Field.State.InteractObjects[interactObjectId].Id = state
-                Field.BroadcastPacket(InteractObjectPacket.ActivateInteractObject(interactObjectId));
+                InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactObjectId);
+                if (interactObject == null)
+                {
+                    continue;
+                }
+                interactObject.State = objectState;
+                Field.BroadcastPacket(InteractObjectPacket.SetInteractObject(interactObject));
             }
         }
 
@@ -57,8 +65,11 @@ namespace MapleServer2.Triggers
         {
             foreach (int triggerMeshId in meshIds)
             {
-                Field.State.TriggerMeshes[triggerMeshId].IsVisible = isVisible;
-                Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerMeshes[triggerMeshId]));
+                if (Field.State.TriggerMeshes.TryGetValue(triggerMeshId, out TriggerMesh triggerMesh))
+                {
+                    triggerMesh.IsVisible = isVisible;
+                    Field.BroadcastPacket(TriggerPacket.UpdateTrigger(triggerMesh));
+                }
             }
         }
 
@@ -66,8 +77,18 @@ namespace MapleServer2.Triggers
         {
         }
 
-        public void SetBreakable(int[] arg1, bool arg2)
+        public void SetBreakable(int[] triggerIds, bool isEnabled)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                BreakableNifObject breakable = Field.State.BreakableNifs.Values.FirstOrDefault(x => x.TriggerId == triggerId);
+                if (breakable == null)
+                {
+                    continue;
+                }
+                breakable.IsEnabled = isEnabled;
+                Field.BroadcastPacket(BreakablePacket.Interact(breakable));
+            }
         }
 
         public void SetPortal(int portalId, bool visible, bool enabled, bool minimapVisible, bool arg5)
@@ -109,8 +130,19 @@ namespace MapleServer2.Triggers
             Field.BroadcastPacket(TriggerPacket.UpdateTrigger(Field.State.TriggerLadders[ropeId]));
         }
 
-        public void SetSkill(int[] arg1, bool arg2)
+        public void SetSkill(int[] triggerIds, bool arg2)
         {
+            foreach (int triggerId in triggerIds)
+            {
+                IFieldObject<TriggerSkill> triggerSkill = Field.State.GetTriggerSkill(triggerId);
+                if (triggerSkill != null)
+                {
+                    //TODO: Do skillcast once skill manager can cast skills by id
+                    //eventually we want to be able to do something like:
+                    //SkillManager.SkillCast(id) and the skillcast function takes care 
+                    //of sending the correct skill type / packet
+                }
+            }
         }
 
         public void SetSound(int soundId, bool isEnabled)

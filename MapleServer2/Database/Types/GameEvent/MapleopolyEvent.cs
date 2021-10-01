@@ -9,5 +9,14 @@
         public int ItemAmount { get; set; }
 
         public MapleopolyEvent() { }
+
+        public MapleopolyEvent(dynamic id, dynamic tripAmount, dynamic itemId, dynamic itemRarity, dynamic itemAmount)
+        {
+            Id = id;
+            TripAmount = tripAmount;
+            ItemId = itemId;
+            ItemRarity = itemRarity;
+            ItemAmount = itemAmount;
+        }
     }
 }

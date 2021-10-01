@@ -85,7 +85,7 @@ namespace MapleServer2.Packets
 
         public static Packet DotDamage(int ownerId, int targetId, int tick, DamageType damageType, int damage)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
 
             pWriter.WriteEnum(SkillDamageMode.DotDamage);
             pWriter.WriteInt(ownerId);
@@ -112,14 +112,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RegionDamage(long skillSN, int objectId, int unkInt, byte count, byte count2, IFieldObject<Player> player, CoordF direction, CoordS blockPosition, DamageType damageType, long damage)
+        public static Packet RegionDamage(long skillSN, int userObjectId, int skillObjectId, byte count, byte count2, IFieldObject<Player> player, CoordF direction, CoordS blockPosition, long damage)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
+            SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
 
             pWriter.WriteEnum(SkillDamageMode.RegionDamage);
-            pWriter.WriteLong(skillSN);
-            pWriter.WriteInt(objectId);
-            pWriter.WriteInt(unkInt);
+            pWriter.WriteLong(skillCast.SkillSN);
+            pWriter.WriteInt(userObjectId);
+            pWriter.WriteInt(skillObjectId);
             pWriter.WriteByte();
             pWriter.WriteByte(count);
             for (int i = 0; i < count; i++)
@@ -130,7 +131,7 @@ namespace MapleServer2.Packets
                 pWriter.Write(direction);
                 for (int j = 0; j < count2; j++)
                 {
-                    pWriter.WriteEnum(damageType);
+                    pWriter.WriteEnum(skillCast.GetSkillDamageType());
                     pWriter.WriteLong(damage);
                 }
             }
@@ -138,13 +139,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet TileSkill(long skillSN, byte targetCount, IFieldObject<Player> player, byte count2, CoordF position, CoordF direction, DamageType damageType, long damage)
+        public static Packet TileSkill(SkillCast skillCast, byte targetCount, IFieldObject<Player> player, byte count2, CoordF position, CoordF direction, long damage)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
-            SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
 
             pWriter.WriteEnum(SkillDamageMode.RegionDamage);
-            pWriter.WriteLong(skillSN);
+            pWriter.WriteLong(skillCast.SkillSN);
             pWriter.WriteInt(skillCast.SkillId);
             pWriter.WriteShort(skillCast.SkillLevel);
             pWriter.WriteByte(targetCount);
@@ -156,7 +156,7 @@ namespace MapleServer2.Packets
                 pWriter.Write(direction);
                 for (int j = 0; j < count2; j++)
                 {
-                    pWriter.WriteEnum(damageType);
+                    pWriter.WriteEnum(skillCast.GetSkillDamageType());
                     pWriter.WriteLong(damage);
                 }
             }
@@ -166,7 +166,7 @@ namespace MapleServer2.Packets
 
         public static Packet UnkDamageMode(int unkInt, int unkInt2, int count)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
 
             pWriter.WriteEnum(SkillDamageMode.UnkMode7);
             pWriter.WriteInt(unkInt);

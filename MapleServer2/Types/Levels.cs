@@ -136,12 +136,7 @@ namespace MapleServer2.Types
         {
             MasteryExp masteryExp = MasteryExp.FirstOrDefault(x => x.Type == type);
 
-            if (masteryExp == null) // add mastery to list
-            {
-                masteryExp = new MasteryExp(type);
-                MasteryExp.Add(masteryExp);
-            }
-            if (amount <= 0)
+            if (masteryExp == null || amount <= 0)
             {
                 return;
             }

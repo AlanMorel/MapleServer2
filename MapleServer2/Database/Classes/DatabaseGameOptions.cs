@@ -6,23 +6,23 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseGameOptions : DatabaseTable
     {
-        public DatabaseGameOptions() : base("GameOptions") { }
+        public DatabaseGameOptions() : base("game_options") { }
 
         public long Insert(GameOptions gameOptions)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                KeyBinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
-                gameOptions.ActiveHotbarId
+                keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
+                active_hotbar_id = gameOptions.ActiveHotbarId
             });
         }
 
         public void Update(GameOptions gameOptions)
         {
-            QueryFactory.Query(TableName).Where("Id", gameOptions.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", gameOptions.Id).Update(new
             {
-                KeyBinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
-                gameOptions.ActiveHotbarId
+                keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
+                active_hotbar_id = gameOptions.ActiveHotbarId
             });
             foreach (Hotbar hotbar in gameOptions.Hotbars)
             {
@@ -33,7 +33,7 @@ namespace MapleServer2.Database.Classes
         public bool Delete(long id)
         {
             DatabaseManager.Hotbars.DeleteAllByGameOptionsId(id);
-            return QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+            return QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
         }
     }
 }

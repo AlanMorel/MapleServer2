@@ -43,9 +43,9 @@ namespace MapleServer2.Packets.Helpers
                 state.Flag3Unknown1 = packet.ReadInt();
                 state.Flag3Unknown2 = packet.ReadUnicodeString();
             }
-            if (state.Flag.HasFlag(SyncStateFlag.Flag4))
+            if (state.Flag.HasFlag(SyncStateFlag.InteractableObject))
             {
-                state.Flag4Unknown = packet.ReadUnicodeString(); // Animation string?
+                state.InteractableObjectCoord = packet.ReadUnicodeString(); // Animation string?
             }
             if (state.Flag.HasFlag(SyncStateFlag.Flag5))
             {
@@ -100,9 +100,9 @@ namespace MapleServer2.Packets.Helpers
                 pWriter.WriteInt(entry.Flag3Unknown1);
                 pWriter.WriteUnicodeString(entry.Flag3Unknown2 ?? "");
             }
-            if (entry.Flag.HasFlag(SyncStateFlag.Flag4))
+            if (entry.Flag.HasFlag(SyncStateFlag.InteractableObject))
             {
-                pWriter.WriteUnicodeString(entry.Flag4Unknown ?? "");
+                pWriter.WriteUnicodeString(entry.InteractableObjectCoord ?? "");
             }
             if (entry.Flag.HasFlag(SyncStateFlag.Flag5))
             {

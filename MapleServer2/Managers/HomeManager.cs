@@ -25,12 +25,27 @@ namespace MapleServer2.Managers
 
         public void RemoveHome(Home home) => HomeList.Remove(home.Id, out _);
 
-        public Home GetHome(long id)
+        public Home GetHomeById(long id)
         {
             HomeList.TryGetValue(id, out Home home);
             if (home == null)
             {
                 home = DatabaseManager.Homes.FindById(id);
+                if (home != null)
+                {
+                    home.InstanceId = IncrementCounter();
+                    AddHome(home);
+                }
+            }
+            return home;
+        }
+
+        public Home GetHomeByAccountId(long accountId)
+        {
+            Home home = HomeList.Values.FirstOrDefault(x => x.AccountId == accountId);
+            if (home == null)
+            {
+                home = DatabaseManager.Homes.FindByAccountId(accountId);
                 if (home != null)
                 {
                     home.InstanceId = IncrementCounter();

@@ -1,8 +1,11 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -22,14 +25,6 @@ namespace MapleServer2.PacketHandlers.Game
             VisitHouse = 0x02,
             ReturnMap = 0x03,
             EnterDecorPlaner = 0x04
-        }
-
-        private enum PortalTypes
-        {
-            Field = 0,
-            DungeonReturnToLobby = 1,
-            DungeonEnter = 9,
-            LeaveDungeon = 13
         }
 
         public override void Handle(GameSession session, PacketReader packet)
@@ -68,14 +63,15 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int portalId = packet.ReadInt();
-            MapPortal srcPortal = MapEntityStorage.GetPortals(srcMapId)
-                .FirstOrDefault(portal => portal.Id == portalId);
-            if (srcPortal == default)
+            IFieldObject<Portal> fieldPortal = session.FieldManager.State.Portals.Values.FirstOrDefault(x => x.Value.Id == portalId);
+            if (fieldPortal == default)
             {
                 Logger.Warn($"Unable to find portal:{portalId} in map:{srcMapId}");
                 return;
             }
-            switch ((PortalTypes) srcPortal.PortalType)
+
+            Portal srcPortal = fieldPortal.Value;
+            switch (srcPortal.PortalType)
             {
                 case PortalTypes.Field:
                     break;
@@ -90,30 +86,25 @@ namespace MapleServer2.PacketHandlers.Game
                 case PortalTypes.LeaveDungeon:
                     HandleLeaveInstance(session);
                     return;
+                case PortalTypes.Home:
+                    HandleHomePortal(session, fieldPortal);
+                    return;
                 default:
                     Logger.Warn($"unknown portal type id: {srcPortal.PortalType}");
                     break;
             }
 
-            if (!MapEntityStorage.HasSafePortal(srcMapId) || srcPortal.Target == 0) // map is instance only
+            if (!MapEntityStorage.HasSafePortal(srcMapId) || srcPortal.TargetMapId == 0) // map is instance only
             {
                 HandleLeaveInstance(session);
                 return;
             }
 
-            MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
-                .FirstOrDefault(portal => portal.Target == srcMapId); //target map portal, that has a portal to the source map
-            if (dstPortal == default)
-            {
-                session.Player.ReturnCoord = session.FieldPlayer.Coord;
-                session.Player.ReturnMapId = session.Player.MapId;
-            }
-
-            dstPortal = MapEntityStorage.GetPortals(srcPortal.Target)
+            MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.TargetMapId)
             .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId); // target map's portal id == source portal's targetPortalId
             if (dstPortal == default)
             {
-                session.Player.Warp(srcPortal.Target);
+                session.Player.Warp(srcPortal.TargetMapId);
                 return;
             }
 
@@ -139,7 +130,53 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            session.Player.Warp(srcPortal.Target, coord, dstPortal.Rotation.ToFloat());
+            session.Player.Warp(srcPortal.TargetMapId, coord, dstPortal.Rotation.ToFloat());
+        }
+
+        private static void HandleHomePortal(GameSession session, IFieldObject<Portal> fieldPortal)
+        {
+            IFieldObject<Cube> srcCube = session.FieldManager.State.Cubes.Values
+                .FirstOrDefault(x => x.Value.PortalSettings is not null
+                && x.Value.PortalSettings.PortalObjectId == fieldPortal.ObjectId);
+            if (srcCube is null)
+            {
+                return;
+            }
+
+            string destinationTarget = srcCube.Value.PortalSettings.DestinationTarget;
+            if (string.IsNullOrEmpty(destinationTarget))
+            {
+                return;
+            }
+
+            switch (srcCube.Value.PortalSettings.Destination)
+            {
+                case UGCPortalDestination.PortalInHome:
+                    IFieldObject<Cube> destinationCube = session.FieldManager.State.Cubes.Values
+                        .FirstOrDefault(x => x.Value.PortalSettings is not null
+                        && x.Value.PortalSettings.PortalName == destinationTarget);
+                    if (destinationCube is null)
+                    {
+                        return;
+                    }
+                    session.Player.Coord = destinationCube.Coord;
+                    CoordF coordF = destinationCube.Coord;
+                    coordF.Z += 25; // Without this the player falls through the ground.
+                    session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, coordF, session.Player.Rotation));
+                    break;
+                case UGCPortalDestination.SelectedMap:
+                    session.Player.Warp(int.Parse(destinationTarget));
+                    break;
+                case UGCPortalDestination.FriendHome:
+                    long friendAccountId = long.Parse(destinationTarget);
+                    Home home = GameServer.HomeManager.GetHomeById(friendAccountId);
+                    if (home is null)
+                    {
+                        return;
+                    }
+                    session.Player.Warp((int) Map.PrivateResidence, instanceId: home.InstanceId);
+                    break;
+            }
         }
 
         private static void HandleLeaveInstance(GameSession session)
@@ -156,10 +193,18 @@ namespace MapleServer2.PacketHandlers.Game
             string password = packet.ReadUnicodeString();
 
             Player target = GameServer.Storage.GetPlayerByAccountId(accountId);
+            if (target is null)
+            {
+                target = DatabaseManager.Characters.FindPartialPlayerById(accountId);
+                if (target is null)
+                {
+                    return;
+                }
+            }
             Player player = session.Player;
 
-            Home home = target.Account.Home;
-            if (target == null || home == null)
+            Home home = GameServer.HomeManager.GetHomeByAccountId(accountId);
+            if (home == null)
             {
                 session.SendNotice("This player does not have a home!");
                 return;
@@ -186,14 +231,8 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
-            if (player.MapId != (int) Map.PrivateResidence)
-            {
-                player.ReturnMapId = player.MapId;
-                player.ReturnCoord = player.SafeBlock;
-            }
-
             player.VisitingHomeId = home.Id;
-            session.Send(ResponseCubePacket.LoadHome(target.Session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, home));
 
             player.Warp(home.MapId, player.Coord, player.Rotation, instanceId: home.InstanceId);
         }
@@ -227,7 +266,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             player.IsInDecorPlanner = true;
             player.Guide = null;
-            Home home = GameServer.HomeManager.GetHome(player.VisitingHomeId);
+            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
             home.DecorPlannerHeight = home.Height;
             home.DecorPlannerSize = home.Size;
             home.DecorPlannerInventory = new Dictionary<long, Cube>();

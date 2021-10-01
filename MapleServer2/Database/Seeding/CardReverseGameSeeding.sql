@@ -1,15 +1,15 @@
-DROP TABLE IF EXISTS `cardreversegame`;
+DROP TABLE IF EXISTS `card_reverse_game`;
 
-CREATE TABLE `cardreversegame` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `ItemId` int NOT NULL,
-  `ItemRarity` tinyint unsigned NOT NULL,
-  `ItemAmount` int NOT NULL,
-  PRIMARY KEY (`Id`)
+CREATE TABLE `card_reverse_game` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `item_id` int NOT NULL,
+  `item_rarity` tinyint unsigned NOT NULL,
+  `item_amount` int NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 INSERT INTO
-  `cardreversegame` (`ItemId`, `ItemRarity`, `ItemAmount`)
+  `card_reverse_game` (`item_id`, `item_rarity`, `item_amount`)
 VALUES
   (30000946, 1, 1),
   (20001690, 1, 3),

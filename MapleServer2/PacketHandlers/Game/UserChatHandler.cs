@@ -2,10 +2,10 @@
 using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
-using MapleServer2.Managers;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
             {
-                string[] args = message[1..].ToLower().Split(" ");
+                string[] args = message[1..].Split(" ");
                 if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
                 {
                     session.SendNotice($"No command were found with alias: {args[0]}");

@@ -63,30 +63,22 @@ namespace MapleServer2.Managers
         {
             if (trigger == null)
             {
-                Logger.Error("No CommandTrigger were pass.");
+                Logger.Warn("No CommandTrigger were pass.");
                 return false;
             }
-            // Assuming the first argument is the command:
-            CommandBase command = GetCommand(trigger.Args[0]);
 
-            if (command == null)
+            if (!CommandsByAlias.TryGetValue(trigger.Args[0], out CommandBase command))
             {
-                Logger.Warn("No Command were found with the current alias.");
                 return false;
             }
+
             if (!trigger.DefinedParametersCommand(command))
             {
-                Logger.Warn("No Parameters to defined in this command.");
+                Logger.Info("No Parameters to defined in this command.");
                 return false;
             }
             command.Execute(trigger);
             return true;
-        }
-
-        public static CommandBase GetCommand(string alias)
-        {
-            CommandsByAlias.TryGetValue(alias, out CommandBase command);
-            return command;
         }
     }
 }

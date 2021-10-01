@@ -1,4 +1,4 @@
-﻿using MapleServer2.Constants;
+﻿using Maple2Storage.Types;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 

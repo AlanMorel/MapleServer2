@@ -9,10 +9,18 @@ namespace MapleServer2.Packets
     // perhaps setting some initial state?
     public static class TimeSyncPacket
     {
+        private enum TimeSyncPacketMode : byte
+        {
+            SetSessionServerTick = 0x0,
+            SetInitial1 = 0x1,
+            Request = 0x2,
+            SetInitial2 = 0x3,
+        }
+
         public static Packet SetSessionServerTick(int key)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
-            pWriter.WriteByte(0x00); // Response
+            pWriter.WriteEnum(TimeSyncPacketMode.SetSessionServerTick);
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteByte();
@@ -22,11 +30,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        // Request client to make a request
-        public static Packet Request()
+        public static Packet SetInitial1()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
-            pWriter.WriteByte(0x02); // 1 and 2
+            pWriter.WriteEnum(TimeSyncPacketMode.SetInitial1);
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteByte();
@@ -35,10 +42,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetInitial1()
+        public static Packet Request()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
-            pWriter.WriteByte(0x01); // 1 and 2
+            pWriter.WriteEnum(TimeSyncPacketMode.Request);
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteByte();
@@ -50,7 +57,7 @@ namespace MapleServer2.Packets
         public static Packet SetInitial2()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
-            pWriter.WriteByte(0x03);
+            pWriter.WriteEnum(TimeSyncPacketMode.SetInitial2);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             return pWriter;

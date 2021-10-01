@@ -1,10 +1,12 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -105,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (skillCast != null)
             {
-                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation, session.FieldPlayer.ObjectId));
+                session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
                 session.Send(StatPacket.SetStats(session.FieldPlayer));
             }
         }
@@ -236,9 +238,23 @@ namespace MapleServer2.PacketHandlers.Game
 
             // TODO: Verify rest of skills to proc correctly.
             // Send status correctly when Region attacks are proc.
-            // TODO: Adding this implementation on another PullRequest
+            SkillCast parentSkill = SkillUsePacket.SkillCastMap[skillSN];
 
-            //RegionSkillHandler.Handle(session, session.FieldPlayer.ObjectId, session.FieldPlayer.Coord, session.FieldPlayer.Value.SkillCast);
+            if (parentSkill.GetConditionSkill() == null)
+            {
+                return;
+            }
+
+            foreach (SkillCondition conditionSkill in parentSkill.GetConditionSkill())
+            {
+                if (!conditionSkill.Splash)
+                {
+                    continue;
+                }
+
+                SkillCast skillCast = new SkillCast(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick, parentSkill);
+                RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.FieldPlayer.Coord, skillCast);
+            }
         }
 
         private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
@@ -278,8 +294,16 @@ namespace MapleServer2.PacketHandlers.Game
             // Gain Mob EXP
             session.Player.Levels.GainExp(mob.Value.Experience);
             // Send achieves (2)
+
+            string mapId = session.Player.MapId.ToString();
+            // Prepend zero if map id is equal to 7 digits
+            if (mapId.Length == 7)
+            {
+                mapId = $"0{mapId}";
+            }
+
             // Quest Check
-            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc");
+            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
         }
     }
 }

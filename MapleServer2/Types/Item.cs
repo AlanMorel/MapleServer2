@@ -12,7 +12,7 @@ namespace MapleServer2.Types
         public int Level { get; set; }
         public InventoryTab InventoryTab { get; private set; }
         public ItemSlot ItemSlot { get; set; }
-        public GemSlot GemSlot { get; private set; }
+        public GemSlot GemSlot { get; set; }
         public int Rarity { get; set; }
         public int StackLimit { get; private set; }
         public bool EnableBreak { get; private set; }
@@ -25,9 +25,7 @@ namespace MapleServer2.Types
         public string FileName { get; set; }
         public int SkillId { get; set; }
         public List<Job> RecommendJobs { get; set; }
-        public List<ItemContent> Content { get; private set; }
         public ItemFunction Function { get; set; }
-        public AdBalloonData AdBalloon { get; set; }
         public string Tag { get; set; }
         public int ShopID { get; set; }
         public ItemHousingCategory HousingCategory;
@@ -76,13 +74,17 @@ namespace MapleServer2.Types
 
         public Item() { }
 
-        public Item(int id)
+        public Item(int id, bool saveToDatabase = true)
         {
             Id = id;
             SetMetadataValues();
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             Level = ItemMetadataStorage.GetLevel(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
+            if (GemSlot == GemSlot.TRANS)
+            {
+                TransparencyBadgeBools = new byte[10];
+            }
             Rarity = ItemMetadataStorage.GetRarity(id);
             PlayCount = ItemMetadataStorage.GetPlayCount(id);
             Color = ItemMetadataStorage.GetEquipColor(id);
@@ -92,10 +94,13 @@ namespace MapleServer2.Types
             Amount = 1;
             Score = new MusicScore();
             Stats = new ItemStats(id, Rarity, ItemSlot, Level);
-            Uid = DatabaseManager.Items.Insert(this);
+            if (saveToDatabase)
+            {
+                Uid = DatabaseManager.Items.Insert(this);
+            }
         }
 
-        public Item(int id, int amount) : this(id)
+        public Item(int id, int amount, bool saveToDatabase = true) : this(id, saveToDatabase)
         {
             Amount = amount;
         }
@@ -118,9 +123,7 @@ namespace MapleServer2.Types
             IsCustomScore = other.IsCustomScore;
             PlayCount = other.PlayCount;
             FileName = other.FileName;
-            Content = other.Content;
             Function = other.Function;
-            AdBalloon = other.AdBalloon;
             Uid = other.Uid;
             Slot = other.Slot;
             Amount = other.Amount;
@@ -193,10 +196,6 @@ namespace MapleServer2.Types
         {
             InventoryTab = ItemMetadataStorage.GetTab(Id);
             GemSlot = ItemMetadataStorage.GetGem(Id);
-            if (GemSlot == GemSlot.TRANS)
-            {
-                TransparencyBadgeBools = new byte[10];
-            }
             StackLimit = ItemMetadataStorage.GetStackLimit(Id);
             EnableBreak = ItemMetadataStorage.GetEnableBreak(Id);
             IsTwoHand = ItemMetadataStorage.GetIsTwoHand(Id);
@@ -206,14 +205,13 @@ namespace MapleServer2.Types
             FileName = ItemMetadataStorage.GetFileName(Id);
             SkillId = ItemMetadataStorage.GetSkillID(Id);
             RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
-            Content = ItemMetadataStorage.GetContent(Id);
             Function = ItemMetadataStorage.GetFunction(Id);
-            AdBalloon = ItemMetadataStorage.GetBalloonData(Id);
             Tag = ItemMetadataStorage.GetTag(Id);
             ShopID = ItemMetadataStorage.GetShopID(Id);
             RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
             TransferType = ItemMetadataStorage.GetTransferType(Id);
             RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
+            HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         }
     }
 }

@@ -5,32 +5,32 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseWallet : DatabaseTable
     {
-        public DatabaseWallet() : base("Wallets") { }
+        public DatabaseWallet() : base("wallets") { }
 
         public long Insert(Wallet wallet)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                Meso = wallet.Meso.Amount,
-                ValorToken = wallet.ValorToken.Amount,
-                Treva = wallet.Treva.Amount,
-                Rue = wallet.Rue.Amount,
-                HaviFruit = wallet.HaviFruit.Amount,
+                meso = wallet.Meso.Amount,
+                valor_token = wallet.ValorToken.Amount,
+                treva = wallet.Treva.Amount,
+                rue = wallet.Rue.Amount,
+                havi_fruit = wallet.HaviFruit.Amount,
             });
         }
 
         public void Update(Wallet wallet)
         {
-            QueryFactory.Query(TableName).Where("Id", wallet.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", wallet.Id).Update(new
             {
-                Meso = wallet.Meso.Amount,
-                ValorToken = wallet.ValorToken.Amount,
-                Treva = wallet.Treva.Amount,
-                Rue = wallet.Rue.Amount,
-                HaviFruit = wallet.HaviFruit.Amount,
+                meso = wallet.Meso.Amount,
+                valor_token = wallet.ValorToken.Amount,
+                treva = wallet.Treva.Amount,
+                rue = wallet.Rue.Amount,
+                havi_fruit = wallet.HaviFruit.Amount,
             });
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 }

@@ -3,7 +3,6 @@ using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;
-using Maple2.File.Flat.standardmodellibrary;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
@@ -16,32 +15,41 @@ namespace GameDataParser.Parsers
     public class MapEntityParser : Exporter<List<MapEntityMetadata>>
     {
         private List<MapEntityMetadata> Entities;
-        private Dictionary<int, int> InteractRecipeMap;
         private Dictionary<string, Dictionary<int, SpawnMetadata>> SpawnTagMap;
         private Dictionary<string, string> Maps;
+        private Dictionary<int, InteractObjectType> InteractTypes;
 
         public MapEntityParser(MetadataResources resources) : base(resources, "map-entity") { }
 
         protected override List<MapEntityMetadata> Parse()
         {
-            Entities = new List<MapEntityMetadata>();
-
-            // fetch interactID and recipeID relation from xml (can be expanded to parse other xml info)
-            InteractRecipeMap = new Dictionary<int, int>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files
-                .Where(entry => Regex.Match(entry.Name, "table/interactobject_mastery").Success))
+            // Get InteractObject Types
+            InteractTypes = new Dictionary<int, InteractObjectType>();
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList interactNodes = document.SelectNodes("/ms2/interact");
+                if (!entry.Name.StartsWith("table/interactobject"))
+                {
+                    continue;
+                }
 
+                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+                XmlNodeList interactNodes = document.GetElementsByTagName("interact");
                 foreach (XmlNode node in interactNodes)
                 {
-                    int interactID = int.Parse(node.Attributes["id"].Value);
-                    XmlNode gatheringNode = node.SelectSingleNode("gathering");
-                    int recipeID = int.Parse(gatheringNode.Attributes["receipeID"].Value);
-                    InteractRecipeMap[interactID] = recipeID;
+                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                    if (locale != "NA" && locale != "")
+                    {
+                        continue;
+                    }
+
+                    int interactId = int.Parse(node.Attributes["id"].Value);
+                    _ = Enum.TryParse(node.Attributes["type"].Value, out InteractObjectType objectType);
+
+                    InteractTypes[interactId] = objectType;
                 }
             }
+
+            Entities = new List<MapEntityMetadata>();
 
             // Get mob spawn ID and mob spawn information from xml (can be expanded to parse other xml info)
             SpawnTagMap = new Dictionary<string, Dictionary<int, SpawnMetadata>>();
@@ -88,8 +96,6 @@ namespace GameDataParser.Parsers
             XBlockParser parser = new XBlockParser(Resources.ExportedReader, new FlatTypeIndex(Resources.ExportedReader));
             parser.Parse(BuildMetadata);
 
-            Console.Out.WriteLine($"Parsed {Entities.Count} entities");
-
             // Since parsing is done in parallel, sort at the end for deterministic order.
             Entities.Sort((metadata1, metadata2) => metadata1.MapId.CompareTo(metadata2.MapId));
             return Entities;
@@ -106,7 +112,7 @@ namespace GameDataParser.Parsers
             if (!isParsableField.Success)
             {
                 // TODO: Handle these later, if we need them. They're xblock files with some other names like
-                //  character_test.xblock, login.xblock, 
+                //  character_test.xblock, login.xblock,
                 return;
             }
 
@@ -175,49 +181,30 @@ namespace GameDataParser.Parsers
 
                         metadata.HealingSpot.Add(CoordS.FromVector3(healingRegion.Position));
                         break;
-                    case IMS2InteractObject interact: // TODO: this one is kinda fucked
-                        if (interact.interactID == 0)
+                    case IMS2InteractObject interact:
+                        InteractObjectType type = GetInteractObjectType(interact.interactID);
+                        if (type == InteractObjectType.None)
                         {
                             continue;
                         }
-                        if (interact.ModelName.Contains("funct_extract_"))
+                        switch (interact)
                         {
-                            metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                InteractObjectType.Extractor, interact.interactID));
-                            continue;
+                            case IMS2SimpleUiObject uiObject:
+                                metadata.InteractObjects.Add(new MapInteractObject(uiObject.EntityId, uiObject.interactID, uiObject.Enabled, type));
+                                break;
+                            case IMS2InteractMesh interactMesh:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactMesh.EntityId, interactMesh.interactID, interactMesh.IsVisible, type));
+                                break;
+                            case IMS2Telescope telescope:
+                                metadata.InteractObjects.Add(new MapInteractObject(telescope.EntityId, telescope.interactID, telescope.Enabled, type));
+                                break;
+                            case IMS2InteractActor interactActor:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactActor.EntityId, interactActor.interactID, interactActor.IsVisible, type));
+                                break;
+                            case IMS2InteractDisplay interactDisplay:
+                                metadata.InteractObjects.Add(new MapInteractObject(interactDisplay.EntityId, interactDisplay.interactID, interactDisplay.IsVisible, type));
+                                break;
                         }
-
-                        if (entity is IMS2Telescope)
-                        {
-                            metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                InteractObjectType.Binoculars, interact.interactID));
-                            continue;
-                        }
-
-                        if (interact.ModelName.EndsWith("hub") || interact.ModelName.EndsWith("vein"))
-                        {
-                            if (InteractRecipeMap.TryGetValue(interact.interactID, out int recipeId))
-                            {
-                                metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                                    InteractObjectType.Gathering, recipeId));
-                            }
-                            continue;
-                        }
-
-                        if (entity is IMS2InteractDisplay)
-                        {
-                            // TODO: Implement Interactive Displays like 02000183, Dark Wind Wanted Board (7bb334fe41f94182a9569ab884004c32)
-                            // "mixinMS2InteractDisplay" ("ID_19100003_")
-                        }
-
-                        if (entity is IMS2InteractMesh)
-                        {
-                            // TODO: InteractMesh IS InteractObject, maybe shouldn't separate them...
-                            metadata.InteractMeshes.Add(new MapInteractMesh(entity.EntityId, entity.EntityName));
-                        }
-
-                        metadata.InteractObjects.Add(new MapInteractObject(interact.EntityId, interact.EntityName,
-                            InteractObjectType.Unknown, interact.interactID));
                         break;
                     case ISpawnPoint spawn:
                         switch (spawn)
@@ -293,13 +280,18 @@ namespace GameDataParser.Parsers
                         break;
                     case IPortal portal:
                         metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
-                            CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
+                            CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (PortalTypes) portal.PortalType));
                         break;
-
-                    case IMS2Breakable:
-                        // case IMS2BreakableActor
-                        // TODO: Do we need to parse these as some special NPC object?
-                        // "mixinMS2Breakable"  But not "mixinMS2BreakableActor", as in ke_fi_prop_buoy_A01_ or el_move_woodbox_B04_
+                    case IMS2Breakable breakable:
+                        switch (breakable)
+                        {
+                            case IMS2BreakableActor actor:
+                                metadata.BreakableActors.Add(new MapBreakableActorObject(actor.EntityId, actor.Enabled, actor.hideTimer, actor.resetTimer));
+                                break;
+                            case IMS2BreakableNIF nif:
+                                metadata.BreakableNifs.Add(new MapBreakableNifObject(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID, nif.hideTimer, nif.resetTimer));
+                                break;
+                        }
                         break;
                     case IMS2TriggerObject triggerObject:
                         switch (triggerObject)
@@ -324,7 +316,7 @@ namespace GameDataParser.Parsers
                                 break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
-                                    triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
+                                    triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (PortalTypes) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                                 break;
                             case IMS2TriggerActor triggerActor:
                                 metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
@@ -335,42 +327,25 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerSound triggerSound:
                                 metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
+                            case IMS2TriggerSkill triggerSkill:
+                                metadata.TriggerSkills.Add(new MapTriggerSkill(triggerSkill.TriggerObjectID, triggerSkill.skillID,
+                                    (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
+                                break;
                         }
                         break;
-                    case IPlaceable placeable: // TODO: placeable might be too generic
-                        // These are objects which you can place in the world
-                        string nameCoord = placeable.EntityName.ToLower();
-                        Match coordMatch = Regex.Match(nameCoord, @"-?\d+, -?\d+, -?\d+");
-                        if (!coordMatch.Success)
+                    case IMS2Liftable liftable:
+                        metadata.LiftableObjects.Add(new MapLiftableObject(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState));
+                        break;
+                    case IMS2CubeProp prop:
+                        if (prop.IsObjectWeapon)
                         {
-                            continue;
+                            List<int> weaponIds = new List<int>();
+                            weaponIds.AddRange(Array.ConvertAll(prop.ObjectWeaponItemCode.Split(","), int.Parse));
+                            metadata.WeaponObjects.Add(new MapWeaponObject(CoordB.FromVector3(prop.Position), weaponIds));
                         }
-
-                        // Only MS2MapProperties has ObjectWeaponItemCode
-                        if (entity is not IMS2MapProperties mapProperties)
-                        {
-                            continue;
-                        }
-
-                        try
-                        //TODO: The parser will output errors here, which are non-critical, yet need resolving later.
-                        {
-                            CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
-                            metadata.Objects.Add(new MapObject(coord, int.Parse(mapProperties.ObjectWeaponItemCode)));
-                        }
-                        catch (FormatException)
-                        {
-                            // ignored
-                            Console.WriteLine($"Format error parsing {mapProperties.ObjectWeaponItemCode} as int");
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
-                        catch (OverflowException ex)
-                        {
-                            Console.WriteLine($"Error parsing {mapProperties.ObjectWeaponItemCode} as int: {ex.Message}");
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
+                        break;
+                    case IMS2Vibrate vibrate:
+                        metadata.VibrateObjects.Add(new MapVibrateObject(vibrate.EntityId));
                         break;
                 }
 
@@ -383,15 +358,15 @@ namespace GameDataParser.Parsers
                      *  "mixinMS2SalePost" - is for sale signs. Does a packet need to respond to this item?
                      */
                 /*
-                
+
                 // Unhandled Items:
-                // "mixinEventSpawnPointNPC", 
+                // "mixinEventSpawnPointNPC",
                 // "mixinMS2Actor" as in "fa_fi_funct_irondoor_A01_"
                 // MS2RegionSkill as in "SkillObj_co_Crepper_C03_" (Only on 8xxxx and 9xxxxx maps)
                 // "mixinMS2FunctionCubeKFM" as in "ry_functobj_lamp_B01_", "ke_functobj_bath_B01_"
                 // "mixinMS2FunctionCubeNIF"
-                // "MS2MapProperties"->"MS2PhysXProp" that's not a weapon. Standard 
-                
+                // "MS2MapProperties"->"MS2PhysXProp" that's not a weapon. Standard
+
                 /*
                  * if (Regex.Match(modelName, @"^\d{8}_").Success && Regex.Match(name, @"\d{1,3}").Success)
                  * {
@@ -415,6 +390,15 @@ namespace GameDataParser.Parsers
             }
 
             Entities.Add(metadata);
+        }
+
+        private InteractObjectType GetInteractObjectType(int interactId)
+        {
+            if (InteractTypes.ContainsKey(interactId))
+            {
+                return InteractTypes[interactId];
+            }
+            return InteractObjectType.None;
         }
     }
 }

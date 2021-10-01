@@ -12,6 +12,7 @@ namespace MapleServer2.Packets
             AddTitle = 0x0,
             UpdateTitles = 0x1,
             SetTitles = 0x2,
+            LifeSkills = 0x8,
         }
 
         public static Packet AddTitle(int titleId)
@@ -87,14 +88,16 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send08()
+        public static Packet UpdateLifeSkills(List<GatheringCount> gatherings)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
-            pWriter.WriteByte(0x08);
-            pWriter.WriteInt();
-            // Loop: Int + Int
-            pWriter.WriteInt();
-            // Loop: Int + Int
+            pWriter.WriteEnum(UserEnvPacketMode.LifeSkills);
+            pWriter.WriteInt(gatherings.Count);
+            foreach (GatheringCount gathering in gatherings)
+            {
+                pWriter.WriteInt(gathering.RecipeId);
+                pWriter.WriteInt(gathering.CurrentCount);
+            }
 
             return pWriter;
         }

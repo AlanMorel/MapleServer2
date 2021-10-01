@@ -10,5 +10,6 @@ GameDataParser/Properties
 MapleServer2/Properties
 Maple2Storage/Resources
 Ms2Database/Migrations
+MapleWebServer/Data
 workspace.code-workspace
 .env

@@ -129,20 +129,16 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool RemoveRequiredItemsFromInventory(GameSession session, RecipeMetadata recipe)
         {
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-            List<RecipeItem> ingredients = recipe.GetIngredients();
+            List<RecipeItem> ingredients = recipe.RequiredItems;
 
-            for (int i = 0; i < ingredients.Count; i++)
+            foreach (RecipeItem ingredient in ingredients)
             {
-                RecipeItem ingredient = ingredients.ElementAt(i);
-                Item item = playerInventoryItems.FirstOrDefault(x => x.Id == ingredient.Id);
-                if (item == null)
+                Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
+                if (item == null || item.Amount < ingredient.Amount)
                 {
-                    continue;
+                    return false;
                 }
 
-                // check if whole stack will be used, and remove the item
-                // otherwise we want to just want to subtract the amount
                 InventoryController.Consume(session, item.Uid, ingredient.Amount);
             }
 
@@ -152,13 +148,13 @@ namespace MapleServer2.PacketHandlers.Game
         private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
         {
             // award items
-            List<RecipeItem> result = recipe.GetResult();
-            for (int i = 0; i < result.Count; i++)
+            List<RecipeItem> resultItems = recipe.RewardItems;
+            foreach (RecipeItem resultItem in resultItems)
             {
-                Item rewardItem = new(result.ElementAt(i).Id)
+                Item rewardItem = new(resultItem.ItemId)
                 {
-                    Rarity = result.ElementAt(i).Rarity,
-                    Amount = result.ElementAt(i).Amount
+                    Rarity = resultItem.Rarity,
+                    Amount = resultItem.Amount
                 };
                 InventoryController.Add(session, rewardItem, true);
                 session.Send(MasteryPacket.GetCraftedItem((MasteryType) (recipe.MasteryType), rewardItem));
@@ -187,20 +183,18 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)
         {
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-            List<RecipeItem> ingredients = recipe.GetIngredients();
+            List<RecipeItem> ingredients = recipe.RequiredItems;
 
-            for (int i = 0; i < ingredients.Count; i++)
+            foreach (RecipeItem ingredient in ingredients)
             {
-                RecipeItem ingredient = ingredients.ElementAt(i);
-                Item item = playerInventoryItems.FirstOrDefault(x => x.Id == ingredient.Id);
-                if (item != null)
+                Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == ingredient.ItemId && x.Rarity == ingredient.Rarity);
+                if (item == null || item.Amount < ingredient.Amount)
                 {
-                    return item.Amount >= ingredient.Amount;
+                    return false;
                 }
             }
 
-            return false;
+            return true;
         }
     }
 }

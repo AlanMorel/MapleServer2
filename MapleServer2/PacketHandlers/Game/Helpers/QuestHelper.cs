@@ -12,27 +12,36 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
     {
         public static void UpdateExplorationQuest(GameSession session, string code, string type)
         {
-            List<QuestStatus> questList = session.Player.QuestList;
-            foreach (QuestStatus quest in questList.Where(x => x.Basic.QuestType == QuestType.Exploration && x.Condition != null))
+            List<QuestStatus> quests = session.Player.QuestList.Where(quest => quest.Basic.QuestType == QuestType.Exploration
+                && quest.Condition is not null
+                && !quest.Completed
+                && quest.Started
+                && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)))
+                .ToList();
+            foreach (QuestStatus quest in quests)
             {
-                Condition condition = quest.Condition.Where(x => x.Type == type)
-                    .FirstOrDefault(x => x.Codes.Length != 0 && x.Codes.Contains(code));
+                Condition condition = quest.Condition.FirstOrDefault(condition => condition.Type == type
+                                                                                  && condition.Codes.Contains(code)
+                                                                                  && !condition.Completed);
                 if (condition == null)
                 {
                     continue;
                 }
 
-                if (condition.Goal != condition.Current)
+                condition.Current++;
+
+                if (condition.Current >= condition.Goal)
                 {
-                    condition.Current++;
+                    condition.Completed = true;
                 }
 
-                session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition.IndexOf(condition) + 1, condition.Current));
+                session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
 
-                if (condition.Goal != condition.Current) // Quest completed
+                if (!condition.Completed)
                 {
                     return;
                 }
+
                 quest.Completed = true;
                 quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 DatabaseManager.Quests.Update(quest);
@@ -44,23 +53,41 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             }
         }
 
-        public static void UpdateQuest(GameSession session, string code, string type)
+        public static void UpdateQuest(GameSession session, string code, string type, string target = "")
         {
-            List<QuestStatus> questList = session.Player.QuestList;
-            foreach (QuestStatus quest in questList.Where(x => x.Condition != null))
+            List<QuestStatus> questList = session.Player.QuestList.Where(quest =>
+            quest.Condition is not null
+            && quest.Started
+            && !quest.Completed
+            && quest.Condition.Any(condition => condition.Codes is not null
+                                                && condition.Target is not null
+                                                && condition.Type == type
+                                                && condition.Codes.Contains(code)
+                                                && condition.Target.Contains(target))
+            ).ToList();
+            foreach (QuestStatus quest in questList)
             {
-                Condition condition = quest.Condition.Where(x => x.Type == type).FirstOrDefault(x => x.Codes != null && x.Codes.Length != 0 && x.Codes.Contains(code));
+                Condition condition = quest.Condition.FirstOrDefault(condition => condition.Codes.Contains(code)
+                                                                                  && condition.Target.Contains(target)
+                                                                                  && !condition.Completed);
                 if (condition == null)
                 {
                     continue;
                 }
 
-                if (condition.Goal == condition.Current)
+                if (condition.Goal != 0)
                 {
-                    return;
+                    if (condition.Goal == condition.Current)
+                    {
+                        return;
+                    }
                 }
                 condition.Current++;
-                session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition.IndexOf(condition) + 1, condition.Current));
+                if (condition.Current >= condition.Goal)
+                {
+                    condition.Completed = true;
+                }
+                session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
                 DatabaseManager.Quests.Update(quest);
                 return;
             }

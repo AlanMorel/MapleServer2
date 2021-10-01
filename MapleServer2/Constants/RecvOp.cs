@@ -158,6 +158,7 @@
         ITEM_LAPENSHARD = 0x00AF,
         PRESTIGE = 0x00AE,
         RESPONSE_SERVER_ENTER = 0x00B2,
+        WARDROBE = 0x00B6,
         SYSTEM_INFO = 0x00B7,
         CHAT_STICKER = 0x00B9,
         FILE_HASH = 0x00BB,

@@ -7,41 +7,43 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHome : DatabaseTable
     {
-        public DatabaseHome() : base("Homes") { }
+        public DatabaseHome() : base("homes") { }
 
         public long Insert(Home home)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                home.AccountId,
-                home.MapId,
-                home.PlotMapId,
-                home.PlotNumber,
-                home.ApartmentNumber,
+                account_id = home.AccountId,
+                map_id = home.MapId,
+                plot_map_id = home.PlotMapId,
+                plot_number = home.PlotNumber,
+                apartment_number = home.ApartmentNumber,
                 home.Expiration,
                 home.Name,
                 home.Description,
                 home.Size,
                 home.Height,
-                home.ArchitectScoreCurrent,
-                home.ArchitectScoreTotal,
-                home.DecorationExp,
-                home.DecorationLevel,
-                home.DecorationRewardTimestamp,
+                architect_score_current = home.ArchitectScoreCurrent,
+                architect_score_total = home.ArchitectScoreTotal,
+                decoration_exp = home.DecorationExp,
+                decoration_level = home.DecorationLevel,
+                decoration_reward_timestamp = home.DecorationRewardTimestamp,
                 home.Lighting,
                 home.Background,
                 home.Camera,
                 home.Password,
-                Permissions = JsonConvert.SerializeObject(home.Permissions),
-                InteriorRewardsClaimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
+                permissions = JsonConvert.SerializeObject(home.Permissions),
+                interior_rewards_claimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
             });
         }
 
-        public Home FindById(long id) => ReadHome(QueryFactory.Query(TableName).Where("Id", id).FirstOrDefault());
+        public Home FindById(long id) => ReadHome(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
+
+        public Home FindByAccountId(long accountId) => ReadHome(QueryFactory.Query(TableName).Where("account_id", accountId).FirstOrDefault());
 
         public List<Home> FindAllByMapId(int mapId)
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("MapId", mapId).Get();
+            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("map_id", mapId).Get();
             List<Home> homes = new List<Home>();
             foreach (dynamic data in results)
             {
@@ -52,28 +54,28 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Home home)
         {
-            QueryFactory.Query(TableName).Where("Id", home.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", home.Id).Update(new
             {
-                home.MapId,
-                home.PlotMapId,
-                home.PlotNumber,
-                home.ApartmentNumber,
+                map_id = home.MapId,
+                plot_map_id = home.PlotMapId,
+                plot_number = home.PlotNumber,
+                apartment_number = home.ApartmentNumber,
                 home.Expiration,
                 home.Name,
                 home.Description,
                 home.Size,
                 home.Height,
-                home.ArchitectScoreCurrent,
-                home.ArchitectScoreTotal,
-                home.DecorationExp,
-                home.DecorationLevel,
-                home.DecorationRewardTimestamp,
+                architect_score_current = home.ArchitectScoreCurrent,
+                architect_score_total = home.ArchitectScoreTotal,
+                decoration_exp = home.DecorationExp,
+                decoration_level = home.DecorationLevel,
+                decoration_reward_timestamp = home.DecorationRewardTimestamp,
                 home.Lighting,
                 home.Background,
                 home.Camera,
                 home.Password,
-                Permissions = JsonConvert.SerializeObject(home.Permissions),
-                InteriorRewardsClaimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
+                permissions = JsonConvert.SerializeObject(home.Permissions),
+                interior_rewards_claimed = JsonConvert.SerializeObject(home.InteriorRewardsClaimed),
             });
 
             foreach (Item item in home.WarehouseInventory.Where(item => item.Value != null).Select(x => x.Value))
@@ -87,7 +89,7 @@ namespace MapleServer2.Database.Classes
             }
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
 
         private static Home ReadHome(dynamic data)
         {
@@ -95,33 +97,44 @@ namespace MapleServer2.Database.Classes
             {
                 return null;
             }
-            Dictionary<long, Item> warehouseItems = DatabaseManager.Items.FindAllByHomeId(data.Id);
-            Dictionary<long, Cube> furnishingCubes = DatabaseManager.Cubes.FindAllByHomeId(data.Id);
-            List<HomeLayout> layouts = DatabaseManager.HomeLayouts.FindAllByHomeId(data.Id);
+            Dictionary<long, Item> warehouseItems = DatabaseManager.Items.FindAllByHomeId(data.id);
+            Dictionary<long, Cube> furnishingCubes = DatabaseManager.Cubes.FindAllByHomeId(data.id);
+            List<HomeLayout> layouts = DatabaseManager.HomeLayouts.FindAllByHomeId(data.id);
+
+            foreach (Item item in warehouseItems.Values)
+            {
+                item.SetMetadataValues();
+            }
+
+            foreach (Cube cube in furnishingCubes.Values)
+            {
+                cube.Item.SetMetadataValues();
+            }
+
             return new Home()
             {
-                Id = data.Id,
-                AccountId = data.AccountId,
-                MapId = data.MapId,
-                PlotMapId = data.PlotMapId,
-                PlotNumber = data.PlotNumber,
-                ApartmentNumber = data.ApartmentNumber,
-                Expiration = data.Expiration,
-                Name = data.Name,
-                Description = data.Description,
-                Size = data.Size,
-                Height = data.Height,
-                ArchitectScoreCurrent = data.ArchitectScoreCurrent,
-                ArchitectScoreTotal = data.ArchitectScoreTotal,
-                DecorationExp = data.DecorationExp,
-                DecorationLevel = data.DecorationLevel,
-                DecorationRewardTimestamp = data.DecorationRewardTimestamp,
-                Lighting = data.Lighting,
-                Background = data.Background,
-                Camera = data.Camera,
-                Password = data.Password,
-                Permissions = JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(data.Permissions),
-                InteriorRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.InteriorRewardsClaimed),
+                Id = data.id,
+                AccountId = data.account_id,
+                MapId = data.map_id,
+                PlotMapId = data.plot_map_id,
+                PlotNumber = data.plot_number,
+                ApartmentNumber = data.apartment_number,
+                Expiration = data.expiration,
+                Name = data.name,
+                Description = data.description,
+                Size = data.size,
+                Height = data.height,
+                ArchitectScoreCurrent = data.architect_score_current,
+                ArchitectScoreTotal = data.architect_score_total,
+                DecorationExp = data.decoration_exp,
+                DecorationLevel = data.decoration_level,
+                DecorationRewardTimestamp = data.decoration_reward_timestamp,
+                Lighting = data.lighting,
+                Background = data.background,
+                Camera = data.camera,
+                Password = data.password,
+                Permissions = JsonConvert.DeserializeObject<Dictionary<HomePermission, byte>>(data.permissions),
+                InteriorRewardsClaimed = JsonConvert.DeserializeObject<List<int>>(data.interior_rewards_claimed),
                 FurnishingInventory = furnishingCubes,
                 WarehouseInventory = warehouseItems,
                 Layouts = layouts

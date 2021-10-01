@@ -1,7 +1,6 @@
 ﻿using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Constants;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static
@@ -12,7 +11,6 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapPortal>> portals = new Dictionary<int, List<MapPortal>>();
         private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new Dictionary<int, List<MapPlayerSpawn>>();
         private static readonly Dictionary<int, List<MapMobSpawn>> mobSpawns = new Dictionary<int, List<MapMobSpawn>>();
-        private static readonly Dictionary<int, List<MapObject>> objects = new Dictionary<int, List<MapObject>>();
         private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new Dictionary<int, List<MapInteractObject>>();
         private static readonly Dictionary<int, CoordS[]> boundingBox = new Dictionary<int, CoordS[]>();
         private static readonly Dictionary<int, List<CoordS>> healthSpot = new Dictionary<int, List<CoordS>>();
@@ -28,6 +26,12 @@ namespace MapleServer2.Data.Static
         private static readonly Dictionary<int, List<MapTriggerLadder>> TriggerLadders = new Dictionary<int, List<MapTriggerLadder>>();
         private static readonly Dictionary<int, List<MapTriggerRope>> TriggerRopes = new Dictionary<int, List<MapTriggerRope>>();
         private static readonly Dictionary<int, List<MapTriggerSound>> TriggerSounds = new Dictionary<int, List<MapTriggerSound>>();
+        private static readonly Dictionary<int, List<MapBreakableActorObject>> BreakableActors = new Dictionary<int, List<MapBreakableActorObject>>();
+        private static readonly Dictionary<int, List<MapBreakableNifObject>> BreakableNifs = new Dictionary<int, List<MapBreakableNifObject>>();
+        private static readonly Dictionary<int, List<MapVibrateObject>> VibrateObjects = new Dictionary<int, List<MapVibrateObject>>();
+        private static readonly Dictionary<int, List<MapTriggerSkill>> TriggerSkills = new Dictionary<int, List<MapTriggerSkill>>();
+        private static readonly Dictionary<int, List<MapInteractObject>> InteractObjects = new Dictionary<int, List<MapInteractObject>>();
+        private static readonly Dictionary<int, List<MapWeaponObject>> WeaponObjects = new Dictionary<int, List<MapWeaponObject>>();
 
         public static void Init()
         {
@@ -39,8 +43,6 @@ namespace MapleServer2.Data.Static
                 portals.Add(entity.MapId, entity.Portals);
                 playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
                 mobSpawns.Add(entity.MapId, entity.MobSpawns);
-                interactObject.Add(entity.MapId, entity.InteractObjects);
-                objects.Add(entity.MapId, entity.Objects);
                 boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
                 healthSpot.Add(entity.MapId, entity.HealingSpot);
                 PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
@@ -55,6 +57,12 @@ namespace MapleServer2.Data.Static
                 TriggerLadders.Add(entity.MapId, entity.TriggerLadders);
                 TriggerRopes.Add(entity.MapId, entity.TriggerRopes);
                 TriggerSounds.Add(entity.MapId, entity.TriggerSounds);
+                BreakableActors.Add(entity.MapId, entity.BreakableActors);
+                BreakableNifs.Add(entity.MapId, entity.BreakableNifs);
+                VibrateObjects.Add(entity.MapId, entity.VibrateObjects);
+                TriggerSkills.Add(entity.MapId, entity.TriggerSkills);
+                InteractObjects.Add(entity.MapId, entity.InteractObjects);
+                WeaponObjects.Add(entity.MapId, entity.WeaponObjects);
             }
         }
 
@@ -65,8 +73,6 @@ namespace MapleServer2.Data.Static
         public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId) => playerSpawns.GetValueOrDefault(mapId);
 
         public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId) => mobSpawns.GetValueOrDefault(mapId);
-
-        public static IEnumerable<MapObject> GetObjects(int mapId) => objects.GetValueOrDefault(mapId);
 
         public static IEnumerable<MapInteractObject> GetInteractObject(int mapId) => interactObject.GetValueOrDefault(mapId);
 
@@ -125,5 +131,27 @@ namespace MapleServer2.Data.Static
         public static List<MapTriggerRope> GetTriggerRopes(int mapId) => TriggerRopes.GetValueOrDefault(mapId);
 
         public static List<MapTriggerSound> GetTriggerSounds(int mapId) => TriggerSounds.GetValueOrDefault(mapId);
+
+        public static List<MapBreakableActorObject> GetBreakableActors(int mapId) => BreakableActors.GetValueOrDefault(mapId);
+
+        public static List<MapBreakableNifObject> GetBreakableNifs(int mapId) => BreakableNifs.GetValueOrDefault(mapId);
+
+        public static bool IsVibrateObject(int mapId, string entityId) => VibrateObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.EntityId == entityId) != default;
+
+        public static List<MapTriggerSkill> GetTriggerSkills(int mapId) => TriggerSkills.GetValueOrDefault(mapId);
+        public static List<MapInteractObject> GetInteractObjects(int mapId) => InteractObjects.GetValueOrDefault(mapId);
+
+        public static int GetWeaponObjectItemId(int mapId, CoordB coord)
+        {
+            MapWeaponObject weaponObject = WeaponObjects.GetValueOrDefault(mapId).FirstOrDefault(x => x.Coord == coord);
+            if (weaponObject == null)
+            {
+                return 0;
+            }
+
+            Random random = RandomProvider.Get();
+            int index = random.Next(weaponObject.WeaponItemIds.Count);
+            return weaponObject.WeaponItemIds[index];
+        }
     }
 }

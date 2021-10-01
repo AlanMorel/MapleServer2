@@ -1,14 +1,15 @@
 ﻿using System.Globalization;
 using Autofac;
+using Maple2Storage.Extensions;
+using Maple2Storage.Tools;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
-using MapleServer2.Constants;
 using MapleServer2.Database;
-using MapleServer2.Extensions;
+using MapleServer2.Managers;
 using MapleServer2.Network;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
-using MapleServer2.Managers;
 using MapleServer2.Types;
 using NLog;
 
@@ -19,7 +20,7 @@ namespace MapleServer2
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static void Main()
+        public static async Task Main()
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionEventHandler);
@@ -36,14 +37,28 @@ namespace MapleServer2
                 throw new ArgumentException(".env file not found!");
             }
             DotEnv.Load(dotenv);
+
             InitDatabase();
+
+            DateTimeOffset lastReset = DatabaseManager.ServerInfo.GetLastDailyReset();
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            DateTime lastMidnight = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, 0);
+
+            // Check if lastReset is before lastMidnight
+            if (lastReset < lastMidnight)
+            {
+                DailyReset();
+            }
+
+            // Schedule daily reset and repeat every 24 hours
+            Tools.TaskScheduler.Instance.ScheduleTask(0, 0, 24, () => DailyReset());
 
             // Load Mob AI files
             string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
             MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
 
             // Initialize all metadata.
-            MetadataHelper.InitializeAll();
+            await MetadataHelper.InitializeAll();
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
@@ -95,6 +110,19 @@ namespace MapleServer2
                         break;
                 }
             }
+        }
+
+        private static void DailyReset()
+        {
+            List<Player> players = GameServer.Storage.GetAllPlayers();
+            foreach (Player player in players)
+            {
+                player.GatheringCount = new();
+                DatabaseManager.Characters.Update(player);
+            }
+            DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
+
+            DatabaseManager.ServerInfo.SetLastDailyReset(DateTimeOffset.UtcNow.UtcDateTime);
         }
 
         private static void InitDatabase()
@@ -164,6 +192,7 @@ namespace MapleServer2
 
         private static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs args)
         {
+            SaveAll(sender, args);
             Exception e = (Exception) args.ExceptionObject;
             Logger.Fatal($"Exception Type: {e.GetType()}\nMessage: {e.Message}\nStack Trace: {e.StackTrace}\n");
         }

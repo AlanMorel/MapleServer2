@@ -16,5 +16,18 @@ namespace MapleServer2.Database.Types
         public List<ShopItem> Items { get; set; }
 
         public Shop() { }
+
+        public Shop(int uid, int id, int category, string name, byte shop_type, bool restrict_sales, bool can_restock, long next_restock, bool allow_buyback)
+        {
+            Uid = uid;
+            Id = id;
+            Category = category;
+            Name = name;
+            ShopType = (ShopType) shop_type;
+            RestrictSales = restrict_sales;
+            CanRestock = can_restock;
+            NextRestock = next_restock;
+            AllowBuyback = allow_buyback;
+        }
     }
 }

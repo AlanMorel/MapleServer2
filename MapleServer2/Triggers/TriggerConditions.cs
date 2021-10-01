@@ -109,9 +109,22 @@ namespace MapleServer2.Triggers
             return false;
         }
 
-        public bool ObjectInteracted(int[] arg1, byte arg2)
+        public bool ObjectInteracted(int[] interactIds, byte state)
         {
-            return false;
+            InteractObjectState objectState = (InteractObjectState) state;
+            foreach (int interactId in interactIds)
+            {
+                InteractObject interactObject = Field.State.InteractObjects.Values.FirstOrDefault(x => x.InteractId == interactId);
+                if (interactObject == null)
+                {
+                    continue;
+                }
+                if (interactObject.State != objectState)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public bool PvpZoneEnded(byte arg1)

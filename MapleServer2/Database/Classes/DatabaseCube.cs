@@ -1,33 +1,35 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Types;
+using Newtonsoft.Json;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
 {
     public class DatabaseCube : DatabaseTable
     {
-        public DatabaseCube() : base("Cubes") { }
+        public DatabaseCube() : base("cubes") { }
 
         public long Insert(Cube cube)
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
-                CoordX = cube.CoordF.X,
-                CoordY = cube.CoordF.Y,
-                CoordZ = cube.CoordF.Z,
-                HomeId = cube.HomeId == 0 ? null : (long?) cube.HomeId,
-                ItemUid = cube.Item.Uid,
-                LayoutUid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
-                cube.PlotNumber,
-                Rotation = cube.Rotation.Z
+                coord_x = cube.CoordF.X,
+                coord_y = cube.CoordF.Y,
+                coord_z = cube.CoordF.Z,
+                home_id = cube.HomeId == 0 ? null : (long?) cube.HomeId,
+                item_uid = cube.Item.Uid,
+                layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
+                plot_number = cube.PlotNumber,
+                rotation = cube.Rotation.Z,
+                portal_settings = JsonConvert.SerializeObject(cube.PortalSettings)
             });
         }
 
-        public Cube FindById(long uid) => ReadCube(QueryFactory.Query(TableName).Where("Uid", uid).FirstOrDefault());
+        public Cube FindById(long uid) => ReadCube(QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault());
 
         public Dictionary<long, Cube> FindAllByHomeId(long homeId)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("HomeId", homeId).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("home_id", homeId).Get();
             Dictionary<long, Cube> cubes = new Dictionary<long, Cube>();
             foreach (dynamic data in result)
             {
@@ -39,7 +41,7 @@ namespace MapleServer2.Database.Classes
 
         public List<Cube> FindAllByLayoutUid(long layoutUid)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("LayoutUid", layoutUid).Get();
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("layout_uid", layoutUid).Get();
             List<Cube> cubes = new List<Cube>();
             foreach (dynamic data in result)
             {
@@ -50,21 +52,32 @@ namespace MapleServer2.Database.Classes
 
         public void Update(Cube cube)
         {
-            QueryFactory.Query(TableName).Where("Uid", cube.Uid).Update(new
+            QueryFactory.Query(TableName).Where("uid", cube.Uid).Update(new
             {
-                CoordX = cube.CoordF.X,
-                CoordY = cube.CoordF.Y,
-                CoordZ = cube.CoordF.Z,
-                HomeId = cube.HomeId == 0 ? null : (long?) cube.HomeId,
-                ItemUid = cube.Item.Uid,
-                LayoutUid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
-                cube.PlotNumber,
-                Rotation = cube.Rotation.Z
+                coord_x = cube.CoordF.X,
+                coord_y = cube.CoordF.Y,
+                coord_z = cube.CoordF.Z,
+                home_id = cube.HomeId == 0 ? null : (long?) cube.HomeId,
+                item_uid = cube.Item.Uid,
+                layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
+                plot_number = cube.PlotNumber,
+                rotation = cube.Rotation.Z,
+                portal_settings = JsonConvert.SerializeObject(cube.PortalSettings)
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static Cube ReadCube(dynamic data) => new Cube(data.Uid, DatabaseManager.Items.FindByUid(data.ItemUid), data.PlotNumber, CoordF.From(data.CoordX, data.CoordY, data.CoordZ), data.Rotation, data.HomeLayoutId ?? 0, data.HomeId ?? 0);
+        private static Cube ReadCube(dynamic data)
+        {
+            return new Cube(data.uid,
+                            DatabaseManager.Items.FindByUid(data.item_uid),
+                            data.plot_number,
+                            CoordF.From(data.coord_x, data.coord_y, data.coord_z),
+                            data.rotation,
+                            data.home_layout_id ?? 0,
+                            data.home_id ?? 0,
+                            JsonConvert.DeserializeObject<CubePortalSettings>(data.portal_settings));
+        }
     }
 }

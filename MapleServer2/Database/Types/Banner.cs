@@ -13,6 +13,20 @@
 
 
         public Banner() { }
+
+        public Banner(int id, string name, string type, string sub_type, string image_url, int language, long begin_time, long end_time)
+        {
+            Id = id;
+            Name = name;
+            _ = Enum.TryParse(type, out BannerType bannerType);
+            Type = bannerType;
+            _ = Enum.TryParse(sub_type, out BannerSubType bannerSubType);
+            SubType = bannerSubType;
+            ImageUrl = image_url;
+            Language = (BannerLanguage) language;
+            BeginTime = begin_time;
+            EndTime = end_time;
+        }
     }
 
     public enum BannerType

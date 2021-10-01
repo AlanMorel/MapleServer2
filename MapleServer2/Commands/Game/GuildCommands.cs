@@ -12,12 +12,16 @@ namespace MapleServer2.Commands.Game
     {
         public GuildExpCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setguildexp"
             };
             Description = "Set the experience of the current player guild.";
-            AddParameter<int>("exp", "Amount of experience.");
+            Parameters = new()
+            {
+                new Parameter<int>("exp", "Amount of experience.")
+            };
+            Usage = "/setguildexp [exp]";
         }
 
         public override void Execute(GameCommandTrigger trigger)
@@ -47,12 +51,16 @@ namespace MapleServer2.Commands.Game
     {
         public GuildFundCommand()
         {
-            Aliases = new[]
+            Aliases = new()
             {
                 "setguildfund"
             };
             Description = "Set the Funds of the current player guild.";
-            AddParameter<int>("amount", "Amount of Funds.");
+            Parameters = new()
+            {
+                new Parameter<int>("amount", "Amount of Funds.")
+            };
+            Usage = "/setguildfund [amount]";
         }
 
         public override void Execute(GameCommandTrigger trigger)

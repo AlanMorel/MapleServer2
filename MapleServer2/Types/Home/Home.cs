@@ -87,6 +87,12 @@ namespace MapleServer2.Types
             }
 
             Id = DatabaseManager.Homes.Insert(this);
+
+            if (templateMetadata == null)
+            {
+                return;
+            }
+
             foreach (CubeTemplate cubeTemplate in templateMetadata.Cubes)
             {
                 Cube cube = new Cube(new Item(cubeTemplate.ItemId), 1, cubeTemplate.CoordF, cubeTemplate.Rotation, 0, Id);

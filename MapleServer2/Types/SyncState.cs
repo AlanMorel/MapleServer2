@@ -32,7 +32,7 @@ namespace MapleServer2.Types
         public string Flag3Unknown2;
 
         // Flag4
-        public string Flag4Unknown;
+        public string InteractableObjectCoord;
 
         // Flag5
         public int Flag5Unknown1;

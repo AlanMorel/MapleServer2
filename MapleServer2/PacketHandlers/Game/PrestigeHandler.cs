@@ -35,7 +35,10 @@ namespace MapleServer2.PacketHandlers.Game
         {
             int rank = packet.ReadInt();
 
-            session.Send(PrestigePacket.Reward(rank));
+            if (session.Player.PrestigeRewardsClaimed.Contains(rank))
+            {
+                return;
+            }
 
             // Get reward data
             PrestigeReward reward = PrestigeMetadataStorage.GetReward(rank);
@@ -54,6 +57,8 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 session.Player.StatPointDistribution.AddTotalStatPoints(reward.Value);
             }
+
+            session.Send(PrestigePacket.Reward(rank));
             session.Player.PrestigeRewardsClaimed.Add(rank);
         }
     }

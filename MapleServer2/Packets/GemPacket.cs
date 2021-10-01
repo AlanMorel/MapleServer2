@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Types;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Servers.Game;
@@ -25,7 +26,7 @@ namespace MapleServer2.Packets
             ActivePremiumClubRequired
         }
 
-        public static Packet EquipItem(GameSession session, Item item)
+        public static Packet EquipItem(GameSession session, Item item, int index)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
@@ -34,19 +35,19 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(item.Rarity);
-            pWriter.WriteByte((byte) (session.Player.Inventory.Badges.Count - 1));
+            pWriter.WriteByte((byte) (index));
             ItemPacketHelper.WriteItem(pWriter, item);
 
             return pWriter;
         }
 
-        public static Packet UnequipItem(GameSession session, byte index)
+        public static Packet UnequipItem(GameSession session, GemSlot gemSlot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
             pWriter.WriteEnum(GemMode.UnequipItem);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
-            pWriter.WriteByte(index);
+            pWriter.WriteEnum(gemSlot);
 
             return pWriter;
         }

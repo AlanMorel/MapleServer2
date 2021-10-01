@@ -1,5 +1,5 @@
-﻿using System.Xml;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
@@ -37,15 +37,28 @@ namespace GameDataParser.Parsers
                     foreach (XmlNode level in levels)
                     {
                         // Getting all skills level
-                        XmlNode motionProperty = level.SelectSingleNode("motion/motionProperty");
-
                         string feature = level.Attributes["feature"]?.Value ?? "";
                         int levelValue = int.Parse(level.Attributes["value"].Value ?? "0");
+                        // We prevent duplicates levels from older balances.
+                        if (skillLevels.Exists(level => level.Level == levelValue))
+                        {
+                            continue;
+                        }
                         int spirit = int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"]?.Value ?? "0");
                         int stamina = int.Parse(level.SelectSingleNode("consume/stat").Attributes["ep"]?.Value ?? "0");
                         float damageRate = float.Parse(level.SelectSingleNode("motion/attack/damageProperty")?.Attributes["rate"].Value ?? "0");
-                        string sequenceName = motionProperty?.Attributes["sequenceName"].Value ?? "";
-                        string motionEffect = motionProperty?.Attributes["motionEffect"].Value ?? "";
+                        string sequenceName = level.SelectSingleNode("motion/motionProperty")?.Attributes["sequenceName"].Value ?? "";
+                        string motionEffect = level.SelectSingleNode("motion/motionProperty")?.Attributes["motionEffect"].Value ?? "";
+
+                        SkillUpgrade skillUpgrade = new SkillUpgrade();
+                        if (level.SelectSingleNode("motion/upgrade")?.Attributes != null)
+                        {
+                            int upgradeLevel = int.Parse(level.SelectSingleNode("motion/upgrade").Attributes["level"].Value ?? "0");
+                            int[] upgradeSkills = Array.ConvertAll(level.SelectSingleNode("motion/upgrade").Attributes["skillIDs"].Value.Split(","), int.Parse);
+                            short[] upgradeSkillsLevel = Array.ConvertAll(level.SelectSingleNode("motion/upgrade").Attributes["skillLevels"].Value.Split(","), short.Parse);
+
+                            skillUpgrade = new SkillUpgrade(upgradeLevel, upgradeSkills, upgradeSkillsLevel);
+                        }
 
                         // Getting all Attack attr in each level.
                         List<SkillAttack> skillAttacks = new List<SkillAttack>();
@@ -71,13 +84,16 @@ namespace GameDataParser.Parsers
                             // We capture that as a list, since each Attack attr has one at least.
                             byte attackPoint = byte.Parse(Regex.Match(attackAttr.Attributes["point"]?.Value, @"\d").Value);
                             short targetCount = short.Parse(attackAttr.Attributes["targetCount"].Value);
-                            SkillAttack skillAttack = new SkillAttack(attackPoint, targetCount);
+                            long magicPathId = long.Parse(attackAttr.Attributes["magicPathID"]?.Value ?? "0");
+                            long cubeMagicPathId = long.Parse(attackAttr.Attributes["cubeMagicPathID"]?.Value ?? "0");
+                            SkillAttack skillAttack = new SkillAttack(attackPoint, targetCount, magicPathId, cubeMagicPathId);
 
                             skillAttacks.Add(skillAttack);
                         }
 
                         SkillMotion skillMotion = new SkillMotion(sequenceName, motionEffect);
-                        skillLevels.Add(new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks, skillConditions));
+                        SkillLevel skillLevel = new SkillLevel(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks, skillConditions, skillUpgrade);
+                        skillLevels.Add(skillLevel);
                     }
                     skillList.Add(new SkillMetadata(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery));
                 }
@@ -88,54 +104,37 @@ namespace GameDataParser.Parsers
                     XmlNodeList jobs = document.SelectNodes("/ms2/job");
                     foreach (XmlNode job in jobs)
                     {
-                        if (job.Attributes["feature"] != null) // Getting attribute that just have "feature"
+                        // Grabs all the skills and them the jobCode.
+                        XmlNodeList skills = job.SelectNodes("skills/skill");
+                        int jobCode = int.Parse(job.Attributes["code"].Value);
+                        foreach (XmlNode skill in skills)
                         {
-                            string feature = job.Attributes["feature"].Value;
-                            if (feature == "JobChange_02") // Getting JobChange_02 skillList for now until better handle Awakening system.
+                            int id = int.Parse(skill.Attributes["main"].Value);
+                            short maxLevel = short.Parse(skill.Attributes["maxLevel"]?.Value ?? "1");
+                            skillList.Find(x => x.SkillId == id).Job = jobCode;
+                            skillList.Find(x => x.SkillId == id).MaxLevel = maxLevel;
+
+                            // If it has subSkill, add as well.
+                            if (skill.Attributes["sub"] == null)
                             {
-                                XmlNode skills = job.SelectSingleNode("skills");
-                                int jobCode = int.Parse(job.Attributes["code"].Value);
-                                for (int i = 0; i < skills.ChildNodes.Count; i++)
+                                continue;
+                            }
+
+                            int[] sub = Array.ConvertAll(skill.Attributes["sub"].Value.Split(","), int.Parse);
+                            skillList.Find(x => x.SkillId == id).SubSkills = sub;
+                            for (int n = 0; n < sub.Length; n++)
+                            {
+                                if (skillList.Select(x => x.SkillId).Contains(sub[n]))
                                 {
-                                    int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
-                                    SkillMetadata skill = skillList.Find(x => x.SkillId == id); // This find the skill in the SkillList
-                                    skill.Job = jobCode;
-                                    if (skills.ChildNodes[i].Attributes["sub"] != null)
-                                    {
-                                        if (skillList.Select(x => x.SkillId).Contains(id))
-                                        {
-                                            int[] sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse); // Trim?
-                                            skill.SubSkills = sub;
-                                            for (int n = 0; n < sub.Length; n++)
-                                            {
-                                                if (skillList.Select(x => x.SkillId).Contains(sub[n]))
-                                                {
-                                                    skillList.Find(x => x.SkillId == sub[n]).Job = jobCode;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                XmlNode learn = job.SelectSingleNode("learn");
-                                for (int i = 0; i < learn.ChildNodes.Count; i++)
-                                {
-                                    int id = int.Parse(learn.ChildNodes[i].Attributes["id"].Value);
-                                    skillList.Find(x => x.SkillId == id).Learned = 1;
+                                    skillList.Find(x => x.SkillId == sub[n]).Job = jobCode;
                                 }
                             }
                         }
-                        else if (job.Attributes["code"].Value == "001")
+                        XmlNodeList learnSkills = job.SelectNodes("learn/skill");
+                        foreach (XmlNode learnSkill in learnSkills)
                         {
-                            XmlNode skills = job.SelectSingleNode("skills");
-
-                            for (int i = 0; i < skills.ChildNodes.Count; i++)
-                            {
-                                int id = int.Parse(skills.ChildNodes[i].Attributes["main"].Value);
-                                if (skills.ChildNodes[i].Attributes["sub"] != null)
-                                {
-                                    int[] sub = Array.ConvertAll(skills.ChildNodes[i].Attributes["sub"].Value.Split(","), int.Parse);
-                                }
-                            }
+                            int id = int.Parse(learnSkill.Attributes["id"].Value);
+                            skillList.Find(x => x.SkillId == id).CurrentLevel = 1;
                         }
                     }
                 }

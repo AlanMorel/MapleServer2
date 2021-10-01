@@ -137,7 +137,7 @@ namespace MapleServer2.Packets
             pWriter.Write(player.ReturnCoord);
             pWriter.WriteInt(); // gearscore
             pWriter.Write(player.SkinColor);
-            pWriter.WriteLong(player.CreationTime);
+            pWriter.WriteLong(player.CreationTime + Environment.TickCount64);
             foreach (int trophyCount in player.TrophyCount)
             {
                 pWriter.WriteInt(trophyCount);
@@ -233,14 +233,18 @@ namespace MapleServer2.Packets
 
         public static void WriteBadges(PacketWriter pWriter, Player player)
         {
-            pWriter.WriteByte((byte) player.Inventory.Badges.Count);
-            foreach (Item badge in player.Inventory.Badges)
+            pWriter.WriteByte((byte) player.Inventory.Badges.Where(x => x != null).Count());
+            for (int i = 0; i < player.Inventory.Badges.Length; i++)
             {
-                pWriter.WriteByte((byte) badge.GemSlot);
-                pWriter.WriteInt(badge.Id);
-                pWriter.WriteLong(badge.Uid);
-                pWriter.WriteInt(badge.Rarity);
-                pWriter.WriteItem(badge);
+                Item badge = player.Inventory.Badges[i];
+                if (player.Inventory.Badges[i] != null)
+                {
+                    pWriter.WriteByte((byte) i);
+                    pWriter.WriteInt(badge.Id);
+                    pWriter.WriteLong(badge.Uid);
+                    pWriter.WriteInt(badge.Rarity);
+                    pWriter.WriteItem(badge);
+                }
             }
         }
 

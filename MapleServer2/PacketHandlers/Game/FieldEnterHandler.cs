@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
@@ -36,8 +37,15 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(HomeCommandPacket.LoadHome(player));
             session.Send(ResponseCubePacket.DecorationScore(account.Home));
-            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer));
+            session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
             session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
+
+            IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
+                && (x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)).Select(x => x.Value);
+            foreach (Cube cube in cubes)
+            {
+                session.Send(FunctionCubePacket.UpdateFunctionCube(cube.CoordF.ToByte(), 2, 1));
+            }
             if (player.Party != null)
             {
                 session.Send(PartyPacket.UpdatePlayer(player));

@@ -2,10 +2,14 @@
 {
     public enum InteractObjectType : byte
     {
-        Unknown = 0,
+        None = 0,
+        Common = 1,
         Binoculars = 2,
-        Extractor = 3,
+        Ui = 3,
+        RankBoard = 5,
         Gathering = 6,
-        AdBalloon = 8
+        GuildPoster = 7,
+        AdBalloon = 8,
+        MushkingTower = 9,
     }
 }

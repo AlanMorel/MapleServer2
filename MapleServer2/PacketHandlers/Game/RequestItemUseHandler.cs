@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Tools;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -103,21 +104,21 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleChatEmoticonAdd(GameSession session, Item item)
         {
-            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.Duration + Environment.TickCount;
+            long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
 
-            if (item.Function.Duration == 0) // if no duration was set, set it to not expire
+            if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
             {
-                expiration = 9223372036854775807;
+                expiration = long.MaxValue;
             }
 
-            if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.Id))
+            if (session.Player.ChatSticker.Any(p => p.GroupId == item.Function.ChatEmoticonAdd.Id))
             {
                 // TODO: Find reject packet
                 return;
             }
 
-            session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.Id, expiration));
-            session.Player.ChatSticker.Add(new((byte) item.Function.Id, expiration));
+            session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.ChatEmoticonAdd.Id, expiration));
+            session.Player.ChatSticker.Add(new((byte) item.Function.ChatEmoticonAdd.Id, expiration));
             InventoryController.Consume(session, item.Uid, 1);
         }
 
@@ -126,25 +127,14 @@ namespace MapleServer2.PacketHandlers.Game
             short boxType = packet.ReadShort();
             int index = packet.ReadShort() - 0x30;
 
-            if (item.Content.Count <= 0)
-            {
-                return;
-            }
-
-            InventoryController.Consume(session, item.Uid, 1);
-
-            if (index < item.Content.Count)
-            {
-                ItemUseHelper.GiveItem(session, item.Content[index]);
-            }
+            ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
         }
 
         private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
         {
             short boxType = packet.ReadShort();
 
-            InventoryController.Consume(session, item.Uid, 1);
-            ItemUseHelper.OpenBox(session, item.Content);
+            ItemBoxHelper.GiveItemFromOpenBox(session, item);
         }
 
         private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)
@@ -152,23 +142,23 @@ namespace MapleServer2.PacketHandlers.Game
             // Major WIP
 
             string password = packet.ReadUnicodeString();
-            int duration = item.Function.Duration + Environment.TickCount;
+            int duration = item.Function.OpenMassiveEvent.Duration + Environment.TickCount;
             CoordF portalCoord = session.Player.Coord;
             CoordF portalRotation = session.Player.Rotation;
 
-            session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.FieldId));
+            session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.OpenMassiveEvent.FieldId));
             //  session.FieldManager.BroadcastPacket(FieldPacket.AddPortal()
             InventoryController.Consume(session, item.Uid, 1);
         }
 
         private static void HandleLevelPotion(GameSession session, Item item)
         {
-            if (session.Player.Levels.Level >= item.Function.TargetLevel)
+            if (session.Player.Levels.Level >= item.Function.LevelPotion.TargetLevel)
             {
                 return;
             }
 
-            session.Player.Levels.SetLevel(item.Function.TargetLevel);
+            session.Player.Levels.SetLevel(item.Function.LevelPotion.TargetLevel);
 
             InventoryController.Consume(session, item.Uid, 1);
         }
@@ -197,7 +187,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleVIPCoupon(GameSession session, Item item)
         {
-            long vipTime = item.Function.Duration * 3600;
+            long vipTime = item.Function.VIPCoupon.Duration * 3600;
 
             PremiumClubHandler.ActivatePremium(session, vipTime);
             InventoryController.Consume(session, item.Uid, 1);
@@ -210,7 +200,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleHongBao(GameSession session, Item item)
         {
-            HongBao newHongBao = new(session.Player, item.Function.TotalUser, item.Id, item.Function.Id, item.Function.Count, item.Function.Duration);
+            HongBao newHongBao = new(session.Player, item.Function.HongBao.TotalUsers, item.Id, item.Function.HongBao.Id, item.Function.HongBao.Count, item.Function.HongBao.Duration);
             GameServer.HongBaoManager.AddHongBao(newHongBao);
 
             session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
@@ -301,16 +291,16 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Item badge = new Item(item.Function.Id)
+            Item badge = new Item(item.Function.OpenCoupleEffectBox.Id)
             {
-                Rarity = item.Function.Rarity,
+                Rarity = item.Function.OpenCoupleEffectBox.Rarity,
                 PairedCharacterId = otherPlayer.CharacterId,
                 PairedCharacterName = otherPlayer.Name
             };
 
             Item otherUserBadge = new Item(item.Function.Id)
             {
-                Rarity = item.Function.Rarity,
+                Rarity = item.Function.OpenCoupleEffectBox.Rarity,
                 PairedCharacterId = session.Player.CharacterId,
                 PairedCharacterName = session.Player.Name
             };
@@ -359,15 +349,10 @@ namespace MapleServer2.PacketHandlers.Game
             bool publicHouse = parameters[2].Equals("1");
 
             int balloonUid = GuidGenerator.Int();
-            string uuid = "AdBalloon_" + balloonUid.ToString();
-            InteractObject balloon = new InteractObject(uuid, uuid, Maple2Storage.Enums.InteractObjectType.AdBalloon);
-            balloon.Balloon = new AdBalloon(session.Player, item, title, description, publicHouse);
-            IFieldObject<InteractObject> fieldBalloon = session.FieldManager.RequestFieldObject(balloon);
-            fieldBalloon.Coord = session.FieldPlayer.Coord;
-            fieldBalloon.Rotation = session.FieldPlayer.Rotation;
-            session.FieldManager.AddBalloon(fieldBalloon);
-
-            session.Send(PlayerHostPacket.AdBalloonPlace());
+            string id = "AdBalloon_" + balloonUid.ToString();
+            AdBalloon balloon = new AdBalloon(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
+            session.FieldManager.State.AddInteractObject(balloon);
+            session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));
             InventoryController.Consume(session, item.Uid, 1);
         }
 

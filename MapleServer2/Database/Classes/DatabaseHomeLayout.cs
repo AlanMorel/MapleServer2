@@ -5,7 +5,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseHomeLayout : DatabaseTable
     {
-        public DatabaseHomeLayout() : base("HomeLayouts") { }
+        public DatabaseHomeLayout() : base("home_layouts") { }
 
         public long Insert(HomeLayout homeLayout)
         {
@@ -14,7 +14,7 @@ namespace MapleServer2.Database.Classes
                 homeLayout.Id,
                 homeLayout.Size,
                 homeLayout.Height,
-                homeLayout.HomeId,
+                home_id = homeLayout.HomeId,
                 homeLayout.Name,
                 homeLayout.Timestamp,
             });
@@ -22,7 +22,7 @@ namespace MapleServer2.Database.Classes
 
         public List<HomeLayout> FindAllByHomeId(long homeId)
         {
-            List<HomeLayout> homeLayouts = QueryFactory.Query(TableName).Where("HomeId", homeId).Get<HomeLayout>().ToList();
+            List<HomeLayout> homeLayouts = QueryFactory.Query(TableName).Where("home_id", homeId).Get<HomeLayout>().ToList();
             foreach (HomeLayout homeLayout in homeLayouts)
             {
                 homeLayout.Cubes = DatabaseManager.Cubes.FindAllByLayoutUid(homeLayout.Uid);
@@ -32,17 +32,17 @@ namespace MapleServer2.Database.Classes
 
         public void Update(HomeLayout homeLayout)
         {
-            QueryFactory.Query(TableName).Where("Uid", homeLayout.Uid).Update(new
+            QueryFactory.Query(TableName).Where("uid", homeLayout.Uid).Update(new
             {
                 homeLayout.Id,
                 homeLayout.Size,
                 homeLayout.Height,
-                homeLayout.HomeId,
+                home_id = homeLayout.HomeId,
                 homeLayout.Name,
                 homeLayout.Timestamp,
             });
         }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("Uid", uid).Delete() == 1;
+        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
     }
 }

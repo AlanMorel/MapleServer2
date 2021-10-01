@@ -6,7 +6,7 @@ namespace MapleServer2.Database.Classes
 {
     public class DatabaseLevels : DatabaseTable
     {
-        public DatabaseLevels() : base("Levels") { }
+        public DatabaseLevels() : base("levels") { }
 
         public long Insert(Levels levels)
         {
@@ -14,26 +14,26 @@ namespace MapleServer2.Database.Classes
             {
                 levels.Level,
                 levels.Exp,
-                levels.RestExp,
-                levels.PrestigeLevel,
-                levels.PrestigeExp,
-                MasteryExp = JsonConvert.SerializeObject(levels.MasteryExp)
+                rest_exp = levels.RestExp,
+                prestige_level = levels.PrestigeLevel,
+                prestige_exp = levels.PrestigeExp,
+                mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
             });
         }
 
         public void Update(Levels levels)
         {
-            QueryFactory.Query(TableName).Where("Id", levels.Id).Update(new
+            QueryFactory.Query(TableName).Where("id", levels.Id).Update(new
             {
                 levels.Level,
                 levels.Exp,
-                levels.RestExp,
-                levels.PrestigeLevel,
-                levels.PrestigeExp,
-                MasteryExp = JsonConvert.SerializeObject(levels.MasteryExp)
+                rest_exp = levels.RestExp,
+                prestige_level = levels.PrestigeLevel,
+                prestige_exp = levels.PrestigeExp,
+                mastery_exp = JsonConvert.SerializeObject(levels.MasteryExp)
             });
         }
 
-        public bool Delete(long id) => QueryFactory.Query(TableName).Where("Id", id).Delete() == 1;
+        public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
     }
 }
