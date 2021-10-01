@@ -226,7 +226,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
             Packet itemLinkPacket = null;
 
-            Match a = Regex.Match(message, @"<A (.*?)>");
             string[] itemLinkMessages = Regex.Matches(message, @"<A (.*?)>")
                 .Cast<Match>()
                 .Select(m => m.Value)
@@ -240,25 +239,24 @@ namespace MapleServer2.PacketHandlers.Game
 
                 long itemUid = long.Parse(itemLinkMessageSplit[1]);
                 Item item = null;
-                switch (itemLinkType)
+                if (itemLinkType == "itemTooltip")
                 {
-                    case "itemTooltip":
-                        int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
-                        if (itemToolTipType == 2) // quest/navigator items
+                    int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
+                    if (itemToolTipType == 2) // quest/navigator items
+                    {
+                        if (ItemMetadataStorage.IsValid((int) itemUid))
                         {
-                            if (ItemMetadataStorage.IsValid((int) itemUid))
+                            item = new Item((int) itemUid, false)
                             {
-                                item = new Item((int) itemUid, false)
-                                {
-                                    Uid = itemUid
-                                };
-                            }
+                                Uid = itemUid
+                            };
                         }
-                        else if (itemToolTipType == 3) // normal item
-                        {
-                            item = DatabaseManager.Items.FindByUid(itemUid);
-                        }
-                        break;
+                    }
+                    else if (itemToolTipType == 3) // normal item
+                    {
+                        item = DatabaseManager.Items.FindByUid(itemUid);
+                    }
+                    break;
                 }
                 if (item != null)
                 {
