@@ -256,7 +256,6 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         item = DatabaseManager.Items.FindByUid(itemUid);
                     }
-                    break;
                 }
                 if (item != null)
                 {
