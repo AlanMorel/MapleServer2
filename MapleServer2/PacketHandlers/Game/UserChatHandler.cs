@@ -1,4 +1,3 @@
-﻿using System.Text.RegularExpressions;
 using System.Xml;
 using MaplePacketLib2.Tools;
 using MapleServer2.Commands.Core;
