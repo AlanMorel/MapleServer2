@@ -7,14 +7,13 @@ namespace MapleServer2.Packets.Helpers
     {
         public static PacketWriter WriteSystem(PacketWriter pWriter, Mail mail)
         {
-            pWriter.WriteByte(mail.Type); // Mail type
-            pWriter.WriteInt(mail.Uid); // Mail uid
+            pWriter.WriteEnum(mail.Type);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteLong(mail.RecipientCharacterId);
             pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.PlayerId); // Receiver character id
-            pWriter.WriteInt(0);
-            pWriter.WriteUnicodeString(mail.SenderName); // Sender name
-            pWriter.WriteUnicodeString(mail.Title); // Title
-            pWriter.WriteUnicodeString(mail.Body); // Body
+            pWriter.WriteUnicodeString(mail.SenderName);
+            pWriter.WriteUnicodeString(mail.Title);
+            pWriter.WriteUnicodeString(mail.Body);
 
             if (mail.Items == null)
             {
@@ -60,34 +59,62 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteInt(0);
             pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0); // Read timestamp
             pWriter.WriteLong(mail.SentTimestamp + 864000000); // Time left = sentTime + 10000 days
-            pWriter.WriteLong(mail.SentTimestamp + Environment.TickCount); // Sent timestamp
+            pWriter.WriteLong(mail.SentTimestamp); // Sent timestamp
             pWriter.WriteShort(0);
 
             return pWriter;
         }
 
-        public static PacketWriter WriteRegular(PacketWriter pWriter, Mail mail)
+        public static PacketWriter WriteRegular(PacketWriter pWriter, Mail mail, List<Item> items = null)
         {
-            pWriter.WriteByte(mail.Type); // Mail type
-            pWriter.WriteInt(mail.Uid); // Mail uid
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.PlayerId); // Sender character id used for reply
-            pWriter.WriteUnicodeString(mail.SenderName); // Sender name
-            pWriter.WriteUnicodeString(mail.Title); // Title
-            pWriter.WriteUnicodeString(mail.Body); // Body
-            pWriter.WriteByte(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteZero(21);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0); // Read timestamp
-            pWriter.WriteLong(mail.SentTimestamp + 2592000); // Time left = sentTime + 30 days
-            pWriter.WriteLong(mail.SentTimestamp + Environment.TickCount); // Sent timestamp
-            pWriter.WriteShort(0);
+            pWriter.WriteEnum(mail.Type);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteLong(mail.SenderCharacterId);
+            pWriter.WriteUnicodeString(mail.SenderName);
+            pWriter.WriteUnicodeString(mail.Title);
+            pWriter.WriteUnicodeString(mail.Body);
+            pWriter.WriteUnicodeString(mail.BlackMarketItemKey);
+            pWriter.WriteUnicodeString(mail.BlackMarketMesoKey);
+
+            pWriter.WriteByte((byte) items.Count);
+            foreach (Item item in items)
+            {
+                pWriter.WriteInt(item.Id);
+                pWriter.WriteLong(item.Uid);
+                pWriter.WriteByte();
+                pWriter.WriteInt(item.Rarity);
+                pWriter.WriteInt(item.Amount);
+                pWriter.WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteLong();
+                pWriter.WriteItem(item);
+            }
+
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+
+            bool idk2 = false;
+            pWriter.WriteBool(idk2);
+            if (idk2)
+            {
+                pWriter.WriteByte();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
+                pWriter.WriteLong();
+            }
+            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0);
+            pWriter.WriteLong(mail.ExpiryTimestamp);
+            pWriter.WriteLong(mail.SentTimestamp);
+            pWriter.WriteUnicodeString("");
+
+            //pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0); // Read timestamp
+            //pWriter.WriteLong(mail.SentTimestamp + 2592000); // Time left = sentTime + 30 days
+            //pWriter.WriteLong(mail.SentTimestamp + Environment.TickCount); // Sent timestamp
+            //pWriter.WriteShort(0);
 
             return pWriter;
         }

@@ -46,6 +46,7 @@ namespace MapleServer2.PacketHandlers.Common
             player.Account.BankInventory.Mesos.Session = session;
             player.Levels.Player = player;
             player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
+            player.Mails = GameServer.MailManager.GetMails(player.CharacterId);
 
             session.InitPlayer(player);
 
@@ -62,6 +63,7 @@ namespace MapleServer2.PacketHandlers.Common
                 session.Send(GuildPacket.MemberJoin(player));
             }
             session.Send(BuddyPacket.Initialize());
+            session.Player.GetUnreadMailCount();
             session.Send(BuddyPacket.LoadList(player.BuddyList));
             session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
@@ -82,9 +84,7 @@ namespace MapleServer2.PacketHandlers.Common
             session.Send(DynamicChannelPacket.DynamicChannel());
             session.Send(ServerEnterPacket.Enter(session));
             // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
-            PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_NUMBER);
-            pWriter.WriteByte();
-            session.Send(pWriter);
+            session.Send(SyncNumberPacket.Send());
             // 0x112, Prestige f(0x00, 0x07)
             session.Send(PrestigePacket.Prestige(player));
 

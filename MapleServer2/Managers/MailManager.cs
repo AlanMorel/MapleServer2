@@ -3,38 +3,24 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Managers
 {
-    public class BuddyManager
+    public class MailManager
     {
-        private readonly Dictionary<long, Buddy> BuddyList;
+        private readonly Dictionary<long, Mail> MailList;
 
-        public BuddyManager()
+        public MailManager()
         {
-            BuddyList = new Dictionary<long, Buddy>();
-            List<Buddy> list = DatabaseManager.Buddies.FindAll();
-            foreach (Buddy buddy in list)
+            MailList = new Dictionary<long, Mail>();
+            List<Mail> list = DatabaseManager.Mails.FindAll();
+            foreach (Mail mail in list)
             {
-                AddBuddy(buddy);
+                AddMail(mail);
             }
         }
 
-        public void AddBuddy(Buddy buddy) => BuddyList.Add(buddy.Id, buddy);
+        public void AddMail(Mail mail) => MailList.Add(mail.Id, mail);
 
-        public void RemoveBuddy(Buddy buddy) => BuddyList.Remove(buddy.Id);
+        public void RemoveMail(Mail mail) => MailList.Remove(mail.Id);
 
-        public List<Buddy> GetBuddies(long characterId) => BuddyList.Values.Where(b => b.CharacterId == characterId).ToList();
-
-        public Buddy GetBuddyByPlayerAndId(Player player, long id) =>
-            BuddyList.Values.ToList()
-            .Where(o => o.Friend.CharacterId != player.CharacterId && o.SharedId == id)
-            .FirstOrDefault();
-
-        public static bool IsFriend(Player player1, Player player2) =>
-            player1.BuddyList.Any(o => o.Friend.CharacterId == player2.CharacterId && o.Blocked == false);
-
-        public static bool IsBlocked(Player player, Player otherPlayer) =>
-            otherPlayer.BuddyList.Any(o => o.Friend.CharacterId == player.CharacterId && o.Blocked == true);
-
-        public void SetFriendSessions(Player player) =>
-            BuddyList.Values.Where(x => x.Friend.CharacterId == player.CharacterId).ToList().ForEach(x => x.Friend.Session = player.Session);
+        public List<Mail> GetMails(long characterId) => MailList.Values.Where(b => b.RecipientCharacterId == characterId).ToList();
     }
 }

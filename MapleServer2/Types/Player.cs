@@ -106,7 +106,8 @@ namespace MapleServer2.Types
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
 
-        public Mailbox Mailbox = new();
+        public List<Mail> Mails = new List<Mail>();
+        public Mailbox Mailbox = new Mailbox();
 
         public List<Buddy> BuddyList;
 
@@ -546,6 +547,12 @@ namespace MapleServer2.Types
         {
             StatPointDistribution.AddTotalStatPoints(amount, index);
             Session.Send(StatPointPacket.WriteTotalStatPoints(this));
+        }
+
+        public void GetUnreadMailCount()
+        {
+            int unreadCount = Mails.Where(x => x.ReadTimestamp == 0).Count();
+            Session.Send(MailPacket.Notify(unreadCount));
         }
     }
 }

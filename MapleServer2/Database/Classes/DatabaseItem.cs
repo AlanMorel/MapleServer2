@@ -92,6 +92,17 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
+        public List<Item> FindAllByMailId(long mailId)
+        {
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("mail_id", mailId).Get();
+            List<Item> items = new List<Item>();
+            foreach(dynamic data in result)
+            {
+                items.Add((Item) ReadItem(data));
+            }
+            return items;
+        }
+
         public void Update(Item item)
         {
             QueryFactory.Query(TableName).Where("uid", item.Uid).Update(new

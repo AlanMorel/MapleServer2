@@ -1,4 +1,6 @@
-﻿namespace MapleServer2.Types
+﻿using static MapleServer2.Types.Mail;
+
+namespace MapleServer2.Types
 {
     public class Mailbox
     {
@@ -13,7 +15,7 @@
 
         public void AddOrUpdate(Mail mail)
         {
-            int index = Mails.FindIndex(x => x.Uid == mail.Uid);
+            int index = Mails.FindIndex(x => x.Id == mail.Id);
 
             if (index > -1)
             {
@@ -25,14 +27,14 @@
             }
         }
 
-        public long Read(int id)
+        public long Read(long id)
         {
             long timestamp = 0;
-            int index = Mails.FindIndex(x => x.Uid == id);
+            int index = Mails.FindIndex(x => x.Id == id);
 
             if (index > -1)
             {
-                Mails[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+              //  Mails[index].Read(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 timestamp = Mails[index].ReadTimestamp;
             }
 
@@ -42,12 +44,12 @@
         public List<Item> Collect(int id)
         {
             List<Item> items = null;
-            int index = Mails.FindIndex(x => x.Uid == id);
+            int index = Mails.FindIndex(x => x.Id == id);
 
             if (index > -1)
             {
                 items = Mails[index].Items;
-                Mails[index].Collect(null);
+               // Mails[index].Collect(null);
             }
 
             return items;
@@ -74,20 +76,20 @@
 
             foreach (Mail mail in Mails)
             {
-                if (mail.Type == 1)
+                if (mail.Type == MailType.Player)
                 {
                     if (currentTime >= mail.SentTimestamp + 2592000) // 2592000 = 30 days
                     {
                         Mails.Remove(mail);
                     }
                 }
-                else if (mail.Type == 101)
-                {
-                    if (currentTime >= mail.SentTimestamp + 864000000) // 864000000 = 10000 days
-                    {
-                        Mails.Remove(mail);
-                    }
-                }
+                //else if (mail.Type == 101)
+                //{
+                //    if (currentTime >= mail.SentTimestamp + 864000000) // 864000000 = 10000 days
+                //    {
+                //        Mails.Remove(mail);
+                //    }
+                //}
             }
         }
     }
