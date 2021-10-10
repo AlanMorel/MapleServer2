@@ -477,6 +477,7 @@ namespace GameDataParser.Parsers
 
                 XmlNode installNode = item.SelectSingleNode("install");
                 metadata.IsCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
+                metadata.ObjectId = int.Parse(installNode.Attributes["objCode"].Value);
 
                 XmlNode housingNode = item.SelectSingleNode("housing");
                 string value = housingNode.Attributes["categoryTag"].Value;

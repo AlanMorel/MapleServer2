@@ -61,7 +61,7 @@ namespace MapleServer2.Tools
                     return;
                 }
 
-                Home home = GameServer.HomeManager.GetHome(session.Player.Account.Home.Id);
+                Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
                 if (home == null)
                 {
                     return;

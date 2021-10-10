@@ -3,7 +3,6 @@ using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;
-using Maple2.File.Flat.standardmodellibrary;
 using Maple2.File.IO.Crypto.Common;
 using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
@@ -281,7 +280,7 @@ namespace GameDataParser.Parsers
                         break;
                     case IPortal portal:
                         metadata.Portals.Add(new MapPortal(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
-                            CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (byte) portal.PortalType));
+                            CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (PortalTypes) portal.PortalType));
                         break;
                     case IMS2Breakable breakable:
                         switch (breakable)
@@ -317,7 +316,7 @@ namespace GameDataParser.Parsers
                                 break;
                             case IMS2TriggerPortal triggerPortal:
                                 metadata.Portals.Add(new MapPortal(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
-                                    triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (byte) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
+                                    triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (PortalTypes) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                                 break;
                             case IMS2TriggerActor triggerActor:
                                 metadata.TriggerActors.Add(new MapTriggerActor(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
@@ -328,43 +327,25 @@ namespace GameDataParser.Parsers
                             case IMS2TriggerSound triggerSound:
                                 metadata.TriggerSounds.Add(new MapTriggerSound(triggerSound.TriggerObjectID, triggerSound.Enabled));
                                 break;
+                            case IMS2TriggerSkill triggerSkill:
+                                metadata.TriggerSkills.Add(new MapTriggerSkill(triggerSkill.TriggerObjectID, triggerSkill.skillID,
+                                    (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
+                                break;
+                        }
+                        break;
+                    case IMS2Liftable liftable:
+                        metadata.LiftableObjects.Add(new MapLiftableObject(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState));
+                        break;
+                    case IMS2CubeProp prop:
+                        if (prop.IsObjectWeapon)
+                        {
+                            List<int> weaponIds = new List<int>();
+                            weaponIds.AddRange(Array.ConvertAll(prop.ObjectWeaponItemCode.Split(","), int.Parse));
+                            metadata.WeaponObjects.Add(new MapWeaponObject(CoordB.FromVector3(prop.Position), weaponIds));
                         }
                         break;
                     case IMS2Vibrate vibrate:
                         metadata.VibrateObjects.Add(new MapVibrateObject(vibrate.EntityId));
-                        break;
-                    case IPlaceable placeable: // TODO: placeable might be too generic
-                        // These are objects which you can place in the world
-                        string nameCoord = placeable.EntityName.ToLower();
-                        Match coordMatch = Regex.Match(nameCoord, @"-?\d+, -?\d+, -?\d+");
-                        if (!coordMatch.Success)
-                        {
-                            continue;
-                        }
-
-                        // Only MS2MapProperties has ObjectWeaponItemCode
-                        if (entity is not IMS2MapProperties mapProperties)
-                        {
-                            continue;
-                        }
-
-                        try
-                        //TODO: The parser will output errors here, which are non-critical, yet need resolving later.
-                        {
-                            CoordB coord = CoordB.Parse(coordMatch.Value, ", ");
-                            metadata.Objects.Add(new MapObject(coord, int.Parse(mapProperties.ObjectWeaponItemCode)));
-                        }
-                        catch (FormatException)
-                        {
-                            // ignored
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
-                        catch (OverflowException)
-                        {
-                            //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(mapProperties.ObjectWeaponItemCode);
-                            //Console.WriteLine($"String in bytes: {Convert.ToHexString(bytes)}");
-                        }
                         break;
                 }
 

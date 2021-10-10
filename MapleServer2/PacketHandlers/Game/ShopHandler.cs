@@ -92,7 +92,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             InventoryController.Consume(session, item.Uid, quantity);
 
-            session.Send(ShopPacket.Sell(item.Id, quantity));
+            session.Send(ShopPacket.Sell(item, quantity));
         }
 
         private static void HandleBuy(GameSession session, PacketReader packet)

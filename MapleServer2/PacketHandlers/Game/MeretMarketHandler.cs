@@ -20,6 +20,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             Initialize = 0x16,
             OpenPremium = 0x1B,
+            SendMarketRequest = 0x1D,
             Purchase = 0x1E,
             Home = 0x65,
             LoadCart = 0x6B,
@@ -45,6 +46,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case MeretMarketMode.LoadCart:
                     HandleLoadCart(session);
+                    break;
+                case MeretMarketMode.SendMarketRequest:
+                    HandleSendMarketRequest(session, packet);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -148,6 +152,17 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleLoadCart(GameSession session)
         {
             session.Send(MeretMarketPacket.LoadCart());
+        }
+
+        private static void HandleSendMarketRequest(GameSession session, PacketReader packet)
+        {
+            packet.ReadByte(); //constant 1
+            int meretMarketItemUid = packet.ReadInt();
+            List<MeretMarketItem> meretMarketItems = new()
+            {
+                DatabaseManager.MeretMarket.FindById(meretMarketItemUid)
+            };
+            session.Send(MeretMarketPacket.Premium(meretMarketItems));
         }
     }
 }

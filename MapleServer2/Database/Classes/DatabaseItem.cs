@@ -57,7 +57,17 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Item FindByUid(long uid) => ReadItem(QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault());
+        public Item FindByUid(long uid)
+        {
+            dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return ReadItem(result);
+        }
 
         public List<Item> FindAllByInventoryId(long inventoryId)
         {

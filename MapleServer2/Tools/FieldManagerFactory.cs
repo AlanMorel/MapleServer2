@@ -13,21 +13,21 @@ namespace MapleServer2.Tools
             Managers = new Dictionary<int, List<FieldManager>>();
         }
 
-        public FieldManager GetManager(int key, long instanceId)
+        public FieldManager GetManager(Player player)
         {
             lock (Managers)
             {
-                if (!Managers.TryGetValue(key, out List<FieldManager> list))
+                if (!Managers.TryGetValue(player.MapId, out List<FieldManager> list))
                 {
-                    list = new List<FieldManager>() { new FieldManager(key, instanceId) };
-                    Managers[key] = list;
+                    list = new List<FieldManager>() { new FieldManager(player) };
+                    Managers[player.MapId] = list;
                 }
 
-                FieldManager manager = list.FirstOrDefault(x => x.InstanceId == instanceId);
+                FieldManager manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
                 if (manager == default)
                 {
-                    manager = new FieldManager(key, instanceId);
-                    Managers[key].Add(manager);
+                    manager = new FieldManager(player);
+                    Managers[player.MapId].Add(manager);
                 }
 
                 manager.Increment();

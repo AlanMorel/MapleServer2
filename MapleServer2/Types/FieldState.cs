@@ -25,6 +25,7 @@ namespace MapleServer2.Types
         public readonly ConcurrentDictionary<int, TriggerSound> TriggerSounds;
         public readonly ConcurrentDictionary<string, BreakableActorObject> BreakableActors;
         public readonly ConcurrentDictionary<string, BreakableNifObject> BreakableNifs;
+        public readonly ConcurrentDictionary<int, IFieldObject<TriggerSkill>> TriggerSkills;
         public readonly ConcurrentDictionary<string, InteractObject> InteractObjects;
 
         public FieldState()
@@ -49,6 +50,7 @@ namespace MapleServer2.Types
             TriggerSounds = new ConcurrentDictionary<int, TriggerSound>();
             BreakableActors = new ConcurrentDictionary<string, BreakableActorObject>();
             BreakableNifs = new ConcurrentDictionary<string, BreakableNifObject>();
+            TriggerSkills = new ConcurrentDictionary<int, IFieldObject<TriggerSkill>>();
             InteractObjects = new ConcurrentDictionary<string, InteractObject>();
         }
 
@@ -202,6 +204,16 @@ namespace MapleServer2.Types
                     BreakableNifs[nif.Id] = nif;
                     break;
             }
+        }
+
+        public void AddTriggerSkills(IFieldObject<TriggerSkill> triggerSkill)
+        {
+            TriggerSkills[triggerSkill.ObjectId] = triggerSkill;
+        }
+
+        public IFieldObject<TriggerSkill> GetTriggerSkill(int triggerId)
+        {
+            return TriggerSkills.FirstOrDefault(skill => skill.Value.Value.Id == triggerId).Value;
         }
 
         public void AddInteractObject(InteractObject interactObject)

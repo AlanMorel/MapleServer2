@@ -52,7 +52,8 @@ namespace MapleServer2.Database.Classes
                 trophy_count = JsonConvert.SerializeObject(player.TrophyCount),
                 unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
                 unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
-                visiting_home_id = player.VisitingHomeId
+                visiting_home_id = player.VisitingHomeId,
+                gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
             });
         }
 
@@ -133,7 +134,8 @@ namespace MapleServer2.Database.Classes
                 VisitingHomeId = data.visiting_home_id,
                 SkillTabs = skillTabs,
                 TrophyData = trophies,
-                QuestList = questList
+                QuestList = questList,
+                GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count)
             };
         }
 
@@ -170,6 +172,24 @@ namespace MapleServer2.Database.Classes
                                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
                                 "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
                                 "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
+                            .FirstOrDefault());
+        }
+
+        /// <summary>
+        /// Return the player with the given account id with the minimal amount of data needed for Buddy list and Guild members.
+        /// </summary>
+        /// <returns>Player</returns>
+        public Player FindPartialPlayerByAccountId(long accountId)
+        {
+            return ReadPartialPlayer(QueryFactory.Query(TableName).Where("characters.account_id", accountId)
+                            .Join("levels", "levels.id", "characters.levels_id")
+                            .Join("accounts", "accounts.id", "characters.account_id")
+                            .LeftJoin("homes", "homes.account_id", "accounts.id")
+                            .Select(
+                                "characters.{*}",
+                                "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
+                                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
+                                "homes.{plotmap_id, plot_number, apartment_number, expiration, id as home_id}")
                             .FirstOrDefault());
         }
 
@@ -247,7 +267,8 @@ namespace MapleServer2.Database.Classes
                 trophy_count = JsonConvert.SerializeObject(player.TrophyCount),
                 unlocked_maps = JsonConvert.SerializeObject(player.UnlockedMaps),
                 unlocked_taxis = JsonConvert.SerializeObject(player.UnlockedTaxis),
-                visiting_home_id = player.VisitingHomeId
+                visiting_home_id = player.VisitingHomeId,
+                gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
             });
             DatabaseManager.Accounts.Update(player.Account);
 

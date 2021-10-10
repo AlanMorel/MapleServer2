@@ -119,6 +119,7 @@ CREATE TABLE `characters` (
   `unlocked_maps` text,
   `unlocked_taxis` text,
   `visiting_home_id` bigint NOT NULL,
+  `gathering_count` text,
   PRIMARY KEY (`character_id`),
   UNIQUE KEY `ix_characters_name` (`name`),
   KEY `ix_characters_accountid` (`account_id`),
@@ -152,6 +153,7 @@ CREATE TABLE `cubes` (
   `layout_uid` bigint DEFAULT NULL,
   `plot_number` int NOT NULL,
   `rotation` float NOT NULL,
+  `portal_settings` text,
   PRIMARY KEY (`uid`),
   KEY `ix_cubes_homeid` (`home_id`),
   KEY `ix_cubes_itemuid` (`item_uid`),
@@ -437,6 +439,16 @@ CREATE TABLE `quests` (
   CONSTRAINT `fk_quests_characters_characterid` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `server`
+--
+
+DROP TABLE IF EXISTS `server`;
+CREATE TABLE `server` (
+	last_daily_reset datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `server` VALUES ('2021-01-01 00:00:00');
 --
 -- Table structure for table `skilltabs`
 --

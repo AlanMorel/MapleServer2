@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Types;
+using Newtonsoft.Json;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
@@ -19,7 +20,8 @@ namespace MapleServer2.Database.Classes
                 item_uid = cube.Item.Uid,
                 layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
                 plot_number = cube.PlotNumber,
-                rotation = cube.Rotation.Z
+                rotation = cube.Rotation.Z,
+                portal_settings = JsonConvert.SerializeObject(cube.PortalSettings)
             });
         }
 
@@ -59,12 +61,23 @@ namespace MapleServer2.Database.Classes
                 item_uid = cube.Item.Uid,
                 layout_uid = cube.LayoutUid == 0 ? null : (long?) cube.LayoutUid,
                 plot_number = cube.PlotNumber,
-                rotation = cube.Rotation.Z
+                rotation = cube.Rotation.Z,
+                portal_settings = JsonConvert.SerializeObject(cube.PortalSettings)
             });
         }
 
         public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
 
-        private static Cube ReadCube(dynamic data) => new Cube(data.uid, DatabaseManager.Items.FindByUid(data.item_uid), data.plot_number, CoordF.From(data.coord_x, data.coord_y, data.coord_z), data.rotation, data.home_layout_id ?? 0, data.home_id ?? 0);
+        private static Cube ReadCube(dynamic data)
+        {
+            return new Cube(data.uid,
+                            DatabaseManager.Items.FindByUid(data.item_uid),
+                            data.plot_number,
+                            CoordF.From(data.coord_x, data.coord_y, data.coord_z),
+                            data.rotation,
+                            data.home_layout_id ?? 0,
+                            data.home_id ?? 0,
+                            JsonConvert.DeserializeObject<CubePortalSettings>(data.portal_settings));
+        }
     }
 }

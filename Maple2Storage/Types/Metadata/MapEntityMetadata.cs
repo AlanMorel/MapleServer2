@@ -18,7 +18,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 5)]
         public readonly List<MapMobSpawn> MobSpawns;
         [XmlElement(Order = 6)]
-        public readonly List<MapObject> Objects;
+        public readonly List<MapWeaponObject> WeaponObjects;
         [XmlElement(Order = 7)]
         public CoordS BoundingBox0;
         [XmlElement(Order = 8)]
@@ -56,7 +56,11 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 24)]
         public readonly List<MapVibrateObject> VibrateObjects;
         [XmlElement(Order = 25)]
+        public readonly List<MapTriggerSkill> TriggerSkills;
+        [XmlElement(Order = 26)]
         public readonly List<MapInteractObject> InteractObjects;
+        [XmlElement(Order = 27)]
+        public readonly List<MapLiftableObject> LiftableObjects;
 
         // Required for deserialization
         public MapEntityMetadata()
@@ -65,7 +69,7 @@ namespace Maple2Storage.Types.Metadata
             MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
-            Objects = new List<MapObject>();
+            WeaponObjects = new List<MapWeaponObject>();
             HealingSpot = new List<CoordS>();
             PatrolDatas = new List<PatrolData>();
             WayPoints = new List<WayPoint>();
@@ -82,7 +86,9 @@ namespace Maple2Storage.Types.Metadata
             BreakableActors = new List<MapBreakableActorObject>();
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
+            TriggerSkills = new List<MapTriggerSkill>();
             InteractObjects = new List<MapInteractObject>();
+            LiftableObjects = new List<MapLiftableObject>();
         }
 
         public MapEntityMetadata(int mapId)
@@ -92,7 +98,7 @@ namespace Maple2Storage.Types.Metadata
             MobSpawns = new List<MapMobSpawn>();
             Npcs = new List<MapNpc>();
             Portals = new List<MapPortal>();
-            Objects = new List<MapObject>();
+            WeaponObjects = new List<MapWeaponObject>();
             HealingSpot = new List<CoordS>();
             PatrolDatas = new List<PatrolData>();
             WayPoints = new List<WayPoint>();
@@ -109,15 +115,17 @@ namespace Maple2Storage.Types.Metadata
             BreakableActors = new List<MapBreakableActorObject>();
             BreakableNifs = new List<MapBreakableNifObject>();
             VibrateObjects = new List<MapVibrateObject>();
+            TriggerSkills = new List<MapTriggerSkill>();
             InteractObjects = new List<MapInteractObject>();
+            LiftableObjects = new List<MapLiftableObject>();
         }
 
         public override string ToString() =>
-            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", Objects)})";
+            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
 
         protected bool Equals(MapEntityMetadata other)
         {
-            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && MobSpawns.SequenceEqual(other.MobSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && Objects.SequenceEqual(other.Objects);
+            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && MobSpawns.SequenceEqual(other.MobSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && WeaponObjects.SequenceEqual(other.WeaponObjects);
         }
 
         public override bool Equals(object obj)
@@ -142,7 +150,7 @@ namespace Maple2Storage.Types.Metadata
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MapId, PlayerSpawns, Npcs, Portals, Objects);
+            return HashCode.Combine(MapId, PlayerSpawns, Npcs, Portals, WeaponObjects);
         }
 
         public static bool operator ==(MapEntityMetadata left, MapEntityMetadata right)
@@ -157,28 +165,31 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [XmlType]
-    public class MapObject
+    public class MapWeaponObject
     {
         [XmlElement(Order = 1)]
         public readonly CoordB Coord;
         [XmlElement(Order = 2)]
-        public readonly int WeaponId;
+        public readonly List<int> WeaponItemIds;
 
         // Required for deserialization
-        public MapObject() { }
+        public MapWeaponObject()
+        {
+            WeaponItemIds = new List<int>();
+        }
 
-        public MapObject(CoordB coord, int weaponId)
+        public MapWeaponObject(CoordB coord, List<int> weaponIds)
         {
             Coord = coord;
-            WeaponId = weaponId;
+            WeaponItemIds = weaponIds;
         }
 
         public override string ToString() =>
-            $"MapObject(Coord:{Coord},WeaponId:{WeaponId})";
+            $"MapObject(Coord:{Coord},WeaponId:{WeaponItemIds})";
 
-        protected bool Equals(MapObject other)
+        protected bool Equals(MapWeaponObject other)
         {
-            return Coord.Equals(other.Coord) && WeaponId == other.WeaponId;
+            return Coord.Equals(other.Coord) && WeaponItemIds == other.WeaponItemIds;
         }
 
         public override bool Equals(object obj)
@@ -198,20 +209,20 @@ namespace Maple2Storage.Types.Metadata
                 return false;
             }
 
-            return Equals((MapObject) obj);
+            return Equals((MapWeaponObject) obj);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Coord, WeaponId);
+            return HashCode.Combine(Coord, WeaponItemIds);
         }
 
-        public static bool operator ==(MapObject left, MapObject right)
+        public static bool operator ==(MapWeaponObject left, MapWeaponObject right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(MapObject left, MapObject right)
+        public static bool operator !=(MapWeaponObject left, MapWeaponObject right)
         {
             return !Equals(left, right);
         }
@@ -323,14 +334,14 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 9)]
         public readonly int TargetPortalId;
         [XmlElement(Order = 10)]
-        public readonly byte PortalType;
+        public readonly PortalTypes PortalType;
         [XmlElement(Order = 11)]
         public readonly int TriggerId;
 
         // Required for deserialization
         public MapPortal() { }
 
-        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, byte portalType, int triggerId = 0)
+        public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, PortalTypes portalType, int triggerId = 0)
         {
             Id = id;
             Name = name;
@@ -579,15 +590,16 @@ namespace Maple2Storage.Types.Metadata
         }
     }
 
-    [ProtoContract, ProtoInclude(10, typeof(MapTriggerMesh))]
-    [ProtoInclude(11, typeof(MapTriggerEffect))]
-    [ProtoInclude(12, typeof(MapTriggerCamera))]
-    [ProtoInclude(13, typeof(MapTriggerBox))]
-    [ProtoInclude(14, typeof(MapTriggerLadder))]
-    [ProtoInclude(15, typeof(MapTriggerActor))]
-    [ProtoInclude(16, typeof(MapTriggerCube))]
-    [ProtoInclude(17, typeof(MapTriggerSound))]
-    [ProtoInclude(18, typeof(MapTriggerRope))]
+    [ProtoContract, ProtoInclude(50, typeof(MapTriggerMesh))]
+    [ProtoInclude(51, typeof(MapTriggerEffect))]
+    [ProtoInclude(52, typeof(MapTriggerCamera))]
+    [ProtoInclude(53, typeof(MapTriggerBox))]
+    [ProtoInclude(54, typeof(MapTriggerLadder))]
+    [ProtoInclude(55, typeof(MapTriggerActor))]
+    [ProtoInclude(56, typeof(MapTriggerCube))]
+    [ProtoInclude(57, typeof(MapTriggerSound))]
+    [ProtoInclude(58, typeof(MapTriggerRope))]
+    [ProtoInclude(59, typeof(MapTriggerSkill))]
     public class MapTriggerObject
     {
         [ProtoMember(8)]
@@ -765,6 +777,29 @@ namespace Maple2Storage.Types.Metadata
     }
 
     [ProtoContract]
+    public class MapTriggerSkill : MapTriggerObject
+    {
+        [ProtoMember(27)]
+        public CoordF Position;
+        [ProtoMember(28)]
+        public byte Count;
+        [ProtoMember(29)]
+        public short SkillLevel;
+        [ProtoMember(30)]
+        public int SkillId;
+
+        public MapTriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position) : base(id)
+        {
+            Position = position;
+            Count = count;
+            SkillLevel = skillLevel;
+            SkillId = skillId;
+        }
+
+        public MapTriggerSkill() : base() { }
+    }
+
+    [ProtoContract]
     public class MapBreakableActorObject : MapBreakableObject
     {
         public MapBreakableActorObject() { }
@@ -805,6 +840,29 @@ namespace Maple2Storage.Types.Metadata
             InteractId = interactId;
             IsEnabled = isEnabled;
             Type = type;
+        }
+    }
+
+    [XmlType]
+    public class MapLiftableObject
+    {
+        [XmlElement(Order = 1)]
+        public string EntityId;
+        [XmlElement(Order = 2)]
+        public int ItemId;
+        [XmlElement(Order = 3)]
+        public string MaskQuestId;
+        [XmlElement(Order = 4)]
+        public string MaskQuestState;
+
+        public MapLiftableObject() { }
+
+        public MapLiftableObject(string entityId, int itemId, string maskQuestId, string maskQuestState)
+        {
+            EntityId = entityId;
+            ItemId = itemId;
+            MaskQuestId = maskQuestId;
+            MaskQuestState = maskQuestState;
         }
     }
 }

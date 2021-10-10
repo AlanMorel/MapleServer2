@@ -1,4 +1,6 @@
-﻿namespace MapleServer2.Types
+﻿using Maple2Storage.Types;
+
+namespace MapleServer2.Types
 {
     public class TriggerObject
     {
@@ -91,6 +93,22 @@
         public TriggerSound(int id, bool isEnabled) : base(id)
         {
             IsEnabled = isEnabled;
+        }
+    }
+
+    public class TriggerSkill : TriggerObject
+    {
+        public CoordF Position;
+        public byte Count;
+        public short SkillLevel;
+        public int SkillId;
+
+        public TriggerSkill(int id, int skillId, short skillLevel, byte count, CoordF position) : base(id)
+        {
+            SkillId = skillId;
+            SkillLevel = skillLevel;
+            Count = count;
+            Position = position;
         }
     }
 }

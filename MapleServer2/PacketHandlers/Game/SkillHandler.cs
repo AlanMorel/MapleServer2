@@ -294,8 +294,16 @@ namespace MapleServer2.PacketHandlers.Game
             // Gain Mob EXP
             session.Player.Levels.GainExp(mob.Value.Experience);
             // Send achieves (2)
+
+            string mapId = session.Player.MapId.ToString();
+            // Prepend zero if map id is equal to 7 digits
+            if (mapId.Length == 7)
+            {
+                mapId = $"0{mapId}";
+            }
+
             // Quest Check
-            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc");
+            QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
         }
     }
 }
