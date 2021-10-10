@@ -71,6 +71,7 @@ namespace MapleServer2.Types
         public long InventoryId;
         public long BankInventoryId;
         public long HomeId;
+        public long MailId;
 
         public Item() { }
 

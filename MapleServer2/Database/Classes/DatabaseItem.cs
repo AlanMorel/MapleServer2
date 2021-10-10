@@ -23,6 +23,7 @@ namespace MapleServer2.Database.Classes
                 play_count = item.PlayCount,
                 item.Amount,
                 bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                mail_id = item.MailId == 0 ? null : (int?) item.MailId,
                 repackage_count = item.RepackageCount,
                 item.Charges,
                 color = JsonConvert.SerializeObject(item.Color),
@@ -114,6 +115,7 @@ namespace MapleServer2.Database.Classes
                 play_count = item.PlayCount,
                 item.Amount,
                 bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                mail_id = item.MailId == 0 ? null : (int?) item.MailId,
                 repackage_count = item.RepackageCount,
                 item.Charges,
                 color = JsonConvert.SerializeObject(item.Color),
@@ -190,6 +192,7 @@ namespace MapleServer2.Database.Classes
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,
                 BankInventoryId = data.bank_inventory_id ?? 0,
+                MailId = data.mail_id ?? 0,
                 HomeId = data.home_id ?? 0,
             };
         }

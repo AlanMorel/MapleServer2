@@ -347,7 +347,7 @@ CREATE TABLE `items` (
   `inventory_id` bigint DEFAULT NULL,
   `is_equipped` tinyint(1) NOT NULL,
   `is_locked` tinyint(1) NOT NULL,
-  `mail_id` int DEFAULT NULL,
+  `mail_id` bigint DEFAULT NULL,
   `owner_character_id` bigint DEFAULT NULL,
   `owner_character_name` varchar(25) DEFAULT '',
   `paired_character_id` bigint NOT NULL,
@@ -399,19 +399,19 @@ CREATE TABLE `levels` (
 
 DROP TABLE IF EXISTS `mails`;
 CREATE TABLE `mails` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `type` tinyint unsigned NOT NULL,
   `recipient_character_id` bigint NOT NULL,
   `sender_character_id` bigint NOT NULL,
-  `sender_name` varchar(25) DEFAULT '',
-  `title` varchar(25) DEFAULT '',
+  `sender_name` text,
+  `title` text,
   `body` text,
   `read_timestamp` bigint NOT NULL,
   `sent_timestamp` bigint NOT NULL,
   `expiry_timestamp` bigint NOT NULL,
   `mesos` bigint NOT NULL,
-  `blackmarket_item_key` varchar(100) DEFAULT '',
-  `blackmarket_meso_key` varchar(100) DEFAULT '',
+  `additional_parameter1` text DEFAULT '',
+  `additional_parameter2` text DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `ix_mails_playerid` (`recipient_character_id`),
   CONSTRAINT `fk_mails_recipient_character_id` FOREIGN KEY (`recipient_character_id`) REFERENCES `characters` (`character_id`) ON DELETE CASCADE

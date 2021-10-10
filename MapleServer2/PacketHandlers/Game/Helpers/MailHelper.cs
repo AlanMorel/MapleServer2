@@ -1,18 +1,31 @@
-﻿using Maple2Storage.Enums;
-using Maple2Storage.Types.Metadata;
-using MapleServer2.Data.Static;
-using MapleServer2.Database;
-using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
+﻿using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using static MapleServer2.Types.Mail;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers
 {
     public class MailHelper
     {
-        public static void SendSystemMail(GameSession session, int id)
+        public static void SendMail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos, out Mail mail)
         {
+            mail = new Mail(type, recipientCharacterId, senderCharacterId, senderName, title, body, addParameter1, addParameter2, items, mesos);
+            GameServer.MailManager.AddMail(mail);
 
+            // TODO: Handle Black Market mails
+
+            SendNotification(mail);
+        }
+
+        private static void SendNotification(Mail mail)
+        {
+            Player recipient = GameServer.Storage.GetPlayerById(mail.RecipientCharacterId);
+            if (recipient == null)
+            {
+                return;
+            }
+
+            recipient.Mails.Add(mail);
+            recipient.GetUnreadMailCount();
         }
     }
 }

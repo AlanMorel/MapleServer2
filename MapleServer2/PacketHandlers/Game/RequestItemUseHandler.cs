@@ -12,6 +12,7 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using static MapleServer2.Types.Mail;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -284,6 +285,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string targetUser = packet.ReadUnicodeString();
 
+            //TODO change this to find in DB
             Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
             if (otherPlayer == null)
             {
@@ -295,22 +297,37 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 Rarity = item.Function.OpenCoupleEffectBox.Rarity,
                 PairedCharacterId = otherPlayer.CharacterId,
-                PairedCharacterName = otherPlayer.Name
+                PairedCharacterName = otherPlayer.Name,
+                OwnerCharacterId = session.Player.CharacterId,
+                OwnerCharacterName = session.Player.Name
             };
 
-            Item otherUserBadge = new Item(item.Function.Id)
+            Item otherUserBadge = new Item(item.Function.OpenCoupleEffectBox.Id)
             {
                 Rarity = item.Function.OpenCoupleEffectBox.Rarity,
                 PairedCharacterId = session.Player.CharacterId,
-                PairedCharacterName = session.Player.Name
+                PairedCharacterName = session.Player.Name,
+                OwnerCharacterId = otherPlayer.CharacterId,
+                OwnerCharacterName = otherPlayer.Name
             };
+
+            List<Item> items = new List<Item>();
+            items.Add(otherUserBadge);
+
+            MailHelper.SendMail(MailType.System, otherPlayer.CharacterId, session.Player.CharacterId,
+                "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
+                "<ms2><v key=\"s_couple_effect_mail_title_receiver\" /></ms2>",
+                "<ms2><v key=\"s_couple_effect_mail_content_receiver\" /></ms2>",
+                "",
+                $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
+                items,
+                0, out Mail mail);
 
             //InventoryController.Consume(session, item.Uid, 1);
             InventoryController.Add(session, badge, true);
-            //session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, otherPlayer.Name, NoticeType.ChatAndFastText));
-
-            //otherPlayer.Session.Send(MailPacket.Notify(otherPlayer.Session));
-            // TODO: Mail the badge to the other user
+            List<string> noticeParameters = new List<string>();
+            noticeParameters.Add(otherPlayer.Name);
+            session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, NoticeType.ChatAndFastText, noticeParameters));
         }
 
         public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)

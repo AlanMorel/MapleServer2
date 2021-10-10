@@ -13,6 +13,13 @@ namespace MapleServer2.Managers
             List<Mail> list = DatabaseManager.Mails.FindAll();
             foreach (Mail mail in list)
             {
+                if (mail.ExpiryTimestamp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                {
+                    RemoveMail(mail);
+                    DatabaseManager.Mails.Delete(mail.Id);
+                    continue;
+                }
+
                 AddMail(mail);
             }
         }

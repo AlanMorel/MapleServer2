@@ -2,6 +2,8 @@
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Classes;
+using MapleServer2.PacketHandlers.Common;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -86,8 +88,14 @@ namespace MapleServer2.PacketHandlers.Game
             //session.Player.Mailbox.ClearExpired();
 
             session.Send(MailPacket.StartOpen());
-            //session.Send(MailPacket.Test());
-            session.Send(MailPacket.Open(session.Player.Mails));
+
+            IEnumerable<List<Mail>> packetCount = ResponseKeyHandler.SplitList(session.Player.Mails, 5);
+
+            foreach (List<Mail> mails in packetCount)
+            {
+                session.Send(MailPacket.Open(mails));
+            }
+
             session.Send(MailPacket.EndOpen());
         }
 
@@ -97,36 +105,27 @@ namespace MapleServer2.PacketHandlers.Game
             string title = packet.ReadUnicodeString();
             string body = packet.ReadUnicodeString();
 
-            long recipientCharacterId = DatabaseManager.Characters.FindPartialPlayerByName(recipientName).CharacterId;
-            if (recipientCharacterId == -1)
+            if (recipientName == session.Player.Name)
+            {
+                session.Send(MailPacket.Error((byte) MailErrorCode.CannotMailYourself));
+                return;
+            }
+
+            if (!DatabaseManager.Characters.NameExists(recipientName))
             {
                 session.Send(MailPacket.Error((byte) MailErrorCode.CharacterNotFound));
                 return;
             }
 
-            Mail mail = new Mail
-            (
-                MailType.Player,
-                recipientCharacterId,
-                session.Player.CharacterId,
-                session.Player.Name,
-                title,
-                body,
-                DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-            );
-
-            session.Send(MailPacket.Send(mail));
-
-            // Check if player is online
             Player recipient = GameServer.Storage.GetPlayerByName(recipientName);
             if (recipient == null)
             {
-                return;
+                recipient = DatabaseManager.Characters.FindPartialPlayerByName(recipientName);
             }
 
-            recipient.Mails.Add(mail);
-            GameServer.MailManager.AddMail(mail);
-            recipient.GetUnreadMailCount();
+            MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", null, 0, out Mail mail);
+
+            session.Send(MailPacket.Send(mail));
         }
 
         private static void HandleRead(GameSession session, PacketReader packet)
@@ -148,26 +147,27 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleCollect(GameSession session, PacketReader packet)
         {
             long id = packet.ReadLong();
+            Mail mail = session.Player.Mails.FirstOrDefault(x => x.Id == id);
+            if (mail == null)
+            {
+                return;
+            }
 
-            // Get items and add to inventory
-            //List<Item> items = session.Player.Mailbox.Collect(id);
+            if (mail.Items.Count == 0)
+            {
+                return;
+            }
 
-            //if (items == null)
-            //{
-            //    return;
-            //}
+            foreach (Item item in mail.Items)
+            {
+                item.MailId = 0;
+                InventoryController.Add(session, item, true);
+            }
+            mail.Items.Clear();
+            DatabaseManager.Mails.Update(mail);
 
-            //foreach (Item item in items)
-            //{
-            //    session.Player.Inventory.Remove(item.Uid, out Item removed);
-            //    InventoryController.Add(session, item, true);
-
-            //    // Item packet, not sure if this is only used for mail, it also doesn't seem to do anything
-            //    session.Send(ItemPacket.ItemData(item));
-            //}
-
-            //session.Send(MailPacket.CollectedAmount(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
-            //session.Send(MailPacket.CollectResponse(id, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            session.Send(MailPacket.Collect(mail));
+            session.Send(MailPacket.UpdateReadTime(mail));
         }
 
         private static void HandleDelete(GameSession session, PacketReader packet)
@@ -202,10 +202,6 @@ namespace MapleServer2.PacketHandlers.Game
 
             for (int i = 0; i < count; i++)
             {
-                HandleRead(session, packet);
-
-                packet.Skip(-8); // Back track to reread id
-
                 HandleCollect(session, packet);
             }
         }

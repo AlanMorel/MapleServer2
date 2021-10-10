@@ -1,6 +1,4 @@
-﻿using Maple2Storage.Types;
-using MapleServer2.Enums;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 using static MapleServer2.Types.Mail;
@@ -53,7 +51,9 @@ namespace MapleServer2.Database.Classes
                 body = mail.Body,
                 read_timestamp = mail.ReadTimestamp,
                 sent_timestamp = mail.SentTimestamp,
-                expiry_timestamp = mail.ExpiryTimestamp
+                expiry_timestamp = mail.ExpiryTimestamp,
+                additional_parameter1 = mail.AdditionalParameter1,
+                additional_parameter2 = mail.AdditionalParameter2
             });
         }
 
@@ -63,7 +63,7 @@ namespace MapleServer2.Database.Classes
         {
             return new Mail()
             {
-                Id = data.Id,
+                Id = data.id,
                 Type = (MailType) data.type,
                 RecipientCharacterId = data.recipient_character_id,
                 SenderCharacterId = data.sender_character_id,
@@ -73,8 +73,8 @@ namespace MapleServer2.Database.Classes
                 SentTimestamp = data.sent_timestamp,
                 ExpiryTimestamp = data.expiry_timestamp,
                 ReadTimestamp = data.read_timestamp,
-                BlackMarketItemKey = data.black_market_item_key,
-                BlackMarketMesoKey = data.black_market_meso_key,
+                AdditionalParameter1 = data.additional_parameter1,
+                AdditionalParameter2 = data.additional_parameter2,
                 Items = DatabaseManager.Items.FindAllByMailId(data.id),
                 Mesos = data.mesos
             };

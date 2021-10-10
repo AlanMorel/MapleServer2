@@ -11,7 +11,7 @@ namespace MapleServer2.Types
         public MailType Type { get; set; }
         public long RecipientCharacterId { get; set; }
         public long SenderCharacterId { get; set; }
-        public string SenderName { get; set; } // we're including a separate variable instead of Player type because not all mail is from players
+        public string SenderName { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public long ReadTimestamp { get; set; }
@@ -19,13 +19,12 @@ namespace MapleServer2.Types
         public long ExpiryTimestamp { get; set; }
         public long Mesos { get; set; }
         public List<Item> Items = new List<Item>();
-        public string BlackMarketItemKey = "";
-        public string BlackMarketMesoKey = "";
+        public string AdditionalParameter1 = "";
+        public string AdditionalParameter2 = "";
 
         public Mail() { }
 
-        // Player Mail
-        public Mail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, long sentTimestamp)
+        public Mail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos)
         {
             Type = type;
             RecipientCharacterId = recipientCharacterId;
@@ -33,14 +32,22 @@ namespace MapleServer2.Types
             SenderName = senderName;
             Title = title;
             Body = body;
-            SentTimestamp = sentTimestamp;
-            ExpiryTimestamp = sentTimestamp + 2592000; // 30 days TODO: Change to grab from Constant.xml
+            SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            ExpiryTimestamp = SentTimestamp + 2592000; // 30 days TODO: Change to grab from Constant.xml
+            Items = items;
+            Mesos = mesos;
+            AdditionalParameter1 = addParameter1;
+            AdditionalParameter2 = addParameter2;
             Id = DatabaseManager.Mails.Insert(this);
+            foreach (Item item in items)
+            {
+                item.MailId = Id;
+                DatabaseManager.Items.Update(item);
+            }
         }
 
-        // Database
-        public Mail(long id, MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, long sentTimestamp, long expiryTimestamp, long readTimestamp, string blackMarketItemKey, 
-            string blackMarketMesoKey, List<Item> items, long mesos)
+        public Mail(long id, MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, long sentTimestamp, long expiryTimestamp, long readTimestamp, string addParameter1,
+            string addParameter2, List<Item> items, long mesos)
         {
             Id = id;
             Type = type;
@@ -52,8 +59,8 @@ namespace MapleServer2.Types
             SentTimestamp = sentTimestamp;
             ReadTimestamp = readTimestamp;
             ExpiryTimestamp = expiryTimestamp;
-            BlackMarketItemKey = blackMarketItemKey;
-            BlackMarketItemKey = blackMarketMesoKey;
+            AdditionalParameter1 = addParameter1;
+            AdditionalParameter2 = addParameter2;
             Items = items;
             Mesos = mesos;
         }
