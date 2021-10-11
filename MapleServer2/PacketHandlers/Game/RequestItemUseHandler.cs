@@ -285,12 +285,22 @@ namespace MapleServer2.PacketHandlers.Game
         {
             string targetUser = packet.ReadUnicodeString();
 
-            //TODO change this to find in DB
-            Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
-            if (otherPlayer == null)
+            if (targetUser == session.Player.Name)
+            {
+                //TODO: Find the error packet
+                return;
+            }
+
+            if (!DatabaseManager.Characters.NameExists(targetUser))
             {
                 session.Send(NoticePacket.Notice(SystemNotice.CharacterNotFound, type: NoticeType.Popup));
                 return;
+            }
+
+            Player otherPlayer = GameServer.Storage.GetPlayerByName(targetUser);
+            if (otherPlayer == null)
+            {
+                otherPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetUser);
             }
 
             Item badge = new Item(item.Function.OpenCoupleEffectBox.Id)
@@ -311,8 +321,10 @@ namespace MapleServer2.PacketHandlers.Game
                 OwnerCharacterName = otherPlayer.Name
             };
 
-            List<Item> items = new List<Item>();
-            items.Add(otherUserBadge);
+            List<Item> items = new List<Item>
+            {
+                otherUserBadge
+            };
 
             MailHelper.SendMail(MailType.System, otherPlayer.CharacterId, session.Player.CharacterId,
                 "<ms2><v key=\"s_couple_effect_mail_sender\" /></ms2>",
@@ -323,10 +335,13 @@ namespace MapleServer2.PacketHandlers.Game
                 items,
                 0, out Mail mail);
 
-            //InventoryController.Consume(session, item.Uid, 1);
+            InventoryController.Consume(session, item.Uid, 1);
             InventoryController.Add(session, badge, true);
-            List<string> noticeParameters = new List<string>();
-            noticeParameters.Add(otherPlayer.Name);
+            List<string> noticeParameters = new List<string>
+            {
+                otherPlayer.Name
+            };
+
             session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, NoticeType.ChatAndFastText, noticeParameters));
         }
 

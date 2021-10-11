@@ -85,8 +85,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session)
         {
-            //session.Player.Mailbox.ClearExpired();
-
             session.Send(MailPacket.StartOpen());
 
             IEnumerable<List<Mail>> packetCount = ResponseKeyHandler.SplitList(session.Player.Mails, 5);
