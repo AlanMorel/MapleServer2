@@ -44,20 +44,6 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public void Update(Mail mail)
-        {
-            QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
-            {
-                type = mail.Type,
-                recipient_character_id = mail.RecipientCharacterId,
-                sender_character_id = mail.SenderCharacterId,
-                sender_name = mail.SenderName,
-                title = mail.Title,
-                body = mail.Body,
-                read_timestamp = mail.ReadTimestamp
-            });
-        }
-
         public bool Delete(long id) => QueryFactory.Query(TableName).Where("id", id).Delete() == 1;
 
         private static Mail ReadMail(dynamic data)
