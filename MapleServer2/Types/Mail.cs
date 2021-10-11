@@ -1,7 +1,7 @@
 ﻿using MapleServer2.Database;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -65,18 +65,10 @@ namespace MapleServer2.Types
             Mesos = mesos;
         }
 
-        public enum MailType : byte
-        {
-            Player = 1,
-            System = 101,
-            BlackMarketSale = 102,
-            BlackMarketListingCancel = 104
-        }
-
         public void Read(GameSession session)
         {
             ReadTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            DatabaseManager.Mails.Update(this);
+            DatabaseManager.Mails.UpdateReadTime(this);
             session.Send(MailPacket.Read(this));
         }
 

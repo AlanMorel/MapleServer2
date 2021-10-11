@@ -1,14 +1,13 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
-using MapleServer2.Database.Classes;
+using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Common;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
-using static MapleServer2.Types.Mail;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -162,7 +161,7 @@ namespace MapleServer2.PacketHandlers.Game
                 InventoryController.Add(session, item, true);
             }
             mail.Items.Clear();
-            DatabaseManager.Mails.Update(mail);
+            DatabaseManager.Mails.UpdateReadTime(mail);
 
             session.Send(MailPacket.Collect(mail));
             session.Send(MailPacket.UpdateReadTime(mail));

@@ -1,9 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using static MapleServer2.Types.Mail;
 
 namespace MapleServer2.Packets
 {
@@ -51,6 +49,7 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(mail.ReadTimestamp);
             return pWriter;
         }
+
         public static Packet Collect(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);

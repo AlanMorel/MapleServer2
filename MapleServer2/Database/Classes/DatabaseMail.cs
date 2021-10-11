@@ -1,14 +1,11 @@
-﻿using MapleServer2.Types;
-using Newtonsoft.Json;
+﻿using MapleServer2.Enums;
+using MapleServer2.Types;
 using SqlKata.Execution;
-using static MapleServer2.Types.Mail;
 
 namespace MapleServer2.Database.Classes
 {
     public class DatabaseMail : DatabaseTable
     {
-        private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
-
         public DatabaseMail() : base("mails") { }
 
         public List<Mail> FindAll()
@@ -39,6 +36,14 @@ namespace MapleServer2.Database.Classes
             });
         }
 
+        public virtual void UpdateReadTime(Mail mail)
+        {
+            QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
+            {
+                read_timestamp = mail.ReadTimestamp
+            });
+        }
+
         public void Update(Mail mail)
         {
             QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
@@ -49,11 +54,7 @@ namespace MapleServer2.Database.Classes
                 sender_name = mail.SenderName,
                 title = mail.Title,
                 body = mail.Body,
-                read_timestamp = mail.ReadTimestamp,
-                sent_timestamp = mail.SentTimestamp,
-                expiry_timestamp = mail.ExpiryTimestamp,
-                additional_parameter1 = mail.AdditionalParameter1,
-                additional_parameter2 = mail.AdditionalParameter2
+                read_timestamp = mail.ReadTimestamp
             });
         }
 

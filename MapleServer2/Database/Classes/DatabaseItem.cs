@@ -107,7 +107,7 @@ namespace MapleServer2.Database.Classes
         {
             IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("mail_id", mailId).Get();
             List<Item> items = new List<Item>();
-            foreach(dynamic data in result)
+            foreach (dynamic data in result)
             {
                 items.Add((Item) ReadItem(data));
             }
