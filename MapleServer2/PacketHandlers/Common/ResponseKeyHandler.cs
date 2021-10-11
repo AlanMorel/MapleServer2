@@ -46,7 +46,7 @@ namespace MapleServer2.PacketHandlers.Common
             player.Account.BankInventory.Mesos.Session = session;
             player.Levels.Player = player;
             player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
-            player.Mails = GameServer.MailManager.GetMails(player.CharacterId);
+            player.Mailbox = GameServer.MailManager.GetMails(player.CharacterId);
 
             session.InitPlayer(player);
 

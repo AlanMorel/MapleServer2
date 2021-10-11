@@ -24,7 +24,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 return;
             }
 
-            recipient.Mails.Add(mail);
+            recipient.Mailbox.Add(mail);
             recipient.GetUnreadMailCount();
         }
     }

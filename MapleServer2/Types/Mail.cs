@@ -82,7 +82,7 @@ namespace MapleServer2.Types
 
         public void Delete(GameSession session)
         {
-            session.Player.Mails.Remove(this);
+            session.Player.Mailbox.Remove(this);
             session.Send(MailPacket.Delete(this));
             DatabaseManager.Mails.Delete(Id);
         }

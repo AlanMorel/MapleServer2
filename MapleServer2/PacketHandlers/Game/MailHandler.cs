@@ -25,7 +25,7 @@ namespace MapleServer2.PacketHandlers.Game
             Read = 0x2,
             Collect = 0xB,
             Delete = 0xD,
-            ReadBatch = 0x12, //batch?
+            ReadBatch = 0x12,
             CollectBatch = 0x13,
         }
 
@@ -87,7 +87,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             session.Send(MailPacket.StartOpen());
 
-            IEnumerable<List<Mail>> packetCount = ResponseKeyHandler.SplitList(session.Player.Mails, 5);
+            IEnumerable<List<Mail>> packetCount = ResponseKeyHandler.SplitList(session.Player.Mailbox, 5);
 
             foreach (List<Mail> mails in packetCount)
             {
@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long id = packet.ReadLong();
 
-            Mail mail = session.Player.Mails.FirstOrDefault(x => x.Id == id);
+            Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
             if (mail == null)
             {
                 return;
@@ -145,7 +145,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleCollect(GameSession session, PacketReader packet)
         {
             long id = packet.ReadLong();
-            Mail mail = session.Player.Mails.FirstOrDefault(x => x.Id == id);
+            Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
             if (mail == null)
             {
                 return;
@@ -174,7 +174,7 @@ namespace MapleServer2.PacketHandlers.Game
             for (int i = 0; i < count; i++)
             {
                 long mailId = packet.ReadLong();
-                Mail mail = session.Player.Mails.FirstOrDefault(x => x.Id == mailId);
+                Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == mailId);
                 if (mail == null)
                 {
                     continue;

@@ -106,8 +106,7 @@ namespace MapleServer2.Types
         public LockInventory LockInventory = new LockInventory();
         public HairInventory HairInventory = new HairInventory();
 
-        public List<Mail> Mails = new List<Mail>();
-        public Mailbox Mailbox = new Mailbox();
+        public List<Mail> Mailbox = new List<Mail>();
 
         public List<Buddy> BuddyList;
 
@@ -202,7 +201,7 @@ namespace MapleServer2.Types
             Emotes = new List<int>() { 90200011, 90200004, 90200024, 90200041, 90200042, 90200057, 90200043, 90200022, 90200031, 90200005, 90200006, 90200003, 90200092, 90200077, 90200073, 90200023, 90200001, 90200019, 90200020, 90200021 };
             StatPointDistribution = new StatDistribution(20);
             Inventory = new Inventory();
-            Mailbox = new Mailbox();
+            Mailbox = new List<Mail>();
             BuddyList = new List<Buddy>();
             QuestList = new List<QuestStatus>();
             GatheringCount = new List<GatheringCount>();
@@ -554,8 +553,8 @@ namespace MapleServer2.Types
 
         public void GetUnreadMailCount()
         {
-            int unreadCount = Mails.Where(x => x.ReadTimestamp == 0).Count();
-            Session.Send(MailPacket.Notify(unreadCount));
+            int unreadCount = Mailbox.Where(x => x.ReadTimestamp == 0).Count();
+            Session.Send(MailPacket.Notify(unreadCount, true));
         }
     }
 }

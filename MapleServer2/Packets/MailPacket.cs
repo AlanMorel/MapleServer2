@@ -79,12 +79,12 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Notify(int unreadCount)
+        public static Packet Notify(int unreadCount, bool alert = false)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
             pWriter.WriteEnum(MailPacketMode.Notify);
             pWriter.WriteInt(unreadCount);
-            pWriter.WriteByte(); // Unknown
+            pWriter.WriteBool(alert);
             pWriter.WriteInt(); // Unknown maybe repeat of count?
             return pWriter;
         }
@@ -100,19 +100,6 @@ namespace MapleServer2.Packets
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
             pWriter.WriteEnum(MailPacketMode.EndOpen);
-            return pWriter;
-        }
-
-        public static Packet CollectedAmount(long id, long timestamp)
-        {
-            // Not sure what the purpose of this packet is, perhaps if collect fails?
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(10); // Mode for collect success/failure? collect mode = 11
-            pWriter.WriteLong(id);
-            pWriter.WriteShort(1); // Successfully collected? 01 00
-            pWriter.WriteLong(timestamp + Environment.TickCount);
-
             return pWriter;
         }
 
@@ -157,9 +144,9 @@ namespace MapleServer2.Packets
             pWriter.WriteLong();
             pWriter.WriteLong();
 
-            bool idk2 = false;
-            pWriter.WriteBool(idk2);
-            if (idk2)
+            bool unk = false;
+            pWriter.WriteBool(unk);
+            if (unk)
             {
                 pWriter.WriteByte();
                 pWriter.WriteByte();
