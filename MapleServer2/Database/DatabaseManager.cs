@@ -46,6 +46,7 @@ namespace MapleServer2.Database
         public static DatabaseTrophy Trophies { get; private set; } = new DatabaseTrophy();
         public static DatabaseWallet Wallets { get; private set; } = new DatabaseWallet();
         public static DatabaseMail Mails { get; private set; } = new DatabaseMail();
+        public static DatabaseBlackMarketListing BlackMarketListings { get; private set; } = new DatabaseBlackMarketListing();
         public static DatabaseServer ServerInfo { get; private set; } = new DatabaseServer();
 
         static DatabaseManager()

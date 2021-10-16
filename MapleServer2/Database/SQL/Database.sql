@@ -325,6 +325,7 @@ CREATE TABLE `inventories` (
 DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items` (
   `uid` bigint NOT NULL AUTO_INCREMENT,
+  `name` text DEFAULT '',
   `level` int NOT NULL,
   `item_slot` tinyint unsigned NOT NULL,
   `gem_slot` tinyint unsigned NOT NULL,
@@ -362,6 +363,7 @@ CREATE TABLE `items` (
   `stats` text,
   `times_attributes_changed` int NOT NULL,
   `transfer_flag` tinyint unsigned NOT NULL,
+  `blackmarket_category` text,
   `transparency_badge_bools` text,
   `unlock_time` bigint NOT NULL,
   PRIMARY KEY (`uid`),
@@ -501,6 +503,30 @@ CREATE TABLE `wallets` (
   `havi_fruit` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `black_market_listings`
+--
+DROP TABLE IF EXISTS `black_market_listings`;
+CREATE TABLE `black_market_listings` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `listing_timestamp` bigint NOT NULL,
+  `expiry_timestamp` bigint NOT NULL,
+  `price` bigint NOT NULL,
+  `deposit` bigint NOT NULL,
+  `item_uid` bigint DEFAULT NULL,
+  `listed_quantity` int DEFAULT NULL,
+  `owner_account_id` bigint DEFAULT NULL,
+  `owner_character_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_black_market_listings_accountid` (`owner_account_id`),
+  KEY `ix_black_market_listings_characterid` (`owner_character_id`),
+  KEY `ix_black_market_listings_item_uid` (`item_uid`),
+  CONSTRAINT `fk_black_market_account_accountid` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_black_market_characters_characterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
+  CONSTRAINT `fk_black_market_items_itemuid` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

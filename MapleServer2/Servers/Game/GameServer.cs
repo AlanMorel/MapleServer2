@@ -22,6 +22,7 @@ namespace MapleServer2.Servers.Game
         public static readonly CommandManager CommandManager = new();
         public static readonly GlobalEventManager GlobalEventManager = new();
         public static readonly MailManager MailManager = new();
+        public static readonly BlackMarketManager BlackMarketManager = new();
 
         public GameServer(PacketRouter<GameSession> router, IComponentContext context) : base(router, context) { }
 

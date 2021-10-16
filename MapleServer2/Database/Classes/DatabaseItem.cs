@@ -16,6 +16,7 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
+                name = item.Name,
                 item.Level,
                 item_slot = (byte) item.ItemSlot,
                 gem_slot = (byte) item.GemSlot,
@@ -52,6 +53,7 @@ namespace MapleServer2.Database.Classes
                 stats = JsonConvert.SerializeObject(item.Stats, Settings),
                 times_attributes_changed = item.TimesAttributesChanged,
                 transfer_flag = item.TransferFlag,
+                blackmarket_cateogry = item.BlackMarketCategory,
                 transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
                 unlock_time = item.UnlockTime
             });
@@ -166,6 +168,7 @@ namespace MapleServer2.Database.Classes
             return new Item()
             {
                 Uid = data.uid,
+                Name = data.name,
                 Level = data.level,
                 ItemSlot = (ItemSlot) data.item_slot,
                 GemSlot = (GemSlot) data.gem_slot,
@@ -198,6 +201,7 @@ namespace MapleServer2.Database.Classes
                 Stats = JsonConvert.DeserializeObject<ItemStats>(data.stats, Settings),
                 TimesAttributesChanged = data.times_attributes_changed,
                 TransferFlag = (TransferFlag) data.transfer_flag,
+                BlackMarketCategory = data.blackmarket_category,
                 TransparencyBadgeBools = JsonConvert.DeserializeObject<byte[]>(data.transparency_badge_bools),
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,

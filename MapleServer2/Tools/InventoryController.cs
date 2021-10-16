@@ -258,9 +258,12 @@ namespace MapleServer2.Tools
         }
 
         // Todo: implement when storage and trade is implemented
-        public static void Split()
+        public static void Split(GameSession session, long uid, int splitAmount, out Item newStack)
         {
+            Item item = session.Player.Inventory.Items[uid];
+            item.TrySplit(splitAmount, out newStack);
 
+            session.Send(ItemInventoryPacket.Update(uid, item.Amount));
         }
 
         public static void ExpandInventory(GameSession session, InventoryTab tab)

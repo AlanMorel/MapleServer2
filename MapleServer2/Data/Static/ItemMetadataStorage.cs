@@ -32,6 +32,11 @@ namespace MapleServer2.Data.Static
             return map.GetValueOrDefault(itemId);
         }
 
+        public static string GetName(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Name;
+        }
+
         public static ItemSlot GetSlot(int itemId)
         {
             return map.GetValueOrDefault(itemId).Slot;
@@ -243,6 +248,11 @@ namespace MapleServer2.Data.Static
         public static int GetObjectId(int itemId)
         {
             return map.GetValueOrDefault(itemId).ObjectId;
+        }
+
+        public static string GetBlackMarketCategory(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).BlackMarketCategory;
         }
     }
 }

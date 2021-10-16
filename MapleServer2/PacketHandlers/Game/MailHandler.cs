@@ -120,7 +120,7 @@ namespace MapleServer2.PacketHandlers.Game
                 recipient = DatabaseManager.Characters.FindPartialPlayerByName(recipientName);
             }
 
-            MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", null, 0, out Mail mail);
+            MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new List<Item>(), 0, out Mail mail);
 
             session.Send(MailPacket.Send(mail));
         }

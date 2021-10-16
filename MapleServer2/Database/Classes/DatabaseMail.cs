@@ -32,6 +32,8 @@ namespace MapleServer2.Database.Classes
                 read_timestamp = mail.ReadTimestamp,
                 sent_timestamp = mail.SentTimestamp,
                 expiry_timestamp = mail.ExpiryTimestamp,
+                additional_parameter1 = mail.AdditionalParameter1,
+                additional_parameter2 = mail.AdditionalParameter2,
                 mesos = mail.Mesos,
             });
         }

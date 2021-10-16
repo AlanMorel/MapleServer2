@@ -29,11 +29,11 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteStats(item.Stats);
             pWriter.WriteInt(item.Enchants);
             pWriter.WriteInt(item.EnchantExp);
-            pWriter.WriteBool(true); // Enchant based peachy charges, otherwise always require 10 charges
+            pWriter.WriteBool(false); // Enchant based peachy charges, otherwise always require 10 charges
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteBool(item.RepackageCount > 0);
+            pWriter.WriteBool(true);
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
@@ -72,7 +72,7 @@ namespace MapleServer2.Packets.Helpers
             }
 
             // Item Transfer Data 0x058AD00
-            pWriter.WriteInt((int) item.TransferFlag);
+            pWriter.WriteInt(6);
             pWriter.WriteByte();
             pWriter.WriteInt(item.RemainingTrades);
             pWriter.WriteInt();

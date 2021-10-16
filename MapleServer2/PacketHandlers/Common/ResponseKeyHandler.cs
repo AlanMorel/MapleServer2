@@ -47,6 +47,7 @@ namespace MapleServer2.PacketHandlers.Common
             player.Levels.Player = player;
             player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
             player.Mailbox = GameServer.MailManager.GetMails(player.CharacterId);
+            player.BlackMarketListings = GameServer.BlackMarketManager.GetListings(player.CharacterId);
 
             session.InitPlayer(player);
 
