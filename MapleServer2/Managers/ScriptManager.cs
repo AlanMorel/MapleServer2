@@ -1,4 +1,4 @@
-﻿using MapleServer2.Servers.Game;
+using MapleServer2.Servers.Game;
 using MoonSharp.Interpreter;
 
 namespace MapleServer2.Managers
@@ -17,7 +17,9 @@ namespace MapleServer2.Managers
         public int GetItemCount(int itemId) => Session.Player.Inventory.Items.Values.Where(x => x.Id == itemId).Sum(x => x.Amount);
 
         public int GetPlayerJobId() => (int) Session.Player.Job;
+        
+        public int GetCurrentMapId() => Session.Player.MapId;
 
-        public bool HasQuestStarted(int questId) => Session.Player.QuestList.Any(x => x.Id == questId && x.Started == true && x.Completed == false);
+        public bool HasQuestStarted(List<int> questIds) => Session.Player.QuestList.Any(x => questIds.Contains(x.Id) && x.Started == true && x.Completed == false);
     }
 }
