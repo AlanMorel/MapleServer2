@@ -73,18 +73,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Sell(int itemId, int quantity)
+        public static Packet Sell(Item item, int quantity)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteEnum(ShopMode.Sell);
             pWriter.WriteInt(quantity);
             pWriter.WriteShort();
-            pWriter.WriteInt(itemId);
+            pWriter.WriteInt(item.Id);
             pWriter.WriteByte(1);
             pWriter.WriteByte(1);
             pWriter.WriteByte();
             pWriter.WriteInt();
-            pWriter.WriteItem(new Item(itemId, quantity));
+            pWriter.WriteItem(item);
 
             return pWriter;
         }

@@ -171,7 +171,7 @@ namespace MapleServer2.Database.Classes
                                 "characters.{*}",
                                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
                                 "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret}",
-                                "homes.{plotmap_id, plot_number, apartment_number, expiration, id as home_id}")
+                                "homes.{plot_map_id, plot_number, apartment_number, expiration, id as home_id}")
                             .FirstOrDefault());
         }
 

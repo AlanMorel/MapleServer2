@@ -23,16 +23,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Notice(SystemNotice notice, NoticeType type = NoticeType.Mint)
+        public static Packet Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null)
         {
+            parameters ??= new List<string>();
             PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
             pWriter.WriteEnum(NoticePacketMode.Send);
             pWriter.WriteShort((short) type);
             pWriter.WriteByte(0x1);
             pWriter.WriteInt(0x1);
             pWriter.WriteInt((int) notice);
-            pWriter.WriteInt();
-            pWriter.WriteShort();
+            pWriter.WriteInt(parameters.Count);
+            foreach (string parameter in parameters)
+            {
+                pWriter.WriteUnicodeString(parameter);
+            }
             return pWriter;
         }
     }

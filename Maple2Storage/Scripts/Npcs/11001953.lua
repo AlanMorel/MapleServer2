@@ -8,6 +8,5 @@
     else
         return 32
     end
-
     return 0
 end

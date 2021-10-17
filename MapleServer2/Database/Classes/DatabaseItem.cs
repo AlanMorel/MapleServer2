@@ -23,6 +23,7 @@ namespace MapleServer2.Database.Classes
                 play_count = item.PlayCount,
                 item.Amount,
                 bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                mail_id = item.MailId == 0 ? null : (int?) item.MailId,
                 repackage_count = item.RepackageCount,
                 item.Charges,
                 color = JsonConvert.SerializeObject(item.Color),
@@ -56,7 +57,17 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Item FindByUid(long uid) => ReadItem(QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault());
+        public Item FindByUid(long uid)
+        {
+            dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return ReadItem(result);
+        }
 
         public List<Item> FindAllByInventoryId(long inventoryId)
         {
@@ -92,6 +103,17 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
+        public List<Item> FindAllByMailId(long mailId)
+        {
+            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("mail_id", mailId).Get();
+            List<Item> items = new List<Item>();
+            foreach (dynamic data in result)
+            {
+                items.Add((Item) ReadItem(data));
+            }
+            return items;
+        }
+
         public void Update(Item item)
         {
             QueryFactory.Query(TableName).Where("uid", item.Uid).Update(new
@@ -103,6 +125,7 @@ namespace MapleServer2.Database.Classes
                 play_count = item.PlayCount,
                 item.Amount,
                 bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+                mail_id = item.MailId == 0 ? null : (int?) item.MailId,
                 repackage_count = item.RepackageCount,
                 item.Charges,
                 color = JsonConvert.SerializeObject(item.Color),
@@ -179,6 +202,7 @@ namespace MapleServer2.Database.Classes
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,
                 BankInventoryId = data.bank_inventory_id ?? 0,
+                MailId = data.mail_id ?? 0,
                 HomeId = data.home_id ?? 0,
             };
         }

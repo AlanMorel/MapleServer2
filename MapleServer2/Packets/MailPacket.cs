@@ -1,112 +1,161 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets.Helpers;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {
     public static class MailPacket
     {
-        public static Packet Notify(GameSession session)
+        private enum MailPacketMode : byte
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(14); // Mode for mail notification
-            pWriter.WriteInt(session.Player.Mailbox.GetUnreadCount()); // Count of unread mail
-            pWriter.WriteByte(); // Unknown
-            pWriter.WriteInt(); // Unknown maybe repeat of count?
-
-            return pWriter;
+            Open = 0x0,
+            Send = 0x1,
+            Read = 0x2,
+            Collect = 0xA,
+            UpdateReadTime = 0xB,
+            Delete = 0xD,
+            Notify = 0xE,
+            StartOpen = 0x10,
+            EndOpen = 0x11,
+            Error = 0x14,
         }
 
         public static Packet Open(List<Mail> box)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(0); // Mode
-            pWriter.WriteInt(box.Count); // Amount of mail encoded in this packet
-
-            for (int i = 0; i < box.Count; i++)
+            pWriter.WriteEnum(MailPacketMode.Open);
+            pWriter.WriteInt(box.Count);
+            foreach (Mail mail in box)
             {
-                if (box[i].Type == 1) // Regular mail
-                {
-                    pWriter = MailPacketHelper.WriteRegular(pWriter, box[i]);
-                }
-                else if (box[i].Type == 101) // System mail
-                {
-                    pWriter = MailPacketHelper.WriteSystem(pWriter, box[i]);
-                }
+                WriteMail(pWriter, mail);
             }
-
-            return pWriter;
-        }
-
-        public static Packet StartOpen()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(16);
-
-            return pWriter;
-        }
-
-        public static Packet EndOpen()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(17);
-
             return pWriter;
         }
 
         public static Packet Send(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(1); // Mode for send
-            pWriter.WriteInt(mail.Uid); // Mail uid
-            pWriter.WriteInt(0);
-
+            pWriter.WriteEnum(MailPacketMode.Send);
+            pWriter.WriteLong(mail.Id);
             return pWriter;
         }
 
-        public static Packet Read(int id, long timestamp)
+        public static Packet Read(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(2); // Mode for read
-            pWriter.WriteInt(id); // Mail uid
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(timestamp + Environment.TickCount); // Read timestamp
-
+            pWriter.WriteEnum(MailPacketMode.Read);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteLong(mail.ReadTimestamp);
             return pWriter;
         }
 
-        public static Packet CollectedAmount(int id, long timestamp)
+        public static Packet Collect(Mail mail)
         {
-            // Not sure what the purpose of this packet is, perhaps if collect fails?
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-
-            pWriter.WriteByte(10); // Mode for collect success/failure? collect mode = 11
-            pWriter.WriteInt(id); // Mail uid
-            pWriter.WriteInt(0);
-            pWriter.WriteShort(1); // Successfully collected? 01 00
-            pWriter.WriteLong(timestamp + Environment.TickCount); // Collect timestamp
-
+            pWriter.WriteEnum(MailPacketMode.Collect);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteByte(1);
+            pWriter.WriteByte();
+            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             return pWriter;
         }
 
-        public static Packet CollectResponse(int id, long timestamp)
+        public static Packet UpdateReadTime(Mail mail)
         {
-            // Collect response packet
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.UpdateReadTime);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteLong(mail.ReadTimestamp);
+            return pWriter;
+        }
 
-            pWriter.WriteByte(11); // Mode for collect
-            pWriter.WriteInt(id); // Mail uid
-            pWriter.WriteInt(0);
-            pWriter.WriteLong(timestamp + Environment.TickCount); // Collect timestamp
+        public static Packet Delete(Mail mail)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.Delete);
+            pWriter.WriteLong(mail.Id);
+            return pWriter;
+        }
 
+        public static Packet Notify(int unreadCount, bool alert = false)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.Notify);
+            pWriter.WriteInt(unreadCount);
+            pWriter.WriteBool(alert);
+            pWriter.WriteInt(); // Unknown maybe repeat of count?
+            return pWriter;
+        }
+
+        public static Packet StartOpen()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.StartOpen);
+            return pWriter;
+        }
+
+        public static Packet EndOpen()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.EndOpen);
+            return pWriter;
+        }
+
+        public static Packet Error(byte errorCode)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
+            pWriter.WriteEnum(MailPacketMode.Error);
+            pWriter.WriteByte(0x1);
+            pWriter.WriteByte(errorCode);
+            return pWriter;
+        }
+
+        public static PacketWriter WriteMail(PacketWriter pWriter, Mail mail)
+        {
+            pWriter.WriteEnum(mail.Type);
+            pWriter.WriteLong(mail.Id);
+            pWriter.WriteLong(mail.SenderCharacterId);
+            pWriter.WriteUnicodeString(mail.SenderName);
+            pWriter.WriteUnicodeString(mail.Title);
+            pWriter.WriteUnicodeString(mail.Body);
+            pWriter.WriteUnicodeString(mail.AdditionalParameter1);
+            pWriter.WriteUnicodeString(mail.AdditionalParameter2);
+
+            pWriter.WriteByte((byte) mail.Items.Count);
+            foreach (Item item in mail.Items)
+            {
+                pWriter.WriteInt(item.Id);
+                pWriter.WriteLong(item.Uid);
+                pWriter.WriteByte();
+                pWriter.WriteInt(item.Rarity);
+                pWriter.WriteInt(item.Amount);
+                pWriter.WriteLong();
+                pWriter.WriteInt();
+                pWriter.WriteLong();
+                pWriter.WriteItem(item);
+            }
+
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+
+            bool unk = false;
+            pWriter.WriteBool(unk);
+            if (unk)
+            {
+                pWriter.WriteByte();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
+                pWriter.WriteLong();
+            }
+            pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0);
+            pWriter.WriteLong(mail.ExpiryTimestamp);
+            pWriter.WriteLong(mail.SentTimestamp);
+            pWriter.WriteUnicodeString("");
             return pWriter;
         }
     }
