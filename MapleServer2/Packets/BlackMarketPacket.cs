@@ -14,6 +14,7 @@ namespace MapleServer2.Packets
             CreateListing = 0x2,
             CancelListing = 0x3,
             SearchResults = 0x4,
+            Purchase = 0x5,
             PrepareListing = 0x8,
         }
 
@@ -59,6 +60,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static Packet Purchase(long listingId, int amount)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
+            pWriter.WriteEnum(BlackMarketPacketMode.Purchase);
+            pWriter.WriteLong(listingId);
+            pWriter.WriteInt(amount);
+            return pWriter;
+        }
+
         public static Packet PrepareListing(int itemId, int rarity, int npcShopPrice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
@@ -67,7 +77,6 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(rarity);
             pWriter.WriteLong(npcShopPrice);
             return pWriter;
-
         }
 
         private static void WriteListing(PacketWriter pWriter, BlackMarketListing listing)

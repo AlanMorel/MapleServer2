@@ -68,7 +68,7 @@ namespace MapleServer2.Types
         public void Read(GameSession session)
         {
             ReadTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            DatabaseManager.Mails.UpdateReadTime(this);
+            DatabaseManager.Mails.Update(this);
             session.Send(MailPacket.Read(this));
         }
 

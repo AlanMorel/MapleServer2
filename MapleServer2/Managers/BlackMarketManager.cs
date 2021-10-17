@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Database;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers
@@ -30,28 +31,64 @@ namespace MapleServer2.Managers
 
         public List<BlackMarketListing> GetListings(long characterId) => Listings.Values.Where(b => b.OwnerCharacterId == characterId).ToList();
 
-        public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name)
+        public BlackMarketListing GetListingById(long listingId) => Listings.Values.Where(x => x.Id == listingId).FirstOrDefault();
+
+        public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
+            int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage)
         {
-            List<BlackMarketListing> results = new List<BlackMarketListing>();
+            // TODO: Only get 70 results, starting from indicated startPage
+            List<BlackMarketListing> allResults = new List<BlackMarketListing>();
             foreach (BlackMarketListing listing in Listings.Values)
             {
                 Item item = listing.Item;
-                if (!itemCategories.Contains(item.BlackMarketCategory))
-                {
-                    continue;
-                }
 
-                if (item.Level < minLevel || 
+                if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() > listing.ExpiryTimestamp ||
+                    !itemCategories.Contains(item.BlackMarketCategory) ||
+                    item.Level < minLevel ||
                     item.Level > maxLevel ||
-                    item.Rarity != rarity)
+                    item.Rarity < rarity ||
+                    item.Enchants < minEnchantLevel ||
+                    item.Enchants > maxEnchantLevel ||
+                    item.Stats.GemSockets.Count < minSockets ||
+                    item.Stats.GemSockets.Count > maxSockets ||
+                    !item.Name.ToLower().Contains(name))
                 {
                     continue;
                 }
 
-                results.Add(listing);
+                // Check job
+                if (item.RecommendJobs != null)
+                {
+                    if (jobFlag != JobFlag.All)
+                    {
+                        // Doing a switch on this because Black Market does not allow you select multiple jobs
+                        Job job = jobFlag switch
+                        {
+                            JobFlag.Beginner => Job.Beginner,
+                            JobFlag.Knight => Job.Knight,
+                            JobFlag.Berserker => Job.Berserker,
+                            JobFlag.Wizard => Job.Wizard,
+                            JobFlag.Priest => Job.Priest,
+                            JobFlag.Archer => Job.Archer,
+                            JobFlag.HeavyGunner => Job.HeavyGunner,
+                            JobFlag.Thief => Job.Thief,
+                            JobFlag.Assassin => Job.Assassin,
+                            JobFlag.Runeblade => Job.Runeblade,
+                            JobFlag.Striker => Job.Striker,
+                            JobFlag.SoulBinder => Job.SoulBinder,
+                            _ => Job.None,
+                        };
+                        if (!item.RecommendJobs.Contains(job))
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                allResults.Add(listing);
 
             }
-            return results;
+            return allResults;
         }
     }
 }

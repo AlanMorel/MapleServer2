@@ -150,20 +150,32 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (mail.Items.Count == 0)
+            if (mail.Items.Count == 0 && mail.Mesos == 0)
             {
                 return;
             }
 
-            foreach (Item item in mail.Items)
+            if (mail.Items.Count > 0)
             {
-                item.MailId = 0;
-                InventoryController.Add(session, item, true);
+                foreach (Item item in mail.Items)
+                {
+                    item.MailId = 0;
+                    InventoryController.Add(session, item, true);
+                }
+                mail.Items.Clear();
+                session.Send(MailPacket.Collect(mail));
             }
-            mail.Items.Clear();
-            DatabaseManager.Mails.UpdateReadTime(mail);
 
-            session.Send(MailPacket.Collect(mail));
+            if (mail.Mesos > 0)
+            {
+                if (!session.Player.Wallet.Meso.Modify(mail.Mesos))
+                {
+                    return;
+                }
+                mail.Mesos = 0;
+            }
+            DatabaseManager.Mails.Update(mail);
+
             session.Send(MailPacket.UpdateReadTime(mail));
         }
 

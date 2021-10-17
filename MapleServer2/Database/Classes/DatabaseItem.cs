@@ -53,7 +53,7 @@ namespace MapleServer2.Database.Classes
                 stats = JsonConvert.SerializeObject(item.Stats, Settings),
                 times_attributes_changed = item.TimesAttributesChanged,
                 transfer_flag = item.TransferFlag,
-                blackmarket_cateogry = item.BlackMarketCategory,
+                blackmarket_category = item.BlackMarketCategory,
                 transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
                 unlock_time = item.UnlockTime
             });

@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             SendNotification(mail);
         }
 
-        public static void SendBlackMarketMail(MailType type, BlackMarketListing listing, long recipientCharacterId)
+        public static void BlackMarketCancellation(BlackMarketListing listing)
         {
             string senderName = "<ms2><v key=\"s_blackmarket_mail_to_sender\" /></ms2>";
             string title = "<ms2><v key=\"s_blackmarket_mail_to_cancel_title\" /></ms2>";
@@ -31,7 +31,49 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 $"<v money=\"0\" ></v>" + // deposit refund. always 0 if cancelled
                 $"</ms2>";
 
-            Mail mail = new Mail(type, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new List<Item>() { listing.Item }, 0);
+            Mail mail = new Mail(MailType.BlackMarketListingCancel, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new List<Item>() { listing.Item }, 0);
+            GameServer.MailManager.AddMail(mail);
+            SendNotification(mail);
+        }
+
+        public static void BlackMarketTransaction(Item item, BlackMarketListing listing, long recipientCharacterId, long price)
+        {
+            // Create mail for purchaser
+            SendBlackMarketPurchaseMail(item, recipientCharacterId, price);
+
+            //Create mail for seller
+            SendBlackMarketSoldMail(listing, item, price);
+        }
+
+        private static void SendBlackMarketPurchaseMail(Item item, long recipientCharacterId, long price)
+        {
+            string senderName = "<ms2><v key=\"s_blackmarket_mail_to_sender\" /></ms2>";
+            string title = "<ms2><v key=\"s_blackmarket_mail_to_buyer_title\" /></ms2>";
+            string body = "<ms2><v key=\"s_blackmarket_mail_to_buyer_content\" /></ms2>";
+            string addParameter1 = $"<ms2><v item=\"{item.Id}\"></v></ms2>";
+            string addParameter2 = $"<ms2><v item=\"{item.Id}\" ></v><v str=\"{item.Amount}\" ></v><v money=\"{price * item.Amount}\" ></v><v money=\"{price}\" ></v></ms2>";
+
+            Console.WriteLine(addParameter2);
+
+            Mail mail = new Mail(MailType.BlackMarketSale, recipientCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new List<Item>() { item }, 0);
+            GameServer.MailManager.AddMail(mail);
+            SendNotification(mail);
+        }
+
+        private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price)
+        {
+            double salesFeeRate = 0.1; // TODO: Use from constant.xml (if it exists?)
+            long tax = (long) (salesFeeRate * (item.Amount * price));
+            long revenue = (item.Amount * price) - tax;
+
+            string senderName = "<ms2><v key=\"s_blackmarket_mail_to_sender\" /></ms2>";
+            string title = "<ms2><v key=\"s_blackmarket_mail_to_seller_title\" /></ms2>";
+            string body = "<ms2><v key=\"s_blackmarket_mail_to_seller_content\" /></ms2>";
+            string addParameter1 = $"<ms2><v item=\"{item.Id}\" ></v></ms2>";
+            string addParameter2 = $"<ms2><v item=\"{item.Id}\" ></v><v str=\"{item.Amount}\" ></v><v money=\"{price * item.Amount}\" ></v><v money=\"{price}\" ></v><v money=\"{tax}\" ></v><v str=\"{salesFeeRate * 100}%\" ></v><v money=\"{revenue}\" ></v></ms2>";
+
+            Mail mail = new Mail(MailType.BlackMarketSale, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new List<Item>() { }, revenue);
+            GameServer.MailManager.AddMail(mail);
             SendNotification(mail);
         }
 

@@ -24,6 +24,7 @@ namespace MapleServer2.PacketHandlers.Game
             CreateListing = 0x2,
             CancelListing = 0x3,
             Search = 0x4,
+            Purchase = 0x5,
             PrepareListing = 0x8,
         }
 
@@ -44,6 +45,9 @@ namespace MapleServer2.PacketHandlers.Game
                     break;
                 case BlackMarketMode.Search:
                     HandleSearch(session, packet);
+                    break;
+                case BlackMarketMode.Purchase:
+                    HandlePurchase(session, packet);
                     break;
                 case BlackMarketMode.PrepareListing:
                     HandlePrepareListing(session, packet);
@@ -143,7 +147,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(BlackMarketPacket.CancelListing(listing, false));
-            MailHelper.SendBlackMarketMail(MailType.BlackMarketListingCancel, listing, session.Player.CharacterId);
+            MailHelper.BlackMarketCancellation(listing);
         }
 
         private static void HandleSearch(GameSession session, PacketReader packet)
@@ -152,18 +156,63 @@ namespace MapleServer2.PacketHandlers.Game
             int maxCategoryId = packet.ReadInt();
             int minLevel = packet.ReadInt();
             int maxLevel = packet.ReadInt();
-            int jobFlags = packet.ReadInt();
+            JobFlag job = (JobFlag) packet.ReadInt();
             int rarity = packet.ReadInt();
-            packet.ReadInt();
-            packet.ReadInt(); // 15?
-            packet.ReadByte();
-            packet.ReadByte(); // 3?
+            int minEnchantLevel = packet.ReadInt();
+            int maxEnchantLevel = packet.ReadInt();
+            byte minSockets = packet.ReadByte();
+            byte maxSockets = packet.ReadByte();
             string name = packet.ReadUnicodeString().ToLower();
+            int startPage = packet.ReadInt();
+            packet.ReadLong(); // 21?
+            packet.ReadShort();
+            bool additionalOptionsEnabled = packet.ReadBool();
+            // TODO: Figure out how additional options are read
 
             List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
-            List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name);
+            List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
+                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage);
 
             session.Send(BlackMarketPacket.SearchResults(searchResults));
+        }
+
+        private static void HandlePurchase(GameSession session, PacketReader packet)
+        {
+            long listingId = packet.ReadLong();
+            int amount = packet.ReadInt();
+
+            BlackMarketListing listing = GameServer.BlackMarketManager.GetListingById(listingId);
+            if (listing == null)
+            {
+                return;
+            }
+
+            if (listing.Item.Amount < amount)
+            {
+                return;
+            }
+
+            if (!session.Player.Wallet.Meso.Modify(-listing.Price * amount))
+            {
+                return;
+            }
+
+            Item purchasedItem;
+            if (listing.Item.Amount == amount)
+            {
+                purchasedItem = listing.Item;
+                GameServer.BlackMarketManager.RemoveListing(listing);
+                DatabaseManager.BlackMarketListings.Delete(listing.Id);
+            }
+            else
+            {
+                InventoryController.Split(session, listing.Item.Uid, amount, out Item newStack);
+                purchasedItem = newStack;
+            }
+
+
+            MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price);
+            session.Send(BlackMarketPacket.Purchase(listingId, amount));
         }
     }
 }

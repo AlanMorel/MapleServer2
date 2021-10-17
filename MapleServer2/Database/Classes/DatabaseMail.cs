@@ -38,11 +38,12 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public virtual void UpdateReadTime(Mail mail)
+        public virtual void Update(Mail mail)
         {
             QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
             {
-                read_timestamp = mail.ReadTimestamp
+                read_timestamp = mail.ReadTimestamp,
+                mesos = mail.Mesos
             });
         }
 

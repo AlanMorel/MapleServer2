@@ -70,7 +70,6 @@ namespace GameDataParser.Parsers
                         continue;
                     }
                     string itemName = node.Attributes["name"].Value;
-                    Console.WriteLine(itemName);
                     names[itemId] = itemName;
                 }
             }

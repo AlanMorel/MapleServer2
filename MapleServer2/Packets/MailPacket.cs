@@ -136,8 +136,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteItem(item);
             }
 
-            pWriter.WriteLong();
-            pWriter.WriteLong();
+            pWriter.WriteLong(mail.Mesos);
+            pWriter.WriteLong(); // last purchase timestamp?
             pWriter.WriteLong();
             pWriter.WriteLong();
             pWriter.WriteLong();
