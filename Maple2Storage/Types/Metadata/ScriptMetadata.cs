@@ -51,21 +51,36 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 2)]
         public DialogType ButtonSet;
         [XmlElement(Order = 3)]
-        public List<int> Goto = new List<int>();
-        [XmlElement(Order = 4)]
-        public List<int> GotoFail = new List<int>();
+        public List<Distractor> Distractor;
 
         public Content() { }
 
-        public Content(List<int> gotos, List<int> gotoFail, string functionId, DialogType buttonSet)
+        public Content(string functionId, DialogType buttonSet, List<Distractor> distractor)
         {
-            Goto = gotos;
-            GotoFail = gotoFail;
+            Distractor = distractor;
             FunctionId = functionId;
             ButtonSet = buttonSet;
         }
 
-        public override string ToString() => $"FunctionId: {FunctionId}, ButtonSet: {ButtonSet}, GoTo: ({string.Join(",", Goto)}), GotoFail: ({string.Join(",", GotoFail)}";
+        public override string ToString() => $"FunctionId: {FunctionId}, ButtonSet: {ButtonSet}, Distractor: ({string.Join("\r\n", Distractor)})";
+    }
+    [XmlType]
+    public class Distractor
+    {
+        [XmlElement(Order = 1)]
+        public List<int> Goto = new List<int>();
+        [XmlElement(Order = 2)]
+        public List<int> GotoFail = new List<int>();
+
+        public Distractor() { }
+
+        public Distractor(List<int> gotos, List<int> gotoFail)
+        {
+            Goto = gotos;
+            GotoFail = gotoFail;
+        }
+
+        public override string ToString() => $"Goto: {string.Join(", ", Goto)}, GotoFail: {string.Join(", ", GotoFail)}";
     }
 
     public enum ScriptType

@@ -3,5 +3,5 @@ function getFirstScriptId()
     if jobId == 1 then
         return 10
     end
-    return jobId + 10;
+    return jobId + 10
 end

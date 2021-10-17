@@ -130,7 +130,7 @@ namespace MapleServer2.PacketHandlers.Game
             Option option = scriptMetadata.Options.First(x => x.Id == firstScriptId);
 
             DialogType dialogType = DialogType.None;
-            if (option.Contents[0].Goto.Count == 0)
+            if (option.Contents[0].Distractor is null)
             {
                 dialogType = DialogType.Close1;
             }
@@ -178,7 +178,7 @@ namespace MapleServer2.PacketHandlers.Game
                 QuestHelper.UpdateQuest(session, npcTalk.Npc.Id.ToString(), "talk_in", option.Id.ToString());
 
                 // If npc has no more options, close dialog
-                if (option.Contents.Count <= npcTalk.ContentIndex + 1 && option.Contents[npcTalk.ContentIndex].Goto.Count == 0)
+                if (option.Contents.Count <= npcTalk.ContentIndex + 1 && option.Contents[npcTalk.ContentIndex].Distractor is null)
                 {
                     session.Send(NpcTalkPacket.Close());
                     return;
@@ -197,8 +197,13 @@ namespace MapleServer2.PacketHandlers.Game
                 npcTalk.ContentIndex++;
             }
 
-            Option nextScript = scriptMetadata.Options.First(x => x.Id == nextScriptId);
-            bool hasNextScript = nextScript.Contents[npcTalk.ContentIndex].Goto.Count != 0;
+            Option nextScript = scriptMetadata.Options.FirstOrDefault(x => x.Id == nextScriptId);
+            if (nextScript is null)
+            {
+                session.Send(NpcTalkPacket.Close());
+                return;
+            }
+            bool hasNextScript = nextScript.Contents[npcTalk.ContentIndex].Distractor is not null;
             if (nextScript.Contents.Count > npcTalk.ContentIndex + 1)
             {
                 hasNextScript = true;
@@ -268,7 +273,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return option.Contents[npcTalk.ContentIndex].ButtonSet;
             }
 
-            if (option.Contents[npcTalk.ContentIndex].Goto.Count == 0)
+            if (option.Contents[npcTalk.ContentIndex].Distractor is null)
             {
                 dialogType = DialogType.CloseNext;
             }
@@ -332,30 +337,27 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             Option currentOption = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
-            if (currentOption.Contents[npcTalk.ContentIndex].Goto.Count == 0
-                || currentOption?.Contents.Count > 1 && currentOption?.Contents.Count > npcTalk.ContentIndex + 1)
+            Content content = currentOption.Contents[npcTalk.ContentIndex];
+            if (content.Distractor is null || currentOption?.Contents.Count > 1 && currentOption?.Contents.Count > npcTalk.ContentIndex + 1)
             {
                 return npcTalk.ScriptId;
             }
 
-            // If content has goto fail, use the lua scripts to check the requirements
-            if (currentOption.Contents[npcTalk.ContentIndex].GotoFail.Count > 0)
+            // If content has any goto, use the lua scripts to check the requirements
+            if (content.Distractor[index].Goto.Count > 0)
             {
                 if (scriptLoader.Script != null)
                 {
-                    DynValue result = scriptLoader.Call("handleGotoFail", currentOption.Contents[npcTalk.ContentIndex].Goto[index]);
-                    if (result == null)
+                    DynValue result = scriptLoader.Call("handleGoto", content.Distractor[index].Goto[0]);
+                    if (result is not null && (int) result.Number != -1)
                     {
-                        return 0;
+                        return (int) result.Number;
                     }
-
-                    return (int) result.Number;
                 }
             }
 
-            // TODO: check for the requirements for goto
-
-            return currentOption.Contents[npcTalk.ContentIndex].Goto[index];
+            // If there is no script just return the selected index and first goto option
+            return content.Distractor[index].Goto[0];
         }
 
         private static int GetFirstScriptId(ScriptLoader scriptLoader, ScriptMetadata scriptMetadata)
