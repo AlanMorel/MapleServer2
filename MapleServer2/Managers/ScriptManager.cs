@@ -20,6 +20,8 @@ namespace MapleServer2.Managers
 
         public int GetCurrentMapId() => Session.Player.MapId;
 
+        public bool HasQuestStarted(int questId) => Session.Player.QuestList.Any(x => x.Id == questId && x.Started == true && x.Completed == false);
+
         public bool HasQuestStarted(List<int> questIds) => Session.Player.QuestList.Any(x => questIds.Contains(x.Id) && x.Started == true && x.Completed == false);
     }
 }

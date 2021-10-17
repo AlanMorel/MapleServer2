@@ -7,5 +7,5 @@ function getFirstScriptId()
     elseif jobId == 20 then
         return 20
     end
-    return jobId + 10;
+    return jobId + 10
 end

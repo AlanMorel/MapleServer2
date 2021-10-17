@@ -1,0 +1,10 @@
+#vscode-lua-format extension
+
+keep_simple_function_one_line: false
+keep_simple_control_block_one_line: false
+column_limit: 100
+double_quote_to_single_quote: true
+extra_sep_at_table_end: true
+spaces_inside_table_braces: true
+indent_width: 4
+chop_down_kv_table: true
