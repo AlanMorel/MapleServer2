@@ -193,7 +193,7 @@ namespace MapleServer2.Data.Static
 
         public static int GetOptionLevelFactor(int itemId)
         {
-            return map.GetValueOrDefault(itemId).OptionLevelFactor;
+            return map.GetValueOrDefault(itemId)?.OptionLevelFactor ?? 0;
         }
 
         public static EquipColor GetEquipColor(int itemId)
