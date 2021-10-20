@@ -45,7 +45,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             CoordB coordB = CoordB.From((sbyte) Convert.ToByte(coordHexa[4..], 16),
                                         (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
-                                        (sbyte) Convert.ToByte(coordHexa.Substring(0, 2), 16));
+                                        (sbyte) Convert.ToByte(coordHexa[..2], 16));
 
             IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes.FirstOrDefault(cube => cube.Value.Coord == coordB.ToFloat()).Value;
             if (fieldCube is null)

@@ -6,13 +6,17 @@ using MapleServer2.Data.Static;
 
 namespace MapleServer2.Types
 {
-    public abstract class ItemStat { }
+    public abstract class ItemStat
+    {
+        public dynamic ItemAttribute;
+        public dynamic Flat;
+        public float Percent;
+    }
 
     public class NormalStat : ItemStat
     {
-        public ItemAttribute ItemAttribute;
-        public int Flat;
-        public float Percent;
+        public new ItemAttribute ItemAttribute;
+        public new int Flat;
 
         public NormalStat() { }
 
@@ -33,9 +37,8 @@ namespace MapleServer2.Types
 
     public class SpecialStat : ItemStat
     {
-        public SpecialItemAttribute ItemAttribute;
-        public float Flat;
-        public float Percent;
+        public new SpecialItemAttribute ItemAttribute;
+        public new float Flat;
 
         public SpecialStat() { }
 
