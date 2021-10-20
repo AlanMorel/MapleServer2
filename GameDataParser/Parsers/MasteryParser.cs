@@ -36,25 +36,13 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
-                        MasteryGrade newGrade = new MasteryGrade()
-                        {
-                            Grade = string.IsNullOrEmpty(grade.Attributes["grade"]?.Value)
-                                ? 0
-                                : int.Parse(grade.Attributes["grade"].Value),
-                            Value = string.IsNullOrEmpty(grade.Attributes["value"]?.Value)
-                                ? 0
-                                : long.Parse(grade.Attributes["value"].Value),
-                            RewardJobItemID = string.IsNullOrEmpty(grade.Attributes["rewardJobItemID"]?.Value)
-                                ? 0
-                                : int.Parse(grade.Attributes["rewardJobItemID"].Value),
-                            RewardJobItemRank = string.IsNullOrEmpty(grade.Attributes["rewardJobItemRank"]?.Value)
-                                ? 0
-                                : int.Parse(grade.Attributes["rewardJobItemRank"].Value),
-                            RewardJobItemCount = string.IsNullOrEmpty(grade.Attributes["rewardJobItemCount"]?.Value)
-                                ? 0
-                                : int.Parse(grade.Attributes["rewardJobItemCount"].Value),
-                            Feature = grade.Attributes["feature"]?.Value
-                        };
+                        MasteryGrade newGrade = new MasteryGrade();
+                        _ = int.TryParse(grade.Attributes["grade"]?.Value ?? "0", out newGrade.Grade);
+                        _ = long.TryParse(grade.Attributes["value"]?.Value ?? "0", out newGrade.Value);
+                        _ = int.TryParse(grade.Attributes["rewardJobItemID"]?.Value ?? "0", out newGrade.RewardJobItemID);
+                        _ = int.TryParse(grade.Attributes["rewardJobItemRank"]?.Value ?? "0", out newGrade.RewardJobItemRank);
+                        _ = int.TryParse(grade.Attributes["rewardJobItemCount"]?.Value ?? "0", out newGrade.RewardJobItemCount);
+                        newGrade.Feature = grade.Attributes["feature"]?.Value ?? "";
 
                         newMastery.Grades.Add(newGrade);
                     }

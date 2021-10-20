@@ -68,8 +68,9 @@ namespace GameDataParser.Parsers
 
                 MapBlock mapBlock = new MapBlock
                 {
-                    Coord = CoordS.From((short) cube.Position.X, (short) cube.Position.Y,
-                        (short) cube.Position.Z),
+                    Coord = CoordS.From((short) cube.Position.X,
+                                        (short) cube.Position.Y,
+                                        (short) cube.Position.Z),
                     Type = cube.CubeType,
                     SaleableGroup = cube.CubeSalableGroup,
                     Attribute = cube.MapAttribute

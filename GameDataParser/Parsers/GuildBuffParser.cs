@@ -56,6 +56,7 @@ namespace GameDataParser.Parsers
                         buffLevels[buffId] = new List<GuildBuffLevel>() { buffLevel };
                     }
                 }
+
                 foreach (KeyValuePair<int, List<GuildBuffLevel>> buffData in buffLevels)
                 {
                     GuildBuffMetadata metadata = new GuildBuffMetadata();

@@ -24,7 +24,7 @@ namespace GameDataParser.Parsers
                 XmlNodeList individualBoxItems = document.SelectNodes($"/ms2/individualDropBox");
                 foreach (XmlNode node in individualBoxItems)
                 {
-                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                    string locale = node.Attributes["locale"]?.Value ?? "";
 
                     if (locale != "NA" && locale != "")
                     {
@@ -40,20 +40,14 @@ namespace GameDataParser.Parsers
                     {
                         int.Parse(node.Attributes["item"].Value)
                     };
+
                     if (node.Attributes["item2"] != null)
                     {
                         itemIds.Add(int.Parse(node.Attributes["item2"].Value));
                     }
 
-                    if (node.Attributes["smartDropRate"] != null)
-                    {
-                        contents.SmartDropRate = int.Parse(node.Attributes["smartDropRate"].Value);
-                    }
-
-                    if (node.Attributes["enchantLevel"] != null)
-                    {
-                        contents.EnchantLevel = byte.Parse(node.Attributes["enchantLevel"].Value);
-                    }
+                    contents.SmartDropRate = int.Parse(node.Attributes["smartDropRate"]?.Value ?? "0");
+                    contents.EnchantLevel = byte.Parse(node.Attributes["enchantLevel"]?.Value ?? "0");
 
                     if (node.Attributes["isApplySmartGenderDrop"] != null)
                     {
@@ -63,12 +57,11 @@ namespace GameDataParser.Parsers
                     contents.MinAmount = float.Parse(node.Attributes["minCount"].Value);
                     contents.MaxAmount = float.Parse(node.Attributes["maxCount"].Value);
                     contents.Rarity = 1;
-                    if (node.Attributes["PackageUIShowGrade"] != null)
-                    {
-                        contents.Rarity = (byte) (string.IsNullOrEmpty(node.Attributes["PackageUIShowGrade"]?.Value) ? 1 : byte.Parse(node.Attributes["PackageUIShowGrade"].Value));
-                    }
+
+                    _ = byte.TryParse(node.Attributes["PackageUIShowGrade"]?.Value ?? "1", out contents.Rarity);
 
                     contents.ItemIds.AddRange(itemIds);
+                    DropGroup newGroup = new DropGroup();
 
                     if (itemGroups.ContainsKey(boxId))
                     {
@@ -79,20 +72,18 @@ namespace GameDataParser.Parsers
                             continue;
                         }
 
-                        DropGroup newGroup = new DropGroup();
                         newGroup.Id = dropGroupId;
                         newGroup.Contents.Add(contents);
                         itemGroups[boxId].Add(newGroup);
                         continue;
                     }
-                    else
-                    {
-                        itemGroups[boxId] = new List<DropGroup>();
-                        DropGroup newGroup = new DropGroup();
-                        newGroup.Id = dropGroupId;
-                        newGroup.Contents.Add(contents);
-                        itemGroups[boxId].Add(newGroup);
-                    }
+
+                    itemGroups[boxId] = new List<DropGroup>();
+                    newGroup = new DropGroup();
+                    newGroup.Id = dropGroupId;
+                    newGroup.Contents.Add(contents);
+                    itemGroups[boxId].Add(newGroup);
+
                 }
 
                 foreach (KeyValuePair<int, List<DropGroup>> kvp in itemGroups)

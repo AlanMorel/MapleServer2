@@ -14,7 +14,6 @@ namespace GameDataParser.Parsers
             List<ItemRepackageMetadata> items = new List<ItemRepackageMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("table/itemrepackingscroll"))
                 {
                     continue;
@@ -28,23 +27,10 @@ namespace GameDataParser.Parsers
                     metadata.Id = int.Parse(node.Attributes["id"].Value);
                     metadata.MinLevel = int.Parse(node.Attributes["minLv"].Value);
                     metadata.MaxLevel = int.Parse(node.Attributes["maxLv"].Value);
-                    if (node.Attributes["slot"].Value != "")
-                    {
-                        List<string> slots = node.Attributes["slot"].Value.Split(",").ToList();
-                        foreach (string slot in slots)
-                        {
-                            metadata.Slots.Add(int.Parse(slot));
-                        }
-                    }
-                    if (node.Attributes["petType"] != null)
-                    {
-                        metadata.PetType = int.Parse(node.Attributes["petType"].Value);
-                    }
-                    List<string> ranks = node.Attributes["rank"].Value.Split(",").ToList();
-                    foreach (string rank in ranks)
-                    {
-                        metadata.Rarities.Add(int.Parse(rank));
-                    }
+                    metadata.Slots = node.Attributes["slot"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                    metadata.PetType = int.Parse(node.Attributes["petType"]?.Value ?? "0");
+                    metadata.Rarities = node.Attributes["rank"].Value.Split(",").Select(int.Parse).ToList();
+
                     items.Add(metadata);
                 }
             }

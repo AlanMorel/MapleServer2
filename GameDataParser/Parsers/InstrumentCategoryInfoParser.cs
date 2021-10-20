@@ -14,38 +14,24 @@ namespace GameDataParser.Parsers
             List<InstrumentCategoryInfoMetadata> instrument = new List<InstrumentCategoryInfoMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("table/instrumentcategoryinfo"))
                 {
                     continue;
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/category");
+
+                foreach (XmlNode node in nodes)
                 {
                     InstrumentCategoryInfoMetadata metadata = new InstrumentCategoryInfoMetadata();
 
-                    if (node.Name == "category")
-                    {
-                        metadata.CategoryId = byte.Parse(node.Attributes["id"].Value);
+                    metadata.CategoryId = byte.Parse(node.Attributes["id"].Value);
+                    metadata.GMId = byte.Parse(node.Attributes["GMId"]?.Value ?? "0");
+                    metadata.Octave = node.Attributes["defaultOctave"]?.Value ?? "";
+                    metadata.PercussionId = byte.Parse(node.Attributes["percussionId"]?.Value ?? "0");
 
-                        if (node.Attributes["GMId"] != null)
-                        {
-                            metadata.GMId = byte.Parse(node.Attributes["GMId"].Value);
-                        }
-
-                        if (node.Attributes["defaultOctave"] != null)
-                        {
-                            metadata.Octave = node.Attributes["defaultOctave"].Value;
-                        }
-
-                        if (node.Attributes["percussionId"] != null)
-                        {
-                            metadata.PercussionId = byte.Parse(node.Attributes["percussionId"].Value);
-                        }
-
-                        instrument.Add(metadata);
-                    }
+                    instrument.Add(metadata);
                 }
             }
             return instrument;

@@ -20,62 +20,24 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode dungeonNode in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/dungeonRoom");
+
+                foreach (XmlNode dungeonNode in nodes)
                 {
                     DungeonMetadata metadata = new DungeonMetadata();
 
-                    if (dungeonNode.Name == "dungeonRoom")
-                    {
-                        metadata.DungeonRoomId = int.Parse(dungeonNode.Attributes["dungeonRoomID"]?.Value);
-                        if (dungeonNode.Attributes["limitPlayerLevel"] != null)
-                        {
-                            metadata.DungeonLevelRequirement = int.Parse(dungeonNode.Attributes["limitPlayerLevel"].Value);
-                        }
-                        if (dungeonNode.Attributes["groupType"] != null)
-                        {
-                            metadata.GroupType = dungeonNode.Attributes["groupType"].Value;
-                        }
-                        if (dungeonNode.Attributes["cooldownType"] != null)
-                        {
-                            metadata.CooldownType = dungeonNode.Attributes["cooldownType"]?.Value;
-                        }
-                        if (dungeonNode.Attributes["unionRewardID"] != null)
-                        {
-                            metadata.UnionRewardId = int.Parse(dungeonNode.Attributes["unionRewardID"].Value);
-                        }
-                        if (dungeonNode.Attributes["rewardCount"] != null)
-                        {
-                            metadata.RewardCount = short.Parse(dungeonNode.Attributes["rewardCount"].Value);
-                        }
-                        if (dungeonNode.Attributes["rewardExp"] != null)
-                        {
-                            metadata.RewardExp = int.Parse(dungeonNode.Attributes["rewardExp"].Value);
-                        }
-                        if (dungeonNode.Attributes["rewardMeso"] != null)
-                        {
-                            metadata.RewardMeso = int.Parse(dungeonNode.Attributes["rewardMeso"].Value);
-                        }
-                        if (dungeonNode.Attributes["lobbyFieldID"] != null)
-                        {
-                            metadata.LobbyFieldId = int.Parse(dungeonNode.Attributes["lobbyFieldID"].Value);
-                        }
-                        if (dungeonNode.Attributes["fieldIDs"] != null)
-                        {
-                            int[] fieldIDsList = Array.ConvertAll(dungeonNode.Attributes["fieldIDs"].Value.Split(","), int.Parse);
-                            foreach (int fieldId in fieldIDsList)
-                            {
-                                metadata.FieldIds.Add(fieldId);
-                            }
-                        }
-                        if (dungeonNode.Attributes["maxUserCount"] != null)
-                        {
-                            metadata.MaxUserCount = byte.Parse(dungeonNode.Attributes["maxUserCount"].Value);
-                        }
-                        if (dungeonNode.Attributes["limitPlayerLevel"] != null)
-                        {
-                            metadata.LimitPlayerLevel = byte.Parse(dungeonNode.Attributes["limitPlayerLevel"].Value);
-                        }
-                    }
+                    metadata.DungeonRoomId = int.Parse(dungeonNode.Attributes["dungeonRoomID"]?.Value ?? "0");
+                    metadata.DungeonLevelRequirement = int.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0");
+                    metadata.GroupType = dungeonNode.Attributes["groupType"]?.Value ?? "";
+                    metadata.CooldownType = dungeonNode.Attributes["cooldownType"]?.Value ?? "";
+                    metadata.UnionRewardId = int.Parse(dungeonNode.Attributes["unionRewardID"]?.Value ?? "0");
+                    metadata.RewardCount = short.Parse(dungeonNode.Attributes["rewardCount"]?.Value ?? "0");
+                    metadata.RewardExp = int.Parse(dungeonNode.Attributes["rewardExp"]?.Value ?? "0");
+                    metadata.RewardMeso = int.Parse(dungeonNode.Attributes["rewardMeso"]?.Value ?? "0");
+                    metadata.LobbyFieldId = int.Parse(dungeonNode.Attributes["lobbyFieldID"]?.Value ?? "0");
+                    metadata.FieldIds = dungeonNode.Attributes["fieldIDs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                    metadata.MaxUserCount = byte.Parse(dungeonNode.Attributes["maxUserCount"]?.Value ?? "0");
+                    metadata.LimitPlayerLevel = byte.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0");
 
                     dungeons.Add(metadata);
                 }

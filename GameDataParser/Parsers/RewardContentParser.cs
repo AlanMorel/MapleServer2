@@ -31,15 +31,8 @@ namespace GameDataParser.Parsers
                     {
                         RewardContentItemMetadata metadataItem = new RewardContentItemMetadata();
 
-                        if (childNode.Attributes["minLevel"] != null)
-                        {
-                            metadataItem.MinLevel = int.Parse(childNode.Attributes["minLevel"].Value);
-                        }
-
-                        if (childNode.Attributes["maxLevel"] != null)
-                        {
-                            metadataItem.MaxLevel = int.Parse(childNode.Attributes["maxLevel"].Value);
-                        }
+                        metadataItem.MinLevel = int.Parse(childNode.Attributes["minLevel"]?.Value ?? "0");
+                        metadataItem.MaxLevel = int.Parse(childNode.Attributes["maxLevel"]?.Value ?? "0");
 
                         foreach (XmlNode itemNode in childNode)
                         {
