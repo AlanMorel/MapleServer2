@@ -14,27 +14,26 @@ namespace GameDataParser.Parsers
             List<ExpMetadata> expList = new List<ExpMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("table/nextexp"))
                 {
                     continue;
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
-                {
-                    ExpMetadata expTable = new ExpMetadata();
+                XmlNodeList nodes = document.SelectNodes("/ms2/exp");
 
-                    if (node.Name == "exp")
+                foreach (XmlNode node in nodes)
+                {
+                    byte level = byte.Parse(node.Attributes["level"].Value);
+                    if (level == 0)
                     {
-                        byte level = byte.Parse(node.Attributes["level"].Value);
-                        if (level != 0)
-                        {
-                            expTable.Level = level;
-                            expTable.Experience = long.Parse(node.Attributes["value"].Value);
-                            expList.Add(expTable);
-                        }
+                        continue;
                     }
+
+                    ExpMetadata expTable = new ExpMetadata();
+                    expTable.Level = level;
+                    expTable.Experience = long.Parse(node.Attributes["value"].Value);
+                    expList.Add(expTable);
                 }
             }
 

@@ -37,7 +37,7 @@ namespace GameDataParser.Parsers
 
                 homeTemplate.Size = byte.Parse(size[0]);
                 homeTemplate.Height = byte.Parse(size[2]);
-                sbyte[] baseCoordB = Array.ConvertAll(item.Attributes["baseCubePoint3"].Value.Split(","), sbyte.Parse);
+                sbyte[] baseCoordB = item.Attributes["baseCubePoint3"].Value.Split(",").Select(sbyte.Parse).ToArray();
                 CoordF baseCoordF = CoordF.From(baseCoordB[0] * Block.BLOCK_SIZE, baseCoordB[1] * Block.BLOCK_SIZE, baseCoordB[2] * Block.BLOCK_SIZE);
 
                 XmlNodeList cubes = document.GetElementsByTagName("cube");
@@ -45,7 +45,7 @@ namespace GameDataParser.Parsers
                 {
                     int itemId = int.Parse(cube.Attributes["itemID"].Value);
 
-                    byte[] coordsB = Array.ConvertAll(cube.Attributes["offsetCubePoint3"].Value.Split(","), byte.Parse);
+                    byte[] coordsB = cube.Attributes["offsetCubePoint3"].Value.Split(",").Select(byte.Parse).ToArray();
                     CoordF cubeCoordF;
 
                     cubeCoordF = CoordF.From(coordsB[0] * Block.BLOCK_SIZE, coordsB[1] * Block.BLOCK_SIZE, coordsB[2] * Block.BLOCK_SIZE);

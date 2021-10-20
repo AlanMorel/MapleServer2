@@ -11,7 +11,6 @@ namespace GameDataParser.Parsers
 
         protected override List<ChatStickerMetadata> Parse()
         {
-            // Iterate over preset objects to later reference while iterating over exported maps
             List<ChatStickerMetadata> chatStickers = new List<ChatStickerMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
@@ -21,16 +20,15 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/chatEmoticon");
+
+                foreach (XmlNode node in nodes)
                 {
                     ChatStickerMetadata metadata = new ChatStickerMetadata();
 
-                    if (node.Name == "chatEmoticon")
-                    {
-                        metadata.StickerId = int.Parse(node.Attributes["id"].Value);
-                        metadata.GroupId = byte.Parse(node.Attributes["group_id"].Value);
-                        metadata.CategoryId = short.Parse(node.Attributes["category_id"].Value);
-                    }
+                    metadata.StickerId = int.Parse(node.Attributes["id"].Value);
+                    metadata.GroupId = byte.Parse(node.Attributes["group_id"].Value);
+                    metadata.CategoryId = short.Parse(node.Attributes["category_id"].Value);
 
                     chatStickers.Add(metadata);
                 }

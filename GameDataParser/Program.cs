@@ -38,7 +38,14 @@ namespace GameDataParser
                     exporter = (MetadataExporter) Activator.CreateInstance(parserClass);
                 }
 
-                tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t => ConsoleUtility.WriteProgressBar((float) count++ / parserClassList.Count * 100f)));
+                tasks.Add(Task.Run(() => exporter.Export()).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        throw new Exception($"Error: {t.Exception}");
+                    }
+                    ConsoleUtility.WriteProgressBar((float) count++ / parserClassList.Count * 100f);
+                }));
             }
 
             await Task.WhenAll(tasks);

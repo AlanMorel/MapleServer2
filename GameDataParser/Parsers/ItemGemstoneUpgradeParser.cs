@@ -29,11 +29,7 @@ namespace GameDataParser.Parsers
                     ItemGemstoneUpgradeMetadata metadata = new ItemGemstoneUpgradeMetadata();
                     metadata.ItemId = int.Parse(key.Attributes["ItemId"].Value);
                     metadata.GemLevel = byte.Parse(key.Attributes["GemLevel"].Value);
-
-                    if (key.Attributes["NextItemID"] != null)
-                    {
-                        metadata.NextItemId = string.IsNullOrEmpty(key.Attributes["NextItemID"]?.Value) ? 0 : int.Parse(key.Attributes["NextItemID"].Value);
-                    }
+                    _ = int.TryParse(key.Attributes["NextItemID"]?.Value ?? "0", out metadata.NextItemId);
 
                     for (int i = 1; i < 5; i++)
                     {

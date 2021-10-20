@@ -36,7 +36,7 @@ namespace GameDataParser.Parsers
                 XmlNodeList interactNodes = document.GetElementsByTagName("interact");
                 foreach (XmlNode node in interactNodes)
                 {
-                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                    string locale = node.Attributes["locale"]?.Value ?? "";
                     if (locale != "NA" && locale != "")
                     {
                         continue;
@@ -53,8 +53,7 @@ namespace GameDataParser.Parsers
 
             // Get mob spawn ID and mob spawn information from xml (can be expanded to parse other xml info)
             SpawnTagMap = new Dictionary<string, Dictionary<int, SpawnMetadata>>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files
-                .Where(entry => Regex.Match(entry.Name, "table/mapspawntag").Success))
+            foreach (PackFileEntry entry in Resources.XmlReader.Files.Where(x => x.Name.StartsWith("table/mapspawntag")))
             {
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 XmlNodeList regionNodes = document.SelectNodes("/ms2/region");
@@ -77,11 +76,10 @@ namespace GameDataParser.Parsers
                         population = 0;
                     }
 
-                    bool isPetSpawn = node.Attributes["petPopulation"] != null &&
-                                      int.Parse(node.Attributes["petPopulation"].Value) > 0;
+                    _ = int.TryParse(node.Attributes["petPopulation"]?.Value, out int petPopulation);
+                    bool isPetSpawn = petPopulation > 0;
 
-                    SpawnMetadata spawnData = new SpawnMetadata(spawnTags, population, spawnTime, difficulty,
-                        minDifficulty, isPetSpawn);
+                    SpawnMetadata spawnData = new SpawnMetadata(spawnTags, population, spawnTime, difficulty, minDifficulty, isPetSpawn);
                     if (!SpawnTagMap.ContainsKey(mapID))
                     {
                         SpawnTagMap[mapID] = new Dictionary<int, SpawnMetadata>();
@@ -339,8 +337,7 @@ namespace GameDataParser.Parsers
                     case IMS2CubeProp prop:
                         if (prop.IsObjectWeapon)
                         {
-                            List<int> weaponIds = new List<int>();
-                            weaponIds.AddRange(Array.ConvertAll(prop.ObjectWeaponItemCode.Split(","), int.Parse));
+                            List<int> weaponIds = prop.ObjectWeaponItemCode.Split(",").Select(int.Parse).ToList();
                             metadata.WeaponObjects.Add(new MapWeaponObject(CoordB.FromVector3(prop.Position), weaponIds));
                         }
                         break;
@@ -394,11 +391,7 @@ namespace GameDataParser.Parsers
 
         private InteractObjectType GetInteractObjectType(int interactId)
         {
-            if (InteractTypes.ContainsKey(interactId))
-            {
-                return InteractTypes[interactId];
-            }
-            return InteractObjectType.None;
+            return InteractTypes.ContainsKey(interactId) ? InteractTypes[interactId] : InteractObjectType.None;
         }
     }
 }

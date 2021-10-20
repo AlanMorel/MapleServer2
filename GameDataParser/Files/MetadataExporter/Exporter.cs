@@ -12,7 +12,7 @@
         protected override void Serialize()
         {
             Metadata entities = Parse();
-            Write<Metadata>(entities);
+            Write(entities);
         }
 
         protected abstract Metadata Parse();
