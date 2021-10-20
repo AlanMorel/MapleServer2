@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
 using Maple2Storage.Types;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 
 // TODO: make this class thread safe?
@@ -20,7 +21,7 @@ namespace MapleServer2.Types
 
         public readonly Dictionary<InventoryTab, short> DefaultSize = new Dictionary<InventoryTab, short> {
             { InventoryTab.Gear, 48}, { InventoryTab.Outfit, 150}, { InventoryTab.Mount, 48}, { InventoryTab.Catalyst, 48},
-            { InventoryTab.FishingMusic, 48}, { InventoryTab.Quest, 48}, { InventoryTab.Gemstone, 48}, { InventoryTab.Misc, 48},
+            { InventoryTab.FishingMusic, 48}, { InventoryTab.Quest, 48}, { InventoryTab.Gemstone, 48}, { InventoryTab.Misc, 84},
             { InventoryTab.LifeSkill, 126}, { InventoryTab.Pets, 60}, { InventoryTab.Consumable, 84}, { InventoryTab.Currency, 48},
             { InventoryTab.Badge, 60}, { InventoryTab.Lapenshard, 48}, { InventoryTab.Fragment, 48}
         };
@@ -245,6 +246,38 @@ namespace MapleServer2.Types
         private Dictionary<short, long> GetSlots(InventoryTab tab)
         {
             return SlotMaps[(int) tab];
+        }
+
+        public int GetFreeSlots(InventoryTab tab) => DefaultSize[tab] + ExtraSize[tab] - GetSlots(tab).Count;
+
+        public bool CanHold(Item item, int amount = -1)
+        {
+            int remaining = amount > 0 ? amount : item.Amount;
+            return CanHold(item.Id, remaining, item.InventoryTab);
+        }
+
+        public bool CanHold(int itemId, int amount)
+        {
+            return CanHold(itemId, amount, ItemMetadataStorage.GetTab(itemId));
+        }
+
+        private bool CanHold(int itemId, int amount, InventoryTab tab)
+        {
+            if (GetFreeSlots(tab) > 0)
+            {
+                return true;
+            }
+
+            foreach (Item i in Items.Values.Where(x => x.InventoryTab == tab && x.Id == itemId && x.StackLimit > 0))
+            {
+                int available = i.StackLimit - i.Amount;
+                amount -= available;
+                if (amount <= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
