@@ -17,6 +17,7 @@ namespace MapleServer2.Packets
             EndList = 0x04,
             DeletePending = 0x05,
             DeleteCancel = 0x06,
+            NameChange = 0x07,
         }
         public static Packet AddEntries(List<Player> players)
         {
@@ -263,6 +264,16 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(ListMode.EndList);
             pWriter.WriteBool(false);
 
+            return pWriter;
+        }
+
+        public static Packet NameChanged(long characterId, string characterName)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
+            pWriter.WriteEnum(ListMode.NameChange);
+            pWriter.WriteInt(1);
+            pWriter.WriteLong(characterId);
+            pWriter.WriteUnicodeString(characterName);
             return pWriter;
         }
     }
