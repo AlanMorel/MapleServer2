@@ -91,6 +91,9 @@ namespace MapleServer2.PacketHandlers.Game
                 case "ItemRePackingScroll":
                     HandleRepackingScroll(session, item);
                     break;
+                case "ChangeCharName":
+                    HandleNameVoucher(session, packet, item);
+                    break;
                 default:
                     Logger.Warn("Unhandled item function: " + item.Function.Name);
                     break;
@@ -413,5 +416,16 @@ namespace MapleServer2.PacketHandlers.Game
         }
 
         public static void HandleRepackingScroll(GameSession session, Item item) => session.Send(ItemRepackagePacket.Open(item.Uid));
+
+        public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
+        {
+            string characterName = packet.ReadUnicodeString();
+            session.Player.Name = characterName;
+
+            InventoryController.Consume(session, item.Uid, 1);
+
+            session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
+            // TODO: Needs to redirect player to character selection screen after pop-up
+        }
     }
 }
