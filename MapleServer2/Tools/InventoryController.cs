@@ -261,8 +261,14 @@ namespace MapleServer2.Tools
         public static void Split(GameSession session, long uid, int splitAmount, out Item newStack)
         {
             Item item = session.Player.Inventory.Items[uid];
-            item.TrySplit(splitAmount, out newStack);
-
+            item.Amount -= splitAmount;
+            newStack = new Item(item)
+            {
+                Amount = splitAmount,
+                InventoryId = 0,
+                Slot = -1
+            };
+            DatabaseManager.Items.Update(newStack);
             session.Send(ItemInventoryPacket.Update(uid, item.Amount));
         }
 

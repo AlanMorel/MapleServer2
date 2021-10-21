@@ -60,7 +60,9 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session, PacketReader packet)
         {
-            session.Send(BlackMarketPacket.Open(session.Player.BlackMarketListings));
+            // TO DO: Maybe move this out of player, query each time its opne?
+            List<BlackMarketListing> listings = GameServer.BlackMarketManager.GetListingsByCharacterId(session.Player.CharacterId);
+            session.Send(BlackMarketPacket.Open(listings));
         }
 
         private static void HandlePrepareListing(GameSession session, PacketReader packet)
@@ -90,12 +92,19 @@ namespace MapleServer2.PacketHandlers.Game
             long price = packet.ReadLong();
             int quantity = packet.ReadInt();
 
-            if (session.Player.BlackMarketListings.Count >= 28) // Max amount of listings
+            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
             {
                 return;
             }
 
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            double depositRate = 0.01; // 1% deposit rate
+            int maxDeposit = 100000;
+
+            int calculatedDeposit = (int) (depositRate * (price * quantity));
+            int deposit = Math.Min(calculatedDeposit, maxDeposit);
+
+            // User does not have enough mesos for deposit
+            if (!session.Player.Wallet.Meso.Modify(-deposit))
             {
                 return;
             }
@@ -114,24 +123,13 @@ namespace MapleServer2.PacketHandlers.Game
                 InventoryController.Split(session, itemUid, quantity, out Item newStack);
                 listingItem = newStack;
             }
-            // TODO :Fix consuming correct item
-
-            double depositRate = 0.01; // 1% deposit rate
-            int maxDeposit = 100000;
-
-            int calculatedDeposit = (int) (depositRate * (price * listingItem.Amount));
-            int deposit = Math.Min(calculatedDeposit, maxDeposit);
-
-            // User does not have enough mesos for deposit
-            if (!session.Player.Wallet.Meso.Modify(-deposit))
+            else
             {
-                return;
+                InventoryController.Consume(session, listingItem.Uid, quantity);
             }
 
-            BlackMarketListing listing = new BlackMarketListing(session.Player, listingItem, listingItem.Amount, price, deposit);
-            session.Player.BlackMarketListings.Add(listing);
+            BlackMarketListing listing = new BlackMarketListing(session.Player, listingItem, quantity, price, deposit);
 
-            InventoryController.Consume(session, listingItem.Uid, quantity);
             session.Send(BlackMarketPacket.CreateListing(listing));
         }
 
@@ -139,15 +137,23 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long listingId = packet.ReadLong();
 
-            BlackMarketListing listing = session.Player.BlackMarketListings.FirstOrDefault(x => x.Id == listingId);
+            BlackMarketListing listing = GameServer.BlackMarketManager.GetListingById(listingId);
             if (listing == null)
             {
                 session.Send(BlackMarketPacket.CancelListing(listing, true));
                 return;
             }
 
+            if (listing.OwnerCharacterId != session.Player.CharacterId)
+            {
+                return;
+            }
+
+            GameServer.BlackMarketManager.RemoveListing(listing);
+            DatabaseManager.BlackMarketListings.Delete(listingId);
             session.Send(BlackMarketPacket.CancelListing(listing, false));
             MailHelper.BlackMarketCancellation(listing);
+
         }
 
         private static void HandleSearch(GameSession session, PacketReader packet)

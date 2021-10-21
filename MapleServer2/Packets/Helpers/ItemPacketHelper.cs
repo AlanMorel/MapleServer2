@@ -72,11 +72,10 @@ namespace MapleServer2.Packets.Helpers
             }
 
             // Item Transfer Data 0x058AD00
-            pWriter.WriteInt((int) item.TransferFlag);
+            pWriter.WriteInt(6);
             pWriter.WriteByte();
-            pWriter.WriteInt(0);
+            pWriter.WriteInt();
             pWriter.WriteInt(item.RemainingTrades);
-            Console.WriteLine($"Remaining trades: {item.RemainingTrades}");
             pWriter.WriteByte();
             pWriter.WriteByte(); // 2nd flag, use to skip charbound
 

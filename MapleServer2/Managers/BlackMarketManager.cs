@@ -29,7 +29,7 @@ namespace MapleServer2.Managers
 
         public void RemoveListing(BlackMarketListing listing) => Listings.Remove(listing.Id);
 
-        public List<BlackMarketListing> GetListings(long characterId) => Listings.Values.Where(b => b.OwnerCharacterId == characterId).ToList();
+        public List<BlackMarketListing> GetListingsByCharacterId(long characterId) => Listings.Values.Where(b => b.OwnerCharacterId == characterId).ToList();
 
         public BlackMarketListing GetListingById(long listingId) => Listings.Values.Where(x => x.Id == listingId).FirstOrDefault();
 
