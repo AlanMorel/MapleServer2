@@ -425,6 +425,7 @@ namespace MapleServer2.PacketHandlers.Game
             InventoryController.Consume(session, item.Uid, 1);
 
             session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
+            // TODO: Needs to redirect player to character selection screen after pop-up
         }
     }
 }
