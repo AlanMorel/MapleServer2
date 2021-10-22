@@ -57,13 +57,7 @@ namespace Maple2Storage.Types.Metadata
             IsSpRecovery = isSpRecovery;
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(SkillId, SkillLevels, Job, CurrentLevel);
-        }
-
-        public override string ToString() =>
-            $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevels)}";
+        public override string ToString() => $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevels)}";
     }
 
     [XmlType]
@@ -119,11 +113,6 @@ namespace Maple2Storage.Types.Metadata
             SkillConditions = skillConditions;
             SkillAdditionalData = new SkillAdditionalData();
             SkillUpgrade = skillUpgrade;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Level, Spirit);
         }
 
         public override string ToString() =>
@@ -194,13 +183,7 @@ namespace Maple2Storage.Types.Metadata
             MotionEffect = motionEffect;
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(SequenceName, MotionEffect);
-        }
-
         public override string ToString() => $"SequenceName:{SequenceName},MotionEffect:{MotionEffect}";
-
     }
 
     [XmlType] // TODO: More to implement, like skill sequences, stats power up, additional MotionEffects...

@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Maple2Storage.Types;
 
 namespace GameDataParser.Files
 {
@@ -6,7 +7,7 @@ namespace GameDataParser.Files
     {
         public static bool HasValidHash(string filename)
         {
-            string hashPath = $"{Paths.HASH}/{filename}-hash";
+            string hashPath = $"{Paths.HASH_DIR}/{filename}-hash";
 
             if (!File.Exists(hashPath))
             {
@@ -21,7 +22,7 @@ namespace GameDataParser.Files
 
         public static void WriteHash(string filename)
         {
-            string hashPath = $"{Paths.HASH}/{filename}-hash";
+            string hashPath = $"{Paths.HASH_DIR}/{filename}-hash";
 
             string newHash = GetHash(filename);
 
@@ -30,7 +31,7 @@ namespace GameDataParser.Files
 
         public static string GetHash(string filename)
         {
-            string filepath = $"{Paths.OUTPUT}/{filename}";
+            string filepath = $"{Paths.RESOURCES_DIR}/{filename}";
 
             if (!File.Exists(filepath))
             {

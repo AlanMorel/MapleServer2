@@ -122,46 +122,6 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
-
-        protected bool Equals(MapEntityMetadata other)
-        {
-            return MapId == other.MapId && PlayerSpawns.SequenceEqual(other.PlayerSpawns) && MobSpawns.SequenceEqual(other.MobSpawns) && Npcs.SequenceEqual(other.Npcs) && Portals.SequenceEqual(other.Portals) && WeaponObjects.SequenceEqual(other.WeaponObjects);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((MapEntityMetadata) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(MapId, PlayerSpawns, Npcs, Portals, WeaponObjects);
-        }
-
-        public static bool operator ==(MapEntityMetadata left, MapEntityMetadata right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MapEntityMetadata left, MapEntityMetadata right)
-        {
-            return !Equals(left, right);
-        }
     }
 
     [XmlType]
@@ -184,48 +144,7 @@ namespace Maple2Storage.Types.Metadata
             WeaponItemIds = weaponIds;
         }
 
-        public override string ToString() =>
-            $"MapObject(Coord:{Coord},WeaponId:{WeaponItemIds})";
-
-        protected bool Equals(MapWeaponObject other)
-        {
-            return Coord.Equals(other.Coord) && WeaponItemIds == other.WeaponItemIds;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((MapWeaponObject) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Coord, WeaponItemIds);
-        }
-
-        public static bool operator ==(MapWeaponObject left, MapWeaponObject right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MapWeaponObject left, MapWeaponObject right)
-        {
-            return !Equals(left, right);
-        }
+        public override string ToString() => $"MapObject(Coord:{Coord},WeaponId:{WeaponItemIds})";
     }
 
     [XmlType]
@@ -266,49 +185,8 @@ namespace Maple2Storage.Types.Metadata
             IsNightDie = isNightDie;
         }
 
-        public override string ToString() =>
-            $"MapNpc(Id:{Id},ModelName:{ModelName},Rotation:{Rotation},Coord:{Coord})";
+        public override string ToString() => $"MapNpc(Id:{Id},ModelName:{ModelName},Rotation:{Rotation},Coord:{Coord})";
 
-        protected bool Equals(MapNpc other)
-        {
-            // TODO: Check instance name instead.
-            return Id == other.Id && Coord.Equals(other.Coord) && Rotation.Equals(other.Rotation);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((MapNpc) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Coord, Rotation);
-        }
-
-        public static bool operator ==(MapNpc left, MapNpc right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MapNpc left, MapNpc right)
-        {
-            return !Equals(left, right);
-        }
         // TODO: Add other methods which idenntify the Type of NPC (always, event, etc)
     }
 
@@ -357,57 +235,8 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-            $"MapPortal(Id:{Id},String:{Name},Enable:{Enable},IsVisible:{IsVisible},MinimapVisible:{MinimapVisible},Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType},TriggerId:{TriggerId})";
-
-        protected bool Equals(MapPortal other)
-        {
-            return Id == other.Id
-                   && Name == other.Name
-                   && Enable == other.Enable
-                   && IsVisible == other.IsVisible
-                   && MinimapVisible == other.MinimapVisible
-                   && Target == other.Target
-                   && Coord.Equals(other.Coord)
-                   && Rotation.Equals(other.Rotation)
-                   && TargetPortalId == other.TargetPortalId
-                   && PortalType == other.PortalType
-                   && TriggerId == other.TriggerId;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((MapPortal) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Target, Coord, Rotation);
-        }
-
-        public static bool operator ==(MapPortal left, MapPortal right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MapPortal left, MapPortal right)
-        {
-            return !Equals(left, right);
-        }
+            $"MapPortal(Id:{Id},String:{Name},Enable:{Enable},IsVisible:{IsVisible},MinimapVisible:{MinimapVisible}," +
+            $"Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType},TriggerId:{TriggerId})";
     }
 
     [XmlType]
@@ -427,8 +256,7 @@ namespace Maple2Storage.Types.Metadata
             Rotation = rotation;
         }
 
-        public override string ToString() =>
-            $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
+        public override string ToString() => $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
     }
 
     [XmlType]
@@ -459,8 +287,7 @@ namespace Maple2Storage.Types.Metadata
             SpawnData = spawnMetadata;
         }
 
-        public override string ToString() =>
-            $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
+        public override string ToString() => $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
     }
 
     [XmlType]
@@ -513,6 +340,7 @@ namespace Maple2Storage.Types.Metadata
         public List<int> ArriveAnimationTimes;
 
         public PatrolData() { }
+
         public PatrolData(string name, List<string> wayPointIds, int patrolSpeed, bool isLoop, bool isAirWayPoint, List<string> arriveAnimations, List<string> approachAnimations, List<int> arriveAnimationTimes)
         {
             Name = name;
@@ -541,6 +369,7 @@ namespace Maple2Storage.Types.Metadata
         public CoordS Rotation;
 
         public WayPoint() { }
+
         public WayPoint(string id, bool isVisible, CoordS position, CoordS rotation)
         {
             Id = id;
@@ -548,6 +377,7 @@ namespace Maple2Storage.Types.Metadata
             Position = position;
             Rotation = rotation;
         }
+
         public override string ToString() => $"PatrolData(Id:{Id},IsVisible:{IsVisible},Position:{Position},Rotation:{Rotation})";
     }
 
@@ -578,6 +408,7 @@ namespace Maple2Storage.Types.Metadata
         public CoordF Rotation;
 
         public MapEventNpcSpawnPoint() { }
+
         public MapEventNpcSpawnPoint(int id, uint count, List<string> npcIds, string spawnAnimation, float spawnRadius, CoordF position, CoordF rotation)
         {
             Id = id;
@@ -618,6 +449,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(9)]
         public bool IsVisible;
+
         public MapTriggerMesh(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
@@ -631,6 +463,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(10)]
         public bool IsVisible;
+
         public MapTriggerEffect(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
@@ -644,6 +477,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(11)]
         public bool IsEnabled;
+
         public MapTriggerCamera(int id, bool isEnabled) : base(id)
         {
             IsEnabled = isEnabled;
@@ -659,6 +493,7 @@ namespace Maple2Storage.Types.Metadata
         public CoordF Position;
         [ProtoMember(13)]
         public CoordF Dimension;
+
         public MapTriggerBox(int id, CoordF position, CoordF dimension) : base(id)
         {
             Position = position;
@@ -689,6 +524,7 @@ namespace Maple2Storage.Types.Metadata
         public bool IsVisible;
         [ProtoMember(16)]
         public string InitialSequence;
+
         public MapTriggerActor(int id, bool isVisible, string initialSequence) : base(id)
         {
             IsVisible = isVisible;
@@ -703,6 +539,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(17)]
         public bool IsVisible;
+
         public MapTriggerCube(int id, bool isVisible) : base(id)
         {
             IsVisible = isVisible;
@@ -716,6 +553,7 @@ namespace Maple2Storage.Types.Metadata
     {
         [ProtoMember(18)]
         public bool IsEnabled;
+
         public MapTriggerSound(int id, bool enabled) : base(id)
         {
             IsEnabled = enabled;
@@ -814,6 +652,7 @@ namespace Maple2Storage.Types.Metadata
         public string EntityId;
 
         public MapVibrateObject() { }
+
         public MapVibrateObject(string id)
         {
             EntityId = id;

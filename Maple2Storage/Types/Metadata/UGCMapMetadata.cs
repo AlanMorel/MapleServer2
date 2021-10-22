@@ -21,8 +21,7 @@ namespace Maple2Storage.Types.Metadata
             Groups = groups;
         }
 
-        public override string ToString() =>
-            $"UGCMapMetadata(MapId:{MapId},Groups:{Groups})";
+        public override string ToString() => $"UGCMapMetadata(MapId:{MapId},Groups:{Groups})";
     }
 
     [XmlType]
@@ -60,7 +59,7 @@ namespace Maple2Storage.Types.Metadata
         public UGCMapGroup() { }
 
         public override string ToString() =>
-    $"UGCMapGroup(Id:{Id},Price:{Price},PriceItemCode:{PriceItemCode},ExtensionPrice:{ExtensionPrice},ExtensionPriceItemCode:{ExtensionPriceItemCode},ContractDate:{ContractDate}" +
+            $"UGCMapGroup(Id:{Id},Price:{Price},PriceItemCode:{PriceItemCode},ExtensionPrice:{ExtensionPrice},ExtensionPriceItemCode:{ExtensionPriceItemCode},ContractDate:{ContractDate}" +
             $"ExtensionDate:{ExtensionDate},HeightLimit:{HeightLimit},BuildingCount:{BuildingCount},ReturnPlaceId:{ReturnPlaceId},Area:{Area},SellType:{SellType}," +
             $"BlockCode:{BlockCode},HouseNumber:{HouseNumber})";
     }

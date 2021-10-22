@@ -34,6 +34,5 @@ namespace Maple2Storage.Types.Metadata
         public List<ParserSpecialStat> SpecialStats = new List<ParserSpecialStat>();
 
         public ItemOptionsConstant() { }
-
     }
 }

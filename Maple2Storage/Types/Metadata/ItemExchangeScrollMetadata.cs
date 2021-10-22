@@ -70,7 +70,6 @@ namespace Maple2Storage.Types.Metadata
             Amount = amount;
         }
 
-        public override string ToString() =>
-            $"ItemRequirement(Id:{Id},Rarity:{Rarity},Amount:{Amount})";
+        public override string ToString() => $"ItemRequirement(Id:{Id},Rarity:{Rarity},Amount:{Amount})";
     }
 }

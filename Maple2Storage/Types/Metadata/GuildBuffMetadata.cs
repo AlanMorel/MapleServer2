@@ -12,13 +12,7 @@ namespace Maple2Storage.Types.Metadata
 
         public GuildBuffMetadata() { }
 
-        public override string ToString() =>
-            $"GuildBuff(BuffId:{BuffId},Levels:{Levels}";
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(BuffId, Levels);
-        }
+        public override string ToString() => $"GuildBuff(BuffId:{BuffId},Levels:{Levels}";
     }
 
     [XmlType]

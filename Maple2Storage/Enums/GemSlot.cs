@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Maple2Storage.Types
+namespace Maple2Storage.Enums
 {
     public enum GemSlot : byte
     {

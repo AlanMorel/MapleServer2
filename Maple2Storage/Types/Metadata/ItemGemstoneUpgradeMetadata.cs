@@ -18,7 +18,6 @@ namespace Maple2Storage.Types.Metadata
 
         public ItemGemstoneUpgradeMetadata() { }
 
-        public override string ToString() =>
-    $"ItemGemstoneUpgradeMetadata(ItemId:{ItemId},GemLevel:{GemLevel},NextItemId{NextItemId})";
+        public override string ToString() => $"ItemGemstoneUpgradeMetadata(ItemId:{ItemId},GemLevel:{GemLevel},NextItemId{NextItemId})";
     }
 }
