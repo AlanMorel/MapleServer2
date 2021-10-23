@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-repackage-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-repackage-metadata");
             List<ItemRepackageMetadata> items = Serializer.Deserialize<List<ItemRepackageMetadata>>(stream);
             foreach (ItemRepackageMetadata item in items)
             {

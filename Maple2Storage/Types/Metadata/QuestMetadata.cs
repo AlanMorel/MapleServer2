@@ -47,14 +47,12 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestMetadata() { }
 
-        public override string ToString()
-        {
-            return $"Feature: {Feature}, Locale: {Locale}, Basic: {Basic}, Notify: {Notify},  Require: {Require}," +
-                $" StartNpc: {StartNpc}, CompleteNpc: {CompleteNpc},  Reward: {Reward}, QuestRewardItem: {string.Join(",", RewardItem)},  " +
-                $"ProgressMap: {string.Join(",", ProgressMap)}, Guide: {Guide}, Npc: {Npc}, Dungeon: {Dungeon}, RemoteAccept: {RemoteAccept}, " +
-                $"RemoteComplete: {RemoteComplete}, SummonPortal: {SummonPortal}, Event: {Event}, Condition: {string.Join(",", Condition)}, " +
-                $"Navigation: {string.Join(",", Navigation)}";
-        }
+        public override string ToString() =>
+            $"Feature: {Feature}, Locale: {Locale}, Basic: {Basic}, Notify: {Notify},  Require: {Require}," +
+            $" StartNpc: {StartNpc}, CompleteNpc: {CompleteNpc},  Reward: {Reward}, QuestRewardItem: {string.Join(",", RewardItem)},  " +
+            $"ProgressMap: {string.Join(",", ProgressMap)}, Guide: {Guide}, Npc: {Npc}, Dungeon: {Dungeon}, RemoteAccept: {RemoteAccept}, " +
+            $"RemoteComplete: {RemoteComplete}, SummonPortal: {SummonPortal}, Event: {Event}, Condition: {string.Join(",", Condition)}, " +
+            $"Navigation: {string.Join(",", Navigation)}";
     }
 
 
@@ -94,13 +92,11 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestBasic() { }
 
-        public override string ToString()
-        {
-            return $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
-                $"autoStart: {AutoStart}, disableGiveup: {DisableGiveup}, exceptChapterClear: {ExceptChapterClear}, repeatable: {Repeatable}, " +
-                $"usePeriod: {UsePeriod}, eventTag: {EventTag}, locking: {Locking}, tabIndex: {TabIndex}, forceRegistGuide: {ForceRegistGuide}, " +
-                $"useNavi: {UseNavigation}";
-        }
+        public override string ToString() =>
+            $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
+            $"autoStart: {AutoStart}, disableGiveup: {DisableGiveup}, exceptChapterClear: {ExceptChapterClear}, repeatable: {Repeatable}, " +
+            $"usePeriod: {UsePeriod}, eventTag: {EventTag}, locking: {Locking}, tabIndex: {TabIndex}, forceRegistGuide: {ForceRegistGuide}, " +
+            $"useNavi: {UseNavigation}";
     }
 
     [XmlType]
@@ -115,11 +111,8 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestNotify() { }
 
-        public override string ToString()
-        {
-            return $"\r\ncompleteUiEffect: {CompleteUiEffect}, acceptSoundKey: {AcceptSoundKey}, completeSoundKey: {CompleteSoundKey}";
-        }
-
+        public override string ToString() =>
+            $"\r\ncompleteUiEffect: {CompleteUiEffect}, acceptSoundKey: {AcceptSoundKey}, completeSoundKey: {CompleteSoundKey}";
     }
 
     [XmlType]
@@ -152,12 +145,10 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestRequire() { }
 
-        public override string ToString()
-        {
-            return $"\r\nLevel: {Level}, maxLevel: {MaxLevel}, job: {string.Join(", ", Job)}, quest: {string.Join(", ", RequiredQuests)}, " +
-                $"selectableQuest: {string.Join(", ", SelectableQuest)}, unrequire: {string.Join(", ", Unrequire)}, field: {Field}, achievement: {Achievement}, " +
-                $"unreqAchievement: {string.Join(", ", UnreqAchievement)}, groupID: {GroupID}, dayOfWeek: {DayOfWeek}, gearScore: {GearScore}";
-        }
+        public override string ToString() =>
+            $"\r\nLevel: {Level}, maxLevel: {MaxLevel}, job: {string.Join(", ", Job)}, quest: {string.Join(", ", RequiredQuests)}, " +
+            $"selectableQuest: {string.Join(", ", SelectableQuest)}, unrequire: {string.Join(", ", Unrequire)}, field: {Field}, achievement: {Achievement}, " +
+            $"unreqAchievement: {string.Join(", ", UnreqAchievement)}, groupID: {GroupID}, dayOfWeek: {DayOfWeek}, gearScore: {GearScore}";
     }
 
     [XmlType]
@@ -176,11 +167,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestReward() { }
 
-        public override string ToString()
-        {
-            return $"\r\nexp: {Exp}, relativeExp: {RelativeExp}, money: {Money}, karma: {Karma}, lu: {Lu}";
-        }
-
+        public override string ToString() => $"\r\nexp: {Exp}, relativeExp: {RelativeExp}, money: {Money}, karma: {Karma}, lu: {Lu}";
     }
 
     [XmlType]
@@ -202,10 +189,7 @@ namespace Maple2Storage.Types.Metadata
             Count = pCount;
         }
 
-        public override string ToString()
-        {
-            return $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}";
-        }
+        public override string ToString() => $"\r\nItemId: {Code}, rank: {Rank}, count: {Count}";
     }
 
     [XmlType]
@@ -224,10 +208,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestGuide() { }
 
-        public override string ToString()
-        {
-            return $"\r\nguideType: {Type}, guideIcon: {Icon}, guideMinLevel: {MinLevel}, guideMaxLevel: {MaxLevel}, guideGroup: {Group}";
-        }
+        public override string ToString() => $"\r\nguideType: {Type}, guideIcon: {Icon}, guideMinLevel: {MinLevel}, guideMaxLevel: {MaxLevel}, guideGroup: {Group}";
     }
 
     [XmlType]
@@ -242,11 +223,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestNpc() { }
 
-        public override string ToString()
-        {
-            return $"\r\nenable: {Enable}, gotoField: {GoToField}, gotoPortal: {GoToPortal}";
-        }
-
+        public override string ToString() => $"\r\nenable: {Enable}, gotoField: {GoToField}, gotoPortal: {GoToPortal}";
     }
 
     [XmlType]
@@ -261,11 +238,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestDungeon() { }
 
-        public override string ToString()
-        {
-            return $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceID}";
-        }
-
+        public override string ToString() => $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceID}";
     }
 
     [XmlType]
@@ -278,10 +251,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestRemoteAccept() { }
 
-        public override string ToString()
-        {
-            return $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}";
-        }
+        public override string ToString() => $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}";
     }
 
     [XmlType]
@@ -296,10 +266,7 @@ namespace Maple2Storage.Types.Metadata
 
         public QuestRemoteComplete() { }
 
-        public override string ToString()
-        {
-            return $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}, requireDungeonClear: {RequireDungeonClear}";
-        }
+        public override string ToString() => $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}, requireDungeonClear: {RequireDungeonClear}";
     }
 
     [XmlType]
@@ -311,10 +278,7 @@ namespace Maple2Storage.Types.Metadata
         public int PortalID;
         public QuestSummonPortal() { }
 
-        public override string ToString()
-        {
-            return $"\r\nfieldID: {FieldID}, portalID: {PortalID}";
-        }
+        public override string ToString() => $"\r\nfieldID: {FieldID}, portalID: {PortalID}";
     }
 
     [XmlType]
@@ -339,10 +303,7 @@ namespace Maple2Storage.Types.Metadata
             Target = target;
         }
 
-        public override string ToString()
-        {
-            return $"\r\ntype: {Type}, codes: {Codes}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
-        }
+        public override string ToString() => $"\r\ntype: {Type}, codes: {Codes}, Goal: {Goal}, Targets: {string.Join(",", Target)}";
     }
 
     [XmlType]
@@ -364,9 +325,6 @@ namespace Maple2Storage.Types.Metadata
             Map = map;
         }
 
-        public override string ToString()
-        {
-            return $"\r\ntype: {Type}, code: {Code}, value: {Map}";
-        }
+        public override string ToString() => $"\r\ntype: {Type}, code: {Code}, value: {Map}";
     }
 }

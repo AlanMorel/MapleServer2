@@ -4,6 +4,7 @@ using System.Reflection;
 using GameDataParser.Files;
 using Maple2Storage.Extensions;
 using Maple2Storage.Tools;
+using Maple2Storage.Types;
 
 namespace GameDataParser
 {
@@ -14,8 +15,8 @@ namespace GameDataParser
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
             // Create Resources folders if they don't exist
-            Directory.CreateDirectory(Paths.INPUT);
-            Directory.CreateDirectory(Paths.OUTPUT);
+            Directory.CreateDirectory(Paths.RESOURCES_INPUT_DIR);
+            Directory.CreateDirectory(Paths.RESOURCES_DIR);
             Stopwatch runtime = Stopwatch.StartNew();
 
             object resources = Activator.CreateInstance(typeof(MetadataResources));

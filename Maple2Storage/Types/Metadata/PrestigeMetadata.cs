@@ -14,13 +14,7 @@ namespace Maple2Storage.Types.Metadata
             Rewards = new List<PrestigeReward>();
         }
 
-        public override string ToString() =>
-            $"PrestigeMetadata(Rewards:{string.Join(",", Rewards)})";
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Rewards);
-        }
+        public override string ToString() => $"PrestigeMetadata(Rewards:{string.Join(",", Rewards)})";
     }
 
     [XmlType]
@@ -46,12 +40,6 @@ namespace Maple2Storage.Types.Metadata
             Value = value;
         }
 
-        public override string ToString() =>
-            $"PrestigeReward(Level:{Level},Type:{Type},Id:{Id},Value:{Value})";
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Level, Type, Id, Value);
-        }
+        public override string ToString() => $"PrestigeReward(Level:{Level},Type:{Type},Id:{Id},Value:{Value})";
     }
 }

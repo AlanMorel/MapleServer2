@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using MoonSharp.Interpreter;

@@ -9,7 +9,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            string json = File.ReadAllText($"{Paths.JSON}/FishingRewards.json");
+            string json = File.ReadAllText($"{Paths.JSON_DIR}/FishingRewards.json");
             List<FishingRewardItem> items = JsonConvert.DeserializeObject<List<FishingRewardItem>>(json);
             foreach (FishingRewardItem item in items)
             {

@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            string json = File.ReadAllText($"{Paths.JSON}/OXQuizQuestions.json");
+            string json = File.ReadAllText($"{Paths.JSON_DIR}/OXQuizQuestions.json");
             List<OXQuizQuestion> items = JsonConvert.DeserializeObject<List<OXQuizQuestion>>(json);
             foreach (OXQuizQuestion item in items)
             {

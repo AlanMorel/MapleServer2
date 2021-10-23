@@ -95,48 +95,6 @@ namespace Maple2Storage.Types.Metadata
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
             $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
             $"Tag:{Tag},ShopID:{ShopID}";
-
-        protected bool Equals(ItemMetadata other)
-        {
-            return Id == other.Id && Slot == other.Slot && Gem == other.Gem && Tab == other.Tab && Rarity == other.Rarity &&
-            StackLimit == other.StackLimit && IsTwoHand == other.IsTwoHand && IsTemplate == other.IsTemplate && other.IsCustomScore == IsCustomScore
-            && PlayCount == other.PlayCount && FileName == other.FileName && SkillID == other.SkillID;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((ItemMetadata) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Slot, Gem, Tab, Rarity, StackLimit);
-        }
-
-        public static bool operator ==(ItemMetadata left, ItemMetadata right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(ItemMetadata left, ItemMetadata right)
-        {
-            return !Equals(left, right);
-        }
     }
 
     [XmlType]
@@ -193,47 +151,6 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() => $"Function(Name: {Name}, Id: {Id}";
-
-        protected bool Equals(ItemFunction other)
-        {
-            return Name == other.Name &&
-                Id == other.Id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((ItemFunction) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Name);
-        }
-
-        public static bool operator ==(ItemFunction left, ItemFunction right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(ItemFunction left, ItemFunction right)
-        {
-            return !Equals(left, right);
-        }
     }
 
     [XmlType]
@@ -349,17 +266,6 @@ namespace Maple2Storage.Types.Metadata
         public int Duration;
 
         public InstallBillboard() { }
-
-        protected bool Equals(InstallBillboard other)
-        {
-            return InteractId == other.InteractId &&
-                Model == other.Model &&
-                Asset == other.Asset &&
-                NormalState == other.NormalState &&
-                Reactable == other.Reactable &&
-                Scale == other.Scale &&
-                Duration == other.Duration;
-        }
 
         public override string ToString() => $"AdBalloonData(InteractId:{InteractId}, Model:{Model}, Asset:{Asset}, " +
             $"NormalState:{NormalState}, Reactable:{Reactable}, Scale:{Scale}, Duration:{Duration})";

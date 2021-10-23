@@ -68,13 +68,7 @@ namespace Maple2Storage.Types.Metadata
 
         public NpcMetadata() { }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Coord, Rotation);
-        }
-
-        public override string ToString() =>
-            $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Friendly},IsShop:{Kind == 13},ShopId:{ShopId})";
+        public override string ToString() => $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Friendly},IsShop:{Kind == 13},ShopId:{ShopId})";
     }
 
     [XmlType]

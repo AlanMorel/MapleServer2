@@ -11,7 +11,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-script-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-script-metadata");
             List<ScriptMetadata> items = Serializer.Deserialize<List<ScriptMetadata>>(stream);
             foreach (ScriptMetadata item in items)
             {

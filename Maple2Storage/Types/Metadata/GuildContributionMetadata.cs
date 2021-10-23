@@ -18,12 +18,6 @@ namespace Maple2Storage.Types.Metadata
             Value = value;
         }
 
-        public override string ToString() =>
-            $"GuildContribution(Type:{Type},Value:{Value})";
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Type, Value);
-        }
+        public override string ToString() => $"GuildContribution(Type:{Type},Value:{Value})";
     }
 }

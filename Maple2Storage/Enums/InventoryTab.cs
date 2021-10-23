@@ -1,4 +1,4 @@
-﻿namespace Maple2Storage.Types
+﻿namespace Maple2Storage.Enums
 {
     public enum InventoryTab : byte
     {

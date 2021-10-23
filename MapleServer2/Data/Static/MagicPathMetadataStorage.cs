@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-magicpath-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-magicpath-metadata");
             List<MagicPathMetadata> magicPathList = Serializer.Deserialize<List<MagicPathMetadata>>(stream);
             foreach (MagicPathMetadata magicPath in magicPathList)
             {
