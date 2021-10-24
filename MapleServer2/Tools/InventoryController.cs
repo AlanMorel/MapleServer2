@@ -211,7 +211,6 @@ namespace MapleServer2.Tools
                 else // Removes item
                 {
                     session.Send(ItemInventoryPacket.Remove(uid));
-                    DatabaseManager.Items.Delete(droppedItem.Uid);
                 }
                 session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
             }
@@ -257,7 +256,6 @@ namespace MapleServer2.Tools
             session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
         }
 
-        // Todo: implement when storage and trade is implemented
         public static void Split(GameSession session, long uid, int splitAmount, out Item newStack)
         {
             Item item = session.Player.Inventory.Items[uid];
@@ -268,7 +266,7 @@ namespace MapleServer2.Tools
                 InventoryId = 0,
                 Slot = -1
             };
-            DatabaseManager.Items.Update(newStack);
+            newStack.Uid = DatabaseManager.Items.Insert(newStack);
             session.Send(ItemInventoryPacket.Update(uid, item.Amount));
         }
 

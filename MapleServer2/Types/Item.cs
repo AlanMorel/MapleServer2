@@ -153,6 +153,7 @@ namespace MapleServer2.Types
             OwnerCharacterName = other.OwnerCharacterName;
             InventoryId = other.InventoryId;
             BankInventoryId = other.BankInventoryId;
+            BlackMarketCategory = other.BlackMarketCategory;
             HomeId = other.HomeId;
             Color = other.Color;
             HairData = other.HairData;

@@ -1,4 +1,6 @@
-﻿using MapleServer2.Types;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Enums;
+using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes
@@ -22,12 +24,11 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public BlackMarketListing FindById(long id) => ReadListing(QueryFactory.Query(TableName).Where("id", id).FirstOrDefault());
-
         public List<BlackMarketListing> FindAll()
         {
             IEnumerable<dynamic> result = QueryFactory.Query(TableName).Get();
             List<BlackMarketListing> listings = new List<BlackMarketListing>();
+
             foreach (dynamic data in result)
             {
                 listings.Add(ReadListing(data));

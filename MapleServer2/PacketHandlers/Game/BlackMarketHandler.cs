@@ -28,6 +28,20 @@ namespace MapleServer2.PacketHandlers.Game
             PrepareListing = 0x8,
         }
 
+        private enum BlackMarketError : int
+        {
+            FailedToListItem = 0x05,
+            ItemNotInInventory = 0x0E,
+            ItemCannotBeListed = 0x20,
+            OneMinuteRestriction = 0x25,
+            Fatigue = 0x26,
+            CannotUseBlackMarket = 0x27,
+            QuantityNotAvailable = 0x29,
+            CannotPurchaseOwnItems = 0x2A,
+            RequiredLevelToList = 0x2B,
+            RequiredLevelToBuy = 0x2C,
+        }
+
         public override void Handle(GameSession session, PacketReader packet)
         {
             BlackMarketMode mode = (BlackMarketMode) packet.ReadByte();
@@ -60,7 +74,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleOpen(GameSession session, PacketReader packet)
         {
-            // TO DO: Maybe move this out of player, query each time its opne?
             List<BlackMarketListing> listings = GameServer.BlackMarketManager.GetListingsByCharacterId(session.Player.CharacterId);
             session.Send(BlackMarketPacket.Open(listings));
         }
@@ -94,6 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (!session.Player.Inventory.Items.ContainsKey(itemUid))
             {
+                session.Send(BlackMarketPacket.Error((int) BlackMarketError.ItemNotInInventory));
                 return;
             }
 
@@ -103,7 +117,6 @@ namespace MapleServer2.PacketHandlers.Game
             int calculatedDeposit = (int) (depositRate * (price * quantity));
             int deposit = Math.Min(calculatedDeposit, maxDeposit);
 
-            // User does not have enough mesos for deposit
             if (!session.Player.Wallet.Meso.Modify(-deposit))
             {
                 return;
@@ -121,6 +134,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (item.Amount > quantity)
             {
                 InventoryController.Split(session, itemUid, quantity, out Item newStack);
+                Console.WriteLine($"Item Category: {newStack.BlackMarketCategory}");
                 listingItem = newStack;
             }
             else
@@ -129,7 +143,6 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             BlackMarketListing listing = new BlackMarketListing(session.Player, listingItem, quantity, price, deposit);
-
             session.Send(BlackMarketPacket.CreateListing(listing));
         }
 
@@ -149,11 +162,10 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            GameServer.BlackMarketManager.RemoveListing(listing);
             DatabaseManager.BlackMarketListings.Delete(listingId);
+            GameServer.BlackMarketManager.RemoveListing(listing);
             session.Send(BlackMarketPacket.CancelListing(listing, false));
             MailHelper.BlackMarketCancellation(listing);
-
         }
 
         private static void HandleSearch(GameSession session, PacketReader packet)
@@ -193,8 +205,15 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
+            if (listing.OwnerAccountId == session.Player.AccountId)
+            {
+                session.Send(BlackMarketPacket.Error((int) BlackMarketError.CannotPurchaseOwnItems));
+                return;
+            }
+
             if (listing.Item.Amount < amount)
             {
+                session.Send(BlackMarketPacket.Error((int) BlackMarketError.QuantityNotAvailable));
                 return;
             }
 
@@ -204,20 +223,26 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             Item purchasedItem;
+            bool removeListing = false;
             if (listing.Item.Amount == amount)
             {
                 purchasedItem = listing.Item;
                 GameServer.BlackMarketManager.RemoveListing(listing);
                 DatabaseManager.BlackMarketListings.Delete(listing.Id);
+                removeListing = true;
             }
             else
             {
-                InventoryController.Split(session, listing.Item.Uid, amount, out Item newStack);
-                purchasedItem = newStack;
+                listing.Item.Amount -= amount;
+                Item newItem = new Item(listing.Item)
+                {
+                    Amount = amount,
+                };
+                DatabaseManager.Items.Insert(newItem);
+                purchasedItem = newItem;
             }
 
-
-            MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price);
+            MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
             session.Send(BlackMarketPacket.Purchase(listingId, amount));
         }
     }

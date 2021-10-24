@@ -10,12 +10,25 @@ namespace MapleServer2.Packets
     {
         private enum BlackMarketPacketMode : byte
         {
+            Error = 0x0,
             Open = 0x1,
             CreateListing = 0x2,
             CancelListing = 0x3,
             SearchResults = 0x4,
             Purchase = 0x5,
             PrepareListing = 0x8,
+        }
+
+        public static Packet Error(int errorCode, int itemId = 0, int itemLevel = 0)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
+            pWriter.WriteEnum(BlackMarketPacketMode.Error);
+            pWriter.WriteByte(0);
+            pWriter.WriteInt(errorCode);
+            pWriter.WriteLong();
+            pWriter.WriteInt(itemId);
+            pWriter.WriteInt(itemLevel);
+            return pWriter;
         }
 
         public static Packet Open(List<BlackMarketListing> listings)
@@ -36,7 +49,6 @@ namespace MapleServer2.Packets
             pWriter.WriteEnum(BlackMarketPacketMode.CreateListing);
             WriteListing(pWriter, listing);
             return pWriter;
-
         }
 
         public static Packet CancelListing(BlackMarketListing listing, bool isSold)

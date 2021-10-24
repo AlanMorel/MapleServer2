@@ -14,13 +14,6 @@ namespace MapleServer2.Managers
             List<BlackMarketListing> list = DatabaseManager.BlackMarketListings.FindAll();
             foreach (BlackMarketListing listing in list)
             {
-                if (listing.ExpiryTimestamp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
-                {
-                    RemoveListing(listing);
-                    DatabaseManager.BlackMarketListings.Delete(listing.Id);
-                    continue;
-                }
-
                 AddListing(listing);
             }
         }
@@ -31,7 +24,9 @@ namespace MapleServer2.Managers
 
         public List<BlackMarketListing> GetListingsByCharacterId(long characterId) => Listings.Values.Where(b => b.OwnerCharacterId == characterId).ToList();
 
-        public BlackMarketListing GetListingById(long listingId) => Listings.Values.Where(x => x.Id == listingId).FirstOrDefault();
+        public BlackMarketListing GetListingByItemUid(long uid) => Listings.Values.FirstOrDefault(b => b.Item.Uid == uid);
+
+        public BlackMarketListing GetListingById(long listingId) => Listings.Values.FirstOrDefault(x => x.Id == listingId);
 
         public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
             int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage)
@@ -88,7 +83,12 @@ namespace MapleServer2.Managers
                 allResults.Add(listing);
 
             }
-            return allResults;
+            int count = startPage * 7 - 7;
+            int offset = count;
+            int limit = 70 + Math.Min(0, count);
+            List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
+
+            return results;
         }
     }
 }
