@@ -82,26 +82,27 @@ namespace MapleServer2.Managers
                 allResults.Add(listing);
 
             }
-            int count = startPage * 7 - 7;
-            int offset = count;
-            int limit = 70 + Math.Min(0, count);
-            List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
 
             switch (sort)
             {
                 case 21: // low to high price
-                    results = results.OrderBy(x => x.Price).ToList();
+                    allResults = allResults.OrderBy(x => x.Price).ToList();
                     break;
                 case 22: // high to low price
-                    results = results.OrderByDescending(x => x.Price).ToList();
+                    allResults = allResults.OrderByDescending(x => x.Price).ToList();
                     break;
                 case 11: // low to high level
-                    results = results.OrderBy(x => x.Item.Level).ToList();
+                    allResults = allResults.OrderBy(x => x.Item.Level).ToList();
                     break;
                 case 12: // high to low level
-                    results = results.OrderByDescending(x => x.Item.Level).ToList();
+                    allResults = allResults.OrderByDescending(x => x.Item.Level).ToList();
                     break;
             }
+
+            int count = startPage * 7 - 7;
+            int offset = count;
+            int limit = 70 + Math.Min(0, count);
+            List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
 
             return results;
         }
