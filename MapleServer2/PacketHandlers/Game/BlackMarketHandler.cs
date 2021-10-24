@@ -152,7 +152,6 @@ namespace MapleServer2.PacketHandlers.Game
             BlackMarketListing listing = GameServer.BlackMarketManager.GetListingById(listingId);
             if (listing == null)
             {
-                session.Send(BlackMarketPacket.CancelListing(listing, true));
                 return;
             }
 
