@@ -160,6 +160,7 @@ namespace MapleServer2.PacketHandlers.Game
                 foreach (Item item in mail.Items)
                 {
                     item.MailId = 0;
+                    DatabaseManager.Items.Update(item);
                     InventoryController.Add(session, item, true);
                 }
                 mail.Items.Clear();

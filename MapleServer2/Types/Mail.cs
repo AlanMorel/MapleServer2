@@ -74,6 +74,14 @@ namespace MapleServer2.Types
 
         public void Delete(GameSession session)
         {
+            if (Items.Count > 0)
+            {
+                foreach (Item item in Items)
+                {
+                    DatabaseManager.Items.Delete(item.Uid);
+                }
+            }
+
             session.Player.Mailbox.Remove(this);
             session.Send(MailPacket.Delete(this));
             DatabaseManager.Mails.Delete(Id);
