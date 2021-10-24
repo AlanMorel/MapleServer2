@@ -83,18 +83,19 @@ namespace MapleServer2.Managers
 
             }
 
-            switch (sort)
+            BlackMarketSort blackmarketSort = (BlackMarketSort) sort;
+            switch (blackmarketSort)
             {
-                case 21: // low to high price
+                case BlackMarketSort.PriceLowToHigh:
                     allResults = allResults.OrderBy(x => x.Price).ToList();
                     break;
-                case 22: // high to low price
+                case BlackMarketSort.PriceHighToLow:
                     allResults = allResults.OrderByDescending(x => x.Price).ToList();
                     break;
-                case 11: // low to high level
+                case BlackMarketSort.LevelLowToHigh:
                     allResults = allResults.OrderBy(x => x.Item.Level).ToList();
                     break;
-                case 12: // high to low level
+                case BlackMarketSort.LevelHighToLow:
                     allResults = allResults.OrderByDescending(x => x.Item.Level).ToList();
                     break;
             }
@@ -105,6 +106,14 @@ namespace MapleServer2.Managers
             List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
 
             return results;
+        }
+
+        private enum BlackMarketSort : long
+        {
+            LevelLowToHigh = 11,
+            LevelHighToLow = 12,
+            PriceLowToHigh = 21,
+            PriceHighToLow = 22
         }
     }
 }
