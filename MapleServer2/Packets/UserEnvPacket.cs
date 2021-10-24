@@ -98,6 +98,7 @@ namespace MapleServer2.Packets
                 pWriter.WriteInt(gathering.RecipeId);
                 pWriter.WriteInt(gathering.CurrentCount);
             }
+            pWriter.WriteInt();
 
             return pWriter;
         }

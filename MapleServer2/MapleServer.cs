@@ -101,7 +101,12 @@ namespace MapleServer2
 
                         break;
                     case "resolve":
+                        // How to use inside the PacketStructureResolver class
                         PacketStructureResolver resolver = PacketStructureResolver.Parse(input[1]);
+                        if (resolver is null)
+                        {
+                            break;
+                        }
                         GameSession first = GameServer.GetSessions().Single();
                         resolver.Start(first);
                         break;
