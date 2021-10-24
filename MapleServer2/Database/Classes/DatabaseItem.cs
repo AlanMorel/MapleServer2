@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -205,6 +206,7 @@ namespace MapleServer2.Database.Classes
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,
                 BankInventoryId = data.bank_inventory_id ?? 0,
+                BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(data.id),
                 MailId = data.mail_id ?? 0,
                 HomeId = data.home_id ?? 0,
             };
