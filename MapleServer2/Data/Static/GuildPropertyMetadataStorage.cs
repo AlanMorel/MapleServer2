@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-guild-property-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-property-metadata");
             List<GuildPropertyMetadata> items = Serializer.Deserialize<List<GuildPropertyMetadata>>(stream);
             foreach (GuildPropertyMetadata item in items)
             {

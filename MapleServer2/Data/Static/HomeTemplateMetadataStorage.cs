@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-home-template-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-home-template-metadata");
             List<HomeTemplateMetadata> homeTemplates = Serializer.Deserialize<List<HomeTemplateMetadata>>(stream);
             foreach (HomeTemplateMetadata template in homeTemplates)
             {

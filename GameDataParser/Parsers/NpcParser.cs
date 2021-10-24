@@ -96,28 +96,15 @@ namespace GameDataParser.Parsers
                 metadata.TemplateId = int.TryParse(npcBasicNode.Attributes["illust"]?.Value, out _) ? int.Parse(npcBasicNode.Attributes["illust"].Value) : 0;
                 metadata.Friendly = byte.Parse(npcBasicNode.Attributes["friendly"].Value);
                 metadata.Level = byte.Parse(npcBasicNode.Attributes["level"].Value);
-                if (npcBasicNode.Attributes["npcAttackGroup"] != null)
-                {
-                    metadata.NpcMetadataBasic.NpcAttackGroup = sbyte.Parse(npcBasicNode.Attributes["npcAttackGroup"].Value);
-                }
-                if (npcBasicNode.Attributes["npcDefenseGroup"] != null)
-                {
-                    metadata.NpcMetadataBasic.NpcDefenseGroup = sbyte.Parse(npcBasicNode.Attributes["npcDefenseGroup"].Value);
-                }
-                if (npcBasicNode.Attributes["difficulty"] != null)
-                {
-                    metadata.NpcMetadataBasic.Difficulty = ushort.Parse(npcBasicNode.Attributes["difficulty"].Value);
-                }
-                if (npcBasicNode.Attributes["maxSpawnCount"] != null)
-                {
-                    metadata.NpcMetadataBasic.MaxSpawnCount = byte.Parse(npcBasicNode.Attributes["maxSpawnCount"].Value);
-                }
-                if (npcBasicNode.Attributes["groupSpawnCount"] != null)
-                {
-                    metadata.NpcMetadataBasic.GroupSpawnCount = byte.Parse(npcBasicNode.Attributes["groupSpawnCount"].Value);
-                }
-                metadata.NpcMetadataBasic.MainTags = string.IsNullOrEmpty(npcBasicNode.Attributes["mainTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["mainTags"].Value.Split(",").Select(p => p.Trim()).ToArray();
-                metadata.NpcMetadataBasic.SubTags = string.IsNullOrEmpty(npcBasicNode.Attributes["subTags"].Value) ? Array.Empty<string>() : npcBasicNode.Attributes["subTags"].Value.Split(",").Select(p => p.Trim()).ToArray();
+
+                metadata.NpcMetadataBasic.NpcAttackGroup = sbyte.Parse(npcBasicNode.Attributes["npcAttackGroup"]?.Value ?? "0");
+                metadata.NpcMetadataBasic.NpcDefenseGroup = sbyte.Parse(npcBasicNode.Attributes["npcDefenseGroup"]?.Value ?? "0");
+                metadata.NpcMetadataBasic.Difficulty = ushort.Parse(npcBasicNode.Attributes["difficulty"]?.Value ?? "0");
+                metadata.NpcMetadataBasic.MaxSpawnCount = byte.Parse(npcBasicNode.Attributes["maxSpawnCount"]?.Value ?? "0");
+
+                metadata.NpcMetadataBasic.GroupSpawnCount = byte.Parse(npcBasicNode.Attributes["groupSpawnCount"]?.Value ?? "0");
+                metadata.NpcMetadataBasic.MainTags = npcBasicNode.Attributes["mainTags"]?.Value.Split(",").Select(p => p.Trim()).ToArray() ?? Array.Empty<string>();
+                metadata.NpcMetadataBasic.SubTags = npcBasicNode.Attributes["subTags"]?.Value.Split(",").Select(p => p.Trim()).ToArray() ?? Array.Empty<string>();
                 metadata.NpcMetadataBasic.Class = byte.Parse(npcBasicNode.Attributes["class"].Value);
                 metadata.NpcMetadataBasic.Kind = ushort.Parse(npcBasicNode.Attributes["kind"].Value);
                 metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
@@ -133,21 +120,21 @@ namespace GameDataParser.Parsers
                 // metadata.AggroRangeDown = ;
 
                 // Parse skill
-                metadata.SkillIds = string.IsNullOrEmpty(npcSkillNode.Attributes["ids"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcSkillNode.Attributes["ids"].Value.Split(","), int.Parse);
+                metadata.SkillIds = npcSkillNode.Attributes["ids"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
                 if (metadata.SkillIds.Length > 0)
                 {
-                    metadata.SkillLevels = string.IsNullOrEmpty(npcSkillNode.Attributes["levels"].Value) ? Array.Empty<byte>() : Array.ConvertAll(npcSkillNode.Attributes["levels"].Value.Split(","), byte.Parse);
-                    metadata.SkillPriorities = string.IsNullOrEmpty(npcSkillNode.Attributes["priorities"].Value) ? Array.Empty<byte>() : Array.ConvertAll(npcSkillNode.Attributes["priorities"].Value.Split(","), byte.Parse);
-                    metadata.SkillProbs = string.IsNullOrEmpty(npcSkillNode.Attributes["probs"].Value) ? Array.Empty<short>() : Array.ConvertAll(npcSkillNode.Attributes["probs"].Value.Split(","), short.Parse);
+                    metadata.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
+                    metadata.SkillPriorities = npcSkillNode.Attributes["priorities"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
+                    metadata.SkillProbs = npcSkillNode.Attributes["probs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(short.Parse).ToArray();
                     metadata.SkillCooldown = short.Parse(npcSkillNode.Attributes["coolDown"].Value);
                 }
 
                 // Parse normal state
                 List<(string, NpcAction, short)> normalActions = new List<(string, NpcAction, short)>();
-                string[] normalActionIds = string.IsNullOrEmpty(npcNormalNode.Attributes["action"].Value) ? Array.Empty<string>() : npcNormalNode.Attributes["action"].Value.Split(",");
+                string[] normalActionIds = npcNormalNode.Attributes["action"]?.Value.Split(",") ?? Array.Empty<string>();
                 if (normalActionIds.Length > 0)
                 {
-                    short[] actionProbs = string.IsNullOrEmpty(npcNormalNode.Attributes["prob"].Value) ? Array.Empty<short>() : Array.ConvertAll(npcNormalNode.Attributes["prob"].Value.Split(","), short.Parse);
+                    short[] actionProbs = npcNormalNode.Attributes["prob"]?.Value.Split(",").Select(short.Parse).ToArray();
                     for (int i = 0; i < normalActionIds.Length; i++)
                     {
                         normalActions.Add((normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
@@ -158,7 +145,7 @@ namespace GameDataParser.Parsers
 
                 // Parse dead state
                 List<(string, NpcAction, short)> deadActions = new List<(string, NpcAction, short)>();
-                string[] deadActionIds = string.IsNullOrEmpty(npcDeadNode.Attributes["defaultaction"].Value) ? Array.Empty<string>() : npcDeadNode.Attributes["defaultaction"].Value.Split(",");
+                string[] deadActionIds = npcDeadNode.Attributes["defaultaction"]?.Value.Split(",") ?? Array.Empty<string>();
                 if (deadActionIds.Length > 0)
                 {
                     int equalProb = 10000 / deadActionIds.Length;
@@ -176,7 +163,7 @@ namespace GameDataParser.Parsers
                 metadata.Experience = (customExpValue >= 0) ? customExpValue : (int) levelExp[metadata.Level].Experience;
                 metadata.NpcMetadataDead.Time = float.Parse(npcDeadNode.Attributes["time"].Value);
                 metadata.NpcMetadataDead.Actions = npcDeadNode.Attributes["defaultaction"].Value.Split(",");
-                metadata.GlobalDropBoxIds = string.IsNullOrEmpty(npcDropItemNode.Attributes["globalDropBoxId"].Value) ? Array.Empty<int>() : Array.ConvertAll(npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse);
+                metadata.GlobalDropBoxIds = npcDropItemNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
                 metadata.Kind = short.Parse(npcBasicNode.Attributes["kind"].Value);
                 metadata.ShopId = int.Parse(npcBasicNode.Attributes["shopId"].Value);
                 npcs.Add(metadata);

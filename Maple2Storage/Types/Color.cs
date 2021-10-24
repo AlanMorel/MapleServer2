@@ -27,12 +27,9 @@ namespace Maple2Storage.Types
             };
         }
 
-        public override string ToString() => $"ARGB({Alpha:X2}, {Red:X2}, {Green:X2}, {Blue:X2})";
+        public static Color FromBytes(byte[] byteArray) => Argb(byteArray[0], byteArray[1], byteArray[2], byteArray[3]);
 
-        public static Color FromBytes(byte[] byteArray)
-        {
-            return Argb(byteArray[0], byteArray[1], byteArray[2], byteArray[3]);
-        }
+        public override string ToString() => $"ARGB({Alpha:X2}, {Red:X2}, {Green:X2}, {Blue:X2})";
     }
 
     [StructLayout(LayoutKind.Sequential, Size = 8)]
@@ -84,8 +81,7 @@ namespace Maple2Storage.Types
             };
         }
 
-        public override string ToString() =>
-            $"Primary:{Primary}, Secondary:{Secondary}, Tertiary:{Tertiary}";
+        public override string ToString() => $"Primary:{Primary}, Secondary:{Secondary}, Tertiary:{Tertiary}";
     }
 
     [XmlType]
@@ -119,7 +115,6 @@ namespace Maple2Storage.Types
             };
         }
 
-        public override string ToString() =>
-            $"Color:{Color}, Index:{Index}, Palette:{Palette}";
+        public override string ToString() => $"Color:{Color}, Index:{Index}, Palette:{Palette}";
     }
 }

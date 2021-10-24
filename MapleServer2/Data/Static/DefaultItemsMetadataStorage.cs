@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-default-items-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-default-items-metadata");
             List<DefaultItemsMetadata> items = Serializer.Deserialize<List<DefaultItemsMetadata>>(stream);
             foreach (DefaultItemsMetadata item in items)
             {

@@ -11,27 +11,24 @@ namespace GameDataParser.Parsers
 
         protected override List<InsigniaMetadata> Parse()
         {
-            // Iterate over preset objects to later reference while iterating over exported maps
             List<InsigniaMetadata> insignias = new List<InsigniaMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("table/nametagsymbol"))
                 {
                     continue;
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/symbol");
+
+                foreach (XmlNode node in nodes)
                 {
                     InsigniaMetadata metadata = new InsigniaMetadata();
 
-                    if (node.Name == "symbol")
-                    {
-                        metadata.InsigniaId = short.Parse(node.Attributes["id"].Value);
-                        metadata.ConditionType = node.Attributes["conditionType"].Value;
-                        metadata.TitleId = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? 0 : int.Parse(node.Attributes["code"].Value);
-                    }
+                    metadata.InsigniaId = short.Parse(node.Attributes["id"].Value);
+                    metadata.ConditionType = node.Attributes["conditionType"].Value;
+                    _ = int.TryParse(node.Attributes["code"]?.Value ?? "0", out metadata.TitleId);
 
                     insignias.Add(metadata);
                 }

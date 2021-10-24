@@ -1,4 +1,4 @@
-﻿function handleGotoFail(nextScript)
+﻿function handleGoto(nextScript)
     if nextScript == 31 and Helper.GetItemCount(30000610) >= 1 then
         return 31
     elseif nextScript == 10 and Helper.GetItemCount(30000610) >= 10 then
@@ -8,6 +8,5 @@
     else
         return 32
     end
-
     return 0
 end

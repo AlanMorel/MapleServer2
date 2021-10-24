@@ -21,7 +21,6 @@ namespace Maple2Storage.Types.Metadata
             ScoreCount = scoreCount;
         }
 
-        public override string ToString() =>
-    $"InstrumentInfo(InstrumentId:{InstrumentId},Category:{Category},ScoreCount:{ScoreCount})";
+        public override string ToString() => $"InstrumentInfo(InstrumentId:{InstrumentId},Category:{Category},ScoreCount:{ScoreCount})";
     }
 }

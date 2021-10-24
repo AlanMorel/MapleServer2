@@ -11,7 +11,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-quest-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-quest-metadata");
             List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
             foreach (QuestMetadata item in items)
             {

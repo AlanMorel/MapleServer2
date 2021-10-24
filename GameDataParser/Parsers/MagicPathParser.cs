@@ -29,35 +29,15 @@ namespace GameDataParser.Parsers
                     long id = long.Parse(pathType.Attributes["id"]?.Value ?? "0");
 
                     List<MagicPathMove> pathMoves = new List<MagicPathMove>();
-                    CoordF fireOffsetPosition = CoordF.From(0, 0, 0);
-                    CoordF direction = CoordF.From(0, 0, 0);
-                    CoordF controlValue0 = CoordF.From(0, 0, 0);
-                    CoordF controlValue1 = CoordF.From(0, 0, 0);
-
                     XmlNodeList pathMoveList = pathType.SelectNodes("move");
                     foreach (XmlNode pathMove in pathMoveList)
                     {
                         int rotation = int.Parse(pathMove.Attributes["rotation"]?.Value ?? "0");
 
-                        if (pathMove.Attributes["fireOffsetPosition"] != null)
-                        {
-                            fireOffsetPosition = ParseCoordWithoutLastChar(pathMove.Attributes["fireOffsetPosition"]?.Value ?? "0");
-                        }
-
-                        if (pathMove.Attributes["direction"] != null)
-                        {
-                            direction = ParseCoordWithDuplicateDot(pathMove.Attributes["direction"].Value ?? "0");
-                        }
-
-                        if (pathMove.Attributes["controlValue0"] != null)
-                        {
-                            controlValue0 = ParseCoordFromString(pathMove.Attributes["controlValue0"].Value ?? "0");
-                        }
-
-                        if (pathMove.Attributes["controlValue1"] != null)
-                        {
-                            controlValue1 = ParseCoordFromString(pathMove.Attributes["controlValue1"].Value ?? "0");
-                        }
+                        CoordF fireOffsetPosition = ParseCoordWithoutLastChar(pathMove.Attributes["fireOffsetPosition"]?.Value ?? "0,0,");
+                        CoordF direction = ParseCoordWithDuplicateDot(pathMove.Attributes["direction"]?.Value ?? "0");
+                        CoordF controlValue0 = ParseCoordFromString(pathMove.Attributes["controlValue0"]?.Value ?? "0,0,0");
+                        CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes["controlValue1"]?.Value ?? "0,0,0");
 
                         bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] != null;
 
@@ -85,17 +65,11 @@ namespace GameDataParser.Parsers
 
         public static CoordF ParseCoordWithoutLastChar(string input)
         {
-            float[] floatArray = new float[input.Length];
-
             if (input.EndsWith(','))
             {
-                string tempString = input.Remove(input.Length - 1);
-                return ParseCoordFromString(tempString);
+                return ParseCoordFromString(input.Remove(input.Length - 1));
             }
-            else
-            {
-                return ParseCoordFromString(input);
-            }
+            return ParseCoordFromString(input);
         }
 
         public static CoordF ParseCoordFromString(string input)

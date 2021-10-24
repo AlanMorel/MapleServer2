@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;

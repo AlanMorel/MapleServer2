@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-function-cube-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-function-cube-metadata");
             List<FunctionCubeMetadata> list = Serializer.Deserialize<List<FunctionCubeMetadata>>(stream);
             foreach (FunctionCubeMetadata metadata in list)
             {

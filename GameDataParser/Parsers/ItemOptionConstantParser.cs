@@ -14,6 +14,7 @@ namespace GameDataParser.Parsers
         {
             List<ItemOptionConstantMetadata> items = new List<ItemOptionConstantMetadata>();
             Dictionary<int, List<ItemOptionsConstant>> itemOptionsConstant = new Dictionary<int, List<ItemOptionsConstant>>();
+
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("itemoption/constant"))
@@ -26,7 +27,7 @@ namespace GameDataParser.Parsers
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
                 foreach (XmlNode node in nodeList)
                 {
-                    int id = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? 0 : int.Parse(node.Attributes["code"].Value);
+                    int id = int.Parse(node.Attributes["code"]?.Value ?? "0");
                     ItemOptionsConstant constant = new ItemOptionsConstant();
 
                     foreach (XmlNode item in node.Attributes)
@@ -36,7 +37,7 @@ namespace GameDataParser.Parsers
                             case "code":
                                 break;
                             case "grade":
-                                constant.Rarity = (byte) (string.IsNullOrEmpty(node.Attributes["grade"]?.Value) ? 0 : byte.Parse(node.Attributes["grade"].Value));
+                                constant.Rarity = byte.Parse(node.Attributes["grade"]?.Value ?? "0");
                                 break;
                             case "abp_rate_base":
                                 constant.Stats.Add(new ParserStat(ItemAttribute.PerfectGuard, float.Parse(node.Attributes[item.Name].Value)));
@@ -339,6 +340,7 @@ namespace GameDataParser.Parsers
                         itemOptionsConstant[id] = new List<ItemOptionsConstant>() { constant };
                     }
                 }
+
                 foreach (KeyValuePair<int, List<ItemOptionsConstant>> optionsData in itemOptionsConstant)
                 {
                     ItemOptionConstantMetadata metadata = new ItemOptionConstantMetadata();

@@ -11,7 +11,7 @@ namespace GameDataParser.Parsers
 
         protected override List<PremiumClubDailyBenefitMetadata> Parse()
         {
-            List<PremiumClubDailyBenefitMetadata> benefit = new List<PremiumClubDailyBenefitMetadata>();
+            List<PremiumClubDailyBenefitMetadata> metadataList = new List<PremiumClubDailyBenefitMetadata>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
             {
                 if (!entry.Name.StartsWith("table/vipbenefititemtable"))
@@ -20,21 +20,21 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/benefit");
+
+                foreach (XmlNode node in nodes)
                 {
                     PremiumClubDailyBenefitMetadata metadata = new PremiumClubDailyBenefitMetadata();
 
-                    if (node.Name == "benefit")
-                    {
-                        metadata.BenefitId = int.Parse(node.Attributes["id"].Value);
-                        metadata.ItemId = int.Parse(node.Attributes["itemID"].Value);
-                        metadata.ItemAmount = short.Parse(node.Attributes["itemCount"].Value);
-                        metadata.ItemRarity = byte.Parse(node.Attributes["itemRank"].Value);
-                        benefit.Add(metadata);
-                    }
+                    metadata.BenefitId = int.Parse(node.Attributes["id"].Value);
+                    metadata.ItemId = int.Parse(node.Attributes["itemID"].Value);
+                    metadata.ItemAmount = short.Parse(node.Attributes["itemCount"].Value);
+                    metadata.ItemRarity = byte.Parse(node.Attributes["itemRank"].Value);
+
+                    metadataList.Add(metadata);
                 }
             }
-            return benefit;
+            return metadataList;
         }
     }
 }

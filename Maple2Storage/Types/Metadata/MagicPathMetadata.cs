@@ -40,10 +40,7 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 6)]
         public readonly bool IgnoreAdjust;
 
-        public MagicPathMove()
-        {
-
-        }
+        public MagicPathMove() { }
 
         public MagicPathMove(int rotation, CoordF fireOffsetPosition, CoordF direction, CoordF controlValue0, CoordF controlValue1, bool ignoreAdjust)
         {

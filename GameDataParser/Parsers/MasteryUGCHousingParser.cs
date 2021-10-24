@@ -26,7 +26,7 @@ namespace GameDataParser.Parsers
 
                     metadata.Grade = byte.Parse(node.Attributes["grade"].Value);
                     metadata.MasteryRequired = short.Parse(node.Attributes["value"].Value);
-                    metadata.ItemId = string.IsNullOrEmpty(node.Attributes["rewardJobItemID"].Value) ? 0 : int.Parse(node.Attributes["rewardJobItemID"].Value);
+                    _ = int.TryParse(node.Attributes["rewardJobItemID"]?.Value ?? "0", out metadata.ItemId);
 
                     metadataList.Add(metadata);
                 }

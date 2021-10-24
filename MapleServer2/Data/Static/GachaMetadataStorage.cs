@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-gacha-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-gacha-metadata");
             List<GachaMetadata> items = Serializer.Deserialize<List<GachaMetadata>>(stream);
             foreach (GachaMetadata item in items)
             {

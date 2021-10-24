@@ -12,7 +12,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-skill-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-skill-metadata");
             List<SkillMetadata> skillList = Serializer.Deserialize<List<SkillMetadata>>(stream);
             foreach (SkillMetadata skills in skillList)
             {

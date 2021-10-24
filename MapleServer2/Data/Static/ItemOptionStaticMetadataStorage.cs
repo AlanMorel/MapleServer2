@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-option-static-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-option-static-metadata");
             List<ItemOptionStaticMetadata> items = Serializer.Deserialize<List<ItemOptionStaticMetadata>>(stream);
             foreach (ItemOptionStaticMetadata item in items)
             {

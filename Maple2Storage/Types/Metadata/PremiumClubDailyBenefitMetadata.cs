@@ -24,7 +24,6 @@ namespace Maple2Storage.Types.Metadata
             ItemAmount = itemAmount;
         }
 
-        public override string ToString() =>
-    $"ItemRequirement(BenefitId:{BenefitId},ItemId:{ItemId},ItemRarity:{ItemRarity},ItemAmount:{ItemAmount})";
+        public override string ToString() => $"ItemRequirement(BenefitId:{BenefitId},ItemId:{ItemId},ItemRarity:{ItemRarity},ItemAmount:{ItemAmount})";
     }
 }

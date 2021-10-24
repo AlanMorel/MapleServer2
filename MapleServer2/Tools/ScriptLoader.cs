@@ -65,6 +65,11 @@ namespace MapleServer2.Tools
                 Logger.Error(ex.Message);
                 return null;
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                return null;
+            }
         }
     }
 }

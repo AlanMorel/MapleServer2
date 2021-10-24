@@ -40,10 +40,7 @@ namespace GameDataParser.Parsers
                     group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
                     group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
                     group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
-                    if (node.Attributes["returnPlaceID"] != null)
-                    {
-                        group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"].Value);
-                    }
+                    group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"]?.Value ?? "0");
                     group.Area = short.Parse(node.Attributes["area"].Value);
                     group.SellType = byte.Parse(node.Attributes["sellType"].Value);
                     group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);

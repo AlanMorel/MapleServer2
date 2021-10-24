@@ -26,95 +26,48 @@ namespace GameDataParser.Parsers
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
                 foreach (XmlNode node in nodeList)
                 {
-                    int id = string.IsNullOrEmpty(node.Attributes["code"]?.Value) ? 0 : int.Parse(node.Attributes["code"].Value);
+                    _ = int.TryParse(node.Attributes["code"]?.Value ?? "0", out int id);
                     ItemOptionsStatic optionsStatic = new ItemOptionsStatic();
 
                     foreach (XmlNode item in node.Attributes)
                     {
                         switch (item.Name)
                         {
-                            case "code":
-                                break;
                             case "grade":
-                                optionsStatic.Rarity = (byte) (string.IsNullOrEmpty(node.Attributes["grade"]?.Value) ? 0 : byte.Parse(node.Attributes["grade"].Value));
+                                _ = byte.TryParse(node.Attributes["grade"]?.Value ?? "0", out optionsStatic.Rarity);
                                 break;
                             case "optionNumPick":
-                                optionsStatic.Slots = Array.ConvertAll(node.Attributes[item.Name].Value.Split(","), byte.Parse);
+                                optionsStatic.Slots = node.Attributes[item.Name].Value.Split(",").Select(byte.Parse).ToArray();
                                 break;
                             case "abp_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PerfectGuard, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PerfectGuard, float.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PerfectGuard, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "asp_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.AttackSpeed, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.AttackSpeed, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.AttackSpeed, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "atp_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Accuracy, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Accuracy, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Accuracy, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "bap_value_base":
                                 optionsStatic.Stats.Add(new ParserStat(ItemAttribute.BonusAtk, int.Parse(node.Attributes[item.Name].Value)));
                                 break;
                             case "cad_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalDamage, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalDamage, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalDamage, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "cap_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalRate, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalRate, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalRate, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "car_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalEvasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalEvasion, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.CriticalEvasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "dex_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Dexterity, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Dexterity, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Dexterity, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "evp_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Evasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Evasion, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Evasion, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "finaladditionaldamage_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.TotalDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.TotalDamage, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.TotalDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "firedamage_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.FireDamage, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -123,23 +76,13 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.FireDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "heal_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.Heal, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.Heal, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.Heal, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "hp_rgp_value_base":
                                 optionsStatic.Stats.Add(new ParserStat(ItemAttribute.HpRegen, int.Parse(node.Attributes[item.Name].Value)));
                                 break;
                             case "hp_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Health, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Health, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Health, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "icedamage_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.IceDamage, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -148,12 +91,7 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.IceDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "int_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Intelligence, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Intelligence, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Intelligence, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "killhprestore_value_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.HpOnKill, 0, int.Parse(node.Attributes[item.Name].Value)));
@@ -165,12 +103,7 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.RangedDamage, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "longdistancedamagereduce_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.RangedDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.RangedDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.RangedDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "lightdamage_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.HolyDamage, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -179,95 +112,40 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.HolyDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "luk_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Luck, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Luck, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Luck, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "map_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalAtk, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "mar_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalRes, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MagicalRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "marpen_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MagicPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MagicPiercing, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MagicPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "msp_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MovementSpeed, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MovementSpeed, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MovementSpeed, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "ndd_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Defense, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Defense, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Defense, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "nddincrease_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MeleeDamage, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "neardistancedamagereduce_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MeleeDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MeleeDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MeleeDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "pap_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalAtk, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "par_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalRes, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PhysicalRes, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "parpen_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PhysicalPiercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "pen_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Piercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Piercing, float.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Piercing, float.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "poisondamage_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PoisonDamage, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -276,31 +154,16 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PoisonDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "sgi_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.BossDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.BossDamage, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.BossDamage, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "skillcooldown_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.CooldownReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "str_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Strength, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Strength, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.Strength, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "stunreduce_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.StunReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.StunReduce, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.StunReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "thunderdamage_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.ElectricDamage, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -309,20 +172,10 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.ElectricDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "wapmax_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MaxWeaponAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MaxWeaponAtk, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MaxWeaponAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "wapmin_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MinWeaponAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MinWeaponAtk, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MinWeaponAtk, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "bap_pet_value_base":
                                 optionsStatic.Stats.Add(new ParserStat(ItemAttribute.PetBonusAtk, int.Parse(node.Attributes[item.Name].Value)));
@@ -331,12 +184,7 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.AllyRecovery, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "reduce_darkstream_recive_damage_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageReduce, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageReduce, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "smd_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.MesoBonus, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -351,20 +199,10 @@ namespace GameDataParser.Parsers
                                 optionsStatic.Stats.Add(new ParserStat(ItemAttribute.MaxWeaponAtk, float.Parse(node.Attributes[item.Name].Value)));
                                 break;
                             case "pvpdamagereduce_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDefense, 0, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDefense, 0, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDefense, 0, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "pvpdamageincrease_value_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDamage, 0, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDamage, 0, int.Parse(node.Attributes[item.Name].Value)));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPDamage, 0, int.Parse(node.Attributes[item.Name].Value.Split(",").First())));
                                 break;
                             case "improve_pvp_exp_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.PvPExp, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -454,12 +292,7 @@ namespace GameDataParser.Parsers
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DoubleRanchingMastery, float.Parse(node.Attributes[item.Name].Value), 0));
                                 break;
                             case "improve_darkstream_damage_rate_base":
-                                if (node.Attributes[item.Name].Value.Contains(','))
-                                {
-                                    optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageBonus, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
-                                    break;
-                                }
-                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageBonus, float.Parse(node.Attributes[item.Name].Value), 0));
+                                optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.DarkDescentDamageBonus, float.Parse(node.Attributes[item.Name].Value.Split(",").First()), 0));
                                 break;
                             case "improve_chaosraid_wap_rate_base":
                                 optionsStatic.SpecialStats.Add(new ParserSpecialStat(SpecialItemAttribute.ChaosRaidWeaponAttack, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -491,9 +324,11 @@ namespace GameDataParser.Parsers
                             case "additionaleffect_95000012_value_base":
                             case "additionaleffect_95000014_value_base":
                             case "sgi_target":
+                            case "code":
                                 break;
                         }
                     }
+
                     if (itemOptionsStatic.ContainsKey(id))
                     {
                         itemOptionsStatic[id].Add(optionsStatic);
@@ -503,6 +338,7 @@ namespace GameDataParser.Parsers
                         itemOptionsStatic[id] = new List<ItemOptionsStatic>() { optionsStatic };
                     }
                 }
+
                 foreach (KeyValuePair<int, List<ItemOptionsStatic>> optionsData in itemOptionsStatic)
                 {
                     ItemOptionStaticMetadata metadata = new ItemOptionStaticMetadata();

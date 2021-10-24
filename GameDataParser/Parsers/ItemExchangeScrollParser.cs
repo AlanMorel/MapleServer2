@@ -30,6 +30,7 @@ namespace GameDataParser.Parsers
                         metadata.ExchangeId = int.Parse(node.Attributes["id"].Value);
                         metadata.Type = node.Attributes["type"].Value;
                     }
+
                     foreach (XmlNode childNode in node)
                     {
                         if (childNode.Name == "receipe")
@@ -46,7 +47,7 @@ namespace GameDataParser.Parsers
                         }
                         else if (childNode.Name == "require")
                         {
-                            metadata.MesoCost = string.IsNullOrEmpty(childNode.Attributes["meso"].Value) ? 0 : int.Parse(childNode.Attributes["meso"].Value);
+                            _ = int.TryParse(childNode.Attributes["meso"]?.Value ?? "0", out metadata.MesoCost);
 
                             foreach (XmlNode itemNode in childNode)
                             {

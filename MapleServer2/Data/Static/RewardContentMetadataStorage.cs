@@ -11,7 +11,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-reward-content-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-reward-content-metadata");
             List<RewardContentMetadata> items = Serializer.Deserialize<List<RewardContentMetadata>>(stream);
             foreach (RewardContentMetadata item in items)
             {

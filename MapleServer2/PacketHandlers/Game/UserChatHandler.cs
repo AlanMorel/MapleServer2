@@ -26,7 +26,7 @@ namespace MapleServer2.PacketHandlers.Game
             string recipient = packet.ReadUnicodeString();
             long clubId = packet.ReadLong();
 
-            if (message.Length > 0 && message.Substring(0, 1).Equals("/"))
+            if (message.Length > 0 && message[..1].Equals("/"))
             {
                 string[] args = message[1..].Split(" ");
                 if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))

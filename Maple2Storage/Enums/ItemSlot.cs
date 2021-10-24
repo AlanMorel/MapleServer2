@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 // NOTE: These enum are case sensitive
-namespace Maple2Storage.Types
+namespace Maple2Storage.Enums
 {
     public enum ItemSlot : byte
     {

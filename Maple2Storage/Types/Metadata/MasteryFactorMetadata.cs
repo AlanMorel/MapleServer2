@@ -11,9 +11,7 @@ namespace Maple2Storage.Types.Metadata
         public int Factor;
 
         // Required for deserialization
-        public MasteryFactorMetadata()
-        {
-        }
+        public MasteryFactorMetadata() { }
 
         public MasteryFactorMetadata(int differential, int factor)
         {
@@ -21,48 +19,6 @@ namespace Maple2Storage.Types.Metadata
             Factor = factor;
         }
 
-        public override string ToString() =>
-            $"MasteryFactorMetadata(Differential:{Differential},Factor:{Factor})";
-
-        protected bool Equals(MasteryFactorMetadata other)
-        {
-            return Differential == other.Differential
-                   && Factor == other.Factor;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((MasteryFactorMetadata) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Differential, Factor);
-        }
-
-        public static bool operator ==(MasteryFactorMetadata left, MasteryFactorMetadata right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(MasteryFactorMetadata left, MasteryFactorMetadata right)
-        {
-            return !Equals(left, right);
-        }
+        public override string ToString() => $"MasteryFactorMetadata(Differential:{Differential},Factor:{Factor})";
     }
 }
