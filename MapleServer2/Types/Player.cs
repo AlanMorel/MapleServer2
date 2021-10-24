@@ -556,5 +556,14 @@ namespace MapleServer2.Types
             int unreadCount = Mailbox.Where(x => x.ReadTimestamp == 0).Count();
             Session.Send(MailPacket.Notify(unreadCount, true));
         }
+
+        public void FallDamage()
+        {
+            int currentHp = Stats[PlayerStatId.Hp].Current;
+            int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
+            ConsumeHp(fallDamage);
+            Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
+            Session.Send(FallDamagePacket.FallDamage(Session.FieldPlayer.ObjectId, fallDamage));
+        }
     }
 }
