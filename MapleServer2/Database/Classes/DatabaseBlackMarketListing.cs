@@ -1,6 +1,4 @@
-﻿using MapleServer2.Data.Static;
-using MapleServer2.Enums;
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes

@@ -29,11 +29,11 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteStats(item.Stats);
             pWriter.WriteInt(item.Enchants);
             pWriter.WriteInt(item.EnchantExp);
-            pWriter.WriteBool(false); // Enchant based peachy charges, otherwise always require 10 charges
+            pWriter.WriteBool(true); // Enchant based peachy charges, otherwise always require 10 charges
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteByte(1);
+            pWriter.WriteByte((byte) item.RepackageCount);
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
@@ -72,10 +72,10 @@ namespace MapleServer2.Packets.Helpers
             }
 
             // Item Transfer Data 0x058AD00
-            pWriter.WriteInt(6);
+            pWriter.WriteInt(6); // Transfer Flag. Temporarily changing it to 6 to make items tradeable
             pWriter.WriteByte();
-            pWriter.WriteInt();
             pWriter.WriteInt(item.RemainingTrades);
+            pWriter.WriteInt();
             pWriter.WriteByte();
             pWriter.WriteByte(); // 2nd flag, use to skip charbound
 

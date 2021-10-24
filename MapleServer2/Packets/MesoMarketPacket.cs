@@ -1,8 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
-using MaplePacketLib2.Tools;
+﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Packets.Helpers;
-using MapleServer2.Types;
 
 namespace MapleServer2.Packets
 {

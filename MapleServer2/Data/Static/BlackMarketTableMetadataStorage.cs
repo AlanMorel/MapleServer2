@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-black-market-table-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-black-market-table-metadata");
             List<BlackMarketTableMetadata> items = Serializer.Deserialize<List<BlackMarketTableMetadata>>(stream);
             foreach (BlackMarketTableMetadata item in items)
             {
@@ -21,7 +21,7 @@ namespace MapleServer2.Data.Static
         public static List<string> GetItemCategories(int minCategoryId, int maxCategoryId)
         {
             List<string> itemCategories = new List<string>();
-            foreach(BlackMarketTableMetadata metadata in map.Values)
+            foreach (BlackMarketTableMetadata metadata in map.Values)
             {
                 if (metadata.CategoryId >= minCategoryId && metadata.CategoryId <= maxCategoryId)
                 {

@@ -274,7 +274,7 @@ namespace MapleServer2.Network
                 case SendOp.STAT:
                 case SendOp.EMOTION:
                 case SendOp.CHARACTER_LIST:
-              //  case SendOp.ITEM_INVENTORY:
+                case SendOp.ITEM_INVENTORY:
                 case SendOp.FIELD_ADD_NPC:
                 case SendOp.FIELD_PORTAL:
                 case SendOp.NPC_CONTROL:

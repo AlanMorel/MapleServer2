@@ -49,7 +49,7 @@ namespace MapleServer2.PacketHandlers.Game
             switch (mode)
             {
                 case BlackMarketMode.Open:
-                    HandleOpen(session, packet);
+                    HandleOpen(session);
                     break;
                 case BlackMarketMode.CreateListing:
                     HandleCreateListing(session, packet);
@@ -72,7 +72,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpen(GameSession session, PacketReader packet)
+        private static void HandleOpen(GameSession session)
         {
             List<BlackMarketListing> listings = GameServer.BlackMarketManager.GetListingsByCharacterId(session.Player.CharacterId);
             session.Send(BlackMarketPacket.Open(listings));

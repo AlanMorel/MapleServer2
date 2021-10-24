@@ -31,7 +31,6 @@ namespace MapleServer2.Managers
         public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
             int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage)
         {
-            // TODO: Only get 70 results, starting from indicated startPage
             List<BlackMarketListing> allResults = new List<BlackMarketListing>();
             foreach (BlackMarketListing listing in Listings.Values)
             {

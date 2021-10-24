@@ -1,8 +1,5 @@
-﻿using Maple2Storage.Enums;
-using MapleServer2.Database;
-using MapleServer2.Packets;
+﻿using MapleServer2.Database;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -40,7 +37,7 @@ namespace MapleServer2.Types
             ExpiryTimestamp = expiryTimestamp;
             Price = price;
             Item = item;
-            ListedQuantity= listedQuantity;
+            ListedQuantity = listedQuantity;
             OwnerCharacterId = ownerAccountId;
             OwnerCharacterId = ownerCharacterId;
             Deposit = deposit;
