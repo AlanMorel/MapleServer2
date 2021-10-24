@@ -53,7 +53,6 @@ namespace MapleServer2.Database.Classes
                 stats = JsonConvert.SerializeObject(item.Stats, Settings),
                 times_attributes_changed = item.TimesAttributesChanged,
                 transfer_flag = item.TransferFlag,
-                blackmarket_category = item.BlackMarketCategory,
                 transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
                 unlock_time = item.UnlockTime
             });
@@ -201,7 +200,6 @@ namespace MapleServer2.Database.Classes
                 Stats = JsonConvert.DeserializeObject<ItemStats>(data.stats, Settings),
                 TimesAttributesChanged = data.times_attributes_changed,
                 TransferFlag = (TransferFlag) data.transfer_flag,
-                BlackMarketCategory = data.blackmarket_category,
                 TransparencyBadgeBools = JsonConvert.DeserializeObject<byte[]>(data.transparency_badge_bools),
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,

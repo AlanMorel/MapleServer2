@@ -363,7 +363,6 @@ CREATE TABLE `items` (
   `stats` text,
   `times_attributes_changed` int NOT NULL,
   `transfer_flag` tinyint unsigned NOT NULL,
-  `blackmarket_category` text,
   `transparency_badge_bools` text,
   `unlock_time` bigint NOT NULL,
   PRIMARY KEY (`uid`),

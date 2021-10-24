@@ -134,7 +134,6 @@ namespace MapleServer2.PacketHandlers.Game
             if (item.Amount > quantity)
             {
                 InventoryController.Split(session, itemUid, quantity, out Item newStack);
-                Console.WriteLine($"Item Category: {newStack.BlackMarketCategory}");
                 listingItem = newStack;
             }
             else
