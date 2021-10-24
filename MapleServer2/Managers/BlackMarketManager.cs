@@ -29,7 +29,7 @@ namespace MapleServer2.Managers
         public BlackMarketListing GetListingById(long listingId) => Listings.Values.FirstOrDefault(x => x.Id == listingId);
 
         public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
-            int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage)
+            int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage, long sort)
         {
             List<BlackMarketListing> allResults = new List<BlackMarketListing>();
             foreach (BlackMarketListing listing in Listings.Values)
@@ -86,6 +86,22 @@ namespace MapleServer2.Managers
             int offset = count;
             int limit = 70 + Math.Min(0, count);
             List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
+
+            switch (sort)
+            {
+                case 21: // low to high price
+                    results = results.OrderBy(x => x.Price).ToList();
+                    break;
+                case 22: // high to low price
+                    results = results.OrderByDescending(x => x.Price).ToList();
+                    break;
+                case 11: // low to high level
+                    results = results.OrderBy(x => x.Item.Level).ToList();
+                    break;
+                case 12: // high to low level
+                    results = results.OrderByDescending(x => x.Item.Level).ToList();
+                    break;
+            }
 
             return results;
         }

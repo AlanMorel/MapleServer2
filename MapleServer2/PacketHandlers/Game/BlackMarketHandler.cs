@@ -181,14 +181,14 @@ namespace MapleServer2.PacketHandlers.Game
             byte maxSockets = packet.ReadByte();
             string name = packet.ReadUnicodeString().ToLower();
             int startPage = packet.ReadInt();
-            packet.ReadLong(); // 21?
+            long sort = packet.ReadLong();
             packet.ReadShort();
             bool additionalOptionsEnabled = packet.ReadBool();
             // TODO: Figure out how additional options are read
 
             List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
             List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
-                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage);
+                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort);
 
             session.Send(BlackMarketPacket.SearchResults(searchResults));
         }
