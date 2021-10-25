@@ -64,6 +64,24 @@
         GameMaster = 1,
         Beginner = GameMaster
     }
+
+    [Flags]
+    public enum JobFlag
+    {
+        Beginner = 1,
+        Knight = 2,
+        Berserker = 4,
+        Wizard = 8,
+        Priest = 16,
+        Archer = 32,
+        HeavyGunner = 64,
+        Thief = 128,
+        Assassin = 256,
+        Runeblade = 512,
+        Striker = 1024,
+        SoulBinder = 2048,
+        All = 4095
+    }
 }
 
 /* SkillIds

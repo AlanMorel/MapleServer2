@@ -51,6 +51,29 @@ namespace GameDataParser.Parsers
                 }
             }
 
+            //Item Name
+            Dictionary<int, string> names = new Dictionary<int, string>();
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
+            {
+                if (!entry.Name.StartsWith("string/en/itemname"))
+                {
+                    continue;
+                }
+
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
+                XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+                foreach (XmlNode node in nodes)
+                {
+                    int itemId = int.Parse(node.Attributes["id"].Value);
+                    if (node.Attributes["name"] == null)
+                    {
+                        continue;
+                    }
+                    string itemName = node.Attributes["name"].Value;
+                    names[itemId] = itemName;
+                }
+            }
+
             // Item rarity
             Dictionary<int, int> rarities = new Dictionary<int, int>();
             foreach (PackFileEntry entry in Resources.XmlReader.Files)
@@ -240,6 +263,7 @@ namespace GameDataParser.Parsers
                     metadata.TradeableCount = byte.Parse(property.Attributes["tradableCount"].Value);
                     metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                     metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
+                    metadata.BlackMarketCategory = property.Attributes["blackMarketCategory"].Value;
 
                     // sales price
                     XmlNode sell = property.SelectSingleNode("sell");
@@ -449,9 +473,16 @@ namespace GameDataParser.Parsers
                     metadata.BreakRewards = rewards[itemId];
                 }
 
+                // Item rarities
                 if (rarities.ContainsKey(itemId))
                 {
                     metadata.Rarity = rarities[itemId];
+                }
+
+                // Item Names
+                if (names.ContainsKey(itemId))
+                {
+                    metadata.Name = names[itemId];
                 }
 
                 items.Add(metadata);

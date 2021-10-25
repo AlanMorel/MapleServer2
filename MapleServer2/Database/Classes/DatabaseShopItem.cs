@@ -20,6 +20,18 @@ namespace MapleServer2.Database.Classes
             return items;
         }
 
+        public ShopItem FindByItemId(int itemId)
+        {
+            dynamic result = QueryFactory.Query(TableName).Where("item_id", itemId).FirstOrDefault();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return ReadShopItem(result);
+        }
+
         private static ShopItem ReadShopItem(dynamic data)
         {
             return new ShopItem(

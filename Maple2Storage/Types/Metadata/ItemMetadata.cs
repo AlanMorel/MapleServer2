@@ -10,79 +10,83 @@ namespace Maple2Storage.Types.Metadata
         [XmlElement(Order = 1)]
         public int Id;
         [XmlElement(Order = 2)]
-        public ItemSlot Slot;
+        public string Name;
         [XmlElement(Order = 3)]
-        public GemSlot Gem;
+        public ItemSlot Slot;
         [XmlElement(Order = 4)]
-        public InventoryTab Tab;
+        public GemSlot Gem;
         [XmlElement(Order = 5)]
-        public int Rarity;
+        public InventoryTab Tab;
         [XmlElement(Order = 6)]
-        public int StackLimit;
+        public int Rarity;
         [XmlElement(Order = 7)]
-        public bool EnableBreak;
+        public int StackLimit;
         [XmlElement(Order = 8)]
-        public bool Sellable;
+        public bool EnableBreak;
         [XmlElement(Order = 9)]
-        public TransferType TransferType;
+        public bool Sellable;
         [XmlElement(Order = 10)]
-        public byte TradeableCount;
+        public TransferType TransferType;
         [XmlElement(Order = 11)]
-        public byte RepackageCount;
+        public byte TradeableCount;
         [XmlElement(Order = 12)]
-        public byte RepackageItemConsumeCount;
+        public byte RepackageCount;
         [XmlElement(Order = 13)]
-        public bool IsTwoHand;
+        public byte RepackageItemConsumeCount;
         [XmlElement(Order = 14)]
-        public bool IsDress;
+        public bool IsTwoHand;
         [XmlElement(Order = 15)]
-        public bool IsTemplate;
+        public bool IsDress;
         [XmlElement(Order = 16)]
-        public byte Gender;
+        public bool IsTemplate;
         [XmlElement(Order = 17)]
-        public int PlayCount;
+        public byte Gender;
         [XmlElement(Order = 18)]
-        public bool IsCustomScore;
+        public int PlayCount;
         [XmlElement(Order = 19)]
-        public List<int> SellPrice = new List<int>();
+        public bool IsCustomScore;
         [XmlElement(Order = 20)]
-        public List<int> SellPriceCustom = new List<int>();
+        public List<int> SellPrice = new List<int>();
         [XmlElement(Order = 21)]
-        public string FileName;
+        public List<int> SellPriceCustom = new List<int>();
         [XmlElement(Order = 22)]
-        public int SkillID;
+        public string FileName;
         [XmlElement(Order = 23)]
-        public List<int> RecommendJobs = new List<int>();
+        public int SkillID;
         [XmlElement(Order = 24)]
-        public List<ItemBreakReward> BreakRewards;
+        public List<int> RecommendJobs = new List<int>();
         [XmlElement(Order = 25)]
-        public ItemFunction FunctionData;
+        public List<ItemBreakReward> BreakRewards;
         [XmlElement(Order = 26)]
-        public string Tag;
+        public ItemFunction FunctionData;
         [XmlElement(Order = 27)]
-        public int ShopID;
+        public string Tag;
         [XmlElement(Order = 28)]
-        public int Level;
+        public int ShopID;
         [XmlElement(Order = 29)]
-        public List<HairPresets> HairPresets = new List<HairPresets>();
+        public int Level;
         [XmlElement(Order = 30)]
-        public int ColorIndex;
+        public List<HairPresets> HairPresets = new List<HairPresets>();
         [XmlElement(Order = 31)]
-        public int ColorPalette;
+        public int ColorIndex;
         [XmlElement(Order = 32)]
-        public int OptionStatic;
+        public int ColorPalette;
         [XmlElement(Order = 33)]
-        public int OptionRandom;
+        public int OptionStatic;
         [XmlElement(Order = 34)]
-        public int OptionConstant;
+        public int OptionRandom;
         [XmlElement(Order = 35)]
-        public int OptionLevelFactor;
+        public int OptionConstant;
         [XmlElement(Order = 36)]
-        public bool IsCubeSolid;
+        public int OptionLevelFactor;
         [XmlElement(Order = 37)]
-        public ItemHousingCategory HousingCategory;
+        public bool IsCubeSolid;
         [XmlElement(Order = 38)]
+        public ItemHousingCategory HousingCategory;
+        [XmlElement(Order = 39)]
         public int ObjectId;
+        [XmlElement(Order = 40)]
+        public string BlackMarketCategory;
 
         // Required for deserialization
         public ItemMetadata()

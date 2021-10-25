@@ -32,15 +32,18 @@ namespace MapleServer2.Database.Classes
                 read_timestamp = mail.ReadTimestamp,
                 sent_timestamp = mail.SentTimestamp,
                 expiry_timestamp = mail.ExpiryTimestamp,
+                additional_parameter1 = mail.AdditionalParameter1,
+                additional_parameter2 = mail.AdditionalParameter2,
                 mesos = mail.Mesos,
             });
         }
 
-        public virtual void UpdateReadTime(Mail mail)
+        public virtual void Update(Mail mail)
         {
             QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
             {
-                read_timestamp = mail.ReadTimestamp
+                read_timestamp = mail.ReadTimestamp,
+                mesos = mail.Mesos
             });
         }
 
