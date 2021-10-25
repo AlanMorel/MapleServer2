@@ -19,10 +19,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (DatabaseManager.Characters.NameExists(characterName))
             {
-                session.FieldManager.BroadcastPacket(CharacterNameChangePacket.NameResult(true, characterName, 0));
+                session.Send(CharacterNameChangePacket.NameResult(true, characterName, 0));
                 return;
             }
-            session.FieldManager.BroadcastPacket(CharacterNameChangePacket.NameResult(false, characterName, itemUid));
+            session.Send(CharacterNameChangePacket.NameResult(false, characterName, itemUid));
         }
     }
 }
