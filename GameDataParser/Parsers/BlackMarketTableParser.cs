@@ -23,53 +23,54 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode node in document.DocumentElement.ChildNodes)
                 {
-                    if (node.Name == "category")
+                    if (node.Name != "category")
                     {
+                        continue;
+                    }
 
-                        foreach (XmlNode tabNode in node)
+                    foreach (XmlNode tabNode in node)
+                    {
+                        if (tabNode.Attributes["category"] != null)
                         {
-                            if (tabNode.Attributes["category"] != null)
+                            BlackMarketTableMetadata metadata = new BlackMarketTableMetadata();
+
+                            metadata.CategoryId = int.Parse(tabNode.Attributes["id"].Value);
+                            metadata.ItemCategories = tabNode.Attributes["category"].Value.Split(",").ToList();
+
+                            tables.Add(metadata);
+                        }
+
+                        foreach (XmlNode subtabNode in tabNode.ChildNodes)
+                        {
+                            Console.WriteLine(subtabNode.Attributes["name"].Value);
+                            if (subtabNode.Attributes["category"] != null)
                             {
                                 BlackMarketTableMetadata metadata = new BlackMarketTableMetadata();
 
-                                metadata.CategoryId = int.Parse(tabNode.Attributes["id"].Value);
-                                metadata.ItemCategories = tabNode.Attributes["category"].Value.Split(",").ToList();
+                                metadata.CategoryId = int.Parse(subtabNode.Attributes["id"].Value);
+                                metadata.ItemCategories = subtabNode.Attributes["category"].Value.Split(",").ToList();
 
                                 tables.Add(metadata);
                             }
 
-                            foreach (XmlNode subtabNode in tabNode.ChildNodes)
+                            if (subtabNode.HasChildNodes)
                             {
-                                Console.WriteLine(subtabNode.Attributes["name"].Value);
-                                if (subtabNode.Attributes["category"] != null)
+                                foreach (XmlNode subsubNode in subtabNode.ChildNodes)
                                 {
-                                    BlackMarketTableMetadata metadata = new BlackMarketTableMetadata();
-
-                                    metadata.CategoryId = int.Parse(subtabNode.Attributes["id"].Value);
-                                    metadata.ItemCategories = subtabNode.Attributes["category"].Value.Split(",").ToList();
-
-                                    tables.Add(metadata);
-                                }
-
-                                if (subtabNode.HasChildNodes)
-                                {
-                                    foreach (XmlNode subsubNode in subtabNode.ChildNodes)
+                                    Console.WriteLine(subsubNode.Attributes["name"].Value);
+                                    if (subsubNode.Attributes["category"] != null)
                                     {
-                                        Console.WriteLine(subsubNode.Attributes["name"].Value);
-                                        if (subsubNode.Attributes["category"] != null)
-                                        {
-                                            BlackMarketTableMetadata metadata = new BlackMarketTableMetadata();
+                                        BlackMarketTableMetadata metadata = new BlackMarketTableMetadata();
 
-                                            metadata.CategoryId = int.Parse(subsubNode.Attributes["id"].Value);
-                                            metadata.ItemCategories = subsubNode.Attributes["category"].Value.Split(",").ToList();
+                                        metadata.CategoryId = int.Parse(subsubNode.Attributes["id"].Value);
+                                        metadata.ItemCategories = subsubNode.Attributes["category"].Value.Split(",").ToList();
 
-                                            tables.Add(metadata);
-                                        }
+                                        tables.Add(metadata);
                                     }
                                 }
                             }
-
                         }
+
                     }
                 }
             }

@@ -59,8 +59,6 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
             string addParameter1 = $"<ms2><v item=\"{item.Id}\"></v></ms2>";
             string addParameter2 = $"<ms2><v item=\"{item.Id}\" ></v><v str=\"{item.Amount}\" ></v><v money=\"{price * item.Amount}\" ></v><v money=\"{price}\" ></v></ms2>";
 
-            Console.WriteLine(addParameter2);
-
             Mail mail = new Mail(MailType.BlackMarketSale, recipientCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new List<Item>() { item }, 0);
             GameServer.MailManager.AddMail(mail);
             SendNotification(mail);

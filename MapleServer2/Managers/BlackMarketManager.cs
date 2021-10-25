@@ -45,7 +45,7 @@ namespace MapleServer2.Managers
                     item.Enchants > maxEnchantLevel ||
                     item.Stats.GemSockets.Count < minSockets ||
                     item.Stats.GemSockets.Count > maxSockets ||
-                    !item.Name.ToLower().Contains(name))
+                    !item.Name.ToLower().Contains(name.ToLower()))
                 {
                     continue;
                 }
@@ -103,9 +103,8 @@ namespace MapleServer2.Managers
             int count = startPage * 7 - 7;
             int offset = count;
             int limit = 70 + Math.Min(0, count);
-            List<BlackMarketListing> results = allResults.Skip(offset).Take(limit).ToList();
 
-            return results;
+            return allResults.Skip(offset).Take(limit).ToList();
         }
 
         private enum BlackMarketSort : long

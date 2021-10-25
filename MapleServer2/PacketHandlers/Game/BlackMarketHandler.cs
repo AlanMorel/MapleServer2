@@ -128,8 +128,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Item listingItem;
-            listingItem = item;
+            Item listingItem = item;
 
             if (item.Amount > quantity)
             {
@@ -178,7 +177,7 @@ namespace MapleServer2.PacketHandlers.Game
             int maxEnchantLevel = packet.ReadInt();
             byte minSockets = packet.ReadByte();
             byte maxSockets = packet.ReadByte();
-            string name = packet.ReadUnicodeString().ToLower();
+            string name = packet.ReadUnicodeString();
             int startPage = packet.ReadInt();
             long sort = packet.ReadLong();
             packet.ReadShort();
