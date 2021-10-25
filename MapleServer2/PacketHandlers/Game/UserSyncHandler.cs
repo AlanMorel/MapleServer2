@@ -61,15 +61,11 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
             {
-                int currentHp = session.Player.Stats[PlayerStatId.Hp].Current;
-                int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
                 CoordF safeBlock = session.Player.SafeBlock;
                 safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
-                session.Player.ConsumeHp(fallDamage);
 
                 session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.Player.Rotation));
-                session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
-                session.Send(FallDamagePacket.FallDamage(session, fallDamage));
+                session.Player.FallDamage();
             }
             // not sure if this needs to be synced here
             session.Player.Animation = syncStates[0].Animation1;
