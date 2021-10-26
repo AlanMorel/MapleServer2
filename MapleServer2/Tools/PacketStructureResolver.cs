@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
@@ -70,7 +71,7 @@ namespace MapleServer2.Tools
             }
 
             PacketStructureResolver resolver = new PacketStructureResolver(opCode);
-            DirectoryInfo dir = Directory.CreateDirectory("PacketStructures");
+            DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SOLUTION_DIR}/MapleServer2/PacketStructures");
 
             string filePath = $"{dir.FullName}/{resolver.OpCode:D4} - {resolver.PacketName}.txt";
             if (!File.Exists(filePath))
@@ -115,10 +116,10 @@ namespace MapleServer2.Tools
                             resolver.Packet.WriteFloat(float.Parse(valueAsString));
                             break;
                         case "UnicodeString":
-                            resolver.Packet.WriteUnicodeString(type.Replace("\"", ""));
+                            resolver.Packet.WriteUnicodeString(valueAsString.Replace("\"", ""));
                             break;
                         case "String":
-                            resolver.Packet.WriteString(type.Replace("\"", ""));
+                            resolver.Packet.WriteString(valueAsString.Replace("\"", ""));
                             break;
                         default:
                             Logger.Info($"Unknown type: {type}");
@@ -172,7 +173,7 @@ namespace MapleServer2.Tools
                 SockHint.DecodeStrA => $"pWriter.WriteString();\r\n",
                 _ => $"[]\r\n",
             };
-            DirectoryInfo dir = Directory.CreateDirectory("PacketStructures");
+            DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SOLUTION_DIR}/MapleServer2/PacketStructures");
             StreamWriter file = File.AppendText($"{dir.FullName}/{OpCode:D4} - {PacketName}.txt");
             file.Write(hint);
             file.Close();
