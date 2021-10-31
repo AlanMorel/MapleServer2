@@ -80,7 +80,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeso(GameSession session, int mapId)
         {
-            // Above ScripterLoader so VIPs don't use meso script
+            // VIP Travel
             Account account = session.Player.Account;
             if (account.IsVip())
             {
