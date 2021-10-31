@@ -13,9 +13,8 @@ namespace MapleServer2.Packets
             pWriter.WriteByte((byte) type); // type of currency
             pWriter.WriteLong(amount); // currency amount
             pWriter.WriteLong(-1); // always the same
-            pWriter.WriteShort(52); // always the same
+            pWriter.WriteInt(52); // always the same
             pWriter.WriteLong(); // unk
-            pWriter.WriteShort(); // unk
 
             return pWriter;
         }

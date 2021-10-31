@@ -74,7 +74,8 @@
             hex = hex.Replace(" ", string.Empty);
             if (hex.Length % 2 != 0)
             {
-                throw new ArgumentException("Hex string must have even number of characters");
+                Console.WriteLine("Hex string must have even number of characters");
+                return Array.Empty<byte>();
             }
             byte[] result = new byte[hex.Length / 2];
             fixed (byte* lookupPtr = nybbleLookup)
