@@ -52,15 +52,16 @@ namespace GameDataParser.Parsers
 
                     int id = int.Parse(node.Attributes["id"].Value);
                     string buttonSet = node.Attributes["buttonSet"]?.Value;
+                    byte jobCondition = byte.Parse(node.Attributes["jobCondition"]?.Value ?? "0");
 
                     List<Content> contents = new List<Content>();
 
                     if (type == ScriptType.Script)
                     {
-                        ParseScript(node, contents);
+                        ParseContents(node, contents);
                     }
 
-                    metadata.Options.Add(new Option(type, id, contents, buttonSet));
+                    metadata.Options.Add(new Option(type, id, contents, buttonSet, jobCondition));
                 }
 
                 metadata.Id = npcId;
@@ -104,11 +105,13 @@ namespace GameDataParser.Parsers
                     foreach (XmlNode script in questNode.ChildNodes)
                     {
                         int id = int.Parse(script.Attributes["id"].Value);
+                        byte jobCondition = byte.Parse(script.Attributes["jobCondition"]?.Value ?? "0");
+
                         List<Content> contents = new List<Content>();
 
-                        ParseScript(script, contents);
+                        ParseContents(script, contents);
 
-                        metadata.Options.Add(new Option(ScriptType.Script, id, contents, buttonSet));
+                        metadata.Options.Add(new Option(ScriptType.Script, id, contents, buttonSet, jobCondition));
                     }
 
                     metadata.Id = questId;
@@ -120,7 +123,7 @@ namespace GameDataParser.Parsers
             return scripts;
         }
 
-        private static void ParseScript(XmlNode node, List<Content> contents)
+        private static void ParseContents(XmlNode node, List<Content> contents)
         {
             foreach (XmlNode content in node.ChildNodes)
             {
