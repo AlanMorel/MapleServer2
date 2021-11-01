@@ -175,7 +175,7 @@ namespace MapleServer2.Types
             splitItem.Amount = amount;
             splitItem.Slot = -1;
             splitItem.InventoryId = 0;
-            splitItem.Uid = DatabaseManager.Items.Insert(this);
+            splitItem.Uid = DatabaseManager.Items.Insert(splitItem);
             return true;
         }
 

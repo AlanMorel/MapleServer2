@@ -27,6 +27,7 @@ namespace MapleServer2.Types
             ExtraSize = extraSize;
             Items = new Item[DEFAULT_SIZE + ExtraSize];
             Mesos = new Currency(CurrencyType.BankMesos, bankMesos);
+
             for (int i = 0; i < items.Count; i++)
             {
                 Item item = items[i];
@@ -51,46 +52,44 @@ namespace MapleServer2.Types
                 item = removedItem;
             }
 
-            if (slot >= 0)
+            if (Items[slot] is null)
             {
-                if (Items[slot] == null)
-                {
-                    item.Slot = slot;
-                    Items[slot] = item;
-                    session.Send(StorageInventoryPacket.Add(item));
-                    return;
-                }
-                else
-                {
-                    slot = -1;
-                }
+                item.Slot = slot;
+                Items[slot] = item;
+                session.Send(StorageInventoryPacket.Add(item));
+                return;
             }
 
-            if (slot == -1)
+            Item existingItem = Items.FirstOrDefault(x => x is not null && x.Id == item.Id);
+            if (existingItem is not null)
             {
-                for (slot = 0; slot < Items.Length; slot++)
+                existingItem.Amount += item.Amount;
+                session.Send(StorageInventoryPacket.UpdateItem(existingItem));
+                return;
+            }
+
+            for (short i = 0; i < Items.Length; i++)
+            {
+                if (Items[i] is not null)
                 {
-                    if (Items[slot] != null)
-                    {
-                        continue;
-                    }
-                    item.Slot = slot;
-                    Items[slot] = item;
-                    session.Send(StorageInventoryPacket.Add(item));
-                    return;
+                    continue;
                 }
+                item.Slot = i;
+                Items[i] = item;
+                session.Send(StorageInventoryPacket.Add(item));
+                return;
             }
         }
 
-        public bool Remove(GameSession session, long uid, short slot, int amount, out Item outItem)
+        public bool Remove(GameSession session, long uid, int amount, out Item outItem)
         {
             outItem = null;
-            if (session.Player.Inventory.Items.ContainsKey(slot))
+            if (!session.Player.Account.BankInventory.Items.Any(x => x is not null && x.Uid == uid))
             {
                 return false;
             }
 
-            int outItemIndex = Array.FindIndex(Items, 0, Items.Length, x => x != null && x.Uid == uid);
+            int outItemIndex = Array.FindIndex(Items, 0, Items.Length, x => x is not null && x.Uid == uid);
             outItem = Items[outItemIndex];
             if (amount >= outItem.Amount)
             {
@@ -101,12 +100,12 @@ namespace MapleServer2.Types
 
             if (outItem.TrySplit(amount, out Item splitItem))
             {
-                outItem.Amount -= amount;
-                outItem.Slot = slot;
-                session.Send(StorageInventoryPacket.Add(outItem));
+                session.Send(StorageInventoryPacket.UpdateItem(outItem));
+
                 outItem = splitItem;
                 return true;
             }
+
             return false;
         }
 
@@ -116,18 +115,18 @@ namespace MapleServer2.Types
             long srcUid = 0;
             short srcSlot = 0;
 
-            if (dstItem != null)
+            if (dstItem is not null)
             {
                 srcUid = dstItem.Uid;
-                srcSlot = (short) Array.FindIndex(Items, 0, Items.Length, x => x != null && x.Uid == dstUid);
+                srcSlot = (short) Array.FindIndex(Items, 0, Items.Length, x => x is not null && x.Uid == dstUid);
                 Item temp = Items[srcSlot];
                 Items[srcSlot] = dstItem;
                 Items[dstSlot] = temp;
             }
             else
             {
-                short oldSlot = (short) Array.FindIndex(Items, 0, Items.Length, x => x != null && x.Uid == dstUid);
-                Items[dstSlot] = Items.FirstOrDefault(x => x != null && x.Uid == dstUid);
+                short oldSlot = (short) Array.FindIndex(Items, 0, Items.Length, x => x is not null && x.Uid == dstUid);
+                Items[dstSlot] = Items.FirstOrDefault(x => x is not null && x.Uid == dstUid);
                 Items[oldSlot] = null;
             }
             session.Send(StorageInventoryPacket.Move(srcUid, srcSlot, dstUid, dstSlot));
@@ -140,14 +139,32 @@ namespace MapleServer2.Types
 
         public void Sort(GameSession session)
         {
-            List<Item> tempItems = Items.Where(x => x != null).ToList();
-            tempItems.Sort((x, y) => x.Id.CompareTo(y.Id));
-            Items = new Item[DEFAULT_SIZE + ExtraSize];
-            for (int i = 0; i < tempItems.Count; i++)
+            IEnumerable<Item> items = Items.Where(x => x is not null);
+
+            foreach (Item item in items)
             {
-                Items[i] = tempItems[i];
+                DatabaseManager.Items.Delete(item.Uid);
             }
+
+            // group items by item id and sum the amount, return a new list of items with updated amount (ty gh copilot)
+            List<Item> groupedItems = items.GroupBy(x => x.Id).Select(x => new Item(x.First())
+            {
+                Amount = x.Sum(y => y.Amount)
+            }).ToList();
+
+            // sort items by id
+            groupedItems.Sort((x, y) => x.Id.CompareTo(y.Id));
+
+            Items = new Item[DEFAULT_SIZE + ExtraSize];
+            for (short i = 0; i < groupedItems.Count; i++)
+            {
+                groupedItems[i].Slot = i;
+                Items[i] = groupedItems[i];
+            }
+
+            session.Send(StorageInventoryPacket.Update());
             session.Send(StorageInventoryPacket.Sort(Items));
+            session.Send(StorageInventoryPacket.ExpandAnim());
         }
 
         public void Expand(GameSession session)
@@ -179,7 +196,7 @@ namespace MapleServer2.Types
             Items = new Item[DEFAULT_SIZE + ExtraSize];
             for (int i = 0; i < temp.Length; i++)
             {
-                if (temp[i] == null)
+                if (temp[i] is null)
                 {
                     continue;
                 }

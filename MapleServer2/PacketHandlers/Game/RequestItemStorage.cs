@@ -1,7 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
-using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
@@ -69,6 +68,11 @@ namespace MapleServer2.PacketHandlers.Game
             short slot = packet.ReadShort();
             int amount = packet.ReadInt();
 
+            if (!session.Player.Inventory.Items.ContainsKey(uid))
+            {
+                return;
+            }
+
             session.Player.Account.BankInventory.Add(session, uid, amount, slot);
         }
 
@@ -76,23 +80,25 @@ namespace MapleServer2.PacketHandlers.Game
         {
             packet.ReadLong();
             long uid = packet.ReadLong();
-            short slot = packet.ReadShort();
+            short destinationSlot = packet.ReadShort();
             int amount = packet.ReadInt();
-            if (!session.Player.Account.BankInventory.Remove(session, uid, slot, amount, out Item item))
+
+            if (!session.Player.Account.BankInventory.Remove(session, uid, amount, out Item item))
             {
                 return;
             }
-            item.Slot = slot;
+            item.Slot = destinationSlot;
+
             InventoryController.Add(session, item, false);
         }
 
         private static void HandleMove(GameSession session, PacketReader packet)
         {
             packet.ReadLong();
-            long uid = packet.ReadLong();
-            short slot = packet.ReadShort();
+            long destinationUid = packet.ReadLong();
+            short destinationSlot = packet.ReadShort();
 
-            session.Player.Account.BankInventory.Move(session, uid, slot);
+            session.Player.Account.BankInventory.Move(session, destinationUid, destinationSlot);
         }
 
         private static void HandleMesos(GameSession session, PacketReader packet)
@@ -109,8 +115,10 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     bankInventory.Mesos.Modify(amount);
                 }
+                return;
             }
-            else if (mode == 0) // remove mesos
+
+            if (mode == 0) // remove mesos
             {
                 if (bankInventory.Mesos.Modify(-amount))
                 {
@@ -119,25 +127,12 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleExpand(GameSession session)
-        {
-            session.Player.Account.BankInventory.Expand(session);
-        }
+        private static void HandleExpand(GameSession session) => session.Player.Account.BankInventory.Expand(session);
 
-        private static void HandleSort(GameSession session)
-        {
-            session.Send(StorageInventoryPacket.Update());
-            session.Player.Account.BankInventory.Sort(session);
-        }
+        private static void HandleSort(GameSession session) => session.Player.Account.BankInventory.Sort(session);
 
-        private static void HandleLoadBank(GameSession session)
-        {
-            session.Player.Account.BankInventory.LoadBank(session);
-        }
+        private static void HandleLoadBank(GameSession session) => session.Player.Account.BankInventory.LoadBank(session);
 
-        private static void HandleClose(Player player)
-        {
-            DatabaseManager.Characters.Update(player);
-        }
+        private static void HandleClose(Player player) => DatabaseManager.Characters.Update(player);
     }
 }

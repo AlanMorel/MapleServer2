@@ -16,6 +16,7 @@ namespace MapleServer2.Packets
             LoadItems = 0x05,
             ExpandAnim = 0x07,
             Sort = 0x08,
+            UpdateItem = 0x09,
             Update = 0x0B,
             Expand = 0x0D,
         }
@@ -89,6 +90,17 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
             pWriter.WriteEnum(ItemStorageMode.Sort);
             pWriter.LoadHelper(items);
+
+            return pWriter;
+        }
+
+        public static Packet UpdateItem(Item item)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
+            pWriter.WriteEnum(ItemStorageMode.UpdateItem);
+            pWriter.WriteLong();
+            pWriter.WriteLong(item.Uid);
+            pWriter.WriteInt(item.Amount);
 
             return pWriter;
         }
