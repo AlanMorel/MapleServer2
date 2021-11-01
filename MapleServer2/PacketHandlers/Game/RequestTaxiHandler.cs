@@ -4,6 +4,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
+using MapleServer2.Types;
 using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -79,6 +80,14 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleRotorMeso(GameSession session, int mapId)
         {
+            // VIP Travel
+            Account account = session.Player.Account;
+            if (account.IsVip())
+            {
+                session.Player.Warp(mapId);
+                return;
+            }
+
             ScriptLoader scriptLoader = new ScriptLoader("Functions/calcAirTaxiCost");
 
             DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
