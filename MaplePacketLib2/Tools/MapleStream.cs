@@ -1,4 +1,6 @@
-﻿namespace MaplePacketLib2.Tools
+﻿using NLog;
+
+namespace MaplePacketLib2.Tools
 {
     // Converts a stream of bytes into individual packets
     public class MapleStream
@@ -8,6 +10,8 @@
 
         private byte[] Buffer = new byte[DEFAULT_SIZE];
         private int Cursor;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public void Write(byte[] packet)
         {
@@ -40,7 +44,21 @@
             }
 
             int packetSize = BitConverter.ToInt32(Buffer, 2);
-            int bufferSize = HEADER_SIZE + packetSize;
+            int bufferSize;
+
+            try
+            {
+                bufferSize = HEADER_SIZE + packetSize;
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug($"Packet Size: {packetSize}");
+                Logger.Debug($"Buffer: {string.Join(" ", Buffer)}");
+                Logger.Fatal(ex, "Error while reading packet size");
+                packet = null;
+                return false;
+            }
+
             if (Cursor < bufferSize)
             {
                 packet = null;
