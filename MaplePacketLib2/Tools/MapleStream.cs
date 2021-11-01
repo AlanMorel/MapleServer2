@@ -7,6 +7,7 @@ namespace MaplePacketLib2.Tools
     {
         private const int DEFAULT_SIZE = 4096;
         private const int HEADER_SIZE = 6;
+        private const int PACKET_MAX_SIZE = 10000;
 
         private byte[] Buffer = new byte[DEFAULT_SIZE];
         private int Cursor;
@@ -37,26 +38,25 @@ namespace MaplePacketLib2.Tools
 
         public bool TryRead(out byte[] packet)
         {
+            packet = null;
+
             if (Cursor < HEADER_SIZE)
             {
-                packet = null;
                 return false;
             }
 
             int packetSize = BitConverter.ToInt32(Buffer, 2);
             int bufferSize = HEADER_SIZE + packetSize;
 
-            if (bufferSize < 0 || bufferSize > 10000)
+            if (bufferSize < 0 || bufferSize > PACKET_MAX_SIZE)
             {
                 Logger.Debug($"Buffer: {string.Join(" ", Buffer)}");
                 Logger.Fatal($"Packet size was too big or negative: {packetSize}");
-                packet = null;
                 return false;
             }
 
             if (Cursor < bufferSize)
             {
-                packet = null;
                 return false;
             }
 
