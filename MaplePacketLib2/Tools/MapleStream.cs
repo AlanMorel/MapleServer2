@@ -44,17 +44,12 @@ namespace MaplePacketLib2.Tools
             }
 
             int packetSize = BitConverter.ToInt32(Buffer, 2);
-            int bufferSize;
+            int bufferSize = HEADER_SIZE + packetSize;
 
-            try
+            if (bufferSize < 0 || bufferSize > 10000)
             {
-                bufferSize = HEADER_SIZE + packetSize;
-            }
-            catch (Exception ex)
-            {
-                Logger.Debug($"Packet Size: {packetSize}");
                 Logger.Debug($"Buffer: {string.Join(" ", Buffer)}");
-                Logger.Fatal(ex, "Error while reading packet size");
+                Logger.Fatal($"Packet size was too big or negative: {packetSize}");
                 packet = null;
                 return false;
             }
