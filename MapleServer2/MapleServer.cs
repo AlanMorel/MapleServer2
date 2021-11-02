@@ -13,13 +13,12 @@ using MapleServer2.Tools;
 using MapleServer2.Types;
 using NLog;
 
-
 namespace MapleServer2
 {
 
     public static class MapleServer
     {
-        const int MIN_MYSQL_VERSION = 9;
+        const int MIN_MYSQL_VERSION = 8;
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
