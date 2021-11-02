@@ -101,7 +101,7 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleTransparency(GameSession session, PacketReader packet)
         {
             byte index = packet.ReadByte();
-            byte[] transparencyBools = packet.Read(10);
+            byte[] transparencyBools = packet.ReadBytes(10);
 
             Item item = session.Player.Inventory.Badges[index];
 

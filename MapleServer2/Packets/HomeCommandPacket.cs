@@ -12,20 +12,20 @@ namespace MapleServer2.Packets
             UpdateArchitectScore = 0x01
         }
 
-        public static Packet LoadHome(Player player)
+        public static PacketWriter LoadHome(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
-            pWriter.WriteEnum(HomeCommandMode.Load);
+            pWriter.Write(HomeCommandMode.Load);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(); // last time player nominated home
 
             return pWriter;
         }
 
-        public static Packet UpdateArchitectScore(int ownerObjectId, int architectScoreCurrent, int architectScoreTotal)
+        public static PacketWriter UpdateArchitectScore(int ownerObjectId, int architectScoreCurrent, int architectScoreTotal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
-            pWriter.WriteEnum(HomeCommandMode.UpdateArchitectScore);
+            pWriter.Write(HomeCommandMode.UpdateArchitectScore);
             pWriter.WriteInt(ownerObjectId);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteInt(architectScoreCurrent);

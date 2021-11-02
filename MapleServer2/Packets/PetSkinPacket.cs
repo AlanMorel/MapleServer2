@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             Skin = 0x0,
         }
 
-        public static Packet Extract(long petUid, Item badge)
+        public static PacketWriter Extract(long petUid, Item badge)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PET_SKIN);
-            pWriter.WriteEnum(PetSkinPacketMode.Skin);
+            pWriter.Write(PetSkinPacketMode.Skin);
             pWriter.WriteLong(petUid);
             pWriter.WriteLong(badge.Uid);
             pWriter.WriteInt(badge.PetSkinBadgeId);

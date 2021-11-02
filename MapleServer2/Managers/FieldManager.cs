@@ -309,9 +309,9 @@ namespace MapleServer2.Managers
         }
 
         // Gets a list of packets to update the state of all field objects for client.
-        public IEnumerable<Packet> GetUpdates()
+        public IEnumerable<PacketWriter> GetUpdates()
         {
-            List<Packet> updates = new List<Packet>();
+            List<PacketWriter> updates = new List<PacketWriter>();
             // Update players locations
             // Update NPCs
             foreach (IFieldObject<Npc> npc in State.Npcs.Values)
@@ -339,7 +339,7 @@ namespace MapleServer2.Managers
 
         private void SendUpdates()
         {
-            foreach (Packet update in GetUpdates())
+            foreach (PacketWriter update in GetUpdates())
             {
                 Broadcast(session =>
                 {
@@ -626,7 +626,7 @@ namespace MapleServer2.Managers
         }
 
         //Broadcast a packet after the specified delay.
-        public async Task DelayBroadcastPacket(Packet packet, int delay)
+        public async Task DelayBroadcastPacket(PacketWriter packet, int delay)
         {
             await Task.Factory.StartNew(async () =>
             {
@@ -636,7 +636,7 @@ namespace MapleServer2.Managers
         }
 
         // Providing a session will result in packet not being broadcast to self.
-        public void BroadcastPacket(Packet packet, GameSession sender = null)
+        public void BroadcastPacket(PacketWriter packet, GameSession sender = null)
         {
             Broadcast(session =>
             {

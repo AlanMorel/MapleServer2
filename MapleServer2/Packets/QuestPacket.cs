@@ -20,10 +20,10 @@ namespace MapleServer2.Packets
             FameMissions2 = 0x20, // not sure
         }
 
-        public static Packet SendDialogQuest(int objectId, List<QuestStatus> questList)
+        public static PacketWriter SendDialogQuest(int objectId, List<QuestStatus> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.Dialog);
+            pWriter.Write(QuestType.Dialog);
             pWriter.WriteInt(objectId);
             pWriter.WriteInt(questList.Count);
             foreach (QuestStatus quest in questList)
@@ -34,10 +34,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AcceptQuest(int questId)
+        public static PacketWriter AcceptQuest(int questId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.AcceptQuest);
+            pWriter.Write(QuestType.AcceptQuest);
             pWriter.WriteInt(questId);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
             pWriter.WriteByte(1);
@@ -46,10 +46,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateCondition(int questId, List<Condition> conditions)
+        public static PacketWriter UpdateCondition(int questId, List<Condition> conditions)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.UpdateCondition);
+            pWriter.Write(QuestType.UpdateCondition);
             pWriter.WriteInt(questId);
             pWriter.WriteInt(conditions.Count);
             foreach (Condition condition in conditions)
@@ -61,10 +61,10 @@ namespace MapleServer2.Packets
         }
 
         // Animation: Animates the quest helper
-        public static Packet CompleteQuest(int questId, bool animation)
+        public static PacketWriter CompleteQuest(int questId, bool animation)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.CompleteQuest);
+            pWriter.Write(QuestType.CompleteQuest);
             pWriter.WriteInt(questId);
             pWriter.WriteInt(animation ? 1 : 0);
             pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
@@ -72,29 +72,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ToggleTracking(int questId, bool tracked)
+        public static PacketWriter ToggleTracking(int questId, bool tracked)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.ToggleTracking);
+            pWriter.Write(QuestType.ToggleTracking);
             pWriter.WriteInt(questId);
             pWriter.WriteBool(tracked);
 
             return pWriter;
         }
 
-        public static Packet StartList()
+        public static PacketWriter StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.StartList);
+            pWriter.Write(QuestType.StartList);
             pWriter.WriteLong(); // unknown, sometimes it has an value
 
             return pWriter;
         }
 
-        public static Packet SendQuests(List<QuestStatus> questList)
+        public static PacketWriter SendQuests(List<QuestStatus> questList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.SendQuests);
+            pWriter.Write(QuestType.SendQuests);
 
             pWriter.WriteInt(questList.Count);
             foreach (QuestStatus quest in questList)
@@ -131,29 +131,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet EndList()
+        public static PacketWriter EndList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.EndList);
+            pWriter.Write(QuestType.EndList);
             pWriter.WriteInt();
 
             return pWriter;
         }
 
-        public static Packet Packet1F()
+        public static PacketWriter Packet1F()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.FameMissions);
+            pWriter.Write(QuestType.FameMissions);
             pWriter.WriteByte();
             pWriter.WriteInt();
 
             return pWriter;
         }
 
-        public static Packet Packet20()
+        public static PacketWriter Packet20()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.WriteEnum(QuestType.FameMissions2);
+            pWriter.Write(QuestType.FameMissions2);
             pWriter.WriteByte();
             pWriter.WriteInt();
 

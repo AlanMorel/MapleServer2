@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class BannerListPacket
     {
-        public static Packet SetBanner(List<Banner> banners)
+        public static PacketWriter SetBanner(List<Banner> banners)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BANNER_LIST);
             pWriter.WriteShort((short) banners.Count);
@@ -25,7 +25,7 @@ namespace MapleServer2.Packets
                 }
                 pWriter.WriteUnicodeString("");
                 pWriter.WriteUnicodeString(banner.ImageUrl);
-                pWriter.WriteEnum(banner.Language);
+                pWriter.WriteInt((int) banner.Language);
                 pWriter.WriteLong(banner.BeginTime);
                 pWriter.WriteLong(banner.EndTime);
             }

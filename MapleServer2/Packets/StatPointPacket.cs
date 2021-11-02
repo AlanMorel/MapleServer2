@@ -13,7 +13,7 @@ namespace MapleServer2.Packets
             StatDistribution = 0x1
         }
 
-        public static Packet WriteTotalStatPoints(Player character)
+        public static PacketWriter WriteTotalStatPoints(Player character)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
             // sends back 41 character length packet which represents the total number of stat points gained and
@@ -34,7 +34,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WriteStatPointDistribution(Player character)
+        public static PacketWriter WriteStatPointDistribution(Player character)
         {
             // sends back a packet that updates or loads the character's current stat distribution
             PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);

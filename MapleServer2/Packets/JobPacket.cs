@@ -9,7 +9,7 @@ namespace MapleServer2.Packets
     public static class JobPacket
     {
         // Close skill tree
-        public static Packet Close()
+        public static PacketWriter Close()
         {
             // After a save the close sends the same save data again, but this doesn't seem to do anything so instead just write 0 int
             PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
@@ -20,16 +20,16 @@ namespace MapleServer2.Packets
         }
 
         // Save skill tree
-        public static Packet Save(Player character, int objectId = 0)
+        public static PacketWriter Save(Player character, int objectId = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
 
             // Identifier info
             pWriter.WriteInt(objectId);
             pWriter.WriteByte(0x09); // Unknown, changes to 08 when closing skill tree after saving
-            pWriter.WriteEnum(character.JobCode);
+            pWriter.Write(character.JobCode);
             pWriter.WriteByte(1); // Possibly always 01 byte
-            pWriter.WriteEnum(character.Job);
+            pWriter.Write(character.Job);
 
             // Skill info
             pWriter.WriteSkills(character);
@@ -37,7 +37,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WriteSkills(this PacketWriter pWriter, Player player)
+        public static PacketWriter WriteSkills(this PacketWriter pWriter, Player player)
         {
             SkillTab skillTab = player.SkillTabs.First(x => x.TabId == player.ActiveSkillTabId);
             Dictionary<int, SkillMetadata> skillData = skillTab.SkillJob;
@@ -67,7 +67,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
+        public static PacketWriter WritePassiveSkills(PacketWriter pWriter, IFieldObject<Player> character)
         {
             // The x.Value.Learned == 1 is to filter for now, the skills by level 1 until player can be save on db.
             List<SkillMetadata> passiveSkillList = character.Value.SkillTabs[0].SkillJob.Where(x => x.Value.Type == 1 && x.Value.CurrentLevel == 1).Select(x => x.Value).ToList();
@@ -90,14 +90,14 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendJob(IFieldObject<Player> character)
+        public static PacketWriter SendJob(IFieldObject<Player> character)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.JOB);
             pWriter.WriteInt(character.ObjectId);
             pWriter.WriteByte(2); //2 = second job? might be a header for awakened = true
-            pWriter.WriteEnum(character.Value.JobCode);
+            pWriter.Write(character.Value.JobCode);
             pWriter.WriteByte(1); //1 = first job?
-            pWriter.WriteEnum(character.Value.Job);
+            pWriter.Write(character.Value.Job);
             pWriter.WriteSkills(character.Value);
 
             return pWriter;

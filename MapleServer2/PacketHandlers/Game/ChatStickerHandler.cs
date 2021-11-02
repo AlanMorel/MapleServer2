@@ -48,7 +48,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
         }
 
-        private static void HandleOpenWindow(/*GameSession session, PacketReader packet*/)
+        private static void HandleOpenWindow(/*GameSession session, ByteReader packet*/)
         {
             // TODO: if user has any expired stickers, use the packet below
             //session.Send(ChatStickerPacket.ExpiredStickerNotification());

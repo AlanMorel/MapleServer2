@@ -14,10 +14,10 @@ namespace MapleServer2.Packets
             Notice = 0x3,
         }
 
-        public static Packet Open(List<CardReverseGame> cards)
+        public static PacketWriter Open(List<CardReverseGame> cards)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
-            pWriter.WriteEnum(CardReverseGamePacketMode.Open);
+            pWriter.Write(CardReverseGamePacketMode.Open);
             pWriter.WriteInt(CardReverseGame.TOKEN_ITEM_ID);
             pWriter.WriteInt(CardReverseGame.TOKEN_COST);
             pWriter.WriteInt(cards.Count);
@@ -30,25 +30,25 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Mix()
+        public static PacketWriter Mix()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
-            pWriter.WriteEnum(CardReverseGamePacketMode.Mix);
+            pWriter.Write(CardReverseGamePacketMode.Mix);
             return pWriter;
         }
 
-        public static Packet Select(int index)
+        public static PacketWriter Select(int index)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
-            pWriter.WriteEnum(CardReverseGamePacketMode.Select);
+            pWriter.Write(CardReverseGamePacketMode.Select);
             pWriter.WriteInt(index);
             return pWriter;
         }
 
-        public static Packet Notice()
+        public static PacketWriter Notice()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
-            pWriter.WriteEnum(CardReverseGamePacketMode.Notice);
+            pWriter.Write(CardReverseGamePacketMode.Notice);
             pWriter.WriteByte(0x0);
             return pWriter;
         }

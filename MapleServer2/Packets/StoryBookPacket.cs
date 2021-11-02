@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class StoryBookPacket
     {
-        public static Packet Open(int storyBookId)
+        public static PacketWriter Open(int storyBookId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORY_BOOK);
             pWriter.WriteInt(storyBookId);

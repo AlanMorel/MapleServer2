@@ -11,24 +11,24 @@ namespace MapleServer2.Packets
             OpenSidebar = 0x2,
         }
 
-        public static Packet OpenBrowser()
+        public static PacketWriter OpenBrowser()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NEWS_NOTIFICATION);
             pWriter.WriteByte(0x0);
             pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
             pWriter.WriteByte(0x1);
-            pWriter.WriteEnum(NewsNotificationPacketMode.OpenBrowser);
+            pWriter.Write(NewsNotificationPacketMode.OpenBrowser);
             pWriter.WriteInt(0x0);
             return pWriter;
         }
 
-        public static Packet OpenSidebar()
+        public static PacketWriter OpenSidebar()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NEWS_NOTIFICATION);
             pWriter.WriteByte(0x0);
             pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
             pWriter.WriteByte(0x1);
-            pWriter.WriteEnum(NewsNotificationPacketMode.OpenSidebar);
+            pWriter.Write(NewsNotificationPacketMode.OpenSidebar);
             pWriter.WriteInt(0x0);
             return pWriter;
         }

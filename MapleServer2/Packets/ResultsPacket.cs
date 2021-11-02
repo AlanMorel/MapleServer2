@@ -13,10 +13,10 @@ namespace MapleServer2.Packets
             Untimed = 0x3,
         }
 
-        public static Packet Timed(bool success, List<Item> itemRewards, bool bonus, List<Item> itemRewardsBonus = null)
+        public static PacketWriter Timed(bool success, List<Item> itemRewards, bool bonus, List<Item> itemRewardsBonus = null)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
-            pWriter.WriteEnum(ResultsPacketMode.Timed);
+            pWriter.Write(ResultsPacketMode.Timed);
             pWriter.WriteBool(success);
             pWriter.WriteInt(); // dungeonID
             pWriter.WriteByte();
@@ -63,10 +63,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Rounds(int roundsCleared, int totalRounds)
+        public static PacketWriter Rounds(int roundsCleared, int totalRounds)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
-            pWriter.WriteEnum(ResultsPacketMode.Rounds);
+            pWriter.Write(ResultsPacketMode.Rounds);
             pWriter.WriteInt(roundsCleared);
             pWriter.WriteInt(totalRounds);
             pWriter.WriteInt(1); // amount of rewards (meso and/or exp)
@@ -88,10 +88,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Untimed(bool success)
+        public static PacketWriter Untimed(bool success)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESULTS);
-            pWriter.WriteEnum(ResultsPacketMode.Untimed);
+            pWriter.Write(ResultsPacketMode.Untimed);
             pWriter.WriteBool(success);
             pWriter.WriteInt(); // dungeonID
             pWriter.WriteInt();

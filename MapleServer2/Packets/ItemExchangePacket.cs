@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             Notice = 0x2,
         }
 
-        public static Packet Notice(short noticeId)
+        public static PacketWriter Notice(short noticeId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXCHANGE);
-            pWriter.WriteEnum(ItemExchangePacketMode.Notice);
+            pWriter.Write(ItemExchangePacketMode.Notice);
             pWriter.WriteShort(noticeId);
             return pWriter;
         }

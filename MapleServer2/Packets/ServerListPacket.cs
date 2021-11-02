@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class ServerListPacket
     {
-        public static Packet SetServers(string serverName, ImmutableList<IPEndPoint> serverIps)
+        public static PacketWriter SetServers(string serverName, ImmutableList<IPEndPoint> serverIps)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
 
@@ -16,11 +16,11 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(serverName);
             pWriter.WriteByte(0); // Unk.
 
-            pWriter.WriteUShort((ushort) serverIps.Count);
+            pWriter.Write((ushort) serverIps.Count);
             foreach (IPEndPoint endpoint in serverIps)
             {
                 pWriter.WriteUnicodeString(endpoint.Address.ToString());
-                pWriter.WriteUShort((ushort) endpoint.Port);
+                pWriter.Write((ushort) endpoint.Port);
             }
 
             pWriter.WriteInt(100); // Unk.

@@ -22,6 +22,7 @@
     <PackageReference Include="MySql.Data" Version="8.0.27" />
     <PackageReference Include="SqlKata" Version="3.2.3" />
     <PackageReference Include="SqlKata.Execution" Version="3.2.3" />
+    <PackageReference Include="System.IO.Pipelines" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>

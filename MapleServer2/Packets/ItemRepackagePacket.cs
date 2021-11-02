@@ -14,28 +14,28 @@ namespace MapleServer2.Packets
             Notice = 0x3,
         }
 
-        public static Packet Open(long itemUid)
+        public static PacketWriter Open(long itemUid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
-            pWriter.WriteEnum(ItemRepackagePacketMode.Open);
+            pWriter.Write(ItemRepackagePacketMode.Open);
             pWriter.WriteLong(itemUid);
             return pWriter;
         }
 
-        public static Packet Repackage(Item item)
+        public static PacketWriter Repackage(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
-            pWriter.WriteEnum(ItemRepackagePacketMode.Repackage);
+            pWriter.Write(ItemRepackagePacketMode.Repackage);
             pWriter.WriteShort();
             pWriter.WriteLong(item.Uid);
             pWriter.WriteItem(item);
             return pWriter;
         }
 
-        public static Packet Notice(int noticeId)
+        public static PacketWriter Notice(int noticeId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_REPACKAGE);
-            pWriter.WriteEnum(ItemRepackagePacketMode.Notice);
+            pWriter.Write(ItemRepackagePacketMode.Notice);
             pWriter.WriteByte();
             pWriter.WriteInt(noticeId);
             return pWriter;

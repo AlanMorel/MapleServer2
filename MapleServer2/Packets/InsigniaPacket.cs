@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class InsigniaPacket
     {
-        public static Packet UpdateInsignia(GameSession session, short insigniaId, bool show)
+        public static PacketWriter UpdateInsignia(GameSession session, short insigniaId, bool show)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NAME_TAG_SYMBOL);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);

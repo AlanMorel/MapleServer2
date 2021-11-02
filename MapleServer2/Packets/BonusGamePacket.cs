@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             SpinWheel = 0x02,
         }
 
-        public static Packet OpenWheel(List<Tuple<int, byte, int>> items)
+        public static PacketWriter OpenWheel(List<Tuple<int, byte, int>> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BONUS_GAME);
-            pWriter.WriteEnum(BonusGameMode.OpenWheel);
+            pWriter.Write(BonusGameMode.OpenWheel);
             pWriter.WriteByte();
             pWriter.WriteInt(items.Count);
             foreach (Tuple<int, byte, int> item in items)
@@ -28,10 +28,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SpinWheel(int index, Tuple<int, byte, int> item)
+        public static PacketWriter SpinWheel(int index, Tuple<int, byte, int> item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BONUS_GAME);
-            pWriter.WriteEnum(BonusGameMode.SpinWheel);
+            pWriter.Write(BonusGameMode.SpinWheel);
             pWriter.WriteInt(1); // spins? | loop count?
             pWriter.WriteInt(index);
             pWriter.WriteInt(item.Item1);

@@ -30,10 +30,10 @@ namespace MapleServer2.Packets
             Join = 0x1E,
         }
 
-        public static Packet UpdateClub(Club club)
+        public static PacketWriter UpdateClub(Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.UpdateClub);
+            pWriter.Write(ClubPacketMode.UpdateClub);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Name);
             pWriter.WriteLong(club.Leader.AccountId);
@@ -55,8 +55,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
                 pWriter.WriteByte();
-                pWriter.WriteEnum(member.Job);
-                pWriter.WriteEnum(member.JobCode);
+                pWriter.Write(member.Job);
+                pWriter.Write(member.JobCode);
                 pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
@@ -76,19 +76,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Establish(Club club)
+        public static PacketWriter Establish(Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Establish);
+            pWriter.Write(ClubPacketMode.Establish);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Name);
             return pWriter;
         }
 
-        public static Packet Create(Party party, Club club)
+        public static PacketWriter Create(Party party, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Create);
+            pWriter.Write(ClubPacketMode.Create);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Name);
             pWriter.WriteLong(party.Leader.AccountId);
@@ -110,8 +110,8 @@ namespace MapleServer2.Packets
                 pWriter.WriteLong(member.CharacterId);
                 pWriter.WriteUnicodeString(member.Name);
                 pWriter.WriteByte();
-                pWriter.WriteEnum(member.Job);
-                pWriter.WriteEnum(member.JobCode);
+                pWriter.Write(member.Job);
+                pWriter.Write(member.JobCode);
                 pWriter.WriteShort(member.Levels.Level);
                 pWriter.WriteInt(member.MapId);
                 pWriter.WriteShort(); // member.Channel
@@ -130,19 +130,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet InviteSentReceipt(long clubId, Player other)
+        public static PacketWriter InviteSentReceipt(long clubId, Player other)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.InviteSentReceipt);
+            pWriter.Write(ClubPacketMode.InviteSentReceipt);
             pWriter.WriteLong(clubId);
             pWriter.WriteUnicodeString(other.Name);
             return pWriter;
         }
 
-        public static Packet Invite(Club club, Player other)
+        public static PacketWriter Invite(Club club, Player other)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Invite);
+            pWriter.Write(ClubPacketMode.Invite);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Name);
             pWriter.WriteUnicodeString(club.Leader.Name);
@@ -150,10 +150,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet InviteResponse(Club club, Player player)
+        public static PacketWriter InviteResponse(Club club, Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.InviteResponse);
+            pWriter.Write(ClubPacketMode.InviteResponse);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Name);
             pWriter.WriteUnicodeString(club.Leader.Name);
@@ -162,58 +162,58 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LeaderInviteResponse(Club club, string invitee, byte response)
+        public static PacketWriter LeaderInviteResponse(Club club, string invitee, byte response)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.LeaderInviteResponse);
+            pWriter.Write(ClubPacketMode.LeaderInviteResponse);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(invitee);
             pWriter.WriteShort(response);
             return pWriter;
         }
 
-        public static Packet LeaveClub(Club club)
+        public static PacketWriter LeaveClub(Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.LeaveClub);
+            pWriter.Write(ClubPacketMode.LeaveClub);
             pWriter.WriteLong(club.Id);
             return pWriter;
         }
 
-        public static Packet ChangeBuffReceipt(Club club, int buffId)
+        public static PacketWriter ChangeBuffReceipt(Club club, int buffId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.ChangeBuffReceipt);
+            pWriter.Write(ClubPacketMode.ChangeBuffReceipt);
             pWriter.WriteLong(club.Id);
             pWriter.WriteInt(buffId);
             pWriter.WriteInt(0x1);
             return pWriter;
         }
 
-        public static Packet ConfirmCreate(long clubId)
+        public static PacketWriter ConfirmCreate(long clubId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.ConfirmCreate);
+            pWriter.Write(ClubPacketMode.ConfirmCreate);
             pWriter.WriteLong(clubId);
             pWriter.WriteInt();
             pWriter.WriteShort();
             return pWriter;
         }
 
-        public static Packet Disband(Club club)
+        public static PacketWriter Disband(Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Disband);
+            pWriter.Write(ClubPacketMode.Disband);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Leader.Name);
             pWriter.WriteInt(0xCF); //unk
             return pWriter;
         }
 
-        public static Packet ConfirmInvite(Club club, Player other/*, byte response*/)
+        public static PacketWriter ConfirmInvite(Club club, Player other/*, byte response*/)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.ConfirmInvite);
+            pWriter.Write(ClubPacketMode.ConfirmInvite);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(club.Leader.Name);
             // TODO use method used in the loop inside Create and UpdateClub
@@ -223,8 +223,8 @@ namespace MapleServer2.Packets
             pWriter.WriteLong(other.CharacterId);
             pWriter.WriteUnicodeString(other.Name);
             pWriter.WriteByte();
-            pWriter.WriteEnum(other.Job);
-            pWriter.WriteEnum(other.JobCode);
+            pWriter.Write(other.Job);
+            pWriter.Write(other.JobCode);
             pWriter.WriteShort(other.Levels.Level);
             pWriter.WriteInt(other.MapId);
             pWriter.WriteShort(); // member.Channel
@@ -242,29 +242,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LeaveNotice(Club club, Player player)
+        public static PacketWriter LeaveNotice(Club club, Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.LeaveNotice);
+            pWriter.Write(ClubPacketMode.LeaveNotice);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             return pWriter;
         }
 
-        public static Packet LogoutNotice(Player player, Club club)
+        public static PacketWriter LogoutNotice(Player player, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.LogoutNotice);
+            pWriter.Write(ClubPacketMode.LogoutNotice);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(); // current timestamp
             return pWriter;
         }
 
-        public static Packet AssignNewLeader(Player player, Club club)
+        public static PacketWriter AssignNewLeader(Player player, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.AssignNewLeader);
+            pWriter.Write(ClubPacketMode.AssignNewLeader);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(""); // new leader
@@ -272,28 +272,28 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ChangeBuff(Club club, int buffId)
+        public static PacketWriter ChangeBuff(Club club, int buffId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.ChangeBuff);
+            pWriter.Write(ClubPacketMode.ChangeBuff);
             pWriter.WriteLong(club.Id);
             pWriter.WriteInt(buffId);
             pWriter.WriteInt(0x1);
             return pWriter;
         }
 
-        public static Packet UpdatePlayerClubList(Player player, Club club)
+        public static PacketWriter UpdatePlayerClubList(Player player, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.UpdatePlayerClubList);
+            pWriter.Write(ClubPacketMode.UpdatePlayerClubList);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteByte();
-            pWriter.WriteEnum(player.Job);
-            pWriter.WriteEnum(player.JobCode);
+            pWriter.Write(player.Job);
+            pWriter.Write(player.JobCode);
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteInt(player.MapId);
             pWriter.WriteShort(); // player.Channel
@@ -308,29 +308,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoginNotice(Player player, Club club)
+        public static PacketWriter LoginNotice(Player player, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.LoginNotice);
+            pWriter.Write(ClubPacketMode.LoginNotice);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             return pWriter;
         }
 
-        public static Packet Rename(Club club, string clubNewName)
+        public static PacketWriter Rename(Club club, string clubNewName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Rename);
+            pWriter.Write(ClubPacketMode.Rename);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(clubNewName);
             pWriter.WriteLong(); //unk
             return pWriter;
         }
 
-        public static Packet Join(Player player, Club club)
+        public static PacketWriter Join(Player player, Club club)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CLUB);
-            pWriter.WriteEnum(ClubPacketMode.Join);
+            pWriter.Write(ClubPacketMode.Join);
             pWriter.WriteLong(club.Id);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteUnicodeString(club.Name);

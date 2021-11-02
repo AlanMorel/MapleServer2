@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     internal class WorldMapPacket
     {
-        public static Packet Open()
+        public static PacketWriter Open()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
 

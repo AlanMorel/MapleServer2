@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class TaxiPacket
     {
-        public static Packet DiscoverTaxi(int mapId)
+        public static PacketWriter DiscoverTaxi(int mapId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TAXI);
             pWriter.WriteInt(1);

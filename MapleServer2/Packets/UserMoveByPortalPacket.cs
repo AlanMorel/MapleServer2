@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class UserMoveByPortalPacket
     {
-        public static Packet Move(IFieldObject<Player> fieldPlayer, CoordF coords, CoordF rotation)
+        public static PacketWriter Move(IFieldObject<Player> fieldPlayer, CoordF coords, CoordF rotation)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_MOVE_BY_PORTAL);
             pWriter.WriteInt(fieldPlayer.ObjectId);

@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             WrongPassword = 0x04,
         }
 
-        public static Packet RequestPassword(long accountId)
+        public static PacketWriter RequestPassword(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
-            pWriter.WriteEnum(EnterUGCMapMode.RequestPassword);
+            pWriter.Write(EnterUGCMapMode.RequestPassword);
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong(accountId);
@@ -24,10 +24,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WrongPassword(long accountId)
+        public static PacketWriter WrongPassword(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ENTER_UGC_MAP);
-            pWriter.WriteEnum(EnterUGCMapMode.WrongPassword);
+            pWriter.Write(EnterUGCMapMode.WrongPassword);
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong(accountId);

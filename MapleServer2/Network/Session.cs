@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
+using System.IO.Pipelines;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using Maple2Storage.Extensions;
@@ -6,6 +8,7 @@ using MaplePacketLib2.Crypto;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
+using MapleServer2.Packets;
 using NLog;
 
 namespace MapleServer2.Network
@@ -13,93 +16,108 @@ namespace MapleServer2.Network
     public abstract class Session : IDisposable
     {
         public const uint VERSION = 12;
-
-        private const int BUFFER_SIZE = 1024;
         private const uint BLOCK_IV = 12; // TODO: should this be variable
 
+        private const int HANDSHAKE_SIZE = 19;
         private const int STOP_TIMEOUT = 2000;
 
-        protected abstract SessionType Type { get; }
-
         public EventHandler<string> OnError;
-        public EventHandler<Packet> OnPacket;
+        public EventHandler<PoolPacketReader> OnPacket;
 
+        private bool Disposed;
         private uint Siv;
         private uint Riv;
 
-        private Task SendThread;
-        private Task RecvThread;
+        private string Name;
         private TcpClient Client;
         private NetworkStream NetworkStream;
-        private MapleStream MapleStream;
-        private MapleCipher SendCipher;
-        private MapleCipher RecvCipher;
+        private MapleCipher.Encryptor SendCipher;
+        private MapleCipher.Decryptor RecvCipher;
 
-        // These are unencrypted packets, scheduled to be sent on a single thread.
-        private readonly Queue<byte[]> SendQueue;
-        private readonly byte[] RecvBuffer;
-        private readonly CancellationTokenSource Source;
+        private readonly Thread Thread;
+        private readonly QueuedPipeScheduler PipeScheduler;
+        private readonly Pipe RecvPipe;
 
-        protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected abstract PatchType Type { get; }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
 
         protected Session()
         {
-            SendQueue = new Queue<byte[]>();
-            RecvBuffer = new byte[BUFFER_SIZE];
-            Source = new CancellationTokenSource();
+            Thread = new Thread(StartInternal);
+            PipeScheduler = new QueuedPipeScheduler();
+            PipeOptions options = new PipeOptions(
+                readerScheduler: PipeScheduler,
+                writerScheduler: PipeScheduler,
+                useSynchronizationContext: false
+            );
+            RecvPipe = new Pipe(options);
         }
 
         public void Init([NotNull] TcpClient client)
         {
-            // Allow Client to close immediately
+            if (Disposed)
+            {
+                throw new ObjectDisposedException("Session has been disposed.");
+            }
+
+            // Allow client to close immediately
             client.LingerState = new LingerOption(true, 0);
+            Name = client.Client.RemoteEndPoint?.ToString();
 
             byte[] sivBytes = new byte[4];
             byte[] rivBytes = new byte[4];
-            Rng.GetBytes(sivBytes);
-            Rng.GetBytes(rivBytes);
+            rng.GetBytes(sivBytes);
+            rng.GetBytes(rivBytes);
             Siv = BitConverter.ToUInt32(sivBytes);
             Riv = BitConverter.ToUInt32(rivBytes);
 
             Client = client;
             NetworkStream = client.GetStream();
-            MapleStream = new MapleStream();
-            SendCipher = MapleCipher.Encryptor(VERSION, Siv, BLOCK_IV);
-            RecvCipher = MapleCipher.Decryptor(VERSION, Riv, BLOCK_IV);
+            SendCipher = new MapleCipher.Encryptor(VERSION, Siv, BLOCK_IV);
+            RecvCipher = new MapleCipher.Decryptor(VERSION, Riv, BLOCK_IV);
         }
 
         public void Dispose()
         {
-            Disconnect();
-            Client?.Dispose();
+            if (Disposed)
+            {
+                return;
+            }
+
+            Disposed = true;
+            Complete();
+            Thread.Join(STOP_TIMEOUT);
+
+            CloseClient();
+
+#if DEBUG
             GC.SuppressFinalize(this);
+#endif
+        }
+
+        protected void Complete()
+        {
+            RecvPipe.Writer.Complete();
+            RecvPipe.Reader.Complete();
+            PipeScheduler.Complete();
         }
 
         public void Disconnect()
         {
-            StopThreads();
-            if (Connected())
+            if (Disposed)
             {
-                // Must close socket before network stream to prevent lingering
-                Client.Client.Close();
-                Client.Close();
-                Logger.Debug("Disconnected Client.");
+                return;
             }
-        }
 
-        private void StopThreads()
-        {
-            Source.Cancel();
-            SendThread.Wait(STOP_TIMEOUT);
-            RecvThread.Wait(STOP_TIMEOUT);
-            EndSession();
+            Logger.Info($"Disconnected {this}");
+            ((IDisposable) this).Dispose();
         }
 
         public bool Connected()
         {
-            if (Client?.Client == null)
+            if (Disposed || Client?.Client == null)
             {
                 return false;
             }
@@ -110,163 +128,183 @@ namespace MapleServer2.Network
 
         public void Start()
         {
-            if (SendThread != null || RecvThread != null)
+            if (Disposed)
             {
-                throw new ArgumentException("Session has already been started.");
+                throw new ObjectDisposedException("Session has been disposed.");
+            }
+            if (Client == null)
+            {
+                throw new InvalidOperationException("Cannot start a session without a client.");
             }
 
-            RecvThread = new Task(() =>
+            Thread.Start();
+        }
+
+        public void Send(params byte[] packet) => SendInternal(new PacketWriter(packet), packet.Length);
+
+        public void Send(PacketWriter packet) => SendInternal(packet, packet.Length);
+
+        // Ensures no more communication before sending a final packet.
+        public void SendFinal(PacketWriter packet)
+        {
+            SendInternal(packet, packet.Length);
+            StopThreads();
+        }
+
+        private void StopThreads()
+        {
+            EndSession();
+        }
+
+        public override string ToString() => $"{GetType().Name} from {Name}";
+
+        private void StartInternal()
+        {
+            try
             {
-                try
+                PerformHandshake(); // Perform handshake to initialize connection
+
+                // Pipeline tasks can be run asynchronously
+                Task writeTask = WriteRecvPipe(Client.Client, RecvPipe.Writer);
+                Task readTask = ReadRecvPipe(RecvPipe.Reader);
+                Task.WhenAll(writeTask, readTask).ContinueWith(_ => CloseClient());
+
+                while (!Disposed && PipeScheduler.OutputAvailableAsync().Result)
                 {
-                    PerformHandshake();
-                    StartRead();
+                    PipeScheduler.ProcessQueue();
                 }
-                catch (SystemException ex)
-                {
-                    Logger.Trace("Fatal error for session:{ex}", ex);
-                    Disconnect();
-                }
-            });
-            SendThread = new Task(() =>
+            }
+            catch (Exception ex)
             {
-                try
+                if (!Disposed)
                 {
-                    StartWrite();
+                    Logger.Error($"Exception on session thread: {ex}");
                 }
-                catch (SystemException ex)
-                {
-                    Logger.Trace("Fatal error for session:{ex}", ex);
-                    Disconnect();
-                }
-            });
-            SendThread.Start();
-            RecvThread.Start();
+            }
+            finally
+            {
+                Disconnect();
+            }
         }
 
         private void PerformHandshake()
         {
-            if (Client == null)
-            {
-                throw new InvalidOperationException("Cannot start a session without a Client.");
-            }
-
-            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_VERSION);
-            pWriter.WriteUInt(VERSION);
-            pWriter.WriteUInt(Riv);
-            pWriter.WriteUInt(Siv);
-            pWriter.WriteUInt(BLOCK_IV);
-            pWriter.WriteByte((byte) Type);
+            PacketWriter handshake = HandshakePacket.Handshake(VERSION, Riv, Siv, BLOCK_IV, Type, HANDSHAKE_SIZE);
 
             // No encryption for handshake
-            Packet packet = SendCipher.WriteHeader(pWriter.ToArray());
-            Logger.Debug("Handshake: {packet}", packet);
+            using PoolPacketWriter packet = SendCipher.WriteHeader(handshake.Buffer, 0, handshake.Length);
+            Logger.Debug($"Handshake: {packet}");
             SendRaw(packet);
         }
 
-        public void Send(params byte[] packet)
+        private async Task WriteRecvPipe(Socket socket, PipeWriter writer)
         {
-            lock (SendQueue)
+            try
             {
-                SendQueue.Enqueue(packet);
-            }
-        }
-
-        public void Send(Packet packet)
-        {
-            lock (SendQueue)
-            {
-                SendQueue.Enqueue(packet.ToArray());
-            }
-        }
-
-        // Ensures no more communication before sending a final packet.
-        public void SendFinal(Packet packet)
-        {
-            SendInternal(packet.ToArray());
-            StopThreads();
-        }
-
-        private async void StartRead()
-        {
-            CancellationToken readToken = Source.Token;
-            while (!readToken.IsCancellationRequested)
-            {
-                try
+                FlushResult result;
+                do
                 {
-                    int length = await NetworkStream.ReadAsync(RecvBuffer.AsMemory(0, RecvBuffer.Length), readToken);
-                    if (length <= 0)
+                    Memory<byte> memory = writer.GetMemory();
+                    int bytesRead = await socket.ReceiveAsync(memory, SocketFlags.None);
+                    if (bytesRead <= 0)
                     {
-                        if (!Connected())
+                        break;
+                    }
+
+                    writer.Advance(bytesRead);
+
+                    result = await writer.FlushAsync();
+                } while (!Disposed && !result.IsCompleted);
+            }
+            catch (Exception)
+            {
+                Disconnect();
+            }
+        }
+
+        private async Task ReadRecvPipe(PipeReader reader)
+        {
+            try
+            {
+                ReadResult result;
+                do
+                {
+                    result = await reader.ReadAsync();
+
+                    int bytesRead;
+                    ReadOnlySequence<byte> buffer = result.Buffer;
+                    while ((bytesRead = RecvCipher.TryDecrypt(buffer, out PoolPacketReader packet)) > 0)
+                    {
+                        try
                         {
-                            return;
+                            LogRecv(packet);
+                            OnPacket?.Invoke(this, packet); // handle packet
                         }
-
-                        continue;
+                        finally
+                        {
+                            packet.Dispose();
+                        }
+                        buffer = buffer.Slice(bytesRead);
                     }
 
-                    MapleStream.Write(RecvBuffer, 0, length);
-                }
-                catch (IOException)
-                {
-                    Disconnect();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Exception reading from socket:");
-                    return;
-                }
-
-                while (MapleStream.TryRead(out byte[] packetBuffer))
-                {
-                    Packet packet = RecvCipher.Transform(packetBuffer);
-                    short opcode = packet.Reader().ReadShort();
-
-                    RecvOp recvOp = (RecvOp) opcode;
-
-                    switch (recvOp)
-                    {
-                        case RecvOp.USER_SYNC:
-                        case RecvOp.KEY_TABLE:
-                        case RecvOp.RIDE_SYNC:
-                        case RecvOp.GUIDE_OBJECT_SYNC:
-                        case RecvOp.REQUEST_TIME_SYNC:
-                        case RecvOp.STATE:
-                        case RecvOp.STATE_FALL_DAMAGE:
-                        case RecvOp.VIBRATE:
-                            break;
-                        default:
-                            string packetString = packet.ToString();
-                            Logger.Debug($"RECV ({recvOp}): {packetString[Math.Min(packetString.Length, 6)..]}".ColorGreen());
-                            break;
-                    }
-                    OnPacket?.Invoke(this, packet); // handle packet
-                }
+                    reader.AdvanceTo(buffer.Start, buffer.End);
+                } while (!Disposed && !result.IsCompleted);
             }
-        }
-
-        private void StartWrite()
-        {
-            CancellationToken writeToken = Source.Token;
-            while (!writeToken.IsCancellationRequested)
+            catch (Exception ex)
             {
-                lock (SendQueue)
+                if (!Disposed)
                 {
-                    while (SendQueue.TryDequeue(out byte[] packet))
-                    {
-                        SendInternal(packet);
-                    }
+                    Logger.Error($"Exception reading recv packet: {ex}");
                 }
-                Thread.Sleep(1);
+            }
+            finally
+            {
+                Disconnect();
             }
         }
 
-        private void SendInternal(byte[] packet)
+        private void SendInternal(PacketWriter packet, int length)
         {
-            short opcode = BitConverter.ToInt16(packet, 0);
-            SendOp sendOp = (SendOp) opcode;
+            if (Disposed)
+            {
+                return;
+            }
 
+            LogSend(packet);
+            lock (SendCipher)
+            {
+                using PoolPacketWriter encryptedPacket = SendCipher.Encrypt(packet.Buffer, 0, length);
+                SendRaw(encryptedPacket);
+            }
+        }
+
+        private void SendRaw(PacketWriter packet)
+        {
+            if (Disposed)
+            {
+                return;
+            }
+
+            try
+            {
+                NetworkStream.Write(packet.Buffer, 0, packet.Length);
+            }
+            catch (Exception)
+            {
+                Disconnect();
+            }
+        }
+
+        private void CloseClient()
+        {
+            // Must close socket before network stream to prevent lingering
+            Client?.Client?.Close();
+            Client?.Close();
+        }
+
+        private static void LogSend(PacketWriter packet)
+        {
+            SendOp sendOp = (SendOp) (packet.Buffer[1] << 8 | packet.Buffer[0]);
             switch (sendOp)
             {
                 case SendOp.USER_SYNC:
@@ -290,30 +328,31 @@ namespace MapleServer2.Network
                 case SendOp.VIBRATE:
                     break;
                 default:
-                    string packetString = packet.ToHexString(' ');
+                    string packetString = packet.ToString();
                     Logger.Debug($"SEND ({sendOp}): {packetString[Math.Min(packetString.Length, 6)..]}".ColorRed());
                     break;
             }
-            Packet encryptedPacket = SendCipher.Transform(packet);
-            SendRaw(encryptedPacket);
         }
 
-        private void SendRaw(Packet packet)
+        private static void LogRecv(PacketReader packet)
         {
-            try
+            RecvOp recvOp = (RecvOp) (packet.Buffer[1] << 8 | packet.Buffer[0]);
+            switch (recvOp)
             {
-                NetworkStream.Write(packet.Buffer, 0, packet.Length);
+                case RecvOp.USER_SYNC:
+                case RecvOp.KEY_TABLE:
+                case RecvOp.RIDE_SYNC:
+                case RecvOp.GUIDE_OBJECT_SYNC:
+                case RecvOp.REQUEST_TIME_SYNC:
+                case RecvOp.STATE:
+                case RecvOp.STATE_FALL_DAMAGE:
+                case RecvOp.VIBRATE:
+                    break;
+                default:
+                    string packetString = packet.ToString();
+                    Logger.Debug($"RECV ({recvOp}): {packetString[Math.Min(packetString.Length, 6)..]}".ColorGreen());
+                    break;
             }
-            catch (IOException ex)
-            {
-                Logger.Error("Exception writing to socket: {ex}", ex);
-                Disconnect();
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"{GetType().Name} from {Client?.Client.RemoteEndPoint}";
         }
 
         public abstract void EndSession();

@@ -41,10 +41,10 @@ namespace MapleServer2.Packets
             // ... probably there is more
         }
 
-        public static Packet InitLogin(long accountId)
+        public static PacketWriter InitLogin(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.LoginOk);
+            pWriter.Write(LoginModes.LoginOk);
             pWriter.WriteInt(); // Const
             pWriter.WriteUnicodeString(""); // Ban reason
             pWriter.WriteLong(accountId);
@@ -59,28 +59,28 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet IncorrectId()
+        public static PacketWriter IncorrectId()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.IncorrectId);
+            pWriter.Write(LoginModes.IncorrectId);
             pWriter.WriteZero(45);
 
             return pWriter;
         }
 
-        public static Packet IncorrectPassword()
+        public static PacketWriter IncorrectPassword()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.IncorrectPassword);
+            pWriter.Write(LoginModes.IncorrectPassword);
             pWriter.WriteZero(45);
 
             return pWriter;
         }
 
-        public static Packet AccountBanned()
+        public static PacketWriter AccountBanned()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.AccountSuspended);
+            pWriter.Write(LoginModes.AccountSuspended);
             pWriter.WriteInt(); // Const
             pWriter.WriteUnicodeString(""); // Ban reason
             pWriter.WriteLong(); // account id
@@ -95,10 +95,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AccountNotInBeta()
+        public static PacketWriter AccountNotInBeta()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
-            pWriter.WriteEnum(LoginModes.AccountNotInBeta);
+            pWriter.Write(LoginModes.AccountNotInBeta);
             pWriter.WriteZero(45);
 
             return pWriter;

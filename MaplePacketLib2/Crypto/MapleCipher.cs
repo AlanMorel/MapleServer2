@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using System.Buffers;
+using MaplePacketLib2.Tools;
 
 namespace MaplePacketLib2.Crypto
 {
@@ -6,72 +7,20 @@ namespace MaplePacketLib2.Crypto
     {
         private const int HEADER_SIZE = 6;
 
-        private readonly uint Version;
-        private readonly ICrypter[] EncryptSeq;
-        private readonly ICrypter[] DecryptSeq;
+        private static readonly ArrayPool<byte> ArrayProvider = ArrayPool<byte>.Shared;
 
+        private readonly uint Version;
         private uint Iv;
 
-        public Func<byte[], Packet> Transform { get; private set; }
-
-        private MapleCipher(uint version, uint iv, uint blockIV)
+        private MapleCipher(uint version, uint iv)
         {
             Version = version;
             Iv = iv;
-
-            // Initialize Crypter Sequence
-            List<ICrypter> cryptSeq = InitCryptSeq(version, blockIV);
-            EncryptSeq = cryptSeq.ToArray();
-            cryptSeq.Reverse();
-            DecryptSeq = cryptSeq.ToArray();
         }
 
-        public static MapleCipher Encryptor(uint version, uint iv, uint blockIV)
-        {
-            MapleCipher cipher = new MapleCipher(version, iv, blockIV);
-            cipher.Transform = cipher.Encrypt;
-            return cipher;
-        }
-
-        public static MapleCipher Decryptor(uint version, uint iv, uint blockIV)
-        {
-            MapleCipher cipher = new MapleCipher(version, iv, blockIV);
-            cipher.Transform = cipher.Decrypt;
-            return cipher;
-        }
-
-        public void AdvanceIV()
+        private void AdvanceIV()
         {
             Iv = Rand32.CrtRand(Iv);
-        }
-
-        public Packet WriteHeader(byte[] packet)
-        {
-            ushort encSeq = EncodeSeqBase();
-
-            PacketWriter writer = new PacketWriter(packet.Length + HEADER_SIZE);
-            writer.Write(encSeq);
-            writer.Write(packet.Length);
-            writer.Write(packet);
-
-            return writer;
-        }
-
-        public int ReadHeader(PacketReader packet)
-        {
-            ushort encSeq = packet.Read<ushort>();
-            ushort decSeq = DecodeSeqBase(encSeq);
-            if (decSeq != Version)
-            {
-                throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
-            }
-            int packetSize = packet.Read<int>();
-            if (packet.Length < packetSize + HEADER_SIZE)
-            {
-                throw new ArgumentException($"Packet has invalid length: {packet.Length}");
-            }
-
-            return packetSize;
         }
 
         private static List<ICrypter> InitCryptSeq(uint version, uint blockIV)
@@ -95,42 +44,137 @@ namespace MaplePacketLib2.Crypto
             return cryptSeq;
         }
 
-        private Packet Encrypt(byte[] packet)
+        // These classes are used for encryption/decryption
+        public class Encryptor
         {
-            foreach (ICrypter crypter in EncryptSeq)
+            private readonly MapleCipher Cipher;
+            private readonly ICrypter[] EncryptSeq;
+
+            public Encryptor(uint version, uint iv, uint blockIV)
             {
-                crypter.Encrypt(packet);
+                Cipher = new MapleCipher(version, iv);
+                EncryptSeq = InitCryptSeq(version, blockIV).ToArray();
             }
 
-            return WriteHeader(packet);
-        }
-
-        private Packet Decrypt(byte[] packet)
-        {
-            PacketReader reader = new PacketReader(packet);
-            int packetSize = ReadHeader(reader);
-
-            packet = reader.Read(packetSize);
-            foreach (ICrypter crypter in DecryptSeq)
+            public PoolPacketWriter WriteHeader(byte[] packet, int offset, int length)
             {
-                crypter.Decrypt(packet);
+                short encSeq = EncodeSeqBase();
+
+                PoolPacketWriter writer = new PoolPacketWriter(length + HEADER_SIZE, ArrayProvider);
+                writer.WriteShort(encSeq);
+                writer.WriteInt(length);
+                writer.WriteBytes(packet, offset, length);
+
+                return writer;
             }
 
-            return new Packet(packet);
+            private short EncodeSeqBase()
+            {
+                short encSeq = (short) (Cipher.Version ^ (Cipher.Iv >> 16));
+                Cipher.AdvanceIV();
+                return encSeq;
+            }
+
+            public PoolPacketWriter Encrypt(byte[] packet, int offset, int length)
+            {
+                PoolPacketWriter result = WriteHeader(packet, offset, length);
+                foreach (ICrypter crypter in EncryptSeq)
+                {
+                    crypter.Encrypt(result.Buffer, HEADER_SIZE, HEADER_SIZE + length);
+                }
+
+                return result;
+            }
+
+            public PacketWriter Encrypt(PacketWriter packet)
+            {
+                return Encrypt(packet.Buffer, 0, packet.Length).Managed();
+            }
         }
 
-        private ushort EncodeSeqBase()
+        public class Decryptor
         {
-            ushort encSeq = (ushort) (Version ^ (Iv >> 16));
-            AdvanceIV();
-            return encSeq;
-        }
+            private readonly MapleCipher Cipher;
+            private readonly ICrypter[] DecryptSeq;
 
-        private ushort DecodeSeqBase(ushort encSeq)
-        {
-            ushort decSeq = (ushort) ((Iv >> 16) ^ encSeq);
-            AdvanceIV();
-            return decSeq;
+            public Decryptor(uint version, uint iv, uint blockIV)
+            {
+                Cipher = new MapleCipher(version, iv);
+                List<ICrypter> cryptSeq = InitCryptSeq(version, blockIV);
+                cryptSeq.Reverse();
+                DecryptSeq = cryptSeq.ToArray();
+            }
+
+            private short DecodeSeqBase(short encSeq)
+            {
+                short decSeq = (short) ((Cipher.Iv >> 16) ^ encSeq);
+                Cipher.AdvanceIV();
+                return decSeq;
+            }
+
+            // For use with System.IO.Pipelines
+            // Decrypt packets directly from underlying data stream without needing to buffer
+            public int TryDecrypt(ReadOnlySequence<byte> buffer, out PoolPacketReader packet)
+            {
+                if (buffer.Length < HEADER_SIZE)
+                {
+                    packet = null;
+                    return 0;
+                }
+
+                SequenceReader<byte> reader = new SequenceReader<byte>(buffer);
+                reader.TryReadLittleEndian(out short encSeq);
+                reader.TryReadLittleEndian(out int packetSize);
+                int rawPacketSize = HEADER_SIZE + packetSize;
+                if (buffer.Length < rawPacketSize)
+                {
+                    packet = null;
+                    return 0;
+                }
+
+                // Only decode sequence once we know there is sufficient data because it mutates IV
+                short decSeq = DecodeSeqBase(encSeq);
+                if (decSeq != Cipher.Version)
+                {
+                    throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
+                }
+
+                byte[] data = ArrayProvider.Rent(packetSize);
+                buffer.Slice(HEADER_SIZE, packetSize).CopyTo(data);
+                foreach (ICrypter crypter in DecryptSeq)
+                {
+                    crypter.Decrypt(data, 0, packetSize);
+                }
+
+                packet = new PoolPacketReader(ArrayProvider, data, packetSize);
+                return rawPacketSize;
+            }
+
+            public PacketReader Decrypt(byte[] rawPacket, int offset = 0)
+            {
+                PacketReader reader = new PacketReader(rawPacket, offset);
+
+                short encSeq = reader.ReadShort();
+                short decSeq = DecodeSeqBase(encSeq);
+                if (decSeq != Cipher.Version)
+                {
+                    throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
+                }
+
+                int packetSize = reader.ReadInt();
+                if (rawPacket.Length < packetSize + HEADER_SIZE)
+                {
+                    throw new ArgumentException($"Packet has invalid length: {rawPacket.Length}");
+                }
+
+                byte[] packet = reader.ReadBytes(packetSize);
+                foreach (ICrypter crypter in DecryptSeq)
+                {
+                    crypter.Decrypt(packet);
+                }
+
+                return new PacketReader(packet);
+            }
         }
     }
 }

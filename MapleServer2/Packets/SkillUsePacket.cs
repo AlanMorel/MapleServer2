@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
     {
         public static readonly Dictionary<long, SkillCast> SkillCastMap = new Dictionary<long, SkillCast>();
 
-        public static Packet SkillUse(SkillCast skillCast, CoordF position, CoordF direction, CoordF rotation)
+        public static PacketWriter SkillUse(SkillCast skillCast, CoordF position, CoordF direction, CoordF rotation)
         {
             SkillCastMap[skillCast.SkillSN] = skillCast;
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
@@ -31,7 +31,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet MobSkillUse(IFieldObject<Mob> mob, int skillId, short skillLevel, byte part)
+        public static PacketWriter MobSkillUse(IFieldObject<Mob> mob, int skillId, short skillLevel, byte part)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
             pWriter.WriteInt(RandomProvider.Get().Next()); // Seems to be an incrementing number - unique id

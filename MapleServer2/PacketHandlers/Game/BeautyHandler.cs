@@ -493,10 +493,10 @@ namespace MapleServer2.PacketHandlers.Game
             switch (itemSlot)
             {
                 case ItemSlot.HR:
-                    float backLength = BitConverter.ToSingle(packet.Read(4), 0);
+                    float backLength = BitConverter.ToSingle(packet.ReadBytes(4), 0);
                     CoordF backPositionCoord = packet.Read<CoordF>();
                     CoordF backPositionRotation = packet.Read<CoordF>();
-                    float frontLength = BitConverter.ToSingle(packet.Read(4), 0);
+                    float frontLength = BitConverter.ToSingle(packet.ReadBytes(4), 0);
                     CoordF frontPositionCoord = packet.Read<CoordF>();
                     CoordF frontPositionRotation = packet.Read<CoordF>();
 
@@ -512,7 +512,7 @@ namespace MapleServer2.PacketHandlers.Game
                     session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
                     break;
                 case ItemSlot.FD:
-                    byte[] faceDecorationPosition = packet.Read(16);
+                    byte[] faceDecorationPosition = packet.ReadBytes(16);
 
                     beautyItem.FaceDecorationData = faceDecorationPosition;
 

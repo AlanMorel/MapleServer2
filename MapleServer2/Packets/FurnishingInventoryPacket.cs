@@ -14,18 +14,18 @@ namespace MapleServer2.Packets
             EndList = 0x4
         }
 
-        public static Packet StartList()
+        public static PacketWriter StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
-            pWriter.WriteEnum(FurnishingInventoryPacketMode.StartList);
+            pWriter.Write(FurnishingInventoryPacketMode.StartList);
 
             return pWriter;
         }
 
-        public static Packet Load(Cube cube)
+        public static PacketWriter Load(Cube cube)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
-            pWriter.WriteEnum(FurnishingInventoryPacketMode.Load);
+            pWriter.Write(FurnishingInventoryPacketMode.Load);
             pWriter.WriteInt(cube.Item.Id);
             pWriter.WriteLong(cube.Uid);
             pWriter.WriteLong(); // expire timestamp for ugc items
@@ -34,19 +34,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Remove(Cube cube)
+        public static PacketWriter Remove(Cube cube)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
-            pWriter.WriteEnum(FurnishingInventoryPacketMode.Remove);
+            pWriter.Write(FurnishingInventoryPacketMode.Remove);
             pWriter.WriteLong(cube.Uid);
 
             return pWriter;
         }
 
-        public static Packet EndList()
+        public static PacketWriter EndList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FURNISHING_INVENTORY);
-            pWriter.WriteEnum(FurnishingInventoryPacketMode.EndList);
+            pWriter.Write(FurnishingInventoryPacketMode.EndList);
 
             return pWriter;
         }

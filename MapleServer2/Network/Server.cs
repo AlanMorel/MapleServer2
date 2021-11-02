@@ -15,20 +15,18 @@ namespace MapleServer2.Network
         private readonly CancellationTokenSource Source;
         private readonly ManualResetEvent ClientConnected;
         private readonly PacketRouter<T> Router;
-        private readonly List<T> Sessions;
-        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IComponentContext Context;
+
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public Server(PacketRouter<T> router, IComponentContext context)
         {
             Trace.Assert(context != null);
 
-            Router = router;
-            Context = context;
-
             Source = new CancellationTokenSource();
             ClientConnected = new ManualResetEvent(false);
-            Sessions = new List<T>();
+            Router = router;
+            Context = context;
         }
 
         public void Start(ushort port)
@@ -41,7 +39,7 @@ namespace MapleServer2.Network
                 while (!Source.IsCancellationRequested)
                 {
                     ClientConnected.Reset();
-                    Logger.Info("{GetType().Name} started on Port:{port}", GetType().Name, port);
+                    Logger.Info($"{GetType().Name} started on Port:{port}");
                     Listener.BeginAcceptTcpClient(AcceptTcpClient, null);
                     ClientConnected.WaitOne();
                 }
@@ -55,25 +53,21 @@ namespace MapleServer2.Network
             switch (ServerThread.ThreadState)
             {
                 case ThreadState.Unstarted:
-                    Logger.Info("{GetType().Name} has not been started.", GetType().Name);
+                    Logger.Info($"{GetType().Name} has not been started.");
                     break;
                 case ThreadState.Stopped:
-                    Logger.Info("{GetType().Name} has already been stopped.", GetType().Name);
+                    Logger.Info($"{GetType().Name} has already been stopped.");
                     break;
                 default:
                     Source.Cancel();
                     ClientConnected.Set();
                     ServerThread.Join();
-                    Logger.Info("{GetType().Name} was stopped.", GetType().Name);
+                    Logger.Info($"{GetType().Name} was stopped.");
                     break;
             }
         }
 
-        public IEnumerable<T> GetSessions()
-        {
-            Sessions.RemoveAll(session => !session.Connected());
-            return Sessions;
-        }
+        public abstract void AddSession(T session);
 
         private void AcceptTcpClient(IAsyncResult result)
         {
@@ -82,9 +76,7 @@ namespace MapleServer2.Network
             session.Init(client);
             session.OnPacket += Router.OnPacket;
 
-            Sessions.Add(session);
-            Logger.Info("Client connected: {session}", session);
-            session.Start();
+            AddSession(session);
 
             ClientConnected.Set();
         }

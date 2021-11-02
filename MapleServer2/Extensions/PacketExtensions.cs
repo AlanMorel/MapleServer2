@@ -13,7 +13,7 @@ namespace MapleServer2.Extensions
             if (length <= 4)
             {
                 pWriter.WriteInt(length);
-                pWriter.Write(data);
+                pWriter.WriteBytes(data);
 
                 return pWriter;
             }

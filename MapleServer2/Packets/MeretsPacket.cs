@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     internal class MeretsPacket
     {
-        public static Packet UpdateMerets(Account account, long amountGain = 0)
+        public static PacketWriter UpdateMerets(Account account, long amountGain = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET);
 

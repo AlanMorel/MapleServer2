@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class ItemLinkPacket
     {
-        public static Packet SendLinkItem(List<Item> items)
+        public static PacketWriter SendLinkItem(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT_ITEM_LINK);
             pWriter.WriteInt(items.Count);

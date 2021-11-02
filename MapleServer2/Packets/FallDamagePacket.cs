@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     internal class FallDamagePacket
     {
-        public static Packet FallDamage(int objectId, int hpLost)
+        public static PacketWriter FallDamage(int objectId, int hpLost)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STATE_FALL_DAMAGE);
             pWriter.WriteInt(objectId);

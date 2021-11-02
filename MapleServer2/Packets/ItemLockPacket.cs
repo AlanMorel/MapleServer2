@@ -14,29 +14,29 @@ namespace MapleServer2.Packets
             Update = 0x03,
         }
 
-        public static Packet Add(long uid, short slot)
+        public static PacketWriter Add(long uid, short slot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
-            pWriter.WriteEnum(ItemLockMode.Add);
+            pWriter.Write(ItemLockMode.Add);
             pWriter.WriteLong(uid);
             pWriter.WriteShort(slot);
 
             return pWriter;
         }
 
-        public static Packet Remove(long uid)
+        public static PacketWriter Remove(long uid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
-            pWriter.WriteEnum(ItemLockMode.Remove);
+            pWriter.Write(ItemLockMode.Remove);
             pWriter.WriteLong(uid);
 
             return pWriter;
         }
 
-        public static Packet UpdateItems(List<Item> items)
+        public static PacketWriter UpdateItems(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
-            pWriter.WriteEnum(ItemLockMode.Update);
+            pWriter.Write(ItemLockMode.Update);
             pWriter.WriteByte((byte) items.Count);
             foreach (Item item in items)
             {

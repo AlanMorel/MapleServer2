@@ -15,42 +15,42 @@ namespace MapleServer2.Packets
             PurchaseMembership = 0x4,
         }
 
-        public static Packet Open()
+        public static PacketWriter Open()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteEnum(PremiumClubPacketMode.Open);
+            pWriter.Write(PremiumClubPacketMode.Open);
             pWriter.WriteInt();
             return pWriter;
         }
 
-        public static Packet ClaimItem(int benefitId)
+        public static PacketWriter ClaimItem(int benefitId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteEnum(PremiumClubPacketMode.ClaimItem);
+            pWriter.Write(PremiumClubPacketMode.ClaimItem);
             pWriter.WriteInt(benefitId);
             return pWriter;
         }
 
-        public static Packet OpenPurchaseWindow()
+        public static PacketWriter OpenPurchaseWindow()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteEnum(PremiumClubPacketMode.OpenPurchaseWindow);
+            pWriter.Write(PremiumClubPacketMode.OpenPurchaseWindow);
             pWriter.WriteInt();
             return pWriter;
         }
 
-        public static Packet PurchaseMembership(int packageId)
+        public static PacketWriter PurchaseMembership(int packageId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteEnum(PremiumClubPacketMode.PurchaseMembership);
+            pWriter.Write(PremiumClubPacketMode.PurchaseMembership);
             pWriter.WriteInt(packageId);
             return pWriter;
         }
 
-        public static Packet ActivatePremium(IFieldObject<Player> player, long expiration)
+        public static PacketWriter ActivatePremium(IFieldObject<Player> player, long expiration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PREMIUM_CLUB);
-            pWriter.WriteEnum(PremiumClubPacketMode.ActivatePremium);
+            pWriter.Write(PremiumClubPacketMode.ActivatePremium);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(expiration);
             return pWriter;

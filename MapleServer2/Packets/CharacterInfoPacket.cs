@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public class CharacterInfoPacket
     {
-        public static Packet WriteCharacterInfo(long characterId, Player player)
+        public static PacketWriter WriteCharacterInfo(long characterId, Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_INFO);
             pWriter.WriteLong(characterId);
@@ -24,8 +24,8 @@ namespace MapleServer2.Packets
             characterBuffer.WriteLong(player.CharacterId);
             characterBuffer.WriteUnicodeString(player.Name);
             characterBuffer.WriteShort(player.Levels.Level);
-            characterBuffer.WriteEnum(player.Job);
-            characterBuffer.WriteEnum(player.JobCode);
+            characterBuffer.Write(player.Job);
+            characterBuffer.Write(player.JobCode);
             characterBuffer.WriteInt(player.Gender);
             characterBuffer.WriteInt(player.Levels.PrestigeLevel);
             characterBuffer.WriteByte();
@@ -64,7 +64,7 @@ namespace MapleServer2.Packets
             characterBuffer.WriteZero(14);
 
             pWriter.WriteInt(characterBuffer.Length);
-            pWriter.Write(characterBuffer.ToArray());
+            pWriter.WriteBytes(characterBuffer.ToArray());
 
             PacketWriter appearanceBuffer = new PacketWriter();
             CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player);
@@ -75,13 +75,13 @@ namespace MapleServer2.Packets
             appearanceBuffer.WriteByte();
 
             pWriter.WriteInt(appearanceBuffer.Length);
-            pWriter.Write(appearanceBuffer.ToArray());
+            pWriter.WriteBytes(appearanceBuffer.ToArray());
 
             PacketWriter badgeBuffer = new PacketWriter();
             CharacterListPacket.WriteBadges(badgeBuffer, player);
 
             pWriter.WriteInt(badgeBuffer.Length);
-            pWriter.Write(badgeBuffer.ToArray());
+            pWriter.WriteBytes(badgeBuffer.ToArray());
 
             return pWriter;
         }

@@ -13,10 +13,10 @@ namespace MapleServer2.Packets
             LearnEmote = 0x1,
         }
 
-        public static Packet LoadEmotes(Player player)
+        public static PacketWriter LoadEmotes(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION);
-            pWriter.WriteEnum(EmotePacketMode.LoadEmotes);
+            pWriter.Write(EmotePacketMode.LoadEmotes);
             pWriter.WriteInt(player.Emotes.Count);
             foreach (int emoteId in player.Emotes)
             {
@@ -27,10 +27,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LearnEmote(int emoteId)
+        public static PacketWriter LearnEmote(int emoteId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.EMOTION);
-            pWriter.WriteEnum(EmotePacketMode.LearnEmote);
+            pWriter.Write(EmotePacketMode.LearnEmote);
             pWriter.WriteInt(emoteId);
             pWriter.WriteInt(1); // quantity
             pWriter.WriteLong();

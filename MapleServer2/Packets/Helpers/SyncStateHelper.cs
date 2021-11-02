@@ -121,7 +121,7 @@ namespace MapleServer2.Packets.Helpers
             return pWriter;
         }
 
-        public static Packet WriteSyncStates(this PacketWriter pWriter, params SyncState[] syncStates)
+        public static PacketWriter WriteSyncStates(this PacketWriter pWriter, params SyncState[] syncStates)
         {
             pWriter.WriteByte((byte) syncStates.Length);
             foreach (SyncState entry in syncStates)

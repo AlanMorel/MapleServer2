@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public class ResponseLoadUGCMapPacket
     {
-        public static Packet LoadUGCMap(bool isHome, Home home = null, bool inDecorPlanner = false)
+        public static PacketWriter LoadUGCMap(bool isHome, Home home = null, bool inDecorPlanner = false)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOAD_UGC_MAP);
             pWriter.WriteLong();

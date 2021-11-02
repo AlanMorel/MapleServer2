@@ -148,7 +148,7 @@ namespace MapleServer2.PacketHandlers.Login
                         });
                         break;
                     case ItemSlot.FD: // Face Decoration
-                        byte[] faceDecoration = packet.Read(16); // Face decoration position
+                        byte[] faceDecoration = packet.ReadBytes(16); // Face decoration position
 
                         if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                         {

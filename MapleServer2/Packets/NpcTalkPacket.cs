@@ -15,37 +15,37 @@ namespace MapleServer2.Packets
             Action = 0x03,
         }
 
-        public static Packet Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
+        public static PacketWriter Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteEnum(NpcTalkMode.Respond);
+            pWriter.Write(NpcTalkMode.Respond);
             pWriter.WriteInt(npc.ObjectId);
-            pWriter.WriteEnum(npcType);
+            pWriter.Write(npcType);
             pWriter.WriteInt(scriptId);
             pWriter.WriteInt();
-            pWriter.WriteEnum(dialogType);
+            pWriter.Write(dialogType);
 
             return pWriter;
         }
 
-        public static Packet ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
+        public static PacketWriter ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteEnum(NpcTalkMode.Continue);
-            pWriter.WriteEnum(responseType);
+            pWriter.Write(NpcTalkMode.Continue);
+            pWriter.Write(responseType);
             pWriter.WriteInt(questId);
             pWriter.WriteInt(scriptId);
             pWriter.WriteInt(contentIndex); // used when there is multiple contents for the same script id
-            pWriter.WriteEnum(dialogType);
+            pWriter.Write(dialogType);
 
             return pWriter;
         }
 
-        public static Packet Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
+        public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteEnum(NpcTalkMode.Action);
-            pWriter.WriteEnum(actionType);
+            pWriter.Write(NpcTalkMode.Action);
+            pWriter.Write(actionType);
             switch (actionType)
             {
                 case ActionType.Portal:
@@ -60,10 +60,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Close()
+        public static PacketWriter Close()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.WriteEnum(NpcTalkMode.Close);
+            pWriter.Write(NpcTalkMode.Close);
 
             return pWriter;
         }
