@@ -182,6 +182,27 @@ namespace MapleServer2.PacketHandlers.Game
             long sort = packet.ReadLong();
             packet.ReadShort();
             bool additionalOptionsEnabled = packet.ReadBool();
+
+
+            List<ItemStat> stats = new List<ItemStat>();
+            if (additionalOptionsEnabled)
+            {
+                packet.ReadByte(); // always 1
+                for (int i = 0; i < 3; i++)
+                {
+                    int statId = packet.ReadInt();
+                    int value = packet.ReadInt();
+                    if (value == 0)
+                    {
+                        continue;
+                    }
+
+                    ItemStat stat = ReadStat(statId, value);
+                    stats.Add(stat);
+                }
+            }
+
+
             // TODO: Figure out how additional options are read
 
             List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
@@ -189,6 +210,11 @@ namespace MapleServer2.PacketHandlers.Game
                 minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort);
 
             session.Send(BlackMarketPacket.SearchResults(searchResults));
+        }
+
+        private static ItemStat ReadStat(int statId, int value)
+        {
+
         }
 
         private static void HandlePurchase(GameSession session, PacketReader packet)
