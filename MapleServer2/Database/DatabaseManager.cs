@@ -10,6 +10,7 @@ namespace MapleServer2.Database
 {
     public class DatabaseManager
     {
+        public const int MIN_MYSQL_VERSION = 8;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static readonly string ConnectionString;
 
