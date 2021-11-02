@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -215,6 +216,24 @@ namespace MapleServer2.PacketHandlers.Game
         private static ItemStat ReadStat(int statId, int value)
         {
 
+            // Normal Stat with percent value
+            if (statId >= 1000 && statId < 11000)
+            {
+
+            }
+            // Special Stat with percent value
+            else if (statId >= 11000)
+            {
+
+            }
+            // Normal Stat with flat value
+            else
+            {
+                ItemAttribute attribute = (ItemAttribute) statId;
+                NormalStat normalStat = new NormalStat();
+                normalStat.ItemAttribute = attribute;
+                normalStat.Flat = value;
+            }
         }
 
         private static void HandlePurchase(GameSession session, PacketReader packet)
