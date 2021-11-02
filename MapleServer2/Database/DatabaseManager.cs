@@ -56,9 +56,9 @@ namespace MapleServer2.Database
 
         public static void RunQuery(string query) => new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
 
-        public static int getVersion()
+        public static int GetVersion()
         {
-            MySqlConnection conn = new MySqlConnection(ConnectionString);
+            MySqlConnection conn = new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};");
             conn.Open();
 
             return int.Parse(conn.ServerVersion.Split(".")[0]);

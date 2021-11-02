@@ -13,10 +13,13 @@ using MapleServer2.Tools;
 using MapleServer2.Types;
 using NLog;
 
+
 namespace MapleServer2
 {
+
     public static class MapleServer
     {
+        const int MIN_MYSQL_VERSION = 9;
         private static GameServer GameServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -132,11 +135,9 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
-            int MIN_MYSQL_VERSION = 8;
-            if (DatabaseManager.getVersion() < MIN_MYSQL_VERSION)
+            if (DatabaseManager.GetVersion() < MIN_MYSQL_VERSION)
             {
-                Logger.Error("MySQL version out-of-date, please upgrade to version " + MIN_MYSQL_VERSION + ".");
-                return;
+                throw new Exception("MySQL version out-of-date, please upgrade to version " + MIN_MYSQL_VERSION + ".");
             }
 
             if (DatabaseManager.DatabaseExists())
