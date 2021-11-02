@@ -25,14 +25,11 @@ namespace MapleServer2.Data.Static
                 }
             }
         }
-        public static ScriptMetadata GetQuestScriptMetadata(int value)
-        {
-            return QuestScripts.GetValueOrDefault(value);
-        }
 
-        public static ScriptMetadata GetNpcScriptMetadata(int value)
-        {
-            return NpcScripts.GetValueOrDefault(value);
-        }
+        public static ScriptMetadata GetQuestScriptMetadata(int value) => QuestScripts.GetValueOrDefault(value);
+
+        public static ScriptMetadata GetNpcScriptMetadata(int value) => NpcScripts.GetValueOrDefault(value);
+
+        public static bool NpcHasScripts(int npcId) => NpcScripts.ContainsKey(npcId);
     }
 }

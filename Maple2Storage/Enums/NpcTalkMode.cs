@@ -2,13 +2,10 @@
 {
     public enum NpcType : byte
     {
-        Default = 01,
-        Unk3 = 02,
-        Unk = 05,
-        Dialog = 10,
-        Shop = 13,
-        Unk2 = 14,
-        Quest = 15,
+        Default = 1,
+        NormalTalk = 2,
+        Quest = 4,
+        QuestOptions = 14,
     }
 
     public enum DialogType : int // All this worked with NpcType 10

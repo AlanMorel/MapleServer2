@@ -29,15 +29,18 @@ namespace Maple2Storage.Types.Metadata
         public List<Content> Contents = new List<Content>();
         [XmlElement(Order = 4)]
         public string ButtonSet;
+        [XmlElement(Order = 5)]
+        public int JobId;
 
         public Option() { }
 
-        public Option(ScriptType type, int id, List<Content> contents, string buttonSet)
+        public Option(ScriptType type, int id, List<Content> contents, string buttonSet, int jobId)
         {
             Type = type;
             Id = id;
             Contents = contents;
             ButtonSet = buttonSet;
+            JobId = jobId;
         }
 
         public override string ToString() => $"Type: {Type}, Id: {Id}, AmountContent: {Contents.Count}, Contents: {string.Join("\n", Contents)})\r\n";
