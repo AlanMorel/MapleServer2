@@ -162,20 +162,24 @@ namespace MapleServer2.Types
             Stats = new ItemStats(other.Stats);
         }
 
-        public bool TrySplit(int amount, out Item splitItem)
+        public bool TrySplit(int splitAmount, out Item splitItem)
         {
-            if (Amount <= amount)
+            splitItem = null;
+            if (Amount <= splitAmount)
             {
-                splitItem = null;
                 return false;
             }
 
-            splitItem = new Item(this);
-            Amount -= amount;
-            splitItem.Amount = amount;
-            splitItem.Slot = -1;
-            splitItem.InventoryId = 0;
-            splitItem.Uid = DatabaseManager.Items.Insert(this);
+            Amount -= splitAmount;
+
+            splitItem = new Item(this)
+            {
+                Amount = splitAmount,
+                Slot = -1,
+                InventoryId = 0
+            };
+            splitItem.Uid = DatabaseManager.Items.Insert(splitItem);
+
             return true;
         }
 

@@ -128,19 +128,18 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Item listingItem = item;
-
             if (item.Amount > quantity)
             {
-                InventoryController.Split(session, itemUid, quantity, out Item newStack);
-                listingItem = newStack;
+                item.TrySplit(quantity, out Item newStack);
+                session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
+                item = newStack;
             }
             else
             {
-                InventoryController.Consume(session, listingItem.Uid, quantity);
+                InventoryController.Consume(session, item.Uid, quantity);
             }
 
-            BlackMarketListing listing = new BlackMarketListing(session.Player, listingItem, quantity, price, deposit);
+            BlackMarketListing listing = new BlackMarketListing(session.Player, item, quantity, price, deposit);
             session.Send(BlackMarketPacket.CreateListing(listing));
         }
 
