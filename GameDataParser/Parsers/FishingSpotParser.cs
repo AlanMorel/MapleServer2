@@ -20,19 +20,18 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/spot");
+
+                foreach (XmlNode node in nodes)
                 {
-                    if (node.Name == "spot")
-                    {
-                        FishingSpotMetadata metadata = new FishingSpotMetadata();
+                    FishingSpotMetadata metadata = new FishingSpotMetadata();
 
-                        metadata.Id = int.Parse(node.Attributes["id"].Value);
-                        metadata.MinMastery = short.Parse(node.Attributes["minMastery"].Value);
-                        metadata.MaxMastery = short.Parse(node.Attributes["maxMastery"].Value);
-                        metadata.LiquidType = node.Attributes["liquidType"].Value.Split(",").ToList();
+                    metadata.Id = int.Parse(node.Attributes["id"].Value);
+                    metadata.MinMastery = short.Parse(node.Attributes["minMastery"].Value);
+                    metadata.MaxMastery = short.Parse(node.Attributes["maxMastery"].Value);
+                    metadata.LiquidType = node.Attributes["liquidType"].Value.Split(",").ToList();
 
-                        spots.Add(metadata);
-                    }
+                    spots.Add(metadata);
                 }
             }
             return spots;

@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -140,14 +141,18 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 // Check if BonusStats[i] is NormalStat and isSpecialStat is false
                 // Check if BonusStats[i] is SpecialStat and isSpecialStat is true
-                if ((newItem.Stats.BonusStats[i].GetType() == typeof(NormalStat) && !isSpecialStat) || (newItem.Stats.BonusStats[i].GetType() == typeof(SpecialStat) && isSpecialStat))
+                switch (newItem.Stats.BonusStats[i])
                 {
-                    // If this is the attribute being locked, continue
-                    // TODO Fix this?
-                    /* if (newItem.Stats.BonusStats[i] == lockStatId)
-                    {
-                        continue;
-                    }*/
+                    case NormalStat when !isSpecialStat:
+                    case SpecialStat when isSpecialStat:
+                        ItemStat stat = newItem.Stats.BonusStats[i];
+                        switch (stat)
+                        {
+                            case NormalStat ns when ns.ItemAttribute == (ItemAttribute) lockStatId:
+                            case SpecialStat ss when ss.ItemAttribute == (SpecialItemAttribute) lockStatId:
+                                continue;
+                        }
+                        break;
                 }
 
                 newItem.Stats.BonusStats[i] = randomList[i];

@@ -1,4 +1,6 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -16,6 +18,7 @@ namespace MapleServer2.Database.Classes
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
+                name = item.Name,
                 item.Level,
                 item_slot = (byte) item.ItemSlot,
                 gem_slot = (byte) item.GemSlot,
@@ -166,6 +169,7 @@ namespace MapleServer2.Database.Classes
             return new Item()
             {
                 Uid = data.uid,
+                Name = data.name,
                 Level = data.level,
                 ItemSlot = (ItemSlot) data.item_slot,
                 GemSlot = (GemSlot) data.gem_slot,
@@ -202,6 +206,7 @@ namespace MapleServer2.Database.Classes
                 UnlockTime = data.unlock_time,
                 InventoryId = data.inventory_id ?? 0,
                 BankInventoryId = data.bank_inventory_id ?? 0,
+                BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(data.id),
                 MailId = data.mail_id ?? 0,
                 HomeId = data.home_id ?? 0,
             };

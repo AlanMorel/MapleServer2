@@ -22,10 +22,5 @@ namespace Maple2Storage.Types.Metadata
 
         public override string ToString() =>
             $"GuildBuff(FieldId:{FieldId},Level:{Level},Theme:{Theme},RequiredLevel:{RequiredLevel},UpgradeCost:{UpgradeCost},RethemeCost:{RethemeCost}";
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(FieldId, Level, Theme);
-        }
     }
 }

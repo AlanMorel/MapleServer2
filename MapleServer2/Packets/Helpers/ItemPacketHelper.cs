@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Types;
 
@@ -33,7 +33,7 @@ namespace MapleServer2.Packets.Helpers
             pWriter.WriteLong();
             pWriter.WriteInt();
             pWriter.WriteInt();
-            pWriter.WriteBool(item.RepackageCount > 0);
+            pWriter.WriteByte((byte) item.RepackageCount);
             pWriter.WriteInt(item.Charges);
             pWriter.WriteStatDiff(/*item.Stats, item.Stats*/);
 
@@ -72,7 +72,7 @@ namespace MapleServer2.Packets.Helpers
             }
 
             // Item Transfer Data 0x058AD00
-            pWriter.WriteInt((int) item.TransferFlag);
+            pWriter.WriteInt(6); // Transfer Flag. Temporarily changing it to 6 to make items tradeable
             pWriter.WriteByte();
             pWriter.WriteInt(item.RemainingTrades);
             pWriter.WriteInt();

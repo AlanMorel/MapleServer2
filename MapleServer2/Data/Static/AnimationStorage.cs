@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-animation-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-animation-metadata");
             List<AnimationMetadata> animations = Serializer.Deserialize<List<AnimationMetadata>>(stream);
             foreach (AnimationMetadata animation in animations)
             {

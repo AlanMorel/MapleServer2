@@ -20,19 +20,18 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/rod");
+
+                foreach (XmlNode node in nodes)
                 {
-                    if (node.Name == "rod")
-                    {
-                        FishingRodMetadata metadata = new FishingRodMetadata();
+                    FishingRodMetadata metadata = new FishingRodMetadata();
 
-                        metadata.RodId = int.Parse(node.Attributes["rodCode"].Value);
-                        metadata.ItemId = int.Parse(node.Attributes["itemCode"].Value);
-                        metadata.MasteryLimit = short.Parse(node.Attributes["fishMasteryLimit"].Value);
-                        metadata.ReduceTime = int.Parse(node.Attributes["reduceFishingTime"].Value);
+                    metadata.RodId = int.Parse(node.Attributes["rodCode"].Value);
+                    metadata.ItemId = int.Parse(node.Attributes["itemCode"].Value);
+                    metadata.MasteryLimit = short.Parse(node.Attributes["fishMasteryLimit"].Value);
+                    metadata.ReduceTime = int.Parse(node.Attributes["reduceFishingTime"].Value);
 
-                        rods.Add(metadata);
-                    }
+                    rods.Add(metadata);
                 }
             }
             return rods;

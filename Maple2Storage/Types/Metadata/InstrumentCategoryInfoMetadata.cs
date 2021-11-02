@@ -24,7 +24,6 @@ namespace Maple2Storage.Types.Metadata
             PercussionId = perucssionId;
         }
 
-        public override string ToString() =>
-    $"InstrumentCategoryInfo(CategoryId:{CategoryId},GMId:{GMId},Octave:{Octave},PercussionId{PercussionId})";
+        public override string ToString() => $"InstrumentCategoryInfo(CategoryId:{CategoryId},GMId:{GMId},Octave:{Octave},PercussionId{PercussionId})";
     }
 }

@@ -29,7 +29,7 @@ namespace GameDataParser.Parsers
                 XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
                 foreach (XmlNode nodes in individualItems)
                 {
-                    string locale = string.IsNullOrEmpty(nodes.Attributes["locale"]?.Value) ? "" : nodes.Attributes["locale"].Value;
+                    string locale = nodes.Attributes["locale"]?.Value ?? "";
                     if (locale != "NA" && locale != "")
                     {
                         continue;
@@ -37,17 +37,40 @@ namespace GameDataParser.Parsers
                     int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
                     rewards[itemID] = new List<ItemBreakReward>();
 
-                    int ingredientItemID1 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID1"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID1"].Value);
-                    int ingredientCount1 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount1"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount1"].Value);
+                    int ingredientItemID1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
+                    int ingredientCount1 = int.Parse(nodes.Attributes["IngredientCount1"]?.Value ?? "0");
                     rewards[itemID].Add(new ItemBreakReward(ingredientItemID1, ingredientCount1));
 
-                    int ingredientItemID2 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID2"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID2"].Value);
-                    int ingredientCount2 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount2"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount2"].Value);
+                    _ = int.TryParse(nodes.Attributes["IngredientItemID2"]?.Value ?? "0", out int ingredientItemID2);
+                    _ = int.TryParse(nodes.Attributes["IngredientCount2"]?.Value ?? "0", out int ingredientCount2);
                     rewards[itemID].Add(new ItemBreakReward(ingredientItemID2, ingredientCount2));
 
-                    int ingredientItemID3 = string.IsNullOrEmpty(nodes.Attributes["IngredientItemID3"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientItemID3"].Value);
-                    int ingredientCount3 = string.IsNullOrEmpty(nodes.Attributes["IngredientCount3"]?.Value) ? 0 : int.Parse(nodes.Attributes["IngredientCount3"].Value);
+                    _ = int.TryParse(nodes.Attributes["IngredientItemID3"]?.Value ?? "0", out int ingredientItemID3);
+                    _ = int.TryParse(nodes.Attributes["IngredientCount3"]?.Value ?? "0", out int ingredientCount3);
                     rewards[itemID].Add(new ItemBreakReward(ingredientItemID3, ingredientCount3));
+                }
+            }
+
+            //Item Name
+            Dictionary<int, string> names = new Dictionary<int, string>();
+            foreach (PackFileEntry entry in Resources.XmlReader.Files)
+            {
+                if (!entry.Name.StartsWith("string/en/itemname"))
+                {
+                    continue;
+                }
+
+                XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
+                XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+                foreach (XmlNode node in nodes)
+                {
+                    int itemId = int.Parse(node.Attributes["id"].Value);
+                    if (node.Attributes["name"] == null)
+                    {
+                        continue;
+                    }
+                    string itemName = node.Attributes["name"].Value;
+                    names[itemId] = itemName;
                 }
             }
 
@@ -84,7 +107,6 @@ namespace GameDataParser.Parsers
 
                 if (items.Exists(item => item.Id == itemId))
                 {
-                    //Console.WriteLine($"Duplicate {entry.Name} was already added.");
                     continue;
                 }
 
@@ -102,11 +124,12 @@ namespace GameDataParser.Parsers
                 // Gear/Cosmetic slot
                 XmlNode slots = item.SelectSingleNode("slots");
                 XmlNode slot = slots.FirstChild;
-                bool slotResult = Enum.TryParse<ItemSlot>(slot.Attributes["name"].Value, out metadata.Slot);
+                bool slotResult = Enum.TryParse(slot.Attributes["name"].Value, out metadata.Slot);
                 if (!slotResult && !string.IsNullOrEmpty(slot.Attributes["name"].Value))
                 {
                     Console.WriteLine($"Failed to parse item slot for {itemId}: {slot.Attributes["name"].Value}");
                 }
+
                 int totalSlots = slots.SelectNodes("slot").Count;
                 if (totalSlots > 1)
                 {
@@ -119,6 +142,7 @@ namespace GameDataParser.Parsers
                         metadata.IsTwoHand = true;
                     }
                 }
+
                 // Hair data
                 if (slot.Attributes["name"].Value == "HR")
                 {
@@ -163,16 +187,8 @@ namespace GameDataParser.Parsers
                             hairPresets.BackPositionRotation = bPosRotation[i];
                             hairPresets.FrontPositionCoord = fPosCord[i];
                             hairPresets.FrontPositionRotation = fPosRotation[i];
-                            if (scaleNode != null)
-                            {
-                                hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
-                                hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
-                            }
-                            else
-                            {
-                                hairPresets.MinScale = 0;
-                                hairPresets.MaxScale = 0;
-                            }
+                            hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
+                            hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
 
                             metadata.HairPresets.Add(hairPresets);
                         }
@@ -203,17 +219,8 @@ namespace GameDataParser.Parsers
                             hairPresets.BackPositionRotation = bPosRotation[i];
                             hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
                             hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
-                            if (scaleNode != null)
-                            {
-                                hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
-                                hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
-                            }
-                            else
-                            {
-                                hairPresets.MinScale = 0;
-                                hairPresets.MaxScale = 0;
-                            }
-
+                            hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
+                            hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
                             metadata.HairPresets.Add(hairPresets);
                         }
                     }
@@ -224,17 +231,8 @@ namespace GameDataParser.Parsers
                         hairPresets.BackPositionRotation = CoordF.Parse("0, 0, 0");
                         hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
                         hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
-                        if (scaleNode != null)
-                        {
-                            hairPresets.MinScale = float.Parse(scaleNode.Attributes["min"].Value ?? "0");
-                            hairPresets.MaxScale = float.Parse(scaleNode.Attributes["max"].Value ?? "0");
-                        }
-                        else
-                        {
-                            hairPresets.MinScale = 0;
-                            hairPresets.MaxScale = 0;
-                        }
-
+                        hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
+                        hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
                         metadata.HairPresets.Add(hairPresets);
                     }
                 }
@@ -265,11 +263,12 @@ namespace GameDataParser.Parsers
                     metadata.TradeableCount = byte.Parse(property.Attributes["tradableCount"].Value);
                     metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                     metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
+                    metadata.BlackMarketCategory = property.Attributes["blackMarketCategory"].Value;
 
                     // sales price
                     XmlNode sell = property.SelectSingleNode("sell");
-                    metadata.SellPrice = string.IsNullOrEmpty(sell.Attributes["price"]?.Value) ? null : sell.Attributes["price"].Value.Split(',').Select(int.Parse).ToList();
-                    metadata.SellPriceCustom = string.IsNullOrEmpty(sell.Attributes["priceCustom"]?.Value) ? null : sell.Attributes["priceCustom"].Value.Split(',').Select(int.Parse).ToList();
+                    metadata.SellPrice = sell.Attributes["price"]?.Value.Split(',').Select(int.Parse).ToList() ?? null;
+                    metadata.SellPriceCustom = sell.Attributes["priceCustom"]?.Value.Split(',').Select(int.Parse).ToList() ?? null;
                 }
                 catch (Exception e)
                 {
@@ -335,13 +334,7 @@ namespace GameDataParser.Parsers
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
                     sticker.Id = byte.Parse(functionParameters.Attributes["id"].Value);
 
-                    int durationSec = 0;
-
-                    if (functionParameters.Attributes["durationSec"] != null)
-                    {
-                        durationSec = int.Parse(functionParameters.Attributes["durationSec"].Value);
-                    }
-                    sticker.Duration = durationSec;
+                    sticker.Duration = int.Parse(functionParameters.Attributes["durationSec"]?.Value ?? "0");
                     metadata.FunctionData.ChatEmoticonAdd = sticker;
                 }
                 else if (contentType == "OpenMassive")
@@ -424,16 +417,10 @@ namespace GameDataParser.Parsers
                     balloon.InteractId = int.Parse(functionParameters.Attributes["interactID"].Value);
                     balloon.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
                     balloon.Model = functionParameters.Attributes["model"].Value;
-                    if (functionParameters.Attributes["asset"] != null)
-                    {
-                        balloon.Asset = functionParameters.Attributes["asset"].Value;
-                    }
+                    balloon.Asset = functionParameters.Attributes["asset"]?.Value ?? "";
                     balloon.NormalState = functionParameters.Attributes["normal"].Value;
                     balloon.Reactable = functionParameters.Attributes["reactable"].Value;
-                    if (functionParameters.Attributes["scale"] != null)
-                    {
-                        balloon.Scale = float.Parse(functionParameters.Attributes["scale"].Value);
-                    }
+                    balloon.Scale = float.Parse(functionParameters.Attributes["scale"]?.Value ?? "0");
                     metadata.FunctionData.InstallBillboard = balloon;
                 }
                 else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty"
@@ -463,16 +450,7 @@ namespace GameDataParser.Parsers
                 metadata.Level = int.Parse(limit.Attributes["levelLimit"].Value);
                 metadata.TransferType = (TransferType) byte.Parse(limit.Attributes["transferType"].Value);
                 metadata.Sellable = byte.Parse(limit.Attributes["shopSell"].Value) == 1;
-
-                if (!string.IsNullOrEmpty(limit.Attributes["recommendJobs"].Value))
-                {
-                    List<string> recommendJobs = new List<string>(limit.Attributes["recommendJobs"].Value.Split(","));
-                    foreach (string recommendJob in recommendJobs)
-                    {
-                        metadata.RecommendJobs.Add(int.Parse(recommendJob));
-                    }
-                }
-
+                metadata.RecommendJobs = limit.Attributes["recommendJobs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
                 metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
 
                 XmlNode installNode = item.SelectSingleNode("install");
@@ -480,11 +458,11 @@ namespace GameDataParser.Parsers
                 metadata.ObjectId = int.Parse(installNode.Attributes["objCode"].Value);
 
                 XmlNode housingNode = item.SelectSingleNode("housing");
-                string value = housingNode.Attributes["categoryTag"].Value;
-                if (!string.IsNullOrEmpty(value))
+                string value = housingNode.Attributes["categoryTag"]?.Value;
+                if (value is not null)
                 {
                     List<string> categories = new List<string>(value.Split(","));
-                    short category = short.Parse(categories[0]);
+                    _ = short.TryParse(categories[0], out short category);
 
                     metadata.HousingCategory = (ItemHousingCategory) category;
                 }
@@ -495,9 +473,16 @@ namespace GameDataParser.Parsers
                     metadata.BreakRewards = rewards[itemId];
                 }
 
+                // Item rarities
                 if (rarities.ContainsKey(itemId))
                 {
                     metadata.Rarity = rarities[itemId];
+                }
+
+                // Item Names
+                if (names.ContainsKey(itemId))
+                {
+                    metadata.Name = names[itemId];
                 }
 
                 items.Add(metadata);
@@ -558,7 +543,6 @@ namespace GameDataParser.Parsers
                         case 20: // Fishing Pole / Instrument
                             return InventoryTab.FishingMusic;
                     }
-
                     break;
                 case 11:
                     return InventoryTab.Pets;

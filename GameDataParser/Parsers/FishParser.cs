@@ -20,28 +20,27 @@ namespace GameDataParser.Parsers
                 }
 
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                foreach (XmlNode node in document.DocumentElement.ChildNodes)
+                XmlNodeList nodes = document.SelectNodes("/ms2/fish");
+
+                foreach (XmlNode node in nodes)
                 {
-                    if (node.Name == "fish")
+                    int fishId = int.Parse(node.Attributes["id"].Value);
+
+                    string habitatString = node.Attributes["habitat"]?.Value;
+                    if (string.IsNullOrEmpty(habitatString))
                     {
-                        List<int> habitat = new List<int>();
-                        int fishId = int.Parse(node.Attributes["id"].Value);
-                        if (node.Attributes["habitat"].Value.Contains(','))
-                        {
-                            habitat.AddRange(node.Attributes["habitat"].Value.Split(",").Select(int.Parse).ToList());
-                        }
-                        else
-                        {
-                            habitat.Add(string.IsNullOrEmpty(node.Attributes["habitat"].Value) ? 0 : int.Parse(node.Attributes["habitat"].Value));
-                        }
-                        if (fishHabitat.ContainsKey(fishId))
-                        {
-                            fishHabitat[fishId].AddRange(habitat);
-                        }
-                        else
-                        {
-                            fishHabitat[fishId] = new List<int>(habitat);
-                        }
+                        continue;
+                    }
+
+                    List<int> habitat = habitatString.Split(",").Select(int.Parse).ToList();
+
+                    if (fishHabitat.ContainsKey(fishId))
+                    {
+                        fishHabitat[fishId].AddRange(habitat);
+                    }
+                    else
+                    {
+                        fishHabitat[fishId] = new List<int>(habitat);
                     }
                 }
             }
@@ -57,34 +56,37 @@ namespace GameDataParser.Parsers
                 XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
                 foreach (XmlNode fishnode in document.DocumentElement.ChildNodes)
                 {
-                    if (fishnode.Name == "fish")
+                    if (fishnode.Name != "fish")
                     {
-                        FishMetadata metadata = new FishMetadata();
-
-                        metadata.Id = int.Parse(fishnode.Attributes["id"].Value);
-                        metadata.Habitat = fishnode.Attributes["habitat"].Value;
-                        if (fishnode.Attributes["companion"] != null)
-                        {
-                            metadata.CompanionId = int.Parse(fishnode.Attributes["companion"].Value);
-                        }
-                        metadata.Mastery = string.IsNullOrEmpty(fishnode.Attributes["fishMastery"]?.Value) ? (short) 0 : short.Parse(fishnode.Attributes["fishMastery"].Value);
-                        metadata.Rarity = byte.Parse(fishnode.Attributes["rank"].Value);
-                        metadata.SmallSize = Array.ConvertAll(fishnode.Attributes["smallSize"].Value.Split("-"), short.Parse);
-                        metadata.BigSize = Array.ConvertAll(fishnode.Attributes["bigSize"].Value.Split("-"), short.Parse);
-                        if (fishnode.Attributes["ignoreSpotMastery"] != null)
-                        {
-                            byte ignoreSpotMastery = byte.Parse(fishnode.Attributes["ignoreSpotMastery"].Value);
-                            if (ignoreSpotMastery == 1)
-                            {
-                                metadata.IgnoreMastery = true;
-                            }
-                        }
-                        if (fishHabitat.ContainsKey(metadata.Id))
-                        {
-                            metadata.HabitatMapId = fishHabitat[metadata.Id];
-                        }
-                        fishes.Add(metadata);
+                        continue;
                     }
+
+                    FishMetadata metadata = new FishMetadata();
+
+                    metadata.Id = int.Parse(fishnode.Attributes["id"].Value);
+                    metadata.Habitat = fishnode.Attributes["habitat"].Value;
+                    metadata.CompanionId = int.Parse(fishnode.Attributes["companion"]?.Value ?? "0");
+
+                    metadata.Mastery = short.Parse(fishnode.Attributes["fishMastery"]?.Value ?? "0");
+                    metadata.Rarity = byte.Parse(fishnode.Attributes["rank"].Value);
+                    metadata.SmallSize = fishnode.Attributes["smallSize"].Value.Split("-").Select(short.Parse).ToArray();
+                    metadata.BigSize = fishnode.Attributes["bigSize"].Value.Split("-").Select(short.Parse).ToArray();
+
+                    if (fishnode.Attributes["ignoreSpotMastery"] != null)
+                    {
+                        byte ignoreSpotMastery = byte.Parse(fishnode.Attributes["ignoreSpotMastery"].Value);
+                        if (ignoreSpotMastery == 1)
+                        {
+                            metadata.IgnoreMastery = true;
+                        }
+                    }
+
+                    if (fishHabitat.ContainsKey(metadata.Id))
+                    {
+                        metadata.HabitatMapId = fishHabitat[metadata.Id];
+                    }
+
+                    fishes.Add(metadata);
                 }
             }
             return fishes;

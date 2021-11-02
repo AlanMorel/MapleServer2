@@ -120,7 +120,7 @@ namespace MapleServer2.PacketHandlers.Game
                 recipient = DatabaseManager.Characters.FindPartialPlayerByName(recipientName);
             }
 
-            MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", null, 0, out Mail mail);
+            MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new List<Item>(), 0, out Mail mail);
 
             session.Send(MailPacket.Send(mail));
         }
@@ -150,20 +150,33 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (mail.Items.Count == 0)
+            if (mail.Items.Count == 0 && mail.Mesos == 0)
             {
                 return;
             }
 
-            foreach (Item item in mail.Items)
+            if (mail.Items.Count > 0)
             {
-                item.MailId = 0;
-                InventoryController.Add(session, item, true);
+                foreach (Item item in mail.Items)
+                {
+                    item.MailId = 0;
+                    DatabaseManager.Items.Update(item);
+                    InventoryController.Add(session, item, true);
+                }
+                mail.Items.Clear();
+                session.Send(MailPacket.Collect(mail));
             }
-            mail.Items.Clear();
-            DatabaseManager.Mails.UpdateReadTime(mail);
 
-            session.Send(MailPacket.Collect(mail));
+            if (mail.Mesos > 0)
+            {
+                if (!session.Player.Wallet.Meso.Modify(mail.Mesos))
+                {
+                    return;
+                }
+                mail.Mesos = 0;
+            }
+            DatabaseManager.Mails.Update(mail);
+
             session.Send(MailPacket.UpdateReadTime(mail));
         }
 

@@ -33,7 +33,7 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-    $"GachaMetadata:(GachaId:{GachaId},BoxGroup:{BoxGroup},DropBoxId:{DropBoxId},ShopId:{ShopId},CoinId:{CoinId},CoinAmount:{CoinAmount})";
+            $"GachaMetadata:(GachaId:{GachaId},BoxGroup:{BoxGroup},DropBoxId:{DropBoxId},ShopId:{ShopId},CoinId:{CoinId},CoinAmount:{CoinAmount})";
     }
 
     [XmlType]
@@ -65,6 +65,6 @@ namespace Maple2Storage.Types.Metadata
         }
 
         public override string ToString() =>
-    $"GachaContent:(ItemId:{ItemId},SmartDrop:{SmartDrop},SmartGender:{SmartGender},MinAmount:{MinAmount},MaxAmount:{MaxAmount},Rarity:{Rarity})";
+            $"GachaContent:(ItemId:{ItemId},SmartDrop:{SmartDrop},SmartGender:{SmartGender},MinAmount:{MinAmount},MaxAmount:{MaxAmount},Rarity:{Rarity})";
     }
 }

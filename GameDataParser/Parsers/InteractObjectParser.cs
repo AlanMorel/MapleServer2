@@ -23,7 +23,7 @@ namespace GameDataParser.Parsers
                 XmlNodeList interactNodes = document.GetElementsByTagName("interact");
                 foreach (XmlNode interactNode in interactNodes)
                 {
-                    string locale = string.IsNullOrEmpty(interactNode.Attributes["locale"]?.Value) ? "" : interactNode.Attributes["locale"].Value;
+                    string locale = interactNode.Attributes["locale"]?.Value ?? "";
                     if (locale != "NA" && locale != "")
                     {
                         continue;
@@ -49,22 +49,14 @@ namespace GameDataParser.Parsers
                         else if (childNode.Name == "drop")
                         {
                             InteractObjectDropMetadata drop = new InteractObjectDropMetadata();
-                            if (!string.IsNullOrEmpty(childNode.Attributes["objectLevel"].Value))
-                            {
-                                drop.ObjectLevel = childNode.Attributes["objectLevel"].Value;
-                            }
-                            if (!string.IsNullOrEmpty(childNode.Attributes["objectDropRank"].Value))
-                            {
-                                drop.DropRank = int.Parse(childNode.Attributes["objectDropRank"].Value);
-                            }
-                            if (!string.IsNullOrEmpty(childNode.Attributes["globalDropBoxId"].Value))
-                            {
-                                drop.GlobalDropBoxId.AddRange(Array.ConvertAll(childNode.Attributes["globalDropBoxId"].Value.Split(","), int.Parse));
-                            }
-                            if (!string.IsNullOrEmpty(childNode.Attributes["individualDropBoxId"].Value))
-                            {
-                                drop.IndividualDropBoxId.AddRange(Array.ConvertAll(childNode.Attributes["individualDropBoxId"].Value.Split(","), int.Parse));
-                            }
+
+                            drop.ObjectLevel = childNode.Attributes["objectLevel"]?.Value ?? "";
+                            _ = int.TryParse(childNode.Attributes["objectDropRank"]?.Value ?? "0", out drop.DropRank);
+
+                            drop.GlobalDropBoxId = childNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+
+                            drop.IndividualDropBoxId = childNode.Attributes["individualDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+
                             metadata.Drop = drop;
                         }
                         else if (childNode.Name == "gathering")

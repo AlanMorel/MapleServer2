@@ -537,8 +537,8 @@ namespace MapleServer2.Managers
             {
                 session.Send(FieldPacket.AddMob(fieldMob));
                 session.Send(FieldObjectPacket.LoadMob(fieldMob));
-                // TODO: Add spawn buff (ID: 0x055D4DAE)
-                //session.Send();
+                SkillCast skillCast = new SkillCast(90000814, 1);   // Spawned effect
+                session.Send(BuffPacket.SendBuff(0, new Status(skillCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
             });
         }
 

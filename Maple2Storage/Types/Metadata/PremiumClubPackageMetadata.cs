@@ -30,8 +30,7 @@ namespace Maple2Storage.Types.Metadata
             BonusItem = bonusItems;
         }
 
-        public override string ToString() =>
-            $"PremiumClubPackage(Id:{Id},VipPeriod:{VipPeriod},Price:{Price},BuyLimit:{BuyLimit},BonusItem:{BonusItem}}}";
+        public override string ToString() => $"PremiumClubPackage(Id:{Id},VipPeriod:{VipPeriod},Price:{Price},BuyLimit:{BuyLimit},BonusItem:{BonusItem}}}";
     }
 
     [XmlType]
@@ -53,7 +52,6 @@ namespace Maple2Storage.Types.Metadata
             Amount = amount;
         }
 
-        public override string ToString() =>
-    $"ItemRequirement(Id:{Id},Rarity:{Rarity},Amount:{Amount})";
+        public override string ToString() => $"ItemRequirement(Id:{Id},Rarity:{Rarity},Amount:{Amount})";
     }
 }

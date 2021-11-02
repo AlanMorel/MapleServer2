@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -211,7 +211,6 @@ namespace MapleServer2.Tools
                 else // Removes item
                 {
                     session.Send(ItemInventoryPacket.Remove(uid));
-                    DatabaseManager.Items.Delete(droppedItem.Uid);
                 }
                 session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
             }
@@ -255,12 +254,6 @@ namespace MapleServer2.Tools
                 return;
             }
             session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
-        }
-
-        // Todo: implement when storage and trade is implemented
-        public static void Split()
-        {
-
         }
 
         public static void ExpandInventory(GameSession session, InventoryTab tab)

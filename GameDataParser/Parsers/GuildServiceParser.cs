@@ -25,7 +25,7 @@ namespace GameDataParser.Parsers
 
                 foreach (XmlNode property in properties)
                 {
-                    string locale = string.IsNullOrEmpty(property.Attributes["locale"]?.Value) ? "" : property.Attributes["locale"].Value;
+                    string locale = property.Attributes["locale"]?.Value ?? "";
 
                     if (locale != "NA" && locale != "")
                     {

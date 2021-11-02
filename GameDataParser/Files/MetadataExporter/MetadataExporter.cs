@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using Maple2Storage.Types;
 using ProtoBuf;
 
 namespace GameDataParser.Files
@@ -38,13 +39,13 @@ namespace GameDataParser.Files
 
         public void Write<Entities>(Entities entities)
         {
-            using (FileStream writeStream = File.Create($"{Paths.OUTPUT}/{Filename}"))
+            using (FileStream writeStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}"))
             {
                 Serializer.Serialize(writeStream, entities);
             }
 
 #if DEBUG
-            using (FileStream debugWriteStream = File.Create($"{Paths.OUTPUT}/{Filename}.xml"))
+            using (FileStream debugWriteStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}.xml"))
             {
                 try
                 {

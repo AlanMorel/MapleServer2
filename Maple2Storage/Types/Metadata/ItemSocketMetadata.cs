@@ -14,7 +14,6 @@ namespace Maple2Storage.Types.Metadata
 
         public ItemSocketMetadata() { }
 
-        public override string ToString() =>
-    $"ItemSocket(Id:{Id},MaxCount:{MaxCount},FixedOpenCount:{FixedOpenCount})";
+        public override string ToString() => $"ItemSocket(Id:{Id},MaxCount:{MaxCount},FixedOpenCount:{FixedOpenCount})";
     }
 }

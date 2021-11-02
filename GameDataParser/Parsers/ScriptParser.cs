@@ -22,7 +22,6 @@ namespace GameDataParser.Parsers
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
             foreach (PackFileEntry entry in resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("script/npc"))
                 {
                     continue;
@@ -38,7 +37,7 @@ namespace GameDataParser.Parsers
                         continue;
                     }
                     // Skip locales other than NA and null
-                    string locale = string.IsNullOrEmpty(node.Attributes["locale"]?.Value) ? "" : node.Attributes["locale"].Value;
+                    string locale = node.Attributes["locale"]?.Value ?? "";
 
                     if (locale != "NA" && locale != "")
                     {
@@ -53,15 +52,16 @@ namespace GameDataParser.Parsers
 
                     int id = int.Parse(node.Attributes["id"].Value);
                     string buttonSet = node.Attributes["buttonSet"]?.Value;
+                    byte jobCondition = byte.Parse(node.Attributes["jobCondition"]?.Value ?? "0");
 
                     List<Content> contents = new List<Content>();
 
                     if (type == ScriptType.Script)
                     {
-                        ParseScript(node, contents);
+                        ParseContents(node, contents);
                     }
 
-                    metadata.Options.Add(new Option(type, id, contents, buttonSet));
+                    metadata.Options.Add(new Option(type, id, contents, buttonSet, jobCondition));
                 }
 
                 metadata.Id = npcId;
@@ -76,11 +76,11 @@ namespace GameDataParser.Parsers
             List<ScriptMetadata> scripts = new List<ScriptMetadata>();
             foreach (PackFileEntry entry in resources.XmlReader.Files)
             {
-
                 if (!entry.Name.StartsWith("script/quest"))
                 {
                     continue;
                 }
+
                 string filename = Path.GetFileNameWithoutExtension(entry.Name);
                 if (filename.Contains("eventjp") || filename.Contains("eventkr") || filename.Contains("eventcn"))
                 {
@@ -91,7 +91,7 @@ namespace GameDataParser.Parsers
                 foreach (XmlNode questNode in document.DocumentElement.ChildNodes)
                 {
                     // Skip locales other than NA and null
-                    string locale = string.IsNullOrEmpty(questNode.Attributes["locale"]?.Value) ? "" : questNode.Attributes["locale"].Value;
+                    string locale = questNode.Attributes["locale"]?.Value ?? "";
 
                     if (locale != "NA" && locale != "")
                     {
@@ -105,11 +105,13 @@ namespace GameDataParser.Parsers
                     foreach (XmlNode script in questNode.ChildNodes)
                     {
                         int id = int.Parse(script.Attributes["id"].Value);
+                        byte jobCondition = byte.Parse(script.Attributes["jobCondition"]?.Value ?? "0");
+
                         List<Content> contents = new List<Content>();
 
-                        ParseScript(script, contents);
+                        ParseContents(script, contents);
 
-                        metadata.Options.Add(new Option(ScriptType.Script, id, contents, buttonSet));
+                        metadata.Options.Add(new Option(ScriptType.Script, id, contents, buttonSet, jobCondition));
                     }
 
                     metadata.Id = questId;
@@ -121,7 +123,7 @@ namespace GameDataParser.Parsers
             return scripts;
         }
 
-        private static void ParseScript(XmlNode node, List<Content> contents)
+        private static void ParseContents(XmlNode node, List<Content> contents)
         {
             foreach (XmlNode content in node.ChildNodes)
             {
@@ -129,8 +131,9 @@ namespace GameDataParser.Parsers
                 {
                     continue;
                 }
+
                 string functionId = content.Attributes["functionID"]?.Value;
-                DialogType dialogType = string.IsNullOrEmpty(content.Attributes["buttonSet"]?.Value) ? DialogType.None : (DialogType) int.Parse(content.Attributes["buttonSet"].Value);
+                DialogType dialogType = (DialogType) int.Parse(content.Attributes["buttonSet"]?.Value ?? "0");
 
                 List<Distractor> distractors = new List<Distractor>();
                 foreach (XmlNode distractorNode in content.ChildNodes)
@@ -142,14 +145,8 @@ namespace GameDataParser.Parsers
                         continue;
                     }
 
-                    if (!string.IsNullOrEmpty(distractorNode.Attributes["goto"]?.Value))
-                    {
-                        gotoList.AddRange(distractorNode.Attributes["goto"].Value.Split(",").Select(int.Parse).ToList());
-                    }
-                    if (!string.IsNullOrEmpty(distractorNode.Attributes["gotoFail"]?.Value))
-                    {
-                        gotoFailList.AddRange(distractorNode.Attributes["gotoFail"].Value.Split(",").Select(int.Parse).ToList());
-                    }
+                    gotoList.AddRange(distractorNode.Attributes["goto"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList());
+                    gotoFailList.AddRange(distractorNode.Attributes["gotoFail"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList());
                     distractors.Add(new Distractor(gotoList, gotoFailList));
                 }
                 contents.Add(new Content(functionId, dialogType, distractors));

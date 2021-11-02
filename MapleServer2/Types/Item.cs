@@ -29,9 +29,11 @@ namespace MapleServer2.Types
         public string Tag { get; set; }
         public int ShopID { get; set; }
         public ItemHousingCategory HousingCategory;
+        public string BlackMarketCategory;
 
         public int Id;
         public long Uid;
+        public string Name;
         public short Slot;
         public int Amount;
         public bool IsEquipped;
@@ -79,6 +81,7 @@ namespace MapleServer2.Types
         {
             Id = id;
             SetMetadataValues();
+            Name = ItemMetadataStorage.GetName(id);
             IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
             Level = ItemMetadataStorage.GetLevel(id);
             ItemSlot = ItemMetadataStorage.GetSlot(id);
@@ -110,6 +113,7 @@ namespace MapleServer2.Types
         public Item(Item other)
         {
             Id = other.Id;
+            Name = other.Name;
             Level = other.Level;
             Gender = other.Gender;
             InventoryTab = other.InventoryTab;
@@ -149,6 +153,7 @@ namespace MapleServer2.Types
             OwnerCharacterName = other.OwnerCharacterName;
             InventoryId = other.InventoryId;
             BankInventoryId = other.BankInventoryId;
+            BlackMarketCategory = other.BlackMarketCategory;
             HomeId = other.HomeId;
             Color = other.Color;
             HairData = other.HairData;
@@ -157,19 +162,24 @@ namespace MapleServer2.Types
             Stats = new ItemStats(other.Stats);
         }
 
-        public bool TrySplit(int amount, out Item splitItem)
+        public bool TrySplit(int splitAmount, out Item splitItem)
         {
-            if (Amount <= amount)
+            splitItem = null;
+            if (Amount <= splitAmount)
             {
-                splitItem = null;
                 return false;
             }
 
-            splitItem = new Item(this);
-            Amount -= amount;
-            splitItem.Amount = amount;
-            splitItem.Slot = -1;
-            splitItem.Uid = DatabaseManager.Items.Insert(this);
+            Amount -= splitAmount;
+
+            splitItem = new Item(this)
+            {
+                Amount = splitAmount,
+                Slot = -1,
+                InventoryId = 0
+            };
+            splitItem.Uid = DatabaseManager.Items.Insert(splitItem);
+
             return true;
         }
 
@@ -213,6 +223,7 @@ namespace MapleServer2.Types
             TransferType = ItemMetadataStorage.GetTransferType(Id);
             RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
             HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
+            BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
         }
     }
 }

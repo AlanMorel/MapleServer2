@@ -16,7 +16,6 @@ namespace Maple2Storage.Types.Metadata
 
         public FurnishingShopMetadata() { }
 
-        public override string ToString() =>
-            $"FurnishingShopMetadata(ItemId:{ItemId},Buyable:{Buyable},FurnishingTokenType:{FurnishingTokenType},Price:{Price})";
+        public override string ToString() => $"FurnishingShopMetadata(ItemId:{ItemId},Buyable:{Buyable},FurnishingTokenType:{FurnishingTokenType},Price:{Price})";
     }
 }

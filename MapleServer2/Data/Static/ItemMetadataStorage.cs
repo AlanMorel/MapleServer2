@@ -14,7 +14,7 @@ namespace MapleServer2.Data.Static
 
         public static void Init()
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES}/ms2-item-metadata");
+            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-metadata");
             List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
             foreach (ItemMetadata item in items)
             {
@@ -30,6 +30,11 @@ namespace MapleServer2.Data.Static
         public static ItemMetadata GetMetadata(int itemId)
         {
             return map.GetValueOrDefault(itemId);
+        }
+
+        public static string GetName(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).Name;
         }
 
         public static ItemSlot GetSlot(int itemId)
@@ -193,7 +198,7 @@ namespace MapleServer2.Data.Static
 
         public static int GetOptionLevelFactor(int itemId)
         {
-            return map.GetValueOrDefault(itemId).OptionLevelFactor;
+            return map.GetValueOrDefault(itemId)?.OptionLevelFactor ?? 0;
         }
 
         public static EquipColor GetEquipColor(int itemId)
@@ -243,6 +248,11 @@ namespace MapleServer2.Data.Static
         public static int GetObjectId(int itemId)
         {
             return map.GetValueOrDefault(itemId).ObjectId;
+        }
+
+        public static string GetBlackMarketCategory(int itemId)
+        {
+            return map.GetValueOrDefault(itemId).BlackMarketCategory;
         }
     }
 }
