@@ -62,7 +62,7 @@ namespace MapleServer2.Types
             }
 
             // Find first item with the same id, if true update the amount
-            Item existingItem = Items.FirstOrDefault(x => x is not null && x.Id == item.Id);
+            Item existingItem = Items.FirstOrDefault(x => x is not null && x.Id == item.Id && x.Rarity == item.Rarity);
             if (existingItem is not null)
             {
                 if (existingItem.Amount + item.Amount <= existingItem.StackLimit)
