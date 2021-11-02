@@ -25,7 +25,7 @@ namespace MapleServer2.Packets
                 }
                 pWriter.WriteUnicodeString("");
                 pWriter.WriteUnicodeString(banner.ImageUrl);
-                pWriter.WriteInt((int) banner.Language);
+                pWriter.Write(banner.Language);
                 pWriter.WriteLong(banner.BeginTime);
                 pWriter.WriteLong(banner.EndTime);
             }
