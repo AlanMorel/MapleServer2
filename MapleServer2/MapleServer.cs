@@ -132,6 +132,13 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
+            int MIN_MYSQL_VERSION = 8;
+            if (DatabaseManager.getVersion() < MIN_MYSQL_VERSION)
+            {
+                Logger.Error("MySQL version out-of-date, please upgrade to version " + MIN_MYSQL_VERSION + ".");
+                return;
+            }
+
             if (DatabaseManager.DatabaseExists())
             {
                 Logger.Info("Database already exists.");

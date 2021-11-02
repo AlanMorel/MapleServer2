@@ -56,6 +56,14 @@ namespace MapleServer2.Database
 
         public static void RunQuery(string query) => new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
 
+        public static int getVersion()
+        {
+            MySqlConnection conn = new MySqlConnection(ConnectionString);
+            conn.Open();
+
+            return int.Parse(conn.ServerVersion.Split(".")[0]);
+        }
+
         public static bool DatabaseExists()
         {
             dynamic result = new QueryFactory(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), new MySqlCompiler())
