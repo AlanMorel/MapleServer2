@@ -52,6 +52,7 @@ namespace MapleServer2.Types
                 item = removedItem;
             }
 
+            // If slot is free, add item to it
             if (Items[slot] is null)
             {
                 item.Slot = slot;
@@ -60,20 +61,30 @@ namespace MapleServer2.Types
                 return;
             }
 
+            // Find first item with the same id, if true update the amount
             Item existingItem = Items.FirstOrDefault(x => x is not null && x.Id == item.Id);
             if (existingItem is not null)
             {
-                existingItem.Amount += item.Amount;
+                if (existingItem.Amount + item.Amount <= existingItem.StackLimit)
+                {
+                    existingItem.Amount += item.Amount;
+                    session.Send(StorageInventoryPacket.UpdateItem(existingItem));
+                    return;
+                }
+
+                existingItem.Amount = existingItem.StackLimit;
+                item.Amount = existingItem.Amount + item.Amount - existingItem.StackLimit;
                 session.Send(StorageInventoryPacket.UpdateItem(existingItem));
-                return;
             }
 
+            // Find first free slot
             for (short i = 0; i < Items.Length; i++)
             {
                 if (Items[i] is not null)
                 {
                     continue;
                 }
+
                 item.Slot = i;
                 Items[i] = item;
                 session.Send(StorageInventoryPacket.Add(item));
@@ -141,25 +152,35 @@ namespace MapleServer2.Types
         {
             IEnumerable<Item> items = Items.Where(x => x is not null);
 
-            foreach (Item item in items)
-            {
-                DatabaseManager.Items.Delete(item.Uid);
-            }
-
             // group items by item id and sum the amount, return a new list of items with updated amount (ty gh copilot)
             List<Item> groupedItems = items.GroupBy(x => x.Id).Select(x => new Item(x.First())
             {
-                Amount = x.Sum(y => y.Amount)
+                Amount = x.Sum(y => y.Amount),
+                BankInventoryId = Id
             }).ToList();
 
             // sort items by id
             groupedItems.Sort((x, y) => x.Id.CompareTo(y.Id));
 
+            // Delete items that got grouped
+            foreach (Item oldItem in items)
+            {
+                Item newItem = groupedItems.FirstOrDefault(x => x.Uid == oldItem.Uid);
+                if (newItem is null)
+                {
+                    DatabaseManager.Items.Delete(oldItem.Uid);
+                }
+            }
+
             Items = new Item[DEFAULT_SIZE + ExtraSize];
             for (short i = 0; i < groupedItems.Count; i++)
             {
-                groupedItems[i].Slot = i;
-                Items[i] = groupedItems[i];
+                Item item = groupedItems[i];
+
+                item.Slot = i;
+                Items[i] = item;
+
+                DatabaseManager.Items.Update(item);
             }
 
             session.Send(StorageInventoryPacket.Update());

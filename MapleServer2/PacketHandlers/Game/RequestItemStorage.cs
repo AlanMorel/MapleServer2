@@ -53,7 +53,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleLoadBank(session);
                     break;
                 case ItemStorageMode.Close:
-                    HandleClose(session.Player);
+                    HandleClose(session.Player.Account.BankInventory);
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -133,6 +133,6 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleLoadBank(GameSession session) => session.Player.Account.BankInventory.LoadBank(session);
 
-        private static void HandleClose(Player player) => DatabaseManager.Characters.Update(player);
+        private static void HandleClose(BankInventory bankInventory) => DatabaseManager.BankInventories.Update(bankInventory);
     }
 }

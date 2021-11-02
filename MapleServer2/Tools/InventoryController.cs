@@ -256,20 +256,6 @@ namespace MapleServer2.Tools
             session.Send(ItemInventoryPacket.Move(srcSlot.Item1, srcSlot.Item2, uid, dstSlot));
         }
 
-        public static void Split(GameSession session, long uid, int splitAmount, out Item newStack)
-        {
-            Item item = session.Player.Inventory.Items[uid];
-            item.Amount -= splitAmount;
-            newStack = new Item(item)
-            {
-                Amount = splitAmount,
-                InventoryId = 0,
-                Slot = -1
-            };
-            newStack.Uid = DatabaseManager.Items.Insert(newStack);
-            session.Send(ItemInventoryPacket.Update(uid, item.Amount));
-        }
-
         public static void ExpandInventory(GameSession session, InventoryTab tab)
         {
             Inventory inventory = session.Player.Inventory;
