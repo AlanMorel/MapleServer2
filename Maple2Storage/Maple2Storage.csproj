@@ -5,6 +5,7 @@
     <RootNamespace>Maple2Storage</RootNamespace>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>10</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
