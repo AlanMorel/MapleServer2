@@ -38,7 +38,7 @@ namespace MapleServer2
             }
             DotEnv.Load(dotenv);
 
-            InitDatabase();
+            DatabaseManager.Init();
 
             DateTimeOffset lastReset = DatabaseManager.ServerInfo.GetLastDailyReset();
             DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -128,42 +128,6 @@ namespace MapleServer2
             DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
 
             DatabaseManager.ServerInfo.SetLastDailyReset(DateTimeOffset.UtcNow.UtcDateTime);
-        }
-
-        private static void InitDatabase()
-        {
-            if (DatabaseManager.GetVersion() < DatabaseManager.MIN_MYSQL_VERSION)
-            {
-                throw new Exception("MySQL version out-of-date, please upgrade to version " + DatabaseManager.MIN_MYSQL_VERSION + ".");
-            }
-
-            if (DatabaseManager.DatabaseExists())
-            {
-                Logger.Info("Database already exists.");
-                return;
-            }
-            Logger.Info("Creating database...");
-            DatabaseManager.CreateDatabase();
-
-            Logger.Info("Seeding shops...");
-            DatabaseManager.SeedShops();
-
-            Logger.Info("Seeding shop items...");
-            DatabaseManager.SeedShopItems();
-
-            Logger.Info("Seeding Meret Market...");
-            DatabaseManager.SeedMeretMarket();
-
-            Logger.Info("Seeding Mapleopoly...");
-            DatabaseManager.SeedMapleopoly();
-
-            Logger.Info("Seeding events...");
-            DatabaseManager.SeedEvents();
-
-            Logger.Info("Seeding card reverse game...");
-            DatabaseManager.SeedCardReverseGame();
-
-            Logger.Info("Database created.".ColorGreen());
         }
 
         public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

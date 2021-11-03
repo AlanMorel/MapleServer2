@@ -1,4 +1,5 @@
 ﻿
+using Maple2Storage.Extensions;
 using Maple2Storage.Types;
 using MapleServer2.Database.Classes;
 using MySql.Data.MySqlClient;
@@ -10,9 +11,12 @@ namespace MapleServer2.Database
 {
     public class DatabaseManager
     {
-        public const int MIN_MYSQL_VERSION = 8;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private static readonly int MIN_MYSQL_VERSION = 8;
+
         public static readonly string ConnectionString;
+        public static readonly string ConnectionStringWithoutTable;
 
         private static readonly string Server = Environment.GetEnvironmentVariable("DB_IP");
         private static readonly string Port = Environment.GetEnvironmentVariable("DB_PORT");
@@ -52,14 +56,41 @@ namespace MapleServer2.Database
 
         static DatabaseManager()
         {
-            ConnectionString = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};DATABASE={Database};";
+            ConnectionStringWithoutTable = $"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};";
+            ConnectionString = ConnectionStringWithoutTable + $"DATABASE={Database};";
+        }
+
+        public static void Init()
+        {
+            if (GetVersion() < MIN_MYSQL_VERSION)
+            {
+                throw new Exception("MySQL version out-of-date, please upgrade to version " + MIN_MYSQL_VERSION + ".");
+            }
+
+            if (DatabaseExists())
+            {
+                Logger.Info("Database already exists.");
+                return;
+            }
+
+            Logger.Info("Creating database...");
+            CreateDatabase();
+
+            string[] seeds = { "Shops", "ShopItems", "MeretMarket", "Mapleopoly", "Events", "CardReverseGame" };
+
+            foreach (string seed in seeds)
+            {
+                Seed(seed);
+            }
+
+            Logger.Info("Database created.".ColorGreen());
         }
 
         public static void RunQuery(string query) => new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
 
         public static int GetVersion()
         {
-            MySqlConnection conn = new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};");
+            MySqlConnection conn = new MySqlConnection(ConnectionStringWithoutTable);
             conn.Open();
 
             return int.Parse(conn.ServerVersion.Split(".")[0]);
@@ -67,7 +98,7 @@ namespace MapleServer2.Database
 
         public static bool DatabaseExists()
         {
-            dynamic result = new QueryFactory(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), new MySqlCompiler())
+            dynamic result = new QueryFactory(new MySqlConnection(ConnectionStringWithoutTable), new MySqlCompiler())
                 .Select($"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{Database}'")
                 .FirstOrDefault();
 
@@ -77,21 +108,15 @@ namespace MapleServer2.Database
         public static void CreateDatabase()
         {
             string fileLines = File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/SQL/Database.sql");
-            MySqlScript script = new MySqlScript(new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};"), fileLines.Replace("DATABASE_NAME", Database));
+            MySqlScript script = new MySqlScript(new MySqlConnection(ConnectionStringWithoutTable), fileLines.Replace("DATABASE_NAME", Database));
             script.Execute();
         }
 
-        public static void SeedShops() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/ShopsSeeding.sql"));
-
-        public static void SeedShopItems() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/ShopItemsSeeding.sql"));
-
-        public static void SeedMeretMarket() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/MeretMarketSeeding.sql"));
-
-        public static void SeedMapleopoly() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/MapleopolySeeding.sql"));
-
-        public static void SeedEvents() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/EventsSeeding.sql"));
-
-        public static void SeedCardReverseGame() => ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/CardReverseGameSeeding.sql"));
+        private static void Seed(string type)
+        {
+            Logger.Info("Seeding " + type + "...");
+            ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
+        }
 
         private static void ExecuteSqlFile(string fileLines)
         {
