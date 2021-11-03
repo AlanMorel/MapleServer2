@@ -15,10 +15,10 @@ namespace MapleServer2.Packets
             PrepareCountdown = 0x8,
         }
 
-        public static Packet RoundBar(int currentRound, int lastRound, int startFromRound)
+        public static PacketWriter RoundBar(int currentRound, int lastRound, int startFromRound)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
-            pWriter.WriteEnum(MassiveEventPacketMode.RoundBar);
+            pWriter.Write(MassiveEventPacketMode.RoundBar);
             pWriter.WriteInt(currentRound);
             pWriter.WriteInt(lastRound);
             pWriter.WriteInt(startFromRound);
@@ -26,10 +26,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Round(string text, int round, int countFrom, int soundType = 0)
+        public static PacketWriter Round(string text, int round, int countFrom, int soundType = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
-            pWriter.WriteEnum(MassiveEventPacketMode.RoundBanner);
+            pWriter.Write(MassiveEventPacketMode.RoundBanner);
             pWriter.WriteUnicodeString(text);
             pWriter.WriteInt(round);
             pWriter.WriteInt(countFrom);
@@ -37,30 +37,30 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet TextBanner(EventBannerType type, string script, int duration)
+        public static PacketWriter TextBanner(EventBannerType type, string script, int duration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
-            pWriter.WriteEnum(MassiveEventPacketMode.TextBanner);
-            pWriter.WriteEnum(type);
+            pWriter.Write(MassiveEventPacketMode.TextBanner);
+            pWriter.Write(type);
             pWriter.WriteUnicodeString(script);
             pWriter.WriteInt(duration);
             return pWriter;
         }
 
-        public static Packet RoundHeader(int round, bool finalRound, int duration)
+        public static PacketWriter RoundHeader(int round, bool finalRound, int duration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
-            pWriter.WriteEnum(MassiveEventPacketMode.RoundHeader);
+            pWriter.Write(MassiveEventPacketMode.RoundHeader);
             pWriter.WriteInt(round);
             pWriter.WriteBool(finalRound);
             pWriter.WriteInt(duration);
             return pWriter;
         }
 
-        public static Packet PrepareCountdown(int countFrom)
+        public static PacketWriter PrepareCountdown(int countFrom)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASSIVE_EVENT);
-            pWriter.WriteEnum(MassiveEventPacketMode.PrepareCountdown);
+            pWriter.Write(MassiveEventPacketMode.PrepareCountdown);
             pWriter.WriteInt(countFrom);
             return pWriter;
         }

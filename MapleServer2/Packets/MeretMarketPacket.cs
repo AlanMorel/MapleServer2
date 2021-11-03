@@ -16,18 +16,18 @@ namespace MapleServer2.Packets
             LoadCart = 0x6B,
         }
 
-        public static Packet Initialize()
+        public static PacketWriter Initialize()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-            pWriter.WriteEnum(MeretMarketMode.Initialize);
+            pWriter.Write(MeretMarketMode.Initialize);
             pWriter.WriteByte();
             return pWriter;
         }
 
-        public static Packet Premium(List<MeretMarketItem> items)
+        public static PacketWriter Premium(List<MeretMarketItem> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-            pWriter.WriteEnum(MeretMarketMode.Premium);
+            pWriter.Write(MeretMarketMode.Premium);
             pWriter.WriteInt(items.Count);
             pWriter.WriteInt(items.Count);
             pWriter.WriteInt(1);
@@ -55,10 +55,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Purchase(MeretMarketItem item, int itemIndex, int totalQuantity)
+        public static PacketWriter Purchase(MeretMarketItem item, int itemIndex, int totalQuantity)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-            pWriter.WriteEnum(MeretMarketMode.Purchase);
+            pWriter.Write(MeretMarketMode.Purchase);
             pWriter.WriteByte((byte) totalQuantity);
             pWriter.WriteInt(item.MarketId);
             pWriter.WriteLong();
@@ -81,10 +81,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Promos(List<MeretMarketItem> items)
+        public static PacketWriter Promos(List<MeretMarketItem> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-            pWriter.WriteEnum(MeretMarketMode.Home);
+            pWriter.Write(MeretMarketMode.Home);
             pWriter.WriteByte();
             pWriter.WriteByte(10);
             pWriter.WriteByte(1);
@@ -101,7 +101,7 @@ namespace MapleServer2.Packets
                 WriteMeretMarketItem(pWriter, item);
 
                 pWriter.WriteByte(1);
-                pWriter.WriteMapleString(item.PromoName);
+                pWriter.WriteString(item.PromoName);
                 pWriter.WriteLong(item.PromoBannerBeginTime);
                 pWriter.WriteLong(item.PromoBannerEndTime);
                 pWriter.WriteByte();
@@ -132,10 +132,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadCart()
+        public static PacketWriter LoadCart()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-            pWriter.WriteEnum(MeretMarketMode.LoadCart);
+            pWriter.Write(MeretMarketMode.LoadCart);
             pWriter.WriteInt(1);
             pWriter.WriteInt();
             pWriter.WriteInt(3);
@@ -153,21 +153,21 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(254);
             pWriter.WriteInt(); // promo bool
             pWriter.WriteByte(2);
-            pWriter.WriteEnum(item.Flag);
-            pWriter.WriteEnum(item.TokenType);
+            pWriter.Write(item.Flag);
+            pWriter.Write(item.TokenType);
             pWriter.WriteLong(item.Price);
             pWriter.WriteLong(item.SalePrice);
             pWriter.WriteByte(1);
             pWriter.WriteLong(item.SellBeginTime);
             pWriter.WriteLong(item.SellEndTime);
-            pWriter.WriteEnum(item.JobRequirement);
+            pWriter.Write(item.JobRequirement);
             pWriter.WriteInt(3);
             pWriter.WriteBool(item.RestockUnavailable);
             pWriter.WriteInt();
             pWriter.WriteByte();
             pWriter.WriteShort(item.MinLevelRequirement);
             pWriter.WriteShort(item.MaxLevelRequirement);
-            pWriter.WriteEnum(item.JobRequirement);
+            pWriter.Write(item.JobRequirement);
             pWriter.WriteInt(item.ItemId);
             pWriter.WriteByte(item.Rarity);
             pWriter.WriteInt(item.Quantity);
@@ -176,14 +176,14 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(40300);
             pWriter.WriteInt();
             pWriter.WriteByte();
-            pWriter.WriteEnum(item.PromoFlag);
+            pWriter.Write(item.PromoFlag);
             string bannerName = "";
             if (item.Banner != null)
             {
                 bannerName = item.Banner.Name;
             }
-            pWriter.WriteMapleString(bannerName);
-            pWriter.WriteMapleString("");
+            pWriter.WriteString(bannerName);
+            pWriter.WriteString("");
             pWriter.WriteByte();
             pWriter.WriteByte();
             pWriter.WriteInt();

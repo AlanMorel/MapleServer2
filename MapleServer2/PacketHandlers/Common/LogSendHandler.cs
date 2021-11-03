@@ -31,7 +31,7 @@ namespace MapleServer2.PacketHandlers.Common
                     if (message.Contains("exception"))
                     {
                         // Read remaining string
-                        string debug = packet.ReadUnicodeString(packet.Available / 2);
+                        string debug = packet.ReadUnicodeString();
                         Logger.Error("[{message}] {debug}", message, debug);
 
                         session.OnError?.Invoke(session, debug);

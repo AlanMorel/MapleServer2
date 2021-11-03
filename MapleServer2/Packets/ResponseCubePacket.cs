@@ -53,10 +53,10 @@ namespace MapleServer2.Packets
             UpdateSizeHeight = 0x3E
         }
 
-        public static Packet LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid)
+        public static PacketWriter LoadFurnishingItem(IFieldObject<Player> player, int itemId, long itemUid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.LoadFurnishingItem);
+            pWriter.Write(ResponseCubePacketMode.LoadFurnishingItem);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(itemId);
             pWriter.WriteLong(itemUid);
@@ -66,10 +66,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet EnablePlotFurnishing(Player player)
+        public static PacketWriter EnablePlotFurnishing(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.EnablePlotFurnishing);
+            pWriter.Write(ResponseCubePacketMode.EnablePlotFurnishing);
             pWriter.WriteByte(); // disable bool
             pWriter.WriteInt(player.Account.Home.PlotNumber);
             pWriter.WriteInt(player.Account.Home.ApartmentNumber);
@@ -80,18 +80,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CompletePurchase()
+        public static PacketWriter CompletePurchase()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.CompletePurchase);
+            pWriter.Write(ResponseCubePacketMode.CompletePurchase);
 
             return pWriter;
         }
 
-        public static Packet RemovePlot(int plotNumber, int apartmentNumber)
+        public static PacketWriter RemovePlot(int plotNumber, int apartmentNumber)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ForfeitPlot);
+            pWriter.Write(ResponseCubePacketMode.ForfeitPlot);
             pWriter.WriteByte();
             pWriter.WriteInt(plotNumber);
             pWriter.WriteInt(apartmentNumber);
@@ -100,10 +100,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemovePlot2(int plotId, int plotNumber)
+        public static PacketWriter RemovePlot2(int plotId, int plotNumber)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ForfeitPlot2);
+            pWriter.Write(ResponseCubePacketMode.ForfeitPlot2);
             pWriter.WriteByte(72); // unknown
             pWriter.WriteShort();
             pWriter.WriteInt(plotId);
@@ -112,10 +112,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlaceFurnishing(IFieldObject<Cube> cube, int ownerObjectId, int fieldPlayerObjectId, bool sendOnlyObjectId)
+        public static PacketWriter PlaceFurnishing(IFieldObject<Cube> cube, int ownerObjectId, int fieldPlayerObjectId, bool sendOnlyObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
+            pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
             pWriter.WriteBool(sendOnlyObjectId);
             pWriter.WriteInt(ownerObjectId);
             pWriter.WriteInt(fieldPlayerObjectId);
@@ -141,10 +141,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CantPlaceHere(int fieldPlayerObjectId)
+        public static PacketWriter CantPlaceHere(int fieldPlayerObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.PlaceFurnishing);
+            pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
             pWriter.WriteByte(44);
             pWriter.WriteInt(fieldPlayerObjectId);
             pWriter.WriteInt(fieldPlayerObjectId);
@@ -152,10 +152,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemoveCube(int ownerObjectId, int fieldPlayerObjectId, CoordB coord)
+        public static PacketWriter RemoveCube(int ownerObjectId, int fieldPlayerObjectId, CoordB coord)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.RemoveCube);
+            pWriter.Write(ResponseCubePacketMode.RemoveCube);
             pWriter.WriteByte();
             pWriter.WriteInt(ownerObjectId);
             pWriter.WriteInt(fieldPlayerObjectId);
@@ -166,10 +166,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RotateCube(IFieldObject<Player> player, IFieldObject<Cube> cube)
+        public static PacketWriter RotateCube(IFieldObject<Player> player, IFieldObject<Cube> cube)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.RotateCube);
+            pWriter.Write(ResponseCubePacketMode.RotateCube);
             pWriter.WriteByte();
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(player.ObjectId);
@@ -180,10 +180,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ReplaceCube(int homeOwnerObjectId, int fieldPlayerObjectId, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
+        public static PacketWriter ReplaceCube(int homeOwnerObjectId, int fieldPlayerObjectId, IFieldObject<Cube> newCube, bool sendOnlyObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ReplaceCube);
+            pWriter.Write(ResponseCubePacketMode.ReplaceCube);
             pWriter.WriteBool(sendOnlyObjectId);
             pWriter.WriteInt(homeOwnerObjectId);
             pWriter.WriteInt(fieldPlayerObjectId);
@@ -206,10 +206,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Pickup(GameSession session, int weaponId, CoordB coords)
+        public static PacketWriter Pickup(GameSession session, int weaponId, CoordB coords)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.Pickup);
+            pWriter.Write(ResponseCubePacketMode.Pickup);
             pWriter.WriteZero(1);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.Write(coords);
@@ -220,20 +220,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Drop(IFieldObject<Player> player)
+        public static PacketWriter Drop(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.Drop);
+            pWriter.Write(ResponseCubePacketMode.Drop);
             pWriter.WriteZero(1);
             pWriter.WriteInt(player.ObjectId);
 
             return pWriter;
         }
 
-        public static Packet LoadHome(int playerObjectId, Home home)
+        public static PacketWriter LoadHome(int playerObjectId, Home home)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.LoadHome);
+            pWriter.Write(ResponseCubePacketMode.LoadHome);
             pWriter.WriteInt(playerObjectId);
             pWriter.WriteInt(home?.MapId ?? 0);
             pWriter.WriteInt(home?.PlotMapId ?? 0);
@@ -247,10 +247,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet HomeName(Player player)
+        public static PacketWriter HomeName(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.HomeName);
+            pWriter.Write(ResponseCubePacketMode.HomeName);
             pWriter.WriteByte();
             pWriter.WriteLong(player.AccountId);
             pWriter.WriteInt(player.Account.Home.PlotNumber);
@@ -260,10 +260,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PurchasePlot(int plotNumber, int apartmentNumber, long expiration)
+        public static PacketWriter PurchasePlot(int plotNumber, int apartmentNumber, long expiration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.PurchasePlot);
+            pWriter.Write(ResponseCubePacketMode.PurchasePlot);
             pWriter.WriteInt(plotNumber);
             pWriter.WriteInt(apartmentNumber);
             pWriter.WriteByte(1);
@@ -272,10 +272,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ForfeitPlot(int plotNumber, int apartmentNumber, long expiration)
+        public static PacketWriter ForfeitPlot(int plotNumber, int apartmentNumber, long expiration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.PurchasePlot);
+            pWriter.Write(ResponseCubePacketMode.PurchasePlot);
             pWriter.WriteInt(plotNumber);
             pWriter.WriteInt(apartmentNumber);
             pWriter.WriteByte(4);
@@ -284,19 +284,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ChangePassword()
+        public static PacketWriter ChangePassword()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ChangePassword);
+            pWriter.Write(ResponseCubePacketMode.ChangePassword);
             pWriter.WriteByte();
 
             return pWriter;
         }
 
-        public static Packet ArchitectScoreExpiration(long accountId, long now)
+        public static PacketWriter ArchitectScoreExpiration(long accountId, long now)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ArchitectScoreExpiration);
+            pWriter.Write(ResponseCubePacketMode.ArchitectScoreExpiration);
             pWriter.WriteByte();
             pWriter.WriteLong(accountId);
             pWriter.WriteLong(now);
@@ -304,47 +304,47 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet KickEveryone()
+        public static PacketWriter KickEveryone()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.KickEveryone);
+            pWriter.Write(ResponseCubePacketMode.KickEveryone);
 
             return pWriter;
         }
 
-        public static Packet UpdateArchitectScore(int current, int total)
+        public static PacketWriter UpdateArchitectScore(int current, int total)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.UpdateArchitectScore);
+            pWriter.Write(ResponseCubePacketMode.UpdateArchitectScore);
             pWriter.WriteInt(current);
             pWriter.WriteInt(total);
 
             return pWriter;
         }
 
-        public static Packet HomeDescription(string description)
+        public static PacketWriter HomeDescription(string description)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.HomeDescription);
+            pWriter.Write(ResponseCubePacketMode.HomeDescription);
             pWriter.WriteByte();
             pWriter.WriteUnicodeString(description);
 
             return pWriter;
         }
 
-        public static Packet ReturnMap(int mapId)
+        public static PacketWriter ReturnMap(int mapId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ReturnMap);
+            pWriter.Write(ResponseCubePacketMode.ReturnMap);
             pWriter.WriteInt(mapId);
 
             return pWriter;
         }
 
-        public static Packet BillPopup(Dictionary<byte, long> cubeCosts, int cubeCount)
+        public static PacketWriter BillPopup(Dictionary<byte, long> cubeCosts, int cubeCount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.LoadLayout);
+            pWriter.Write(ResponseCubePacketMode.LoadLayout);
             pWriter.WriteByte((byte) cubeCosts.Keys.Count);
             pWriter.WriteInt(cubeCount);
             foreach (KeyValuePair<byte, long> kvp in cubeCosts)
@@ -356,30 +356,30 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet IncreaseSize(byte size)
+        public static PacketWriter IncreaseSize(byte size)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.IncreaseSize);
+            pWriter.Write(ResponseCubePacketMode.IncreaseSize);
             pWriter.WriteByte();
             pWriter.WriteByte(size);
 
             return pWriter;
         }
 
-        public static Packet DecreaseSize(byte size)
+        public static PacketWriter DecreaseSize(byte size)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.DecreaseSize);
+            pWriter.Write(ResponseCubePacketMode.DecreaseSize);
             pWriter.WriteByte();
             pWriter.WriteByte(size);
 
             return pWriter;
         }
 
-        public static Packet DecorationScore(Home home)
+        public static PacketWriter DecorationScore(Home home)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.Rewards);
+            pWriter.Write(ResponseCubePacketMode.Rewards);
             pWriter.WriteLong(home?.AccountId ?? 0);
             pWriter.WriteLong(home?.DecorationRewardTimestamp ?? 0);
             pWriter.WriteLong(home?.DecorationLevel ?? 1);
@@ -396,50 +396,50 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet EnablePermission(HomePermission permission, bool enabled)
+        public static PacketWriter EnablePermission(HomePermission permission, bool enabled)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.EnablePermission);
-            pWriter.WriteEnum(permission);
+            pWriter.Write(ResponseCubePacketMode.EnablePermission);
+            pWriter.Write(permission);
             pWriter.WriteBool(enabled);
 
             return pWriter;
         }
 
-        public static Packet SetPermission(HomePermission permission, byte setting)
+        public static PacketWriter SetPermission(HomePermission permission, byte setting)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.SetPermission);
-            pWriter.WriteEnum(permission);
+            pWriter.Write(ResponseCubePacketMode.SetPermission);
+            pWriter.Write(permission);
             pWriter.WriteByte(setting);
 
             return pWriter;
         }
 
-        public static Packet IncreaseHeight(byte height)
+        public static PacketWriter IncreaseHeight(byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.IncreaseHeight);
+            pWriter.Write(ResponseCubePacketMode.IncreaseHeight);
             pWriter.WriteByte();
             pWriter.WriteByte(height);
 
             return pWriter;
         }
 
-        public static Packet DecreaseHeight(byte height)
+        public static PacketWriter DecreaseHeight(byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.DecreaseHeight);
+            pWriter.Write(ResponseCubePacketMode.DecreaseHeight);
             pWriter.WriteByte();
             pWriter.WriteByte(height);
 
             return pWriter;
         }
 
-        public static Packet SaveLayout(long accountId, int layoutId, string layoutName, long timestamp)
+        public static PacketWriter SaveLayout(long accountId, int layoutId, string layoutName, long timestamp)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.SaveLayout);
+            pWriter.Write(ResponseCubePacketMode.SaveLayout);
             pWriter.WriteByte();
             pWriter.WriteLong(accountId);
             pWriter.WriteInt(layoutId);
@@ -449,30 +449,30 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ChangeBackground(byte lighthing)
+        public static PacketWriter ChangeBackground(byte lighthing)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ChangeLighting);
+            pWriter.Write(ResponseCubePacketMode.ChangeLighting);
             pWriter.WriteByte();
             pWriter.WriteByte(lighthing);
 
             return pWriter;
         }
 
-        public static Packet ChangeLighting(byte background)
+        public static PacketWriter ChangeLighting(byte background)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ChangeBackground);
+            pWriter.Write(ResponseCubePacketMode.ChangeBackground);
             pWriter.WriteByte();
             pWriter.WriteByte(background);
 
             return pWriter;
         }
 
-        public static Packet UpdateBuildingPermissions(long targetAccountId, long ownerAccountId)
+        public static PacketWriter UpdateBuildingPermissions(long targetAccountId, long ownerAccountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.GiveBuildingPermission);
+            pWriter.Write(ResponseCubePacketMode.GiveBuildingPermission);
             pWriter.WriteLong(targetAccountId);
             pWriter.WriteLong(ownerAccountId);
             pWriter.WriteLong();
@@ -481,20 +481,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ChangeCamera(byte camera)
+        public static PacketWriter ChangeCamera(byte camera)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.ChangeCamera);
+            pWriter.Write(ResponseCubePacketMode.ChangeCamera);
             pWriter.WriteByte();
             pWriter.WriteByte(camera);
 
             return pWriter;
         }
 
-        public static Packet SendWarehouseItems(List<Item> items)
+        public static PacketWriter SendWarehouseItems(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.LoadWarehouseItems);
+            pWriter.Write(ResponseCubePacketMode.LoadWarehouseItems);
             pWriter.WriteShort(3);
             pWriter.WriteInt(items.Count);
             foreach (Item item in items)
@@ -506,10 +506,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateBudget(Home home)
+        public static PacketWriter UpdateBudget(Home home)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.UpdateBudget);
+            pWriter.Write(ResponseCubePacketMode.UpdateBudget);
             pWriter.WriteByte();
             pWriter.WriteLong(home.Mesos);
             pWriter.WriteLong(home.Merets);
@@ -517,20 +517,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddBuildingPermission(long accountId)
+        public static PacketWriter AddBuildingPermission(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.AddBuildingPermission);
+            pWriter.Write(ResponseCubePacketMode.AddBuildingPermission);
             pWriter.WriteByte();
             pWriter.WriteLong(accountId);
 
             return pWriter;
         }
 
-        public static Packet RemoveBuildingPermission(long accountId, string characterName)
+        public static PacketWriter RemoveBuildingPermission(long accountId, string characterName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.RemoveBuildingPermission);
+            pWriter.Write(ResponseCubePacketMode.RemoveBuildingPermission);
             pWriter.WriteByte();
             pWriter.WriteLong(accountId);
             pWriter.WriteUnicodeString(characterName);
@@ -538,10 +538,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateHomeSizeAndHeight(byte size, byte height)
+        public static PacketWriter UpdateHomeSizeAndHeight(byte size, byte height)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
-            pWriter.WriteEnum(ResponseCubePacketMode.UpdateSizeHeight);
+            pWriter.Write(ResponseCubePacketMode.UpdateSizeHeight);
             pWriter.WriteByte();
             pWriter.WriteByte(size);
             pWriter.WriteByte(height);

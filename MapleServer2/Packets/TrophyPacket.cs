@@ -20,19 +20,19 @@ namespace MapleServer2.Packets
             Finished = 0x3
         }
 
-        public static Packet WriteTableStart()
+        public static PacketWriter WriteTableStart()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
-            pWriter.WriteEnum(TrophyPacketMode.TableStart);
+            pWriter.Write(TrophyPacketMode.TableStart);
 
             return pWriter;
         }
 
         // packet from WriteTableStart() must be sent immediately before sending these packets
-        public static Packet WriteTableContent(List<Trophy> trophies)
+        public static PacketWriter WriteTableContent(List<Trophy> trophies)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
-            pWriter.WriteEnum(TrophyPacketMode.TableContent);
+            pWriter.Write(TrophyPacketMode.TableContent);
             pWriter.WriteInt(trophies.Count);
 
             foreach (Trophy trophy in trophies)
@@ -45,20 +45,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet WriteUpdate(Trophy trophy)
+        public static PacketWriter WriteUpdate(Trophy trophy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
-            pWriter.WriteEnum(TrophyPacketMode.Update);
+            pWriter.Write(TrophyPacketMode.Update);
             pWriter.WriteInt(trophy.Id);
             WriteIndividualTrophy(pWriter, trophy);
 
             return pWriter;
         }
 
-        public static Packet ToggleFavorite(Trophy trophy, bool favorited)
+        public static PacketWriter ToggleFavorite(Trophy trophy, bool favorited)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TROPHY);
-            pWriter.WriteEnum(TrophyPacketMode.Favorite);
+            pWriter.Write(TrophyPacketMode.Favorite);
             pWriter.WriteInt(trophy.Id);
             pWriter.WriteBool(favorited);
 
@@ -69,7 +69,7 @@ namespace MapleServer2.Packets
         {
             int timestampsCount = trophy.Timestamps.Count;
 
-            pWriter.WriteEnum(trophy.GetGradeStatus());
+            pWriter.Write(trophy.GetGradeStatus());
             pWriter.WriteInt(trophy.IsDone ? 1 : 0);
             pWriter.WriteInt(trophy.NextGrade);
             pWriter.WriteInt(trophy.LastReward);

@@ -2,14 +2,12 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.PacketHandlers;
-using NLog;
 
 namespace MapleServer2.Network
 {
     public class PacketRouter<T> where T : Session
     {
         private readonly ImmutableDictionary<RecvOp, IPacketHandler<T>> Handlers;
-        protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public PacketRouter(IEnumerable<IPacketHandler<T>> packetHandlers)
         {
@@ -18,15 +16,13 @@ namespace MapleServer2.Network
             {
                 Register(builder, packetHandler);
             }
-
             Handlers = builder.ToImmutable();
         }
 
-        public void OnPacket(object sender, Packet packet)
+        public void OnPacket(object sender, PacketReader reader)
         {
-            PacketReader reader = packet.Reader();
-            ushort op = reader.ReadUShort();
-            IPacketHandler<T> handler = Handlers.GetValueOrDefault((RecvOp) op);
+            RecvOp op = (RecvOp) reader.Read<ushort>();
+            IPacketHandler<T> handler = Handlers.GetValueOrDefault(op);
             handler?.Handle(sender as T, reader);
         }
 

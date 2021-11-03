@@ -19,10 +19,10 @@ namespace MapleServer2.Packets
             DeleteCancel = 0x06,
             NameChange = 0x07,
         }
-        public static Packet AddEntries(List<Player> players)
+        public static PacketWriter AddEntries(List<Player> players)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.AddEntries);
+            pWriter.Write(ListMode.AddEntries);
             pWriter.WriteByte((byte) players.Count);
             foreach (Player player in players)
             {
@@ -33,29 +33,29 @@ namespace MapleServer2.Packets
         }
 
         // Sent after creating a character to append to list
-        public static Packet AppendEntry(Player player)
+        public static PacketWriter AppendEntry(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.AppendEntry);
+            pWriter.Write(ListMode.AppendEntry);
             WriteCharacterEntry(pWriter, player);
 
             return pWriter;
         }
 
-        public static Packet DeleteCharacter(long playerId)
+        public static PacketWriter DeleteCharacter(long playerId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.DeleteCharacter);
+            pWriter.Write(ListMode.DeleteCharacter);
             pWriter.WriteInt(); // unk
             pWriter.WriteLong(playerId);
 
             return pWriter;
         }
 
-        public static Packet DeletePending(long playerId)
+        public static PacketWriter DeletePending(long playerId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.DeletePending);
+            pWriter.Write(ListMode.DeletePending);
             pWriter.WriteLong(playerId);
             pWriter.WriteInt(); // unk
             pWriter.WriteLong(); // delete timestamp
@@ -63,17 +63,17 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet DeleteCancel(long playerId)
+        public static PacketWriter DeleteCancel(long playerId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.DeleteCancel);
+            pWriter.Write(ListMode.DeleteCancel);
             pWriter.WriteLong(playerId);
             pWriter.WriteInt(); // unk
 
             return pWriter;
         }
 
-        public static Packet SetMax(int unlocked, int total = 11)
+        public static PacketWriter SetMax(int unlocked, int total = 11)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHAR_MAX_COUNT);
             pWriter.WriteInt(unlocked);
@@ -126,8 +126,8 @@ namespace MapleServer2.Packets
             pWriter.WriteInt();
             pWriter.WriteShort(player.Levels.Level);
             pWriter.WriteShort();
-            pWriter.WriteEnum(player.Job);
-            pWriter.WriteEnum(player.JobCode);
+            pWriter.Write(player.Job);
+            pWriter.Write(player.JobCode);
             pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
             pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
             pWriter.WriteShort();
@@ -249,28 +249,28 @@ namespace MapleServer2.Packets
             }
         }
 
-        public static Packet StartList()
+        public static PacketWriter StartList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.StartList);
+            pWriter.Write(ListMode.StartList);
 
             return pWriter;
         }
 
         // This only needs to be sent if char count > 0
-        public static Packet EndList()
+        public static PacketWriter EndList()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.EndList);
+            pWriter.Write(ListMode.EndList);
             pWriter.WriteBool(false);
 
             return pWriter;
         }
 
-        public static Packet NameChanged(long characterId, string characterName)
+        public static PacketWriter NameChanged(long characterId, string characterName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_LIST);
-            pWriter.WriteEnum(ListMode.NameChange);
+            pWriter.Write(ListMode.NameChange);
             pWriter.WriteInt(1);
             pWriter.WriteLong(characterId);
             pWriter.WriteUnicodeString(characterName);

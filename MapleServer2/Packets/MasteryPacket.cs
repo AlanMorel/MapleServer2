@@ -15,22 +15,22 @@ namespace MapleServer2.Packets
             MasteryNotice = 0x03,
         }
 
-        public static Packet SetExp(MasteryType type, long totalExp)
+        public static PacketWriter SetExp(MasteryType type, long totalExp)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteEnum(MasteryMode.SetMasteryExp);
-            pWriter.WriteEnum(type);
+            pWriter.Write(MasteryMode.SetMasteryExp);
+            pWriter.Write(type);
             pWriter.WriteLong(totalExp);
 
             return pWriter;
         }
 
-        public static Packet ClaimReward(int rewardBoxDetails, Item item)
+        public static PacketWriter ClaimReward(int rewardBoxDetails, Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteEnum(MasteryMode.ClaimRewardBox);
+            pWriter.Write(MasteryMode.ClaimRewardBox);
             pWriter.WriteInt(rewardBoxDetails);
             pWriter.WriteInt(item.Amount);
             pWriter.WriteInt(item.Id);
@@ -39,11 +39,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet GetCraftedItem(MasteryType type, Item item)
+        public static PacketWriter GetCraftedItem(MasteryType type, Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteEnum(MasteryMode.GetCraftedItem);
+            pWriter.Write(MasteryMode.GetCraftedItem);
             pWriter.WriteShort((short) type);
             pWriter.WriteInt(item.Amount);
             pWriter.WriteInt(item.Id);
@@ -51,11 +51,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet MasteryNotice(short noticeId)
+        public static PacketWriter MasteryNotice(short noticeId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MASTERY);
 
-            pWriter.WriteEnum(MasteryMode.MasteryNotice);
+            pWriter.Write(MasteryMode.MasteryNotice);
             pWriter.WriteShort(noticeId);
             return pWriter;
         }

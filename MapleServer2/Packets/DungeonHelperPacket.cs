@@ -13,10 +13,10 @@ namespace MapleServer2.Packets
             DisplayVetAndRookie = 0x1,
         }
 
-        public static Packet BroadcastAssist(Party party, int dungeonId)
+        public static PacketWriter BroadcastAssist(Party party, int dungeonId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_HELPER);
-            pWriter.WriteEnum(DungeonHelperPacketMode.BroadcastAssist);
+            pWriter.Write(DungeonHelperPacketMode.BroadcastAssist);
             pWriter.WriteInt(party.Id);
             pWriter.WriteUnicodeString("");
             pWriter.WriteLong(); // unk
@@ -26,10 +26,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet DisplayVetAndRookie(Party party)
+        public static PacketWriter DisplayVetAndRookie(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_HELPER);
-            pWriter.WriteEnum(DungeonHelperPacketMode.DisplayVetAndRookie);
+            pWriter.Write(DungeonHelperPacketMode.DisplayVetAndRookie);
             pWriter.WriteByte(); // rookie count
             pWriter.WriteByte(); // veteran count
             pWriter.WriteInt(party.Id);

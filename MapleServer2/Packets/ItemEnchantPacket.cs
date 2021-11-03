@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
     public static class ItemEnchantPacket
     {
         // Sent when putting item into enchant window
-        public static Packet BeginEnchant(byte type, Item item)
+        public static PacketWriter BeginEnchant(byte type, Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
             pWriter.WriteByte(0x05);
@@ -64,7 +64,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateCharges(Item item)
+        public static PacketWriter UpdateCharges(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
             pWriter.WriteByte(0x06);
@@ -74,7 +74,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet EnchantResult(Item item)
+        public static PacketWriter EnchantResult(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_ENCHANT);
             pWriter.WriteByte(0x0A);

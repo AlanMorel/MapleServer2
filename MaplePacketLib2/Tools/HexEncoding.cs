@@ -2,11 +2,6 @@
 {
     public static class HexEncoding
     {
-        private static int seed = Environment.TickCount;
-
-        private static readonly ThreadLocal<Random> rng =
-            new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref seed)));
-
         private static readonly uint[] hexLookup = {
             3145776, 3211312, 3276848, 3342384, 3407920, 3473456, 3538992, 3604528, 3670064, 3735600, 4259888, 4325424,
             4390960, 4456496, 4522032, 4587568, 3145777, 3211313, 3276849, 3342385, 3407921, 3473457, 3538993, 3604529,
@@ -88,19 +83,6 @@
             return result;
         }
 
-        public static unsafe string ToAsciiString(this byte[] bytes)
-        {
-            string result = new string('\0', bytes.Length);
-            fixed (char* resultPtr = result)
-            {
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    resultPtr[i] = bytes[i] < 32 ? '.' : (char) bytes[i];
-                }
-            }
-            return result;
-        }
-
         public static unsafe string ToHexString(this byte[] bytes)
         {
             fixed (byte* bytesPtr = bytes)
@@ -155,37 +137,6 @@
                 }
             }
             return result;
-        }
-
-        public static string RandomHexString(int length)
-        {
-            byte[] buffer = new byte[length];
-            rng.Value.NextBytes(buffer);
-
-            return ToHexString(buffer, ' ');
-        }
-
-        public static string RandomHexString(int length, char sep)
-        {
-            byte[] buffer = new byte[length];
-            rng.Value.NextBytes(buffer);
-
-            return ToHexString(buffer, sep);
-        }
-
-        public static unsafe string FillRandom(this string packet)
-        {
-            fixed (char* pch = packet)
-            {
-                for (int i = 0; i < packet.Length; i++)
-                { // randomizes wildcards
-                    if (pch[i] == '*')
-                    {
-                        pch[i] = $"{rng.Value.Next(0xF):X}"[0];
-                    }
-                }
-            }
-            return packet;
         }
     }
 }

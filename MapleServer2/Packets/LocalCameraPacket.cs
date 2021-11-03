@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class LocalCameraPacket
     {
-        public static Packet Camera(int localCameraId, byte state, int objectId = 0)
+        public static PacketWriter Camera(int localCameraId, byte state, int objectId = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOCAL_CAMERA);
             pWriter.WriteInt(localCameraId);

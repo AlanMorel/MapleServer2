@@ -12,10 +12,10 @@ namespace MapleServer2.Packets
             Clear = 0x1,
         }
 
-        public static Packet Notice(GlobalEvent globalEvent)
+        public static PacketWriter Notice(GlobalEvent globalEvent)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GLOBAL_PORTAL);
-            pWriter.WriteEnum(GlobalPortalPacketMode.Notice);
+            pWriter.Write(GlobalPortalPacketMode.Notice);
             pWriter.WriteInt(globalEvent.Id);
             pWriter.WriteInt(144); // unk. seems to either be 144 or 145
             pWriter.WriteUnicodeString("s_massive_event_message");
@@ -27,10 +27,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Clear(GlobalEvent globalEvent)
+        public static PacketWriter Clear(GlobalEvent globalEvent)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GLOBAL_PORTAL);
-            pWriter.WriteEnum(GlobalPortalPacketMode.Clear);
+            pWriter.Write(GlobalPortalPacketMode.Clear);
             pWriter.WriteInt(globalEvent.Id);
             return pWriter;
         }

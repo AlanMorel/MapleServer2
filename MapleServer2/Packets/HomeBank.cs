@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class HomeBank
     {
-        public static Packet OpenBank(long date = 0)
+        public static PacketWriter OpenBank(long date = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_BANK);
             pWriter.WriteLong(date); // cooldown timer

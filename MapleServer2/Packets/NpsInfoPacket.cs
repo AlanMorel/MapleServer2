@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class NpsInfoPacket
     {
-        public static Packet SendUsername(string username)
+        public static PacketWriter SendUsername(string username)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPS_INFO);
             pWriter.WriteLong();

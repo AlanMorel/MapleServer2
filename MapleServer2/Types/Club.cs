@@ -24,7 +24,7 @@ namespace MapleServer2.Types
             Leader.ClubId = Id;
         }
 
-        public void BroadcastPacketClub(Packet packet, GameSession sender = null)
+        public void BroadcastPacketClub(PacketWriter packet, GameSession sender = null)
         {
             BroadcastClub(session =>
             {

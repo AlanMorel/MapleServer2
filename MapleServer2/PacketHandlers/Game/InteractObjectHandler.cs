@@ -39,7 +39,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleCast(GameSession session, PacketReader packet)
         {
-            string id = packet.ReadMapleString();
+            string id = packet.ReadString();
             InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
             if (interactObject == null)
             {
@@ -51,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void HandleInteract(GameSession session, PacketReader packet)
         {
-            string id = packet.ReadMapleString();
+            string id = packet.ReadString();
             InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
             if (interactObject == null)
             {

@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     internal class MesosPacket
     {
-        public static Packet UpdateMesos(long mesoAmount)
+        public static PacketWriter UpdateMesos(long mesoAmount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY);
 

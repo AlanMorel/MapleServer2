@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             Answer = 0x1,
         }
 
-        public static Packet Question(string category, string question, int duration)
+        public static PacketWriter Question(string category, string question, int duration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUIZ_EVENT);
-            pWriter.WriteEnum(QuizEventPacketMode.Question);
+            pWriter.Write(QuizEventPacketMode.Question);
             pWriter.WriteUnicodeString(category);
             pWriter.WriteUnicodeString(question);
             pWriter.WriteUnicodeString("");
@@ -22,10 +22,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Answer(bool answer, string answerText, int duration)
+        public static PacketWriter Answer(bool answer, string answerText, int duration)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.QUIZ_EVENT);
-            pWriter.WriteEnum(QuizEventPacketMode.Answer);
+            pWriter.Write(QuizEventPacketMode.Answer);
             pWriter.WriteBool(answer);
             pWriter.WriteUnicodeString(answerText);
             pWriter.WriteInt(duration);

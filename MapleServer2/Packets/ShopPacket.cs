@@ -18,10 +18,10 @@ namespace MapleServer2.Packets
             Reload = 0x6
         }
 
-        public static Packet Open(Shop shop)
+        public static PacketWriter Open(Shop shop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteEnum(ShopMode.Open);
+            pWriter.Write(ShopMode.Open);
             pWriter.WriteInt(shop.Uid);
             pWriter.WriteInt(shop.Id);
             pWriter.WriteLong(shop.NextRestock);
@@ -32,27 +32,27 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(shop.RestrictSales);
             pWriter.WriteBool(shop.CanRestock);
             pWriter.WriteBool(false);
-            pWriter.WriteEnum(shop.ShopType);
+            pWriter.Write(shop.ShopType);
             pWriter.WriteBool(shop.AllowBuyback);
             pWriter.WriteBool(false);
             pWriter.WriteBool(false);
             pWriter.WriteBool(false);
-            pWriter.WriteMapleString(shop.Name);
+            pWriter.WriteString(shop.Name);
 
             return pWriter;
         }
 
-        public static Packet Reload()
+        public static PacketWriter Reload()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteEnum(ShopMode.Reload);
+            pWriter.Write(ShopMode.Reload);
             pWriter.WriteByte();
             pWriter.WriteByte();
 
             return pWriter;
         }
 
-        public static Packet Close()
+        public static PacketWriter Close()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
             pWriter.WriteShort();
@@ -60,23 +60,23 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
+        public static PacketWriter Buy(int itemId, int quantity, int price, ShopCurrencyType shopCurrencyType)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteEnum(ShopMode.Buy);
+            pWriter.Write(ShopMode.Buy);
             pWriter.WriteInt(itemId);
             pWriter.WriteInt(quantity);
             pWriter.WriteInt(price * quantity);
-            pWriter.WriteEnum(shopCurrencyType);
+            pWriter.Write(shopCurrencyType);
             pWriter.WriteByte();
 
             return pWriter;
         }
 
-        public static Packet Sell(Item item, int quantity)
+        public static PacketWriter Sell(Item item, int quantity)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteEnum(ShopMode.Sell);
+            pWriter.Write(ShopMode.Sell);
             pWriter.WriteInt(quantity);
             pWriter.WriteShort();
             pWriter.WriteInt(item.Id);
@@ -89,24 +89,24 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadProducts(ShopItem product)
+        public static PacketWriter LoadProducts(ShopItem product)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SHOP);
-            pWriter.WriteEnum(ShopMode.LoadProducts);
+            pWriter.Write(ShopMode.LoadProducts);
             pWriter.WriteByte(1);
             pWriter.WriteInt(product.Uid);
             pWriter.WriteInt(product.ItemId);
-            pWriter.WriteEnum(product.TokenType);
+            pWriter.Write(product.TokenType);
             pWriter.WriteInt(product.RequiredItemId);
             pWriter.WriteInt();
             pWriter.WriteInt(product.Price);
             pWriter.WriteInt(product.SalePrice);
             pWriter.WriteByte(product.ItemRank);
-            pWriter.WriteUInt(0xEFDA5D2D);
+            pWriter.Write(0xEFDA5D2D);
             pWriter.WriteInt(product.StockCount);
             pWriter.WriteInt(product.StockPurchased);
             pWriter.WriteInt(product.GuildTrophy);
-            pWriter.WriteMapleString(product.Category);
+            pWriter.WriteString(product.Category);
             pWriter.WriteInt(product.RequiredAchievementId);
             pWriter.WriteInt(product.RequiredAchievementGrade);
             pWriter.WriteByte(product.RequiredChampionshipGrade);
@@ -116,8 +116,8 @@ namespace MapleServer2.Packets
             pWriter.WriteBool(false);
             pWriter.WriteShort(product.Quantity);
             pWriter.WriteByte(1);
-            pWriter.WriteEnum(product.Flag);
-            pWriter.WriteMapleString(product.TemplateName);
+            pWriter.Write(product.Flag);
+            pWriter.WriteString(product.TemplateName);
             pWriter.WriteShort(product.RequiredQuestAlliance);
             pWriter.WriteInt(product.RequiredFameGrade);
             pWriter.WriteBool(product.AutoPreviewEquip);

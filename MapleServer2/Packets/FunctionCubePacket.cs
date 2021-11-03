@@ -17,11 +17,11 @@ namespace MapleServer2.Packets
             FailLifeSkill = 0x09
         }
 
-        public static Packet SendCubes(List<Cube> cubes)
+        public static PacketWriter SendCubes(List<Cube> cubes)
         {
             PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
-            packetWriter.WriteEnum(FunctionCubeMode.SendCubes);
+            packetWriter.Write(FunctionCubeMode.SendCubes);
             packetWriter.WriteInt(cubes.Count);
             foreach (Cube cube in cubes)
             {
@@ -42,11 +42,11 @@ namespace MapleServer2.Packets
             return packetWriter;
         }
 
-        public static Packet UpdateFunctionCube(CoordB coordB, int status, byte unkByte)
+        public static PacketWriter UpdateFunctionCube(CoordB coordB, int status, byte unkByte)
         {
             PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
-            packetWriter.WriteEnum(FunctionCubeMode.Add);
+            packetWriter.Write(FunctionCubeMode.Add);
             packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
             packetWriter.WriteInt(status);
             packetWriter.WriteByte(unkByte);
@@ -54,11 +54,11 @@ namespace MapleServer2.Packets
             return packetWriter;
         }
 
-        public static Packet UseFurniture(long characterId, CoordB coordB, bool inUse)
+        public static PacketWriter UseFurniture(long characterId, CoordB coordB, bool inUse)
         {
             PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
-            packetWriter.WriteEnum(FunctionCubeMode.Furniture);
+            packetWriter.Write(FunctionCubeMode.Furniture);
             packetWriter.WriteLong(characterId);
             packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
             packetWriter.WriteBool(inUse);
@@ -66,11 +66,11 @@ namespace MapleServer2.Packets
             return packetWriter;
         }
 
-        public static Packet SuccessLifeSkill(long characterId, CoordB coordB, int status)
+        public static PacketWriter SuccessLifeSkill(long characterId, CoordB coordB, int status)
         {
             PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
-            packetWriter.WriteEnum(FunctionCubeMode.SuccessLifeSkill);
+            packetWriter.Write(FunctionCubeMode.SuccessLifeSkill);
             packetWriter.WriteLong(characterId);
             packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
             packetWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds());
@@ -79,11 +79,11 @@ namespace MapleServer2.Packets
             return packetWriter;
         }
 
-        public static Packet FailLikeSkill(long characterId, CoordB coordB)
+        public static PacketWriter FailLikeSkill(long characterId, CoordB coordB)
         {
             PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
-            packetWriter.WriteEnum(FunctionCubeMode.FailLifeSkill);
+            packetWriter.Write(FunctionCubeMode.FailLifeSkill);
             packetWriter.WriteLong(characterId);
             packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
             packetWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds());

@@ -11,19 +11,19 @@ namespace MapleServer2.Packets
             PortalCube = 0x06
         }
 
-        public static Packet SendCubePortalSettings(Cube cube, List<Cube> otherPortals)
+        public static PacketWriter SendCubePortalSettings(Cube cube, List<Cube> otherPortals)
         {
             CubePortalSettings portalSettings = cube.PortalSettings;
 
             PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
 
-            pWriter.WriteEnum(HomeActionMode.PortalCube);
+            pWriter.Write(HomeActionMode.PortalCube);
             pWriter.WriteByte();
             pWriter.Write(cube.CoordF.ToByte());
             pWriter.WriteByte();
             pWriter.WriteUnicodeString(portalSettings.PortalName);
-            pWriter.WriteEnum(portalSettings.Method);
-            pWriter.WriteEnum(portalSettings.Destination);
+            pWriter.Write(portalSettings.Method);
+            pWriter.Write(portalSettings.Destination);
             pWriter.WriteUnicodeString(portalSettings.DestinationTarget ?? "");
             pWriter.WriteInt(otherPortals.Count);
             foreach (Cube otherPortal in otherPortals)

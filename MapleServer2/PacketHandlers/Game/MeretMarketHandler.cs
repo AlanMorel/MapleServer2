@@ -76,7 +76,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             byte quantity = packet.ReadByte();
             int marketItemId = packet.ReadInt();
-            byte[] unk = packet.Read(12);
+            byte[] unk = packet.ReadBytes(12);
             int childMarketItemId = packet.ReadInt();
             long unk2 = packet.ReadLong();
             int itemIndex = packet.ReadInt();

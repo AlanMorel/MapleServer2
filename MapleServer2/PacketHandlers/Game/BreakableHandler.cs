@@ -13,7 +13,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            string entityId = packet.ReadMapleString();
+            string entityId = packet.ReadString();
             long someId = packet.ReadLong();
             int randId = packet.ReadInt(); //unk
             int unk = packet.ReadInt();

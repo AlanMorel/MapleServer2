@@ -12,10 +12,10 @@ namespace MapleServer2.Packets
             UpdateDungeonInfo = 0x7,
         }
 
-        public static Packet DungeonInfo(int dungeonId, byte weeklyClearCountMax, byte addRewards, int clearCount, short lifetimeRecord, byte toggle)
+        public static PacketWriter DungeonInfo(int dungeonId, byte weeklyClearCountMax, byte addRewards, int clearCount, short lifetimeRecord, byte toggle)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ROOM_DUNGEON);
-            pWriter.WriteEnum(DungeonPacketMode.DungeonInfo);
+            pWriter.Write(DungeonPacketMode.DungeonInfo);
             pWriter.WriteInt(dungeonId);
             pWriter.WriteLong(0); //timestamp
             pWriter.WriteByte(weeklyClearCountMax);
@@ -32,10 +32,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateDungeonInfo(byte mode, int dungeonId)
+        public static PacketWriter UpdateDungeonInfo(byte mode, int dungeonId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ROOM_DUNGEON);
-            pWriter.WriteEnum(DungeonPacketMode.UpdateDungeonInfo);
+            pWriter.Write(DungeonPacketMode.UpdateDungeonInfo);
             pWriter.WriteByte(mode); //05 = favorite, 04 = become veteran
             pWriter.WriteInt(dungeonId);
             return pWriter;

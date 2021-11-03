@@ -7,7 +7,7 @@ namespace MapleServer2.Servers.Login
 {
     public class LoginSession : Session
     {
-        protected override SessionType Type => SessionType.Login;
+        protected override PatchType Type => PatchType.Delete;
 
         public long AccountId;
         public long CharacterId;

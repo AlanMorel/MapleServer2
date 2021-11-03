@@ -90,7 +90,7 @@ namespace MapleServer2
                         }
                         string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
-                        pWriter.Write(packet.ToByteArray());
+                        pWriter.WriteBytes(packet.ToByteArray());
                         Logger.Info(pWriter);
 
                         foreach (Session session in GetSessions(loginServer, GameServer))
@@ -166,7 +166,7 @@ namespace MapleServer2
             Logger.Info("Database created.".ColorGreen());
         }
 
-        public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
+        public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)
         {
             BroadcastAll(session =>
             {

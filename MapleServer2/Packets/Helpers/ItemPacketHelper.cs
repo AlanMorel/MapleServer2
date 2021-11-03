@@ -66,7 +66,7 @@ namespace MapleServer2.Packets.Helpers
                         pWriter.WriteInt(item.PetSkinBadgeId);
                         break;
                     case GemSlot.TRANS:
-                        pWriter.Write(item.TransparencyBadgeBools);
+                        pWriter.WriteBytes(item.TransparencyBadgeBools);
                         break;
                 }
             }
@@ -122,7 +122,7 @@ namespace MapleServer2.Packets.Helpers
                     pWriter.Write(item.HairData.FrontPositionRotation);
                     break;
                 case ItemSlot.FD:
-                    pWriter.Write(item.FaceDecorationData);
+                    pWriter.WriteBytes(item.FaceDecorationData);
                     break;
             }
 

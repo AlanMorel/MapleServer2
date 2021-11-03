@@ -19,11 +19,11 @@ namespace MapleServer2.Packets
             Unk2 = 0x0B,
         }
 
-        public static Packet LoadPlayer(IFieldObject<Player> fieldPlayer)
+        public static PacketWriter LoadPlayer(IFieldObject<Player> fieldPlayer)
         {
             Player player = fieldPlayer.Value;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.LoadPlayer);
+            pWriter.Write(ProxyGameObjMode.LoadPlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
             pWriter.WriteLong(player.CharacterId);
             pWriter.WriteLong(player.AccountId);
@@ -49,21 +49,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemovePlayer(IFieldObject<Player> fieldPlayer)
+        public static PacketWriter RemovePlayer(IFieldObject<Player> fieldPlayer)
         {
             Player player = fieldPlayer.Value;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.RemovePlayer);
+            pWriter.Write(ProxyGameObjMode.RemovePlayer);
             pWriter.WriteInt(fieldPlayer.ObjectId);
 
             return pWriter;
         }
 
-        public static Packet UpdatePlayer(IFieldObject<Player> player)
+        public static PacketWriter UpdatePlayer(IFieldObject<Player> player)
         {
             FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.UpdateEntity);
+            pWriter.Write(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteByte((byte) flag);
 
@@ -100,10 +100,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadNpc(IFieldObject<Npc> npc)
+        public static PacketWriter LoadNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
+            pWriter.Write(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteInt(npc.Value.Id);
             pWriter.WriteByte();
@@ -112,10 +112,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadMob(IFieldObject<Mob> mob)
+        public static PacketWriter LoadMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.LoadNpc);
+            pWriter.Write(ProxyGameObjMode.LoadNpc);
             pWriter.WriteInt(mob.ObjectId);
             pWriter.WriteInt(mob.Value.Id);
             pWriter.WriteByte();
@@ -124,7 +124,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ControlNpc(IFieldObject<Npc> npc)
+        public static PacketWriter ControlNpc(IFieldObject<Npc> npc)
         {
             PacketWriter npcBuffer = new PacketWriter();
             npcBuffer.WriteInt(npc.ObjectId);
@@ -141,11 +141,11 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_CONTROL);
             pWriter.WriteShort(1); // Segments
             pWriter.WriteShort((short) npcBuffer.Length);
-            pWriter.Write(npcBuffer.ToArray());
+            pWriter.WriteBytes(npcBuffer.ToArray());
             return pWriter;
         }
 
-        public static Packet ControlMob(IFieldObject<Mob> mob)
+        public static PacketWriter ControlMob(IFieldObject<Mob> mob)
         {
             PacketWriter npcBuffer = new PacketWriter();
             npcBuffer.WriteInt(mob.ObjectId);
@@ -163,40 +163,40 @@ namespace MapleServer2.Packets
             PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_CONTROL);
             pWriter.WriteShort(1); // Segments
             pWriter.WriteShort((short) npcBuffer.Length);
-            pWriter.Write(npcBuffer.ToArray());
+            pWriter.WriteBytes(npcBuffer.ToArray());
             return pWriter;
         }
 
-        public static Packet UpdateEntity(int objectId)
+        public static PacketWriter UpdateEntity(int objectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.UpdateEntity);
+            pWriter.Write(ProxyGameObjMode.UpdateEntity);
             pWriter.WriteInt(objectId);
             pWriter.WriteByte();
             pWriter.WriteShort();
             return pWriter;
         }
 
-        public static Packet RemoveNpc(IFieldObject<Npc> npc)
+        public static PacketWriter RemoveNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.RemoveNpc);
+            pWriter.Write(ProxyGameObjMode.RemoveNpc);
             pWriter.WriteInt(npc.ObjectId);
             return pWriter;
         }
 
-        public static Packet RemoveMob(IFieldObject<Mob> mob)
+        public static PacketWriter RemoveMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.RemoveNpc);
+            pWriter.Write(ProxyGameObjMode.RemoveNpc);
             pWriter.WriteInt(mob.ObjectId);
             return pWriter;
         }
 
-        public static Packet MoveNpc(IFieldObject<Npc> npc)
+        public static PacketWriter MoveNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-            pWriter.WriteEnum(ProxyGameObjMode.MoveNpc);
+            pWriter.Write(ProxyGameObjMode.MoveNpc);
             pWriter.WriteInt(npc.ObjectId);
             pWriter.WriteByte();
             pWriter.Write(npc.Coord);

@@ -16,7 +16,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            string entityId = packet.ReadMapleString();
+            string entityId = packet.ReadString();
             long skillSN = packet.ReadLong();
             int skillId = packet.ReadInt();
             short skillLevel = packet.ReadShort();

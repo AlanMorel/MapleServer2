@@ -26,11 +26,11 @@ namespace MapleServer2.Packets
             ActivePremiumClubRequired
         }
 
-        public static Packet EquipItem(GameSession session, Item item, int index)
+        public static PacketWriter EquipItem(GameSession session, Item item, int index)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
-            pWriter.WriteEnum(GemMode.EquipItem);
+            pWriter.Write(GemMode.EquipItem);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
@@ -41,22 +41,22 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UnequipItem(GameSession session, GemSlot gemSlot)
+        public static PacketWriter UnequipItem(GameSession session, GemSlot gemSlot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
-            pWriter.WriteEnum(GemMode.UnequipItem);
+            pWriter.Write(GemMode.UnequipItem);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
-            pWriter.WriteEnum(gemSlot);
+            pWriter.Write(gemSlot);
 
             return pWriter;
         }
 
-        public static Packet EquipError(GemEquipError type)
+        public static PacketWriter EquipError(GemEquipError type)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
-            pWriter.WriteEnum(GemMode.EquipError);
+            pWriter.Write(GemMode.EquipError);
             pWriter.WriteShort((short) type);
 
             return pWriter;

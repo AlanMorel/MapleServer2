@@ -143,7 +143,7 @@ namespace MapleServer2.Types
             DatabaseManager.Guilds.Update(this);
         }
 
-        public void BroadcastPacketGuild(Packet packet, GameSession sender = null)
+        public void BroadcastPacketGuild(PacketWriter packet, GameSession sender = null)
         {
             BroadcastGuild(session =>
             {

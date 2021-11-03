@@ -33,7 +33,7 @@ namespace MapleServer2.PacketHandlers.Game
                 packet.ReadInt(); // ServerTicks
             }
 
-            Packet syncPacket = SyncStatePacket.RideSync(session.FieldPlayer, syncStates);
+            PacketWriter syncPacket = SyncStatePacket.RideSync(session.FieldPlayer, syncStates);
             session.FieldManager.BroadcastPacket(syncPacket, session);
             UserSyncHandler.UpdatePlayer(session, syncStates);
         }

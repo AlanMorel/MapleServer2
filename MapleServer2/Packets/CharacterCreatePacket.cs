@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class ResponseCharCreatePacket
     {
-        public static Packet NameTaken()
+        public static PacketWriter NameTaken()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHARACTER_CREATE);
             pWriter.WriteByte(0x0B); // Name is taken

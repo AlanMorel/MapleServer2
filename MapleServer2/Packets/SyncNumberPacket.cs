@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class SyncNumberPacket
     {
-        public static Packet Send()
+        public static PacketWriter Send()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_NUMBER);
             pWriter.WriteByte();

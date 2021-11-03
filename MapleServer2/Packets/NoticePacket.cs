@@ -11,10 +11,10 @@ namespace MapleServer2.Packets
             Send = 0x04
         }
 
-        public static Packet Notice(string message, NoticeType type = NoticeType.Mint)
+        public static PacketWriter Notice(string message, NoticeType type = NoticeType.Mint)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
-            pWriter.WriteEnum(NoticePacketMode.Send);
+            pWriter.Write(NoticePacketMode.Send);
             pWriter.WriteShort((short) type);
             pWriter.WriteByte(0x0);
             pWriter.WriteInt();
@@ -23,11 +23,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null)
+        public static PacketWriter Notice(SystemNotice notice, NoticeType type = NoticeType.Mint, List<string> parameters = null)
         {
             parameters ??= new List<string>();
             PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
-            pWriter.WriteEnum(NoticePacketMode.Send);
+            pWriter.Write(NoticePacketMode.Send);
             pWriter.WriteShort((short) type);
             pWriter.WriteByte(0x1);
             pWriter.WriteInt(0x1);

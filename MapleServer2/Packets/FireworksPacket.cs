@@ -12,18 +12,18 @@ namespace MapleServer2.Packets
             Gacha = 0x5,
         }
 
-        public static Packet TreasureChest(int itemId)
+        public static PacketWriter TreasureChest(int itemId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIREWORKS);
-            pWriter.WriteEnum(FireworksPacketMode.TreasureChest);
+            pWriter.Write(FireworksPacketMode.TreasureChest);
             pWriter.WriteInt(itemId);
             return pWriter;
         }
 
-        public static Packet Gacha(List<Item> items)
+        public static PacketWriter Gacha(List<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIREWORKS);
-            pWriter.WriteEnum(FireworksPacketMode.Gacha);
+            pWriter.Write(FireworksPacketMode.Gacha);
             pWriter.WriteInt(items.Count);
             foreach (Item item in items)
             {

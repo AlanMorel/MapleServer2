@@ -1,45 +1,58 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.CompilerServices;
 
 namespace MaplePacketLib2.Tools
 {
-    public class PacketWriter : Packet
+    public unsafe class PacketWriter : IPacketWriter
     {
-        private const int DEFAULT_SIZE = 64;
+        protected const int DEFAULT_SIZE = 512;
+
+        public byte[] Buffer { get; protected set; }
+        public int Length { get; protected set; }
 
         public int Remaining => Buffer.Length - Length;
 
-        public PacketWriter(int size = DEFAULT_SIZE) : base(new byte[size])
+        public PacketWriter(int size = DEFAULT_SIZE) : this(new byte[size]) { }
+
+        public PacketWriter(byte[] buffer, int offset = 0)
         {
-            Length = 0;
+            Buffer = buffer;
+            Length = offset;
         }
 
         public static PacketWriter Of(object opcode, int size = DEFAULT_SIZE)
         {
             PacketWriter packet = new PacketWriter(size);
-            packet.WriteUShort(Convert.ToUInt16(opcode));
+            packet.Write(Convert.ToUInt16(opcode));
             return packet;
         }
 
         private void EnsureCapacity(int length)
         {
-            if (length <= Remaining)
+            int required = Length + length;
+            if (Buffer.Length >= required)
             {
                 return;
             }
+
             int newSize = Buffer.Length * 2;
-            while (newSize < Length + length)
+            while (newSize < required)
             {
                 newSize *= 2;
             }
+
             ResizeBuffer(newSize);
         }
 
-        public void ResizeBuffer(int newSize)
+        public virtual void ResizeBuffer(int newSize)
         {
-            byte[] newBuffer = new byte[newSize];
-            System.Buffer.BlockCopy(Buffer, 0, newBuffer, 0, Length);
-            Buffer = newBuffer;
+            byte[] copy = new byte[newSize];
+            fixed (byte* ptr = Buffer)
+            fixed (byte* copyPtr = copy)
+            {
+                Unsafe.CopyBlock(copyPtr, ptr, (uint) Length);
+            }
+
+            Buffer = copy;
         }
 
         public void Seek(int position)
@@ -52,155 +65,145 @@ namespace MaplePacketLib2.Tools
             Length = position;
         }
 
-        public unsafe void Write<T>(T value) where T : struct
+        public unsafe void Write<T>(in T value) where T : struct
         {
-            int size = Marshal.SizeOf(typeof(T));
+            int size = Unsafe.SizeOf<T>();
             EnsureCapacity(size);
             fixed (byte* ptr = &Buffer[Length])
             {
-                Marshal.StructureToPtr(value, (IntPtr) ptr, false);
+                Unsafe.Write(ptr, value);
                 Length += size;
             }
         }
 
-        public void Write(params byte[] value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteBytes(byte[] value)
         {
-            EnsureCapacity(value.Length);
-            System.Buffer.BlockCopy(value, 0, Buffer, Length, value.Length);
-            Length += value.Length;
+            WriteBytes(value, 0, value.Length);
         }
 
-        public void WriteEnum(Enum value)
+        public void WriteBytes(byte[] value, int offset, int length)
         {
-            Type type = Enum.GetUnderlyingType(value.GetType());
-            dynamic converted = Convert.ChangeType(value, type);
-
-            Write(converted);
+            EnsureCapacity(length);
+            fixed (byte* ptr = &Buffer[Length])
+            fixed (byte* valuePtr = value)
+            {
+                Unsafe.CopyBlock(ptr, valuePtr + offset, (uint) length);
+                Length += length;
+            }
         }
+
+        public void WriteZero(int count) => WriteBytes(new byte[count]);
 
         public void WriteBool(bool value)
         {
-            WriteByte(value ? (byte) 1 : (byte) 0);
+            EnsureCapacity(1);
+            Buffer[Length++] = value ? (byte) 1 : (byte) 0;
         }
 
-        public unsafe void WriteByte(byte value = 0)
+        public void WriteByte(byte value = 0)
         {
             EnsureCapacity(1);
-            fixed (byte* ptr = Buffer)
-            {
-                *(ptr + Length) = value;
-                ++Length;
-            }
+            Buffer[Length++] = value;
         }
 
-        public unsafe void WriteShort(short value = 0)
+        public void WriteShort(short value = 0)
         {
             EnsureCapacity(2);
-            fixed (byte* ptr = Buffer)
+            fixed (byte* ptr = &Buffer[Length])
             {
-                *(short*) (ptr + Length) = value;
+                *(short*) ptr = value;
                 Length += 2;
             }
         }
 
-        public unsafe void WriteUShort(ushort value = 0)
-        {
-            EnsureCapacity(2);
-            fixed (byte* ptr = Buffer)
-            {
-                *(ushort*) (ptr + Length) = value;
-                Length += 2;
-            }
-        }
-
-        public unsafe void WriteInt(int value = 0)
+        public void WriteInt(int value = 0)
         {
             EnsureCapacity(4);
-            fixed (byte* ptr = Buffer)
+            fixed (byte* ptr = &Buffer[Length])
             {
-                *(int*) (ptr + Length) = value;
+                *(int*) ptr = value;
                 Length += 4;
             }
         }
 
-        public unsafe void WriteUInt(uint value = 0)
+        public void WriteFloat(float value = 0f)
         {
             EnsureCapacity(4);
-            fixed (byte* ptr = Buffer)
+            fixed (byte* ptr = &Buffer[Length])
             {
-                *(uint*) (ptr + Length) = value;
+                *(float*) ptr = value;
                 Length += 4;
             }
         }
 
-        public unsafe void WriteFloat(float value = 0.0f)
-        {
-            EnsureCapacity(4);
-            fixed (byte* ptr = Buffer)
-            {
-                *(float*) (ptr + Length) = value;
-                Length += 4;
-            }
-        }
-
-
-        public unsafe void WriteLong(long value = 0)
+        public void WriteLong(long value = 0)
         {
             EnsureCapacity(8);
-            fixed (byte* ptr = Buffer)
+            fixed (byte* ptr = &Buffer[Length])
             {
-                *(long*) (ptr + Length) = value;
+                *(long*) ptr = value;
                 Length += 8;
             }
         }
 
-        public unsafe void WriteULong(ulong value = 0)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteString(string value = "")
         {
-            EnsureCapacity(8);
+            Write<ushort>((ushort) value.Length);
+            WriteRawString(value);
+        }
+
+        // Note: char and string are UTF-16 in C#
+        public void WriteRawString(string value)
+        {
+            int length = value.Length;
+            EnsureCapacity(length);
+            fixed (char* valuePtr = value)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    Buffer[Length++] = (byte) *(valuePtr + i);
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteUnicodeString(string value = "")
+        {
+            Write<ushort>((ushort) value.Length);
+            WriteRawUnicodeString(value);
+        }
+
+        public void WriteRawUnicodeString(string value)
+        {
+            int length = value.Length * 2;
+            EnsureCapacity(length);
+            fixed (byte* ptr = &Buffer[Length])
+            fixed (char* valuePtr = value)
+            {
+                Unsafe.CopyBlock(ptr, valuePtr, (uint) length);
+                Length += length;
+            }
+        }
+
+        public byte[] ToArray()
+        {
+            byte[] copy = new byte[Length];
             fixed (byte* ptr = Buffer)
+            fixed (byte* copyPtr = copy)
             {
-                *(ulong*) (ptr + Length) = value;
-                Length += 8;
+                Unsafe.CopyBlock(copyPtr, ptr, (uint) Length);
             }
+
+            return copy;
         }
 
-        public void WriteString(string value)
+        public override string ToString()
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(value);
-            Write(bytes);
+            return Buffer.ToHexString(Length, ' ');
         }
 
-        public void WritePaddedString(string value, int length, char pad = '\0')
-        {
-            WriteString(value);
-            for (int i = value.Length; i < length; i++)
-            {
-                WriteByte((byte) pad);
-            }
-        }
-
-        public void WriteUnicodeString(string value)
-        {
-            Write((ushort) value.Length);
-            byte[] bytes = Encoding.Unicode.GetBytes(value);
-            Write(bytes);
-        }
-
-        public void WriteMapleString(string value)
-        {
-            Write((ushort) value.Length);
-            WriteString(value);
-        }
-
-        public void WriteHexString(string value)
-        {
-            byte[] bytes = value.ToByteArray();
-            Write(bytes);
-        }
-
-        public void WriteZero(int count)
-        {
-            Write(new byte[count]);
-        }
+        void IDisposable.Dispose() => GC.SuppressFinalize(this);
     }
 }

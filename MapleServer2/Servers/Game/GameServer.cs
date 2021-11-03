@@ -24,6 +24,8 @@ namespace MapleServer2.Servers.Game
         public static readonly MailManager MailManager = new();
         public static readonly BlackMarketManager BlackMarketManager = new();
 
+        private List<GameSession> Sessions;
+
         public GameServer(PacketRouter<GameSession> router, IComponentContext context) : base(router, context) { }
 
         public void Start()
@@ -37,6 +39,19 @@ namespace MapleServer2.Servers.Game
             ushort port = ushort.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
             Start(port);
             CommandManager.RegisterAll(Assembly.GetAssembly(typeof(CommandBase)));
+            Sessions = new List<GameSession>();
+        }
+
+        public override void AddSession(GameSession session)
+        {
+            Sessions.Add(session);
+            Logger.Info($"Game client connected: {session}");
+            session.Start();
+        }
+
+        public List<GameSession> GetSessions()
+        {
+            return Sessions;
         }
     }
 }

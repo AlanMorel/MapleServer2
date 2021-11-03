@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class ChatPacket
     {
-        public static Packet Send(Player player, string message, ChatType type)
+        public static PacketWriter Send(Player player, string message, ChatType type)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
             pWriter.WriteLong(player.AccountId);
@@ -36,7 +36,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Error(Player player, SystemNotice error, ChatType type)
+        public static PacketWriter Error(Player player, SystemNotice error, ChatType type)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_CHAT);
             pWriter.WriteLong();

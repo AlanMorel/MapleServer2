@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class KeyTablePacket
     {
-        public static Packet AskKeyboardOrMouse()
+        public static PacketWriter AskKeyboardOrMouse()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
             pWriter.WriteByte(0x09);
@@ -15,7 +15,7 @@ namespace MapleServer2.Packets
         }
 
         // Tells client to load DefaultKey.xml
-        public static Packet RequestDefault()
+        public static PacketWriter RequestDefault()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
             pWriter.WriteByte(0x00);
@@ -24,7 +24,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendFullOptions(GameOptions options)
+        public static PacketWriter SendFullOptions(GameOptions options)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
             pWriter.WriteByte(0x00);
@@ -43,7 +43,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SendHotbars(GameOptions options)
+        public static PacketWriter SendHotbars(GameOptions options)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
             pWriter.WriteByte(0x7); // Type

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     internal class WalletPacket
     {
-        public static Packet UpdateWallet(CurrencyType type, long amount)
+        public static PacketWriter UpdateWallet(CurrencyType type, long amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY_TOKEN);
 

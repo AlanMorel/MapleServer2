@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class ChangeAttributesPacket
     {
-        public static Packet PreviewNewItem(Item item)
+        public static PacketWriter PreviewNewItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
             pWriter.WriteByte(0x01);
@@ -17,7 +17,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddNewItem(Item item)
+        public static PacketWriter AddNewItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES);
             pWriter.WriteByte(0x02);

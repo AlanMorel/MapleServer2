@@ -47,7 +47,7 @@ namespace MapleServer2.Types
             GameServer.GroupChatManager.RemoveGroupChat(this);
         }
 
-        public void BroadcastPacketGroupChat(Packet packet, GameSession sender = null)
+        public void BroadcastPacketGroupChat(PacketWriter packet, GameSession sender = null)
         {
             BroadcastGroupChat(session =>
             {

@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class ExperiencePacket
     {
-        public static Packet ExpUp(int expGained, long expTotal, long restExp)
+        public static PacketWriter ExpUp(int expGained, long expTotal, long restExp)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.EXP_UP);
 
@@ -22,7 +22,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LevelUp(IFieldObject<Player> fieldPlayer, int level)
+        public static PacketWriter LevelUp(IFieldObject<Player> fieldPlayer, int level)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LEVEL_UP);
 

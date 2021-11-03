@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class SyncStatePacket
     {
-        public static Packet UserSync(IFieldObject<Player> player, params SyncState[] syncStates)
+        public static PacketWriter UserSync(IFieldObject<Player> player, params SyncState[] syncStates)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SYNC);
             pWriter.WriteInt(player.ObjectId);
@@ -16,7 +16,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RideSync(IFieldObject<Player> player, params SyncState[] syncStates)
+        public static PacketWriter RideSync(IFieldObject<Player> player, params SyncState[] syncStates)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.RIDE_SYNC);
             pWriter.WriteInt(player.ObjectId);

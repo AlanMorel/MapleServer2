@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public class InviteToHomePacket
     {
-        public static Packet InviteToHome(Player sourcePlayer)
+        public static PacketWriter InviteToHome(Player sourcePlayer)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INVITE_TO_HOME);
             pWriter.WriteByte(2);

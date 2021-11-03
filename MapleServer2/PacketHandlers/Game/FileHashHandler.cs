@@ -13,8 +13,8 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             packet.ReadInt();
-            string filename = packet.ReadMapleString();
-            string md5 = packet.ReadMapleString();
+            string filename = packet.ReadString();
+            string md5 = packet.ReadString();
 
             Logger.Debug("Hash for {filename}: {md5}", filename, md5);
         }

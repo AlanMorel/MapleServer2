@@ -10,7 +10,7 @@ namespace MapleServer2.Packets
             ProfilePicture = 0x0B
         }
 
-        public static Packet SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
+        public static PacketWriter SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11); // Function
@@ -22,13 +22,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown0()
+        public static PacketWriter Unknown0()
         {
             // SO MANY CASES...
             return null;
         }
 
-        public static Packet Unknown4()
+        public static PacketWriter Unknown4()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x04);
@@ -40,7 +40,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown7()
+        public static PacketWriter Unknown7()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x07);
@@ -54,7 +54,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown8()
+        public static PacketWriter Unknown8()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x08);
@@ -63,7 +63,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown9()
+        public static PacketWriter Unknown9()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x09);
@@ -77,10 +77,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetProfilePictureURL(int objectId, long characterId, string url)
+        public static PacketWriter SetProfilePictureURL(int objectId, long characterId, string url)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-            pWriter.WriteEnum(UgcMode.ProfilePicture);
+            pWriter.Write(UgcMode.ProfilePicture);
             pWriter.WriteInt(objectId);
             pWriter.WriteLong(characterId);
             pWriter.WriteUnicodeString(url);
@@ -88,7 +88,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown13To15()
+        public static PacketWriter Unknown13To15()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x0D); // Also 0x0E, 0x0F
@@ -107,7 +107,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown16()
+        public static PacketWriter Unknown16()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x10);
@@ -123,7 +123,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown17()
+        public static PacketWriter Unknown17()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x11);
@@ -135,7 +135,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown18()
+        public static PacketWriter Unknown18()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x12);
@@ -176,7 +176,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown20()
+        public static PacketWriter Unknown20()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x14);
@@ -195,7 +195,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown21()
+        public static PacketWriter Unknown21()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x15);
@@ -209,7 +209,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unknown22()
+        public static PacketWriter Unknown22()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
             pWriter.WriteByte(0x16);
