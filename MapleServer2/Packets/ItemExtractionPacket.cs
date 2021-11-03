@@ -12,10 +12,10 @@ namespace MapleServer2.Packets
             InsufficientAnvils = 0x2,
         }
 
-        public static Packet Extract(Item resultItem)
+        public static PacketWriter Extract(Item resultItem)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
-            pWriter.WriteEnum(ItemExtractionPacketMode.Extract);
+            pWriter.Write(ItemExtractionPacketMode.Extract);
             pWriter.WriteLong(resultItem.Uid);
             pWriter.WriteLong(resultItem.Uid);
             pWriter.WriteShort();
@@ -31,10 +31,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet InsufficientAnvils()
+        public static PacketWriter InsufficientAnvils()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
-            pWriter.WriteEnum(ItemExtractionPacketMode.InsufficientAnvils);
+            pWriter.Write(ItemExtractionPacketMode.InsufficientAnvils);
             return pWriter;
         }
     }

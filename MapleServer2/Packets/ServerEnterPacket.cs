@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class ServerEnterPacket
     {
-        public static Packet Enter(GameSession session)
+        public static PacketWriter Enter(GameSession session)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
@@ -64,7 +64,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Confirm()
+        public static PacketWriter Confirm()
         {
             return PacketWriter.Of(SendOp.FINALIZE_SERVER_ENTER);
         }

@@ -36,7 +36,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Packet itemLinkPacket = GetItemLink(message);
+            PacketWriter itemLinkPacket = GetItemLink(message);
 
             switch (type)
             {
@@ -76,7 +76,7 @@ namespace MapleServer2.PacketHandlers.Game
             // session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
         }
 
-        private static void HandleSuperChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandleSuperChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             if (session.Player.SuperChat == 0)
             {
@@ -102,7 +102,7 @@ namespace MapleServer2.PacketHandlers.Game
             session.Player.SuperChat = 0;
         }
 
-        private static void HandleWorldChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandleWorldChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
             if (voucher != null)
@@ -123,7 +123,7 @@ namespace MapleServer2.PacketHandlers.Game
             MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
         }
 
-        private static void HandleGuildAlert(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandleGuildAlert(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
@@ -149,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Game
             guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
         }
 
-        private static void HandleGuildChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandleGuildChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
             if (guild == null)
@@ -164,7 +164,7 @@ namespace MapleServer2.PacketHandlers.Game
             guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
         }
 
-        private static void HandlePartyChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandlePartyChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             Party party = session.Player.Party;
             if (party == null)
@@ -179,7 +179,7 @@ namespace MapleServer2.PacketHandlers.Game
             party.BroadcastPacketParty(ChatPacket.Send(session.Player, message, type));
         }
 
-        private static void HandleWhisperChat(GameSession session, string recipient, string message, Packet itemLinkPacket)
+        private static void HandleWhisperChat(GameSession session, string recipient, string message, PacketWriter itemLinkPacket)
         {
             Player recipientPlayer = GameServer.Storage.GetPlayerByName(recipient);
             if (recipientPlayer == null)
@@ -203,12 +203,12 @@ namespace MapleServer2.PacketHandlers.Game
             session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
         }
 
-        private static void HandleClubChat(/*GameSession session, string message, ChatType type, long clubId, Packet itemLinkPacket*/)
+        private static void HandleClubChat(/*GameSession session, string message, ChatType type, long clubId, ByteWriter itemLinkPacket*/)
         {
             // TODO
         }
 
-        private static void HandleChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        private static void HandleChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
         {
             if (itemLinkPacket != null)
             {
@@ -217,14 +217,14 @@ namespace MapleServer2.PacketHandlers.Game
             session.FieldManager.SendChat(session.Player, message, type);
         }
 
-        private static Packet GetItemLink(string message)
+        private static PacketWriter GetItemLink(string message)
         {
             // '<' signals a message containing an item link
             if (!message.Contains('<'))
             {
                 return null;
             }
-            Packet itemLinkPacket = null;
+            PacketWriter itemLinkPacket = null;
 
             XmlDocument itemLinkMessages = new XmlDocument();
             itemLinkMessages.LoadXml("<xml>" + message + "</xml>");

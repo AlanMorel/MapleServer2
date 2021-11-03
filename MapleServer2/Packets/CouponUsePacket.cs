@@ -15,24 +15,24 @@ namespace MapleServer2.Packets
             BeautyCoupon = 0x6,
         }
 
-        public static Packet CharacterSlotAdded()
+        public static PacketWriter CharacterSlotAdded()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
-            pWriter.WriteEnum(CouponUsePacketMode.CharacterSlotAdded);
+            pWriter.Write(CouponUsePacketMode.CharacterSlotAdded);
             return pWriter;
         }
 
-        public static Packet MaxCharacterSlots()
+        public static PacketWriter MaxCharacterSlots()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
-            pWriter.WriteEnum(CouponUsePacketMode.MaxCharacterSlots);
+            pWriter.Write(CouponUsePacketMode.MaxCharacterSlots);
             return pWriter;
         }
 
-        public static Packet BeautyCoupon(IFieldObject<Player> player, long itemUid)
+        public static PacketWriter BeautyCoupon(IFieldObject<Player> player, long itemUid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.COUPON_USE);
-            pWriter.WriteEnum(CouponUsePacketMode.BeautyCoupon);
+            pWriter.Write(CouponUsePacketMode.BeautyCoupon);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(itemUid);
             return pWriter;

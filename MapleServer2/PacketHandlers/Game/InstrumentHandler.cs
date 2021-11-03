@@ -168,7 +168,7 @@ namespace MapleServer2.PacketHandlers.Game
             int length = packet.ReadInt();
             int instrumentType = packet.ReadInt();
             string scoreName = packet.ReadUnicodeString();
-            string scoreNotes = packet.ReadMapleString();
+            string scoreNotes = packet.ReadString();
 
             if (!session.Player.Inventory.Items.ContainsKey(itemUid))
             {

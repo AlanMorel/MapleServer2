@@ -21,10 +21,10 @@ namespace MapleServer2.Packets
             Error = 0x14,
         }
 
-        public static Packet Open(List<Mail> box)
+        public static PacketWriter Open(List<Mail> box)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Open);
+            pWriter.Write(MailPacketMode.Open);
             pWriter.WriteInt(box.Count);
             foreach (Mail mail in box)
             {
@@ -33,27 +33,27 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send(Mail mail)
+        public static PacketWriter Send(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Send);
+            pWriter.Write(MailPacketMode.Send);
             pWriter.WriteLong(mail.Id);
             return pWriter;
         }
 
-        public static Packet Read(Mail mail)
+        public static PacketWriter Read(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Read);
+            pWriter.Write(MailPacketMode.Read);
             pWriter.WriteLong(mail.Id);
             pWriter.WriteLong(mail.ReadTimestamp);
             return pWriter;
         }
 
-        public static Packet Collect(Mail mail)
+        public static PacketWriter Collect(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Collect);
+            pWriter.Write(MailPacketMode.Collect);
             pWriter.WriteLong(mail.Id);
             pWriter.WriteByte(1);
             pWriter.WriteByte();
@@ -61,51 +61,51 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateReadTime(Mail mail)
+        public static PacketWriter UpdateReadTime(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.UpdateReadTime);
+            pWriter.Write(MailPacketMode.UpdateReadTime);
             pWriter.WriteLong(mail.Id);
             pWriter.WriteLong(mail.ReadTimestamp);
             return pWriter;
         }
 
-        public static Packet Delete(Mail mail)
+        public static PacketWriter Delete(Mail mail)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Delete);
+            pWriter.Write(MailPacketMode.Delete);
             pWriter.WriteLong(mail.Id);
             return pWriter;
         }
 
-        public static Packet Notify(int unreadCount, bool alert = false)
+        public static PacketWriter Notify(int unreadCount, bool alert = false)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Notify);
+            pWriter.Write(MailPacketMode.Notify);
             pWriter.WriteInt(unreadCount);
             pWriter.WriteBool(alert);
             pWriter.WriteInt(); // Unknown maybe repeat of count?
             return pWriter;
         }
 
-        public static Packet StartOpen()
+        public static PacketWriter StartOpen()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.StartOpen);
+            pWriter.Write(MailPacketMode.StartOpen);
             return pWriter;
         }
 
-        public static Packet EndOpen()
+        public static PacketWriter EndOpen()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.EndOpen);
+            pWriter.Write(MailPacketMode.EndOpen);
             return pWriter;
         }
 
-        public static Packet Error(byte errorCode)
+        public static PacketWriter Error(byte errorCode)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAIL);
-            pWriter.WriteEnum(MailPacketMode.Error);
+            pWriter.Write(MailPacketMode.Error);
             pWriter.WriteByte(0x1);
             pWriter.WriteByte(errorCode);
             return pWriter;
@@ -113,7 +113,7 @@ namespace MapleServer2.Packets
 
         public static PacketWriter WriteMail(PacketWriter pWriter, Mail mail)
         {
-            pWriter.WriteEnum(mail.Type);
+            pWriter.Write(mail.Type);
             pWriter.WriteLong(mail.Id);
             pWriter.WriteLong(mail.SenderCharacterId);
             pWriter.WriteUnicodeString(mail.SenderName);

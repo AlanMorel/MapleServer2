@@ -21,10 +21,10 @@ namespace MapleServer2.Packets
             Expand = 0x0D,
         }
 
-        public static Packet Add(Item item)
+        public static PacketWriter Add(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Add);
+            pWriter.Write(ItemStorageMode.Add);
             pWriter.WriteLong();
             pWriter.WriteInt(item.Id);
             pWriter.WriteLong(item.Uid);
@@ -35,20 +35,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Remove(long uid)
+        public static PacketWriter Remove(long uid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Remove);
+            pWriter.Write(ItemStorageMode.Remove);
             pWriter.WriteLong();
             pWriter.WriteLong(uid);
 
             return pWriter;
         }
 
-        public static Packet Move(long srcUid, short srcSlot, long dstUid, short dstSlot)
+        public static PacketWriter Move(long srcUid, short srcSlot, long dstUid, short dstSlot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Move);
+            pWriter.Write(ItemStorageMode.Move);
             pWriter.WriteLong();
             pWriter.WriteLong(srcUid);
             pWriter.WriteShort(srcSlot);
@@ -58,46 +58,46 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateMesos(long amount)
+        public static PacketWriter UpdateMesos(long amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Mesos);
+            pWriter.Write(ItemStorageMode.Mesos);
             pWriter.WriteLong(amount);
 
             return pWriter;
         }
 
-        public static Packet LoadItems(Item[] items)
+        public static PacketWriter LoadItems(Item[] items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
 
-            pWriter.WriteEnum(ItemStorageMode.LoadItems);
+            pWriter.Write(ItemStorageMode.LoadItems);
             pWriter.LoadHelper(items);
 
             return pWriter;
         }
 
-        public static Packet ExpandAnim()
+        public static PacketWriter ExpandAnim()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.ExpandAnim);
+            pWriter.Write(ItemStorageMode.ExpandAnim);
 
             return pWriter;
         }
 
-        public static Packet Sort(Item[] items)
+        public static PacketWriter Sort(Item[] items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Sort);
+            pWriter.Write(ItemStorageMode.Sort);
             pWriter.LoadHelper(items);
 
             return pWriter;
         }
 
-        public static Packet UpdateItem(Item item)
+        public static PacketWriter UpdateItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.UpdateItem);
+            pWriter.Write(ItemStorageMode.UpdateItem);
             pWriter.WriteLong();
             pWriter.WriteLong(item.Uid);
             pWriter.WriteInt(item.Amount);
@@ -105,18 +105,18 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Update()
+        public static PacketWriter Update()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Update);
+            pWriter.Write(ItemStorageMode.Update);
 
             return pWriter;
         }
 
-        public static Packet Expand(int amount)
+        public static PacketWriter Expand(int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.STORAGE_INVENTORY);
-            pWriter.WriteEnum(ItemStorageMode.Expand);
+            pWriter.Write(ItemStorageMode.Expand);
             pWriter.WriteInt(amount);
 
             return pWriter;

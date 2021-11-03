@@ -14,14 +14,14 @@ namespace MapleServer2.Packets
             Remove = 0x1
         }
 
-        public static Packet Send(int sourceObjectId, CoordS effectCoord, SkillCast skill)
+        public static PacketWriter Send(int sourceObjectId, CoordS effectCoord, SkillCast skill)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
             SkillCast parentSkill = skill.ParentSkill;
             List<MagicPathMove> skillMoves = parentSkill?.GetMagicPaths().MagicPathMoves ?? null;
             byte tileCount = (byte) (skillMoves != null ? skillMoves.Count : 1);
 
-            pWriter.WriteEnum(RegionSkillMode.Add);
+            pWriter.Write(RegionSkillMode.Add);
             pWriter.WriteInt(sourceObjectId);
             pWriter.WriteInt(sourceObjectId);
             pWriter.WriteInt();
@@ -46,10 +46,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Remove(int sourceObjectId)
+        public static PacketWriter Remove(int sourceObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
-            pWriter.WriteEnum(RegionSkillMode.Remove);
+            pWriter.Write(RegionSkillMode.Remove);
             pWriter.WriteInt(sourceObjectId); // Uid regionEffect
             return pWriter;
         }

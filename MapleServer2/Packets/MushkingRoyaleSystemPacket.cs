@@ -22,7 +22,7 @@ namespace MapleServer2.Packets
         public static PacketWriter MatchFound()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.MatchFound);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.MatchFound);
             pWriter.WriteLong(); // match ID
             pWriter.WriteBool(false); // false = 15 second window, true = 5 second window
             return pWriter;
@@ -31,7 +31,7 @@ namespace MapleServer2.Packets
         public static PacketWriter Results()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.Results);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.Results);
             pWriter.WriteInt();
             pWriter.WriteInt();
             pWriter.WriteInt(); // previous points
@@ -67,7 +67,7 @@ namespace MapleServer2.Packets
         public static PacketWriter LastStandingNotice()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.Results);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.Results);
             pWriter.WriteByte();
             pWriter.WriteInt(); // amount of users
             // start loop
@@ -80,7 +80,7 @@ namespace MapleServer2.Packets
         public static PacketWriter LoadStats(long accountId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.LoadStats);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.LoadStats);
             pWriter.WriteLong(accountId);
             pWriter.WriteInt();
             pWriter.WriteByte();
@@ -96,14 +96,14 @@ namespace MapleServer2.Packets
         public static PacketWriter NewSeasonNotice()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.NewSeasonNotice);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.NewSeasonNotice);
             return pWriter;
         }
 
         public static PacketWriter SurvivalSessionStats()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.SurvivalSessionStats);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.SurvivalSessionStats);
             pWriter.WriteInt(); // players remaining
             pWriter.WriteInt(); // total players
             pWriter.WriteByte();
@@ -113,7 +113,7 @@ namespace MapleServer2.Packets
         public static PacketWriter UpdateKills()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.UpdateKills);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.UpdateKills);
             pWriter.WriteInt(); // kill count
             return pWriter;
         }
@@ -121,14 +121,14 @@ namespace MapleServer2.Packets
         public static PacketWriter Poisoned()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.Poisoned);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.Poisoned);
             return pWriter;
         }
 
         public static PacketWriter ClaimRewards()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
-            pWriter.WriteEnum(MushkingRoyaleSystemPacketMode.ClaimRewards);
+            pWriter.Write(MushkingRoyaleSystemPacketMode.ClaimRewards);
             pWriter.WriteInt(); // silver reward claim start level
             pWriter.WriteInt(); // silver reward claim end level
             pWriter.WriteInt(); // gold reward claim start level

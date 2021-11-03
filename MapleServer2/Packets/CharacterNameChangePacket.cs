@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class CharacterNameChangePacket
     {
-        public static Packet NameResult(bool nameBeingUsed, string characterName, long itemUid)
+        public static PacketWriter NameResult(bool nameBeingUsed, string characterName, long itemUid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHECK_CHAR_NAME_RESULT);
             pWriter.WriteBool(nameBeingUsed);

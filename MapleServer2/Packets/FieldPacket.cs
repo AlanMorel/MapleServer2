@@ -16,7 +16,7 @@ namespace MapleServer2.Packets
             UpdatePortal = 0x02
         }
 
-        public static Packet RequestEnter(Player player)
+        public static PacketWriter RequestEnter(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
             pWriter.WriteByte(0x00);
@@ -32,7 +32,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddPlayer(IFieldObject<Player> fieldPlayer)
+        public static PacketWriter AddPlayer(IFieldObject<Player> fieldPlayer)
         {
             Player player = fieldPlayer.Value;
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_USER);
@@ -40,9 +40,9 @@ namespace MapleServer2.Packets
             CharacterListPacket.WriteCharacter(player, pWriter);
 
             // Skills
-            pWriter.WriteEnum(player.JobCode);
+            pWriter.Write(player.JobCode);
             pWriter.WriteByte(1);
-            pWriter.WriteEnum(player.Job);
+            pWriter.Write(player.Job);
             JobPacket.WriteSkills(pWriter, player);
 
             // Coords
@@ -166,7 +166,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemovePlayer(IFieldObject<Player> player)
+        public static PacketWriter RemovePlayer(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_USER);
             pWriter.WriteInt(player.ObjectId);
@@ -174,7 +174,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddItem(IFieldObject<Item> item, int userObjectId)
+        public static PacketWriter AddItem(IFieldObject<Item> item, int userObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_ITEM);
             pWriter.Write(item.ObjectId); // object id
@@ -201,7 +201,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddItem(IFieldObject<Item> item, IFieldObject<Mob> sourceMob, IFieldObject<Player> targetPlayer)
+        public static PacketWriter AddItem(IFieldObject<Item> item, IFieldObject<Mob> sourceMob, IFieldObject<Player> targetPlayer)
         {
             // Works for meso
 
@@ -260,7 +260,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PickupItem(int objectId, int userObjectId)
+        public static PacketWriter PickupItem(int objectId, int userObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM);
             pWriter.WriteByte(0x01);
@@ -270,7 +270,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PickupItem(int objectId, Item item, int userObjectId)
+        public static PacketWriter PickupItem(int objectId, Item item, int userObjectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PICKUP_ITEM);
             pWriter.WriteByte(0x01);
@@ -281,7 +281,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemoveItem(int objectId)
+        public static PacketWriter RemoveItem(int objectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_ITEM);
             pWriter.WriteInt(objectId);
@@ -289,7 +289,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddNpc(IFieldObject<Npc> npc)
+        public static PacketWriter AddNpc(IFieldObject<Npc> npc)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
             pWriter.WriteInt(npc.ObjectId);
@@ -326,7 +326,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddBoss(IFieldObject<Mob> mob)
+        public static PacketWriter AddBoss(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
 
@@ -334,7 +334,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt(mob.Value.Id);
             pWriter.Write(mob.Coord);
             pWriter.Write(mob.Rotation);
-            pWriter.WriteMapleString(mob.Value.Model); // StrA - kfm model string
+            pWriter.WriteString(mob.Value.Model); // StrA - kfm model string
             // If NPC is not valid, the packet seems to stop here
 
             StatPacket.DefaultStatsMob(pWriter, mob);
@@ -368,7 +368,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AddMob(IFieldObject<Mob> mob)
+        public static PacketWriter AddMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
 
@@ -389,21 +389,21 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemoveMob(IFieldObject<Mob> mob)
+        public static PacketWriter RemoveMob(IFieldObject<Mob> mob)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
             pWriter.WriteInt(mob.ObjectId);
             return pWriter;
         }
 
-        public static Packet AddPortal(IFieldObject<Portal> fieldPortal)
+        public static PacketWriter AddPortal(IFieldObject<Portal> fieldPortal)
         {
             Portal portal = fieldPortal.Value;
             CoordF coord = fieldPortal.Coord;
             coord.Z -= 75; // Looks like every portal coord is offset by 75
 
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteEnum(PortalType.AddPortal);
+            pWriter.Write(PortalType.AddPortal);
             pWriter.WriteInt(portal.Id);
             pWriter.WriteBool(portal.IsVisible);
             pWriter.WriteBool(portal.IsEnabled);
@@ -416,7 +416,7 @@ namespace MapleServer2.Packets
             pWriter.WriteInt((int) portal.UGCPortalMethod);
             pWriter.WriteBool(portal.IsMinimapVisible);
             pWriter.WriteLong(portal.TargetHomeAccountId);
-            pWriter.WriteEnum(portal.PortalType);
+            pWriter.Write(portal.PortalType);
             pWriter.WriteInt(portal.Duration);
             pWriter.WriteShort();
             pWriter.WriteInt();
@@ -428,19 +428,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet RemovePortal(Portal portal)
+        public static PacketWriter RemovePortal(Portal portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteEnum(PortalType.RemovePortal);
+            pWriter.Write(PortalType.RemovePortal);
             pWriter.WriteInt(portal.Id);
 
             return pWriter;
         }
 
-        public static Packet UpdatePortal(IFieldObject<Portal> portal)
+        public static PacketWriter UpdatePortal(IFieldObject<Portal> portal)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_PORTAL);
-            pWriter.WriteEnum(PortalType.UpdatePortal);
+            pWriter.Write(PortalType.UpdatePortal);
             pWriter.WriteInt(portal.Value.Id);
             pWriter.WriteBool(portal.Value.IsVisible);
             pWriter.WriteBool(portal.Value.IsEnabled);

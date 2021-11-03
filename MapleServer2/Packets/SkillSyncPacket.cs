@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class SkillSyncPacket
     {
-        public static Packet Sync(long skillSN, IFieldObject<Player> player, CoordF position, CoordF rotation, bool toggle)
+        public static PacketWriter Sync(long skillSN, IFieldObject<Player> player, CoordF position, CoordF rotation, bool toggle)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_SYNC);
             SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];

@@ -5,17 +5,17 @@ namespace MapleServer2.Packets
 {
     public static class RequestPacket
     {
-        public static Packet Login()
+        public static PacketWriter Login()
         {
             return PacketWriter.Of(SendOp.REQUEST_LOGIN);
         }
 
-        public static Packet Key()
+        public static PacketWriter Key()
         {
             return PacketWriter.Of(SendOp.REQUEST_KEY);
         }
 
-        public static Packet Heartbeat(int key)
+        public static PacketWriter Heartbeat(int key)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
             pWriter.WriteInt(key);
@@ -23,7 +23,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet TickSync()
+        public static PacketWriter TickSync()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_CLIENTTICK_SYNC);
             pWriter.WriteInt(Environment.TickCount);

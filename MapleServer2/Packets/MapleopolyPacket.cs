@@ -15,10 +15,10 @@ namespace MapleServer2.Packets
             Notice = 0x6
         }
 
-        public static Packet Open(Mapleopoly game, List<MapleopolyTile> tiles, int playerTokenAmount)
+        public static PacketWriter Open(Mapleopoly game, List<MapleopolyTile> tiles, int playerTokenAmount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
-            pWriter.WriteEnum(MapleopolyPacketMode.Open);
+            pWriter.Write(MapleopolyPacketMode.Open);
             pWriter.WriteInt(game.TotalTileCount);
             pWriter.WriteInt(game.FreeRollAmount);
             pWriter.WriteInt(Mapleopoly.TOKEN_ITEM_ID);
@@ -27,7 +27,7 @@ namespace MapleServer2.Packets
 
             foreach (MapleopolyTile tile in tiles)
             {
-                pWriter.WriteEnum(tile.Type);
+                pWriter.Write(tile.Type);
                 pWriter.WriteInt(tile.TileParameter);
                 pWriter.WriteInt(tile.ItemId);
                 pWriter.WriteByte(tile.ItemRarity);
@@ -36,10 +36,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Roll(int tileLocation, int roll1, int roll2)
+        public static PacketWriter Roll(int tileLocation, int roll1, int roll2)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
-            pWriter.WriteEnum(MapleopolyPacketMode.Roll);
+            pWriter.Write(MapleopolyPacketMode.Roll);
             pWriter.WriteByte();
             pWriter.WriteInt(tileLocation);
             pWriter.WriteInt(roll1);
@@ -48,11 +48,11 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet ProcessTile(Mapleopoly playerGame, MapleopolyTile tile)
+        public static PacketWriter ProcessTile(Mapleopoly playerGame, MapleopolyTile tile)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
-            pWriter.WriteEnum(MapleopolyPacketMode.ProcessTile);
-            pWriter.WriteEnum(tile.Type);
+            pWriter.Write(MapleopolyPacketMode.ProcessTile);
+            pWriter.Write(tile.Type);
             pWriter.WriteInt(tile.TileParameter);
             pWriter.WriteInt(playerGame.TotalTileCount);
             pWriter.WriteInt(playerGame.FreeRollAmount);
@@ -62,10 +62,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Notice(byte noticeId)
+        public static PacketWriter Notice(byte noticeId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MAPLEOPOLY);
-            pWriter.WriteEnum(MapleopolyPacketMode.Notice);
+            pWriter.Write(MapleopolyPacketMode.Notice);
             pWriter.WriteByte(noticeId);
             return pWriter;
         }

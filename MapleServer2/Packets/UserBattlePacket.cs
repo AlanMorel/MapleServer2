@@ -6,7 +6,7 @@ namespace MapleServer2.Packets
 {
     public static class UserBattlePacket
     {
-        public static Packet UserBattle(IFieldObject<Player> player, bool flag)
+        public static PacketWriter UserBattle(IFieldObject<Player> player, bool flag)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_BATTLE);
             pWriter.WriteInt(player.ObjectId);

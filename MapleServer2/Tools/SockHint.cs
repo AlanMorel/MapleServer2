@@ -75,7 +75,7 @@ namespace MapleServer2.Tools
                     packet.WriteUnicodeString(StringValue);
                     break;
                 case SockHint.DecodeStrA:
-                    packet.WriteMapleString(StringValue);
+                    packet.WriteString(StringValue);
                     break;
                 default:
                     throw new ArgumentException($"Unexpected hint: {Hint}");
@@ -109,7 +109,7 @@ namespace MapleServer2.Tools
                 SockHint.Decodef => $"pWriter.WriteInt(-1);",
                 SockHint.Decode8 => $"pWriter.WriteLong();",
                 SockHint.DecodeStr => $"pWriter.WriteUnicodeString(\"\");",
-                SockHint.DecodeStrA => $"pWriter.WriteMapleString(\"\");",
+                SockHint.DecodeStrA => $"pWriter.WriteString(\"\");",
                 _ => throw new ArgumentException($"Unexpected hint: {hint}")
             };
 

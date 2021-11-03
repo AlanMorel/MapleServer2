@@ -17,56 +17,56 @@ namespace MapleServer2.Packets
             Caption = 0xA,
         }
 
-        public static Packet HideUi(bool hide)
+        public static PacketWriter HideUi(bool hide)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.HideUi);
+            pWriter.Write(CinematicPacketMode.HideUi);
             pWriter.WriteBool(hide);
             return pWriter;
         }
 
-        public static Packet View(int type)
+        public static PacketWriter View(int type)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.View);
+            pWriter.Write(CinematicPacketMode.View);
             pWriter.WriteInt(type);
             pWriter.WriteUnicodeString("");
             pWriter.WriteUnicodeString("");
             return pWriter;
         }
 
-        public static Packet SetSceneSkip(string skipState)
+        public static PacketWriter SetSceneSkip(string skipState)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.SetSceneSkip);
+            pWriter.Write(CinematicPacketMode.SetSceneSkip);
             pWriter.WriteByte(1); //??
-            pWriter.WriteMapleString(skipState);
+            pWriter.WriteString(skipState);
             return pWriter;
         }
 
-        public static Packet StartSceneSkip()
+        public static PacketWriter StartSceneSkip()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.StartSceneSkip);
+            pWriter.Write(CinematicPacketMode.StartSceneSkip);
             return pWriter;
         }
 
-        public static Packet Conversation(int npcId, string stringId, int delay, Align align)
+        public static PacketWriter Conversation(int npcId, string stringId, int delay, Align align)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.Conversation);
+            pWriter.Write(CinematicPacketMode.Conversation);
             pWriter.WriteInt(npcId);
-            pWriter.WriteMapleString(npcId.ToString());
+            pWriter.WriteString(npcId.ToString());
             pWriter.WriteUnicodeString(stringId);
             pWriter.WriteInt(delay);
-            pWriter.WriteEnum(align);
+            pWriter.Write(align);
             return pWriter;
         }
 
-        public static Packet BalloonTalk(int objectId, bool isNpcId, string msg, int duration, int delayTick)
+        public static PacketWriter BalloonTalk(int objectId, bool isNpcId, string msg, int duration, int delayTick)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.BalloonTalk);
+            pWriter.Write(CinematicPacketMode.BalloonTalk);
             pWriter.WriteBool(isNpcId);
             pWriter.WriteInt(objectId);
             pWriter.WriteUnicodeString(msg);
@@ -75,10 +75,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Caption(CaptionType type, string title, string script, string align, float offsetRateX, float offsetRateY, int duration, float scale)
+        public static PacketWriter Caption(CaptionType type, string title, string script, string align, float offsetRateX, float offsetRateY, int duration, float scale)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
-            pWriter.WriteEnum(CinematicPacketMode.Caption);
+            pWriter.Write(CinematicPacketMode.Caption);
             pWriter.WriteUnicodeString(type.ToString() + "Caption");
             pWriter.WriteUnicodeString(title);
             pWriter.WriteUnicodeString(script);

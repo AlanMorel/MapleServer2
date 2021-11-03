@@ -14,10 +14,10 @@ namespace MapleServer2.Packets
             Sync = 0x2,
         }
 
-        public static Packet Add(IFieldObject<GuideObject> guide)
+        public static PacketWriter Add(IFieldObject<GuideObject> guide)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
-            pWriter.WriteEnum(GuideObjectPacketMode.Add);
+            pWriter.Write(GuideObjectPacketMode.Add);
             pWriter.WriteShort(guide.Value.Type);
             pWriter.WriteInt(guide.ObjectId);
             pWriter.WriteLong(guide.Value.BoundCharacterId);
@@ -31,20 +31,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Remove(IFieldObject<GuideObject> guide)
+        public static PacketWriter Remove(IFieldObject<GuideObject> guide)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
-            pWriter.WriteEnum(GuideObjectPacketMode.Remove);
+            pWriter.Write(GuideObjectPacketMode.Remove);
             pWriter.WriteInt(guide.ObjectId);
             pWriter.WriteLong(guide.Value.BoundCharacterId);
 
             return pWriter;
         }
 
-        public static Packet Sync(IFieldObject<GuideObject> guide, byte unk2, byte unk3, byte unk4, byte unk5, CoordS unkCoord, short unk6, int unk7)
+        public static PacketWriter Sync(IFieldObject<GuideObject> guide, byte unk2, byte unk3, byte unk4, byte unk5, CoordS unkCoord, short unk6, int unk7)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GUIDE_OBJECT);
-            pWriter.WriteEnum(GuideObjectPacketMode.Sync);
+            pWriter.Write(GuideObjectPacketMode.Sync);
             pWriter.WriteInt(guide.ObjectId);
             pWriter.WriteByte(unk2);
             pWriter.WriteByte(unk3);

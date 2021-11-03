@@ -14,29 +14,29 @@ namespace MapleServer2.Packets
             Add = 3,
         }
 
-        public static Packet Open(long uid)
+        public static PacketWriter Open(long uid)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
-            pWriter.WriteEnum(ChangeAttributesScrollMode.Open);
+            pWriter.Write(ChangeAttributesScrollMode.Open);
             pWriter.WriteLong(uid);
 
             return pWriter;
         }
 
-        public static Packet PreviewNewItem(Item item)
+        public static PacketWriter PreviewNewItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
-            pWriter.WriteEnum(ChangeAttributesScrollMode.Preview);
+            pWriter.Write(ChangeAttributesScrollMode.Preview);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteItem(item);
 
             return pWriter;
         }
 
-        public static Packet AddNewItem(Item item)
+        public static PacketWriter AddNewItem(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CHANGE_ATTRIBUTES_SCROLL);
-            pWriter.WriteEnum(ChangeAttributesScrollMode.Add);
+            pWriter.Write(ChangeAttributesScrollMode.Add);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteItem(item);
 

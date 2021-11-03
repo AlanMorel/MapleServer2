@@ -105,7 +105,7 @@ namespace MapleServer2.Types
             }
         }
 
-        public void BroadcastPacketParty(Packet packet, GameSession sender = null)
+        public void BroadcastPacketParty(PacketWriter packet, GameSession sender = null)
         {
             BroadcastParty(session =>
             {

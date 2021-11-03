@@ -13,7 +13,7 @@ namespace MapleServer2.Packets
             Update = 2
         }
 
-        public static Packet SendBuff(byte mode, Status status)
+        public static PacketWriter SendBuff(byte mode, Status status)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUFF);
             pWriter.WriteByte(mode);

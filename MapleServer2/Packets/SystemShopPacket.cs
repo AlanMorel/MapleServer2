@@ -10,10 +10,10 @@ namespace MapleServer2.Packets
             Open = 0x0A,
         }
 
-        public static Packet Open()
+        public static PacketWriter Open()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SYSTEM_SHOP);
-            pWriter.WriteEnum(SystemShopPacketMode.Open);
+            pWriter.Write(SystemShopPacketMode.Open);
             pWriter.WriteByte(0x1);
             return pWriter;
         }

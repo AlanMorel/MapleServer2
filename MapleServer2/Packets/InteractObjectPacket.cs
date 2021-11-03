@@ -16,12 +16,12 @@ namespace MapleServer2.Packets
             Interact = 0x0D
         }
 
-        public static Packet Use(InteractObject interactObject, short result = 0, int numDrops = 0)
+        public static PacketWriter Use(InteractObject interactObject, short result = 0, int numDrops = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.Use);
-            pWriter.WriteMapleString(interactObject.Id);
-            pWriter.WriteEnum(interactObject.Type);
+            pWriter.Write(InteractObjectMode.Use);
+            pWriter.WriteString(interactObject.Id);
+            pWriter.Write(interactObject.Type);
 
             if (interactObject.Type == InteractObjectType.Gathering)
             {
@@ -31,19 +31,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet SetInteractObject(InteractObject interactObject)
+        public static PacketWriter SetInteractObject(InteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.SetInteractObject);
+            pWriter.Write(InteractObjectMode.SetInteractObject);
             pWriter.WriteInt(interactObject.InteractId);
-            pWriter.WriteEnum(interactObject.State);
+            pWriter.Write(interactObject.State);
             return pWriter;
         }
 
-        public static Packet LoadInteractObject(List<InteractObject> interactObjects)
+        public static PacketWriter LoadInteractObject(List<InteractObject> interactObjects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.LoadInteractObject);
+            pWriter.Write(InteractObjectMode.LoadInteractObject);
             pWriter.WriteInt(interactObjects.Count);
             foreach (InteractObject interactObject in interactObjects)
             {
@@ -55,22 +55,22 @@ namespace MapleServer2.Packets
 
         public static void WriteInteractObject(PacketWriter pWriter, InteractObject interactObject)
         {
-            pWriter.WriteMapleString(interactObject.Id);
-            pWriter.WriteEnum(interactObject.State);
-            pWriter.WriteEnum(interactObject.Type);
+            pWriter.WriteString(interactObject.Id);
+            pWriter.Write(interactObject.State);
+            pWriter.Write(interactObject.Type);
             if (interactObject.Type == InteractObjectType.Gathering)
             {
                 pWriter.WriteInt();
             }
         }
 
-        public static Packet LoadAdBallon(AdBalloon balloon)
+        public static PacketWriter LoadAdBallon(AdBalloon balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.AddAdBalloons);
-            pWriter.WriteMapleString(balloon.Id);
-            pWriter.WriteEnum(balloon.State);
-            pWriter.WriteEnum(balloon.Type);
+            pWriter.Write(InteractObjectMode.AddAdBalloons);
+            pWriter.WriteString(balloon.Id);
+            pWriter.Write(balloon.State);
+            pWriter.Write(balloon.Type);
             pWriter.WriteInt(balloon.InteractId);
             pWriter.Write(balloon.Position);
             pWriter.Write(balloon.Rotation);
@@ -85,13 +85,13 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Interact(InteractObject interactObject)
+        public static PacketWriter Interact(InteractObject interactObject)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-            pWriter.WriteEnum(InteractObjectMode.Interact);
+            pWriter.Write(InteractObjectMode.Interact);
             pWriter.WriteByte();
-            pWriter.WriteMapleString(interactObject.Id);
-            pWriter.WriteEnum(interactObject.Type);
+            pWriter.WriteString(interactObject.Id);
+            pWriter.Write(interactObject.Type);
             return pWriter;
         }
     }

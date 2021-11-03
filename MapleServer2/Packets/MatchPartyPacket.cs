@@ -13,28 +13,28 @@ namespace MapleServer2.Packets
             Refresh = 0x2
         }
 
-        public static Packet CreateListing(Party party)
+        public static PacketWriter CreateListing(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
-            pWriter.WriteEnum(MatchPartyPacketMode.Create);
+            pWriter.Write(MatchPartyPacketMode.Create);
             WritePartyInformation(pWriter, party, false);
 
             return pWriter;
         }
 
-        public static Packet RemoveListing(Party party)
+        public static PacketWriter RemoveListing(Party party)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
-            pWriter.WriteEnum(MatchPartyPacketMode.Remove);
+            pWriter.Write(MatchPartyPacketMode.Remove);
             pWriter.WriteLong(party.PartyFinderId);
 
             return pWriter;
         }
 
-        public static Packet SendListings(List<Party> parties)
+        public static PacketWriter SendListings(List<Party> parties)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.MATCH_PARTY);
-            pWriter.WriteEnum(MatchPartyPacketMode.Refresh);
+            pWriter.Write(MatchPartyPacketMode.Refresh);
             pWriter.WriteInt(parties.Count);
             foreach (Party party in parties)
             {

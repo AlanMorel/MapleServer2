@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 {
     public static class SkinColorPacket
     {
-        public static Packet Update(IFieldObject<Player> player, SkinColor skinColor)
+        public static PacketWriter Update(IFieldObject<Player> player, SkinColor skinColor)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SKIN_COLOR);
             pWriter.WriteInt(player.ObjectId);

@@ -18,10 +18,10 @@ namespace MapleServer2.Packets
             PrepareListing = 0x8,
         }
 
-        public static Packet Error(int errorCode, int itemId = 0, int itemLevel = 0)
+        public static PacketWriter Error(int errorCode, int itemId = 0, int itemLevel = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.Error);
+            pWriter.Write(BlackMarketPacketMode.Error);
             pWriter.WriteByte(0);
             pWriter.WriteInt(errorCode);
             pWriter.WriteLong();
@@ -30,10 +30,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Open(List<BlackMarketListing> listings)
+        public static PacketWriter Open(List<BlackMarketListing> listings)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.Open);
+            pWriter.Write(BlackMarketPacketMode.Open);
             pWriter.WriteInt(listings.Count);
             foreach (BlackMarketListing listing in listings)
             {
@@ -42,27 +42,27 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet CreateListing(BlackMarketListing listing)
+        public static PacketWriter CreateListing(BlackMarketListing listing)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.CreateListing);
+            pWriter.Write(BlackMarketPacketMode.CreateListing);
             WriteListing(pWriter, listing);
             return pWriter;
         }
 
-        public static Packet CancelListing(BlackMarketListing listing, bool isSold)
+        public static PacketWriter CancelListing(BlackMarketListing listing, bool isSold)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.CancelListing);
+            pWriter.Write(BlackMarketPacketMode.CancelListing);
             pWriter.WriteLong(listing.Id);
             pWriter.WriteBool(isSold);
             return pWriter;
         }
 
-        public static Packet SearchResults(List<BlackMarketListing> listings)
+        public static PacketWriter SearchResults(List<BlackMarketListing> listings)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.SearchResults);
+            pWriter.Write(BlackMarketPacketMode.SearchResults);
             pWriter.WriteInt(listings.Count);
             foreach (BlackMarketListing listing in listings)
             {
@@ -71,19 +71,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Purchase(long listingId, int amount)
+        public static PacketWriter Purchase(long listingId, int amount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.Purchase);
+            pWriter.Write(BlackMarketPacketMode.Purchase);
             pWriter.WriteLong(listingId);
             pWriter.WriteInt(amount);
             return pWriter;
         }
 
-        public static Packet PrepareListing(int itemId, int rarity, int npcShopPrice)
+        public static PacketWriter PrepareListing(int itemId, int rarity, int npcShopPrice)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
-            pWriter.WriteEnum(BlackMarketPacketMode.PrepareListing);
+            pWriter.Write(BlackMarketPacketMode.PrepareListing);
             pWriter.WriteInt(itemId);
             pWriter.WriteInt(rarity);
             pWriter.WriteLong(npcShopPrice);

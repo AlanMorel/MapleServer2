@@ -6,11 +6,11 @@ namespace MapleServer2.Packets
 {
     public static class VibratePacket
     {
-        public static Packet Vibrate(string objectHash, SkillCast skillCast, IFieldObject<Player> player)
+        public static PacketWriter Vibrate(string objectHash, SkillCast skillCast, IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.VIBRATE);
             pWriter.WriteByte(1);
-            pWriter.WriteMapleString(objectHash);
+            pWriter.WriteString(objectHash);
             pWriter.WriteLong(skillCast.SkillSN);
             pWriter.WriteInt(skillCast.SkillId);
             pWriter.WriteShort(skillCast.SkillLevel);
@@ -18,7 +18,7 @@ namespace MapleServer2.Packets
             pWriter.WriteByte();
             pWriter.Write(player.Coord.ToShort());
             pWriter.Write(player.Value.Session.ServerTick);
-            pWriter.WriteMapleString("");
+            pWriter.WriteString("");
             pWriter.WriteByte();
 
             return pWriter;

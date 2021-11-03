@@ -14,10 +14,10 @@ namespace MapleServer2.Packets
             Expiration = 0x03
         }
 
-        public static Packet LoadCubes(List<Cube> cubes)
+        public static PacketWriter LoadCubes(List<Cube> cubes)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
-            pWriter.WriteEnum(SendCubesMode.LoadCubes);
+            pWriter.Write(SendCubesMode.LoadCubes);
             pWriter.WriteByte();
             pWriter.WriteInt(cubes.Count);
             foreach (Cube cube in cubes)
@@ -39,10 +39,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadAvailablePlots(List<Home> homes, List<byte> plotNumbers)
+        public static PacketWriter LoadAvailablePlots(List<Home> homes, List<byte> plotNumbers)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
-            pWriter.WriteEnum(SendCubesMode.AvailablePlots);
+            pWriter.Write(SendCubesMode.AvailablePlots);
             pWriter.WriteInt(plotNumbers.Count);
             foreach (int plotId in plotNumbers)
             {
@@ -53,10 +53,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet LoadPlots(List<Home> homes, int mapId)
+        public static PacketWriter LoadPlots(List<Home> homes, int mapId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
-            pWriter.WriteEnum(SendCubesMode.LoadPlots);
+            pWriter.Write(SendCubesMode.LoadPlots);
             pWriter.WriteInt(homes.Count);
             foreach (Home home in homes)
             {
@@ -69,10 +69,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Expiration(List<Home> homes)
+        public static PacketWriter Expiration(List<Home> homes)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.CUBES);
-            pWriter.WriteEnum(SendCubesMode.Expiration);
+            pWriter.Write(SendCubesMode.Expiration);
             pWriter.WriteInt(homes.Count);
             foreach (Home home in homes)
             {

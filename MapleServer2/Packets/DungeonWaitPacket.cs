@@ -5,7 +5,7 @@ namespace MapleServer2.Packets
 {
     public static class DungeonWaitPacket
     {
-        public static Packet Show(int dungeonId, int playerCountDisplay)
+        public static PacketWriter Show(int dungeonId, int playerCountDisplay)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_WAIT);
             pWriter.WriteInt(dungeonId);

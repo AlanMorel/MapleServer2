@@ -16,10 +16,10 @@ namespace MapleServer2.Packets
             AdBalloonWindow = 0x6,
             AdBalloonPlace = 0x7,
         }
-        public static Packet OpenHongbao(Player player, HongBao hongBao)
+        public static PacketWriter OpenHongbao(Player player, HongBao hongBao)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.OpenHongbao);
+            pWriter.Write(PlayerHostPacketMode.OpenHongbao);
             pWriter.WriteInt(hongBao.ItemId);
             pWriter.WriteInt(hongBao.Id);
             pWriter.WriteInt(hongBao.RewardId);
@@ -29,10 +29,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet HongbaoGiftNotice(Player receiver, HongBao hongBao, int dividedRewardAmount)
+        public static PacketWriter HongbaoGiftNotice(Player receiver, HongBao hongBao, int dividedRewardAmount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.HongbaoGiftNotice);
+            pWriter.Write(PlayerHostPacketMode.HongbaoGiftNotice);
             pWriter.WriteBool(hongBao.Active);
             if (hongBao.Active)
             {
@@ -45,37 +45,37 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet StartMinigame(Player player, int minigameId)
+        public static PacketWriter StartMinigame(Player player, int minigameId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.StartMinigame);
+            pWriter.Write(PlayerHostPacketMode.StartMinigame);
             pWriter.WriteUnicodeString(player.Name);
             pWriter.WriteInt(minigameId);
             return pWriter;
         }
 
-        public static Packet MinigameRewardNotice(int minigameId)
+        public static PacketWriter MinigameRewardNotice(int minigameId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.StartMinigame);
+            pWriter.Write(PlayerHostPacketMode.StartMinigame);
             pWriter.WriteInt(minigameId);
             pWriter.WriteInt(); // amount of players in map
             return pWriter;
         }
 
-        public static Packet MinigameRewardReceive(int minigameId)
+        public static PacketWriter MinigameRewardReceive(int minigameId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.StartMinigame);
+            pWriter.Write(PlayerHostPacketMode.StartMinigame);
             pWriter.WriteInt(minigameId);
             pWriter.WriteInt(); // amount of players in map
             return pWriter;
         }
 
-        public static Packet AdBalloonWindow(AdBalloon balloon)
+        public static PacketWriter AdBalloonWindow(AdBalloon balloon)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonWindow);
+            pWriter.Write(PlayerHostPacketMode.AdBalloonWindow);
             pWriter.WriteLong(balloon.Owner.AccountId);
             pWriter.WriteLong(balloon.Owner.CharacterId);
             pWriter.WriteUnicodeString(balloon.Owner.ProfileUrl);
@@ -91,10 +91,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AdBalloonPlace()
+        public static PacketWriter AdBalloonPlace()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAYER_HOST);
-            pWriter.WriteEnum(PlayerHostPacketMode.AdBalloonPlace);
+            pWriter.Write(PlayerHostPacketMode.AdBalloonPlace);
             pWriter.WriteInt();
             return pWriter;
         }

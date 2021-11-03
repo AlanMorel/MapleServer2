@@ -10,6 +10,7 @@ namespace MapleServer2.Database
 {
     public class DatabaseManager
     {
+        public const int MIN_MYSQL_VERSION = 8;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static readonly string ConnectionString;
 
@@ -55,6 +56,14 @@ namespace MapleServer2.Database
         }
 
         public static void RunQuery(string query) => new QueryFactory(new MySqlConnection(ConnectionString), new MySqlCompiler()).Statement(query);
+
+        public static int GetVersion()
+        {
+            MySqlConnection conn = new MySqlConnection($"SERVER={Server};PORT={Port};USER={User};PASSWORD={Password};");
+            conn.Open();
+
+            return int.Parse(conn.ServerVersion.Split(".")[0]);
+        }
 
         public static bool DatabaseExists()
         {

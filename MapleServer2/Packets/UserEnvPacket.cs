@@ -15,28 +15,28 @@ namespace MapleServer2.Packets
             LifeSkills = 0x8,
         }
 
-        public static Packet AddTitle(int titleId)
+        public static PacketWriter AddTitle(int titleId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
-            pWriter.WriteEnum(UserEnvPacketMode.AddTitle);
+            pWriter.Write(UserEnvPacketMode.AddTitle);
             pWriter.WriteInt(titleId);
             return pWriter;
         }
 
-        public static Packet UpdateTitle(GameSession session, int titleId)
+        public static PacketWriter UpdateTitle(GameSession session, int titleId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
-            pWriter.WriteEnum(UserEnvPacketMode.UpdateTitles);
+            pWriter.Write(UserEnvPacketMode.UpdateTitles);
             pWriter.WriteInt(session.FieldPlayer.ObjectId);
             pWriter.WriteInt(titleId);
             return pWriter;
         }
 
         // Unlocked Titles
-        public static Packet SetTitles(Player player)
+        public static PacketWriter SetTitles(Player player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
-            pWriter.WriteEnum(UserEnvPacketMode.SetTitles);
+            pWriter.Write(UserEnvPacketMode.SetTitles);
             pWriter.WriteInt(player.Titles.Count);
             foreach (int titleId in player.Titles)
             {
@@ -46,7 +46,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateTrophy()
+        public static PacketWriter UpdateTrophy()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             // seems unchanged before and after gaining trophy
@@ -55,11 +55,11 @@ namespace MapleServer2.Packets
                                 0x17, 0xC9, 0xC9, 0x01, 0x01,
                                 0x19, 0xC9, 0xC9, 0x01, 0x01,
                                 0xDA, 0xC9, 0xA2, 0x03, 0x01 };
-            pWriter.Write(toSend);
+            pWriter.WriteBytes(toSend);
             return pWriter;
         }
 
-        public static Packet Send03()
+        public static PacketWriter Send03()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x03);
@@ -69,7 +69,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send04()
+        public static PacketWriter Send04()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x04);
@@ -79,7 +79,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send05()
+        public static PacketWriter Send05()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x05);
@@ -88,10 +88,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateLifeSkills(List<GatheringCount> gatherings)
+        public static PacketWriter UpdateLifeSkills(List<GatheringCount> gatherings)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
-            pWriter.WriteEnum(UserEnvPacketMode.LifeSkills);
+            pWriter.Write(UserEnvPacketMode.LifeSkills);
             pWriter.WriteInt(gatherings.Count);
             foreach (GatheringCount gathering in gatherings)
             {
@@ -103,7 +103,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send09()
+        public static PacketWriter Send09()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x09);
@@ -113,7 +113,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send10()
+        public static PacketWriter Send10()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0A);
@@ -123,7 +123,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send11()
+        public static PacketWriter Send11()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0B);
@@ -133,7 +133,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send12()
+        public static PacketWriter Send12()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0C);
@@ -143,7 +143,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Send13()
+        public static PacketWriter Send13()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
             pWriter.WriteByte(0x0D);

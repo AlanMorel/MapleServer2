@@ -21,10 +21,10 @@ namespace MapleServer2.Packets
             Fireworks = 0xE,
         }
 
-        public static Packet StartImprovise(IFieldObject<Instrument> instrument)
+        public static PacketWriter StartImprovise(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.StartImprovise);
+            pWriter.Write(InstrumentPacketMode.StartImprovise);
             pWriter.WriteInt(instrument.ObjectId);
             pWriter.WriteInt(instrument.Value.PlayerObjectId);
             pWriter.Write(instrument.Coord);
@@ -33,29 +33,29 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet PlayNote(int note, IFieldObject<Player> player)
+        public static PacketWriter PlayNote(int note, IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.PlayNote);
+            pWriter.Write(InstrumentPacketMode.PlayNote);
             pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteInt(note);
             return pWriter;
         }
 
-        public static Packet StopImprovise(IFieldObject<Player> player)
+        public static PacketWriter StopImprovise(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.StopImprovise);
+            pWriter.Write(InstrumentPacketMode.StopImprovise);
             pWriter.WriteInt(player.Value.Instrument.ObjectId);
             pWriter.WriteInt(player.ObjectId);
             return pWriter;
         }
 
-        public static Packet PlayScore(IFieldObject<Instrument> instrument)
+        public static PacketWriter PlayScore(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.PlayScore);
+            pWriter.Write(InstrumentPacketMode.PlayScore);
             pWriter.WriteBool(instrument.Value.IsCustomScore);
             pWriter.WriteInt(instrument.ObjectId);
             pWriter.WriteInt(instrument.Value.PlayerObjectId);
@@ -67,7 +67,7 @@ namespace MapleServer2.Packets
 
             if (instrument.Value.IsCustomScore)
             {
-                pWriter.WriteMapleString(instrument.Value.Score.Score.Notes);
+                pWriter.WriteString(instrument.Value.Score.Score.Notes);
             }
             else
             {
@@ -76,44 +76,44 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet StopScore(IFieldObject<Instrument> instrument)
+        public static PacketWriter StopScore(IFieldObject<Instrument> instrument)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.StopScore);
+            pWriter.Write(InstrumentPacketMode.StopScore);
             pWriter.WriteInt(instrument.ObjectId);
             pWriter.WriteInt(instrument.Value.PlayerObjectId);
             return pWriter;
         }
 
-        public static Packet LeaveEnsemble()
+        public static PacketWriter LeaveEnsemble()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.LeaveEnsemble);
+            pWriter.Write(InstrumentPacketMode.LeaveEnsemble);
             return pWriter;
         }
 
-        public static Packet Compose(Item item)
+        public static PacketWriter Compose(Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.Compose);
+            pWriter.Write(InstrumentPacketMode.Compose);
             pWriter.WriteLong(item.Uid);
             pWriter.WriteItem(item);
             return pWriter;
         }
 
-        public static Packet UpdateScoreUses(long scoreItemUid, int usesRemaining)
+        public static PacketWriter UpdateScoreUses(long scoreItemUid, int usesRemaining)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.UpdateScoreUses);
+            pWriter.Write(InstrumentPacketMode.UpdateScoreUses);
             pWriter.WriteLong(scoreItemUid);
             pWriter.WriteInt(usesRemaining);
             return pWriter;
         }
 
-        public static Packet Fireworks(int objectId)
+        public static PacketWriter Fireworks(int objectId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.PLAY_INSTRUMENT);
-            pWriter.WriteEnum(InstrumentPacketMode.Fireworks);
+            pWriter.Write(InstrumentPacketMode.Fireworks);
             pWriter.WriteInt(objectId);
             return pWriter;
         }

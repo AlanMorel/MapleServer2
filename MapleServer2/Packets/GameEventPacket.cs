@@ -7,7 +7,7 @@ namespace MapleServer2.Packets
 
     public static class GameEventPacket
     {
-        public static Packet Load(List<GameEvent> events)
+        public static PacketWriter Load(List<GameEvent> events)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_EVENT);
             pWriter.WriteByte(0);

@@ -10,7 +10,7 @@ namespace MapleServer2.Servers.Game
 {
     public class GameSession : Session
     {
-        protected override SessionType Type => SessionType.Game;
+        protected override PatchType Type => PatchType.Ignore;
 
         public int ServerTick;
         public int ClientTick;

@@ -8,7 +8,7 @@ namespace MapleServer2.Packets
 {
     public static class EquipmentPacket
     {
-        public static Packet EquipItem(IFieldObject<Player> player, Item item, ItemSlot equipSlot)
+        public static PacketWriter EquipItem(IFieldObject<Player> player, Item item, ItemSlot equipSlot)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_ON);
             pWriter.WriteInt(player.ObjectId);
@@ -22,7 +22,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UnequipItem(IFieldObject<Player> player, Item item)
+        public static PacketWriter UnequipItem(IFieldObject<Player> player, Item item)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_PUT_OFF);
             pWriter.WriteInt(player.ObjectId);

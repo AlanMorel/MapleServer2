@@ -90,7 +90,7 @@ namespace MapleServer2
                         }
                         string packet = input[1];
                         PacketWriter pWriter = new PacketWriter();
-                        pWriter.Write(packet.ToByteArray());
+                        pWriter.WriteBytes(packet.ToByteArray());
                         Logger.Info(pWriter);
 
                         foreach (Session session in GetSessions(loginServer, GameServer))
@@ -132,6 +132,11 @@ namespace MapleServer2
 
         private static void InitDatabase()
         {
+            if (DatabaseManager.GetVersion() < DatabaseManager.MIN_MYSQL_VERSION)
+            {
+                throw new Exception("MySQL version out-of-date, please upgrade to version " + DatabaseManager.MIN_MYSQL_VERSION + ".");
+            }
+
             if (DatabaseManager.DatabaseExists())
             {
                 Logger.Info("Database already exists.");
@@ -161,7 +166,7 @@ namespace MapleServer2
             Logger.Info("Database created.".ColorGreen());
         }
 
-        public static void BroadcastPacketAll(Packet packet, GameSession sender = null)
+        public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)
         {
             BroadcastAll(session =>
             {

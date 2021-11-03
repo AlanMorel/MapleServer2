@@ -13,19 +13,19 @@ namespace MapleServer2.Packets
             Deselect = 0x1,
         }
 
-        public static Packet Select(IFieldObject<Player> player, int itemId)
+        public static PacketWriter Select(IFieldObject<Player> player, int itemId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SUPER_WORLDCHAT);
-            pWriter.WriteEnum(SuperChatMode.Select);
+            pWriter.Write(SuperChatMode.Select);
             pWriter.WriteInt(player.ObjectId);
             pWriter.WriteLong(itemId);
             return pWriter;
         }
 
-        public static Packet Deselect(IFieldObject<Player> player)
+        public static PacketWriter Deselect(IFieldObject<Player> player)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.SUPER_WORLDCHAT);
-            pWriter.WriteEnum(SuperChatMode.Deselect);
+            pWriter.Write(SuperChatMode.Deselect);
             pWriter.WriteInt(player.ObjectId);
             return pWriter;
         }

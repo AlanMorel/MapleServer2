@@ -26,10 +26,10 @@ namespace MapleServer2.Packets
             EndList = 0x13,
         }
 
-        public static Packet LoadList(List<Buddy> buddyList)
+        public static PacketWriter LoadList(List<Buddy> buddyList)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.LoadList);
+            pWriter.Write(BuddyPacketMode.LoadList);
             pWriter.WriteInt(buddyList.Count);
             foreach (Buddy buddy in buddyList)
             {
@@ -38,20 +38,20 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Notice(byte notice, string playerName)
+        public static PacketWriter Notice(byte notice, string playerName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.Notice);
+            pWriter.Write(BuddyPacketMode.Notice);
             pWriter.WriteByte(notice);
             pWriter.WriteUnicodeString(playerName);
             pWriter.WriteUnicodeString("");
             return pWriter;
         }
 
-        public static Packet AcceptRequest(Buddy buddy)
+        public static PacketWriter AcceptRequest(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.AcceptRequest);
+            pWriter.Write(BuddyPacketMode.AcceptRequest);
             pWriter.WriteByte(0x0);
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteLong(buddy.Friend.CharacterId);
@@ -60,19 +60,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet DeclineRequest(Buddy buddy)
+        public static PacketWriter DeclineRequest(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.DeclineRequest);
+            pWriter.Write(BuddyPacketMode.DeclineRequest);
             pWriter.WriteByte(0x0);
             pWriter.WriteLong(buddy.SharedId);
             return pWriter;
         }
 
-        public static Packet Block(Buddy buddy)
+        public static PacketWriter Block(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.Block);
+            pWriter.Write(BuddyPacketMode.Block);
             pWriter.WriteByte();
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteUnicodeString(buddy.Friend.Name);
@@ -80,19 +80,19 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Unblock(Buddy buddy)
+        public static PacketWriter Unblock(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.Unblock);
+            pWriter.Write(BuddyPacketMode.Unblock);
             pWriter.WriteByte(0x0);
             pWriter.WriteLong(buddy.SharedId);
             return pWriter;
         }
 
-        public static Packet RemoveFromList(Buddy buddy)
+        public static PacketWriter RemoveFromList(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.RemoveFromList);
+            pWriter.Write(BuddyPacketMode.RemoveFromList);
             pWriter.WriteByte(0x0);
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteLong(buddy.Friend.AccountId);
@@ -101,26 +101,26 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateBuddy(Buddy buddy)
+        public static PacketWriter UpdateBuddy(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.UpdateBuddy);
+            pWriter.Write(BuddyPacketMode.UpdateBuddy);
             WriteBuddy(buddy, pWriter);
             return pWriter;
         }
 
-        public static Packet AddToList(Buddy buddy)
+        public static PacketWriter AddToList(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.AddToList);
+            pWriter.Write(BuddyPacketMode.AddToList);
             WriteBuddy(buddy, pWriter);
             return pWriter;
         }
 
-        public static Packet EditBlockReason(Buddy buddy)
+        public static PacketWriter EditBlockReason(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.EditBlockReason);
+            pWriter.Write(BuddyPacketMode.EditBlockReason);
             pWriter.WriteByte();
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteUnicodeString(buddy.Friend.Name);
@@ -130,53 +130,53 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet AcceptNotification(Buddy buddy)
+        public static PacketWriter AcceptNotification(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.AcceptNotification);
+            pWriter.Write(BuddyPacketMode.AcceptNotification);
             pWriter.WriteLong(buddy.SharedId);
             return pWriter;
         }
 
-        public static Packet BlockNotification(string playerName)
+        public static PacketWriter BlockNotification(string playerName)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.BlockNotification);
+            pWriter.Write(BuddyPacketMode.BlockNotification);
             pWriter.WriteByte();
             pWriter.WriteUnicodeString(playerName);
             return pWriter;
         }
 
-        public static Packet LoginLogoutNotification(Buddy buddy)
+        public static PacketWriter LoginLogoutNotification(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.LoginLogoutNotification);
+            pWriter.Write(BuddyPacketMode.LoginLogoutNotification);
             pWriter.WriteBool(!buddy.Friend?.Session?.Connected() ?? true);
             pWriter.WriteLong(buddy.SharedId);
             pWriter.WriteUnicodeString(buddy.Friend.Name);
             return pWriter;
         }
 
-        public static Packet Initialize()
+        public static PacketWriter Initialize()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.Initialize);
+            pWriter.Write(BuddyPacketMode.Initialize);
             return pWriter;
         }
 
-        public static Packet CancelRequest(Buddy buddy)
+        public static PacketWriter CancelRequest(Buddy buddy)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.CancelRequest);
+            pWriter.Write(BuddyPacketMode.CancelRequest);
             pWriter.WriteByte();
             pWriter.WriteLong(buddy.SharedId);
             return pWriter;
         }
 
-        public static Packet EndList(int buddyCount)
+        public static PacketWriter EndList(int buddyCount)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
-            pWriter.WriteEnum(BuddyPacketMode.EndList);
+            pWriter.Write(BuddyPacketMode.EndList);
             pWriter.WriteInt(buddyCount);
             return pWriter;
         }
@@ -190,8 +190,8 @@ namespace MapleServer2.Packets
             pWriter.WriteUnicodeString(buddy.Message);
             pWriter.WriteShort();
             pWriter.WriteInt(buddy.Friend.Account.Home?.MapId ?? 0);
-            pWriter.WriteEnum(buddy.Friend.Job);
-            pWriter.WriteEnum(buddy.Friend.JobCode);
+            pWriter.Write(buddy.Friend.Job);
+            pWriter.Write(buddy.Friend.JobCode);
             pWriter.WriteShort(buddy.Friend.Levels.Level);
             pWriter.WriteBool(buddy.IsFriendRequest);
             pWriter.WriteBool(buddy.IsPending);

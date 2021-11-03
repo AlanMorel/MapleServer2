@@ -26,10 +26,10 @@ namespace MapleServer2.Packets
             SetAnimation = 0x8,
         }
 
-        public static Packet LoadTriggers(List<TriggerObject> triggerObjects)
+        public static PacketWriter LoadTriggers(List<TriggerObject> triggerObjects)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.LoadTriggers);
+            pWriter.Write(TriggerPacketMode.LoadTriggers);
             pWriter.WriteInt(triggerObjects.Count);
 
             foreach (TriggerObject triggerObject in triggerObjects)
@@ -39,10 +39,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet UpdateTrigger(TriggerObject trigger)
+        public static PacketWriter UpdateTrigger(TriggerObject trigger)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UpdateTrigger);
+            pWriter.Write(TriggerPacketMode.UpdateTrigger);
             WriteTrigger(pWriter, trigger);
             return pWriter;
         }
@@ -95,19 +95,19 @@ namespace MapleServer2.Packets
             }
         }
 
-        public static Packet Guide(int eventId)
+        public static PacketWriter Guide(int eventId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UI);
-            pWriter.WriteEnum(TriggerUIMode.Guide);
+            pWriter.Write(TriggerPacketMode.UI);
+            pWriter.Write(TriggerUIMode.Guide);
             pWriter.WriteInt(eventId);
             return pWriter;
         }
 
-        public static Packet Banner(byte state, int entityId, int stringGuideId = 0, int time = 0)
+        public static PacketWriter Banner(byte state, int entityId, int stringGuideId = 0, int time = 0)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UI);
+            pWriter.Write(TriggerPacketMode.UI);
             pWriter.WriteByte(state); // 02 = on, 03 = off
             pWriter.WriteInt(entityId);
             pWriter.WriteInt(stringGuideId);
@@ -115,40 +115,40 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet StartCutscene(string fileName, int movieId)
+        public static PacketWriter StartCutscene(string fileName, int movieId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UI);
-            pWriter.WriteEnum(TriggerUIMode.StartCutscene);
-            pWriter.WriteMapleString(fileName);
+            pWriter.Write(TriggerPacketMode.UI);
+            pWriter.Write(TriggerUIMode.StartCutscene);
+            pWriter.WriteString(fileName);
             pWriter.WriteInt(movieId);
             return pWriter;
         }
 
-        public static Packet StopCutscene(int movieId)
+        public static PacketWriter StopCutscene(int movieId)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UI);
-            pWriter.WriteEnum(TriggerUIMode.StopCutscene);
+            pWriter.Write(TriggerPacketMode.UI);
+            pWriter.Write(TriggerUIMode.StopCutscene);
             pWriter.WriteInt(movieId);
             return pWriter;
         }
 
-        public static Packet SetAnimation(string animationState, int duration, bool loop)
+        public static PacketWriter SetAnimation(string animationState, int duration, bool loop)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.UI);
-            pWriter.WriteEnum(TriggerUIMode.SetAnimation);
+            pWriter.Write(TriggerPacketMode.UI);
+            pWriter.Write(TriggerUIMode.SetAnimation);
             pWriter.WriteBool(loop);
             pWriter.WriteInt(duration);
             pWriter.WriteUnicodeString(animationState);
             return pWriter;
         }
 
-        public static Packet Camera(int[] pathIds, bool returnView)
+        public static PacketWriter Camera(int[] pathIds, bool returnView)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.Camera);
+            pWriter.Write(TriggerPacketMode.Camera);
             pWriter.WriteByte((byte) pathIds.Length);
             foreach (int pathId in pathIds)
             {
@@ -158,10 +158,10 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static Packet Timer(int msTime, bool clearAtZero = false, bool display = false)
+        public static PacketWriter Timer(int msTime, bool clearAtZero = false, bool display = false)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-            pWriter.WriteEnum(TriggerPacketMode.Timer);
+            pWriter.Write(TriggerPacketMode.Timer);
             pWriter.WriteBool(display);
             pWriter.WriteInt(Environment.TickCount);
             pWriter.WriteInt(msTime);

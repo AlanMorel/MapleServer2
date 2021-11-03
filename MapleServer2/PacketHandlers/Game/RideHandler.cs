@@ -74,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Game
             fieldMount.Value.Players[0] = session.FieldPlayer;
             session.Player.Mount = fieldMount;
 
-            Packet startPacket = MountPacket.StartRide(session.FieldPlayer);
+            PacketWriter startPacket = MountPacket.StartRide(session.FieldPlayer);
             session.FieldManager.BroadcastPacket(startPacket);
         }
 
@@ -84,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
             bool forced = packet.ReadBool(); // Going into water without amphibious riding
 
             session.Player.Mount = null; // Remove mount from player
-            Packet stopPacket = MountPacket.StopRide(session.FieldPlayer, forced);
+            PacketWriter stopPacket = MountPacket.StopRide(session.FieldPlayer, forced);
             session.FieldManager.BroadcastPacket(stopPacket);
         }
 
@@ -98,7 +98,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            Packet changePacket = MountPacket.ChangeRide(session.FieldPlayer.ObjectId, mountId, mountUid);
+            PacketWriter changePacket = MountPacket.ChangeRide(session.FieldPlayer.ObjectId, mountId, mountUid);
             session.FieldManager.BroadcastPacket(changePacket);
         }
 

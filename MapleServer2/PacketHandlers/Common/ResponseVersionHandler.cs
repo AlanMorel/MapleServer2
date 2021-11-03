@@ -35,7 +35,7 @@ namespace MapleServer2.PacketHandlers.Common
 
         protected override void HandleCommon(Session session, PacketReader packet)
         {
-            uint version = packet.ReadUInt();
+            uint version = packet.Read<uint>();
             // +4 Bytes CONST(2F 00 02 00)
 
             if (version != Session.VERSION)

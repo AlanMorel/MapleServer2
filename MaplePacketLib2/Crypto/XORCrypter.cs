@@ -25,7 +25,12 @@
 
         public void Encrypt(byte[] src)
         {
-            for (int i = 0; i < src.Length; i++)
+            Encrypt(src, 0, src.Length);
+        }
+
+        public void Encrypt(byte[] src, int start, int end)
+        {
+            for (int i = start; i < end; i++)
             {
                 src[i] ^= Table[i & 1];
             }
@@ -33,7 +38,12 @@
 
         public void Decrypt(byte[] src)
         {
-            for (int i = 0; i < src.Length; i++)
+            Decrypt(src, 0, src.Length);
+        }
+
+        public void Decrypt(byte[] src, int start, int end)
+        {
+            for (int i = start; i < end; i++)
             {
                 src[i] ^= Table[i & 1];
             }
