@@ -5,7 +5,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -71,7 +70,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = benefit.ItemAmount,
             };
 
-            InventoryController.Add(session, benefitRewardItem, true);
+            session.Player.Inventory.AddItem(session, benefitRewardItem, true);
 
             // TODO only claim once a day
         }
@@ -106,7 +105,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Rarity = item.Rarity,
                     Amount = item.Amount
                 };
-                InventoryController.Add(session, bonusItem, true);
+                session.Player.Inventory.AddItem(session, bonusItem, true);
             }
 
             int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours

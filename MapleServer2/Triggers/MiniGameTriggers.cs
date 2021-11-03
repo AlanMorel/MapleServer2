@@ -4,7 +4,6 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Triggers
@@ -95,7 +94,7 @@ namespace MapleServer2.Triggers
                     List<Item> items = RewardContentMetadataStorage.GetRewardItems(3, player.Value.Levels.Level);
                     foreach (Item item in items)
                     {
-                        InventoryController.Add(player.Value.Session, item, true);
+                        player.Value.Inventory.AddItem(player.Value.Session, item, true);
                     }
                 }
                 else if (contentType == "UserOpenMiniGameExtraReward")

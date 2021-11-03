@@ -6,7 +6,6 @@ using MapleServer2.PacketHandlers.Common;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -161,7 +160,7 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     item.MailId = 0;
                     DatabaseManager.Items.Update(item);
-                    InventoryController.Add(session, item, true);
+                    session.Player.Inventory.AddItem(session, item, true);
                 }
                 mail.Items.Clear();
                 session.Send(MailPacket.Collect(mail));

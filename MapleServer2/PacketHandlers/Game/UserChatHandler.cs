@@ -8,7 +8,6 @@ using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -97,7 +96,7 @@ namespace MapleServer2.PacketHandlers.Game
                 MapleServer.BroadcastPacketAll(itemLinkPacket);
             }
             MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
-            InventoryController.Consume(session, superChatItem.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, superChatItem.Uid, 1);
             session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
             session.Player.SuperChat = 0;
         }
@@ -108,7 +107,7 @@ namespace MapleServer2.PacketHandlers.Game
             if (voucher != null)
             {
                 session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
-                InventoryController.Consume(session, voucher.Uid, 1);
+                session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
             }
             else if (!session.Player.Account.RemoveMerets(30))
             {

@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -163,7 +162,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (useLock)
             {
-                InventoryController.Consume(session, scrollLock.Uid, 1);
+                session.Player.Inventory.ConsumeItem(session, scrollLock.Uid, 1);
             }
             inventory.TemporaryStorage[newItem.Uid] = newItem;
 
@@ -188,46 +187,41 @@ namespace MapleServer2.PacketHandlers.Game
 
         private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, List<KeyValuePair<long, Item>> greenCrystals, List<KeyValuePair<long, Item>> metacells, List<KeyValuePair<long, Item>> crystalFragments)
         {
+            Inventory inventory = session.Player.Inventory;
             foreach (KeyValuePair<long, Item> item in greenCrystals)
             {
                 if (item.Value.Amount >= greenCrystalCost)
                 {
-                    InventoryController.Consume(session, item.Key, greenCrystalCost);
+                    inventory.ConsumeItem(session, item.Key, greenCrystalCost);
                     break;
                 }
-                else
-                {
-                    greenCrystalCost -= item.Value.Amount;
-                    InventoryController.Consume(session, item.Key, item.Value.Amount);
-                }
+
+                greenCrystalCost -= item.Value.Amount;
+                inventory.ConsumeItem(session, item.Key, item.Value.Amount);
             }
 
             foreach (KeyValuePair<long, Item> item in metacells)
             {
                 if (item.Value.Amount >= metacellCosts)
                 {
-                    InventoryController.Consume(session, item.Key, metacellCosts);
+                    inventory.ConsumeItem(session, item.Key, metacellCosts);
                     break;
                 }
-                else
-                {
-                    metacellCosts -= item.Value.Amount;
-                    InventoryController.Consume(session, item.Key, item.Value.Amount);
-                }
+
+                metacellCosts -= item.Value.Amount;
+                inventory.ConsumeItem(session, item.Key, item.Value.Amount);
             }
 
             foreach (KeyValuePair<long, Item> item in crystalFragments)
             {
                 if (item.Value.Amount >= crystalFragmentsCosts)
                 {
-                    InventoryController.Consume(session, item.Key, crystalFragmentsCosts);
+                    inventory.ConsumeItem(session, item.Key, crystalFragmentsCosts);
                     break;
                 }
-                else
-                {
-                    crystalFragmentsCosts -= item.Value.Amount;
-                    InventoryController.Consume(session, item.Key, item.Value.Amount);
-                }
+
+                crystalFragmentsCosts -= item.Value.Amount;
+                inventory.ConsumeItem(session, item.Key, item.Value.Amount);
             }
         }
     }

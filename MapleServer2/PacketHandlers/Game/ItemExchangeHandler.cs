@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -85,7 +84,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = exchange.RewardAmount * quantity,
             };
 
-            InventoryController.Add(session, exchangeRewardItem, true);
+            session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
             session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
 
         }
@@ -125,11 +124,11 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         continue;
                     }
-                    InventoryController.Consume(session, item.Uid, exchangeItem.Amount * quantity);
+                    session.Player.Inventory.ConsumeItem(session, item.Uid, exchangeItem.Amount * quantity);
                 }
             }
 
-            InventoryController.Consume(session, originItem.Uid, exchange.RecipeAmount * quantity);
+            session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
 
             return true;
         }

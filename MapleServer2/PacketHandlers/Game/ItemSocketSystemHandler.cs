@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -74,23 +73,24 @@ namespace MapleServer2.PacketHandlers.Game
                 fodderUids.Add(fodderUid);
             }
 
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+            Inventory inventory = session.Player.Inventory;
+            if (!inventory.Items.ContainsKey(itemUid))
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                 return;
             }
-            Item equip = session.Player.Inventory.Items[itemUid];
+            Item equip = inventory.Items[itemUid];
             int equipUnlockedSlotCount = equip.Stats.GemSockets.Where(x => x.IsUnlocked == true).Count();
 
             foreach (long uid in fodderUids)
             {
-                if (!session.Player.Inventory.Items.ContainsKey(uid))
+                if (!inventory.Items.ContainsKey(uid))
                 {
                     session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                     return;
                 }
 
-                Item fodder = session.Player.Inventory.Items[uid];
+                Item fodder = inventory.Items[uid];
                 int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Where(x => x.IsUnlocked == true).Count();
                 if (equipUnlockedSlotCount != fodderUnlockedSlotCount)
                 {
@@ -118,7 +118,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             int crystalFragmentsTotalAmount = 0;
-            List<KeyValuePair<long, Item>> crystalFragments = session.Player.Inventory.Items.Where(x => x.Value.Tag == "CrystalPiece").ToList();
+            List<KeyValuePair<long, Item>> crystalFragments = inventory.Items.Where(x => x.Value.Tag == "CrystalPiece").ToList();
             crystalFragments.ForEach(x => crystalFragmentsTotalAmount += x.Value.Amount);
 
             if (crystalFragmentsTotalAmount < crystalFragmentCost)
@@ -130,18 +130,18 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 if (item.Value.Amount >= crystalFragmentCost)
                 {
-                    InventoryController.Consume(session, item.Key, crystalFragmentCost);
+                    inventory.ConsumeItem(session, item.Key, crystalFragmentCost);
                     break;
                 }
                 else
                 {
                     crystalFragmentCost -= item.Value.Amount;
-                    InventoryController.Consume(session, item.Key, item.Value.Amount);
+                    inventory.ConsumeItem(session, item.Key, item.Value.Amount);
                 }
             }
             foreach (long uid in fodderUids)
             {
-                InventoryController.Consume(session, uid, 1);
+                inventory.ConsumeItem(session, uid, 1);
             }
 
             equip.Stats.GemSockets[slot].IsUnlocked = true;
@@ -173,15 +173,16 @@ namespace MapleServer2.PacketHandlers.Game
 
             ItemGemstoneUpgradeMetadata metadata;
 
+            Inventory inventory = session.Player.Inventory;
             if (equipUid == 0) // this is a gemstone in the player's inventory
             {
-                if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+                if (!inventory.Items.ContainsKey(itemUid))
                 {
                     session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                     return;
                 }
 
-                Item gem = session.Player.Inventory.Items[itemUid];
+                Item gem = inventory.Items[itemUid];
                 if (gem == null)
                 {
                     return;
@@ -193,31 +194,31 @@ namespace MapleServer2.PacketHandlers.Game
                     return;
                 }
 
-                if (!CheckGemUpgradeIngredients(session.Player.Inventory, metadata))
+                if (!CheckGemUpgradeIngredients(inventory, metadata))
                 {
                     return;
                 }
 
                 ConsumeIngredients(session, metadata);
-                InventoryController.Consume(session, gem.Uid, 1);
+                inventory.ConsumeItem(session, gem.Uid, 1);
 
                 Item upgradeGem = new Item(metadata.NextItemId)
                 {
                     Rarity = gem.Rarity
                 };
-                InventoryController.Add(session, upgradeGem, true);
+                inventory.AddItem(session, upgradeGem, true);
                 session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, upgradeGem));
                 return;
             }
 
             // upgrade gem mounted on a equipment
-            if (!session.Player.Inventory.Items.ContainsKey(equipUid))
+            if (!inventory.Items.ContainsKey(equipUid))
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
                 return;
             }
 
-            Gemstone gemstone = session.Player.Inventory.Items[equipUid].Stats.GemSockets[slot].Gemstone;
+            Gemstone gemstone = inventory.Items[equipUid].Stats.GemSockets[slot].Gemstone;
             if (gemstone == null)
             {
                 return;
@@ -229,7 +230,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            if (!CheckGemUpgradeIngredients(session.Player.Inventory, metadata))
+            if (!CheckGemUpgradeIngredients(inventory, metadata))
             {
                 return;
             }
@@ -258,7 +259,7 @@ namespace MapleServer2.PacketHandlers.Game
                 OwnerName = gemstone.OwnerName
             };
 
-            session.Player.Inventory.Items[equipUid].Stats.GemSockets[slot].Gemstone = gemstone;
+            inventory.Items[equipUid].Stats.GemSockets[slot].Gemstone = gemstone;
             session.Send(ItemSocketSystemPacket.UpgradeGem(equipUid, slot, newGem));
         }
 
@@ -290,14 +291,12 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     if (item.Value.Amount >= metadata.IngredientAmounts[i])
                     {
-                        InventoryController.Consume(session, item.Key, metadata.IngredientAmounts[i]);
+                        session.Player.Inventory.ConsumeItem(session, item.Key, metadata.IngredientAmounts[i]);
                         break;
                     }
-                    else
-                    {
-                        metadata.IngredientAmounts[i] -= item.Value.Amount;
-                        InventoryController.Consume(session, item.Key, item.Value.Amount);
-                    }
+
+                    metadata.IngredientAmounts[i] -= item.Value.Amount;
+                    session.Player.Inventory.ConsumeItem(session, item.Key, item.Value.Amount);
                 }
             }
         }
@@ -381,7 +380,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             equipItem.Stats.GemSockets[slot].Gemstone = gemstone;
 
-            InventoryController.Consume(session, gemItem.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, gemItem.Uid, 1);
             session.Send(ItemSocketSystemPacket.MountGem(equipItemUid, gemstone, slot));
         }
 
@@ -426,7 +425,7 @@ namespace MapleServer2.PacketHandlers.Game
             // remove gemstone from item
             equipItem.Stats.GemSockets[slot].Gemstone = null;
 
-            InventoryController.Add(session, gemstoneItem, true);
+            session.Player.Inventory.AddItem(session, gemstoneItem, true);
             session.Send(ItemSocketSystemPacket.ExtractGem(equipItemUid, gemstoneItem.Uid, slot));
         }
     }

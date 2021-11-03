@@ -7,7 +7,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -90,7 +89,7 @@ namespace MapleServer2.PacketHandlers.Game
             int price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
             session.Player.Wallet.Meso.Modify(price * quantity);
 
-            InventoryController.Consume(session, item.Uid, quantity);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, quantity);
 
             session.Send(ShopPacket.Sell(item, quantity));
         }
@@ -130,7 +129,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         return;
                     }
-                    InventoryController.Consume(session, itemCost.Uid, shopItem.Price);
+                    session.Player.Inventory.ConsumeItem(session, itemCost.Uid, shopItem.Price);
                     break;
                 default:
                     session.SendNotice($"Unknown currency: {shopItem.TokenType}");
@@ -143,7 +142,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = quantity * shopItem.Quantity,
                 Rarity = shopItem.ItemRank
             };
-            InventoryController.Add(session, item, true);
+            session.Player.Inventory.AddItem(session, item, true);
 
             // complete purchase
             session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));

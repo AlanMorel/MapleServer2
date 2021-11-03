@@ -4,7 +4,6 @@ using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game
@@ -38,16 +37,18 @@ namespace MapleServer2.Commands.Game
                 trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
                 return;
             }
-            QuestStatus questStatus = trigger.Session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+
+            Player player = trigger.Session.Player;
+            QuestStatus questStatus = player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
             if (questStatus == null)
             {
-                questStatus = new QuestStatus(trigger.Session.Player, QuestMetadataStorage.GetMetadata(questId));
-                trigger.Session.Player.QuestList.Add(questStatus);
+                questStatus = new QuestStatus(player, QuestMetadataStorage.GetMetadata(questId));
+                player.QuestList.Add(questStatus);
             }
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            trigger.Session.Player.Levels.GainExp(questStatus.Reward.Exp);
-            trigger.Session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+            player.Levels.GainExp(questStatus.Reward.Exp);
+            player.Wallet.Meso.Modify(questStatus.Reward.Money);
 
             foreach (QuestRewardItem reward in questStatus.RewardItems)
             {
@@ -56,9 +57,9 @@ namespace MapleServer2.Commands.Game
                     Amount = reward.Count,
                     Rarity = reward.Rank
                 };
-                if (newItem.RecommendJobs.Contains(trigger.Session.Player.Job) || newItem.RecommendJobs.Contains(0))
+                if (newItem.RecommendJobs.Contains(player.Job) || newItem.RecommendJobs.Contains(0))
                 {
-                    InventoryController.Add(trigger.Session, newItem, true);
+                    player.Inventory.AddItem(trigger.Session, newItem, true);
                 }
             }
             trigger.Session.Send(QuestPacket.CompleteQuest(questId, true));
@@ -67,7 +68,7 @@ namespace MapleServer2.Commands.Game
             IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
             foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
             {
-                trigger.Session.Player.QuestList.Add(new QuestStatus(trigger.Session.Player, kvp.Value));
+                player.QuestList.Add(new QuestStatus(player, kvp.Value));
             }
         }
     }

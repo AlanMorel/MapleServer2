@@ -122,7 +122,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(ChatStickerPacket.AddSticker(item.Id, item.Function.ChatEmoticonAdd.Id, expiration));
             session.Player.ChatSticker.Add(new((byte) item.Function.ChatEmoticonAdd.Id, expiration));
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleSelectItemBox(GameSession session, PacketReader packet, Item item)
@@ -151,7 +151,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.OpenMassiveEvent.FieldId));
             //  session.FieldManager.BroadcastPacket(FieldPacket.AddPortal()
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleLevelPotion(GameSession session, Item item)
@@ -163,7 +163,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Player.Levels.SetLevel(item.Function.LevelPotion.TargetLevel);
 
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleTitleScroll(GameSession session, Item item)
@@ -177,7 +177,7 @@ namespace MapleServer2.PacketHandlers.Game
 
             session.Send(UserEnvPacket.AddTitle(item.Function.Id));
 
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleOpenInstrument(Item item)
@@ -193,7 +193,7 @@ namespace MapleServer2.PacketHandlers.Game
             long vipTime = item.Function.VIPCoupon.Duration * 3600;
 
             PremiumClubHandler.ActivatePremium(session, vipTime);
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleStoryBook(GameSession session, Item item)
@@ -207,7 +207,7 @@ namespace MapleServer2.PacketHandlers.Game
             GameServer.HongBaoManager.AddHongBao(newHongBao);
 
             session.FieldManager.BroadcastPacket(PlayerHostPacket.OpenHongbao(session.Player, newHongBao));
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         private static void HandleOpenGachaBox(GameSession session, PacketReader packet, Item capsule)
@@ -241,14 +241,14 @@ namespace MapleServer2.PacketHandlers.Game
                     GachaDismantleId = gacha.GachaId
                 };
                 items.Add(gachaItem);
-                InventoryController.Consume(session, capsule.Uid, 1);
+                session.Player.Inventory.ConsumeItem(session, capsule.Uid, 1);
             }
 
             session.Send(FireWorksPacket.Gacha(items));
 
             foreach (Item item in items)
             {
-                InventoryController.Add(session, item, true);
+                session.Player.Inventory.AddItem(session, item, true);
             }
         }
 
@@ -337,8 +337,8 @@ namespace MapleServer2.PacketHandlers.Game
                 items,
                 0, out Mail mail);
 
-            InventoryController.Consume(session, item.Uid, 1);
-            InventoryController.Add(session, badge, true);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
+            session.Player.Inventory.AddItem(session, badge, true);
             List<string> noticeParameters = new List<string>
             {
                 otherPlayer.Name
@@ -363,15 +363,15 @@ namespace MapleServer2.PacketHandlers.Game
                 CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
             };
 
-            InventoryController.Consume(session, item.Uid, 1);
-            InventoryController.Add(session, badge, true);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
+            session.Player.Inventory.AddItem(session, badge, true);
             session.Send(PetSkinPacket.Extract(petUid, badge));
         }
 
         public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
         {
             int fieldID = int.Parse(packet.ReadUnicodeString());
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
             session.Player.Warp(fieldID);
         }
 
@@ -387,7 +387,7 @@ namespace MapleServer2.PacketHandlers.Game
             AdBalloon balloon = new AdBalloon(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
             session.FieldManager.State.AddInteractObject(balloon);
             session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         public static void HandleExpandCharacterSlot(GameSession session, Item item)
@@ -402,7 +402,7 @@ namespace MapleServer2.PacketHandlers.Game
             account.CharacterSlots++;
             DatabaseManager.Accounts.Update(account);
             session.Send(CouponUsePacket.CharacterSlotAdded());
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         }
 
         public static void HandleBeautyVoucher(GameSession session, Item item)
@@ -422,7 +422,7 @@ namespace MapleServer2.PacketHandlers.Game
             string characterName = packet.ReadUnicodeString();
             session.Player.Name = characterName;
 
-            InventoryController.Consume(session, item.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
 
             session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
             // TODO: Needs to redirect player to character selection screen after pop-up

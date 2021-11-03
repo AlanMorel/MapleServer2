@@ -30,6 +30,7 @@ namespace MapleServer2.Types
         public int ShopID { get; set; }
         public ItemHousingCategory HousingCategory;
         public string BlackMarketCategory;
+        public ItemType Type { get; set; }
 
         public int Id;
         public long Uid;
@@ -224,6 +225,18 @@ namespace MapleServer2.Types
             RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
             HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
             BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
+            Type = GetItemType(Id);
+        }
+
+        public static ItemType GetItemType(int itemId)
+        {
+            return (itemId / 100000) switch
+            {
+                501 or 502 or 503 or 504 or 505 => ItemType.Furnishing,
+                600 => ItemType.Pet,
+                900 => ItemType.Currency,
+                _ => ItemType.None,
+            };
         }
     }
 }

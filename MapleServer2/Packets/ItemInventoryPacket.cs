@@ -68,7 +68,7 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
-        public static PacketWriter LoadItem(List<Item> items)
+        public static PacketWriter LoadItem(ICollection<Item> items)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_INVENTORY);
             pWriter.Write(InventoryMode.LoadItem);

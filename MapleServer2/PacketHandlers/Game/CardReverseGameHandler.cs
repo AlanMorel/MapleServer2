@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -58,7 +57,7 @@ namespace MapleServer2.PacketHandlers.Game
                 session.Send(CardReverseGamePacket.Notice());
                 return;
             }
-            InventoryController.Consume(session, token.Uid, CardReverseGame.TOKEN_COST);
+            session.Player.Inventory.ConsumeItem(session, token.Uid, CardReverseGame.TOKEN_COST);
 
             session.Send(CardReverseGamePacket.Mix());
         }
@@ -80,7 +79,7 @@ namespace MapleServer2.PacketHandlers.Game
             };
 
             session.Send(CardReverseGamePacket.Select(index));
-            InventoryController.Add(session, item, true);
+            session.Player.Inventory.AddItem(session, item, true);
         }
     }
 }

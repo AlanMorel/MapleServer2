@@ -5,7 +5,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -95,7 +94,7 @@ namespace MapleServer2.PacketHandlers.Game
                 };
                 if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
                 {
-                    InventoryController.Add(session, newItem, true);
+                    session.Player.Inventory.AddItem(session, newItem, true);
                 }
             }
 
@@ -130,7 +129,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Amount = rewardItem.Count,
                     Rarity = rewardItem.Rank
                 };
-                InventoryController.Add(session, item, true);
+                session.Player.Inventory.AddItem(session, item, true);
             }
             questStatus.Completed = true;
             questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
