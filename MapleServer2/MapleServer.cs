@@ -18,6 +18,7 @@ namespace MapleServer2
     public static class MapleServer
     {
         private static GameServer GameServer;
+        private static LoginServer LoginServer;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static async Task Main()
@@ -62,8 +63,8 @@ namespace MapleServer2
 
             IContainer loginContainer = LoginContainerConfig.Configure();
             using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
-            LoginServer loginServer = loginScope.Resolve<LoginServer>();
-            loginServer.Start();
+            LoginServer = loginScope.Resolve<LoginServer>();
+            LoginServer.Start();
 
             IContainer gameContainer = GameContainerConfig.Configure();
             using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
@@ -81,7 +82,7 @@ namespace MapleServer2
                     case "exit":
                     case "quit":
                         GameServer.Stop();
-                        loginServer.Stop();
+                        LoginServer.Stop();
                         return;
                     case "send":
                         if (input.Length <= 1)
@@ -93,7 +94,7 @@ namespace MapleServer2
                         pWriter.WriteBytes(packet.ToByteArray());
                         Logger.Info(pWriter);
 
-                        foreach (Session session in GetSessions(loginServer, GameServer))
+                        foreach (Session session in GetSessions(LoginServer, GameServer))
                         {
                             Logger.Info($"Sending packet to {session}: {pWriter}");
                             session.Send(pWriter);
@@ -116,6 +117,10 @@ namespace MapleServer2
                 }
             }
         }
+
+        public static GameServer GetGameServer() => GameServer;
+
+        public static LoginServer GetLoginServer() => LoginServer;
 
         private static void DailyReset()
         {
