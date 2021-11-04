@@ -69,6 +69,8 @@ namespace MapleServer2.Network
 
         public abstract void AddSession(T session);
 
+        public abstract void RemoveSession(T session);
+
         private void AcceptTcpClient(IAsyncResult result)
         {
             T session = Context.Resolve<T>();

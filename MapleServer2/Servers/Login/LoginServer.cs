@@ -23,6 +23,12 @@ namespace MapleServer2.Servers.Login
             session.Start();
         }
 
+        public override void RemoveSession(LoginSession session)
+        {
+            Sessions.Remove(session);
+            Logger.Info($"Login client disconnected: {session}");
+        }
+
         public List<LoginSession> GetSessions()
         {
             return Sessions;
