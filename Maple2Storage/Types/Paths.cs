@@ -12,5 +12,7 @@
         public static readonly string HASH_DIR = $"{SOLUTION_DIR}/GameDataParser/Hash";
 
         public static readonly string AI_DIR = $"{SOLUTION_DIR}/MobAI";
+
+        public static readonly string DATA_DIR = $"{SOLUTION_DIR}/MapleWebServer/Data";
     }
 }

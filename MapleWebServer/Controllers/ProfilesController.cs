@@ -1,8 +1,6 @@
 ﻿using System.Text;
-using MapleWebServer.Constants;
-using Microsoft.AspNetCore.Http;
+using Maple2Storage.Types;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace MapleWebServer.Controllers
 {
@@ -20,7 +18,7 @@ namespace MapleWebServer.Controllers
         public IActionResult Get(string characterId, string hash)
         {
             string requestImagePath = HttpContext.Request.Path;
-            string fullPath = $"{Paths.DATA}/profiles/{characterId}/{hash}.png".Replace("$", "");
+            string fullPath = $"{Paths.DATA_DIR}/profiles/{characterId}/{hash}.png".Replace("$", "");
             if (!System.IO.File.Exists(fullPath))
             {
                 return BadRequest();
@@ -47,7 +45,7 @@ namespace MapleWebServer.Controllers
             long accountId = (long) BitConverter.ToUInt64(array.Skip(8).Take(8).ToArray(), 0);
             long characterId = (long) BitConverter.ToUInt64(array.Skip(16).Take(8).ToArray(), 0);
 
-            string filePath = $"{Paths.DATA}/profiles/{characterId}/";
+            string filePath = $"{Paths.DATA_DIR}/profiles/{characterId}/";
             Directory.CreateDirectory(filePath);
 
             byte[] fileBytes = array.Skip(48).ToArray();
