@@ -6,7 +6,6 @@ using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Servers.Login;
 
 namespace MapleServer2.PacketHandlers.Common
 {
