@@ -3,12 +3,13 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
 using MapleServer2.Database;
+using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Common
 {
-    public class QuitHandler : GamePacketHandler
+    public class QuitHandler : CommonPacketHandler
     {
         public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
         private readonly IPEndPoint LoginEndpoint;
@@ -26,17 +27,24 @@ namespace MapleServer2.PacketHandlers.Game
             Quit = 0x01
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
+        protected override void HandleCommon(Session session, PacketReader packet)
         {
             QuitMode mode = (QuitMode) packet.ReadByte();
 
             switch (mode)
             {
                 case QuitMode.ChangeCharacter:
-                    HandleChangeCharacter(session);
+                    if (session is GameSession)
+                    {
+                        HandleChangeCharacter(session as GameSession);
+                    }
                     break;
                 case QuitMode.Quit:
-                    HandleQuit(session);
+                    if (session is GameSession)
+                    {
+                        HandleQuit(session as GameSession);
+                    }
+                    session.Dispose();
                     break;
                 default:
                     IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -58,7 +66,6 @@ namespace MapleServer2.PacketHandlers.Game
             session.ReleaseField(session.Player);
             session.FieldManager.RemovePlayer(session, session.FieldPlayer);
             DatabaseManager.Characters.Update(session.Player);
-            session.Dispose();
         }
     }
 }

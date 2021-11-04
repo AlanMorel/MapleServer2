@@ -4,7 +4,9 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
+using MapleServer2.Network;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
 
@@ -48,6 +50,20 @@ namespace MapleServer2.PacketHandlers.Login
                 if (!DatabaseManager.Accounts.Authenticate(username, password, out account))
                 {
                     session.Send(LoginResultPacket.IncorrectPassword());
+                    return;
+                }
+
+                Session loggedInAccount = MapleServer.GetSessions(MapleServer.GetLoginServer(), MapleServer.GetGameServer()).FirstOrDefault(p => p switch
+                {
+                    LoginSession s => s.AccountId == account.Id,
+                    GameSession s => s.Player.AccountId == account.Id,
+                    _ => false
+                });
+
+                if (loggedInAccount != null)
+                {
+                    loggedInAccount.Disconnect();
+                    session.Send(LoginResultPacket.AccountAlreadyLoggedIn());
                     return;
                 }
             }

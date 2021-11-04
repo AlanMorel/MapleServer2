@@ -160,7 +160,7 @@ namespace MapleServer2
         }
 
         // Testing Stuff outside of a main arg
-        private static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer)
+        public static IEnumerable<Session> GetSessions(LoginServer loginServer, GameServer gameServer)
         {
             List<Session> sessions = new List<Session>();
             sessions.AddRange(loginServer.GetSessions());
