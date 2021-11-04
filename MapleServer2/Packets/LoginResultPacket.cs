@@ -77,6 +77,15 @@ namespace MapleServer2.Packets
             return pWriter;
         }
 
+        public static PacketWriter AccountAlreadyLoggedIn()
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
+            pWriter.Write(LoginModes.AccountAlreadyLoggedIn);
+            pWriter.WriteZero(45);
+
+            return pWriter;
+        }
+
         public static PacketWriter AccountBanned()
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
