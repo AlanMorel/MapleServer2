@@ -49,6 +49,12 @@ namespace MapleServer2.Servers.Game
             session.Start();
         }
 
+        public override void RemoveSession(GameSession session)
+        {
+            Sessions.Remove(session);
+            Logger.Info($"Game client disconnected: {session}");
+        }
+
         public List<GameSession> GetSessions()
         {
             return Sessions;

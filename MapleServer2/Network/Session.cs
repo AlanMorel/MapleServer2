@@ -9,6 +9,8 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
+using MapleServer2.Servers.Login;
 using NLog;
 
 namespace MapleServer2.Network
@@ -86,6 +88,16 @@ namespace MapleServer2.Network
                 return;
             }
 
+            if (this is LoginSession)
+            {
+                MapleServer.GetLoginServer().RemoveSession(this as LoginSession);
+            }
+
+            if (this is GameSession)
+            {
+                MapleServer.GetGameServer().RemoveSession(this as GameSession);
+            }
+
             Disposed = true;
             Complete();
             Thread.Join(STOP_TIMEOUT);
@@ -111,7 +123,7 @@ namespace MapleServer2.Network
                 return;
             }
 
-            Logger.Info($"Disconnected {this}");
+            EndSession();
             ((IDisposable) this).Dispose();
         }
 
@@ -148,12 +160,7 @@ namespace MapleServer2.Network
         public void SendFinal(PacketWriter packet)
         {
             SendInternal(packet, packet.Length);
-            StopThreads();
-        }
-
-        private void StopThreads()
-        {
-            EndSession();
+            Disconnect();
         }
 
         public override string ToString() => $"{GetType().Name} from {Name}";
@@ -178,7 +185,7 @@ namespace MapleServer2.Network
             {
                 if (!Disposed)
                 {
-                    Logger.Error($"Exception on session thread: {ex}");
+                    Logger.Fatal($"Exception on session thread: {ex}");
                 }
             }
             finally
@@ -254,7 +261,7 @@ namespace MapleServer2.Network
             {
                 if (!Disposed)
                 {
-                    Logger.Error($"Exception reading recv packet: {ex}");
+                    Logger.Fatal($"Exception in recv PipeScheduler: {ex}");
                 }
             }
             finally
