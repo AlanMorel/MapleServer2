@@ -6,7 +6,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -96,7 +95,7 @@ namespace MapleServer2.PacketHandlers.Game
                 default:
                     break;
                 case RewardType.item:
-                    InventoryController.Add(session, new Item(grade.RewardCode, grade.RewardValue), true);
+                    session.Player.Inventory.AddItem(session, new Item(grade.RewardCode, grade.RewardValue), true);
                     break;
                 case RewardType.title:
                     session.Player.Titles.Add(grade.RewardCode);

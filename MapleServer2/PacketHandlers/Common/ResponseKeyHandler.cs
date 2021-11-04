@@ -7,7 +7,6 @@ using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Common
@@ -91,7 +90,7 @@ namespace MapleServer2.PacketHandlers.Common
             // Load inventory tabs
             foreach (InventoryTab tab in Enum.GetValues(typeof(InventoryTab)))
             {
-                InventoryController.LoadInventoryTab(session, tab);
+                player.Inventory.LoadInventoryTab(session, tab);
             }
 
             if (player.Account.HomeId != 0)

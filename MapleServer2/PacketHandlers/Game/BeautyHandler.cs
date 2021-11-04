@@ -9,7 +9,6 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -280,7 +279,8 @@ namespace MapleServer2.PacketHandlers.Game
 
             if (selection == 0) // player chose previous hair
             {
-                Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
+                Player player = session.Player;
+                Dictionary<ItemSlot, Item> cosmetics = player.Inventory.Cosmetics;
                 //Remove current hair
                 if (cosmetics.Remove(ItemSlot.HR, out Item newHair))
                 {
@@ -289,12 +289,12 @@ namespace MapleServer2.PacketHandlers.Game
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, newHair));
                 }
 
-                cosmetics[ItemSlot.HR] = session.Player.HairInventory.RandomHair; // apply the previous hair
+                cosmetics[ItemSlot.HR] = player.HairInventory.RandomHair; // apply the previous hair
 
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, session.Player.HairInventory.RandomHair, ItemSlot.HR));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
 
                 Item voucher = new Item(20300246) { }; // Chic Salon Voucher
-                InventoryController.Add(session, voucher, true);
+                player.Inventory.AddItem(session, voucher, true);
 
                 session.Send(BeautyPacket.ChooseRandomHair(voucher.Id));
             }
@@ -453,7 +453,8 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long itemUid = packet.ReadLong();
 
-            Item voucher = session.Player.Inventory.Items[itemUid];
+            Player player = session.Player;
+            Item voucher = player.Inventory.Items[itemUid];
             if (voucher == null || voucher.Function.Name != "ItemChangeBeauty")
             {
                 return;
@@ -465,11 +466,11 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            List<BeautyItem> beautyItems = BeautyMetadataStorage.GetGenderItems(beautyShop.ShopId, session.Player.Gender);
+            List<BeautyItem> beautyItems = BeautyMetadataStorage.GetGenderItems(beautyShop.ShopId, player.Gender);
 
-            session.Player.ShopId = beautyShop.ShopId;
+            player.ShopId = beautyShop.ShopId;
             session.Send(BeautyPacket.LoadBeautyShop(beautyShop, beautyItems));
-            InventoryController.Consume(session, voucher.Uid, 1);
+            player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
 
         private static void ModifyBeauty(GameSession session, PacketReader packet, Item beautyItem)
@@ -566,7 +567,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             session.Send(BeautyPacket.UseVoucher(voucher.Id, 1));
-            InventoryController.Consume(session, voucher.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
             return true;
         }
 
@@ -616,7 +617,7 @@ namespace MapleServer2.PacketHandlers.Game
                     {
                         return false;
                     }
-                    InventoryController.Consume(session, itemCost.Uid, tokenCost);
+                    session.Player.Inventory.ConsumeItem(session, itemCost.Uid, tokenCost);
                     return true;
                 default:
                     session.SendNotice($"Unknown currency: {type}");

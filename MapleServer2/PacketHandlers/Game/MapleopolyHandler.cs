@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -75,7 +74,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else if (token != null && token.Amount >= Mapleopoly.TOKEN_COST)
             {
-                InventoryController.Consume(session, token.Uid, Mapleopoly.TOKEN_COST);
+                session.Player.Inventory.ConsumeItem(session, token.Uid, Mapleopoly.TOKEN_COST);
             }
             else
             {
@@ -113,7 +112,7 @@ namespace MapleServer2.PacketHandlers.Game
                         Amount = currentTile.ItemAmount,
                         Rarity = currentTile.ItemRarity
                     };
-                    InventoryController.Add(session, item, true);
+                    session.Player.Inventory.AddItem(session, item, true);
                     break;
                 case MapleopolyTileType.Backtrack:
                     session.Player.Mapleopoly.TotalTileCount -= currentTile.TileParameter;
@@ -163,7 +162,7 @@ namespace MapleServer2.PacketHandlers.Game
                         Amount = mapleopolyItem1.ItemAmount,
                         Rarity = mapleopolyItem1.ItemRarity
                     };
-                    InventoryController.Add(session, item1, true);
+                    session.Player.Inventory.AddItem(session, item1, true);
                 }
 
                 // Check if there's any other item to give for hitting a specific number of trips
@@ -177,7 +176,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Amount = mapleopolyItem2.ItemAmount,
                     Rarity = mapleopolyItem2.ItemRarity
                 };
-                InventoryController.Add(session, item2, true);
+                session.Player.Inventory.AddItem(session, item2, true);
             }
         }
     }

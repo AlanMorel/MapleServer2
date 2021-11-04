@@ -2,7 +2,6 @@
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -48,7 +47,7 @@ namespace MapleServer2.Types
             }
             else
             {
-                InventoryController.Remove(session, uid, out Item removedItem);
+                session.Player.Inventory.RemoveItem(session, uid, out Item removedItem);
                 item = removedItem;
             }
 
@@ -153,11 +152,14 @@ namespace MapleServer2.Types
             IEnumerable<Item> items = Items.Where(x => x is not null);
 
             // group items by item id and sum the amount, return a new list of items with updated amount (ty gh copilot)
-            List<Item> groupedItems = items.GroupBy(x => x.Id).Select(x => new Item(x.First())
+            List<Item> groupedItems = items.Where(x => x.StackLimit > 1).GroupBy(x => x.Id).Select(x => new Item(x.First())
             {
                 Amount = x.Sum(y => y.Amount),
                 BankInventoryId = Id
             }).ToList();
+
+            // Add items that can't be grouped
+            groupedItems.AddRange(items.Where(x => x.StackLimit == 1));
 
             // sort items by id
             groupedItems.Sort((x, y) => x.Id.CompareTo(y.Id));

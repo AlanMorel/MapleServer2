@@ -3,7 +3,6 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 
 namespace MapleServer2.Types
 {
@@ -16,7 +15,7 @@ namespace MapleServer2.Types
         {
             foreach (Tuple<long, int> slot in Slots.Where(i => i != null))
             {
-                InventoryController.Consume(session, slot.Item1, slot.Item2);
+                session.Player.Inventory.ConsumeItem(session, slot.Item1, slot.Item2);
             }
             foreach (KeyValuePair<int, int> reward in Rewards)
             {
@@ -25,7 +24,7 @@ namespace MapleServer2.Types
                     Amount = reward.Value
                 };
 
-                InventoryController.Add(session, item, true);
+                session.Player.Inventory.AddItem(session, item, true);
             }
             Slots = new Tuple<long, int>[100];
             session.Send(ItemBreakPacket.ShowRewards(Rewards));

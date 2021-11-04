@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -51,7 +50,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Rarity = 4
                 };
 
-                InventoryController.Add(session, item, true);
+                session.Player.Inventory.AddItem(session, item, true);
             }
             else if (reward.Type.Equals("statPoint"))
             {

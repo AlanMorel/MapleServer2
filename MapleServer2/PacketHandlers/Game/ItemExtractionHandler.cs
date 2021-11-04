@@ -4,7 +4,6 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -48,8 +47,8 @@ namespace MapleServer2.PacketHandlers.Game
                 Color = sourceItem.Color,
             };
 
-            InventoryController.Consume(session, anvilItemUid, metadata.ScrollCount);
-            InventoryController.Add(session, resultItem, true);
+            session.Player.Inventory.ConsumeItem(session, anvilItemUid, metadata.ScrollCount);
+            session.Player.Inventory.AddItem(session, resultItem, true);
             sourceItem.RemainingGlamorForges -= 1;
 
             session.Send(ItemExtractionPacket.Extract(sourceItem));

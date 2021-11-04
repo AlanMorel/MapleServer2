@@ -11,7 +11,6 @@ using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -957,12 +956,12 @@ namespace MapleServer2.PacketHandlers.Game
                     rewardsIds.Add(20300078);
                     rewardsIds.Add(20000031);
                     rewardsIds.Add(20300040);
-                    InventoryController.Add(session, new Item(20300559), true);
+                    session.Player.Inventory.AddItem(session, new Item(20300559), true);
                     break;
             }
 
             home.GainExp(decorationScore);
-            InventoryController.Add(session, new Item(rewardsIds.OrderBy(x => RandomProvider.Get().Next()).First()), true);
+            session.Player.Inventory.AddItem(session, new Item(rewardsIds.OrderBy(x => RandomProvider.Get().Next()).First()), true);
             home.DecorationRewardTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
             session.Send(ResponseCubePacket.DecorationScore(home));
         }
@@ -987,7 +986,7 @@ namespace MapleServer2.PacketHandlers.Game
                 return;
             }
 
-            InventoryController.Add(session, new Item(metadata.ItemId), true);
+            session.Player.Inventory.AddItem(session, new Item(metadata.ItemId), true);
             home.InteriorRewardsClaimed.Add(rewardId);
             session.Send(ResponseCubePacket.DecorationScore(home));
         }

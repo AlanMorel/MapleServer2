@@ -2,8 +2,6 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
-using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
 {
@@ -25,7 +23,6 @@ namespace MapleServer2.PacketHandlers.Game
         public override void Handle(GameSession session, PacketReader packet)
         {
             RequestItemInventoryMode mode = (RequestItemInventoryMode) packet.ReadByte();
-            Inventory inventory = session.Player.Inventory;
 
             switch (mode)
             {
@@ -39,7 +36,7 @@ namespace MapleServer2.PacketHandlers.Game
                     HandleDropBound(session, packet);
                     break;
                 case RequestItemInventoryMode.Sort:
-                    HandleSort(session, packet, inventory);
+                    HandleSort(session, packet);
                     break;
                 case RequestItemInventoryMode.Expand:
                     HandleExpand(session, packet);
@@ -54,7 +51,7 @@ namespace MapleServer2.PacketHandlers.Game
         {
             long uid = packet.ReadLong(); // Grabs incoming item packet uid
             short dstSlot = packet.ReadShort(); // Grabs incoming item packet slot
-            InventoryController.MoveItem(session, uid, dstSlot);
+            session.Player.Inventory.MoveItem(session, uid, dstSlot);
         }
 
         private static void HandleDrop(GameSession session, PacketReader packet)
@@ -62,25 +59,25 @@ namespace MapleServer2.PacketHandlers.Game
             // TODO: Make sure items are tradable?
             long uid = packet.ReadLong();
             int amount = packet.ReadInt(); // Grabs incoming item packet amount
-            InventoryController.DropItem(session, uid, amount, false);
+            session.Player.Inventory.DropItem(session, uid, amount, false);
         }
 
         private static void HandleDropBound(GameSession session, PacketReader packet)
         {
             long uid = packet.ReadLong();
-            InventoryController.DropItem(session, uid, 0, true);
+            session.Player.Inventory.DropItem(session, uid, 0, true);
         }
 
-        private static void HandleSort(GameSession session, PacketReader packet, Inventory inventory)
+        private static void HandleSort(GameSession session, PacketReader packet)
         {
             InventoryTab tab = (InventoryTab) packet.ReadShort();
-            InventoryController.SortInventory(session, inventory, tab);
+            session.Player.Inventory.SortInventory(session, tab);
         }
 
         private static void HandleExpand(GameSession session, PacketReader packet)
         {
             InventoryTab tab = (InventoryTab) packet.ReadByte();
-            InventoryController.ExpandInventory(session, tab);
+            session.Player.Inventory.ExpandInventory(session, tab);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.Commands.Game
@@ -43,7 +42,7 @@ namespace MapleServer2.Commands.Game
             item.Stats = new ItemStats(item);
 
             // Simulate looting item
-            InventoryController.Add(trigger.Session, item, true);
+            trigger.Session.Player.Inventory.AddItem(trigger.Session, item, true);
         }
     }
 }

@@ -7,7 +7,6 @@ using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -136,7 +135,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             else
             {
-                InventoryController.Consume(session, item.Uid, quantity);
+                session.Player.Inventory.ConsumeItem(session, item.Uid, quantity);
             }
 
             BlackMarketListing listing = new BlackMarketListing(session.Player, item, quantity, price, deposit);

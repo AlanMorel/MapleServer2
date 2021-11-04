@@ -3,7 +3,6 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -46,7 +45,8 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Remove the item from the users inventory
-            InventoryController.Remove(session, itemUid, out Item item);
+            Inventory inventory = session.Player.Inventory;
+            inventory.RemoveItem(session, itemUid, out Item item);
             if (item == null)
             {
                 return;
@@ -65,7 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 prevItem.Slot = item.Slot;
                 prevItem.IsEquipped = false;
-                InventoryController.Add(session, prevItem, false);
+                inventory.AddItem(session, prevItem, false);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
 
                 if (prevItem.InventoryTab == InventoryTab.Gear)
@@ -86,7 +86,7 @@ namespace MapleServer2.PacketHandlers.Game
                         prevItem2.Slot = item.Slot;
                     }
                     prevItem2.IsEquipped = false;
-                    InventoryController.Add(session, prevItem2, false);
+                    inventory.AddItem(session, prevItem2, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                 }
             }
@@ -104,7 +104,7 @@ namespace MapleServer2.PacketHandlers.Game
                         {
                             prevItem2.Slot = item.Slot;
                             prevItem2.IsEquipped = false;
-                            InventoryController.Add(session, prevItem2, false);
+                            inventory.AddItem(session, prevItem2, false);
                             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
                         }
                     }
@@ -127,16 +127,17 @@ namespace MapleServer2.PacketHandlers.Game
         private static void HandleUnequipItem(GameSession session, PacketReader packet)
         {
             long itemUid = packet.ReadLong();
+            Inventory inventory = session.Player.Inventory;
 
             // Unequip gear
-            KeyValuePair<ItemSlot, Item> kvpEquips = session.Player.Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
+            KeyValuePair<ItemSlot, Item> kvpEquips = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
             if (kvpEquips.Value != null)
             {
-                if (session.Player.Inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
+                if (inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
                     unequipItem.IsEquipped = false;
-                    InventoryController.Add(session, unequipItem, false);
+                    inventory.AddItem(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
 
                     DecreaseStats(session, unequipItem);
@@ -146,14 +147,14 @@ namespace MapleServer2.PacketHandlers.Game
             }
 
             // Unequip cosmetics
-            KeyValuePair<ItemSlot, Item> kvpCosmetics = session.Player.Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
+            KeyValuePair<ItemSlot, Item> kvpCosmetics = inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
             if (kvpCosmetics.Value != null)
             {
-                if (session.Player.Inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
+                if (inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
                 {
                     unequipItem.Slot = -1;
                     unequipItem.IsEquipped = false;
-                    InventoryController.Add(session, unequipItem, false);
+                    inventory.AddItem(session, unequipItem, false);
                     session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
                 }
             }

@@ -79,8 +79,8 @@ namespace MapleServer2.PacketHandlers.Game
                 }
             }
 
+            session.Player.NpcTalk = new NpcTalk(npc.Value, npcQuests);
             NpcTalk npcTalk = session.Player.NpcTalk;
-            npcTalk = new NpcTalk(npc.Value, npcQuests);
 
             ScriptLoader scriptLoader = new ScriptLoader($"Npcs/{npc.Value.Id}", session);
 

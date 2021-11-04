@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -46,7 +45,7 @@ namespace MapleServer2.PacketHandlers.Game
             long itemUid = packet.ReadLong();
 
             // Remove from inventory
-            bool success = InventoryController.Remove(session, itemUid, out Item item);
+            bool success = session.Player.Inventory.RemoveItem(session, itemUid, out Item item);
 
             if (!success)
             {
@@ -60,7 +59,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 // Add to inventory
                 badges[index].IsEquipped = false;
-                InventoryController.Add(session, badges[index], false);
+                session.Player.Inventory.AddItem(session, badges[index], false);
 
                 // Unequip
                 badges[index] = default;
@@ -91,7 +90,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             // Add to inventory
             item.IsEquipped = false;
-            InventoryController.Add(session, item, false);
+            session.Player.Inventory.AddItem(session, item, false);
 
             // Unequip
             badges[index] = default;

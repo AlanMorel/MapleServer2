@@ -5,7 +5,7 @@ using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
+
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -446,7 +446,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = property.AttendGuildCoin
             };
 
-            InventoryController.Add(session, guildCoins, true);
+            session.Player.Inventory.AddItem(session, guildCoins, true);
             guild.AddExp(session, property.AttendExp);
             guild.ModifyFunds(session, property, property.AttendFunds);
             guild.BroadcastPacketGuild(GuildPacket.UpdatePlayerContribution(member, contributionAmount));
@@ -862,7 +862,7 @@ namespace MapleServer2.PacketHandlers.Game
                 Amount = guildProperty.DonateGuildCoin * donateQuantity
             };
 
-            InventoryController.Add(session, coins, true);
+            session.Player.Inventory.AddItem(session, coins, true);
 
             int contribution = GuildContributionMetadataStorage.GetContributionAmount("donation");
 

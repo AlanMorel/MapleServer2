@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -96,10 +95,10 @@ namespace MapleServer2.PacketHandlers.Game
 
             inventory.TemporaryStorage[newItem.Uid] = newItem;
 
-            InventoryController.Consume(session, scroll.Uid, 1);
+            session.Player.Inventory.ConsumeItem(session, scroll.Uid, 1);
             if (useLock)
             {
-                InventoryController.Consume(session, scrollLock.Uid, 1);
+                session.Player.Inventory.ConsumeItem(session, scrollLock.Uid, 1);
             }
 
             session.Send(ChangeAttributesScrollPacket.PreviewNewItem(newItem));

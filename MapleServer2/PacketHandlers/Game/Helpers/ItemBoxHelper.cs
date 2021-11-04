@@ -4,7 +4,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers
@@ -53,7 +52,8 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 return;
             }
 
-            InventoryController.Consume(session, sourceItem.Uid, 1);
+            Inventory inventory = session.Player.Inventory;
+            inventory.ConsumeItem(session, sourceItem.Uid, 1);
 
             // Select boxes disregards group ID. Adding these all to a filtered list
             List<DropGroupContent> dropContentsList = new List<DropGroupContent>();
@@ -87,7 +87,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     Rarity = dropContents.Rarity
 
                 };
-                InventoryController.Add(session, newItem, true);
+                inventory.AddItem(session, newItem, true);
             }
         }
 
@@ -106,18 +106,19 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                 return;
             }
 
+            Inventory inventory = session.Player.Inventory;
             if (box.RequiredItemId > 0)
             {
-                Item requiredItem = session.Player.Inventory.Items[box.RequiredItemId];
+                Item requiredItem = inventory.Items[box.RequiredItemId];
                 if (requiredItem == null)
                 {
                     return;
                 }
 
-                InventoryController.Consume(session, requiredItem.Uid, 1);
+                inventory.ConsumeItem(session, requiredItem.Uid, 1);
             }
 
-            InventoryController.Consume(session, item.Uid, box.AmountRequired);
+            inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
 
             Random rng = RandomProvider.Get();
 
@@ -133,7 +134,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                         List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
                         foreach (Item newItem in items)
                         {
-                            InventoryController.Add(session, newItem, true);
+                            inventory.AddItem(session, newItem, true);
                         }
                     }
                 }
@@ -148,7 +149,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers
                     List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
                     foreach (Item newItem in items)
                     {
-                        InventoryController.Add(session, newItem, true);
+                        inventory.AddItem(session, newItem, true);
                     }
                 }
             }

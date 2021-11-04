@@ -2,7 +2,6 @@
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -89,7 +88,7 @@ namespace MapleServer2.PacketHandlers.Game
             }
             item.Slot = destinationSlot;
 
-            InventoryController.Add(session, item, false);
+            session.Player.Inventory.AddItem(session, item, false);
         }
 
         private static void HandleMove(GameSession session, PacketReader packet)

@@ -5,7 +5,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -66,7 +65,7 @@ namespace MapleServer2.PacketHandlers.Game
             Item rewardBox = new Item(rewardBoxItemId) { Amount = 1 };
 
             // give player the reward box item
-            InventoryController.Add(session, rewardBox, true);
+            session.Player.Inventory.AddItem(session, rewardBox, true);
 
             // mark reward box as claimed
             session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, rewardBox));
@@ -139,7 +138,7 @@ namespace MapleServer2.PacketHandlers.Game
                     return false;
                 }
 
-                InventoryController.Consume(session, item.Uid, ingredient.Amount);
+                session.Player.Inventory.ConsumeItem(session, item.Uid, ingredient.Amount);
             }
 
             return true;
@@ -156,7 +155,7 @@ namespace MapleServer2.PacketHandlers.Game
                     Rarity = resultItem.Rarity,
                     Amount = resultItem.Amount
                 };
-                InventoryController.Add(session, rewardItem, true);
+                session.Player.Inventory.AddItem(session, rewardItem, true);
                 session.Send(MasteryPacket.GetCraftedItem((MasteryType) (recipe.MasteryType), rewardItem));
             }
 

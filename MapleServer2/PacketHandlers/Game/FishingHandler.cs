@@ -7,7 +7,6 @@ using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -388,7 +387,7 @@ namespace MapleServer2.PacketHandlers.Game
             };
             List<Item> items = new List<Item>() { item };
             session.Send(FishingPacket.CatchItem(items));
-            InventoryController.Add(session, item, true);
+            session.Player.Inventory.AddItem(session, item, true);
         }
     }
 }

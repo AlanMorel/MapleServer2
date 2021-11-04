@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game
@@ -135,7 +134,7 @@ namespace MapleServer2.PacketHandlers.Game
             {
                 item.ExpiryTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + (marketItem.Duration * (24 * 60 * 60));
             }
-            InventoryController.Add(session, item, true);
+            session.Player.Inventory.AddItem(session, item, true);
             session.Send(MeretMarketPacket.Purchase(marketItem, itemIndex, totalQuantity));
         }
 
