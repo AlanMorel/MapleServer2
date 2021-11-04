@@ -88,6 +88,7 @@ namespace MapleServer2.Servers.Game
         {
             Player.Session = null;
             GameServer.BuddyManager.SetFriendSessions(Player);
+            ReleaseField(Player);
             FieldManager.RemovePlayer(this, FieldPlayer);
             GameServer.Storage.RemovePlayer(FieldPlayer.Value);
             // Should we Join the thread to wait for it to complete?

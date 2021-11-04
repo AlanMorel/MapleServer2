@@ -112,6 +112,7 @@ namespace MapleServer2.Network
             }
 
             Logger.Info($"Disconnected {this}");
+            EndSession();
             ((IDisposable) this).Dispose();
         }
 
@@ -148,11 +149,6 @@ namespace MapleServer2.Network
         public void SendFinal(PacketWriter packet)
         {
             SendInternal(packet, packet.Length);
-            StopThreads();
-        }
-
-        private void StopThreads()
-        {
             EndSession();
         }
 
