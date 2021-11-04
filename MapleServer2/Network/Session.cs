@@ -149,7 +149,7 @@ namespace MapleServer2.Network
         public void SendFinal(PacketWriter packet)
         {
             SendInternal(packet, packet.Length);
-            EndSession();
+            Disconnect();
         }
 
         public override string ToString() => $"{GetType().Name} from {Name}";
