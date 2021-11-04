@@ -452,7 +452,6 @@ namespace MapleServer2.Types
         // This REQUIRES item.Slot to be set appropriately
         private void AddInternal(Item item)
         {
-            Console.WriteLine($"Adding item uid {item.Uid}");
             Debug.Assert(!Items.ContainsKey(item.Uid), "Error adding an item that already exists");
             Items[item.Uid] = item;
 
