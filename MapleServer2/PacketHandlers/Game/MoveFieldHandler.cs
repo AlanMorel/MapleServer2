@@ -251,7 +251,7 @@ public class MoveFieldHandler : GamePacketHandler
 
         CoordF returnCoord = player.ReturnCoord;
         returnCoord.Z += Block.BLOCK_SIZE;
-        player.WarpGameToGame(player.ReturnMapId, 0, returnCoord, player.Rotation);
+        player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, player.Rotation);
         player.ReturnMapId = 0;
         player.VisitingHomeId = 0;
     }
