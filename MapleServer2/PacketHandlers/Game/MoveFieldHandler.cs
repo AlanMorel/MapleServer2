@@ -174,7 +174,7 @@ public class MoveFieldHandler : GamePacketHandler
                 {
                     return;
                 }
-                session.Player.Warp((int) Map.PrivateResidence, instanceId: home.InstanceId);
+                session.Player.WarpGameToGame((int) Map.PrivateResidence, instanceId: home.InstanceId);
                 break;
         }
     }
@@ -182,7 +182,7 @@ public class MoveFieldHandler : GamePacketHandler
     private static void HandleLeaveInstance(GameSession session)
     {
         Player player = session.Player;
-        player.Warp(player.ReturnMapId, player.ReturnCoord, player.Rotation, 0);
+        player.Warp(player.ReturnMapId, player.ReturnCoord, player.Rotation);
     }
 
     private static void HandleVisitHouse(GameSession session, PacketReader packet)
@@ -234,7 +234,7 @@ public class MoveFieldHandler : GamePacketHandler
         player.VisitingHomeId = home.Id;
         session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, home));
 
-        player.Warp(home.MapId, player.Coord, player.Rotation, home.InstanceId);
+        player.WarpGameToGame(home.MapId, home.InstanceId, player.Coord, player.Rotation);
     }
 
     // This also leaves decor planning
@@ -245,13 +245,13 @@ public class MoveFieldHandler : GamePacketHandler
         {
             player.IsInDecorPlanner = false;
             player.Guide = null;
-            player.Warp((int) Map.PrivateResidence, instanceId: --player.InstanceId);
+            player.WarpGameToGame((int) Map.PrivateResidence, instanceId: --player.InstanceId);
             return;
         }
 
         CoordF returnCoord = player.ReturnCoord;
         returnCoord.Z += Block.BLOCK_SIZE;
-        player.Warp(player.ReturnMapId, returnCoord, player.Rotation);
+        player.WarpGameToGame(player.ReturnMapId, 0, returnCoord, player.Rotation);
         player.ReturnMapId = 0;
         player.VisitingHomeId = 0;
     }
@@ -270,6 +270,6 @@ public class MoveFieldHandler : GamePacketHandler
         home.DecorPlannerHeight = home.Height;
         home.DecorPlannerSize = home.Size;
         home.DecorPlannerInventory = new();
-        player.Warp((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
+        player.WarpGameToGame((int) Map.PrivateResidence, instanceId: ++player.InstanceId);
     }
 }

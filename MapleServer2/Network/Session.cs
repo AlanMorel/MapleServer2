@@ -162,13 +162,6 @@ public abstract class Session : IDisposable
         SendInternal(packet, packet.Length);
     }
 
-    // Ensures no more communication before sending a final packet.
-    public void SendFinal(PacketWriter packet)
-    {
-        SendInternal(packet, packet.Length);
-        Disconnect();
-    }
-
     public override string ToString()
     {
         return $"{GetType().Name} from {Name}";

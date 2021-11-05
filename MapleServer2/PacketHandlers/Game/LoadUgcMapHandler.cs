@@ -66,10 +66,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             session.Player.Coord = coord;
             session.Player.SafeBlock = coord;
             session.Player.Rotation = rotation;
-            if (session.Player.InstanceId == 0)
-            {
-                session.Player.InstanceId = home.InstanceId;
-            }
+            session.Player.InstanceId = home.InstanceId;
         }
         else
         {

@@ -1,7 +1,9 @@
-﻿using Maple2Storage.Enums;
+﻿using System.Net;
+using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
+using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -62,6 +64,9 @@ public class Player
 
     public int SuperChat;
     public int ShopId; // current shop player is interacting
+
+    public short ChannelId;
+    public bool IsChangingChannel;
 
     // Combat, Adventure, Lifestyle
     public int[] TrophyCount;
@@ -246,45 +251,91 @@ public class Player
         };
     }
 
-    public void Warp(int mapId, CoordF coord = default, CoordF rotation = default, long instanceId = 0)
+    public void UpdateBuddies()
+    {
+        BuddyList.ForEach(buddy =>
+        {
+            if (buddy.Friend?.Session?.Connected() ?? false)
+            {
+                Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
+                buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
+                buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
+            }
+        });
+    }
+
+    public void Warp(int mapId, CoordF? coord = null, CoordF? rotation = null, long instanceId = 1)
+    {
+        UpdateCoords(mapId, instanceId, coord, rotation);
+
+        SetCoords(mapId, coord, rotation);
+
+        DatabaseManager.Characters.Update(this);
+        Session.Send(FieldPacket.RequestEnter(this));
+    }
+
+    public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
+    {
+        UpdateCoords(mapId, instanceId, coord, rotation);
+        string ipAddress = Environment.GetEnvironmentVariable("IP");
+        int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
+        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+
+        AuthData authTokens = AuthStorage.GetData(AccountId);
+        authTokens.Player.IsChangingChannel = true;
+
+        DatabaseManager.Characters.Update(this);
+        Session.Send(MigrationPacket.GameToGame(endpoint, authTokens, this));
+    }
+
+    public void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
+    {
+        if (coord is not null && rotation is not null)
+        {
+            return;
+        }
+
+        MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
+        if (spawn == null)
+        {
+            Session.SendNotice($"Could not find a spawn for map {mapId}");
+            return;
+        }
+        if (coord == default)
+        {
+            Coord = spawn.Coord.ToFloat();
+            SafeBlock = spawn.Coord.ToFloat();
+        }
+        if (rotation == default)
+        {
+            Rotation = spawn.Rotation.ToFloat();
+        }
+    }
+
+    private void UpdateCoords(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
     {
         if (MapEntityStorage.HasSafePortal(MapId))
         {
             ReturnCoord = Coord;
             ReturnMapId = MapId;
         }
-        Coord = coord;
-        Rotation = rotation;
-        SafeBlock = coord;
-        MapId = mapId;
-        InstanceId = instanceId;
-
-        if (coord == default || rotation == default)
+        if (coord is not null && rotation is not null)
         {
-            MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-            if (spawn == null)
-            {
-                Session.SendNotice($"Could not find a spawn for map {mapId}");
-                return;
-            }
-            if (coord == default)
-            {
-                Coord = spawn.Coord.ToFloat();
-                SafeBlock = spawn.Coord.ToFloat();
-            }
-            if (rotation == default)
-            {
-                Rotation = spawn.Rotation.ToFloat();
-            }
+            Coord = (CoordF) coord;
+            Rotation = (CoordF) rotation;
+            SafeBlock = (CoordF) coord;
+        }
+        MapId = mapId;
+
+        if (instanceId != 0)
+        {
+            InstanceId = instanceId;
         }
 
         if (!UnlockedMaps.Contains(MapId))
         {
             UnlockedMaps.Add(MapId);
         }
-
-        DatabaseManager.Characters.Update(this);
-        Session.Send(FieldPacket.RequestEnter(this));
     }
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
