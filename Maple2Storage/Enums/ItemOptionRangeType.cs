@@ -1,10 +1,9 @@
-﻿namespace Maple2Storage.Enums
+﻿namespace Maple2Storage.Enums;
+
+public enum ItemOptionRangeType
 {
-    public enum ItemOptionRangeType
-    {
-        itemoptionvariation_acc,
-        itemoptionvariation_armor,
-        itemoptionvariation_pet,
-        itemoptionvariation_weapon,
-    }
+    itemoptionvariation_acc,
+    itemoptionvariation_armor,
+    itemoptionvariation_pet,
+    itemoptionvariation_weapon
 }

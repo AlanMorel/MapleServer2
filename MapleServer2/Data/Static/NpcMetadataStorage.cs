@@ -2,55 +2,54 @@
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
-namespace MapleServer2.Data.Static
+namespace MapleServer2.Data.Static;
+
+public static class NpcMetadataStorage
 {
-    public static class NpcMetadataStorage
+    private static readonly Dictionary<int, NpcMetadata> Npcs = new();
+
+    public static void Init()
     {
-        private static readonly Dictionary<int, NpcMetadata> Npcs = new Dictionary<int, NpcMetadata>();
-
-        public static void Init()
+        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-npc-metadata");
+        List<NpcMetadata> npcList = Serializer.Deserialize<List<NpcMetadata>>(stream);
+        foreach (NpcMetadata npc in npcList)
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-npc-metadata");
-            List<NpcMetadata> npcList = Serializer.Deserialize<List<NpcMetadata>>(stream);
-            foreach (NpcMetadata npc in npcList)
-            {
-                Npcs.Add(npc.Id, npc);
-            }
+            Npcs.Add(npc.Id, npc);
         }
+    }
 
-        public static NpcMetadata GetNpc(int id)
-        {
-            return Npcs.GetValueOrDefault(id);
-        }
+    public static NpcMetadata GetNpc(int id)
+    {
+        return Npcs.GetValueOrDefault(id);
+    }
 
-        public static NpcMetadata GetNpcMetadata(int id)
+    public static NpcMetadata GetNpcMetadata(int id)
+    {
+        NpcMetadata newNpc = Npcs.GetValueOrDefault(id);
+        if (newNpc != null)
         {
-            NpcMetadata newNpc = Npcs.GetValueOrDefault(id);
-            if (newNpc != null)
+            if (newNpc.Friendly == 2)
             {
-                if (newNpc.Friendly == 2)
-                {
-                    return Npcs.Select(x => x.Value).Where(x => x.Friendly == 2 && x.Id == id).FirstOrDefault();
-                }
-                else
-                {
-                    return Npcs.Select(x => x.Value).Where(x => x.Friendly == 0 && x.Id == id).FirstOrDefault();
-                }
+                return Npcs.Select(x => x.Value).Where(x => x.Friendly == 2 && x.Id == id).FirstOrDefault();
             }
             else
             {
-                return Npcs.GetValueOrDefault(11000010);
+                return Npcs.Select(x => x.Value).Where(x => x.Friendly == 0 && x.Id == id).FirstOrDefault();
             }
         }
-
-        public static List<NpcMetadata> GetNpcsByMainTag(string mainTag)
+        else
         {
-            return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(mainTag)).ToList();
+            return Npcs.GetValueOrDefault(11000010);
         }
+    }
 
-        public static List<NpcMetadata> GetNpcsBySubTag(string subTag)
-        {
-            return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(subTag)).ToList();
-        }
+    public static List<NpcMetadata> GetNpcsByMainTag(string mainTag)
+    {
+        return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(mainTag)).ToList();
+    }
+
+    public static List<NpcMetadata> GetNpcsBySubTag(string subTag)
+    {
+        return Npcs.Select(x => x.Value).Where(x => x.NpcMetadataBasic.MainTags.Contains(subTag)).ToList();
     }
 }

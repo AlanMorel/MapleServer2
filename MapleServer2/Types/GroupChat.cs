@@ -2,79 +2,80 @@
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 
-namespace MapleServer2.Types
+namespace MapleServer2.Types;
+
+public class GroupChat
 {
-    public class GroupChat
+    public int Id { get; }
+    public byte MaxMembers { get; }
+    public List<Player> Members { get; }
+
+    public GroupChat(Player player)
     {
-        public int Id { get; }
-        public byte MaxMembers { get; }
-        public List<Player> Members { get; }
-
-        public GroupChat(Player player)
+        Id = GuidGenerator.Int();
+        MaxMembers = 20;
+        Members = new()
         {
-            Id = GuidGenerator.Int();
-            MaxMembers = 20;
-            Members = new List<Player> { };
+        };
 
-            AddMember(player);
+        AddMember(player);
+    }
+
+    public void AddMember(Player player)
+    {
+        Members.Add(player);
+
+        int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == 0);
+        player.GroupChatId[index] = Id;
+    }
+
+    public void RemoveMember(Player player)
+    {
+        Members.Remove(player);
+
+        int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == Id);
+        player.GroupChatId[index] = 0;
+
+        CheckDisband();
+    }
+
+    public void CheckDisband()
+    {
+        if (Members.Count >= 1)
+        {
+            return;
         }
 
-        public void AddMember(Player player)
+        GameServer.GroupChatManager.RemoveGroupChat(this);
+    }
+
+    public void BroadcastPacketGroupChat(PacketWriter packet, GameSession sender = null)
+    {
+        BroadcastGroupChat(session =>
         {
-            Members.Add(player);
-
-            int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == 0);
-            player.GroupChatId[index] = Id;
-        }
-
-        public void RemoveMember(Player player)
-        {
-            Members.Remove(player);
-
-            int index = Array.FindIndex(player.GroupChatId, 0, player.GroupChatId.Length, x => x == Id);
-            player.GroupChatId[index] = 0;
-
-            CheckDisband();
-        }
-
-        public void CheckDisband()
-        {
-            if (Members.Count >= 1)
+            if (session == sender)
             {
                 return;
             }
 
-            GameServer.GroupChatManager.RemoveGroupChat(this);
-        }
+            session.Send(packet);
+        });
+    }
 
-        public void BroadcastPacketGroupChat(PacketWriter packet, GameSession sender = null)
+    public void BroadcastGroupChat(Action<GameSession> action)
+    {
+        IEnumerable<GameSession> sessions = GetSessions();
+        lock (sessions)
         {
-            BroadcastGroupChat(session =>
+            foreach (GameSession session in sessions)
             {
-                if (session == sender)
-                {
-                    return;
-                }
-
-                session.Send(packet);
-            });
-        }
-
-        public void BroadcastGroupChat(Action<GameSession> action)
-        {
-            IEnumerable<GameSession> sessions = GetSessions();
-            lock (sessions)
-            {
-                foreach (GameSession session in sessions)
-                {
-                    action?.Invoke(session);
-                }
+                action?.Invoke(session);
             }
         }
+    }
 
-        private List<GameSession> GetSessions()
-        {
-            return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
-        }
+    private List<GameSession> GetSessions()
+    {
+        return Members.Where(member => member.Session.Connected()).Select(member => member.Session).ToList();
     }
 }

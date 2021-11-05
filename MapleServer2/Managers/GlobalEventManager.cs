@@ -1,22 +1,33 @@
 ﻿using MapleServer2.Types;
 
-namespace MapleServer2.Managers
+namespace MapleServer2.Managers;
+
+public class GlobalEventManager
 {
-    public class GlobalEventManager
+    private readonly Dictionary<int, GlobalEvent> GlobalEventList;
+
+    public GlobalEventManager()
     {
-        private readonly Dictionary<int, GlobalEvent> GlobalEventList;
+        GlobalEventList = new();
+    }
 
-        public GlobalEventManager()
-        {
-            GlobalEventList = new Dictionary<int, GlobalEvent>();
-        }
+    public void AddEvent(GlobalEvent globalEvent)
+    {
+        GlobalEventList.Add(globalEvent.Id, globalEvent);
+    }
 
-        public void AddEvent(GlobalEvent globalEvent) => GlobalEventList.Add(globalEvent.Id, globalEvent);
+    public void RemoveEvent(GlobalEvent globalEvent)
+    {
+        GlobalEventList.Remove(globalEvent.Id);
+    }
 
-        public void RemoveEvent(GlobalEvent globalEvent) => GlobalEventList.Remove(globalEvent.Id);
+    public int GetCount()
+    {
+        return GlobalEventList.Count;
+    }
 
-        public int GetCount() => GlobalEventList.Count;
-
-        public GlobalEvent GetEventById(int id) => GlobalEventList.GetValueOrDefault(id);
+    public GlobalEvent GetEventById(int id)
+    {
+        return GlobalEventList.GetValueOrDefault(id);
     }
 }

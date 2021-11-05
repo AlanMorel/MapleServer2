@@ -2,30 +2,29 @@
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
-namespace MapleServer2.Data.Static
+namespace MapleServer2.Data.Static;
+
+public static class GuildHouseMetadataStorage
 {
-    public static class GuildHouseMetadataStorage
+    private static readonly Dictionary<int, GuildHouseMetadata> houses = new();
+
+    public static void Init()
     {
-        private static readonly Dictionary<int, GuildHouseMetadata> houses = new Dictionary<int, GuildHouseMetadata>();
-
-        public static void Init()
+        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-house-metadata");
+        List<GuildHouseMetadata> items = Serializer.Deserialize<List<GuildHouseMetadata>>(stream);
+        foreach (GuildHouseMetadata item in items)
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-house-metadata");
-            List<GuildHouseMetadata> items = Serializer.Deserialize<List<GuildHouseMetadata>>(stream);
-            foreach (GuildHouseMetadata item in items)
-            {
-                houses[item.FieldId] = item;
-            }
+            houses[item.FieldId] = item;
         }
+    }
 
-        public static GuildHouseMetadata GetMetadataByThemeId(int level, int themeId)
-        {
-            return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId);
-        }
+    public static GuildHouseMetadata GetMetadataByThemeId(int level, int themeId)
+    {
+        return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId);
+    }
 
-        public static int GetFieldId(int level, int themeId)
-        {
-            return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId).FieldId;
-        }
+    public static int GetFieldId(int level, int themeId)
+    {
+        return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId).FieldId;
     }
 }

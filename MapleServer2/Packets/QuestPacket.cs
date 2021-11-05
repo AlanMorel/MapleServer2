@@ -2,162 +2,161 @@
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+public static class QuestPacket
 {
-    public static class QuestPacket
+    private enum QuestType : byte
     {
-        private enum QuestType : byte
+        Dialog = 0x01,
+        AcceptQuest = 0x02,
+        UpdateCondition = 0x03,
+        CompleteQuest = 0x04,
+        ToggleTracking = 0x09,
+        StartList = 0x15,
+        SendQuests = 0x16, // send the status of every quest
+        EndList = 0x17,
+        FameMissions = 0x1F, // not sure
+        FameMissions2 = 0x20 // not sure
+    }
+
+    public static PacketWriter SendDialogQuest(int objectId, List<QuestStatus> questList)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.Dialog);
+        pWriter.WriteInt(objectId);
+        pWriter.WriteInt(questList.Count);
+        foreach (QuestStatus quest in questList)
         {
-            Dialog = 0x01,
-            AcceptQuest = 0x02,
-            UpdateCondition = 0x03,
-            CompleteQuest = 0x04,
-            ToggleTracking = 0x09,
-            StartList = 0x15,
-            SendQuests = 0x16, // send the status of every quest
-            EndList = 0x17,
-            FameMissions = 0x1F, // not sure
-            FameMissions2 = 0x20, // not sure
+            pWriter.WriteInt(quest.Basic.Id);
         }
 
-        public static PacketWriter SendDialogQuest(int objectId, List<QuestStatus> questList)
+        return pWriter;
+    }
+
+    public static PacketWriter AcceptQuest(int questId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.AcceptQuest);
+        pWriter.WriteInt(questId);
+        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(0);
+
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateCondition(int questId, List<Condition> conditions)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.UpdateCondition);
+        pWriter.WriteInt(questId);
+        pWriter.WriteInt(conditions.Count);
+        foreach (Condition condition in conditions)
         {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.Dialog);
-            pWriter.WriteInt(objectId);
-            pWriter.WriteInt(questList.Count);
-            foreach (QuestStatus quest in questList)
+            pWriter.WriteInt(condition.Current);
+        }
+
+        return pWriter;
+    }
+
+    // Animation: Animates the quest helper
+    public static PacketWriter CompleteQuest(int questId, bool animation)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.CompleteQuest);
+        pWriter.WriteInt(questId);
+        pWriter.WriteInt(animation ? 1 : 0);
+        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
+        return pWriter;
+    }
+
+    public static PacketWriter ToggleTracking(int questId, bool tracked)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.ToggleTracking);
+        pWriter.WriteInt(questId);
+        pWriter.WriteBool(tracked);
+
+        return pWriter;
+    }
+
+    public static PacketWriter StartList()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.StartList);
+        pWriter.WriteLong(); // unknown, sometimes it has an value
+
+        return pWriter;
+    }
+
+    public static PacketWriter SendQuests(List<QuestStatus> questList)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.SendQuests);
+
+        pWriter.WriteInt(questList.Count);
+        foreach (QuestStatus quest in questList)
+        {
+            pWriter.WriteInt(quest.Basic.Id);
+
+            if (quest.Completed)
             {
-                pWriter.WriteInt(quest.Basic.Id);
+                pWriter.WriteInt(2);
+                pWriter.WriteInt(1);
+            }
+            else if (quest.Started)
+            {
+                pWriter.WriteInt(1);
+                pWriter.WriteInt(0);
+            }
+            else
+            {
+                pWriter.WriteInt(0);
+                pWriter.WriteInt(0);
             }
 
-            return pWriter;
-        }
+            pWriter.WriteLong(quest.StartTimestamp);
+            pWriter.WriteLong(quest.CompleteTimestamp);
+            pWriter.WriteBool(quest.Tracked);
+            pWriter.WriteInt(quest.Condition.Count);
 
-        public static PacketWriter AcceptQuest(int questId)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.AcceptQuest);
-            pWriter.WriteInt(questId);
-            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            pWriter.WriteByte(1);
-            pWriter.WriteInt(0);
-
-            return pWriter;
-        }
-
-        public static PacketWriter UpdateCondition(int questId, List<Condition> conditions)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.UpdateCondition);
-            pWriter.WriteInt(questId);
-            pWriter.WriteInt(conditions.Count);
-            foreach (Condition condition in conditions)
+            for (int j = 0; j < quest.Condition.Count; j++)
             {
-                pWriter.WriteInt(condition.Current);
+                pWriter.WriteInt(quest.Condition[j].Current);
             }
-
-            return pWriter;
         }
 
-        // Animation: Animates the quest helper
-        public static PacketWriter CompleteQuest(int questId, bool animation)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.CompleteQuest);
-            pWriter.WriteInt(questId);
-            pWriter.WriteInt(animation ? 1 : 0);
-            pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        return pWriter;
+    }
 
-            return pWriter;
-        }
+    public static PacketWriter EndList()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.EndList);
+        pWriter.WriteInt();
 
-        public static PacketWriter ToggleTracking(int questId, bool tracked)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.ToggleTracking);
-            pWriter.WriteInt(questId);
-            pWriter.WriteBool(tracked);
+        return pWriter;
+    }
 
-            return pWriter;
-        }
+    public static PacketWriter Packet1F()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.FameMissions);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
 
-        public static PacketWriter StartList()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.StartList);
-            pWriter.WriteLong(); // unknown, sometimes it has an value
+        return pWriter;
+    }
 
-            return pWriter;
-        }
+    public static PacketWriter Packet20()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
+        pWriter.Write(QuestType.FameMissions2);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
 
-        public static PacketWriter SendQuests(List<QuestStatus> questList)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.SendQuests);
-
-            pWriter.WriteInt(questList.Count);
-            foreach (QuestStatus quest in questList)
-            {
-                pWriter.WriteInt(quest.Basic.Id);
-
-                if (quest.Completed)
-                {
-                    pWriter.WriteInt(2);
-                    pWriter.WriteInt(1);
-                }
-                else if (quest.Started)
-                {
-                    pWriter.WriteInt(1);
-                    pWriter.WriteInt(0);
-                }
-                else
-                {
-                    pWriter.WriteInt(0);
-                    pWriter.WriteInt(0);
-                }
-
-                pWriter.WriteLong(quest.StartTimestamp);
-                pWriter.WriteLong(quest.CompleteTimestamp);
-                pWriter.WriteBool(quest.Tracked);
-                pWriter.WriteInt(quest.Condition.Count);
-
-                for (int j = 0; j < quest.Condition.Count; j++)
-                {
-                    pWriter.WriteInt(quest.Condition[j].Current);
-                }
-            }
-
-            return pWriter;
-        }
-
-        public static PacketWriter EndList()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.EndList);
-            pWriter.WriteInt();
-
-            return pWriter;
-        }
-
-        public static PacketWriter Packet1F()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.FameMissions);
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-
-            return pWriter;
-        }
-
-        public static PacketWriter Packet20()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
-            pWriter.Write(QuestType.FameMissions2);
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-
-            return pWriter;
-        }
+        return pWriter;
     }
 }

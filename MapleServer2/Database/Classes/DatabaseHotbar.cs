@@ -2,40 +2,42 @@
 using Newtonsoft.Json;
 using SqlKata.Execution;
 
-namespace MapleServer2.Database.Classes
+namespace MapleServer2.Database.Classes;
+
+public class DatabaseHotbar : DatabaseTable
 {
-    public class DatabaseHotbar : DatabaseTable
+    public DatabaseHotbar() : base("hotbars") { }
+
+    public long Insert(Hotbar hotbar, long gameOptionsId)
     {
-        public DatabaseHotbar() : base("hotbars") { }
-
-        public long Insert(Hotbar hotbar, long gameOptionsId)
+        return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            return QueryFactory.Query(TableName).InsertGetId<long>(new
-            {
-                slots = JsonConvert.SerializeObject(hotbar.Slots),
-                game_options_id = gameOptionsId
-            });
-        }
+            slots = JsonConvert.SerializeObject(hotbar.Slots),
+            game_options_id = gameOptionsId
+        });
+    }
 
-        public List<Hotbar> FindAllByGameOptionsId(long gameOptionsId)
+    public List<Hotbar> FindAllByGameOptionsId(long gameOptionsId)
+    {
+        IEnumerable<dynamic> hotbarsResult = QueryFactory.Query(TableName).Where("game_options_id", gameOptionsId).Get();
+        List<Hotbar> hotbars = new();
+        foreach (dynamic data in hotbarsResult)
         {
-            IEnumerable<dynamic> hotbarsResult = QueryFactory.Query(TableName).Where("game_options_id", gameOptionsId).Get();
-            List<Hotbar> hotbars = new List<Hotbar>();
-            foreach (dynamic data in hotbarsResult)
-            {
-                hotbars.Add(new Hotbar(JsonConvert.DeserializeObject<QuickSlot[]>(data.slots), data.hotbar_id));
-            }
-            return hotbars;
+            hotbars.Add(new Hotbar(JsonConvert.DeserializeObject<QuickSlot[]>(data.slots), data.hotbar_id));
         }
+        return hotbars;
+    }
 
-        public void Update(Hotbar hotbar)
+    public void Update(Hotbar hotbar)
+    {
+        QueryFactory.Query(TableName).Where("hotbar_id", hotbar.Id).Update(new
         {
-            QueryFactory.Query(TableName).Where("hotbar_id", hotbar.Id).Update(new
-            {
-                slots = JsonConvert.SerializeObject(hotbar.Slots)
-            });
-        }
+            slots = JsonConvert.SerializeObject(hotbar.Slots)
+        });
+    }
 
-        public void DeleteAllByGameOptionsId(long gameOptionsId) => QueryFactory.Query(TableName).Where("gameoptions_id", gameOptionsId).Delete();
+    public void DeleteAllByGameOptionsId(long gameOptionsId)
+    {
+        QueryFactory.Query(TableName).Where("gameoptions_id", gameOptionsId).Delete();
     }
 }

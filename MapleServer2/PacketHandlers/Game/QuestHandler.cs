@@ -7,171 +7,170 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class QuestHandler : GamePacketHandler
 {
-    public class QuestHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.QUEST;
+
+    public QuestHandler() : base() { }
+
+    private enum QuestMode : byte
     {
-        public override RecvOp OpCode => RecvOp.QUEST;
+        AcceptQuest = 0x02,
+        CompleteQuest = 0x04,
+        ExplorationQuests = 0x08,
+        ToggleTracking = 0x09,
+        CompleteNavigator = 0x18
+    }
 
-        public QuestHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        QuestMode mode = (QuestMode) packet.ReadByte();
 
-        private enum QuestMode : byte
+        switch (mode)
         {
-            AcceptQuest = 0x02,
-            CompleteQuest = 0x04,
-            ExplorationQuests = 0x08,
-            ToggleTracking = 0x09,
-            CompleteNavigator = 0x18,
+            case QuestMode.AcceptQuest:
+                HandleAcceptQuest(session, packet);
+                break;
+            case QuestMode.CompleteQuest:
+                HandleCompleteQuest(session, packet);
+                break;
+            case QuestMode.ExplorationQuests:
+                HandleAddExplorationQuests(session, packet);
+                break;
+            case QuestMode.CompleteNavigator:
+                HandleCompleteNavigator(session, packet);
+                break;
+            case QuestMode.ToggleTracking:
+                HandleToggleTracking(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
+
+    private static void HandleAcceptQuest(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+        int objectId = packet.ReadInt();
+
+        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+        if (questStatus == null)
+        {
+            return;
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            QuestMode mode = (QuestMode) packet.ReadByte();
+        questStatus.Started = true;
+        questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        DatabaseManager.Quests.Update(questStatus);
+        session.Send(QuestPacket.AcceptQuest(questId));
+    }
 
-            switch (mode)
-            {
-                case QuestMode.AcceptQuest:
-                    HandleAcceptQuest(session, packet);
-                    break;
-                case QuestMode.CompleteQuest:
-                    HandleCompleteQuest(session, packet);
-                    break;
-                case QuestMode.ExplorationQuests:
-                    HandleAddExplorationQuests(session, packet);
-                    break;
-                case QuestMode.CompleteNavigator:
-                    HandleCompleteNavigator(session, packet);
-                    break;
-                case QuestMode.ToggleTracking:
-                    HandleToggleTracking(session, packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+    private static void HandleCompleteQuest(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+        int objectId = packet.ReadInt();
+
+        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+        if (questStatus == null || questStatus.Completed)
+        {
+            return;
         }
 
-        private static void HandleAcceptQuest(GameSession session, PacketReader packet)
+        questStatus.Completed = true;
+        questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        session.Player.Levels.GainExp(questStatus.Reward.Exp);
+        session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
+
+        foreach (QuestRewardItem reward in questStatus.RewardItems)
         {
-            int questId = packet.ReadInt();
-            int objectId = packet.ReadInt();
-
-            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            Item newItem = new(reward.Code)
             {
-                return;
-            }
-
-            questStatus.Started = true;
-            questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            DatabaseManager.Quests.Update(questStatus);
-            session.Send(QuestPacket.AcceptQuest(questId));
-        }
-
-        private static void HandleCompleteQuest(GameSession session, PacketReader packet)
-        {
-            int questId = packet.ReadInt();
-            int objectId = packet.ReadInt();
-
-            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null || questStatus.Completed)
+                Amount = reward.Count,
+                Rarity = reward.Rank
+            };
+            if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
             {
-                return;
-            }
-
-            questStatus.Completed = true;
-            questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-
-            session.Player.Levels.GainExp(questStatus.Reward.Exp);
-            session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
-
-            foreach (QuestRewardItem reward in questStatus.RewardItems)
-            {
-                Item newItem = new Item(reward.Code)
-                {
-                    Amount = reward.Count,
-                    Rarity = reward.Rank
-                };
-                if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
-                {
-                    session.Player.Inventory.AddItem(session, newItem, true);
-                }
-            }
-
-            DatabaseManager.Quests.Update(questStatus);
-            session.Send(QuestPacket.CompleteQuest(questId, true));
-
-            // Add next quest
-            IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
-            foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
-            {
-                if (session.Player.QuestList.Exists(x => x.Basic.Id == kvp.Value.Basic.Id))
-                {
-                    continue;
-                }
-                session.Player.QuestList.Add(new QuestStatus(session.Player, kvp.Value));
+                session.Player.Inventory.AddItem(session, newItem, true);
             }
         }
 
-        private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
-        {
-            int questId = packet.ReadInt();
-            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null || questStatus.Completed)
-            {
-                return;
-            }
+        DatabaseManager.Quests.Update(questStatus);
+        session.Send(QuestPacket.CompleteQuest(questId, true));
 
-            foreach (QuestRewardItem rewardItem in questStatus.RewardItems)
+        // Add next quest
+        IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
+        foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+        {
+            if (session.Player.QuestList.Exists(x => x.Basic.Id == kvp.Value.Basic.Id))
             {
-                Item item = new Item(rewardItem.Code)
-                {
-                    Amount = rewardItem.Count,
-                    Rarity = rewardItem.Rank
-                };
-                session.Player.Inventory.AddItem(session, item, true);
+                continue;
             }
-            questStatus.Completed = true;
-            questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            DatabaseManager.Quests.Update(questStatus);
-            session.Send(QuestPacket.CompleteQuest(questId, false));
+            session.Player.QuestList.Add(new(session.Player, kvp.Value));
+        }
+    }
+
+    private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+        if (questStatus == null || questStatus.Completed)
+        {
+            return;
         }
 
-        private static void HandleAddExplorationQuests(GameSession session, PacketReader packet)
+        foreach (QuestRewardItem rewardItem in questStatus.RewardItems)
         {
-            List<QuestStatus> list = new List<QuestStatus>();
-
-            int listSize = packet.ReadInt();
-            for (int i = 0; i < listSize; i++)
+            Item item = new(rewardItem.Code)
             {
-                int questId = packet.ReadInt();
-                if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.Started))
-                {
-                    continue;
-                }
-
-                QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-                QuestStatus questStatus = new QuestStatus(session.Player, metadata, true, DateTimeOffset.Now.ToUnixTimeSeconds());
-                list.Add(questStatus);
-                session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
-            }
-
-            session.Player.QuestList.AddRange(list);
+                Amount = rewardItem.Count,
+                Rarity = rewardItem.Rank
+            };
+            session.Player.Inventory.AddItem(session, item, true);
         }
+        questStatus.Completed = true;
+        questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        DatabaseManager.Quests.Update(questStatus);
+        session.Send(QuestPacket.CompleteQuest(questId, false));
+    }
 
-        private static void HandleToggleTracking(GameSession session, PacketReader packet)
+    private static void HandleAddExplorationQuests(GameSession session, PacketReader packet)
+    {
+        List<QuestStatus> list = new();
+
+        int listSize = packet.ReadInt();
+        for (int i = 0; i < listSize; i++)
         {
             int questId = packet.ReadInt();
-            bool tracked = packet.ReadBool();
-
-            QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-            if (questStatus == null)
+            if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.Started))
             {
-                return;
+                continue;
             }
-            questStatus.Tracked = tracked;
-            DatabaseManager.Quests.Update(questStatus);
-            session.Send(QuestPacket.ToggleTracking(questId, tracked));
+
+            QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
+            QuestStatus questStatus = new(session.Player, metadata, true, DateTimeOffset.Now.ToUnixTimeSeconds());
+            list.Add(questStatus);
+            session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
         }
+
+        session.Player.QuestList.AddRange(list);
+    }
+
+    private static void HandleToggleTracking(GameSession session, PacketReader packet)
+    {
+        int questId = packet.ReadInt();
+        bool tracked = packet.ReadBool();
+
+        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
+        if (questStatus == null)
+        {
+            return;
+        }
+        questStatus.Tracked = tracked;
+        DatabaseManager.Quests.Update(questStatus);
+        session.Send(QuestPacket.ToggleTracking(questId, tracked));
     }
 }

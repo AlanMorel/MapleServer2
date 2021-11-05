@@ -3,49 +3,48 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Network;
 
-namespace MapleServer2.PacketHandlers.Common
+namespace MapleServer2.PacketHandlers.Common;
+
+// Note: socket_exception debug offset includes +6 bytes from encrypted header
+public class LogSendHandler : CommonPacketHandler
 {
-    // Note: socket_exception debug offset includes +6 bytes from encrypted header
-    public class LogSendHandler : CommonPacketHandler
+    public override RecvOp OpCode => RecvOp.LOG_SEND;
+
+    public LogSendHandler() : base() { }
+
+    protected override void HandleCommon(Session session, PacketReader packet)
     {
-        public override RecvOp OpCode => RecvOp.LOG_SEND;
-
-        public LogSendHandler() : base() { }
-
-        protected override void HandleCommon(Session session, PacketReader packet)
+        packet.ReadByte();
+        byte function = packet.ReadByte();
+        if (function == 1)
         {
-            packet.ReadByte();
-            byte function = packet.ReadByte();
-            if (function == 1)
+            // Some random data that isn't text...
+            // Example: 56 00 00 01 03 03 00 66 70 73 9B D2 6A 42 29 73 07 44 A3 45 00 00 00 00 00 00 00 00 70 42 03 00 6D 65 6D BC 2E 01 45 B4 FA B3 43 A3 45 00 00 00 A0 FE 44 00 80 01 45 03 00 6C 61 74 00 00 00 00 00 00 00 00 A3 45 00 00 00 00 00 00 00 00 00 00
+            return;
+        }
+        try
+        {
+            StringBuilder builder = new();
+            while (packet.Available > 2)
             {
-                // Some random data that isn't text...
-                // Example: 56 00 00 01 03 03 00 66 70 73 9B D2 6A 42 29 73 07 44 A3 45 00 00 00 00 00 00 00 00 70 42 03 00 6D 65 6D BC 2E 01 45 B4 FA B3 43 A3 45 00 00 00 A0 FE 44 00 80 01 45 03 00 6C 61 74 00 00 00 00 00 00 00 00 A3 45 00 00 00 00 00 00 00 00 00 00
-                return;
-            }
-            try
-            {
-                StringBuilder builder = new StringBuilder();
-                while (packet.Available > 2)
+                string message = packet.ReadUnicodeString();
+                if (message.Contains("exception"))
                 {
-                    string message = packet.ReadUnicodeString();
-                    if (message.Contains("exception"))
-                    {
-                        // Read remaining string
-                        string debug = packet.ReadUnicodeString();
-                        Logger.Error("[{message}] {debug}", message, debug);
+                    // Read remaining string
+                    string debug = packet.ReadUnicodeString();
+                    Logger.Error("[{message}] {debug}", message, debug);
 
-                        session.OnError?.Invoke(session, debug);
-                        return;
-                    }
-
-                    builder.Append(message);
+                    session.OnError?.Invoke(session, debug);
+                    return;
                 }
-                Logger.Warn("Client Log: {builder}", builder);
+
+                builder.Append(message);
             }
-            catch (Exception ex)
-            {
-                Logger.Error("Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}", packet, function, ex);
-            }
+            Logger.Warn("Client Log: {builder}", builder);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}", packet, function, ex);
         }
     }
 }

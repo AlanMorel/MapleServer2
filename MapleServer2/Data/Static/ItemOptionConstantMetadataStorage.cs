@@ -2,35 +2,34 @@
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
-namespace MapleServer2.Data.Static
+namespace MapleServer2.Data.Static;
+
+public static class ItemOptionConstantMetadataStorage
 {
-    public static class ItemOptionConstantMetadataStorage
+    private static readonly Dictionary<int, ItemOptionConstantMetadata> map = new();
+
+    public static void Init()
     {
-        private static readonly Dictionary<int, ItemOptionConstantMetadata> map = new Dictionary<int, ItemOptionConstantMetadata>();
-
-        public static void Init()
+        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-option-constant-metadata");
+        List<ItemOptionConstantMetadata> items = Serializer.Deserialize<List<ItemOptionConstantMetadata>>(stream);
+        foreach (ItemOptionConstantMetadata item in items)
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-option-constant-metadata");
-            List<ItemOptionConstantMetadata> items = Serializer.Deserialize<List<ItemOptionConstantMetadata>>(stream);
-            foreach (ItemOptionConstantMetadata item in items)
-            {
-                map[item.Id] = item;
-            }
+            map[item.Id] = item;
         }
+    }
 
-        public static bool IsValid(int id)
-        {
-            return map.ContainsKey(id);
-        }
+    public static bool IsValid(int id)
+    {
+        return map.ContainsKey(id);
+    }
 
-        public static ItemOptionsConstant GetMetadata(int id, int rarity)
+    public static ItemOptionsConstant GetMetadata(int id, int rarity)
+    {
+        ItemOptionConstantMetadata metadata = map.Values.FirstOrDefault(x => x.Id == id);
+        if (metadata == null)
         {
-            ItemOptionConstantMetadata metadata = map.Values.FirstOrDefault(x => x.Id == id);
-            if (metadata == null)
-            {
-                return null;
-            }
-            return metadata.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
+            return null;
         }
+        return metadata.ItemOptions.FirstOrDefault(x => x.Rarity == rarity);
     }
 }

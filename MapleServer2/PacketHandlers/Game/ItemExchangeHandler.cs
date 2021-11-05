@@ -6,131 +6,130 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class ItemExchangeHandler : GamePacketHandler
 {
-    public class ItemExchangeHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.ITEM_EXCHANGE;
+
+    public ItemExchangeHandler() : base() { }
+
+    private enum ItemExchangeMode : byte
     {
-        public override RecvOp OpCode => RecvOp.ITEM_EXCHANGE;
+        Use = 0x1
+    }
 
-        public ItemExchangeHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        ItemExchangeMode mode = (ItemExchangeMode) packet.ReadByte();
 
-        private enum ItemExchangeMode : byte
+        switch (mode)
         {
-            Use = 0x1,
+            case ItemExchangeMode.Use:
+                HandleUse(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
+
+    public enum ExchangeNotice : short
+    {
+        Sucess = 0x0,
+        Invalid = 0x1,
+        CannotFuse = 0x2,
+        InsufficientMeso = 0x3,
+        InsufficientItems = 0x4,
+        EnchantLevelTooHigh = 0x5,
+        ItemIsLocked = 0x6,
+        CheckFusionAmount = 0x7
+    }
+
+    private static void HandleUse(GameSession session, PacketReader packet)
+    {
+        long itemUid = packet.ReadLong();
+        long unk = packet.ReadLong();
+        int quantity = packet.ReadInt();
+
+        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        {
+            return;
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            ItemExchangeMode mode = (ItemExchangeMode) packet.ReadByte();
+        Item item = session.Player.Inventory.Items[itemUid];
 
-            switch (mode)
-            {
-                case ItemExchangeMode.Use:
-                    HandleUse(session, packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+        ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
+
+        if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
+        {
+            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientMeso));
+            return;
         }
 
-        public enum ExchangeNotice : short
+        if (exchange.ItemCost.Count != 0 && !PlayerHasAllIngredients(session, exchange, quantity))
         {
-            Sucess = 0x0,
-            Invalid = 0x1,
-            CannotFuse = 0x2,
-            InsufficientMeso = 0x3,
-            InsufficientItems = 0x4,
-            EnchantLevelTooHigh = 0x5,
-            ItemIsLocked = 0x6,
-            CheckFusionAmount = 0x7,
+            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
+            return;
         }
 
-        private static void HandleUse(GameSession session, PacketReader packet)
+        if (!RemoveRequiredItemsFromInventory(session, exchange, item, quantity))
         {
-            long itemUid = packet.ReadLong();
-            long unk = packet.ReadLong();
-            int quantity = packet.ReadInt();
-
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
-            {
-                return;
-            }
-
-            Item item = session.Player.Inventory.Items[itemUid];
-
-            ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
-
-            if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
-            {
-                session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientMeso));
-                return;
-            }
-
-            if (exchange.ItemCost.Count != 0 && !PlayerHasAllIngredients(session, exchange, quantity))
-            {
-                session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
-                return;
-            }
-
-            if (!RemoveRequiredItemsFromInventory(session, exchange, item, quantity))
-            {
-                return;
-            }
-
-            Item exchangeRewardItem = new(exchange.RewardId)
-            {
-                Rarity = exchange.RewardRarity,
-                Amount = exchange.RewardAmount * quantity,
-            };
-
-            session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
-            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
-
+            return;
         }
 
-        private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
+        Item exchangeRewardItem = new(exchange.RewardId)
         {
-            // TODO: Check if rarity matches
+            Rarity = exchange.RewardRarity,
+            Amount = exchange.RewardAmount * quantity
+        };
 
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+        session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
+        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
 
+    }
+
+    private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
+    {
+        // TODO: Check if rarity matches
+
+        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+
+        for (int i = 0; i < exchange.ItemCost.Count; i++)
+        {
+            ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
+            Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+
+            if (item == null)
+            {
+                continue;
+            }
+
+            return item.Amount >= exchangeItem.Amount * quantity;
+        }
+        return false;
+    }
+
+    private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
+    {
+        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+
+        if (exchange.ItemCost.Count != 0)
+        {
             for (int i = 0; i < exchange.ItemCost.Count; i++)
             {
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
                 Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
-
                 if (item == null)
                 {
                     continue;
                 }
-
-                return item.Amount >= exchangeItem.Amount * quantity;
+                session.Player.Inventory.ConsumeItem(session, item.Uid, exchangeItem.Amount * quantity);
             }
-            return false;
         }
 
-        private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
-        {
-            List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
+        session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
 
-            if (exchange.ItemCost.Count != 0)
-            {
-                for (int i = 0; i < exchange.ItemCost.Count; i++)
-                {
-                    ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                    Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
-                    if (item == null)
-                    {
-                        continue;
-                    }
-                    session.Player.Inventory.ConsumeItem(session, item.Uid, exchangeItem.Amount * quantity);
-                }
-            }
-
-            session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
-
-            return true;
-        }
+        return true;
     }
 }

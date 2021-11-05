@@ -1,23 +1,25 @@
 ﻿using System.Xml.Serialization;
 
-namespace Maple2Storage.Types.Metadata
+namespace Maple2Storage.Types.Metadata;
+
+[XmlType]
+public class GuildContributionMetadata
 {
-    [XmlType]
-    public class GuildContributionMetadata
+    [XmlElement(Order = 1)]
+    public string Type;
+    [XmlElement(Order = 2)]
+    public int Value;
+
+    public GuildContributionMetadata() { }
+
+    public GuildContributionMetadata(string type, int value)
     {
-        [XmlElement(Order = 1)]
-        public string Type;
-        [XmlElement(Order = 2)]
-        public int Value;
+        Type = type;
+        Value = value;
+    }
 
-        public GuildContributionMetadata() { }
-
-        public GuildContributionMetadata(string type, int value)
-        {
-            Type = type;
-            Value = value;
-        }
-
-        public override string ToString() => $"GuildContribution(Type:{Type},Value:{Value})";
+    public override string ToString()
+    {
+        return $"GuildContribution(Type:{Type},Value:{Value})";
     }
 }

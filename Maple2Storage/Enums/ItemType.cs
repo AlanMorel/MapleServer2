@@ -1,10 +1,9 @@
-﻿namespace Maple2Storage.Enums
+﻿namespace Maple2Storage.Enums;
+
+public enum ItemType
 {
-    public enum ItemType
-    {
-        None,
-        Currency,
-        Furnishing,
-        Pet
-    }
+    None,
+    Currency,
+    Furnishing,
+    Pet
 }
