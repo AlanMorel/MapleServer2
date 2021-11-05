@@ -382,7 +382,8 @@ public class FishingHandler : GamePacketHandler
 
         Item item = new(fishingItem.Id)
         {
-            Amount = fishingItem.Amount, Rarity = fishingItem.Rarity
+            Amount = fishingItem.Amount,
+            Rarity = fishingItem.Rarity
         };
         List<Item> items = new()
         {

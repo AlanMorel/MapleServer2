@@ -127,7 +127,8 @@ public class MeretMarketHandler : GamePacketHandler
 
         Item item = new(marketItem.ItemId)
         {
-            Amount = marketItem.Quantity + marketItem.BonusQuantity, Rarity = marketItem.Rarity
+            Amount = marketItem.Quantity + marketItem.BonusQuantity,
+            Rarity = marketItem.Rarity
         };
         if (marketItem.Duration != 0)
         {

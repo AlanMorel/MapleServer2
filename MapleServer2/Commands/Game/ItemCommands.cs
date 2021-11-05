@@ -15,7 +15,9 @@ public class ItemCommand : InGameCommand
         Description = "Give an item to the current player.";
         Parameters = new()
         {
-            new Parameter<int>("id", "Item id", 20000027), new Parameter<int>("amount", "Amount of the same item.", 1), new Parameter<int>("rarity", "Item rarity.")
+            new Parameter<int>("id", "Item id", 20000027),
+            new Parameter<int>("amount", "Amount of the same item.", 1),
+            new Parameter<int>("rarity", "Item rarity.")
         };
         Usage = "/item [id] [amount] [rarity]";
     }
@@ -34,7 +36,8 @@ public class ItemCommand : InGameCommand
 
         Item item = new(itemId)
         {
-            Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId), Amount = amount
+            Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
+            Amount = amount
         };
         item.Stats = new(item);
 

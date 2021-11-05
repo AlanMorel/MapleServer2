@@ -658,46 +658,60 @@ public static class SkillTreeOrdered
     private static readonly Dictionary<Job, List<int>> ListOrdered = new()
     {
         {
-            Job.None, None
+            Job.None,
+            None
         },
         {
-            Job.Knight, Knight
+            Job.Knight,
+            Knight
         },
         {
-            Job.Berserker, Berserker
+            Job.Berserker,
+            Berserker
         },
         {
-            Job.Wizard, Wizard
+            Job.Wizard,
+            Wizard
         },
         {
-            Job.Priest, Priest
+            Job.Priest,
+            Priest
         },
         {
-            Job.Archer, Archer
+            Job.Archer,
+            Archer
         },
         {
-            Job.HeavyGunner, HeavyGunner
+            Job.HeavyGunner,
+            HeavyGunner
         },
         {
-            Job.Thief, Thief
+            Job.Thief,
+            Thief
         },
         {
-            Job.Assassin, Assassin
+            Job.Assassin,
+            Assassin
         },
         {
-            Job.Runeblade, Runeblade
+            Job.Runeblade,
+            Runeblade
         },
         {
-            Job.Striker, Striker
+            Job.Striker,
+            Striker
         },
         {
-            Job.SoulBinder, SoulBinder
+            Job.SoulBinder,
+            SoulBinder
         },
         {
-            Job.GameMaster, GameMaster
+            Job.GameMaster,
+            GameMaster
         },
         {
-            Job.Beginner, Beginner
+            Job.Beginner,
+            Beginner
         }
     };
     /// <summary>

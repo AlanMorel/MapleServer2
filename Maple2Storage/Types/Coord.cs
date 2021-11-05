@@ -20,7 +20,9 @@ public struct CoordF
     {
         return new()
         {
-            X = x, Y = y, Z = z
+            X = x,
+            Y = y,
+            Z = z
         };
     }
 
@@ -29,7 +31,9 @@ public struct CoordF
         double angle = Math.PI * ((zRotation - 900) / 1800);
         return new()
         {
-            X = (float) (distance * Math.Cos(angle)), Y = (float) (distance * Math.Sin(angle)), Z = 0.0f
+            X = (float) (distance * Math.Cos(angle)),
+            Y = (float) (distance * Math.Sin(angle)),
+            Z = 0.0f
         };
     }
 
@@ -189,7 +193,9 @@ public struct CoordS
     {
         return new()
         {
-            X = x, Y = y, Z = z
+            X = x,
+            Y = y,
+            Z = z
         };
     }
 
@@ -198,7 +204,9 @@ public struct CoordS
         double angle = Math.PI * ((zRotation - 900) / 1800);
         return new()
         {
-            X = (short) (distance * Math.Cos(angle)), Y = (short) (distance * Math.Sin(angle)), Z = 0
+            X = (short) (distance * Math.Cos(angle)),
+            Y = (short) (distance * Math.Sin(angle)),
+            Z = 0
         };
     }
 
@@ -355,7 +363,9 @@ public struct CoordB
     {
         return new()
         {
-            X = x, Y = y, Z = z
+            X = x,
+            Y = y,
+            Z = z
         };
     }
 
@@ -364,7 +374,9 @@ public struct CoordB
         double angle = Math.PI * ((zRotation - 900) / 1800);
         return new()
         {
-            X = (sbyte) (distance * Math.Cos(angle)), Y = (sbyte) (distance * Math.Sin(angle)), Z = 0
+            X = (sbyte) (distance * Math.Cos(angle)),
+            Y = (sbyte) (distance * Math.Sin(angle)),
+            Z = 0
         };
     }
 

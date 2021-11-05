@@ -239,7 +239,8 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         Item newGem = new(metadata.NextItemId)
         {
-            IsLocked = gemstone.IsLocked, UnlockTime = gemstone.UnlockTime
+            IsLocked = gemstone.IsLocked,
+            UnlockTime = gemstone.UnlockTime
         };
 
         Player owner = GameServer.PlayerManager.GetPlayerById(gemstone.OwnerId);
@@ -367,7 +368,9 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         Gemstone gemstone = new()
         {
-            Id = gemItem.Id, IsLocked = gemItem.IsLocked, UnlockTime = gemItem.UnlockTime
+            Id = gemItem.Id,
+            IsLocked = gemItem.IsLocked,
+            UnlockTime = gemItem.UnlockTime
         };
         if (gemItem.OwnerCharacterId != 0)
         {
@@ -404,7 +407,9 @@ public class ItemSocketSystemHandler : GamePacketHandler
         // crystal fragment cost
         Item gemstoneItem = new(gemstone.Id)
         {
-            IsLocked = gemstone.IsLocked, UnlockTime = gemstone.UnlockTime, Rarity = 4
+            IsLocked = gemstone.IsLocked,
+            UnlockTime = gemstone.UnlockTime,
+            Rarity = 4
         };
 
         if (gemstone.OwnerId != 0)

@@ -38,12 +38,14 @@ public class SetJobCommand : InGameCommand
     {
         Aliases = new()
         {
-            "setJob", "sj"
+            "setJob",
+            "sj"
         };
         Description = "Sets character's job.";
         Parameters = new()
         {
-            new Parameter<string>("job", "Classname, e.g.: striker"), new Parameter<byte>("awakened", "Awakened = 1, Unawakened = 0")
+            new Parameter<string>("job", "Classname, e.g.: striker"),
+            new Parameter<byte>("awakened", "Awakened = 1, Unawakened = 0")
         };
         Usage = "/setJob [job] [awakened]";
     }

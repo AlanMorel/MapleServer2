@@ -80,7 +80,8 @@ public class ItemExchangeHandler : GamePacketHandler
 
         Item exchangeRewardItem = new(exchange.RewardId)
         {
-            Rarity = exchange.RewardRarity, Amount = exchange.RewardAmount * quantity
+            Rarity = exchange.RewardRarity,
+            Amount = exchange.RewardAmount * quantity
         };
 
         session.Player.Inventory.AddItem(session, exchangeRewardItem, true);

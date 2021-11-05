@@ -36,7 +36,9 @@ public class Fishing
     {
         session.Player.FishAlbum[fish.Id] = new()
         {
-            FishId = fish.Id, TotalCaught = 1, LargestFish = size
+            FishId = fish.Id,
+            TotalCaught = 1,
+            LargestFish = size
         };
 
         AddMastery(session, fish, true);

@@ -3,7 +3,6 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
@@ -51,7 +50,8 @@ public static class GatheringHelper
 
             session.FieldManager.AddItem(session, new(item.ItemId)
             {
-                Rarity = item.Rarity, Amount = item.Amount
+                Rarity = item.Rarity,
+                Amount = item.Amount
             });
 
             numDrop += item.Amount;

@@ -11,7 +11,9 @@ public class DatabaseEvent : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            gameEvent.Id, gameEvent.Active, gameEvent.Type
+            gameEvent.Id,
+            gameEvent.Active,
+            gameEvent.Type
         });
     }
 
@@ -19,7 +21,8 @@ public class DatabaseEvent : DatabaseTable
     {
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.EventFieldPopup, active = true
+            type = GameEventType.EventFieldPopup,
+            active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
@@ -33,7 +36,8 @@ public class DatabaseEvent : DatabaseTable
         List<MapleopolyEvent> mapleopolyEvents = new();
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.BlueMarble, active = true
+            type = GameEventType.BlueMarble,
+            active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
@@ -51,7 +55,8 @@ public class DatabaseEvent : DatabaseTable
     {
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.UGCMapContractSale, active = true
+            type = GameEventType.UGCMapContractSale,
+            active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
@@ -64,7 +69,8 @@ public class DatabaseEvent : DatabaseTable
     {
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.UGCMapExtensionSale, active = true
+            type = GameEventType.UGCMapExtensionSale,
+            active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {
@@ -78,7 +84,8 @@ public class DatabaseEvent : DatabaseTable
         List<StringBoardEvent> stringBoardEvents = new();
         GameEvent gameEvent = QueryFactory.Query(TableName).Where(new
         {
-            type = GameEventType.StringBoard, active = true
+            type = GameEventType.StringBoard,
+            active = true
         }).Get<GameEvent>().FirstOrDefault();
         if (gameEvent == null)
         {

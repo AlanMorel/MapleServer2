@@ -24,98 +24,128 @@ public class Inventory
     public readonly Dictionary<InventoryTab, short> DefaultSize = new()
     {
         {
-            InventoryTab.Gear, 48
+            InventoryTab.Gear,
+            48
         },
         {
-            InventoryTab.Outfit, 150
+            InventoryTab.Outfit,
+            150
         },
         {
-            InventoryTab.Mount, 48
+            InventoryTab.Mount,
+            48
         },
         {
-            InventoryTab.Catalyst, 48
+            InventoryTab.Catalyst,
+            48
         },
         {
-            InventoryTab.FishingMusic, 48
+            InventoryTab.FishingMusic,
+            48
         },
         {
-            InventoryTab.Quest, 48
+            InventoryTab.Quest,
+            48
         },
         {
-            InventoryTab.Gemstone, 48
+            InventoryTab.Gemstone,
+            48
         },
         {
-            InventoryTab.Misc, 84
+            InventoryTab.Misc,
+            84
         },
         {
-            InventoryTab.LifeSkill, 126
+            InventoryTab.LifeSkill,
+            126
         },
         {
-            InventoryTab.Pets, 60
+            InventoryTab.Pets,
+            60
         },
         {
-            InventoryTab.Consumable, 84
+            InventoryTab.Consumable,
+            84
         },
         {
-            InventoryTab.Currency, 48
+            InventoryTab.Currency,
+            48
         },
         {
-            InventoryTab.Badge, 60
+            InventoryTab.Badge,
+            60
         },
         {
-            InventoryTab.Lapenshard, 48
+            InventoryTab.Lapenshard,
+            48
         },
         {
-            InventoryTab.Fragment, 48
+            InventoryTab.Fragment,
+            48
         }
     };
 
     public Dictionary<InventoryTab, short> ExtraSize = new()
     {
         {
-            InventoryTab.Gear, 0
+            InventoryTab.Gear,
+            0
         },
         {
-            InventoryTab.Outfit, 0
+            InventoryTab.Outfit,
+            0
         },
         {
-            InventoryTab.Mount, 0
+            InventoryTab.Mount,
+            0
         },
         {
-            InventoryTab.Catalyst, 0
+            InventoryTab.Catalyst,
+            0
         },
         {
-            InventoryTab.FishingMusic, 0
+            InventoryTab.FishingMusic,
+            0
         },
         {
-            InventoryTab.Quest, 0
+            InventoryTab.Quest,
+            0
         },
         {
-            InventoryTab.Gemstone, 0
+            InventoryTab.Gemstone,
+            0
         },
         {
-            InventoryTab.Misc, 0
+            InventoryTab.Misc,
+            0
         },
         {
-            InventoryTab.LifeSkill, 0
+            InventoryTab.LifeSkill,
+            0
         },
         {
-            InventoryTab.Pets, 0
+            InventoryTab.Pets,
+            0
         },
         {
-            InventoryTab.Consumable, 0
+            InventoryTab.Consumable,
+            0
         },
         {
-            InventoryTab.Currency, 0
+            InventoryTab.Currency,
+            0
         },
         {
-            InventoryTab.Badge, 0
+            InventoryTab.Badge,
+            0
         },
         {
-            InventoryTab.Lapenshard, 0
+            InventoryTab.Lapenshard,
+            0
         },
         {
-            InventoryTab.Fragment, 0
+            InventoryTab.Fragment,
+            0
         }
     };
 
@@ -242,7 +272,8 @@ public class Inventory
         {
             Item newItem = new(item)
             {
-                Amount = 1, Uid = 0
+                Amount = 1,
+                Uid = 0
             };
             newItem.Uid = DatabaseManager.Items.Insert(newItem);
 

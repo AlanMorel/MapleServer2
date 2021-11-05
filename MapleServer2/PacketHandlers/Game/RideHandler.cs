@@ -66,7 +66,9 @@ public class RideHandler : GamePacketHandler
         IFieldObject<Mount> fieldMount =
             session.FieldManager.RequestFieldObject(new Mount
             {
-                Type = type, Id = mountId, Uid = mountUid
+                Type = type,
+                Id = mountId,
+                Uid = mountUid
             });
 
         fieldMount.Value.Players[0] = session.FieldPlayer;

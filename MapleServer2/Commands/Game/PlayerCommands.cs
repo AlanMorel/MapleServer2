@@ -159,7 +159,8 @@ public class SkillCommand : InGameCommand
         Description = "Cast an specific skill.";
         Parameters = new()
         {
-            new Parameter<int>("id", "ID of the skill."), new Parameter<short>("level", "The level of the skill.")
+            new Parameter<int>("id", "ID of the skill."),
+            new Parameter<short>("level", "The level of the skill.")
         };
         Usage = "/skill <id> [level]";
     }
@@ -192,7 +193,10 @@ public class BuffCommand : InGameCommand
         Description = "Level up all the skills available.";
         Parameters = new()
         {
-            new Parameter<int>("id", "ID of the status."), new Parameter<short>("level", "The level of the status. (OPTIONAL)"), new Parameter<int>("duration", "Duration for the status in seconds. (OPTIONAL)"), new Parameter<int>("stacks", "Stacks for the status. (OPTIONAL)")
+            new Parameter<int>("id", "ID of the status."),
+            new Parameter<short>("level", "The level of the status. (OPTIONAL)"),
+            new Parameter<int>("duration", "Duration for the status in seconds. (OPTIONAL)"),
+            new Parameter<int>("stacks", "Stacks for the status. (OPTIONAL)")
         };
         Usage = "/buff [id] [level] [duration] [stacks]";
     }

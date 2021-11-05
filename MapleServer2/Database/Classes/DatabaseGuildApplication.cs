@@ -11,7 +11,9 @@ public class DatabaseGuildApplication : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            character_id = guildApplication.CharacterId, guild_id = guildApplication.GuildId, creation_timestamp = guildApplication.CreationTimestamp
+            character_id = guildApplication.CharacterId,
+            guild_id = guildApplication.GuildId,
+            creation_timestamp = guildApplication.CreationTimestamp
         });
     }
 
@@ -29,7 +31,9 @@ public class DatabaseGuildApplication : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", guildApplication.Id).Update(new
         {
-            character_id = guildApplication.CharacterId, guild_id = guildApplication.GuildId, creation_timestamp = guildApplication.CreationTimestamp
+            character_id = guildApplication.CharacterId,
+            guild_id = guildApplication.GuildId,
+            creation_timestamp = guildApplication.CreationTimestamp
         });
     }
 

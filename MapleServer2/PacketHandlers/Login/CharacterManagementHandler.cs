@@ -69,7 +69,9 @@ public class CharacterManagementHandler : LoginPacketHandler
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
         AuthData authData = new()
         {
-            TokenA = LoginSession.GetToken(), TokenB = LoginSession.GetToken(), CharacterId = charId
+            TokenA = LoginSession.GetToken(),
+            TokenB = LoginSession.GetToken(),
+            CharacterId = charId
         };
         // Write AuthData to storage shared with GameServer
         AuthStorage.SetData(session.AccountId, authData);
@@ -126,7 +128,10 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.HR, new(id)
                     {
-                        Color = equipColor, HairData = new(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation), IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        HairData = new(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.FA: // Face
@@ -137,7 +142,9 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new(id)
                     {
-                        Color = equipColor, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.FD: // Face Decoration
@@ -150,7 +157,10 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.FD, new(id)
                     {
-                        Color = equipColor, FaceDecorationData = faceDecoration, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        FaceDecorationData = faceDecoration,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.CL: // Clothes
@@ -161,7 +171,9 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new(id)
                     {
-                        Color = equipColor, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.PA: // Pants
@@ -172,7 +184,9 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new(id)
                     {
-                        Color = equipColor, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.SH: // Shoes
@@ -183,7 +197,9 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new(id)
                     {
-                        Color = equipColor, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
                 case ItemSlot.ER: // Ear
@@ -194,7 +210,9 @@ public class CharacterManagementHandler : LoginPacketHandler
 
                     newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new(id)
                     {
-                        Color = equipColor, IsTemplate = false, IsEquipped = true
+                        Color = equipColor,
+                        IsTemplate = false,
+                        IsEquipped = true
                     });
                     break;
             }

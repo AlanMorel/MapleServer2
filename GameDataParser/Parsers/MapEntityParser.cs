@@ -4,7 +4,6 @@ using GameDataParser.Files;
 using Maple2.File.Flat;
 using Maple2.File.Flat.maplestory2library;
 using Maple2.File.IO.Crypto.Common;
-using Maple2.File.Parser.Flat;
 using Maple2.File.Parser.MapXBlock;
 using Maple2Storage.Enums;
 using Maple2Storage.Types;

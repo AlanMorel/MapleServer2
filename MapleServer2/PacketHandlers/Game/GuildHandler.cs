@@ -441,7 +441,8 @@ public class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.CheckInBegin());
         Item guildCoins = new(30000861)
         {
-            Rarity = 4, Amount = property.AttendGuildCoin
+            Rarity = 4,
+            Amount = property.AttendGuildCoin
         };
 
         session.Player.Inventory.AddItem(session, guildCoins, true);
@@ -856,7 +857,8 @@ public class GuildHandler : GamePacketHandler
 
         Item coins = new(30000861)
         {
-            Rarity = 4, Amount = guildProperty.DonateGuildCoin * donateQuantity
+            Rarity = 4,
+            Amount = guildProperty.DonateGuildCoin * donateQuantity
         };
 
         session.Player.Inventory.AddItem(session, coins, true);

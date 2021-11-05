@@ -13,7 +13,9 @@ public struct QuickSlot
     {
         return new()
         {
-            SkillId = skillId, ItemId = item.Id, ItemUid = item.Uid
+            SkillId = skillId,
+            ItemId = item.Id,
+            ItemUid = item.Uid
         };
     }
 
@@ -21,7 +23,9 @@ public struct QuickSlot
     {
         return new()
         {
-            SkillId = skillId, ItemId = itemId, ItemUid = itemUid
+            SkillId = skillId,
+            ItemId = itemId,
+            ItemUid = itemUid
         };
     }
 

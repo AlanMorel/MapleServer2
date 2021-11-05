@@ -42,7 +42,8 @@ public class DatabaseMail : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
         {
-            read_timestamp = mail.ReadTimestamp, mesos = mail.Mesos
+            read_timestamp = mail.ReadTimestamp,
+            mesos = mail.Mesos
         });
     }
 

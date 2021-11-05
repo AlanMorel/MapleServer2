@@ -18,7 +18,8 @@ public class GotoMapCommand : InGameCommand
         Description = "Give informations about a map";
         Parameters = new()
         {
-            new Parameter<int>("id", "The map id."), new Parameter<int>("instance", "The instance id.")
+            new Parameter<int>("id", "The map id."),
+            new Parameter<int>("instance", "The instance id.")
         };
         Usage = "/map [id] [instance]";
     }

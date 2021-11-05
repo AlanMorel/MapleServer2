@@ -17,7 +17,8 @@ public class CurrencyCommands : InGameCommand
         Description = "Set the amount of the currency type specified.";
         Parameters = new()
         {
-            new Parameter<string>("name", "Type of the currency you want to add."), new Parameter<long>("amount", "Amount of the currency type.")
+            new Parameter<string>("name", "Type of the currency you want to add."),
+            new Parameter<long>("amount", "Amount of the currency type.")
         };
         Usage = "/currency [name] [amount]";
     }

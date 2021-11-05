@@ -325,7 +325,9 @@ public class BeautyHandler : GamePacketHandler
 
         Item hairCopy = new(hair.Id)
         {
-            HairData = hair.HairData, Color = hair.Color, CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            HairData = hair.HairData,
+            Color = hair.Color,
+            CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
         };
 
         session.Player.HairInventory.SavedHair.Add(hairCopy);

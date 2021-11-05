@@ -433,7 +433,8 @@ public class MapEventNpcSpawnPoint
         Rotation = rotation;
     }
 }
-[ProtoContract] [ProtoInclude(50, typeof(MapTriggerMesh))]
+[ProtoContract]
+[ProtoInclude(50, typeof(MapTriggerMesh))]
 [ProtoInclude(51, typeof(MapTriggerEffect))]
 [ProtoInclude(52, typeof(MapTriggerCamera))]
 [ProtoInclude(53, typeof(MapTriggerBox))]
@@ -578,7 +579,8 @@ public class MapTriggerRope : MapTriggerObject
 
     private MapTriggerRope() : base() { }
 }
-[ProtoContract] [ProtoInclude(20, typeof(MapBreakableNifObject))]
+[ProtoContract]
+[ProtoInclude(20, typeof(MapBreakableNifObject))]
 [ProtoInclude(21, typeof(MapBreakableActorObject))]
 public class MapBreakableObject
 {

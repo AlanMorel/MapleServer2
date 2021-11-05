@@ -89,7 +89,8 @@ public class QuestHandler : GamePacketHandler
         {
             Item newItem = new(reward.Code)
             {
-                Amount = reward.Count, Rarity = reward.Rank
+                Amount = reward.Count,
+                Rarity = reward.Rank
             };
             if (newItem.RecommendJobs.Contains(session.Player.Job) || newItem.RecommendJobs.Contains(0))
             {
@@ -125,7 +126,8 @@ public class QuestHandler : GamePacketHandler
         {
             Item item = new(rewardItem.Code)
             {
-                Amount = rewardItem.Count, Rarity = rewardItem.Rank
+                Amount = rewardItem.Count,
+                Rarity = rewardItem.Rank
             };
             session.Player.Inventory.AddItem(session, item, true);
         }

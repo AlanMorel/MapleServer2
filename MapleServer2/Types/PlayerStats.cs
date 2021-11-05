@@ -94,109 +94,144 @@ public class PlayerStats
         Data = new()
         {
             {
-                PlayerStatId.Str, new PlayerStat(strBase)
+                PlayerStatId.Str,
+                new PlayerStat(strBase)
             },
             {
-                PlayerStatId.Dex, new PlayerStat(dexBase)
+                PlayerStatId.Dex,
+                new PlayerStat(dexBase)
             },
             {
-                PlayerStatId.Int, new PlayerStat(intBase)
+                PlayerStatId.Int,
+                new PlayerStat(intBase)
             },
             {
-                PlayerStatId.Luk, new PlayerStat(lukBase)
+                PlayerStatId.Luk,
+                new PlayerStat(lukBase)
             },
             {
-                PlayerStatId.Hp, new PlayerStat(hpBase, hpBase, 0)
+                PlayerStatId.Hp,
+                new PlayerStat(hpBase, hpBase, 0)
             }, // Max = 0 on login
             {
-                PlayerStatId.HpRegen, new PlayerStat(10)
+                PlayerStatId.HpRegen,
+                new PlayerStat(10)
             },
             {
-                PlayerStatId.HpRegenTime, new PlayerStat(3000)
+                PlayerStatId.HpRegenTime,
+                new PlayerStat(3000)
             },
             {
-                PlayerStatId.Spirit, new PlayerStat(100, 100, 0)
+                PlayerStatId.Spirit,
+                new PlayerStat(100, 100, 0)
             }, // Max = 0 on login
             {
-                PlayerStatId.SpRegen, new PlayerStat(1)
+                PlayerStatId.SpRegen,
+                new PlayerStat(1)
             },
             {
-                PlayerStatId.SpRegenTime, new PlayerStat(200)
+                PlayerStatId.SpRegenTime,
+                new PlayerStat(200)
             },
             {
-                PlayerStatId.Stamina, new PlayerStat(120)
+                PlayerStatId.Stamina,
+                new PlayerStat(120)
             }, // Max = 0 on login
             {
-                PlayerStatId.StaRegen, new PlayerStat(10)
+                PlayerStatId.StaRegen,
+                new PlayerStat(10)
             },
             {
-                PlayerStatId.StaRegenTime, new PlayerStat(500)
+                PlayerStatId.StaRegenTime,
+                new PlayerStat(500)
             },
             {
-                PlayerStatId.AtkSpd, new PlayerStat(100)
+                PlayerStatId.AtkSpd,
+                new PlayerStat(100)
             },
             {
-                PlayerStatId.MoveSpd, new PlayerStat(100)
+                PlayerStatId.MoveSpd,
+                new PlayerStat(100)
             },
             {
-                PlayerStatId.Acc, new PlayerStat(82)
+                PlayerStatId.Acc,
+                new PlayerStat(82)
             },
             {
-                PlayerStatId.Eva, new PlayerStat(70)
+                PlayerStatId.Eva,
+                new PlayerStat(70)
             }, // changes with job
             {
-                PlayerStatId.CritRate, new PlayerStat(critRateBase)
+                PlayerStatId.CritRate,
+                new PlayerStat(critRateBase)
             }, // changes with job
             {
-                PlayerStatId.CritDmg, new PlayerStat(250)
+                PlayerStatId.CritDmg,
+                new PlayerStat(250)
             },
             {
-                PlayerStatId.CritEva, new PlayerStat(50)
+                PlayerStatId.CritEva,
+                new PlayerStat(50)
             },
             {
-                PlayerStatId.Def, new PlayerStat(16)
+                PlayerStatId.Def,
+                new PlayerStat(16)
             }, // base affected by something?
             {
-                PlayerStatId.Guard, new PlayerStat(0)
+                PlayerStatId.Guard,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.JumpHeight, new PlayerStat(100)
+                PlayerStatId.JumpHeight,
+                new PlayerStat(100)
             },
             {
-                PlayerStatId.PhysAtk, new PlayerStat(10)
+                PlayerStatId.PhysAtk,
+                new PlayerStat(10)
             }, // base for mage, 74 thief
             {
-                PlayerStatId.MagAtk, new PlayerStat(2)
+                PlayerStatId.MagAtk,
+                new PlayerStat(2)
             }, // base for thief, 216 mage
             {
-                PlayerStatId.PhysRes, new PlayerStat(5)
+                PlayerStatId.PhysRes,
+                new PlayerStat(5)
             },
             {
-                PlayerStatId.MagRes, new PlayerStat(4)
+                PlayerStatId.MagRes,
+                new PlayerStat(4)
             },
             {
-                PlayerStatId.MinAtk, new PlayerStat(0)
+                PlayerStatId.MinAtk,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.MaxAtk, new PlayerStat(0)
+                PlayerStatId.MaxAtk,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.MinDmg, new PlayerStat(0)
+                PlayerStatId.MinDmg,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.MaxDmg, new PlayerStat(0)
+                PlayerStatId.MaxDmg,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.Pierce, new PlayerStat(0)
+                PlayerStatId.Pierce,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.MountSpeed, new PlayerStat(100)
+                PlayerStatId.MountSpeed,
+                new PlayerStat(100)
             },
             {
-                PlayerStatId.BonusAtk, new PlayerStat(0)
+                PlayerStatId.BonusAtk,
+                new PlayerStat(0)
             },
             {
-                PlayerStatId.PetBonusAtk, new PlayerStat(0)
+                PlayerStatId.PetBonusAtk,
+                new PlayerStat(0)
             }
         };
     }

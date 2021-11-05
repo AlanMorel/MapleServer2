@@ -175,7 +175,9 @@ public class Item
 
         splitItem = new(this)
         {
-            Amount = splitAmount, Slot = -1, InventoryId = 0
+            Amount = splitAmount,
+            Slot = -1,
+            InventoryId = 0
         };
         splitItem.Uid = DatabaseManager.Items.Insert(splitItem);
 

@@ -202,7 +202,10 @@ public class RequestCubeHandler : GamePacketHandler
         {
             player.Account.Home = new(player.Account.Id, player.Name, homeTemplate)
             {
-                PlotMapId = player.MapId, PlotNumber = land.Id, Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + land.ContractDate * 24 * 60 * 60, Name = player.Name
+                PlotMapId = player.MapId,
+                PlotNumber = land.Id,
+                Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + land.ContractDate * 24 * 60 * 60,
+                Name = player.Name
             };
             GameServer.HomeManager.AddHome(player.Account.Home);
         }
@@ -889,37 +892,48 @@ public class RequestCubeHandler : GamePacketHandler
         Dictionary<ItemHousingCategory, int> goals = new()
         {
             {
-                ItemHousingCategory.Bed, 1
+                ItemHousingCategory.Bed,
+                1
             },
             {
-                ItemHousingCategory.Table, 1
+                ItemHousingCategory.Table,
+                1
             },
             {
-                ItemHousingCategory.SofasChairs, 2
+                ItemHousingCategory.SofasChairs,
+                2
             },
             {
-                ItemHousingCategory.Storage, 1
+                ItemHousingCategory.Storage,
+                1
             },
             {
-                ItemHousingCategory.WallDecoration, 1
+                ItemHousingCategory.WallDecoration,
+                1
             },
             {
-                ItemHousingCategory.WallTiles, 3
+                ItemHousingCategory.WallTiles,
+                3
             },
             {
-                ItemHousingCategory.Bathroom, 1
+                ItemHousingCategory.Bathroom,
+                1
             },
             {
-                ItemHousingCategory.Lighting, 1
+                ItemHousingCategory.Lighting,
+                1
             },
             {
-                ItemHousingCategory.Electronics, 1
+                ItemHousingCategory.Electronics,
+                1
             },
             {
-                ItemHousingCategory.Fences, 2
+                ItemHousingCategory.Fences,
+                2
             },
             {
-                ItemHousingCategory.NaturalTerrain, 4
+                ItemHousingCategory.NaturalTerrain,
+                4
             }
         };
 
@@ -968,7 +982,9 @@ public class RequestCubeHandler : GamePacketHandler
 
         List<int> rewardsIds = new()
         {
-            20300039, 20000071, 20301018
+            20300039,
+            20000071,
+            20301018
         }; // Default rewards
         switch (decorationScore)
         {

@@ -11,7 +11,9 @@ public class DatabaseCardReverseGame : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            item_id = cardReverseGame.ItemId, item_rarity = cardReverseGame.ItemRarity, item_amount = cardReverseGame.ItemAmount
+            item_id = cardReverseGame.ItemId,
+            item_rarity = cardReverseGame.ItemRarity,
+            item_amount = cardReverseGame.ItemAmount
         });
     }
 
@@ -24,7 +26,9 @@ public class DatabaseCardReverseGame : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", cardReverseGame.Id).Update(new
         {
-            item_id = cardReverseGame.ItemId, item_rarity = cardReverseGame.ItemRarity, item_amount = cardReverseGame.ItemAmount
+            item_id = cardReverseGame.ItemId,
+            item_rarity = cardReverseGame.ItemRarity,
+            item_amount = cardReverseGame.ItemAmount
         });
     }
 

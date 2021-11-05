@@ -12,7 +12,10 @@ public class DatabaseSkillTab : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            tab_id = skillTab.TabId, skillTab.Name, skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels), character_id = characterId
+            tab_id = skillTab.TabId,
+            skillTab.Name,
+            skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels),
+            character_id = characterId
         });
     }
 
@@ -31,7 +34,9 @@ public class DatabaseSkillTab : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("uid", skillTab.Uid).Update(new
         {
-            tab_id = skillTab.TabId, skillTab.Name, skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels)
+            tab_id = skillTab.TabId,
+            skillTab.Name,
+            skill_levels = JsonConvert.SerializeObject(skillTab.SkillLevels)
         });
     }
 

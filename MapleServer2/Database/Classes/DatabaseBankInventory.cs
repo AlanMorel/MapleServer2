@@ -11,7 +11,8 @@ public class DatabaseBankInventory : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            mesos = bankInventory.Mesos.Amount, extra_size = bankInventory.ExtraSize
+            mesos = bankInventory.Mesos.Amount,
+            extra_size = bankInventory.ExtraSize
         });
     }
 
@@ -24,7 +25,8 @@ public class DatabaseBankInventory : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", bankInventory.Id).Update(new
         {
-            mesos = bankInventory.Mesos.Amount, extra_size = bankInventory.ExtraSize
+            mesos = bankInventory.Mesos.Amount,
+            extra_size = bankInventory.ExtraSize
         });
 
         List<Item> items = new();

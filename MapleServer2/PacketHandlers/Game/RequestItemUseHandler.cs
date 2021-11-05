@@ -238,7 +238,9 @@ public class RequestItemUseHandler : GamePacketHandler
 
             Item gachaItem = new(contents.ItemId)
             {
-                Rarity = contents.Rarity, Amount = itemAmount, GachaDismantleId = gacha.GachaId
+                Rarity = contents.Rarity,
+                Amount = itemAmount,
+                GachaDismantleId = gacha.GachaId
             };
             items.Add(gachaItem);
             session.Player.Inventory.ConsumeItem(session, capsule.Uid, 1);
@@ -359,7 +361,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
         Item badge = new(70100000)
         {
-            PetSkinBadgeId = pet.Id, CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            PetSkinBadgeId = pet.Id,
+            CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
         };
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);

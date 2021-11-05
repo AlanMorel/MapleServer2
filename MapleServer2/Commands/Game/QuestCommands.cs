@@ -54,7 +54,8 @@ public class CompleteQuestCommand : InGameCommand
         {
             Item newItem = new(reward.Code)
             {
-                Amount = reward.Count, Rarity = reward.Rank
+                Amount = reward.Count,
+                Rarity = reward.Rank
             };
             if (newItem.RecommendJobs.Contains(player.Job) || newItem.RecommendJobs.Contains(0))
             {

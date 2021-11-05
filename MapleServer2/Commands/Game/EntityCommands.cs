@@ -19,7 +19,10 @@ public class NpcCommand : InGameCommand
         Description = "Spawn a NPC from id.";
         Parameters = new()
         {
-            new Parameter<int>("id", "The id of the NPC.", 11003146), new Parameter<short>("ani", "The animation of the NPC.", 1), new Parameter<short>("dir", "The rotation of the NPC.", 2700), new Parameter<CoordF>("coord", "The position of the NPC.", CoordF.From(0, 0, 0))
+            new Parameter<int>("id", "The id of the NPC.", 11003146),
+            new Parameter<short>("ani", "The animation of the NPC.", 1),
+            new Parameter<short>("dir", "The rotation of the NPC.", 2700),
+            new Parameter<CoordF>("coord", "The position of the NPC.", CoordF.From(0, 0, 0))
         };
         Usage = "/npc [id] [ani] [dir] [coord]";
     }
@@ -35,7 +38,8 @@ public class NpcCommand : InGameCommand
         }
         Npc npc = new(npcId)
         {
-            Animation = trigger.Get<short>("ani"), ZRotation = trigger.Get<short>("dir")
+            Animation = trigger.Get<short>("ani"),
+            ZRotation = trigger.Get<short>("dir")
         };
 
         IFieldObject<Npc> fieldNpc = trigger.Session.FieldManager.RequestFieldObject(npc);
@@ -63,7 +67,10 @@ public class MobCommand : InGameCommand
         Description = "Spawn a MOB from id.";
         Parameters = new()
         {
-            new Parameter<int>("id", "The id of the MOB.", 21000001), new Parameter<short>("ani", "The animation of the MOB.", 1), new Parameter<short>("dir", "The rotation of the MOB.", 2700), new Parameter<CoordF>("coord", "The position of the MOB.", CoordF.From(0, 0, 0))
+            new Parameter<int>("id", "The id of the MOB.", 21000001),
+            new Parameter<short>("ani", "The animation of the MOB.", 1),
+            new Parameter<short>("dir", "The rotation of the MOB.", 2700),
+            new Parameter<CoordF>("coord", "The position of the MOB.", CoordF.From(0, 0, 0))
         };
         Usage = "/mob [id] [ani] [dir] [coord]";
     }
@@ -79,7 +86,8 @@ public class MobCommand : InGameCommand
         }
         Mob mob = new(mobId)
         {
-            Animation = trigger.Get<short>("ani"), ZRotation = trigger.Get<short>("dir")
+            Animation = trigger.Get<short>("ani"),
+            ZRotation = trigger.Get<short>("dir")
         };
 
         IFieldObject<Mob> fieldMob = trigger.Session.FieldManager.RequestFieldObject(mob);

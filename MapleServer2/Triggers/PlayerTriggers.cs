@@ -226,7 +226,8 @@ public partial class TriggerContext
     {
         PlayerTrigger playerTrigger = new(key)
         {
-            TriggerId = triggerId, Value = value
+            TriggerId = triggerId,
+            Value = value
         };
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {

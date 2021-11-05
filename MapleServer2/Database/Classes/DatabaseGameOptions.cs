@@ -12,7 +12,8 @@ public class DatabaseGameOptions : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds), active_hotbar_id = gameOptions.ActiveHotbarId
+            keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
+            active_hotbar_id = gameOptions.ActiveHotbarId
         });
     }
 
@@ -20,7 +21,8 @@ public class DatabaseGameOptions : DatabaseTable
     {
         QueryFactory.Query(TableName).Where("id", gameOptions.Id).Update(new
         {
-            keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds), active_hotbar_id = gameOptions.ActiveHotbarId
+            keybinds = JsonConvert.SerializeObject(gameOptions.KeyBinds),
+            active_hotbar_id = gameOptions.ActiveHotbarId
         });
         foreach (Hotbar hotbar in gameOptions.Hotbars)
         {

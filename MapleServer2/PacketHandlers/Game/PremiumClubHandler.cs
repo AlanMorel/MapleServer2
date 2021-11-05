@@ -66,7 +66,8 @@ public class PremiumClubHandler : GamePacketHandler
 
         Item benefitRewardItem = new(benefit.ItemId)
         {
-            Rarity = benefit.ItemRarity, Amount = benefit.ItemAmount
+            Rarity = benefit.ItemRarity,
+            Amount = benefit.ItemAmount
         };
 
         session.Player.Inventory.AddItem(session, benefitRewardItem, true);
@@ -101,7 +102,8 @@ public class PremiumClubHandler : GamePacketHandler
         {
             Item bonusItem = new(item.Id)
             {
-                Rarity = item.Rarity, Amount = item.Amount
+                Rarity = item.Rarity,
+                Amount = item.Amount
             };
             session.Player.Inventory.AddItem(session, bonusItem, true);
         }

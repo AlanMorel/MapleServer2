@@ -20,7 +20,10 @@ public struct Color
     {
         return new()
         {
-            Alpha = alpha, Red = red, Green = green, Blue = blue
+            Alpha = alpha,
+            Red = red,
+            Green = green,
+            Blue = blue
         };
     }
 
@@ -44,7 +47,8 @@ public struct SkinColor
     {
         return new()
         {
-            Primary = color, Secondary = color
+            Primary = color,
+            Secondary = color
         };
     }
 
@@ -68,7 +72,9 @@ public struct MixedColor
     {
         return new()
         {
-            Primary = color, Secondary = color, Tertiary = color
+            Primary = color,
+            Secondary = color,
+            Tertiary = color
         };
     }
 
@@ -76,7 +82,9 @@ public struct MixedColor
     {
         return new()
         {
-            Primary = primary, Secondary = secondary, Tertiary = tertiary
+            Primary = primary,
+            Secondary = secondary,
+            Tertiary = tertiary
         };
     }
 
@@ -100,7 +108,9 @@ public struct EquipColor
     {
         return new()
         {
-            Color = color, Index = index, Palette = palette
+            Color = color,
+            Index = index,
+            Palette = palette
         };
     }
 
@@ -108,7 +118,9 @@ public struct EquipColor
     {
         return new()
         {
-            Color = color, Index = index, Palette = palette
+            Color = color,
+            Index = index,
+            Palette = palette
         };
     }
 

@@ -154,7 +154,8 @@ public class BankInventory
         // group items by item id and sum the amount, return a new list of items with updated amount (ty gh copilot)
         List<Item> groupedItems = items.Where(x => x.StackLimit > 1).GroupBy(x => x.Id).Select(x => new Item(x.First())
         {
-            Amount = x.Sum(y => y.Amount), BankInventoryId = Id
+            Amount = x.Sum(y => y.Amount),
+            BankInventoryId = Id
         }).ToList();
 
         // Add items that can't be grouped

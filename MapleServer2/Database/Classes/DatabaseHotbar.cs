@@ -12,7 +12,8 @@ public class DatabaseHotbar : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            slots = JsonConvert.SerializeObject(hotbar.Slots), game_options_id = gameOptionsId
+            slots = JsonConvert.SerializeObject(hotbar.Slots),
+            game_options_id = gameOptionsId
         });
     }
 

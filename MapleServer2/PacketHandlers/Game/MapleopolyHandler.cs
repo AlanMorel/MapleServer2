@@ -109,7 +109,8 @@ public class MapleopolyHandler : GamePacketHandler
             case MapleopolyTileType.TreasureTrove:
                 Item item = new(currentTile.ItemId)
                 {
-                    Amount = currentTile.ItemAmount, Rarity = currentTile.ItemRarity
+                    Amount = currentTile.ItemAmount,
+                    Rarity = currentTile.ItemRarity
                 };
                 session.Player.Inventory.AddItem(session, item, true);
                 break;
@@ -158,7 +159,8 @@ public class MapleopolyHandler : GamePacketHandler
             {
                 Item item1 = new(mapleopolyItem1.ItemId)
                 {
-                    Amount = mapleopolyItem1.ItemAmount, Rarity = mapleopolyItem1.ItemRarity
+                    Amount = mapleopolyItem1.ItemAmount,
+                    Rarity = mapleopolyItem1.ItemRarity
                 };
                 session.Player.Inventory.AddItem(session, item1, true);
             }
@@ -171,7 +173,8 @@ public class MapleopolyHandler : GamePacketHandler
             }
             Item item2 = new(mapleopolyItem2.ItemId)
             {
-                Amount = mapleopolyItem2.ItemAmount, Rarity = mapleopolyItem2.ItemRarity
+                Amount = mapleopolyItem2.ItemAmount,
+                Rarity = mapleopolyItem2.ItemRarity
             };
             session.Player.Inventory.AddItem(session, item2, true);
         }

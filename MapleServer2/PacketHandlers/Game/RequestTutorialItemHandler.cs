@@ -32,7 +32,8 @@ public class RequestTutorialItemHandler : GamePacketHandler
 
             Item item = new(tutorialItem.ItemId)
             {
-                Rarity = tutorialItem.Rarity, Amount = amountRemaining
+                Rarity = tutorialItem.Rarity,
+                Amount = amountRemaining
             };
             session.Player.Inventory.AddItem(session, item, true);
         }

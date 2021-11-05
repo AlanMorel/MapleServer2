@@ -73,7 +73,8 @@ public class UnlockTrophyCommand : InGameCommand
         Description = "Unlock an trophy!";
         Parameters = new()
         {
-            new Parameter<int>("trophyId", "The trophy id to unlock;", 0), new Parameter<int>("amount", "The amount of trophy goals.", 1)
+            new Parameter<int>("trophyId", "The trophy id to unlock;", 0),
+            new Parameter<int>("amount", "The amount of trophy goals.", 1)
         };
         Usage = "/trophy [trophyId] [amount]";
     }

@@ -139,7 +139,9 @@ public class InstrumentHandler : GamePacketHandler
 
         Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
         {
-            InstrumentTick = session.ServerTick, Score = score, Improvise = false
+            InstrumentTick = session.ServerTick,
+            Score = score,
+            Improvise = false
         };
 
         score.PlayCount -= 1;
@@ -214,7 +216,9 @@ public class InstrumentHandler : GamePacketHandler
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
         Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
         {
-            Score = score, Ensemble = true, Improvise = false
+            Score = score,
+            Ensemble = true,
+            Improvise = false
         };
 
         session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
