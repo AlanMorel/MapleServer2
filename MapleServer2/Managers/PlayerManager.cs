@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using MapleServer2.Types;
 
-namespace MapleServer2.Servers.Game;
+namespace MapleServer2.Managers;
 
 public class PlayerManager
 {
