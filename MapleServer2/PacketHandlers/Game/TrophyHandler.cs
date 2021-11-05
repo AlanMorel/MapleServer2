@@ -8,100 +8,99 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class TrophyHandler : GamePacketHandler
 {
-    public class TrophyHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.TROPHY;
+
+    private enum TrophyHandlerMode : byte
     {
-        public override RecvOp OpCode => RecvOp.TROPHY;
+        ClaimReward = 0x03,
+        Favorite = 0x04
+    }
 
-        private enum TrophyHandlerMode : byte
+    public TrophyHandler() : base() { }
+
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();
+
+        switch (mode)
         {
-            ClaimReward = 0x03,
-            Favorite = 0x04
+            case TrophyHandlerMode.ClaimReward:
+                HandleClaimReward(session, packet);
+                break;
+            case TrophyHandlerMode.Favorite:
+                HandleFavorite(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
+
+    private static void HandleClaimReward(GameSession session, PacketReader packet)
+    {
+        int id = packet.ReadInt();
+        if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
+        {
+            return;
         }
 
-        public TrophyHandler() : base() { }
-
-        public override void Handle(GameSession session, PacketReader packet)
+        TrophyMetadata metadata = TrophyMetadataStorage.GetMetadata(trophy.Id);
+        List<TrophyGradeMetadata> grades = metadata.Grades.Where(x => x.Grade <= trophy.LastReward).ToList();
+        foreach (TrophyGradeMetadata grade in grades)
         {
-            TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();
-
-            switch (mode)
+            if (grade.Grade >= trophy.LastReward)
             {
-                case TrophyHandlerMode.ClaimReward:
-                    HandleClaimReward(session, packet);
-                    break;
-                case TrophyHandlerMode.Favorite:
-                    HandleFavorite(session, packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
+                ProvideReward(grade, session);
+                trophy.LastReward++;
             }
         }
+        session.Send(TrophyPacket.WriteUpdate(trophy));
+        DatabaseManager.Trophies.Update(trophy);
+    }
 
-        private static void HandleClaimReward(GameSession session, PacketReader packet)
+    private static void HandleFavorite(GameSession session, PacketReader packet)
+    {
+        int id = packet.ReadInt();
+        bool favorited = packet.ReadBool();
+        if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
         {
-            int id = packet.ReadInt();
-            if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
-            {
-                return;
-            }
-
-            TrophyMetadata metadata = TrophyMetadataStorage.GetMetadata(trophy.Id);
-            List<TrophyGradeMetadata> grades = metadata.Grades.Where(x => x.Grade <= trophy.LastReward).ToList();
-            foreach (TrophyGradeMetadata grade in grades)
-            {
-                if (grade.Grade >= trophy.LastReward)
-                {
-                    ProvideReward(grade, session);
-                    trophy.LastReward++;
-                }
-            }
-            session.Send(TrophyPacket.WriteUpdate(trophy));
-            DatabaseManager.Trophies.Update(trophy);
+            return;
         }
+        trophy.Favorited = favorited;
+        session.Send(TrophyPacket.ToggleFavorite(trophy, favorited));
+        DatabaseManager.Trophies.Update(trophy);
+    }
 
-        private static void HandleFavorite(GameSession session, PacketReader packet)
+    private static void ProvideReward(TrophyGradeMetadata grade, GameSession session)
+    {
+        switch (grade.RewardType)
         {
-            int id = packet.ReadInt();
-            bool favorited = packet.ReadBool();
-            if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
-            {
-                return;
-            }
-            trophy.Favorited = favorited;
-            session.Send(TrophyPacket.ToggleFavorite(trophy, favorited));
-            DatabaseManager.Trophies.Update(trophy);
-        }
-
-        private static void ProvideReward(TrophyGradeMetadata grade, GameSession session)
-        {
-            switch (grade.RewardType)
-            {
-                // this cases don't require any handling.
-                case RewardType.None:
-                case RewardType.itemcoloring:
-                case RewardType.beauty_hair:
-                case RewardType.skillPoint:
-                case RewardType.beauty_makeup:
-                case RewardType.shop_build:
-                case RewardType.shop_weapon:
-                case RewardType.dynamicaction:
-                case RewardType.etc:
-                case RewardType.beauty_skin:
-                case RewardType.statPoint:
-                case RewardType.shop_ride:
-                default:
-                    break;
-                case RewardType.item:
-                    session.Player.Inventory.AddItem(session, new Item(grade.RewardCode, grade.RewardValue), true);
-                    break;
-                case RewardType.title:
-                    session.Player.Titles.Add(grade.RewardCode);
-                    session.Send(UserEnvPacket.AddTitle(grade.RewardCode));
-                    break;
-            }
+            // this cases don't require any handling.
+            case RewardType.None:
+            case RewardType.itemcoloring:
+            case RewardType.beauty_hair:
+            case RewardType.skillPoint:
+            case RewardType.beauty_makeup:
+            case RewardType.shop_build:
+            case RewardType.shop_weapon:
+            case RewardType.dynamicaction:
+            case RewardType.etc:
+            case RewardType.beauty_skin:
+            case RewardType.statPoint:
+            case RewardType.shop_ride:
+            default:
+                break;
+            case RewardType.item:
+                session.Player.Inventory.AddItem(session, new(grade.RewardCode, grade.RewardValue), true);
+                break;
+            case RewardType.title:
+                session.Player.Titles.Add(grade.RewardCode);
+                session.Send(UserEnvPacket.AddTitle(grade.RewardCode));
+                break;
         }
     }
 }

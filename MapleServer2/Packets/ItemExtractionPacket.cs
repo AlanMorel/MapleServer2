@@ -2,40 +2,39 @@
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+public static class ItemExtractionPacket
 {
-    public static class ItemExtractionPacket
+    private enum ItemExtractionPacketMode : byte
     {
-        private enum ItemExtractionPacketMode : byte
-        {
-            Extract = 0x0,
-            InsufficientAnvils = 0x2,
-        }
+        Extract = 0x0,
+        InsufficientAnvils = 0x2
+    }
 
-        public static PacketWriter Extract(Item resultItem)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
-            pWriter.Write(ItemExtractionPacketMode.Extract);
-            pWriter.WriteLong(resultItem.Uid);
-            pWriter.WriteLong(resultItem.Uid);
-            pWriter.WriteShort();
-            pWriter.Write(resultItem.Color);
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteByte();
-            pWriter.WriteInt();
-            pWriter.WriteInt();
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            pWriter.WriteByte();
-            return pWriter;
-        }
+    public static PacketWriter Extract(Item resultItem)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
+        pWriter.Write(ItemExtractionPacketMode.Extract);
+        pWriter.WriteLong(resultItem.Uid);
+        pWriter.WriteLong(resultItem.Uid);
+        pWriter.WriteShort();
+        pWriter.Write(resultItem.Color);
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteByte();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        return pWriter;
+    }
 
-        public static PacketWriter InsufficientAnvils()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
-            pWriter.Write(ItemExtractionPacketMode.InsufficientAnvils);
-            return pWriter;
-        }
+    public static PacketWriter InsufficientAnvils()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_EXTRACTION);
+        pWriter.Write(ItemExtractionPacketMode.InsufficientAnvils);
+        return pWriter;
     }
 }

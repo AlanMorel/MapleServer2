@@ -1,27 +1,26 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+internal class WorldMapPacket
 {
-    internal class WorldMapPacket
+    public static PacketWriter Open()
     {
-        public static PacketWriter Open()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.WORLD_MAP);
 
-            // Expect 4 bytes
-            // 0X 00 00 00 breaks map
-            // 00 01 00 00 breaks map => wants 1 int
-            // 00 00 0X 00 breaks map => wants 1 more byte
-            // 00 00 00 0X breaks map => wants 1 more byte
-            // seems like map data seems to be sent elsewhere, perhaps FIELD_ADD_USER
+        // Expect 4 bytes
+        // 0X 00 00 00 breaks map
+        // 00 01 00 00 breaks map => wants 1 int
+        // 00 00 0X 00 breaks map => wants 1 more byte
+        // 00 00 00 0X breaks map => wants 1 more byte
+        // seems like map data seems to be sent elsewhere, perhaps FIELD_ADD_USER
 
-            pWriter.WriteByte(0);
-            pWriter.WriteByte(0);
-            pWriter.WriteByte(0);
-            pWriter.WriteByte(0);
+        pWriter.WriteByte(0);
+        pWriter.WriteByte(0);
+        pWriter.WriteByte(0);
+        pWriter.WriteByte(0);
 
-            return pWriter;
-        }
+        return pWriter;
     }
 }

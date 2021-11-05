@@ -7,122 +7,121 @@ using MapleServer2.Tools;
 using MapleServer2.Types;
 using MoonSharp.Interpreter;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+internal class RequestTaxiHandler : GamePacketHandler
 {
-    internal class RequestTaxiHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
+
+    public RequestTaxiHandler() : base() { }
+
+    private enum RequestTaxiMode : byte
     {
-        public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
+        Car = 0x1,
+        RotorsMeso = 0x3,
+        RotorsMeret = 0x4,
+        DiscoverTaxi = 0x5
+    };
 
-        public RequestTaxiHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
 
-        private enum RequestTaxiMode : byte
+        int mapId = 0;
+        long meretPrice = 15;
+
+        if (mode != RequestTaxiMode.DiscoverTaxi)
         {
-            Car = 0x1,
-            RotorsMeso = 0x3,
-            RotorsMeret = 0x4,
-            DiscoverTaxi = 0x5
-        };
-
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
-
-            int mapId = 0;
-            long meretPrice = 15;
-
-            if (mode != RequestTaxiMode.DiscoverTaxi)
-            {
-                mapId = packet.ReadInt();
-            }
-
-            switch (mode)
-            {
-                case RequestTaxiMode.Car:
-                    HandleCarTaxi(session, mapId);
-                    break;
-                case RequestTaxiMode.RotorsMeso:
-                    HandleRotorMeso(session, mapId);
-                    break;
-                case RequestTaxiMode.RotorsMeret:
-                    HandleRotorMeret(session, mapId, meretPrice);
-                    break;
-                case RequestTaxiMode.DiscoverTaxi:
-                    HandleDiscoverTaxi(session);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+            mapId = packet.ReadInt();
         }
 
-        private static void HandleCarTaxi(GameSession session, int mapId)
+        switch (mode)
         {
-            if (!WorldMapGraphStorage.CanPathFind(mapOrigin: session.Player.MapId.ToString(), mapDestination: mapId.ToString(), out int mapCount))
-            {
-                Logger.Warn("Path not found.");
-                return;
-            }
+            case RequestTaxiMode.Car:
+                HandleCarTaxi(session, mapId);
+                break;
+            case RequestTaxiMode.RotorsMeso:
+                HandleRotorMeso(session, mapId);
+                break;
+            case RequestTaxiMode.RotorsMeret:
+                HandleRotorMeret(session, mapId, meretPrice);
+                break;
+            case RequestTaxiMode.DiscoverTaxi:
+                HandleDiscoverTaxi(session);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
 
-            ScriptLoader scriptLoader = new ScriptLoader("Functions/calcTaxiCost");
+    private static void HandleCarTaxi(GameSession session, int mapId)
+    {
+        if (!WorldMapGraphStorage.CanPathFind(session.Player.MapId.ToString(), mapId.ToString(), out int mapCount))
+        {
+            Logger.Warn("Path not found.");
+            return;
+        }
 
-            DynValue result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
-            if (result == null)
-            {
-                return;
-            }
+        ScriptLoader scriptLoader = new("Functions/calcTaxiCost");
 
-            if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
-            {
-                return;
-            }
+        DynValue result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
+        if (result == null)
+        {
+            return;
+        }
+
+        if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
+        {
+            return;
+        }
+        session.Player.Warp(mapId);
+    }
+
+    private static void HandleRotorMeso(GameSession session, int mapId)
+    {
+        // VIP Travel
+        Account account = session.Player.Account;
+        if (account.IsVip())
+        {
             session.Player.Warp(mapId);
+            return;
         }
 
-        private static void HandleRotorMeso(GameSession session, int mapId)
+        ScriptLoader scriptLoader = new("Functions/calcAirTaxiCost");
+
+        DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
+        if (result == null)
         {
-            // VIP Travel
-            Account account = session.Player.Account;
-            if (account.IsVip())
-            {
-                session.Player.Warp(mapId);
-                return;
-            }
-
-            ScriptLoader scriptLoader = new ScriptLoader("Functions/calcAirTaxiCost");
-
-            DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
-            if (result == null)
-            {
-                return;
-            }
-
-            if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
-            {
-                return;
-            }
-
-            session.Player.Warp(mapId);
+            return;
         }
 
-        private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
+        if (!session.Player.Wallet.Meso.Modify((long) -result.Number))
         {
-            if (!session.Player.Account.RemoveMerets(meretPrice))
-            {
-                return;
-            }
-
-            session.Player.Warp(mapId);
+            return;
         }
 
-        private static void HandleDiscoverTaxi(GameSession session)
+        session.Player.Warp(mapId);
+    }
+
+    private static void HandleRotorMeret(GameSession session, int mapId, long meretPrice)
+    {
+        if (!session.Player.Account.RemoveMerets(meretPrice))
         {
-            List<int> unlockedTaxis = session.Player.UnlockedTaxis;
-            int mapId = session.Player.MapId;
-            if (!unlockedTaxis.Contains(mapId))
-            {
-                unlockedTaxis.Add(mapId);
-            }
-            session.Send(TaxiPacket.DiscoverTaxi(mapId));
+            return;
         }
+
+        session.Player.Warp(mapId);
+    }
+
+    private static void HandleDiscoverTaxi(GameSession session)
+    {
+        List<int> unlockedTaxis = session.Player.UnlockedTaxis;
+        int mapId = session.Player.MapId;
+        if (!unlockedTaxis.Contains(mapId))
+        {
+            unlockedTaxis.Add(mapId);
+        }
+        session.Send(TaxiPacket.DiscoverTaxi(mapId));
     }
 }

@@ -3,90 +3,89 @@ using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Types.Metadata;
 
-namespace GameDataParser.Parsers
-{
-    public class JobParser : Exporter<List<JobMetadata>>
-    {
-        public JobParser(MetadataResources resources) : base(resources, "job") { }
+namespace GameDataParser.Parsers;
 
-        protected override List<JobMetadata> Parse()
+public class JobParser : Exporter<List<JobMetadata>>
+{
+    public JobParser(MetadataResources resources) : base(resources, "job") { }
+
+    protected override List<JobMetadata> Parse()
+    {
+        List<JobMetadata> jobs = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-            List<JobMetadata> jobs = new List<JobMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files)
+            if (!entry.Name.Equals("table/job.xml"))
             {
-                if (!entry.Name.Equals("table/job.xml"))
+                continue;
+            }
+
+            XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList jobNodes = document.GetElementsByTagName("job");
+            foreach (XmlNode jobNode in jobNodes)
+            {
+                if (jobNode.Attributes["feature"] == null || jobNode.Attributes["feature"].Value != "JobChange_02") // only get latest job data
                 {
                     continue;
                 }
 
-                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList jobNodes = document.GetElementsByTagName("job");
-                foreach (XmlNode jobNode in jobNodes)
+                JobMetadata metadata = new();
+
+                metadata.JobId = short.Parse(jobNode.Attributes["code"].Value);
+                metadata.StartMapId = int.Parse(jobNode.Attributes["startField"].Value);
+
+                metadata.OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                metadata.OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+
+                foreach (XmlNode childNode in jobNode)
                 {
-                    if (jobNode.Attributes["feature"] == null || jobNode.Attributes["feature"].Value != "JobChange_02") // only get latest job data
+                    if (childNode.Name.Equals("startInvenItem"))
                     {
-                        continue;
+                        Dictionary<int, TutorialItemMetadata> tutorialItemsDictionary = new();
+                        foreach (XmlNode startItem in childNode)
+                        {
+                            TutorialItemMetadata tutorialItem = new();
+                            tutorialItem.ItemId = int.Parse(startItem.Attributes["itemID"].Value);
+                            tutorialItem.Rarity = byte.Parse(startItem.Attributes["grade"].Value);
+                            tutorialItem.Amount = byte.Parse(startItem.Attributes["count"].Value);
+
+                            if (tutorialItemsDictionary.ContainsKey(tutorialItem.ItemId))
+                            {
+                                tutorialItemsDictionary[tutorialItem.ItemId].Amount += tutorialItem.Amount;
+                                continue;
+                            }
+
+                            tutorialItemsDictionary[tutorialItem.ItemId] = tutorialItem;
+                        }
+                        metadata.TutorialItems.AddRange(tutorialItemsDictionary.Values);
                     }
-
-                    JobMetadata metadata = new JobMetadata();
-
-                    metadata.JobId = short.Parse(jobNode.Attributes["code"].Value);
-                    metadata.StartMapId = int.Parse(jobNode.Attributes["startField"].Value);
-
-                    metadata.OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                    metadata.OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-
-                    foreach (XmlNode childNode in jobNode)
+                    else if (childNode.Name.Equals("skills"))
                     {
-                        if (childNode.Name.Equals("startInvenItem"))
+                        foreach (XmlNode skillNode in childNode)
                         {
-                            Dictionary<int, TutorialItemMetadata> tutorialItemsDictionary = new Dictionary<int, TutorialItemMetadata>();
-                            foreach (XmlNode startItem in childNode)
-                            {
-                                TutorialItemMetadata tutorialItem = new TutorialItemMetadata();
-                                tutorialItem.ItemId = int.Parse(startItem.Attributes["itemID"].Value);
-                                tutorialItem.Rarity = byte.Parse(startItem.Attributes["grade"].Value);
-                                tutorialItem.Amount = byte.Parse(startItem.Attributes["count"].Value);
+                            int skillId = int.Parse(skillNode.Attributes["main"].Value);
+                            byte maxLevel = byte.Parse(skillNode.Attributes["maxLevel"]?.Value ?? "1");
+                            short subJobCode = short.Parse(skillNode.Attributes["subJobCode"]?.Value ?? "0");
 
-                                if (tutorialItemsDictionary.ContainsKey(tutorialItem.ItemId))
-                                {
-                                    tutorialItemsDictionary[tutorialItem.ItemId].Amount += tutorialItem.Amount;
-                                    continue;
-                                }
+                            List<int> subSkillIds = skillNode.Attributes["sub"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
 
-                                tutorialItemsDictionary[tutorialItem.ItemId] = tutorialItem;
-                            }
-                            metadata.TutorialItems.AddRange(tutorialItemsDictionary.Values);
-                        }
-                        else if (childNode.Name.Equals("skills"))
-                        {
-                            foreach (XmlNode skillNode in childNode)
-                            {
-                                int skillId = int.Parse(skillNode.Attributes["main"].Value);
-                                byte maxLevel = byte.Parse(skillNode.Attributes["maxLevel"]?.Value ?? "1");
-                                short subJobCode = short.Parse(skillNode.Attributes["subJobCode"]?.Value ?? "0");
-
-                                List<int> subSkillIds = skillNode.Attributes["sub"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-
-                                metadata.Skills.Add(new JobSkillMetadata(skillId, subJobCode, maxLevel, subSkillIds));
-                            }
-                        }
-                        else if (childNode.Name.Equals("learn"))
-                        {
-                            JobLearnedSkillsMetadata learnedSkills = new JobLearnedSkillsMetadata();
-                            learnedSkills.Level = int.Parse(childNode.Attributes["level"].Value);
-                            foreach (XmlNode skillNode in childNode)
-                            {
-                                learnedSkills.SkillIds.Add(int.Parse(skillNode.Attributes["id"].Value));
-                            }
-                            metadata.LearnedSkills.Add(learnedSkills);
+                            metadata.Skills.Add(new(skillId, subJobCode, maxLevel, subSkillIds));
                         }
                     }
-
-                    jobs.Add(metadata);
+                    else if (childNode.Name.Equals("learn"))
+                    {
+                        JobLearnedSkillsMetadata learnedSkills = new();
+                        learnedSkills.Level = int.Parse(childNode.Attributes["level"].Value);
+                        foreach (XmlNode skillNode in childNode)
+                        {
+                            learnedSkills.SkillIds.Add(int.Parse(skillNode.Attributes["id"].Value));
+                        }
+                        metadata.LearnedSkills.Add(learnedSkills);
+                    }
                 }
+
+                jobs.Add(metadata);
             }
-            return jobs;
         }
+        return jobs;
     }
 }

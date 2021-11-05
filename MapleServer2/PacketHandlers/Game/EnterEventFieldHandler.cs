@@ -4,23 +4,22 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class EnterEventFieldHandler : GamePacketHandler
 {
-    public class EnterEventFieldHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.ENTER_EVENTFIELD;
+
+    public EnterEventFieldHandler() : base() { }
+
+    public override void Handle(GameSession session, PacketReader packet)
     {
-        public override RecvOp OpCode => RecvOp.ENTER_EVENTFIELD;
-
-        public EnterEventFieldHandler() : base() { }
-
-        public override void Handle(GameSession session, PacketReader packet)
+        FieldPopupEvent fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
+        if (fieldPopupEvent == null)
         {
-            FieldPopupEvent fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
-            if (fieldPopupEvent == null)
-            {
-                return;
-            }
-
-            session.Player.Warp(fieldPopupEvent.MapId);
+            return;
         }
+
+        session.Player.Warp(fieldPopupEvent.MapId);
     }
 }

@@ -7,99 +7,98 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class RequestItemUseMultipleHandler : GamePacketHandler
 {
-    public class RequestItemUseMultipleHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
+
+    public RequestItemUseMultipleHandler() : base() { }
+
+    private enum BoxType : byte
     {
-        public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
+        OPEN = 0x00,
+        SELECT = 0x01
+    }
 
-        public RequestItemUseMultipleHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        int itemId = packet.ReadInt();
+        packet.ReadShort(); // Unknown
+        int amount = packet.ReadInt();
+        BoxType boxType = (BoxType) packet.ReadShort();
 
-        private enum BoxType : byte
+        string functionName = ItemMetadataStorage.GetFunction(itemId).Name;
+        if (functionName != "SelectItemBox" && functionName != "OpenItemBox")
         {
-            OPEN = 0x00,
-            SELECT = 0x01
+            return;
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
+        Dictionary<long, Item> items = new(session.Player.Inventory.Items.Where(x => x.Value.Id == itemId)); // Make copy of items in-case new item is added
+        if (items.Count == 0)
         {
-            int itemId = packet.ReadInt();
-            packet.ReadShort(); // Unknown
-            int amount = packet.ReadInt();
-            BoxType boxType = (BoxType) packet.ReadShort();
+            return;
+        }
 
-            string functionName = ItemMetadataStorage.GetFunction(itemId).Name;
-            if (functionName != "SelectItemBox" && functionName != "OpenItemBox")
+        int index = 0;
+        if (boxType == BoxType.SELECT)
+        {
+            index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
+            if (index < 0)
             {
                 return;
             }
-
-            Dictionary<long, Item> items = new Dictionary<long, Item>(session.Player.Inventory.Items.Where(x => x.Value.Id == itemId)); // Make copy of items in-case new item is added
-            if (items.Count == 0)
-            {
-                return;
-            }
-
-            int index = 0;
-            if (boxType == BoxType.SELECT)
-            {
-                index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
-                if (index < 0)
-                {
-                    return;
-                }
-                SelectItemBox selectBox = ItemMetadataStorage.GetFunction(itemId).SelectItemBox;
-                HandleSelectBox(session, items, selectBox, index, amount);
-                return;
-            }
-
-            OpenItemBox openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
-            HandleOpenBox(session, items, /*openBox,*/ amount);
+            SelectItemBox selectBox = ItemMetadataStorage.GetFunction(itemId).SelectItemBox;
+            HandleSelectBox(session, items, selectBox, index, amount);
+            return;
         }
 
-        private static void HandleSelectBox(GameSession session, Dictionary<long, Item> items, SelectItemBox box, int index, int amount)
+        OpenItemBox openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
+        HandleOpenBox(session, items, /*openBox,*/ amount);
+    }
+
+    private static void HandleSelectBox(GameSession session, Dictionary<long, Item> items, SelectItemBox box, int index, int amount)
+    {
+        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        int opened = 0;
+        foreach (KeyValuePair<long, Item> kvp in items)
         {
-            ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
-            int opened = 0;
-            foreach (KeyValuePair<long, Item> kvp in items)
+            Item item = kvp.Value;
+
+            for (int i = opened; i < amount; i++)
             {
-                Item item = kvp.Value;
-
-                for (int i = opened; i < amount; i++)
+                if (item.Amount <= 0)
                 {
-                    if (item.Amount <= 0)
-                    {
-                        break;
-                    }
-
-                    opened++;
-                    ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
+                    break;
                 }
-            }
 
-            session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
+                opened++;
+                ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
+            }
         }
 
-        private static void HandleOpenBox(GameSession session, Dictionary<long, Item> items, /*OpenItemBox box,*/ int amount)
+        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
+    }
+
+    private static void HandleOpenBox(GameSession session, Dictionary<long, Item> items, /*OpenItemBox box,*/ int amount)
+    {
+        int opened = 0;
+        foreach (KeyValuePair<long, Item> kvp in items)
         {
-            int opened = 0;
-            foreach (KeyValuePair<long, Item> kvp in items)
+            Item item = kvp.Value;
+
+            for (int i = opened; i < amount; i++)
             {
-                Item item = kvp.Value;
-
-                for (int i = opened; i < amount; i++)
+                if (item.Amount <= 0)
                 {
-                    if (item.Amount <= 0)
-                    {
-                        break;
-                    }
-
-                    opened++;
-                    ItemBoxHelper.GiveItemFromOpenBox(session, item);
+                    break;
                 }
-            }
 
-            session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
+                opened++;
+                ItemBoxHelper.GiveItemFromOpenBox(session, item);
+            }
         }
+
+        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
     }
 }

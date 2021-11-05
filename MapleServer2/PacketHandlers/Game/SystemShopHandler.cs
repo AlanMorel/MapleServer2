@@ -6,109 +6,108 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class SystemShopHandler : GamePacketHandler
 {
-    public class SystemShopHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.SYSTEM_SHOP;
+
+    public SystemShopHandler() : base() { }
+
+    private enum ShopMode : byte
     {
-        public override RecvOp OpCode => RecvOp.SYSTEM_SHOP;
+        Arena = 0x03,
+        Fishing = 0x04,
+        ViaItem = 0x0A
+    }
 
-        public SystemShopHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        ShopMode mode = (ShopMode) packet.ReadByte();
 
-        private enum ShopMode : byte
+        switch (mode)
         {
-            Arena = 0x03,
-            Fishing = 0x04,
-            ViaItem = 0x0A
+            case ShopMode.ViaItem:
+                HandleViaItem(session, packet);
+                break;
+            case ShopMode.Fishing:
+                HandleFishingShop(session, packet);
+                break;
+            case ShopMode.Arena:
+                HandleMapleArenaShop(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
+
+    private static void HandleViaItem(GameSession session, PacketReader packet)
+    {
+        bool openShop = packet.ReadBool();
+
+        if (!openShop)
+        {
+            return;
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            ShopMode mode = (ShopMode) packet.ReadByte();
+        int itemId = packet.ReadInt();
 
-            switch (mode)
-            {
-                case ShopMode.ViaItem:
-                    HandleViaItem(session, packet);
-                    break;
-                case ShopMode.Fishing:
-                    HandleFishingShop(session, packet);
-                    break;
-                case ShopMode.Arena:
-                    HandleMapleArenaShop(session, packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+        Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
+        if (item == null)
+        {
+            return;
         }
 
-        private static void HandleViaItem(GameSession session, PacketReader packet)
+        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
+        if (shop == null)
         {
-            bool openShop = packet.ReadBool();
-
-            if (!openShop)
-            {
-                return;
-            }
-
-            int itemId = packet.ReadInt();
-
-            Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
-            if (item == null)
-            {
-                return;
-            }
-
-            Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
-            if (shop == null)
-            {
-                Logger.Warn($"Unknown shop ID: {item.ShopID}");
-                return;
-            }
-
-            session.Send(ShopPacket.Open(shop));
-            foreach (ShopItem shopItem in shop.Items)
-            {
-                session.Send(ShopPacket.LoadProducts(shopItem));
-            }
-            session.Send(ShopPacket.Reload());
-            session.Send(SystemShopPacket.Open());
-        }
-        private static void HandleFishingShop(GameSession session, PacketReader packet)
-        {
-            bool openShop = packet.ReadBool();
-
-            if (!openShop)
-            {
-                return;
-            }
-
-            OpenSystemShop(session, 161);
+            Logger.Warn($"Unknown shop ID: {item.ShopID}");
+            return;
         }
 
-        private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
+        session.Send(ShopPacket.Open(shop));
+        foreach (ShopItem shopItem in shop.Items)
         {
-            bool openShop = packet.ReadBool();
+            session.Send(ShopPacket.LoadProducts(shopItem));
+        }
+        session.Send(ShopPacket.Reload());
+        session.Send(SystemShopPacket.Open());
+    }
+    private static void HandleFishingShop(GameSession session, PacketReader packet)
+    {
+        bool openShop = packet.ReadBool();
 
-            if (!openShop)
-            {
-                return;
-            }
-
-            OpenSystemShop(session, 168);
+        if (!openShop)
+        {
+            return;
         }
 
-        private static void OpenSystemShop(GameSession session, int shopId)
-        {
-            Shop shop = DatabaseManager.Shops.FindById(shopId);
+        OpenSystemShop(session, 161);
+    }
 
-            session.Send(ShopPacket.Open(shop));
-            foreach (ShopItem shopItem in shop.Items)
-            {
-                session.Send(ShopPacket.LoadProducts(shopItem));
-            }
-            session.Send(ShopPacket.Reload());
-            session.Send(SystemShopPacket.Open());
+    private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
+    {
+        bool openShop = packet.ReadBool();
+
+        if (!openShop)
+        {
+            return;
         }
+
+        OpenSystemShop(session, 168);
+    }
+
+    private static void OpenSystemShop(GameSession session, int shopId)
+    {
+        Shop shop = DatabaseManager.Shops.FindById(shopId);
+
+        session.Send(ShopPacket.Open(shop));
+        foreach (ShopItem shopItem in shop.Items)
+        {
+            session.Send(ShopPacket.LoadProducts(shopItem));
+        }
+        session.Send(ShopPacket.Reload());
+        session.Send(SystemShopPacket.Open());
     }
 }

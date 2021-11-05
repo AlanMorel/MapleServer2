@@ -1,81 +1,80 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
 
-namespace MapleServer2.Types
+namespace MapleServer2.Types;
+
+public class MobAI
 {
-    public class MobAI
+    public delegate bool Condition(Mob mob);
+    public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
+
+    public MobAI()
     {
-        public delegate bool Condition(Mob mob);
-        public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
+        Rules = new();
+    }
 
-        public MobAI()
+    public (string, NpcAction) GetAction(Mob mob)
+    {
+        if (mob.State == NpcState.Dead)
         {
-            Rules = new Dictionary<NpcState, (NpcAction, MobMovement, Condition[])>();
+            return (null, NpcAction.None);
         }
 
-        public (string, NpcAction) GetAction(Mob mob)
+        (NpcAction nextAction, _, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
+
+        bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
+        if (meetsConds)
         {
-            if (mob.State == NpcState.Dead)
+            if (nextAction != NpcAction.None)
             {
-                return (null, NpcAction.None);
+                return (null, nextAction);
             }
-
-            (NpcAction nextAction, _, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
-
-            bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
-            if (meetsConds)
+            else if (mob.StateActions[mob.State].Length > 0)
             {
-                if (nextAction != NpcAction.None)
+                int roll = RandomProvider.Get().Next(10000);
+                foreach ((string name, NpcAction type, int probability) in mob.StateActions[mob.State])
                 {
-                    return (null, nextAction);
-                }
-                else if (mob.StateActions[mob.State].Length > 0)
-                {
-                    int roll = RandomProvider.Get().Next(10000);
-                    foreach ((string name, NpcAction type, int probability) in mob.StateActions[mob.State])
+                    if (roll < probability)
                     {
-                        if (roll < probability)
-                        {
-                            return (name, type);
-                        }
-
-                        roll -= probability;
+                        return (name, type);
                     }
+
+                    roll -= probability;
                 }
             }
-            return (null, mob.CurrentAction);
         }
+        return (null, mob.CurrentAction);
+    }
 
-        public MobMovement GetMovementAction(Mob mob)
+    public MobMovement GetMovementAction(Mob mob)
+    {
+        if (mob.State == NpcState.Dead)
         {
-            if (mob.State == NpcState.Dead)
-            {
-                return MobMovement.Hold;
-            }
-
-            (_, MobMovement movementAction, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
-
-            bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
-            if (meetsConds)
-            {
-                return movementAction;
-            }
-            return mob.CurrentMovement;
+            return MobMovement.Hold;
         }
 
-        public static Condition HpPercentCond(int min = 0, int max = 100)
+        (_, MobMovement movementAction, Condition[] conds) = Rules.GetValueOrDefault(mob.State, (NpcAction.None, MobMovement.Hold, Array.Empty<Condition>()));
+
+        bool meetsConds = conds.Aggregate(true, (acc, nextCond) => acc && nextCond(mob));
+        if (meetsConds)
         {
-            return new Condition((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+            return movementAction;
         }
+        return mob.CurrentMovement;
+    }
 
-        public static Condition HpCond(int min = 0, int max = int.MaxValue)
-        {
-            return new Condition((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
-        }
+    public static Condition HpPercentCond(int min = 0, int max = 100)
+    {
+        return new((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+    }
 
-        public static Condition SpCond(int min = 0, int max = int.MaxValue)
-        {
-            return new Condition((Mob mob) => mob.Stats.Sp.Total >= min && mob.Stats.Sp.Total >= max);
-        }
+    public static Condition HpCond(int min = 0, int max = int.MaxValue)
+    {
+        return new((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+    }
+
+    public static Condition SpCond(int min = 0, int max = int.MaxValue)
+    {
+        return new((Mob mob) => mob.Stats.Sp.Total >= min && mob.Stats.Sp.Total >= max);
     }
 }

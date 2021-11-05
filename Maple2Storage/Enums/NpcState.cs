@@ -1,12 +1,11 @@
-﻿namespace Maple2Storage.Enums
+﻿namespace Maple2Storage.Enums;
+
+public enum NpcState : byte
 {
-    public enum NpcState : byte
-    {
-        Normal,
-        Combat,
-        Dead,
-        Spawn,
-        EnterAttackRange,
-        EnterProjectileRange,
-    }
+    Normal,
+    Combat,
+    Dead,
+    Spawn,
+    EnterAttackRange,
+    EnterProjectileRange
 }

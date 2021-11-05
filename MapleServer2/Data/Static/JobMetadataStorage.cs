@@ -2,30 +2,44 @@
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
-namespace MapleServer2.Data.Static
+namespace MapleServer2.Data.Static;
+
+public static class JobMetadataStorage
 {
-    public static class JobMetadataStorage
+    private static readonly Dictionary<int, JobMetadata> jobs = new();
+
+    public static void Init()
     {
-        private static readonly Dictionary<int, JobMetadata> jobs = new Dictionary<int, JobMetadata>();
-
-        public static void Init()
+        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-job-metadata");
+        List<JobMetadata> jobList = Serializer.Deserialize<List<JobMetadata>>(stream);
+        foreach (JobMetadata job in jobList)
         {
-            using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-job-metadata");
-            List<JobMetadata> jobList = Serializer.Deserialize<List<JobMetadata>>(stream);
-            foreach (JobMetadata job in jobList)
-            {
-                jobs[job.JobId] = job;
-            }
+            jobs[job.JobId] = job;
         }
+    }
 
-        public static JobMetadata GetJobMetadata(int jobId) => jobs.GetValueOrDefault(jobId);
+    public static JobMetadata GetJobMetadata(int jobId)
+    {
+        return jobs.GetValueOrDefault(jobId);
+    }
 
-        public static List<TutorialItemMetadata> GetTutorialItems(int jobId) => jobs.GetValueOrDefault(jobId).TutorialItems;
+    public static List<TutorialItemMetadata> GetTutorialItems(int jobId)
+    {
+        return jobs.GetValueOrDefault(jobId).TutorialItems;
+    }
 
-        public static List<JobLearnedSkillsMetadata> GetLearnedSkills(int jobId) => jobs.GetValueOrDefault(jobId).LearnedSkills;
+    public static List<JobLearnedSkillsMetadata> GetLearnedSkills(int jobId)
+    {
+        return jobs.GetValueOrDefault(jobId).LearnedSkills;
+    }
 
-        public static List<JobSkillMetadata> GetJobskills(int jobId) => jobs.GetValueOrDefault(jobId).Skills;
+    public static List<JobSkillMetadata> GetJobskills(int jobId)
+    {
+        return jobs.GetValueOrDefault(jobId).Skills;
+    }
 
-        public static int GetStartMapId(int jobId) => jobs.GetValueOrDefault(jobId).StartMapId;
+    public static int GetStartMapId(int jobId)
+    {
+        return jobs.GetValueOrDefault(jobId).StartMapId;
     }
 }

@@ -5,11 +5,13 @@ Packet Library for MapleStory2
 Credits to [@EricSoftTM](https://github.com/EricSoftTM) for packet encryption algos
 
 ### General Usage:
+
 - SIV: Send IV
 - RIV: Recv IV
 - BLOCK_IV: Determines cipher ordering
 
 Sending Packets
+
 ```C#
 MapleCipher sendCipher = MapleCipher.Encryptor(VERSION, SIV, BLOCK_IV);
 ...
@@ -26,6 +28,7 @@ SendPacket(encryptedSendPacket);
 ```
 
 Receiving Packets
+
 ```C#
 MapleCipher recvCipher = MapleCipher.Decryptor(VERSION, RIV, BLOCK_IV);
 MapleStream stream = new MapleStream();

@@ -3,69 +3,68 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+public static class NpcTalkPacket
 {
-    public static class NpcTalkPacket
+    private enum NpcTalkMode : byte
     {
-        private enum NpcTalkMode : byte
+        Close = 0x00,
+        Respond = 0x01,
+        Continue = 0x02,
+        Action = 0x03
+    }
+
+    public static PacketWriter Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        pWriter.Write(NpcTalkMode.Respond);
+        pWriter.WriteInt(npc.ObjectId);
+        pWriter.Write(npcType);
+        pWriter.WriteInt(scriptId);
+        pWriter.WriteInt();
+        pWriter.Write(dialogType);
+
+        return pWriter;
+    }
+
+    public static PacketWriter ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        pWriter.Write(NpcTalkMode.Continue);
+        pWriter.Write(responseType);
+        pWriter.WriteInt(questId);
+        pWriter.WriteInt(scriptId);
+        pWriter.WriteInt(contentIndex); // used when there is multiple contents for the same script id
+        pWriter.Write(dialogType);
+
+        return pWriter;
+    }
+
+    public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        pWriter.Write(NpcTalkMode.Action);
+        pWriter.Write(actionType);
+        switch (actionType)
         {
-            Close = 0x00,
-            Respond = 0x01,
-            Continue = 0x02,
-            Action = 0x03,
+            case ActionType.Portal:
+                pWriter.WriteInt(function);
+                break;
+            case ActionType.OpenWindow:
+                pWriter.WriteUnicodeString(window);
+                pWriter.WriteUnicodeString(parameters);
+                break;
         }
 
-        public static PacketWriter Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.Write(NpcTalkMode.Respond);
-            pWriter.WriteInt(npc.ObjectId);
-            pWriter.Write(npcType);
-            pWriter.WriteInt(scriptId);
-            pWriter.WriteInt();
-            pWriter.Write(dialogType);
+        return pWriter;
+    }
 
-            return pWriter;
-        }
+    public static PacketWriter Close()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
+        pWriter.Write(NpcTalkMode.Close);
 
-        public static PacketWriter ContinueChat(int scriptId, ResponseType responseType, DialogType dialogType, int contentIndex, int questId = 0)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.Write(NpcTalkMode.Continue);
-            pWriter.Write(responseType);
-            pWriter.WriteInt(questId);
-            pWriter.WriteInt(scriptId);
-            pWriter.WriteInt(contentIndex); // used when there is multiple contents for the same script id
-            pWriter.Write(dialogType);
-
-            return pWriter;
-        }
-
-        public static PacketWriter Action(ActionType actionType, string window = "", string parameters = "", int function = 0)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.Write(NpcTalkMode.Action);
-            pWriter.Write(actionType);
-            switch (actionType)
-            {
-                case ActionType.Portal:
-                    pWriter.WriteInt(function);
-                    break;
-                case ActionType.OpenWindow:
-                    pWriter.WriteUnicodeString(window);
-                    pWriter.WriteUnicodeString(parameters);
-                    break;
-            }
-
-            return pWriter;
-        }
-
-        public static PacketWriter Close()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
-            pWriter.Write(NpcTalkMode.Close);
-
-            return pWriter;
-        }
+        return pWriter;
     }
 }

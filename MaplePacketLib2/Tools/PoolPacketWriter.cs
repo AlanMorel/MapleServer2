@@ -1,64 +1,63 @@
 ﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace MaplePacketLib2.Tools
+namespace MaplePacketLib2.Tools;
+
+public unsafe class PoolPacketWriter : PacketWriter, IDisposable
 {
-    public unsafe class PoolPacketWriter : PacketWriter, IDisposable
+    private readonly ArrayPool<byte> Pool;
+    private bool Disposed;
+
+    public PoolPacketWriter(int size = DEFAULT_SIZE, ArrayPool<byte> pool = null) : base((pool ?? ArrayPool<byte>.Shared).Rent(size))
     {
-        private readonly ArrayPool<byte> Pool;
-        private bool Disposed;
+        Pool = pool ?? ArrayPool<byte>.Shared;
+        Length = 0;
+    }
 
-        public PoolPacketWriter(int size = DEFAULT_SIZE, ArrayPool<byte> pool = null) : base((pool ?? ArrayPool<byte>.Shared).Rent(size))
+    public override void ResizeBuffer(int newSize)
+    {
+        if (newSize < Buffer.Length)
         {
-            Pool = pool ?? ArrayPool<byte>.Shared;
-            Length = 0;
+            throw new ArgumentException("Cannot decrease buffer size.");
         }
 
-        public override void ResizeBuffer(int newSize)
+        byte[] copy = Pool.Rent(newSize);
+        fixed (byte* ptr = Buffer)
+        fixed (byte* copyPtr = copy)
         {
-            if (newSize < Buffer.Length)
-            {
-                throw new ArgumentException("Cannot decrease buffer size.");
-            }
+            Unsafe.CopyBlock(copyPtr, ptr, (uint) Length);
+        }
+        Pool.Return(Buffer);
 
-            byte[] copy = Pool.Rent(newSize);
-            fixed (byte* ptr = Buffer)
-            fixed (byte* copyPtr = copy)
-            {
-                Unsafe.CopyBlock(copyPtr, ptr, (uint) Length);
-            }
+        Buffer = copy;
+    }
+
+    // Returns a managed array ByteWriter and disposes this instance.
+    public PacketWriter Managed()
+    {
+        PacketWriter writer = new(ToArray(), Length);
+        Dispose();
+        return writer;
+    }
+
+    public void Dispose()
+    {
+        if (!Disposed)
+        {
+            Disposed = true;
             Pool.Return(Buffer);
-
-            Buffer = copy;
         }
-
-        // Returns a managed array ByteWriter and disposes this instance.
-        public PacketWriter Managed()
-        {
-            PacketWriter writer = new PacketWriter(ToArray(), Length);
-            Dispose();
-            return writer;
-        }
-
-        public void Dispose()
-        {
-            if (!Disposed)
-            {
-                Disposed = true;
-                Pool.Return(Buffer);
-            }
 #if DEBUG
-            // In DEBUG, SuppressFinalize to mark object as disposed.
-            GC.SuppressFinalize(this);
-#endif
-        }
-
-#if DEBUG
-        // Provides warning if Disposed in not called.
-        ~PoolPacketWriter()
-        {
-            System.Diagnostics.Debug.Fail($"PacketWriter not disposed: {this}");
-        }
+        // In DEBUG, SuppressFinalize to mark object as disposed.
+        GC.SuppressFinalize(this);
 #endif
     }
+
+#if DEBUG
+    // Provides warning if Disposed in not called.
+    ~PoolPacketWriter()
+    {
+        System.Diagnostics.Debug.Fail($"PacketWriter not disposed: {this}");
+    }
+#endif
 }

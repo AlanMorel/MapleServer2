@@ -1,29 +1,28 @@
 ﻿using MapleServer2.Types;
 
-namespace MapleServer2.Managers
+namespace MapleServer2.Managers;
+
+public class GroupChatManager
 {
-    public class GroupChatManager
+    private readonly Dictionary<long, GroupChat> GroupChatList;
+
+    public GroupChatManager()
     {
-        private readonly Dictionary<long, GroupChat> GroupChatList;
+        GroupChatList = new();
+    }
 
-        public GroupChatManager()
-        {
-            GroupChatList = new Dictionary<long, GroupChat>();
-        }
+    public void AddGroupChat(GroupChat groupChat)
+    {
+        GroupChatList.Add(groupChat.Id, groupChat);
+    }
 
-        public void AddGroupChat(GroupChat groupChat)
-        {
-            GroupChatList.Add(groupChat.Id, groupChat);
-        }
+    public void RemoveGroupChat(GroupChat groupChat)
+    {
+        GroupChatList.Remove(groupChat.Id);
+    }
 
-        public void RemoveGroupChat(GroupChat groupChat)
-        {
-            GroupChatList.Remove(groupChat.Id);
-        }
-
-        public GroupChat GetGroupChatById(int id)
-        {
-            return GroupChatList.TryGetValue(id, out GroupChat foundGroupChat) ? foundGroupChat : null;
-        }
+    public GroupChat GetGroupChatById(int id)
+    {
+        return GroupChatList.TryGetValue(id, out GroupChat foundGroupChat) ? foundGroupChat : null;
     }
 }

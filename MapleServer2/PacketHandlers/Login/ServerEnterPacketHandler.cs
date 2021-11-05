@@ -8,41 +8,40 @@ using MapleServer2.Packets;
 using MapleServer2.Servers.Login;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Login
+namespace MapleServer2.PacketHandlers.Login;
+
+public class ServerEnterPacketHandler : LoginPacketHandler
 {
-    public class ServerEnterPacketHandler : LoginPacketHandler
+    public override RecvOp OpCode => RecvOp.RESPONSE_SERVER_ENTER;
+
+    // TODO: This data needs to be dynamic
+    private readonly ImmutableList<IPEndPoint> ServerIPs;
+    private readonly string ServerName;
+
+    public ServerEnterPacketHandler() : base()
     {
-        public override RecvOp OpCode => RecvOp.RESPONSE_SERVER_ENTER;
+        ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
+        string ipAddress = Environment.GetEnvironmentVariable("IP");
+        int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
+        builder.Add(new(IPAddress.Parse(ipAddress), port));
 
-        // TODO: This data needs to be dynamic
-        private readonly ImmutableList<IPEndPoint> ServerIPs;
-        private readonly string ServerName;
+        ServerIPs = builder.ToImmutable();
+        ServerName = Environment.GetEnvironmentVariable("NAME");
+    }
 
-        public ServerEnterPacketHandler() : base()
-        {
-            ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-            string ipAddress = Environment.GetEnvironmentVariable("IP");
-            int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
-            builder.Add(new IPEndPoint(IPAddress.Parse(ipAddress), port));
+    public override void Handle(LoginSession session, PacketReader packet)
+    {
+        List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
+        session.Send(BannerListPacket.SetBanner(banners));
+        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
 
-            ServerIPs = builder.ToImmutable();
-            ServerName = Environment.GetEnvironmentVariable("NAME");
-        }
+        List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
-        public override void Handle(LoginSession session, PacketReader packet)
-        {
-            List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
-            session.Send(BannerListPacket.SetBanner(banners));
-            session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
-
-            List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
-
-            Account account = DatabaseManager.Accounts.FindById(session.AccountId);
-            session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
-            session.Send(CharacterListPacket.StartList());
-            // Send each character data
-            session.Send(CharacterListPacket.AddEntries(characters));
-            session.Send(CharacterListPacket.EndList());
-        }
+        Account account = DatabaseManager.Accounts.FindById(session.AccountId);
+        session.Send(CharacterListPacket.SetMax(account.CharacterSlots));
+        session.Send(CharacterListPacket.StartList());
+        // Send each character data
+        session.Send(CharacterListPacket.AddEntries(characters));
+        session.Send(CharacterListPacket.EndList());
     }
 }

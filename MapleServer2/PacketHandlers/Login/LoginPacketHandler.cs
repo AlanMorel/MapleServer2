@@ -3,18 +3,20 @@ using MapleServer2.Constants;
 using MapleServer2.Servers.Login;
 using NLog;
 
-namespace MapleServer2.PacketHandlers.Login
+namespace MapleServer2.PacketHandlers.Login;
+
+public abstract class LoginPacketHandler : IPacketHandler<LoginSession>
 {
-    public abstract class LoginPacketHandler : IPacketHandler<LoginSession>
+    public abstract RecvOp OpCode { get; }
+
+    protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    protected LoginPacketHandler() { }
+
+    public abstract void Handle(LoginSession session, PacketReader packet);
+
+    public override string ToString()
     {
-        public abstract RecvOp OpCode { get; }
-
-        protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        protected LoginPacketHandler() { }
-
-        public abstract void Handle(LoginSession session, PacketReader packet);
-
-        public override string ToString() => $"[{OpCode}] Login.{GetType().Name}";
+        return $"[{OpCode}] Login.{GetType().Name}";
     }
 }

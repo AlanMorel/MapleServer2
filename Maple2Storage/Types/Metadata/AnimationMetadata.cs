@@ -1,43 +1,40 @@
 ﻿using System.Xml.Serialization;
 
-namespace Maple2Storage.Types.Metadata
+namespace Maple2Storage.Types.Metadata;
+
+[XmlType]
+public class AnimationMetadata
 {
-    [XmlType]
-    public class AnimationMetadata
+    [XmlElement(Order = 1)]
+    public string ActorId;
+    [XmlElement(Order = 2)]
+    public List<SequenceMetadata> Sequence;
+
+    public AnimationMetadata()
     {
-        [XmlElement(Order = 1)]
-        public string ActorId;
-        [XmlElement(Order = 2)]
-        public List<SequenceMetadata> Sequence;
-
-        public AnimationMetadata()
-        {
-            Sequence = new List<SequenceMetadata>();
-        }
+        Sequence = new();
     }
+}
+[XmlType]
+public class SequenceMetadata
+{
+    [XmlElement(Order = 1)]
+    public short SequenceId;
+    [XmlElement(Order = 2)]
+    public string SequenceName;
+    [XmlElement(Order = 3)]
+    public List<KeyMetadata> Keys;
 
-    [XmlType]
-    public class SequenceMetadata
+    public SequenceMetadata()
     {
-        [XmlElement(Order = 1)]
-        public short SequenceId;
-        [XmlElement(Order = 2)]
-        public string SequenceName;
-        [XmlElement(Order = 3)]
-        public List<KeyMetadata> Keys;
-
-        public SequenceMetadata()
-        {
-            Keys = new List<KeyMetadata>();
-        }
+        Keys = new();
     }
-
-    [XmlType]
-    public class KeyMetadata
-    {
-        [XmlElement(Order = 1)]
-        public string KeyName;
-        [XmlElement(Order = 2)]
-        public float KeyTime;
-    }
+}
+[XmlType]
+public class KeyMetadata
+{
+    [XmlElement(Order = 1)]
+    public string KeyName;
+    [XmlElement(Order = 2)]
+    public float KeyTime;
 }
