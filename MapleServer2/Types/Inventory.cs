@@ -151,6 +151,7 @@ public class Inventory
 
     // Only use to share information between handler functions. Should always be empty
     public Dictionary<long, Item> TemporaryStorage = new();
+    public Item[] LapenshardStorage;
 
     #region Constructors
     public Inventory(bool addToDatabase)
@@ -159,6 +160,7 @@ public class Inventory
         Cosmetics = new();
         Badges = new Item[12];
         Items = new();
+        LapenshardStorage = new Item[6];
 
         byte maxTabs = Enum.GetValues(typeof(InventoryTab)).Cast<byte>().Max();
         SlotMaps = new Dictionary<short, long>[maxTabs + 1];
@@ -194,6 +196,12 @@ public class Inventory
                 if (item.InventoryTab == InventoryTab.Badge)
                 {
                     Badges[badgeIndex++] = item;
+                    continue;
+                }
+
+                if (item.InventoryTab == InventoryTab.Lapenshard)
+                {
+                    LapenshardStorage[item.Slot] = item;
                     continue;
                 }
 

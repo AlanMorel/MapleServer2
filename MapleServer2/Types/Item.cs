@@ -232,6 +232,7 @@ public class Item
     {
         return (itemId / 100000) switch
         {
+            410 or 420 or 430 => ItemType.Lapenshard,
             501 or 502 or 503 or 504 or 505 => ItemType.Furnishing,
             600 => ItemType.Pet,
             900 => ItemType.Currency,

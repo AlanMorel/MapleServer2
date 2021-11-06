@@ -34,6 +34,8 @@ public class DatabaseInventory : DatabaseTable
         items.AddRange(inventory.Equips.Values.Where(x => x != null).ToList());
         items.AddRange(inventory.Badges.Where(x => x != null).ToList());
         items.AddRange(inventory.Cosmetics.Values.Where(x => x != null).ToList());
+        items.AddRange(inventory.LapenshardStorage.Where(x => x != null).ToList());
+
         foreach (Item item in items)
         {
             item.InventoryId = inventory.Id;
