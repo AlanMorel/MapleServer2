@@ -43,6 +43,7 @@ public class InfoCommands : InGameCommand
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
+
 public class InfoCommand : InGameCommand
 {
     public InfoCommand()
@@ -97,6 +98,7 @@ public class InfoCommand : InGameCommand
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
+
 public class SendNoticeCommand : InGameCommand
 {
     public SendNoticeCommand()
@@ -270,4 +272,3 @@ public class FindCommand : InGameCommand
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
-

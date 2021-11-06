@@ -155,9 +155,9 @@ public class LapenshardHandler : GamePacketHandler
         }
 
         // Check if items are in inventory
-        foreach ((long Uid, int Amount) in items)
+        foreach ((long uid, int amount) in items)
         {
-            if (!inventory.Items.TryGetValue(Uid, out Item item) || item.Amount < Amount)
+            if (!inventory.Items.TryGetValue(uid, out Item item) || item.Amount < amount)
             {
                 return;
             }
@@ -220,9 +220,9 @@ public class LapenshardHandler : GamePacketHandler
         }
 
         // Consume all Lapenshards
-        foreach ((long Uid, int Amount) in items)
+        foreach ((long uid, int amount) in items)
         {
-            session.Player.Inventory.ConsumeItem(session, Uid, Amount);
+            session.Player.Inventory.ConsumeItem(session, uid, amount);
         }
 
         session.Player.Inventory.ConsumeItem(session, itemUid, 1);

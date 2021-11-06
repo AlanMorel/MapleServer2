@@ -46,6 +46,7 @@ public class GotoMapCommand : InGameCommand
 
 public class MapCommand : InGameCommand
 {
+    // Maybe merge this command with /map, but I don't know if it's easily possible.
     public MapCommand()
     {
         Aliases = new()
