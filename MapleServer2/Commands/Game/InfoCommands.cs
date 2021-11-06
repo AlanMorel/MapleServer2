@@ -191,7 +191,7 @@ public class FindCommand : InGameCommand
             return;
         }
 
-        if (type != "item" && type != "map" && type != "npc" && type != "mob")
+        if (type is not "item" and not "map" and not "npc" and not "mob")
         {
             trigger.Session.SendNotice("Invalid type provided. Please use item, map, npc or mob.");
             return;

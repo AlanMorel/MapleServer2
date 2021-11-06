@@ -94,12 +94,12 @@ public class MapCommand : InGameCommand
             trigger.Session.SendNotice($"Map doesn't exists.");
             return;
         }
-        if (trigger.Session.Player.MapId == mapId && trigger.Session.Player.InstanceId == 1)
+        if (trigger.Session.Player.MapId == mapId)
         {
             trigger.Session.SendNotice("You are already on that map.");
             return;
         }
-        trigger.Session.Player.Warp(mapId, instanceId: 1);
+        trigger.Session.Player.Warp(mapId, instanceId: trigger.Session.Player.InstanceId);
     }
 }
 
