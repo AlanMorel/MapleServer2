@@ -17,141 +17,51 @@ public class Inventory
     public Dictionary<ItemSlot, Item> Equips;
     public Dictionary<ItemSlot, Item> Cosmetics;
     public Item[] Badges;
+    public Item[] LapenshardStorage;
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
 
     public readonly Dictionary<InventoryTab, short> DefaultSize = new()
     {
-        {
-            InventoryTab.Gear,
-            48
-        },
-        {
-            InventoryTab.Outfit,
-            150
-        },
-        {
-            InventoryTab.Mount,
-            48
-        },
-        {
-            InventoryTab.Catalyst,
-            48
-        },
-        {
-            InventoryTab.FishingMusic,
-            48
-        },
-        {
-            InventoryTab.Quest,
-            48
-        },
-        {
-            InventoryTab.Gemstone,
-            48
-        },
-        {
-            InventoryTab.Misc,
-            84
-        },
-        {
-            InventoryTab.LifeSkill,
-            126
-        },
-        {
-            InventoryTab.Pets,
-            60
-        },
-        {
-            InventoryTab.Consumable,
-            84
-        },
-        {
-            InventoryTab.Currency,
-            48
-        },
-        {
-            InventoryTab.Badge,
-            60
-        },
-        {
-            InventoryTab.Lapenshard,
-            48
-        },
-        {
-            InventoryTab.Fragment,
-            48
-        }
+        { InventoryTab.Gear, 48 },
+        { InventoryTab.Outfit, 150 },
+        { InventoryTab.Mount, 48 },
+        { InventoryTab.Catalyst, 48 },
+        { InventoryTab.FishingMusic, 48 },
+        { InventoryTab.Quest, 48 },
+        { InventoryTab.Gemstone, 48 },
+        { InventoryTab.Misc, 84 },
+        { InventoryTab.LifeSkill, 126 },
+        { InventoryTab.Pets, 60 },
+        { InventoryTab.Consumable, 84 },
+        { InventoryTab.Currency, 48 },
+        { InventoryTab.Badge, 60 },
+        { InventoryTab.Lapenshard, 48 },
+        { InventoryTab.Fragment, 48 }
     };
 
     public Dictionary<InventoryTab, short> ExtraSize = new()
     {
-        {
-            InventoryTab.Gear,
-            0
-        },
-        {
-            InventoryTab.Outfit,
-            0
-        },
-        {
-            InventoryTab.Mount,
-            0
-        },
-        {
-            InventoryTab.Catalyst,
-            0
-        },
-        {
-            InventoryTab.FishingMusic,
-            0
-        },
-        {
-            InventoryTab.Quest,
-            0
-        },
-        {
-            InventoryTab.Gemstone,
-            0
-        },
-        {
-            InventoryTab.Misc,
-            0
-        },
-        {
-            InventoryTab.LifeSkill,
-            0
-        },
-        {
-            InventoryTab.Pets,
-            0
-        },
-        {
-            InventoryTab.Consumable,
-            0
-        },
-        {
-            InventoryTab.Currency,
-            0
-        },
-        {
-            InventoryTab.Badge,
-            0
-        },
-        {
-            InventoryTab.Lapenshard,
-            0
-        },
-        {
-            InventoryTab.Fragment,
-            0
-        }
+        { InventoryTab.Gear, 0 },
+        { InventoryTab.Outfit, 0 },
+        { InventoryTab.Mount, 0 },
+        { InventoryTab.Catalyst, 0 },
+        { InventoryTab.FishingMusic, 0 },
+        { InventoryTab.Quest, 0 },
+        { InventoryTab.Gemstone, 0 },
+        { InventoryTab.Misc, 0 },
+        { InventoryTab.LifeSkill, 0 },
+        { InventoryTab.Pets, 0 },
+        { InventoryTab.Consumable, 0 },
+        { InventoryTab.Currency, 0 },
+        { InventoryTab.Badge, 0 },
+        { InventoryTab.Lapenshard, 0 },
+        { InventoryTab.Fragment, 0 }
     };
 
     // Only use to share information between handler functions. Should always be empty
     public Dictionary<long, Item> TemporaryStorage = new();
-    public Item[] LapenshardStorage;
 
     #region Constructors
     public Inventory(bool addToDatabase)
