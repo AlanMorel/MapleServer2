@@ -566,7 +566,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             case 20:
                 return InventoryTab.Currency;
             case 21:
-                return InventoryTab.Currency;
+                return InventoryTab.Lapenshard;
             case 22: // Blueprint
                 return InventoryTab.Misc;
         }

@@ -2,6 +2,7 @@
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
@@ -46,6 +47,8 @@ public class CompleteQuestCommand : InGameCommand
             player.QuestList.Add(questStatus);
         }
         questStatus.Completed = true;
+        questStatus.Started = true;
+        questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
         questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
         player.Levels.GainExp(questStatus.Reward.Exp);
         player.Wallet.Meso.Modify(questStatus.Reward.Money);
@@ -62,6 +65,7 @@ public class CompleteQuestCommand : InGameCommand
                 player.Inventory.AddItem(trigger.Session, newItem, true);
             }
         }
+        DatabaseManager.Quests.Update(questStatus);
         trigger.Session.Send(QuestPacket.CompleteQuest(questId, true));
 
         // Add next quest
