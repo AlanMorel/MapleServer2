@@ -100,6 +100,7 @@ public class LapenshardHandler : GamePacketHandler
 
         session.Player.Inventory.LapenshardStorage[slotId] = null;
         lapenshard.Slot = -1;
+        lapenshard.IsEquipped = false;
         session.Player.Inventory.AddItem(session, lapenshard, true);
         session.Send(LapenshardPacket.Unequip(slotId));
     }
