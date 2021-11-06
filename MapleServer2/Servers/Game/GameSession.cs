@@ -37,24 +37,6 @@ public class GameSession : Session
         Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
         FieldManager = FieldManagerFactory.GetManager(player);
         FieldPlayer = FieldManager.RequestFieldObject(player);
-        GameServer.PlayerManager.AddPlayer(player);
-        GameServer.BuddyManager.SetFriendSessions(player);
-
-        Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
-        if (party != null)
-        {
-            party.BroadcastPacketParty(PartyPacket.LoginNotice(player), this);
-        }
-
-        player.BuddyList.ForEach(buddy =>
-        {
-            if (buddy.Friend?.Session?.Connected() ?? false)
-            {
-                Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
-                buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
-                buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
-            }
-        });
     }
 
     public void EnterField(Player player)
@@ -86,27 +68,25 @@ public class GameSession : Session
 
     public override void EndSession()
     {
-        Player.Session = null;
-        GameServer.BuddyManager.SetFriendSessions(Player);
-        ReleaseField(Player);
+        FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, Player);
+
         FieldManager.RemovePlayer(this, FieldPlayer);
         GameServer.PlayerManager.RemovePlayer(FieldPlayer.Value);
-        // Should we Join the thread to wait for it to complete?
+
+        // if session is changing channels, dont send the logout message
+        if (Player.IsChangingChannel)
+        {
+            return;
+        }
+
+        GameServer.BuddyManager.SetFriendSessions(Player);
 
         if (Player.Party != null)
         {
             Player.Party.CheckOffineParty(Player);
         }
 
-        Player.BuddyList.ForEach(buddy =>
-        {
-            if (buddy.Friend?.Session?.Connected() ?? false)
-            {
-                Buddy myBuddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddy.SharedId);
-                buddy.Friend.Session.Send(BuddyPacket.LoginLogoutNotification(myBuddy));
-                buddy.Friend.Session.Send(BuddyPacket.UpdateBuddy(myBuddy));
-            }
-        });
+        Player.UpdateBuddies();
     }
 
     public void ReleaseField(Player player)

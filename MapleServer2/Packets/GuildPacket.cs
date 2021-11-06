@@ -781,7 +781,7 @@ public static class GuildPacket
         pWriter.WriteShort(member.Levels.Level);
         pWriter.WriteInt(); // player gearscore
         pWriter.WriteInt(member.MapId);
-        pWriter.WriteShort(); // player.channel
+        pWriter.WriteShort(member.ChannelId);
         pWriter.WriteUnicodeString(member.ProfileUrl);
         pWriter.WriteInt(member.Account.Home?.PlotMapId ?? 0);
         pWriter.WriteInt(member.Account.Home?.PlotNumber ?? 0);

@@ -52,7 +52,7 @@ public class HomeActionHandler : GamePacketHandler
             return;
         }
 
-        target.Warp(target.ReturnMapId, target.ReturnCoord, target.Rotation, 0);
+        target.Warp(target.ReturnMapId, target.ReturnCoord, target.Rotation);
         target.ReturnMapId = 0;
         target.VisitingHomeId = 0;
     }

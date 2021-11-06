@@ -60,25 +60,35 @@ public class CharacterManagementHandler : LoginPacketHandler
 
     public void HandleSelect(LoginSession session, PacketReader packet)
     {
-        long charId = packet.ReadLong();
+        long characterId = packet.ReadLong();
         packet.ReadShort(); // 01 00
-        Logger.Info("Logging in to game with char id: {charId}", charId);
+        Logger.Info($"Logging in to game with char id: {characterId}");
 
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
-        IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
-        AuthData authData = new()
+        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+
+        Player player = DatabaseManager.Characters.FindPlayerById(characterId);
+        if (player == default)
+        {
+            Logger.Error("Character not found!");
+            return;
+        }
+
+        player.ChannelId = 1;
+        player.InstanceId = 1;
+
+        AuthData authData = new AuthData
         {
             TokenA = LoginSession.GetToken(),
             TokenB = LoginSession.GetToken(),
-            CharacterId = charId
+            Player = player,
         };
+
         // Write AuthData to storage shared with GameServer
         AuthStorage.SetData(session.AccountId, authData);
 
-        session.SendFinal(MigrationPacket.LoginToGame(endpoint, authData));
-
-        // LoginPacket.LoginError("message?");
+        session.Send(MigrationPacket.LoginToGame(endpoint, authData));
     }
 
     public static void HandleCreate(LoginSession session, PacketReader packet)

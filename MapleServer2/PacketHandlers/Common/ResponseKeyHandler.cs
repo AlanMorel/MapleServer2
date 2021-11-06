@@ -2,7 +2,6 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -26,11 +25,9 @@ public class ResponseKeyHandler : CommonPacketHandler
         packet.Skip(-8);
         HandleCommon(session, packet);
 
-        Player player = DatabaseManager.Characters.FindPlayerById(authData.CharacterId);
-        if (player == default)
-        {
-            throw new ArgumentException("Character not found!");
-        }
+        session.InitPlayer(authData.Player);
+
+        Player player = session.Player;
 
         player.Session = session;
         player.Wallet.Meso.Session = session;
@@ -47,11 +44,18 @@ public class ResponseKeyHandler : CommonPacketHandler
         player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
         player.Mailbox = GameServer.MailManager.GetMails(player.CharacterId);
 
-        session.InitPlayer(player);
+        GameServer.PlayerManager.AddPlayer(player);
+        GameServer.BuddyManager.SetFriendSessions(player);
 
-        //session.Send(0x27, 0x01); // Meret market related...?
-
-        session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
+        // Only send buddy login notification if player is not changing channels
+        if (player.IsChangingChannel)
+        {
+            player.IsChangingChannel = false;
+        }
+        else
+        {
+            player.UpdateBuddies();
+        }
 
         if (player.GuildId != 0)
         {
@@ -61,8 +65,12 @@ public class ResponseKeyHandler : CommonPacketHandler
             session.Send(GuildPacket.UpdateGuild(guild));
             session.Send(GuildPacket.MemberJoin(player));
         }
-        session.Send(BuddyPacket.Initialize());
+
+        //session.Send(0x27, 0x01); // Meret market related...?
+        session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
+
         session.Player.GetUnreadMailCount();
+        session.Send(BuddyPacket.Initialize());
         session.Send(BuddyPacket.LoadList(player.BuddyList));
         session.Send(BuddyPacket.EndList(player.BuddyList.Count));
 
@@ -170,6 +178,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         if (party != null)
         {
             player.Party = party;
+            party.BroadcastPacketParty(PartyPacket.LoginNotice(player), session);
             session.Send(PartyPacket.Create(party, false));
         }
 

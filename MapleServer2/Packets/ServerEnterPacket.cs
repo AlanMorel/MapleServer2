@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -8,37 +9,41 @@ public static class ServerEnterPacket
 {
     public static PacketWriter Enter(GameSession session)
     {
+        Player player = session.Player;
+        Account account = player.Account;
+        Wallet wallet = player.Wallet;
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
         pWriter.WriteInt(session.FieldPlayer.ObjectId);
-        pWriter.WriteLong(session.Player.CharacterId);
-        pWriter.WriteShort(1); // channel
-        pWriter.WriteLong(session.Player.Levels.Exp);
-        pWriter.WriteLong(session.Player.Levels.RestExp);
-        pWriter.WriteLong(session.Player.Wallet.Meso.Amount);
+        pWriter.WriteLong(player.CharacterId);
+        pWriter.WriteShort(player.ChannelId);
+        pWriter.WriteLong(player.Levels.Exp);
+        pWriter.WriteLong(player.Levels.RestExp);
+        pWriter.WriteLong(wallet.Meso.Amount);
 
         pWriter.WriteLong(); // Total Merets
-        pWriter.WriteLong(session.Player.Account.Meret.Amount); // Merets
-        pWriter.WriteLong(session.Player.Account.GameMeret.Amount); // Game Merets
-        pWriter.WriteLong(session.Player.Account.EventMeret.Amount); // Event Merets
+        pWriter.WriteLong(account.Meret.Amount); // Merets
+        pWriter.WriteLong(account.GameMeret.Amount); // Game Merets
+        pWriter.WriteLong(account.EventMeret.Amount); // Event Merets
 
         pWriter.WriteLong();
 
-        pWriter.WriteLong(session.Player.Wallet.ValorToken.Amount);
-        pWriter.WriteLong(session.Player.Wallet.Treva.Amount);
-        pWriter.WriteLong(session.Player.Wallet.Rue.Amount);
-        pWriter.WriteLong(session.Player.Wallet.HaviFruit.Amount);
+        pWriter.WriteLong(wallet.ValorToken.Amount);
+        pWriter.WriteLong(wallet.Treva.Amount);
+        pWriter.WriteLong(wallet.Rue.Amount);
+        pWriter.WriteLong(wallet.HaviFruit.Amount);
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteLong();
-        pWriter.WriteLong(session.Player.Account.MesoToken.Amount);
-        pWriter.WriteUnicodeString(""); // Profile Url
+        pWriter.WriteLong(account.MesoToken.Amount);
+        pWriter.WriteUnicodeString(player.ProfileUrl); // Profile Url
         pWriter.WriteByte();
         pWriter.WriteByte();
         // REQUIRED OR CRASH
 
         // Unlocked Maps (World Map)
-        List<int> unlockedMaps = session.Player.UnlockedMaps;
+        List<int> unlockedMaps = player.UnlockedMaps;
         pWriter.WriteShort((short) unlockedMaps.Count);
         foreach (int mapId in unlockedMaps)
         {
@@ -46,7 +51,7 @@ public static class ServerEnterPacket
         }
 
         // Unlocked Taxis
-        List<int> unlockedTaxis = session.Player.UnlockedTaxis;
+        List<int> unlockedTaxis = player.UnlockedTaxis;
         pWriter.WriteShort((short) unlockedTaxis.Count);
         foreach (int mapId in unlockedTaxis)
         {

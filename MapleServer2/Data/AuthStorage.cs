@@ -1,4 +1,6 @@
-﻿namespace MapleServer2.Data;
+﻿using MapleServer2.Types;
+
+namespace MapleServer2.Data;
 
 // TODO: This is mostly temporary while I think about how auth really should work
 // It's mostly just required to pass login data to GameSession (which is why it's static)
@@ -20,5 +22,5 @@ public class AuthData
 {
     public int TokenA;
     public int TokenB;
-    public long CharacterId;
+    public Player Player;
 }

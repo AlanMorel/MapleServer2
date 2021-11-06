@@ -2,6 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -49,7 +50,7 @@ public static class MigrationPacket
         return pWriter;
     }
 
-    public static PacketWriter GameToGame(IPEndPoint endpoint, AuthData authTokens)
+    public static PacketWriter GameToGame(IPEndPoint endpoint, AuthData authTokens, Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GAME_TO_GAME);
         pWriter.WriteByte(); // 0 = Success
@@ -57,8 +58,8 @@ public static class MigrationPacket
         pWriter.WriteInt(authTokens.TokenB);
         pWriter.WriteBytes(endpoint.Address.GetAddressBytes());
         pWriter.Write((ushort) endpoint.Port);
-        pWriter.WriteInt(); // Map
-        pWriter.WriteByte();
+        pWriter.WriteInt(player.MapId); // Map
+        pWriter.WriteByte(); //unknown
 
         return pWriter;
     }

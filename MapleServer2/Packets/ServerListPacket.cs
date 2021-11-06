@@ -14,7 +14,7 @@ public static class ServerListPacket
         pWriter.WriteByte(1); // If false packet isn't processed
         pWriter.WriteInt(1); // Unk.
         pWriter.WriteUnicodeString(serverName);
-        pWriter.WriteByte(0); // Unk.
+        pWriter.WriteByte(); // Unk.
 
         pWriter.Write((ushort) serverIps.Count);
         foreach (IPEndPoint endpoint in serverIps)
@@ -25,8 +25,9 @@ public static class ServerListPacket
 
         pWriter.WriteInt(100); // Unk.
 
-        short nMultiServerChannel = 1; // Need at least 1
-        for (short i = 0; i < nMultiServerChannel; ++i)
+        short nMultiServerChannel = 10; // Doesn't seems to go past 9 channels ingame ??
+        pWriter.WriteShort(nMultiServerChannel);
+        for (short i = 1; i <= nMultiServerChannel; ++i)
         {
             pWriter.WriteShort(i);
         }

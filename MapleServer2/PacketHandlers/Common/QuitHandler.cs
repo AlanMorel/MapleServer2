@@ -58,13 +58,12 @@ public class QuitHandler : CommonPacketHandler
         DatabaseManager.Characters.Update(session.Player);
         AuthData authData = AuthStorage.GetData(session.Player.AccountId);
 
-        session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, authData));
+        session.Send(MigrationPacket.GameToLogin(LoginEndpoint, authData));
     }
 
     private static void HandleQuit(GameSession session)
     {
-        session.ReleaseField(session.Player);
-        session.FieldManager.RemovePlayer(session, session.FieldPlayer);
         DatabaseManager.Characters.Update(session.Player);
+        session.Disconnect();
     }
 }

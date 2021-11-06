@@ -93,7 +93,8 @@ public class LoginHandler : LoginPacketHandler
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(NpsInfoPacket.SendUsername(account.Username));
         session.Send(BannerListPacket.SetBanner(banners));
-        session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs));
+        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
+        session.Disconnect();
     }
 
     private void SendCharacters(LoginSession session, Account account)
