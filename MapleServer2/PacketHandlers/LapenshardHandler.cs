@@ -74,12 +74,18 @@ public class LapenshardHandler : GamePacketHandler
             return;
         }
 
-        Item newLapenshard = new Item(item) { Amount = 1, IsEquipped = true, Slot = (short) slotId };
+        Item newLapenshard = new Item(item)
+        {
+            Amount = 1,
+            IsEquipped = true,
+            Slot = (short) slotId
+        };
+
         newLapenshard.Uid = DatabaseManager.Items.Insert(newLapenshard);
 
         session.Player.Inventory.LapenshardStorage[slotId] = newLapenshard;
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
-        session.Send(LapenshardPacket.LapenshardEquip(slotId, item.Id));
+        session.Send(LapenshardPacket.Equip(slotId, item.Id));
     }
 
     private static void HandleUnequip(GameSession session, PacketReader packet)
@@ -95,7 +101,7 @@ public class LapenshardHandler : GamePacketHandler
         session.Player.Inventory.LapenshardStorage[slotId] = null;
         lapenshard.Slot = -1;
         session.Player.Inventory.AddItem(session, lapenshard, true);
-        session.Send(LapenshardPacket.LapenshardUnequip(slotId));
+        session.Send(LapenshardPacket.Unequip(slotId));
     }
 
     private static void HandleAddFusion(GameSession session, PacketReader packet)
@@ -109,7 +115,8 @@ public class LapenshardHandler : GamePacketHandler
         {
             return;
         }
-        session.Send(LapenshardPacket.LapenshardSelect(10000));
+        // GMS2 Always 100% success rate
+        session.Send(LapenshardPacket.Select(10000));
     }
 
     private static void HandleAddCatalyst(GameSession session, PacketReader packet)
@@ -120,15 +127,13 @@ public class LapenshardHandler : GamePacketHandler
         int amount = packet.ReadInt();
         Inventory inventory = session.Player.Inventory;
 
-        if (inventory.Items.TryGetValue(itemUid, out Item item))
+        if (!inventory.Items.TryGetValue(itemUid, out Item item) || item.Amount < amount)
         {
-            if (item.Amount < amount)
-            {
-                return;
-            }
+            return;
         }
 
-        session.Send(LapenshardPacket.LapenshardSelect(10000));
+        // GMS2 Always 100% success rate
+        session.Send(LapenshardPacket.Select(10000));
     }
 
     private static void HandleFusion(GameSession session, PacketReader packet)
@@ -221,6 +226,6 @@ public class LapenshardHandler : GamePacketHandler
 
         session.Player.Inventory.ConsumeItem(session, itemUid, 1);
         session.Player.Inventory.AddItem(session, new Item(itemId + 1) { Rarity = 3 }, true);
-        session.Send(LapenshardPacket.LapenshardUpgrade(itemId, true));
+        session.Send(LapenshardPacket.Upgrade(itemId, true));
     }
 }

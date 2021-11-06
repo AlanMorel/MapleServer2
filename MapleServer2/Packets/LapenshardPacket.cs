@@ -15,7 +15,7 @@ public static class LapenshardPacket
         Upgrade = 5,
     }
 
-    public static PacketWriter LapenshardLoad(Item[] items)
+    public static PacketWriter Load(Item[] items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LAPENSHARD);
         pWriter.Write(LapenshardMode.Load);
@@ -28,7 +28,7 @@ public static class LapenshardPacket
         return pWriter;
     }
 
-    public static PacketWriter LapenshardEquip(int slotId, int itemId)
+    public static PacketWriter Equip(int slotId, int itemId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LAPENSHARD);
         pWriter.Write(LapenshardMode.Equip);
@@ -37,7 +37,7 @@ public static class LapenshardPacket
         return pWriter;
     }
 
-    public static PacketWriter LapenshardUnequip(int slotId)
+    public static PacketWriter Unequip(int slotId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LAPENSHARD);
         pWriter.Write(LapenshardMode.Unequip);
@@ -45,7 +45,7 @@ public static class LapenshardPacket
         return pWriter;
     }
 
-    public static PacketWriter LapenshardSelect(int successRate)
+    public static PacketWriter Select(int successRate)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LAPENSHARD);
         pWriter.Write(LapenshardMode.Select);
@@ -53,7 +53,7 @@ public static class LapenshardPacket
         return pWriter;
     }
 
-    public static PacketWriter LapenshardUpgrade(int itemId, bool result)
+    public static PacketWriter Upgrade(int itemId, bool result)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LAPENSHARD);
         pWriter.Write(LapenshardMode.Upgrade);
