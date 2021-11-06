@@ -88,7 +88,7 @@ public class BeautyHandler : GamePacketHandler
         int npcId = packet.ReadInt();
         BeautyCategory category = (BeautyCategory) packet.ReadByte();
 
-        NpcMetadata beautyNpc = NpcMetadataStorage.GetNpc(npcId);
+        NpcMetadata beautyNpc = NpcMetadataStorage.GetNpcMetadata(npcId);
         if (beautyNpc == null)
         {
             return;
