@@ -155,49 +155,47 @@ public class OnlineCommand : InGameCommand
 
 public class FindCommand : InGameCommand
 {
+    readonly string[] Options = new string[]
+    {
+        "item",
+        "map",
+        "npc",
+        "mob",
+    };
+
     public FindCommand()
     {
         Aliases = new()
         {
             "find"
         };
-        Description = "Find id by item/map/npc/mob name.";
+        Description = $"Find id by {string.Join("/", Options)} name.";
         Parameters = new()
         {
-            new Parameter<string[]>("name", "The item/map/npc/mob name."),
+            new Parameter<string>("type", $"The search type."),
+            new Parameter<string[]>("name", $"The search name."),
         };
-        Usage = "/find [item/map/npc/mob] [name]";
+        Usage = $"/find [{string.Join("/", Options)}] [name]";
     }
 
     public override void Execute(GameCommandTrigger trigger)
     {
+        string type = trigger.Get<string>("type");
         string[] command = trigger.Get<string[]>("name");
-        if (command is null)
+        if (string.IsNullOrEmpty(type) || !Options.Contains(type) || command is null)
         {
+            trigger.Session.SendNotice($"Usage: /find [{string.Join("/", Options)}] [name]");
             return;
         }
 
         string[] args = command[1..];
         if (args.Length == 0)
         {
-            trigger.Session.SendNotice("Usage: /find [item/map/npc/mob] [name]");
+            trigger.Session.SendNotice($"Usage: /find [{string.Join("/", Options)}] [name]");
             return;
         }
 
-        string type = args.First().ToLower();
-        if (string.IsNullOrEmpty(type))
-        {
-            trigger.Session.SendNotice("No type provided. Please use item, map, npc or mob.");
-            return;
-        }
-
-        if (type is not "item" and not "map" and not "npc" and not "mob")
-        {
-            trigger.Session.SendNotice("Invalid type provided. Please use item, map, npc or mob.");
-            return;
-        }
-
-        string name = string.Join(" ", args[1..]);
+        string name = string.Join(" ", args);
         if (string.IsNullOrEmpty(name))
         {
             trigger.Session.SendNotice("No names provided.");
