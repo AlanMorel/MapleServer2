@@ -43,8 +43,11 @@ public class BlackMarketManager
         return Listings.Values.FirstOrDefault(x => x.Id == listingId);
     }
 
-        public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
-            int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage, long sort, bool searchStat, List<ItemStat> searchedStats)
+    public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
+        int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage, long sort, bool searchStat, List<ItemStat> searchedStats)
+    {
+        List<BlackMarketListing> allResults = new List<BlackMarketListing>();
+        foreach (BlackMarketListing listing in Listings.Values)
         {
             Item item = listing.Item;
 
@@ -82,74 +85,70 @@ public class BlackMarketManager
                         JobFlag.Runeblade => Job.Runeblade,
                         JobFlag.Striker => Job.Striker,
                         JobFlag.SoulBinder => Job.SoulBinder,
-                        _ => Job.None
+                        _ => Job.None,
                     };
                     if (!item.RecommendJobs.Contains(job))
                     {
                         continue;
                     }
                 }
+            }
 
-                if (!searchStat)
+            if (!searchStat)
+            {
+                allResults.Add(listing);
+                continue;
+            }
+
+            List<NormalStat> normalStats = new List<NormalStat>();
+            List<SpecialStat> specialStats = new List<SpecialStat>();
+            foreach (ItemStat stat in item.Stats.BasicStats)
+            {
+                if (stat is NormalStat normalStat)
                 {
-                    allResults.Add(listing);
+                    normalStats.Add(normalStat);
                     continue;
                 }
+                specialStats.Add((SpecialStat) stat);
+            }
 
-
-                List<NormalStat> normalStats = new List<NormalStat>();
-                List<SpecialStat> specialStats = new List<SpecialStat>();
-                foreach (ItemStat stat in item.Stats.BasicStats)
+            foreach (ItemStat stat in item.Stats.BonusStats)
+            {
+                if (stat is NormalStat normalStat)
                 {
-                    if (stat is NormalStat normalStat)
-                    {
-                        normalStats.Add(normalStat);
-                        continue;
-                    }
-                    specialStats.Add((SpecialStat) stat);
-                }
-
-                foreach (ItemStat stat in item.Stats.BonusStats)
-                {
-                    if (stat is NormalStat normalStat)
-                    {
-                        normalStats.Add(normalStat);
-                        continue;
-                    }
-                    specialStats.Add((SpecialStat) stat);
-                }
-
-                // find if stats contains all values inside searchedStats
-                bool containsAll = true;
-                foreach (ItemStat searchedStat in searchedStats)
-                {
-                    if (searchedStat is NormalStat normalStat)
-                    {
-                        if (!normalStats.Any(x => x.ItemAttribute == normalStat.ItemAttribute && x.Flat >= normalStat.Flat && x.Percent >= normalStat.Percent))
-                        {
-                            containsAll = false;
-                            break;
-                        }
-                    }
-                    else if (searchedStat is SpecialStat specialStat)
-                    {
-                        if (!specialStats.Any(x => x.ItemAttribute == specialStat.ItemAttribute && x.Flat >= specialStat.Flat && x.Percent >= specialStat.Percent))
-                        {
-                            containsAll = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (containsAll)
-                {
-                    allResults.Add(listing);
+                    normalStats.Add(normalStat);
                     continue;
+                }
+                specialStats.Add((SpecialStat) stat);
+            }
+
+            // find if stats contains all values inside searchedStats
+            bool containsAll = true;
+            foreach (ItemStat searchedStat in searchedStats)
+            {
+                if (searchedStat is NormalStat normalStat)
+                {
+                    if (!normalStats.Any(x => x.ItemAttribute == normalStat.ItemAttribute && x.Flat >= normalStat.Flat && x.Percent >= normalStat.Percent))
+                    {
+                        containsAll = false;
+                        break;
+                    }
+                }
+                else if (searchedStat is SpecialStat specialStat)
+                {
+                    if (!specialStats.Any(x => x.ItemAttribute == specialStat.ItemAttribute && x.Flat >= specialStat.Flat && x.Percent >= specialStat.Percent))
+                    {
+                        containsAll = false;
+                        break;
+                    }
                 }
             }
 
-            allResults.Add(listing);
-
+            if (containsAll)
+            {
+                allResults.Add(listing);
+                continue;
+            }
         }
 
         BlackMarketSort blackmarketSort = (BlackMarketSort) sort;

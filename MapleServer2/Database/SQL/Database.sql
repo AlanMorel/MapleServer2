@@ -379,6 +379,7 @@ CREATE TABLE `items`
     `transfer_flag`            tinyint unsigned NOT NULL,
     `transparency_badge_bools` text,
     `unlock_time`              bigint   NOT NULL,
+    `blackmarket_category`     text,
     PRIMARY KEY (`uid`),
     KEY                        `ix_items_bankinventoryid` (`bank_inventory_id`),
     KEY                        `ix_items_guildid` (`guild_id`),
@@ -392,7 +393,6 @@ CREATE TABLE `items`
     CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT
-  `blackmarket_category` text,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --

@@ -181,11 +181,32 @@ public class BlackMarketHandler : GamePacketHandler
         long sort = packet.ReadLong();
         packet.ReadShort();
         bool additionalOptionsEnabled = packet.ReadBool();
-        // TODO: Figure out how additional options are read
+
+        List<ItemStat> stats = new List<ItemStat>();
+        if (additionalOptionsEnabled)
+        {
+            packet.ReadByte(); // always 1
+            for (int i = 0; i < 3; i++)
+            {
+                int statId = packet.ReadInt();
+                int value = packet.ReadInt();
+                if (value == 0)
+                {
+                    continue;
+                }
+
+                ItemStat stat = ReadStat(statId, value);
+                if (stat == null)
+                {
+                    continue;
+                }
+                stats.Add(stat);
+            }
+        }
 
         List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
         List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
-                                                                                                   minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort);
+            minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort, additionalOptionsEnabled, stats);
 
         session.Send(BlackMarketPacket.SearchResults(searchResults));
     }
@@ -254,63 +275,35 @@ public class BlackMarketHandler : GamePacketHandler
 
             session.Send(BlackMarketPacket.SearchResults(searchResults));
         }
+    }
 
-        private static ItemStat ReadStat(int statId, int value)
+    private static ItemStat ReadStat(int statId, int value)
+    {
+        // Normal Stat with percent value
+        if (statId >= 1000 && statId < 11000)
         {
-            // Normal Stat with percent value
-            if (statId >= 1000 && statId < 11000)
-            {
-                NormalStat normalStat = new NormalStat();
-                float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
-                normalStat.ItemAttribute = (ItemAttribute) statId - 1000;
-                normalStat.Percent = percent;
-                return normalStat;
-            }
-            // Special Stat with percent value
-            else if (statId >= 11000)
-            {
-                SpecialStat specialStat = new SpecialStat();
-                specialStat.ItemAttribute = (SpecialItemAttribute) statId - 11000;
-                float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
-                specialStat.Percent = percent;
-                return specialStat;
-            }
-            // Normal Stat with flat value
-            else
-            {
-                NormalStat normalStat = new NormalStat();
-                normalStat.ItemAttribute = (ItemAttribute) statId;
-                normalStat.Flat = value;
-                return normalStat;
-            }
+            NormalStat normalStat = new NormalStat();
+            float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
+            normalStat.ItemAttribute = (ItemAttribute) statId - 1000;
+            normalStat.Percent = percent;
+            return normalStat;
         }
-
-        private static void HandlePurchase(GameSession session, PacketReader packet)
+        // Special Stat with percent value
+        else if (statId >= 11000)
         {
-            return;
+            SpecialStat specialStat = new SpecialStat();
+            specialStat.ItemAttribute = (SpecialItemAttribute) statId - 11000;
+            float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
+            specialStat.Percent = percent;
+            return specialStat;
         }
-
-        Item purchasedItem;
-        bool removeListing = false;
-        if (listing.Item.Amount == amount)
-        {
-            purchasedItem = listing.Item;
-            GameServer.BlackMarketManager.RemoveListing(listing);
-            DatabaseManager.BlackMarketListings.Delete(listing.Id);
-            removeListing = true;
-        }
+        // Normal Stat with flat value
         else
         {
-            listing.Item.Amount -= amount;
-            Item newItem = new(listing.Item)
-            {
-                Amount = amount
-            };
-            DatabaseManager.Items.Insert(newItem);
-            purchasedItem = newItem;
+            NormalStat normalStat = new NormalStat();
+            normalStat.ItemAttribute = (ItemAttribute) statId;
+            normalStat.Flat = value;
+            return normalStat;
         }
-
-        MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
-        session.Send(BlackMarketPacket.Purchase(listingId, amount));
     }
 }
