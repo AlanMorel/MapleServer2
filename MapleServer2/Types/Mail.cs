@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -18,13 +19,14 @@ public class Mail
     public long SentTimestamp { get; set; }
     public long ExpiryTimestamp { get; set; }
     public long Mesos { get; set; }
+    public long Merets { get; set; }
     public List<Item> Items = new();
     public string AdditionalParameter1 = "";
     public string AdditionalParameter2 = "";
 
     public Mail() { }
 
-    public Mail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos)
+    public Mail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos, long merets)
     {
         Type = type;
         RecipientCharacterId = recipientCharacterId;
@@ -33,9 +35,11 @@ public class Mail
         Title = title;
         Body = body;
         SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        ExpiryTimestamp = SentTimestamp + 2592000; // 30 days TODO: Change to grab from Constant.xml
+        int sellEndtime = int.Parse(ConstantsMetadataStorage.GetConstant("MailExpiryDays")) * 86400;
+        ExpiryTimestamp = SentTimestamp + sellEndtime;
         Items = items;
         Mesos = mesos;
+        Merets = merets;
         AdditionalParameter1 = addParameter1;
         AdditionalParameter2 = addParameter2;
         Id = DatabaseManager.Mails.Insert(this);
@@ -47,7 +51,7 @@ public class Mail
     }
 
     public Mail(long id, MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, long sentTimestamp, long expiryTimestamp, long readTimestamp, string addParameter1,
-        string addParameter2, List<Item> items, long mesos)
+        string addParameter2, List<Item> items, long mesos, long merets)
     {
         Id = id;
         Type = type;
@@ -63,6 +67,7 @@ public class Mail
         AdditionalParameter2 = addParameter2;
         Items = items;
         Mesos = mesos;
+        Merets = merets;
     }
 
     public void Read(GameSession session)

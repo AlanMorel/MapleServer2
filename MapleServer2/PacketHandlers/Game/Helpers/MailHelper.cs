@@ -1,4 +1,5 @@
-﻿using MapleServer2.Enums;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -6,12 +7,10 @@ namespace MapleServer2.PacketHandlers.Game.Helpers;
 
 public class MailHelper
 {
-    public static void SendMail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos, out Mail mail)
+    public static void SendMail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos, long merets, out Mail mail)
     {
-        mail = new(type, recipientCharacterId, senderCharacterId, senderName, title, body, addParameter1, addParameter2, items, mesos);
+        mail = new(type, recipientCharacterId, senderCharacterId, senderName, title, body, addParameter1, addParameter2, items, mesos, merets);
         GameServer.MailManager.AddMail(mail);
-
-        // TODO: Handle Black Market mails
 
         SendNotification(mail);
     }
@@ -40,7 +39,7 @@ public class MailHelper
         Mail mail = new(MailType.BlackMarketListingCancel, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
         {
             listing.Item
-        }, deposit);
+        }, deposit, 0);
         GameServer.MailManager.AddMail(mail);
         SendNotification(mail);
     }
@@ -50,7 +49,7 @@ public class MailHelper
         // Create mail for purchaser
         SendBlackMarketPurchaseMail(item, recipientCharacterId, price);
 
-        //Create mail for seller
+        // Create mail for seller
         SendBlackMarketSoldMail(listing, item, price, removeListing);
     }
 
@@ -65,14 +64,14 @@ public class MailHelper
         Mail mail = new(MailType.BlackMarketSale, recipientCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
         {
             item
-        }, 0);
+        }, 0, 0);
         GameServer.MailManager.AddMail(mail);
         SendNotification(mail);
     }
 
     private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price, bool removeListing)
     {
-        double salesFeeRate = 0.1; // TODO: Use from constant.xml (if it exists?)
+        float salesFeeRate = float.Parse(ConstantsMetadataStorage.GetConstant("BlackMarketSalesFeeRate"));
         long tax = (long) (salesFeeRate * (item.Amount * price));
         long revenue = item.Amount * price - tax;
 
@@ -89,9 +88,52 @@ public class MailHelper
             addParameter2 = $"<ms2><v item=\"{item.Id}\" ></v><v str=\"{item.Amount}\" ></v><v money=\"{price * item.Amount}\" ></v><v money=\"{price}\" ></v><v money=\"{tax}\" ></v><v str=\"{salesFeeRate * 100}%\" ></v><v money=\"{listing.Deposit}\" ></v><v money=\"{revenue}\" ></v></ms2>";
         }
 
-        Mail mail = new(MailType.BlackMarketSale, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
-        {
-        }, revenue);
+        Mail mail = new(MailType.BlackMarketSale, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new(), revenue, 0);
+        GameServer.MailManager.AddMail(mail);
+        SendNotification(mail);
+    }
+
+    public static void MesoMarketTransaction(MesoMarketListing listing, long recipientCharacterId)
+    {
+        // Create mail for purchaser
+        SendMesoMarketPurchaseMail(listing, recipientCharacterId);
+
+        // Create mail for seller
+        SendMesoMarketSoldMail(listing);
+    }
+
+    private static void SendMesoMarketPurchaseMail(MesoMarketListing listing, long recipientCharacterId)
+    {
+        string senderName = "<ms2><v key=\"s_mesoMarket_mail_to_sender\" /></ms2>";
+        string title = "<ms2><v key=\"s_mesoMarket_mail_to_buyer_title\" /></ms2>";
+        string body = "<ms2><v key=\"s_mesoMarket_mail_to_buyer_content\" /></ms2>";
+        string addParameter2 = $"<ms2><v money=\"{listing.Mesos}\" ></v><v money=\"{listing.Price}\" ></v></ms2>";
+
+        Mail mail = new(MailType.MesoMarket, recipientCharacterId, 0, senderName, title, body, "", addParameter2, new(), listing.Mesos, 0);
+        GameServer.MailManager.AddMail(mail);
+        SendNotification(mail);
+    }
+
+    private static void SendMesoMarketSoldMail(MesoMarketListing listing)
+    {
+        string senderName = "<ms2><v key=\"s_mesoMarket_mail_to_sender\" /></ms2>";
+        string title = "<ms2><v key=\"s_mesoMarket_mail_to_seller_title\" /></ms2>";
+        string body = "<ms2><v key=\"s_mesoMarket_mail_to_seller_content\" /></ms2>";
+        string addParameter2 = $"<ms2><v money=\"{listing.Mesos}\" ></v><v money=\"{listing.Price}\" ></v><v money=\"0\" ></v><v money=\"0\" ></v><v money=\"{listing.Price}\" ></v></ms2>";
+
+        Mail mail = new(MailType.MesoMarket, listing.OwnerCharacterId, 0, senderName, title, body, "", addParameter2, new(), 0, listing.Price);
+        GameServer.MailManager.AddMail(mail);
+        SendNotification(mail);
+    }
+
+    public static void SendMesoMarketCancellation(MesoMarketListing listing, long recipientCharacterId)
+    {
+        string senderName = "<ms2><v key=\"s_mesoMarket_mail_to_sender\" /></ms2>";
+        string title = "<ms2><v key=\"s_mesoMarket_mail_to_cancel_title\" /></ms2>";
+        string body = "<ms2><v key=\"s_mesoMarket_mail_to_cancel_content\" /></ms2>";
+        string addParameter2 = $"<ms2><v money=\"{listing.Mesos}\" ></v></ms2>";
+
+        Mail mail = new(MailType.MesoMarket, recipientCharacterId, 0, senderName, title, body, "", addParameter2, new(), listing.Mesos, 0);
         GameServer.MailManager.AddMail(mail);
         SendNotification(mail);
     }

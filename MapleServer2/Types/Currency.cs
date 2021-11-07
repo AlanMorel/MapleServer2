@@ -55,6 +55,7 @@ public class Currency
             case CurrencyType.Treva:
             case CurrencyType.Rue:
             case CurrencyType.HaviFruit:
+            case CurrencyType.MesoToken:
                 Session.Send(WalletPacket.UpdateWallet(Type, Amount));
                 break;
             case CurrencyType.BankMesos:

@@ -23,6 +23,7 @@ public class GameServer : Server<GameSession>
     public static readonly GlobalEventManager GlobalEventManager = new();
     public static readonly MailManager MailManager = new();
     public static readonly BlackMarketManager BlackMarketManager = new();
+    public static readonly MesoMarketManager MesoMarketManager = new();
 
     private List<GameSession> Sessions;
 
