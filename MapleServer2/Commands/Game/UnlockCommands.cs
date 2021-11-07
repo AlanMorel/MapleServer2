@@ -1,4 +1,6 @@
-﻿using MapleServer2.Commands.Core;
+﻿using Maple2Storage.Types.Metadata;
+using MapleServer2.Commands.Core;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
@@ -21,6 +23,12 @@ public class UnlockAll : InGameCommand
     public override void Execute(GameCommandTrigger trigger)
     {
         Player player = trigger.Session.Player;
+
+        player.Levels.SetLevel(90);
+        player.Levels.SetPrestigeLevel(100);
+        player.Wallet.Meso.SetAmount(10000000000); // 10B
+        player.Account.Meret.SetAmount(10000000000); // 10B
+
         // Stickers
         for (int i = 1; i < 7; i++)
         {
@@ -32,10 +40,14 @@ public class UnlockAll : InGameCommand
             player.ChatSticker.Add(new((byte) i, 9223372036854775807));
         }
 
-        // Emotes
-        for (int i = 1; i < 146; i++)
+        List<int> emotes = SkillMetadataStorage.GetEmotes();
+        foreach (int emoteId in emotes)
         {
-            int emoteId = 90200000 + i;
+            // Broken emotes
+            if (emoteId is >= 90200032 and <= 90200036)
+            {
+                continue;
+            }
             if (player.Emotes.Contains(emoteId))
             {
                 continue;
@@ -45,10 +57,10 @@ public class UnlockAll : InGameCommand
             trigger.Session.Send(EmotePacket.LearnEmote(emoteId));
         }
 
-        // Titles
-        for (int i = 1; i < 854; i++)
+        List<TitleMetadata> titles = TitleMetadataStorage.GetAll();
+        foreach (TitleMetadata title in titles)
         {
-            int titleId = 10000000 + i;
+            int titleId = title.Id;
             if (player.Titles.Contains(titleId))
             {
                 continue;
