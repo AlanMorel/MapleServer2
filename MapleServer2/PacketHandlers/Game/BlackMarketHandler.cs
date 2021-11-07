@@ -199,40 +199,48 @@ namespace MapleServer2.PacketHandlers.Game
                     }
 
                     ItemStat stat = ReadStat(statId, value);
+                    if (stat == null)
+                    {
+                        continue;
+                    }
                     stats.Add(stat);
                 }
             }
 
-
-            // TODO: Figure out how additional options are read
-
             List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
             List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
-                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort);
+                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort, additionalOptionsEnabled, stats);
 
             session.Send(BlackMarketPacket.SearchResults(searchResults));
         }
 
         private static ItemStat ReadStat(int statId, int value)
         {
-
             // Normal Stat with percent value
             if (statId >= 1000 && statId < 11000)
             {
-
+                NormalStat normalStat = new NormalStat();
+                float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
+                normalStat.ItemAttribute = (ItemAttribute) statId - 1000;
+                normalStat.Percent = percent;
+                return normalStat;
             }
             // Special Stat with percent value
             else if (statId >= 11000)
             {
-
+                SpecialStat specialStat = new SpecialStat();
+                specialStat.ItemAttribute = (SpecialItemAttribute) statId - 11000;
+                float percent = (float) Math.Round(value * 0.0001f + 0.0005f, 4);
+                specialStat.Percent = percent;
+                return specialStat;
             }
             // Normal Stat with flat value
             else
             {
-                ItemAttribute attribute = (ItemAttribute) statId;
                 NormalStat normalStat = new NormalStat();
-                normalStat.ItemAttribute = attribute;
+                normalStat.ItemAttribute = (ItemAttribute) statId;
                 normalStat.Flat = value;
+                return normalStat;
             }
         }
 

@@ -365,6 +365,7 @@ CREATE TABLE `items` (
   `transfer_flag` tinyint unsigned NOT NULL,
   `transparency_badge_bools` text,
   `unlock_time` bigint NOT NULL,
+  `blackmarket_category` text,
   PRIMARY KEY (`uid`),
   KEY `ix_items_bankinventoryid` (`bank_inventory_id`),
   KEY `ix_items_guildid` (`guild_id`),
