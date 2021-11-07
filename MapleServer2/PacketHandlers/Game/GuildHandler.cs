@@ -439,7 +439,7 @@ public class GuildHandler : GamePacketHandler
         member.AddContribution(contributionAmount);
         member.AttendanceTimestamp = TimeInfo.Now() + Environment.TickCount;
         session.Send(GuildPacket.CheckInBegin());
-       
+
         Item guildCoins = new(30000861)
         {
             Rarity = 4,

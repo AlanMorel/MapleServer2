@@ -352,7 +352,7 @@ public static class GuildPacket
         pWriter.WriteUnicodeString(player.Name);
         return pWriter;
     }
-    
+
     public static PacketWriter MemberLoggedOff(Player player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
