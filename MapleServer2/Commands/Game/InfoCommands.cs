@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Text;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
@@ -41,6 +43,7 @@ public class InfoCommands : InGameCommand
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }
+
 public class InfoCommand : InGameCommand
 {
     public InfoCommand()
@@ -94,58 +97,178 @@ public class InfoCommand : InGameCommand
         }
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
+}
 
-    public class SendNoticeCommand : InGameCommand
+public class SendNoticeCommand : InGameCommand
+{
+    public SendNoticeCommand()
     {
-        public SendNoticeCommand()
+        Aliases = new()
         {
-            Aliases = new()
-            {
-                "notice"
-            };
-            Description = "Send a server message.";
-            Parameters = new()
-            {
-                new Parameter<string[]>("message", "Message to send on the server.")
-            };
-            Usage = "/notice <message>";
-        }
-
-        public override void Execute(GameCommandTrigger trigger)
+            "notice"
+        };
+        Description = "Send a server message.";
+        Parameters = new()
         {
-            string[] args = trigger.Get<string[]>("message");
-
-            if (args == null || args.Length <= 1)
-            {
-                trigger.Session.SendNotice("No message provided.");
-                return;
-            }
-
-            string message = CommandHelpers.BuildString(args, trigger.Session.Player.Name);
-            MapleServer.BroadcastPacketAll(NoticePacket.Notice(message));
-        }
+            new Parameter<string[]>("message", "Message to send on the server.")
+        };
+        Usage = "/notice <message>";
     }
 
-    public class OnlineCommand : InGameCommand
+    public override void Execute(GameCommandTrigger trigger)
     {
-        public OnlineCommand()
+        string[] args = trigger.Get<string[]>("message");
+
+        if (args == null || args.Length <= 1)
         {
-            Aliases = new()
-            {
-                "online"
-            };
-            Description = "See all online players.";
-            Usage = "/online";
+            trigger.Session.SendNotice("No message provided.");
+            return;
         }
 
-        public override void Execute(GameCommandTrigger trigger)
-        {
-            List<Player> players = GameServer.PlayerManager.GetAllPlayers();
-            StringBuilder stringBuilder = new();
-            stringBuilder.Append($"Online players:".Color(Color.DarkOrange).Bold() + "\n");
-            stringBuilder.Append(string.Join(", ", players.Select(p => p.Name)));
+        string message = CommandHelpers.BuildString(args, trigger.Session.Player.Name);
+        MapleServer.BroadcastPacketAll(NoticePacket.Notice(message));
+    }
+}
 
-            trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
+public class OnlineCommand : InGameCommand
+{
+    public OnlineCommand()
+    {
+        Aliases = new()
+        {
+            "online"
+        };
+        Description = "See all online players.";
+        Usage = "/online";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        List<Player> players = GameServer.PlayerManager.GetAllPlayers();
+        StringBuilder stringBuilder = new();
+        stringBuilder.Append($"Online players:".Color(Color.DarkOrange).Bold() + "\n");
+        stringBuilder.Append(string.Join(", ", players.Select(p => p.Name)));
+
+        trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
+    }
+}
+
+public class FindCommand : InGameCommand
+{
+    public FindCommand()
+    {
+        Aliases = new()
+        {
+            "find"
+        };
+        Description = "Find id by item/map/npc/mob name.";
+        Parameters = new()
+        {
+            new Parameter<string[]>("name", "The item/map/npc/mob name."),
+        };
+        Usage = "/find [item/map/npc/mob] [name]";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        string[] command = trigger.Get<string[]>("name");
+        if (command is null)
+        {
+            return;
         }
+
+        string[] args = command[1..];
+        if (args.Length == 0)
+        {
+            trigger.Session.SendNotice("Usage: /find [item/map/npc/mob] [name]");
+            return;
+        }
+
+        string type = args.First().ToLower();
+        if (string.IsNullOrEmpty(type))
+        {
+            trigger.Session.SendNotice("No type provided. Please use item, map, npc or mob.");
+            return;
+        }
+
+        if (type is not "item" and not "map" and not "npc" and not "mob")
+        {
+            trigger.Session.SendNotice("Invalid type provided. Please use item, map, npc or mob.");
+            return;
+        }
+
+        string name = string.Join(" ", args[1..]);
+        if (string.IsNullOrEmpty(name))
+        {
+            trigger.Session.SendNotice("No names provided.");
+            return;
+        }
+
+        StringBuilder stringBuilder = new();
+        switch (type)
+        {
+            case "item":
+                IEnumerable<ItemMetadata> itemMetadatas = ItemMetadataStorage.GetAll().Where(x => x.Name is not null && x.Name.ToLower().Contains(name));
+                if (itemMetadatas is null || !itemMetadatas.Any())
+                {
+                    trigger.Session.SendNotice("Item not found.");
+                    return;
+                }
+
+                if (itemMetadatas.Count() > 50)
+                {
+                    trigger.Session.SendNotice($"Too many results for '{name}'");
+                    return;
+                }
+
+                stringBuilder.Append($"Found {itemMetadatas.Count()} items with name {name}:".Color(Color.DarkOrange).Bold() + "\n");
+                foreach (ItemMetadata item in itemMetadatas)
+                {
+                    stringBuilder.Append($"{item.Name} - {item.Id}\n".Color(Color.Wheat));
+                }
+                break;
+            case "map":
+                IEnumerable<MapMetadata> mapMetadatas = MapMetadataStorage.GetAll().Where(x => x.Name.ToLower().Contains(name));
+                if (mapMetadatas is null || !mapMetadatas.Any())
+                {
+                    trigger.Session.SendNotice($"Map '{name}' not found.");
+                    return;
+                }
+
+                if (mapMetadatas.Count() > 50)
+                {
+                    trigger.Session.SendNotice($"Too many results for '{name}'");
+                    return;
+                }
+
+                stringBuilder.Append($"Found {mapMetadatas.Count()} maps with name {name}:".Color(Color.DarkOrange).Bold() + "\n");
+                foreach (MapMetadata map in mapMetadatas)
+                {
+                    stringBuilder.Append($"{map.Name} - {map.Id}\n".Color(Color.Wheat));
+                }
+                break;
+            case "mob":
+            case "npc":
+                IEnumerable<NpcMetadata> npcMetadatas = NpcMetadataStorage.GetAll().Where(x => x.Name.ToLower().Contains(name));
+                if (npcMetadatas is null || !npcMetadatas.Any())
+                {
+                    trigger.Session.SendNotice($"Npc '{name}' not found.");
+                    return;
+                }
+
+                if (npcMetadatas.Count() > 50)
+                {
+                    trigger.Session.SendNotice($"Too many results for '{name}'");
+                    return;
+                }
+
+                stringBuilder.Append($"Found {npcMetadatas.Count()} npcs/mobs with name {name}:".Color(Color.DarkOrange).Bold() + "\n");
+                foreach (NpcMetadata npc in npcMetadatas)
+                {
+                    stringBuilder.Append($"{npc.Name} - {npc.Id}\n".Color(Color.Wheat));
+                }
+                break;
+        }
+        trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
     }
 }

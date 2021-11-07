@@ -66,7 +66,7 @@ public class MobSpawn
         }
         if (matchedNpcs.Count == 0)
         {
-            matchedNpcs.Add(NpcMetadataStorage.GetNpc(21000001));
+            matchedNpcs.Add(NpcMetadataStorage.GetNpcMetadata(21000001));
         }
         return matchedNpcs.ToList();
     }
