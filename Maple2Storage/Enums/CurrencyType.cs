@@ -7,9 +7,12 @@ public enum CurrencyType : byte
     Treva = 4,
     Rue = 5,
     HaviFruit = 6,
-    Meret,
-    GameMeret,
-    EventMeret,
-    MesoToken,
+    Meret = 7,
+    GameMeret = 8,
+    EventMeret = 9,
+    // ReverseCoin = 9, also 9?
+    MentorPoints = 10,
+    MenteePoints = 11,
+    MesoToken = 13,
     BankMesos
 }

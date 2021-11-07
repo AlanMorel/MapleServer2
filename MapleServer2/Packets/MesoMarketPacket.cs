@@ -31,14 +31,14 @@ namespace MapleServer2.Packets
             // Meso Market stats/info
             PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
             pWriter.Write(MesoMarketPacketMode.LoadMarket);
-            pWriter.WriteFloat();
+            pWriter.WriteFloat(); // tax %
             pWriter.WriteFloat(0.2f); // price within 20%
             pWriter.WriteLong(100); // average
-            pWriter.WriteInt(5);
+            pWriter.WriteInt(5); // total listings limit
             pWriter.WriteInt(5); // daily listing limit
             pWriter.WriteInt(4); // monthly purchase limit
             pWriter.WriteInt(2); // sale period from listing
-            pWriter.WriteInt(100);
+            pWriter.WriteInt(100); // amount of listings to display
             pWriter.WriteInt(100);
             pWriter.WriteInt(1000);
             return pWriter;
