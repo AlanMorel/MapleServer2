@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets
@@ -28,19 +29,18 @@ namespace MapleServer2.Packets
 
         public static PacketWriter LoadMarket()
         {
-            // Meso Market stats/info
             PacketWriter pWriter = PacketWriter.Of(SendOp.MESO_MARKET);
             pWriter.Write(MesoMarketPacketMode.LoadMarket);
-            pWriter.WriteFloat(); // tax %
-            pWriter.WriteFloat(0.2f); // price within 20%
-            pWriter.WriteLong(100); // average
-            pWriter.WriteInt(5); // total listings limit
-            pWriter.WriteInt(5); // daily listing limit
-            pWriter.WriteInt(4); // monthly purchase limit
-            pWriter.WriteInt(2); // sale period from listing
-            pWriter.WriteInt(100); // amount of listings to display
-            pWriter.WriteInt(100);
-            pWriter.WriteInt(1000);
+            pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTax")));
+            pWriter.WriteFloat(float.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketPriceRange")));
+            pWriter.WriteLong(long.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketAveragePrice"))); // TODO: Calculate average price
+            pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketTotaListingsLimit")));
+            pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit")));
+            pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketMonthlyPurchaseLimit")));
+            pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingDayDuration")));
+            pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketListingsDisplayCount")));
+            pWriter.WriteInt(100); // unk
+            pWriter.WriteInt(1000); // unk
             return pWriter;
         }
 

@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -34,7 +35,8 @@ public class Mail
         Title = title;
         Body = body;
         SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        ExpiryTimestamp = SentTimestamp + 2592000; // 30 days TODO: Change to grab from Constant.xml
+        int sellEndtime = int.Parse(ConstantsMetadataStorage.GetConstant("MailExpiryDays")) * 86400;
+        ExpiryTimestamp = SentTimestamp + sellEndtime;
         Items = items;
         Mesos = mesos;
         Merets = merets;

@@ -395,7 +395,8 @@ public class RequestItemUseHandler : GamePacketHandler
     public static void HandleExpandCharacterSlot(GameSession session, Item item)
     {
         Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
-        if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
+        int maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
+        if (account.CharacterSlots >= maxSlots)
         {
             session.Send(CouponUsePacket.MaxCharacterSlots());
             return;

@@ -1,4 +1,5 @@
-﻿using MapleServer2.Enums;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
@@ -10,8 +11,6 @@ public class MailHelper
     {
         mail = new(type, recipientCharacterId, senderCharacterId, senderName, title, body, addParameter1, addParameter2, items, mesos, merets);
         GameServer.MailManager.AddMail(mail);
-
-        // TODO: Handle Black Market mails
 
         SendNotification(mail);
     }
@@ -72,7 +71,7 @@ public class MailHelper
 
     private static void SendBlackMarketSoldMail(BlackMarketListing listing, Item item, long price, bool removeListing)
     {
-        double salesFeeRate = 0.1; // TODO: Use from constant.xml (if it exists?)
+        float salesFeeRate = float.Parse(ConstantsMetadataStorage.GetConstant("BlackMarketSalesFeeRate"));
         long tax = (long) (salesFeeRate * (item.Amount * price));
         long revenue = item.Amount * price - tax;
 

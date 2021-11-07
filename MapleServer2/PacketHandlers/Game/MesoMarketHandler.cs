@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
@@ -81,8 +82,7 @@ internal class MesoMarketHandler : GamePacketHandler
         long mesos = packet.ReadLong();
         long price = packet.ReadLong();
 
-        // TODO: Change listing limit value from constants
-        if (session.Player.Account.MesoMarketDailyListings >= 5)
+        if (session.Player.Account.MesoMarketDailyListings >= int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit")))
         {
             session.Send(MesoMarketPacket.Error((int) MesoMarketError.ReachedListingLimit));
             return;
@@ -133,8 +133,7 @@ internal class MesoMarketHandler : GamePacketHandler
     {
         long listingId = packet.ReadLong();
 
-        // TODO: Change listing limit value from constants
-        if (session.Player.Account.MesoMarketMonthlyPurchases >= 4)
+        if (session.Player.Account.MesoMarketMonthlyPurchases >= int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketMonthlyPurchaseLimit")))
         {
             return;
         }
