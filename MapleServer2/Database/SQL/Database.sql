@@ -21,18 +21,20 @@ USE `DATABASE_NAME`;
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts`
 (
-    `id`                bigint       NOT NULL AUTO_INCREMENT,
-    `username`          varchar(25)  NOT NULL,
-    `password_hash`     varchar(255) NOT NULL,
-    `creation_time`     bigint       NOT NULL,
-    `last_login_time`   bigint       NOT NULL,
-    `character_slots`   int          NOT NULL,
-    `meret`             bigint DEFAULT NULL,
-    `game_meret`        bigint DEFAULT NULL,
-    `event_meret`       bigint DEFAULT NULL,
-    `meso_token`        bigint DEFAULT NULL,
-    `bank_inventory_id` bigint DEFAULT NULL,
-    `vip_expiration`    bigint       NOT NULL,
+    `id`                            bigint       NOT NULL AUTO_INCREMENT,
+    `username`                      varchar(25)  NOT NULL,
+    `password_hash`                 varchar(255) NOT NULL,
+    `creation_time`                 bigint       NOT NULL,
+    `last_login_time`               bigint       NOT NULL,
+    `character_slots`               int          NOT NULL,
+    `meret`                         bigint DEFAULT NULL,
+    `game_meret`                    bigint DEFAULT NULL,
+    `event_meret`                   bigint DEFAULT NULL,
+    `meso_token`                    bigint DEFAULT NULL,
+    `bank_inventory_id`             bigint DEFAULT NULL,
+    `vip_expiration`                bigint       NOT NULL,
+    `meso_market_daily_listings`    int          NOT NULL,
+    `meso_market_monthly_purchases` int          NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `ix_accounts_username` (`username`),
     KEY                 `accounts_bankinventoryid_fk` (`bank_inventory_id`),
@@ -430,6 +432,7 @@ CREATE TABLE `mails`
     `sent_timestamp`         bigint NOT NULL,
     `expiry_timestamp`       bigint NOT NULL,
     `mesos`                  bigint NOT NULL,
+    `merets`                 bigint NOT NULL,
     `additional_parameter1`  text DEFAULT '',
     `additional_parameter2`  text DEFAULT '',
     PRIMARY KEY (`id`),
@@ -550,6 +553,25 @@ CREATE TABLE `black_market_listings`
     CONSTRAINT `fk_black_market_items_itemuid` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Table structure for table `meso_market_listings`
+--
+DROP TABLE IF EXISTS `meso_market_listings`;
+CREATE TABLE `meso_market_listings`
+(
+    `id`                 bigint NOT NULL AUTO_INCREMENT,
+    `listing_timestamp`  bigint NOT NULL,
+    `expiry_timestamp`   bigint NOT NULL,
+    `price`              bigint NOT NULL,
+    `mesos`              bigint NOT NULL,
+    `owner_account_id`   bigint DEFAULT NULL,
+    `owner_character_id` bigint DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY                  `ix_meso_market_listings_accountid` (`owner_account_id`),
+    KEY                  `ix_meso_market_listings_characterid` (`owner_character_id`),
+    CONSTRAINT `fk_meso_market_account_accountid` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_meso_market_characters_characterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

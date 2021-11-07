@@ -34,7 +34,8 @@ public class DatabaseMail : DatabaseTable
             expiry_timestamp = mail.ExpiryTimestamp,
             additional_parameter1 = mail.AdditionalParameter1,
             additional_parameter2 = mail.AdditionalParameter2,
-            mesos = mail.Mesos
+            mesos = mail.Mesos,
+            merets = mail.Merets
         });
     }
 
@@ -43,7 +44,8 @@ public class DatabaseMail : DatabaseTable
         QueryFactory.Query(TableName).Where("id", mail.Id).Update(new
         {
             read_timestamp = mail.ReadTimestamp,
-            mesos = mail.Mesos
+            mesos = mail.Mesos,
+            merets = mail.Merets
         });
     }
 
@@ -69,7 +71,8 @@ public class DatabaseMail : DatabaseTable
             AdditionalParameter1 = data.additional_parameter1,
             AdditionalParameter2 = data.additional_parameter2,
             Items = DatabaseManager.Items.FindAllByMailId(data.id),
-            Mesos = data.mesos
+            Mesos = data.mesos,
+            Merets = data.merets
         };
     }
 }

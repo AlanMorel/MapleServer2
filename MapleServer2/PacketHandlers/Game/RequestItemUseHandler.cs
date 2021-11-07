@@ -337,7 +337,7 @@ public class RequestItemUseHandler : GamePacketHandler
                             "",
                             $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
                             items,
-                            0, out Mail mail);
+                            0, 0, out Mail mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
