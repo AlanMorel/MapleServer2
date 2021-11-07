@@ -139,6 +139,7 @@ public class Player
     private Task HpRegenThread;
     private Task SpRegenThread;
     private Task StaRegenThread;
+    public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
 
     public List<GatheringCount> GatheringCount;
@@ -600,12 +601,16 @@ public class Player
 
     public Task OnlineTimer()
     {
+        OnlineCTS = new();
         return Task.Run(async () =>
         {
-            await Task.Delay(60000);
-            OnlineTime += 1;
-            LastLoginTime = TimeInfo.Now();
-            TrophyUpdate(23100001, 1);
+            while (!OnlineCTS.IsCancellationRequested)
+            {
+                await Task.Delay(60000);
+                OnlineTime += 1;
+                LastLoginTime = TimeInfo.Now();
+                TrophyUpdate(23100001, 1);
+            }
         });
     }
 

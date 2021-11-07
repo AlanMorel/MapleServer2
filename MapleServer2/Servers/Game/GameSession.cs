@@ -73,6 +73,9 @@ public class GameSession : Session
         FieldManager.RemovePlayer(this, FieldPlayer);
         GameServer.PlayerManager.RemovePlayer(FieldPlayer.Value);
 
+        Player.OnlineCTS.Cancel();
+        Player.OnlineTimeThread = null;
+
         // if session is changing channels, dont send the logout message
         if (Player.IsChangingChannel)
         {
