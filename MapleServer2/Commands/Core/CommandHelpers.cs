@@ -27,23 +27,11 @@ public static class CommandHelpers
         return stringBuilder.ToString();
     }
 
-    internal static string Bold(this string message)
-    {
-        return "<b>" + message + "</b>";
-    }
+    internal static string Bold(this string message) => "<b>" + message + "</b>";
 
-    internal static string Italic(this string message)
-    {
-        return "<i>" + message + "</i>";
-    }
+    internal static string Italic(this string message) => "<i>" + message + "</i>";
 
-    internal static string Underline(this string message)
-    {
-        return "<u>" + message + "</u>";
-    }
+    internal static string Underline(this string message) => "<u>" + message + "</u>";
 
-    internal static string Color(this string message, Color color)
-    {
-        return "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + message + "</font>";
-    }
+    internal static string Color(this string message, Color color) => "<font color=\"#" + color.ToArgb().ToString("X") + "\">" + message + "</font>";
 }

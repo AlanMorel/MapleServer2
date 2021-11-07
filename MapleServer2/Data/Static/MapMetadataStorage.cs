@@ -18,10 +18,9 @@ public static class MapMetadataStorage
         }
     }
 
-    public static MapMetadata GetMetadata(int mapId)
-    {
-        return map.GetValueOrDefault(mapId);
-    }
+    public static MapMetadata GetMetadata(int mapId) => map.GetValueOrDefault(mapId);
+
+    public static List<MapMetadata> GetAll() => map.Values.ToList();
 
     public static bool BlockExists(int mapId, CoordS coord)
     {

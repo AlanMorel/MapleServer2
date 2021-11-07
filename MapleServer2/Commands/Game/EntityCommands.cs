@@ -31,7 +31,7 @@ public class NpcCommand : InGameCommand
     {
         int npcId = trigger.Get<int>("id");
 
-        if (NpcMetadataStorage.GetNpc(npcId) == null)
+        if (NpcMetadataStorage.GetNpcMetadata(npcId) is null)
         {
             trigger.Session.Send(NoticePacket.Notice($"No NPC was found with the id: {npcId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
             return;
@@ -79,7 +79,7 @@ public class MobCommand : InGameCommand
     {
         int mobId = trigger.Get<int>("id");
 
-        if (NpcMetadataStorage.GetNpc(mobId) == null)
+        if (NpcMetadataStorage.GetNpcMetadata(mobId) is null)
         {
             trigger.Session.Send(NoticePacket.Notice($"No MOB was found with the id: {mobId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
             return;
