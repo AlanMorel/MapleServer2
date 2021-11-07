@@ -48,8 +48,8 @@ public class Account
     {
         Username = username;
         PasswordHash = passwordHash;
-        CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-        LastLoginTime = CreationTime;
+        CreationTime = TimeInfo.Now() + Environment.TickCount;
+        LastLoginTime = TimeInfo.Now();
         CharacterSlots = 7;
         Meret = new(CurrencyType.Meret, 0);
         GameMeret = new(CurrencyType.GameMeret, 0);

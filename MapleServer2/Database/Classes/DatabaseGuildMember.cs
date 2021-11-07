@@ -19,6 +19,7 @@ public class DatabaseGuildMember : DatabaseTable
             daily_donation_count = guildMember.DailyDonationCount,
             attendance_timestamp = guildMember.AttendanceTimestamp,
             join_timestamp = guildMember.JoinTimestamp,
+            lastlogon_timestamp = guildMember.LastLogonTimestamp,
             guild_id = guildMember.GuildId
         });
     }
@@ -49,6 +50,7 @@ public class DatabaseGuildMember : DatabaseTable
             daily_donation_count = guildMember.DailyDonationCount,
             attendance_timestamp = guildMember.AttendanceTimestamp,
             join_timestamp = guildMember.JoinTimestamp,
+            lastlogon_timestamp = guildMember.LastLogonTimestamp,
             guildMember.Motto,
             guild_id = guildMember.GuildId
         });
@@ -62,7 +64,7 @@ public class DatabaseGuildMember : DatabaseTable
     private static GuildMember ReadGuildMember(dynamic data)
     {
         return new GuildMember(data.id, data.rank, data.daily_contribution, data.contribution_total,
-                               data.daily_donation_count, data.attendance_timestamp, data.join_timestamp, data.guild_id, data.motto,
+                               data.daily_donation_count, data.attendance_timestamp, data.join_timestamp, data.lastlogon_timestamp, data.guild_id, data.motto,
                                DatabaseManager.Characters.FindPartialPlayerById(data.id));
     }
 }

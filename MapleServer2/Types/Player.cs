@@ -24,6 +24,8 @@ public class Player
     public long AccountId { get; set; }
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
+    public long LastLogonTime { get; set; }
+    private long OnlineTime { get; set; }
     public bool IsDeleted;
 
     public string Name { get; set; }
@@ -123,7 +125,6 @@ public class Player
     public int[] GroupChatId;
 
     public long GuildId;
-    public long GuildMemberId;
     public Guild Guild;
     public GuildMember GuildMember;
     public List<GuildApplication> GuildApplications = new();
@@ -138,7 +139,7 @@ public class Player
     private Task HpRegenThread;
     private Task SpRegenThread;
     private Task StaRegenThread;
-    private readonly TimeInfo Timestamps;
+    public Task OnlineTimeThread;
 
     public List<GatheringCount> GatheringCount;
 
@@ -150,20 +151,6 @@ public class Player
     public int DungeonSessionId = -1;
 
     public List<PlayerTrigger> Triggers = new();
-
-    private class TimeInfo
-    {
-        public long CharCreation;
-        public long OnlineDuration;
-        public long LastOnline;
-
-        public TimeInfo(long charCreation = -1, long onlineDuration = 0, long lastOnline = -1)
-        {
-            CharCreation = charCreation;
-            OnlineDuration = onlineDuration;
-            LastOnline = lastOnline;
-        }
-    }
 
     public Player() { }
 
@@ -191,13 +178,13 @@ public class Player
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
         });
-        Timestamps = new(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         MapId = JobMetadataStorage.GetStartMapId((int) job);
         Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(10, 10, 10, 10, 500, 10);
         Motto = "Motto";
         ProfileUrl = "";
-        CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+        CreationTime = TimeInfo.Now();
+        LastLogonTime = TimeInfo.Now();
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
@@ -611,17 +598,14 @@ public class Player
         }
     }
 
-    private Task OnlineTimer()
+    public Task OnlineTimer()
     {
         return Task.Run(async () =>
         {
             await Task.Delay(60000);
-            lock (Timestamps)
-            {
-                Timestamps.OnlineDuration += 1;
-                Timestamps.LastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                TrophyUpdate(23100001, 1);
-            }
+            OnlineTime += 1;
+            LastLogonTime = TimeInfo.Now();
+            TrophyUpdate(23100001, 1);
         });
     }
 

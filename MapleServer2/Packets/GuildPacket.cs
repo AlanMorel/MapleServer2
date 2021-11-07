@@ -77,7 +77,7 @@ public static class GuildPacket
         pWriter.WriteUnicodeString(guild.Name);
         pWriter.WriteUnicodeString(guild.Emblem);
         pWriter.WriteByte(guild.Capacity);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteUnicodeString(guild.Notice);
         pWriter.WriteLong(guild.LeaderAccountId);
         pWriter.WriteLong(guild.LeaderCharacterId);
@@ -96,8 +96,8 @@ public static class GuildPacket
         pWriter.WriteInt(guild.FocusAttributes);
         pWriter.WriteInt(guild.Exp);
         pWriter.WriteInt(guild.Funds);
-        pWriter.WriteByte(0x0);
-        pWriter.WriteInt(0);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
         pWriter.WriteByte((byte) guild.Members.Count);
 
         foreach (GuildMember member in guild.Members)
@@ -108,7 +108,7 @@ public static class GuildPacket
             WriteGuildMember(pWriter, member.Player);
             pWriter.WriteUnicodeString(member.Motto);
             pWriter.WriteLong(member.JoinTimestamp);
-            pWriter.WriteLong(); // last seen timestamp
+            pWriter.WriteLong(member.LastLogonTimestamp); // last seen timestamp
             pWriter.WriteLong(member.AttendanceTimestamp);
             pWriter.WriteInt();
             pWriter.WriteInt();
@@ -117,7 +117,7 @@ public static class GuildPacket
             pWriter.WriteInt(member.DailyDonationCount);
             pWriter.WriteLong();
             pWriter.WriteInt();
-            pWriter.WriteByte(); // 00 = online, 01 = offline
+            pWriter.WriteByte((byte) (member.Player.Session.Connected() ? 01 : 00)); // 00 = online, 01 = offline
         }
 
         pWriter.WriteByte((byte) guild.Ranks.Length);

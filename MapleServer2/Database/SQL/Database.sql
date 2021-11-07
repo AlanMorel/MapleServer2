@@ -211,6 +211,7 @@ CREATE TABLE `guild_members`
     `daily_donation_count` tinyint unsigned NOT NULL,
     `attendance_timestamp` bigint NOT NULL,
     `join_timestamp`       bigint NOT NULL,
+    `lastlogon_timestamp`  bigint NOT NULL,
     `guild_id`             bigint      DEFAULT NULL,
     `motto`                varchar(50) DEFAULT '',
     PRIMARY KEY (`id`),

@@ -53,7 +53,7 @@ public class Guild
         {
             new("Master", 4095), new("Jr. Master"), new("Member 1"), new("Member 2"), new("New Member 1"), new("New Member 2")
         };
-        CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        CreationTimestamp = TimeInfo.Now();
 
         List<int> buffIds = GuildBuffMetadataStorage.GetBuffList();
         foreach (int buffId in buffIds)

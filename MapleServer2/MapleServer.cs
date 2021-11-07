@@ -24,8 +24,8 @@ public static class MapleServer
     public static async Task Main()
     {
         AppDomain currentDomain = AppDomain.CurrentDomain;
-        currentDomain.UnhandledException += new(UnhandledExceptionEventHandler);
-        currentDomain.ProcessExit += new(SaveAll);
+        currentDomain.UnhandledException += UnhandledExceptionEventHandler;
+        currentDomain.ProcessExit += SaveAll;
 
         // Force Globalization to en-US because we use periods instead of commas for decimals
         CultureInfo.CurrentCulture = new("en-US");
