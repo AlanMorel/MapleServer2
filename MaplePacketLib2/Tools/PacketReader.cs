@@ -1,169 +1,192 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace MaplePacketLib2.Tools
+namespace MaplePacketLib2.Tools;
+
+public unsafe class PacketReader : IPacketReader
 {
-    public class PacketReader : Packet
+    public byte[] Buffer { get; }
+    public int Length { get; protected set; }
+    public int Position { get; protected set; }
+
+    public int Available => Length - Position;
+
+    public PacketReader(byte[] packet, int offset = 0)
     {
-        public int Position { get; private set; }
+        Buffer = packet;
+        Length = packet.Length;
+        Position = offset;
+    }
 
-        public int Available => Length - Position;
-
-        public PacketReader(byte[] packet, int skip = 0) : base(packet)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void CheckLength(int length)
+    {
+        int index = Position + length;
+        if (index > Length || index < Position)
         {
-            Position = skip;
+            throw new IndexOutOfRangeException($"Not enough space in packet: {this}\n");
+        }
+    }
+
+    public T Read<T>() where T : struct
+    {
+        int size = Unsafe.SizeOf<T>();
+        CheckLength(size);
+        fixed (byte* ptr = &Buffer[Position])
+        {
+            T value = Unsafe.Read<T>(ptr);
+            Position += size;
+            return value;
+        }
+    }
+
+    public T Peek<T>() where T : struct
+    {
+        int size = Unsafe.SizeOf<T>();
+        CheckLength(size);
+        fixed (byte* ptr = &Buffer[Position])
+        {
+            return Unsafe.Read<T>(ptr);
+        }
+    }
+
+    public byte[] ReadBytes(int count)
+    {
+        if (count == 0)
+        {
+            return Array.Empty<byte>();
         }
 
-        private void CheckLength(int length)
+        CheckLength(count);
+        byte[] bytes = new byte[count];
+        fixed (byte* ptr = &Buffer[Position])
+        fixed (byte* bytesPtr = bytes)
         {
-            int index = Position + length;
-            if (index > Length || index < Position)
-            {
-                throw new IndexOutOfRangeException($"Not enough space in packet: {ToString()}\n");
-            }
+            Unsafe.CopyBlock(bytesPtr, ptr, (uint) count);
         }
 
-        public unsafe T Read<T>() where T : struct
+        Position += count;
+        return bytes;
+    }
+
+    public bool ReadBool()
+    {
+        return ReadByte() != 0;
+    }
+
+    public byte ReadByte()
+    {
+        CheckLength(1);
+        return Buffer[Position++];
+    }
+
+    public short ReadShort()
+    {
+        CheckLength(2);
+        fixed (byte* ptr = &Buffer[Position])
         {
-            int size = Marshal.SizeOf(typeof(T));
-            CheckLength(size);
-            fixed (byte* ptr = &Buffer[Position])
-            {
-                T value = (T) Marshal.PtrToStructure((IntPtr) ptr, typeof(T));
-                Position += size;
-                return value;
-            }
+            short value = *(short*) ptr;
+            Position += 2;
+            return value;
+        }
+    }
+
+    public int ReadInt()
+    {
+        CheckLength(4);
+        fixed (byte* ptr = &Buffer[Position])
+        {
+            int value = *(int*) ptr;
+            Position += 4;
+            return value;
+        }
+    }
+
+    public float ReadFloat()
+    {
+        CheckLength(4);
+        fixed (byte* ptr = &Buffer[Position])
+        {
+            float value = *(float*) ptr;
+            Position += 4;
+            return value;
+        }
+    }
+
+    public long ReadLong()
+    {
+        CheckLength(8);
+        fixed (byte* ptr = &Buffer[Position])
+        {
+            long value = *(long*) ptr;
+            Position += 8;
+            return value;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadString()
+    {
+        ushort length = Read<ushort>();
+        return ReadRawString(length);
+    }
+
+    public string ReadRawString(int length)
+    {
+        if (length == 0)
+        {
+            return string.Empty;
         }
 
-        public byte[] Read(int count)
+        CheckLength(length);
+        fixed (byte* ptr = &Buffer[Position])
         {
-            CheckLength(count);
-            byte[] bytes = new byte[count];
-            System.Buffer.BlockCopy(Buffer, Position, bytes, 0, count);
-            Position += count;
-            return bytes;
+            string value = new((sbyte*) ptr, 0, length, Encoding.UTF8);
+            Position += length;
+            return value;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadUnicodeString()
+    {
+        ushort length = Read<ushort>();
+        return ReadRawUnicodeString(length);
+    }
+
+    public string ReadRawUnicodeString(int length)
+    {
+        if (length == 0)
+        {
+            return string.Empty;
         }
 
-        public byte ReadByte()
+        CheckLength(length * 2);
+        fixed (byte* ptr = &Buffer[Position])
         {
-            CheckLength(1);
-            return Buffer[Position++];
+            string value = new((sbyte*) ptr, 0, length * 2, Encoding.Unicode);
+            Position += length * 2;
+            return value;
         }
+    }
 
-        public bool ReadBool()
-        {
-            return ReadByte() != 0;
+    public void Skip(int count)
+    {
+        int index = Position + count;
+        if (index > Length || index < 0)
+        { // Allow backwards seeking
+            throw new IndexOutOfRangeException($"Not enough space in packet: {this}\n");
         }
+        Position += count;
+    }
 
-        public unsafe short ReadShort()
-        {
-            CheckLength(2);
-            fixed (byte* ptr = Buffer)
-            {
-                short value = *(short*) (ptr + Position);
-                Position += 2;
-                return value;
-            }
-        }
+    public override string ToString()
+    {
+        return Buffer.ToHexString(Length, ' ');
+    }
 
-        public unsafe ushort ReadUShort()
-        {
-            CheckLength(2);
-            fixed (byte* ptr = Buffer)
-            {
-                ushort value = *(ushort*) (ptr + Position);
-                Position += 2;
-                return value;
-            }
-        }
-
-        public unsafe int ReadInt()
-        {
-            CheckLength(4);
-            fixed (byte* ptr = Buffer)
-            {
-                int value = *(int*) (ptr + Position);
-                Position += 4;
-                return value;
-            }
-        }
-
-        public unsafe uint ReadUInt()
-        {
-            CheckLength(4);
-            fixed (byte* ptr = Buffer)
-            {
-                uint value = *(uint*) (ptr + Position);
-                Position += 4;
-                return value;
-            }
-        }
-
-        public unsafe float ReadFloat()
-        {
-            CheckLength(4);
-            fixed (byte* ptr = Buffer)
-            {
-                float value = *(float*) (ptr + Position);
-                Position += 4;
-                return value;
-            }
-        }
-
-        public unsafe long ReadLong()
-        {
-            CheckLength(8);
-            fixed (byte* ptr = Buffer)
-            {
-                long value = *(long*) (ptr + Position);
-                Position += 8;
-                return value;
-            }
-        }
-
-        public string ReadString(int length)
-        {
-            byte[] bytes = Read(length);
-            return Encoding.UTF8.GetString(bytes);
-        }
-
-        public string ReadUnicodeString()
-        {
-            ushort length = Read<ushort>();
-            return ReadUnicodeString(length);
-        }
-
-        public string ReadUnicodeString(int length)
-        {
-            byte[] bytes = Read(length * 2);
-            return Encoding.Unicode.GetString(bytes);
-        }
-
-        public string ReadMapleString()
-        {
-            ushort count = Read<ushort>();
-            return ReadString(count);
-        }
-
-        public string ReadHexString(int length)
-        {
-            return Read(length).ToHexString(' ');
-        }
-
-        public void Skip(int count)
-        {
-            int index = Position + count;
-            if (index > Length || index < 0)
-            { // Allow backwards seeking
-                throw new IndexOutOfRangeException($"Not enough space in packet: {ToString()}\n");
-            }
-            Position += count;
-        }
-
-        public void Next(byte b)
-        {
-            int pos = Array.IndexOf(Buffer, b, Position);
-            Skip(pos - Position + 1);
-        }
+    void IDisposable.Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

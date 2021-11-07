@@ -3,40 +3,39 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class RequestHomeBankHandler : GamePacketHandler
 {
-    public class RequestHomeBankHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.REQUEST_HOME_BANK;
+
+    public RequestHomeBankHandler() : base() { }
+
+    private enum BankMode : byte
     {
-        public override RecvOp OpCode => RecvOp.REQUEST_HOME_BANK;
+        House = 0x01,
+        Inventory = 0x02
+    }
 
-        public RequestHomeBankHandler() : base() { }
-
-        private enum BankMode : byte
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        BankMode mode = (BankMode) packet.ReadByte();
+        switch (mode)
         {
-            House = 0x01,
-            Inventory = 0x02,
+            case BankMode.House:
+                HandleOpen(session, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                break;
+            case BankMode.Inventory:
+                HandleOpen(session);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
+    }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            BankMode mode = (BankMode) packet.ReadByte();
-            switch (mode)
-            {
-                case BankMode.House:
-                    HandleOpen(session, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                    break;
-                case BankMode.Inventory:
-                    HandleOpen(session);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
-        }
-
-        private static void HandleOpen(GameSession session, long date = 0)
-        {
-            session.Send(HomeBank.OpenBank(date));
-        }
+    private static void HandleOpen(GameSession session, long date = 0)
+    {
+        session.Send(HomeBank.OpenBank(date));
     }
 }

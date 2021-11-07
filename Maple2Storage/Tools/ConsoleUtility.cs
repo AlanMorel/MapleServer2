@@ -1,47 +1,46 @@
 ﻿using Maple2Storage.Extensions;
 
-namespace Maple2Storage.Tools
+namespace Maple2Storage.Tools;
+
+public static class ConsoleUtility
 {
-    public static class ConsoleUtility
+    private const char Block = '■';
+
+    public static void WriteProgressBar(float percent)
     {
-        private const char Block = '■';
-
-        public static void WriteProgressBar(float percent)
+        ClearCurrentConsoleLine();
+        Console.Write(" [");
+        for (int i = 0; i < 10; i++)
         {
-            ClearCurrentConsoleLine();
-            Console.Write(" [");
-            for (int i = 0; i < 10; i++)
+            if (i >= percent / 10)
             {
-                if (i >= percent / 10)
-                {
-                    Console.Write(" ");
-                }
-                else
-                {
-                    Console.Write(Block);
-                }
+                Console.Write(" ");
             }
-
-            if (percent <= 50f)
+            else
             {
-                Console.Write("]");
-                Console.Write(" {0,1:0}%\r".ColorRed(), percent);
+                Console.Write(Block);
             }
-
-            else if (percent <= 100f)
-            {
-                Console.Write("]");
-                Console.Write(" {0,1:0}%\r".ColorYellow(), percent);
-            }
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
         }
 
-        public static void ClearCurrentConsoleLine()
+        if (percent <= 50f)
         {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
+            Console.Write("]");
+            Console.Write(" {0,1:0}%\r".ColorRed(), percent);
         }
+
+        else if (percent <= 100f)
+        {
+            Console.Write("]");
+            Console.Write(" {0,1:0}%\r".ColorYellow(), percent);
+        }
+        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
+    }
+
+    public static void ClearCurrentConsoleLine()
+    {
+        int currentLineCursor = Console.CursorTop;
+        Console.SetCursorPosition(0, Console.CursorTop);
+        Console.Write(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, currentLineCursor);
     }
 }

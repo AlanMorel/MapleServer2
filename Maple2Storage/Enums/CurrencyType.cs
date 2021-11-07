@@ -1,16 +1,15 @@
-﻿namespace Maple2Storage.Enums
+﻿namespace Maple2Storage.Enums;
+
+public enum CurrencyType : byte
 {
-    public enum CurrencyType : byte
-    {
-        Meso,
-        ValorToken = 3,
-        Treva = 4,
-        Rue = 5,
-        HaviFruit = 6,
-        Meret,
-        GameMeret,
-        EventMeret,
-        MesoToken,
-        BankMesos
-    }
+    Meso,
+    ValorToken = 3,
+    Treva = 4,
+    Rue = 5,
+    HaviFruit = 6,
+    Meret,
+    GameMeret,
+    EventMeret,
+    MesoToken,
+    BankMesos
 }

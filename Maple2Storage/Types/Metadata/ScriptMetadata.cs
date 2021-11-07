@@ -1,91 +1,102 @@
 ﻿using System.Xml.Serialization;
 using Maple2Storage.Enums;
 
-namespace Maple2Storage.Types.Metadata
+namespace Maple2Storage.Types.Metadata;
+
+[XmlType]
+public class ScriptMetadata
 {
-    [XmlType]
-    public class ScriptMetadata
+    [XmlElement(Order = 1)]
+    public bool IsQuestScript;
+    [XmlElement(Order = 2)]
+    public int Id;
+    [XmlElement(Order = 3)]
+    public List<Option> Options = new();
+
+    public ScriptMetadata() { }
+
+    public override string ToString()
     {
-        [XmlElement(Order = 1)]
-        public bool IsQuestScript;
-        [XmlElement(Order = 2)]
-        public int Id;
-        [XmlElement(Order = 3)]
-        public List<Option> Options = new List<Option>();
+        return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", Options)})";
+    }
+}
+[XmlType]
+public class Option
+{
+    [XmlElement(Order = 1)]
+    public ScriptType Type;
+    [XmlElement(Order = 2)]
+    public int Id;
+    [XmlElement(Order = 3)]
+    public List<Content> Contents = new();
+    [XmlElement(Order = 4)]
+    public string ButtonSet;
+    [XmlElement(Order = 5)]
+    public int JobId;
 
-        public ScriptMetadata() { }
+    public Option() { }
 
-        public override string ToString() => $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", Options)})";
+    public Option(ScriptType type, int id, List<Content> contents, string buttonSet, int jobId)
+    {
+        Type = type;
+        Id = id;
+        Contents = contents;
+        ButtonSet = buttonSet;
+        JobId = jobId;
     }
 
-    [XmlType]
-    public class Option
+    public override string ToString()
     {
-        [XmlElement(Order = 1)]
-        public ScriptType Type;
-        [XmlElement(Order = 2)]
-        public int Id;
-        [XmlElement(Order = 3)]
-        public List<Content> Contents = new List<Content>();
-        [XmlElement(Order = 4)]
-        public string ButtonSet;
+        return $"Type: {Type}, Id: {Id}, AmountContent: {Contents.Count}, Contents: {string.Join("\n", Contents)})\r\n";
+    }
+}
+[XmlType]
+public class Content
+{
+    [XmlElement(Order = 1)]
+    public string FunctionId;
+    [XmlElement(Order = 2)]
+    public DialogType ButtonSet;
+    [XmlElement(Order = 3)]
+    public List<Distractor> Distractor;
 
-        public Option() { }
+    public Content() { }
 
-        public Option(ScriptType type, int id, List<Content> contents, string buttonSet)
-        {
-            Type = type;
-            Id = id;
-            Contents = contents;
-            ButtonSet = buttonSet;
-        }
-
-        public override string ToString() => $"Type: {Type}, Id: {Id}, AmountContent: {Contents.Count}, Contents: {string.Join("\n", Contents)})\r\n";
+    public Content(string functionId, DialogType buttonSet, List<Distractor> distractor)
+    {
+        Distractor = distractor;
+        FunctionId = functionId;
+        ButtonSet = buttonSet;
     }
 
-    [XmlType]
-    public class Content
+    public override string ToString()
     {
-        [XmlElement(Order = 1)]
-        public string FunctionId;
-        [XmlElement(Order = 2)]
-        public DialogType ButtonSet;
-        [XmlElement(Order = 3)]
-        public List<Distractor> Distractor;
-
-        public Content() { }
-
-        public Content(string functionId, DialogType buttonSet, List<Distractor> distractor)
-        {
-            Distractor = distractor;
-            FunctionId = functionId;
-            ButtonSet = buttonSet;
-        }
-
-        public override string ToString() => $"FunctionId: {FunctionId}, ButtonSet: {ButtonSet}, Distractor: ({string.Join("\r\n", Distractor)})";
+        return $"FunctionId: {FunctionId}, ButtonSet: {ButtonSet}, Distractor: ({string.Join("\r\n", Distractor)})";
     }
-    [XmlType]
-    public class Distractor
+}
+[XmlType]
+public class Distractor
+{
+    [XmlElement(Order = 1)]
+    public List<int> Goto = new();
+    [XmlElement(Order = 2)]
+    public List<int> GotoFail = new();
+
+    public Distractor() { }
+
+    public Distractor(List<int> gotos, List<int> gotoFail)
     {
-        [XmlElement(Order = 1)]
-        public List<int> Goto = new List<int>();
-        [XmlElement(Order = 2)]
-        public List<int> GotoFail = new List<int>();
-
-        public Distractor() { }
-
-        public Distractor(List<int> gotos, List<int> gotoFail)
-        {
-            Goto = gotos;
-            GotoFail = gotoFail;
-        }
-
-        public override string ToString() => $"Goto: {string.Join(", ", Goto)}, GotoFail: {string.Join(", ", GotoFail)}";
+        Goto = gotos;
+        GotoFail = gotoFail;
     }
 
-    public enum ScriptType
+    public override string ToString()
     {
-        Select = 0,
-        Script = 1
+        return $"Goto: {string.Join(", ", Goto)}, GotoFail: {string.Join(", ", GotoFail)}";
     }
+}
+public enum ScriptType
+{
+    Select = 0,
+    Script = 1
 }

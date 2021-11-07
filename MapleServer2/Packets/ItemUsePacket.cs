@@ -1,19 +1,18 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+public static class ItemUsePacket
 {
-    public static class ItemUsePacket
+    public static PacketWriter Use(int id, int amount)
     {
-        public static Packet Use(int id, int amount)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_USE);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_USE);
 
-            pWriter.WriteInt(id);
-            pWriter.WriteInt(amount);
-            pWriter.WriteShort(2); // Unknown
+        pWriter.WriteInt(id);
+        pWriter.WriteInt(amount);
+        pWriter.WriteShort(2); // Unknown
 
-            return pWriter;
-        }
+        return pWriter;
     }
 }

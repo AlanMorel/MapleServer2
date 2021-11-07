@@ -1,20 +1,22 @@
 ﻿using System.Xml.Serialization;
 
-namespace Maple2Storage.Types.Metadata
+namespace Maple2Storage.Types.Metadata;
+
+[XmlType]
+public class ColorPaletteMetadata
 {
-    [XmlType]
-    public class ColorPaletteMetadata
+    [XmlElement(Order = 1)]
+    public int PaletteId;
+    [XmlElement(Order = 2)]
+    public List<MixedColor> DefaultColors;
+
+    public ColorPaletteMetadata()
     {
-        [XmlElement(Order = 1)]
-        public int PaletteId;
-        [XmlElement(Order = 2)]
-        public List<MixedColor> DefaultColors;
+        DefaultColors = new();
+    }
 
-        public ColorPaletteMetadata()
-        {
-            DefaultColors = new List<MixedColor>();
-        }
-
-        public override string ToString() => $"ColorPaletteMetadata(PaletteId:{PaletteId},DefaultColors:{DefaultColors})";
+    public override string ToString()
+    {
+        return $"ColorPaletteMetadata(PaletteId:{PaletteId},DefaultColors:{DefaultColors})";
     }
 }

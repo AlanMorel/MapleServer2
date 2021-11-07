@@ -1,29 +1,28 @@
 ﻿using MapleServer2.Types;
 
-namespace MapleServer2.Managers
+namespace MapleServer2.Managers;
+
+public class HongBaoManager
 {
-    public class HongBaoManager
+    private readonly Dictionary<long, HongBao> HongBaoList;
+
+    public HongBaoManager()
     {
-        private readonly Dictionary<long, HongBao> HongBaoList;
+        HongBaoList = new();
+    }
 
-        public HongBaoManager()
-        {
-            HongBaoList = new Dictionary<long, HongBao>();
-        }
+    public void AddHongBao(HongBao hongBao)
+    {
+        HongBaoList.Add(hongBao.Id, hongBao);
+    }
 
-        public void AddHongBao(HongBao hongBao)
-        {
-            HongBaoList.Add(hongBao.Id, hongBao);
-        }
+    public void RemoveHongBao(HongBao hongBao)
+    {
+        HongBaoList.Remove(hongBao.Id);
+    }
 
-        public void RemoveHongBao(HongBao hongBao)
-        {
-            HongBaoList.Remove(hongBao.Id);
-        }
-
-        public HongBao GetHongBaoById(int id)
-        {
-            return HongBaoList.TryGetValue(id, out HongBao foundHongBao) ? foundHongBao : null;
-        }
+    public HongBao GetHongBaoById(int id)
+    {
+        return HongBaoList.TryGetValue(id, out HongBao foundHongBao) ? foundHongBao : null;
     }
 }

@@ -3,47 +3,46 @@ using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class NewsNotificationHandler : GamePacketHandler
 {
-    public class NewsNotificationHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.NEWS_NOTIFICATION;
+
+    public NewsNotificationHandler() : base() { }
+
+    private enum NewsNotificationMode : byte
     {
-        public override RecvOp OpCode => RecvOp.NEWS_NOTIFICATION;
+        OpenBrowser = 0x0,
+        OpenSidebar = 0x2
+    }
 
-        public NewsNotificationHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        short unk = packet.ReadShort();
+        NewsNotificationMode mode = (NewsNotificationMode) packet.ReadByte();
 
-        private enum NewsNotificationMode : byte
+        switch (mode)
         {
-            OpenBrowser = 0x0,
-            OpenSidebar = 0x2,
+            case NewsNotificationMode.OpenBrowser:
+                HandleOpenBrowser(session);
+                break;
+            case NewsNotificationMode.OpenSidebar:
+                HandleOpenSidebar(session);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
+    }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            short unk = packet.ReadShort();
-            NewsNotificationMode mode = (NewsNotificationMode) packet.ReadByte();
+    private static void HandleOpenBrowser(GameSession session)
+    {
+        session.Send(NewsNotificationPacket.OpenBrowser());
+    }
 
-            switch (mode)
-            {
-                case NewsNotificationMode.OpenBrowser:
-                    HandleOpenBrowser(session);
-                    break;
-                case NewsNotificationMode.OpenSidebar:
-                    HandleOpenSidebar(session);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
-        }
-
-        private static void HandleOpenBrowser(GameSession session)
-        {
-            session.Send(NewsNotificationPacket.OpenBrowser());
-        }
-
-        private static void HandleOpenSidebar(GameSession session)
-        {
-            session.Send(NewsNotificationPacket.OpenSidebar());
-        }
+    private static void HandleOpenSidebar(GameSession session)
+    {
+        session.Send(NewsNotificationPacket.OpenSidebar());
     }
 }

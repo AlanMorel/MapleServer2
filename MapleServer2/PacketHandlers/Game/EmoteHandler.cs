@@ -2,69 +2,67 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class EmoteHandler : GamePacketHandler
 {
-    public class EmoteHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.EMOTION;
+
+    public EmoteHandler() : base() { }
+
+    private enum EmoteMode : byte
     {
-        public override RecvOp OpCode => RecvOp.EMOTION;
+        LearnEmote = 0x1,
+        UseEmote = 0x2
+    }
 
-        public EmoteHandler() : base() { }
+    public override void Handle(GameSession session, PacketReader packet)
+    {
+        EmoteMode mode = (EmoteMode) packet.ReadByte();
 
-        private enum EmoteMode : byte
+        switch (mode)
         {
-            LearnEmote = 0x1,
-            UseEmote = 0x2,
+            case EmoteMode.LearnEmote:
+                HandleLearnEmote(session, packet);
+                break;
+            case EmoteMode.UseEmote:
+                HandleUseEmote(packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
+    }
+
+    private static void HandleLearnEmote(GameSession session, PacketReader packet)
+    {
+        long itemUid = packet.ReadLong();
+
+        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        {
+            return;
         }
 
-        public override void Handle(GameSession session, PacketReader packet)
-        {
-            EmoteMode mode = (EmoteMode) packet.ReadByte();
+        Item item = session.Player.Inventory.Items[itemUid];
 
-            switch (mode)
-            {
-                case EmoteMode.LearnEmote:
-                    HandleLearnEmote(session, packet);
-                    break;
-                case EmoteMode.UseEmote:
-                    HandleUseEmote(packet);
-                    break;
-                default:
-                    IPacketHandler<GameSession>.LogUnknownMode(mode);
-                    break;
-            }
+        if (session.Player.Emotes.Contains(item.SkillId))
+        {
+            return;
         }
 
-        private static void HandleLearnEmote(GameSession session, PacketReader packet)
-        {
-            long itemUid = packet.ReadLong();
+        session.Player.Emotes.Add(item.SkillId);
 
-            if (!session.Player.Inventory.Items.ContainsKey(itemUid))
-            {
-                return;
-            }
+        session.Send(EmotePacket.LearnEmote(item.SkillId));
 
-            Item item = session.Player.Inventory.Items[itemUid];
+        session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
+    }
 
-            if (session.Player.Emotes.Contains(item.SkillId))
-            {
-                return;
-            }
-
-            session.Player.Emotes.Add(item.SkillId);
-
-            session.Send(EmotePacket.LearnEmote(item.SkillId));
-
-            InventoryController.Consume(session, item.Uid, 1);
-        }
-
-        private static void HandleUseEmote(PacketReader packet)
-        {
-            int emoteId = packet.ReadInt();
-            string animationName = packet.ReadUnicodeString();
-            // animationName is the name in /Xml/anikeytext.xml
-        }
+    private static void HandleUseEmote(PacketReader packet)
+    {
+        int emoteId = packet.ReadInt();
+        string animationName = packet.ReadUnicodeString();
+        // animationName is the name in /Xml/anikeytext.xml
     }
 }

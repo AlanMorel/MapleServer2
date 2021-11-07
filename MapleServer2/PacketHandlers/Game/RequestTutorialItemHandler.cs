@@ -3,41 +3,39 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class RequestTutorialItemHandler : GamePacketHandler
 {
-    public class RequestTutorialItemHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
+
+    public RequestTutorialItemHandler() : base() { }
+
+    public override void Handle(GameSession session, PacketReader packet)
     {
-        public override RecvOp OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
+        List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
 
-        public RequestTutorialItemHandler() : base() { }
-
-        public override void Handle(GameSession session, PacketReader packet)
+        foreach (TutorialItemMetadata tutorialItem in metadata)
         {
-            List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
+            int tutorialItemsCount = session.Player.Inventory.Items.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
+            tutorialItemsCount += session.Player.Inventory.Cosmetics.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
+            tutorialItemsCount += session.Player.Inventory.Equips.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
 
-            foreach (TutorialItemMetadata tutorialItem in metadata)
+            if (tutorialItemsCount >= tutorialItem.Amount)
             {
-                int tutorialItemsCount = session.Player.Inventory.Items.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
-                tutorialItemsCount += session.Player.Inventory.Cosmetics.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
-                tutorialItemsCount += session.Player.Inventory.Equips.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
-
-                if (tutorialItemsCount >= tutorialItem.Amount)
-                {
-                    continue;
-                }
-
-                int amountRemaining = tutorialItem.Amount - tutorialItemsCount;
-
-                Item item = new Item(tutorialItem.ItemId)
-                {
-                    Rarity = tutorialItem.Rarity,
-                    Amount = amountRemaining,
-                };
-                InventoryController.Add(session, item, true);
+                continue;
             }
+
+            int amountRemaining = tutorialItem.Amount - tutorialItemsCount;
+
+            Item item = new(tutorialItem.ItemId)
+            {
+                Rarity = tutorialItem.Rarity,
+                Amount = amountRemaining
+            };
+            session.Player.Inventory.AddItem(session, item, true);
         }
     }
 }

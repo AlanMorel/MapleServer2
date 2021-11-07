@@ -1,35 +1,34 @@
 ﻿using MapleServer2.Database;
 
-namespace MapleServer2.Types
+namespace MapleServer2.Types;
+
+public class HomeLayout
 {
-    public class HomeLayout
+    public readonly long Uid;
+    public long HomeId;
+    public int Id;
+    public string Name;
+    public byte Size;
+    public byte Height;
+    public long Timestamp;
+    public List<Cube> Cubes;
+
+    public HomeLayout() { }
+
+    public HomeLayout(long homeId, int layoutId, string layoutName, byte size, byte height, long timestamp, List<Cube> cubes)
     {
-        public readonly long Uid;
-        public long HomeId;
-        public int Id;
-        public string Name;
-        public byte Size;
-        public byte Height;
-        public long Timestamp;
-        public List<Cube> Cubes;
+        HomeId = homeId;
+        Id = layoutId;
+        Name = layoutName;
+        Size = size;
+        Height = height;
+        Timestamp = timestamp;
+        Cubes = cubes;
+        Uid = DatabaseManager.HomeLayouts.Insert(this);
 
-        public HomeLayout() { }
-
-        public HomeLayout(long homeId, int layoutId, string layoutName, byte size, byte height, long timestamp, List<Cube> cubes)
+        foreach (Cube cube in cubes)
         {
-            HomeId = homeId;
-            Id = layoutId;
-            Name = layoutName;
-            Size = size;
-            Height = height;
-            Timestamp = timestamp;
-            Cubes = cubes;
-            Uid = DatabaseManager.HomeLayouts.Insert(this);
-
-            foreach (Cube cube in cubes)
-            {
-                _ = new Cube(cube.Item, cube.PlotNumber, cube.CoordF, cube.Rotation, Uid);
-            }
+            _ = new Cube(cube.Item, cube.PlotNumber, cube.CoordF, cube.Rotation, Uid);
         }
     }
 }

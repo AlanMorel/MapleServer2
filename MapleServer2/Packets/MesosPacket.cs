@@ -1,18 +1,17 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+internal class MesosPacket
 {
-    internal class MesosPacket
+    public static PacketWriter UpdateMesos(long mesoAmount)
     {
-        public static Packet UpdateMesos(long mesoAmount)
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MONEY);
 
-            pWriter.WriteLong(mesoAmount); // Total amount of mesos
-            pWriter.WriteInt(); // unknown int
+        pWriter.WriteLong(mesoAmount); // Total amount of mesos
+        pWriter.WriteInt(); // unknown int
 
-            return pWriter;
-        }
+        return pWriter;
     }
 }
