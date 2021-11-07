@@ -88,9 +88,7 @@ public class MailHelper
             addParameter2 = $"<ms2><v item=\"{item.Id}\" ></v><v str=\"{item.Amount}\" ></v><v money=\"{price * item.Amount}\" ></v><v money=\"{price}\" ></v><v money=\"{tax}\" ></v><v str=\"{salesFeeRate * 100}%\" ></v><v money=\"{listing.Deposit}\" ></v><v money=\"{revenue}\" ></v></ms2>";
         }
 
-        Mail mail = new(MailType.BlackMarketSale, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
-        {
-        }, revenue, 0);
+        Mail mail = new(MailType.BlackMarketSale, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new(), revenue, 0);
         GameServer.MailManager.AddMail(mail);
         SendNotification(mail);
     }

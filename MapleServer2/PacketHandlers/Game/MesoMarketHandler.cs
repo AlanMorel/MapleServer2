@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class MesoMarketHandler : GamePacketHandler
+public class MesoMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MESO_MARKET;
 
@@ -96,7 +96,7 @@ internal class MesoMarketHandler : GamePacketHandler
 
         MesoMarketListing listing = new MesoMarketListing(session.Player, price, mesos);
 
-        session.Player.Account.MesoMarketDailyListings += 1;
+        session.Player.Account.MesoMarketDailyListings++;
         DatabaseManager.Accounts.Update(session.Player.Account);
         session.Send(MesoMarketPacket.CreateListing(listing));
         session.Send(MesoMarketPacket.AccountStats(session.Player.Account.MesoMarketDailyListings, session.Player.Account.MesoMarketMonthlyPurchases));
@@ -107,7 +107,7 @@ internal class MesoMarketHandler : GamePacketHandler
         long listingId = packet.ReadLong();
 
         MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
-        if (listing == null)
+        if (listing is null)
         {
             session.Send(MesoMarketPacket.Error((int) MesoMarketError.TryAgain));
             return;
@@ -139,7 +139,7 @@ internal class MesoMarketHandler : GamePacketHandler
         }
 
         MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
-        if (listing == null)
+        if (listing is null)
         {
             session.Send(MesoMarketPacket.Error((int) MesoMarketError.ItemSoldOut));
             return;
@@ -157,7 +157,7 @@ internal class MesoMarketHandler : GamePacketHandler
             return;
         }
 
-        session.Player.Account.MesoMarketMonthlyPurchases += 1;
+        session.Player.Account.MesoMarketMonthlyPurchases++;
         DatabaseManager.Accounts.Update(session.Player.Account);
         session.Send(MesoMarketPacket.Purchase(listingId));
         session.Send(MesoMarketPacket.AccountStats(session.Player.Account.MesoMarketDailyListings, session.Player.Account.MesoMarketMonthlyPurchases));

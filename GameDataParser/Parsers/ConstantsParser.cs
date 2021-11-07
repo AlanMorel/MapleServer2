@@ -14,7 +14,7 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
         List<ConstantsMetadata> constants = new List<ConstantsMetadata>();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-            if (!entry.Name.StartsWith("table/constants"))
+            if (!entry.Name.StartsWith("table/constants.xml"))
             {
                 continue;
             }
@@ -28,15 +28,12 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
                     continue;
                 }
 
-                ConstantsMetadata metadata = new ConstantsMetadata();
-
-                if (node.Name == "v")
+                if (node.Name != "v")
                 {
-                    metadata.Key = node.Attributes["key"].Value;
-                    metadata.Value = node.Attributes["value"].Value;
+                    continue;
                 }
 
-                constants.Add(metadata);
+                constants.Add(new(node.Attributes["key"].Value, node.Attributes["value"].Value));
             }
         }
         return constants;
