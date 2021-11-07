@@ -361,7 +361,7 @@ public static class GuildPacket
         pWriter.WriteLong(TimeInfo.Now());
         return pWriter;
     }
-    
+
     public static PacketWriter AssignNewLeader(Player newLeader, Player oldLeader)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
