@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using MapleServer2.Data.Static;
+using MapleServer2.Database;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
@@ -19,7 +20,8 @@ public class BlackMarketListing
     public BlackMarketListing(Player player, Item item, int listedQuantity, long price, long deposit)
     {
         ListedTimestamp = TimeInfo.Now();
-        ExpiryTimestamp = ListedTimestamp + 172800; // 2 days TODO: Change to value from constant.xml
+        int sellEndTime = int.Parse(ConstantsMetadataStorage.GetConstant("BlackMarketSellEndDay")) * 86400;
+        ExpiryTimestamp = ListedTimestamp + sellEndTime;
         Price = price;
         Deposit = deposit;
         Item = item;

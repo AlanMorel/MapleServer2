@@ -5,5 +5,6 @@ public enum MailType : byte
     Player = 1,
     System = 101,
     BlackMarketSale = 102,
-    BlackMarketListingCancel = 104
+    BlackMarketListingCancel = 104,
+    MesoMarket = 106
 }

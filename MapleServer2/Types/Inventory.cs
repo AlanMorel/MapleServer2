@@ -383,7 +383,7 @@ public class Inventory
 
     public void ExpandInventory(GameSession session, InventoryTab tab)
     {
-        long meretPrice = 390;
+        long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row"));
         short expansionAmount = 6;
 
         if (session.Player.Account.RemoveMerets(meretPrice))

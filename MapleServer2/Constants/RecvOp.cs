@@ -144,6 +144,7 @@ public enum RecvOp : ushort
     CONSTRUCT_RECIPE = 0x0093,
     CONSTRUCT_SHOP = 0x0094,
     CLUB = 0x0096,
+    MERET_PURCHASE = 0x0097,
     STAT_POINT = 0x009A,
     ITEM_REPEAT = 0x009B,
     ITEM_EXCHANGE = 0x009C,

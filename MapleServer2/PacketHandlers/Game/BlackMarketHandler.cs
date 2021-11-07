@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
@@ -180,11 +181,32 @@ public class BlackMarketHandler : GamePacketHandler
         long sort = packet.ReadLong();
         packet.ReadShort();
         bool additionalOptionsEnabled = packet.ReadBool();
-        // TODO: Figure out how additional options are read
+
+        List<ItemStat> stats = new List<ItemStat>();
+        if (additionalOptionsEnabled)
+        {
+            packet.ReadByte(); // always 1
+            for (int i = 0; i < 3; i++)
+            {
+                int statId = packet.ReadInt();
+                int value = packet.ReadInt();
+                if (value == 0)
+                {
+                    continue;
+                }
+
+                ItemStat stat = ReadStat(statId, value);
+                if (stat == null)
+                {
+                    continue;
+                }
+                stats.Add(stat);
+            }
+        }
 
         List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
         List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
-                                                                                                   minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort);
+            minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort, additionalOptionsEnabled, stats);
 
         session.Send(BlackMarketPacket.SearchResults(searchResults));
     }
@@ -239,5 +261,27 @@ public class BlackMarketHandler : GamePacketHandler
 
         MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
         session.Send(BlackMarketPacket.Purchase(listingId, amount));
+    }
+
+    private static ItemStat ReadStat(int statId, int value)
+    {
+        // Normal Stat with percent value
+        if (statId >= 1000 && statId < 11000)
+        {
+            float percent = (float) (value + 5) / 10000;
+            ItemAttribute attribute = (ItemAttribute) statId - 1000;
+            return new NormalStat(attribute, 0, percent);
+        }
+
+        // Special Stat with percent value
+        if (statId >= 11000)
+        {
+            float percent = (float) (value + 5) / 10000;
+            SpecialItemAttribute attribute = (SpecialItemAttribute) statId - 11000;
+            return new SpecialStat(attribute, 0, percent);
+        }
+
+        // Normal Stat with flat value
+        return new NormalStat((ItemAttribute) statId, value, 0);
     }
 }
