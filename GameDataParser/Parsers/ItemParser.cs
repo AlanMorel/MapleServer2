@@ -55,7 +55,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
         Dictionary<int, string> names = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-            if (!entry.Name.StartsWith("string/en/itemname"))
+            if (!entry.Name.StartsWith("string/en/itemname.xml"))
             {
                 continue;
             }

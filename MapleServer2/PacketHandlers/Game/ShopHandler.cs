@@ -50,7 +50,7 @@ public class ShopHandler : GamePacketHandler
 
     public static void HandleOpen(GameSession session, IFieldObject<Npc> npcFieldObject)
     {
-        NpcMetadata metadata = NpcMetadataStorage.GetNpc(npcFieldObject.Value.Id);
+        NpcMetadata metadata = NpcMetadataStorage.GetNpcMetadata(npcFieldObject.Value.Id);
 
         Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
         if (shop == null)

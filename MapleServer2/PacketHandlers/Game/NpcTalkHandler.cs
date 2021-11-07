@@ -97,7 +97,7 @@ public class NpcTalkHandler : GamePacketHandler
         }
         else if (npc.Value.IsBeauty())
         {
-            NpcMetadata npcTarget = NpcMetadataStorage.GetNpc(npcTalk.Npc.Id);
+            NpcMetadata npcTarget = NpcMetadataStorage.GetNpcMetadata(npcTalk.Npc.Id);
             if (npcTarget.ShopId == 507) // mirror
             {
                 session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 0));
@@ -243,7 +243,7 @@ public class NpcTalkHandler : GamePacketHandler
     {
         MapPortal portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
         session.Send(NpcTalkPacket.Action(ActionType.Portal, "", "", portal.Id));
-        NpcMetadata npcTarget = NpcMetadataStorage.GetNpc(session.Player.NpcTalk.Npc.Id);
+        NpcMetadata npcTarget = NpcMetadataStorage.GetNpcMetadata(session.Player.NpcTalk.Npc.Id);
         session.Player.ShopId = npcTarget.ShopId;
 
         switch (npcTarget.ShopId)
