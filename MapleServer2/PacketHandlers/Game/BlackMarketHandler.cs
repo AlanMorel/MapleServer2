@@ -230,51 +230,38 @@ public class BlackMarketHandler : GamePacketHandler
 
         if (listing.Item.Amount < amount)
         {
-            int minCategoryId = packet.ReadInt();
-            int maxCategoryId = packet.ReadInt();
-            int minLevel = packet.ReadInt();
-            int maxLevel = packet.ReadInt();
-            JobFlag job = (JobFlag) packet.ReadInt();
-            int rarity = packet.ReadInt();
-            int minEnchantLevel = packet.ReadInt();
-            int maxEnchantLevel = packet.ReadInt();
-            byte minSockets = packet.ReadByte();
-            byte maxSockets = packet.ReadByte();
-            string name = packet.ReadUnicodeString();
-            int startPage = packet.ReadInt();
-            long sort = packet.ReadLong();
-            packet.ReadShort();
-            bool additionalOptionsEnabled = packet.ReadBool();
-
-
-            List<ItemStat> stats = new List<ItemStat>();
-            if (additionalOptionsEnabled)
-            {
-                packet.ReadByte(); // always 1
-                for (int i = 0; i < 3; i++)
-                {
-                    int statId = packet.ReadInt();
-                    int value = packet.ReadInt();
-                    if (value == 0)
-                    {
-                        continue;
-                    }
-
-                    ItemStat stat = ReadStat(statId, value);
-                    if (stat == null)
-                    {
-                        continue;
-                    }
-                    stats.Add(stat);
-                }
-            }
-
-            List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
-            List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
-                minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort, additionalOptionsEnabled, stats);
-
-            session.Send(BlackMarketPacket.SearchResults(searchResults));
+            session.Send(BlackMarketPacket.Error((int) BlackMarketError.QuantityNotAvailable));
+            return;
         }
+
+        if (!session.Player.Wallet.Meso.Modify(-listing.Price * amount))
+        {
+            return;
+        }
+
+        Item purchasedItem;
+        bool removeListing = false;
+        if (listing.Item.Amount == amount)
+        {
+            purchasedItem = listing.Item;
+            GameServer.BlackMarketManager.RemoveListing(listing);
+            DatabaseManager.BlackMarketListings.Delete(listing.Id);
+            removeListing = true;
+        }
+        else
+        {
+            listing.Item.Amount -= amount;
+            Item newItem = new(listing.Item)
+            {
+                Amount = amount
+            };
+            DatabaseManager.Items.Insert(newItem);
+            purchasedItem = newItem;
+        }
+
+        MailHelper.BlackMarketTransaction(purchasedItem, listing, session.Player.CharacterId, listing.Price, removeListing);
+        session.Send(BlackMarketPacket.Purchase(listingId, amount));
+    }
     }
 
     private static ItemStat ReadStat(int statId, int value)

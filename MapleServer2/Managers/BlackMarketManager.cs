@@ -85,7 +85,7 @@ public class BlackMarketManager
                         JobFlag.Runeblade => Job.Runeblade,
                         JobFlag.Striker => Job.Striker,
                         JobFlag.SoulBinder => Job.SoulBinder,
-                        _ => Job.None,
+                        _ => Job.None
                     };
                     if (!item.RecommendJobs.Contains(job))
                     {
