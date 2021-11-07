@@ -18,7 +18,7 @@ public class BlackMarketListing
 
     public BlackMarketListing(Player player, Item item, int listedQuantity, long price, long deposit)
     {
-        ListedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        ListedTimestamp = TimeInfo.Now();
         ExpiryTimestamp = ListedTimestamp + 172800; // 2 days TODO: Change to value from constant.xml
         Price = price;
         Deposit = deposit;

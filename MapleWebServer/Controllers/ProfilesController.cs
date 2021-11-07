@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Maple2Storage.Types;
+using MapleServer2.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MapleWebServer.Controllers;
@@ -54,7 +55,7 @@ public class ProfilesController : ControllerBase
         byte[] fileBytes = array.Skip(48).ToArray();
 
         // Adding timestamp to the file name to prevent caching, client doesn't refresh the image if the url is already cached
-        string fileHash = CreateMD5(Encoding.UTF8.GetString(fileBytes) + DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+        string fileHash = CreateMD5(Encoding.UTF8.GetString(fileBytes) + TimeInfo.Now());
 
         // Deleting old files in the character folder
         DirectoryInfo di = new(filePath);

@@ -73,7 +73,7 @@ public class FunctionCubePacket
         packetWriter.Write(FunctionCubeMode.SuccessLifeSkill);
         packetWriter.WriteLong(characterId);
         packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
-        packetWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds());
+        packetWriter.WriteLong(TimeInfo.Now());
         packetWriter.WriteInt(status);
 
         return packetWriter;
@@ -86,7 +86,7 @@ public class FunctionCubePacket
         packetWriter.Write(FunctionCubeMode.FailLifeSkill);
         packetWriter.WriteLong(characterId);
         packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
-        packetWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds());
+        packetWriter.WriteLong(TimeInfo.Now());
 
         return packetWriter;
     }

@@ -110,7 +110,7 @@ public class Trophy
             LastReward++;
         }
         NextGrade++;
-        Timestamps.Add(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        Timestamps.Add(TimeInfo.Now());
 
         // level up but not completed
         if (NextGrade <= MaxGrade)

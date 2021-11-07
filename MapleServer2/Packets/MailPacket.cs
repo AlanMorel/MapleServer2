@@ -57,7 +57,7 @@ public static class MailPacket
         pWriter.WriteLong(mail.Id);
         pWriter.WriteByte(1);
         pWriter.WriteByte();
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         return pWriter;
     }
 

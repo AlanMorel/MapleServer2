@@ -13,10 +13,10 @@ public class GuildMember
     public byte DailyDonationCount { get; set; }
     public long AttendanceTimestamp { get; set; }
     public long JoinTimestamp { get; set; }
-    public long LastLogonTimestamp { get; set; }
+    public long LastLoginTimestamp { get; set; }
     public long GuildId;
 
-    public GuildMember(long id, byte rank, int dailyContribution, int contributionTotal, byte dailyDonationCount, long attendanceTimestamp, long joinTimestamp, long lastLogonTimestamp, long guildId, string motto, Player player)
+    public GuildMember(long id, byte rank, int dailyContribution, int contributionTotal, byte dailyDonationCount, long attendanceTimestamp, long joinTimestamp, long lastLoginTimestamp, long guildId, string motto, Player player)
     {
         Id = id;
         Motto = motto;
@@ -26,7 +26,7 @@ public class GuildMember
         DailyDonationCount = dailyDonationCount;
         AttendanceTimestamp = attendanceTimestamp;
         JoinTimestamp = joinTimestamp;
-        LastLogonTimestamp = lastLogonTimestamp;
+        LastLoginTimestamp = lastLoginTimestamp;
         GuildId = guildId;
         Player = player;
     }
@@ -38,7 +38,7 @@ public class GuildMember
         Rank = rank;
         Motto = "";
         JoinTimestamp = TimeInfo.Now() + Environment.TickCount;
-        LastLogonTimestamp = TimeInfo.Now();
+        LastLoginTimestamp = player.LastLoginTime;
         GuildId = guildId;
         DatabaseManager.GuildMembers.Insert(this);
     }

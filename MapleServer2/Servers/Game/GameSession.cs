@@ -81,10 +81,9 @@ public class GameSession : Session
 
         GameServer.BuddyManager.SetFriendSessions(Player);
 
-        if (Player.Party != null)
-        {
-            Player.Party.CheckOffineParty(Player);
-        }
+        Player.Party?.CheckOffineParty(Player);
+
+        Player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedOff(Player));
 
         Player.UpdateBuddies();
     }

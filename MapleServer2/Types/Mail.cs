@@ -32,7 +32,7 @@ public class Mail
         SenderName = senderName;
         Title = title;
         Body = body;
-        SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        SentTimestamp = TimeInfo.Now();
         ExpiryTimestamp = SentTimestamp + 2592000; // 30 days TODO: Change to grab from Constant.xml
         Items = items;
         Mesos = mesos;
@@ -67,7 +67,7 @@ public class Mail
 
     public void Read(GameSession session)
     {
-        ReadTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        ReadTimestamp = TimeInfo.Now();
         DatabaseManager.Mails.Update(this);
         session.Send(MailPacket.Read(this));
     }

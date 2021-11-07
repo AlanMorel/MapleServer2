@@ -38,7 +38,7 @@ public class Buddy
         IsPending = pending;
         IsFriendRequest = accepted;
         Blocked = blocked;
-        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        Timestamp = TimeInfo.Now() + Environment.TickCount;
 
         if (blocked == true)
         {

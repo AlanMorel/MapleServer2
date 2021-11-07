@@ -53,7 +53,7 @@ public class LockInventory
             if (inventory.ContainsKey(uid))
             {
                 inventory[uid].IsLocked = mode == 0;
-                inventory[uid].UnlockTime = mode == 1 ? DateTimeOffset.UtcNow.AddDays(3).ToUnixTimeSeconds() : 0;
+                inventory[uid].UnlockTime = mode == 1 ? TimeInfo.AddDays(3) : 0;
                 changedItems.Add(inventory[uid]);
             }
         }

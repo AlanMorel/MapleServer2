@@ -27,7 +27,7 @@ public class HomeCommandPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.HOME_COMMAND);
         pWriter.Write(HomeCommandMode.UpdateArchitectScore);
         pWriter.WriteInt(ownerObjectId);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteInt(architectScoreCurrent);
         pWriter.WriteInt(architectScoreTotal);
 

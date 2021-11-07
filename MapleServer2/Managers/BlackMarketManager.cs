@@ -51,7 +51,7 @@ public class BlackMarketManager
         {
             Item item = listing.Item;
 
-            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() > listing.ExpiryTimestamp ||
+            if (TimeInfo.Now() > listing.ExpiryTimestamp ||
                 !itemCategories.Contains(item.BlackMarketCategory) ||
                 item.Level < minLevel ||
                 item.Level > maxLevel ||

@@ -107,7 +107,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
 
         if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
         {
@@ -362,7 +362,7 @@ public class RequestItemUseHandler : GamePacketHandler
         Item badge = new(70100000)
         {
             PetSkinBadgeId = pet.Id,
-            CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            CreationTime = TimeInfo.Now() + Environment.TickCount
         };
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);

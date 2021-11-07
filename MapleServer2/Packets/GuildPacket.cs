@@ -26,6 +26,8 @@ public static class GuildPacket
         KickMember = 0x14,
         RankChangeNotice = 0x15,
         UpdatePlayerMessage = 0x16,
+        MemberLoggedIn = 0x17,
+        MemberLoggedOff = 0x18,
         AssignNewLeader = 0x19,
         GuildNoticeChange = 0x1A,
         UpdateRankNotice = 0x1D,
@@ -108,7 +110,7 @@ public static class GuildPacket
             WriteGuildMember(pWriter, member.Player);
             pWriter.WriteUnicodeString(member.Motto);
             pWriter.WriteLong(member.JoinTimestamp);
-            pWriter.WriteLong(member.LastLogonTimestamp); // last seen timestamp
+            pWriter.WriteLong(member.LastLoginTimestamp); // last seen timestamp
             pWriter.WriteLong(member.AttendanceTimestamp);
             pWriter.WriteInt();
             pWriter.WriteInt();
@@ -117,7 +119,8 @@ public static class GuildPacket
             pWriter.WriteInt(member.DailyDonationCount);
             pWriter.WriteLong();
             pWriter.WriteInt();
-            pWriter.WriteByte((byte) (member.Player.Session.Connected() ? 01 : 00)); // 00 = online, 01 = offline
+
+            pWriter.WriteBool(member.Player.Session is null || !member.Player.Session.Connected()); // 00 = online, 01 = offline
         }
 
         pWriter.WriteByte((byte) guild.Ranks.Length);
@@ -138,16 +141,16 @@ public static class GuildPacket
 
         pWriter.WriteByte(0x4); // another loop. unk
         pWriter.WriteInt(1);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         pWriter.WriteInt(2);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         pWriter.WriteInt(3);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         pWriter.WriteInt(4);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         pWriter.WriteInt(guild.HouseRank);
         pWriter.WriteInt(guild.HouseTheme);
-        pWriter.WriteInt(0); // for guild posters
+        pWriter.WriteInt(); // for guild posters
 
         pWriter.WriteByte((byte) guild.Services.Count);
         foreach (GuildService service in guild.Services)
@@ -170,8 +173,8 @@ public static class GuildPacket
             pWriter.WriteByte();
         }
 
-        pWriter.WriteInt(0);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteInt();
+        pWriter.WriteUnicodeString();
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteInt();
@@ -188,7 +191,7 @@ public static class GuildPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
         pWriter.Write(GuildPacketMode.Create);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteUnicodeString(guildName);
         return pWriter;
     }
@@ -342,6 +345,24 @@ public static class GuildPacket
         return pWriter;
     }
 
+    public static PacketWriter MemberLoggedIn(Player player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+        pWriter.Write(GuildPacketMode.MemberLoggedIn);
+        pWriter.WriteUnicodeString(player.Name);
+        return pWriter;
+    }
+    
+    public static PacketWriter MemberLoggedOff(Player player)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
+        pWriter.Write(GuildPacketMode.MemberLoggedOff);
+        pWriter.WriteUnicodeString(player.Name);
+        pWriter.WriteLong(TimeInfo.Now());
+        return pWriter;
+    }
+
+
     public static PacketWriter AssignNewLeader(Player newLeader, Player oldLeader)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
@@ -452,7 +473,7 @@ public static class GuildPacket
         {
             pWriter.WriteInt(trophyCategory);
         }
-        pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount);
+        pWriter.WriteLong(TimeInfo.Now() + Environment.TickCount);
         return pWriter;
     }
     public static PacketWriter WithdrawApplicationGuildUpdate(long applicationId)
@@ -766,7 +787,7 @@ public static class GuildPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
         pWriter.Write(GuildPacketMode.UpdatePlayerDonation);
         pWriter.WriteInt(0x3); // total amount of donations today
-        pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount);
+        pWriter.WriteLong(TimeInfo.Now() + Environment.TickCount);
         return pWriter;
     }
 

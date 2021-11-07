@@ -61,9 +61,12 @@ public class ResponseKeyHandler : CommonPacketHandler
         {
             Guild guild = GameServer.GuildManager.GetGuildById(player.GuildId);
             player.Guild = guild;
-            player.GuildMember = guild.Members.First(x => x.Id == player.CharacterId);
+            GuildMember guildMember = guild.Members.First(x => x.Id == player.CharacterId);
+            guildMember.Player.Session = session;
+            player.GuildMember = guildMember;
             session.Send(GuildPacket.UpdateGuild(guild));
-            session.Send(GuildPacket.MemberJoin(player));
+            guild.BroadcastPacketGuild(GuildPacket.MemberJoin(player));
+            guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
         }
 
         //session.Send(0x27, 0x01); // Meret market related...?

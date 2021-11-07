@@ -64,7 +64,7 @@ public class GuildFundCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(trigger.Session.Player.Guild.Id);
+       Guild guild = GameServer.GuildManager.GetGuildById(trigger.Session.Player.Guild.Id);
 
         if (guild == null)
         {

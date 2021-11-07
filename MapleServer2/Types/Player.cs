@@ -24,7 +24,7 @@ public class Player
     public long AccountId { get; set; }
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
-    public long LastLogonTime { get; set; }
+    public long LastLoginTime { get; set; }
     private long OnlineTime { get; set; }
     public bool IsDeleted;
 
@@ -184,7 +184,7 @@ public class Player
         Motto = "Motto";
         ProfileUrl = "";
         CreationTime = TimeInfo.Now();
-        LastLogonTime = TimeInfo.Now();
+        LastLoginTime = TimeInfo.Now();
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
@@ -275,7 +275,7 @@ public class Player
         Session.Send(MigrationPacket.GameToGame(endpoint, authTokens, this));
     }
 
-    public void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
+    private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
     {
         if (coord is not null && rotation is not null)
         {
@@ -439,7 +439,7 @@ public class Player
         }
     }
 
-    public void ConsumeHp(int amount)
+    private void ConsumeHp(int amount)
     {
         if (amount <= 0)
         {
@@ -476,7 +476,7 @@ public class Player
         }
     }
 
-    public void ConsumeSp(int amount)
+    private void ConsumeSp(int amount)
     {
         if (amount <= 0)
         {
@@ -513,7 +513,7 @@ public class Player
         }
     }
 
-    public void ConsumeStamina(int amount)
+    private void ConsumeStamina(int amount)
     {
         if (amount <= 0)
         {
@@ -568,13 +568,13 @@ public class Player
         return new(stat.Max, stat.Min, postRegen);
     }
 
-    public void IncrementGatheringCount(int recipeID, int amount)
+    public void IncrementGatheringCount(int recipeId, int amount)
     {
-        GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeID);
+        GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
         if (gatheringCount is null)
         {
-            int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount * 1.4);
-            gatheringCount = new(recipeID, 0, maxLimit);
+            int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeId).NormalPropLimitCount * 1.4);
+            gatheringCount = new(recipeId, 0, maxLimit);
             GatheringCount.Add(gatheringCount);
         }
 
@@ -604,7 +604,7 @@ public class Player
         {
             await Task.Delay(60000);
             OnlineTime += 1;
-            LastLogonTime = TimeInfo.Now();
+            LastLoginTime = TimeInfo.Now();
             TrophyUpdate(23100001, 1);
         });
     }
@@ -617,7 +617,7 @@ public class Player
 
     public void GetUnreadMailCount()
     {
-        int unreadCount = Mailbox.Where(x => x.ReadTimestamp == 0).Count();
+        int unreadCount = Mailbox.Count(x => x.ReadTimestamp == 0);
         Session.Send(MailPacket.Notify(unreadCount, true));
     }
 

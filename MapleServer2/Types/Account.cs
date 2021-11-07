@@ -82,6 +82,6 @@ public class Account
 
     public bool IsVip()
     {
-        return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        return VIPExpiration > TimeInfo.Now();
     }
 }
