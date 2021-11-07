@@ -2,63 +2,62 @@
 using Maple2Storage.Types;
 using ProtoBuf;
 
-namespace GameDataParser.Files
+namespace GameDataParser.Files;
+
+public abstract class MetadataExporter
 {
-    public abstract class MetadataExporter
+    protected string Filename;
+
+    public MetadataExporter(string slug)
     {
-        protected string Filename;
+        Filename = $"ms2-{slug}-metadata";
+    }
 
-        public MetadataExporter(string slug)
+    public void Export()
+    {
+        if (CheckHash())
         {
-            Filename = $"ms2-{slug}-metadata";
+            Console.WriteLine($"\rSkipping {Filename}");
+            return;
         }
 
-        public void Export()
+        Serialize();
+        WriteHash();
+
+        Console.WriteLine($"\rSuccessfully exported {Filename}");
+    }
+
+    private bool CheckHash()
+    {
+        return Hash.HasValidHash(Filename);
+    }
+
+    private void WriteHash()
+    {
+        Hash.WriteHash(Filename);
+    }
+
+    public void Write<Entities>(Entities entities)
+    {
+        using (FileStream writeStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}"))
         {
-            if (CheckHash())
-            {
-                Console.WriteLine($"\rSkipping {Filename}");
-                return;
-            }
-
-            Serialize();
-            WriteHash();
-
-            Console.WriteLine($"\rSuccessfully exported {Filename}");
+            Serializer.Serialize(writeStream, entities);
         }
-
-        private bool CheckHash()
-        {
-            return Hash.HasValidHash(Filename);
-        }
-
-        private void WriteHash()
-        {
-            Hash.WriteHash(Filename);
-        }
-
-        public void Write<Entities>(Entities entities)
-        {
-            using (FileStream writeStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}"))
-            {
-                Serializer.Serialize(writeStream, entities);
-            }
 
 #if DEBUG
-            using (FileStream debugWriteStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}.xml"))
+        using (FileStream debugWriteStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}.xml"))
+        {
+            try
             {
-                try
-                {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Entities));
-                    xmlSerializer.Serialize(debugWriteStream, entities);
-                }
-                catch
-                {
-                    Console.WriteLine($"Unable to serialize {debugWriteStream.Name}");
-                }
+                XmlSerializer xmlSerializer = new(typeof(Entities));
+                xmlSerializer.Serialize(debugWriteStream, entities);
             }
-#endif
+            catch
+            {
+                Console.WriteLine($"Unable to serialize {debugWriteStream.Name}");
+            }
         }
-        protected abstract void Serialize();
+#endif
     }
+    protected abstract void Serialize();
 }

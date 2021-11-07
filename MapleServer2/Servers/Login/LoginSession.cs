@@ -3,33 +3,35 @@ using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 
-namespace MapleServer2.Servers.Login
+namespace MapleServer2.Servers.Login;
+
+public class LoginSession : Session
 {
-    public class LoginSession : Session
+    protected override PatchType Type => PatchType.Delete;
+
+    public long AccountId;
+    public long CharacterId;
+    public int ServerTick;
+    public int ClientTick;
+
+    public LoginSession() : base() { }
+
+    public static int GetToken()
     {
-        protected override SessionType Type => SessionType.Login;
+        return RandomProvider.Get().Next();
+    }
 
-        public long AccountId;
-        public long CharacterId;
-        public int ServerTick;
-        public int ClientTick;
+    public override void EndSession() { }
 
-        public LoginSession() : base() { }
-
-        public static int GetToken() => RandomProvider.Get().Next();
-
-        public override void EndSession() { }
-
-        public Task HeartbeatLoop()
+    public Task HeartbeatLoop()
+    {
+        return Task.Run(async () =>
         {
-            return Task.Run(async () =>
+            while (this != null)
             {
-                while (this != null)
-                {
-                    Send(HeartbeatPacket.Request());
-                    await Task.Delay(30000); // every 30 seconds
-                }
-            });
-        }
+                Send(HeartbeatPacket.Request());
+                await Task.Delay(30000); // every 30 seconds
+            }
+        });
     }
 }

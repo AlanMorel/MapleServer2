@@ -1,18 +1,23 @@
 ﻿using SqlKata.Execution;
 
-namespace MapleServer2.Database.Classes
+namespace MapleServer2.Database.Classes;
+
+public class DatabaseServer : DatabaseTable
 {
-    public class DatabaseServer : DatabaseTable
+    public DatabaseServer() : base("server") { }
+
+    public DateTimeOffset GetLastDailyReset()
     {
-        public DatabaseServer() : base("server") { }
+        dynamic results = QueryFactory.Query(TableName).Select("last_daily_reset").FirstOrDefault();
 
-        public DateTimeOffset GetLastDailyReset()
+        return results is null ? DateTimeOffset.UtcNow : (DateTimeOffset) results.last_daily_reset;
+    }
+
+    public void SetLastDailyReset(DateTimeOffset date)
+    {
+        QueryFactory.Query(TableName).Update(new
         {
-            dynamic results = QueryFactory.Query(TableName).Select("last_daily_reset").FirstOrDefault();
-
-            return results is null ? DateTimeOffset.UtcNow : (DateTimeOffset) results.last_daily_reset;
-        }
-
-        public void SetLastDailyReset(DateTimeOffset date) => QueryFactory.Query(TableName).Update(new { last_daily_reset = date.UtcDateTime });
+            last_daily_reset = date.UtcDateTime
+        });
     }
 }

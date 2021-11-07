@@ -5,141 +5,140 @@ using MapleServer2.Data.Static;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
-namespace MapleServer2.Triggers
+namespace MapleServer2.Triggers;
+
+public partial class TriggerContext
 {
-    public partial class TriggerContext
+    public void AddBalloonTalk(int spawnPointId, string msg, int duration, int delayTick, bool isNpcId)
     {
-        public void AddBalloonTalk(int spawnPointId, string msg, int duration, int delayTick, bool isNpcId)
+        if (!isNpcId)
         {
-            if (!isNpcId)
+            if (spawnPointId == 0)
             {
-                if (spawnPointId == 0)
+                IFieldObject<Player> player = Field.State.Players.Values.First();
+                if (player == null)
                 {
-                    IFieldObject<Player> player = Field.State.Players.Values.First();
-                    if (player == null)
-                    {
-                        return;
-                    }
-                    player.Value.Session.Send(CinematicPacket.BalloonTalk(player.ObjectId, isNpcId, msg, duration, delayTick));
                     return;
                 }
+                player.Value.Session.Send(CinematicPacket.BalloonTalk(player.ObjectId, isNpcId, msg, duration, delayTick));
+                return;
             }
         }
+    }
 
-        public void RemoveBalloonTalk(int spawnPointId)
-        {
-        }
+    public void RemoveBalloonTalk(int spawnPointId)
+    {
+    }
 
-        public void AddCinematicTalk(int npcId, string illustId, string script, int duration, Align align, int delayTick)
-        {
-        }
+    public void AddCinematicTalk(int npcId, string illustId, string script, int duration, Align align, int delayTick)
+    {
+    }
 
-        public void CreateMonster(int[] spawnPointIds, bool arg2, int arg3)
+    public void CreateMonster(int[] spawnPointIds, bool arg2, int arg3)
+    {
+        foreach (int spawnPointId in spawnPointIds)
         {
-            foreach (int spawnPointId in spawnPointIds)
+            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            if (spawnPoint == null)
             {
-                MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
-                if (spawnPoint == null)
+                continue;
+            }
+            for (int i = 0; i < spawnPoint.Count; i++)
+            {
+                foreach (string npcId in spawnPoint.NpcIds)
                 {
-                    continue;
-                }
-                for (int i = 0; i < spawnPoint.Count; i++)
-                {
-                    foreach (string npcId in spawnPoint.NpcIds)
+                    if (int.TryParse(npcId, out int id))
                     {
-                        if (int.TryParse(npcId, out int id))
+                        Mob mob = new(id);
+                        if (mob.Friendly != 2)
                         {
-                            Mob mob = new Mob(id);
-                            if (mob.Friendly != 2)
-                            {
-                                IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
-                                fieldMob.Coord = spawnPoint.Position;
-                                fieldMob.Rotation = spawnPoint.Rotation;
-                                Field.AddMob(fieldMob);
-                                continue;
-                            }
-
-                            IFieldObject<Npc> fieldNpc = Field.RequestFieldObject(new Npc(mob.Id));
-                            fieldNpc.Coord = spawnPoint.Position;
-                            fieldNpc.Rotation = spawnPoint.Rotation;
-                            Field.AddNpc(fieldNpc);
+                            IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
+                            fieldMob.Coord = spawnPoint.Position;
+                            fieldMob.Rotation = spawnPoint.Rotation;
+                            Field.AddMob(fieldMob);
+                            continue;
                         }
+
+                        IFieldObject<Npc> fieldNpc = Field.RequestFieldObject(new Npc(mob.Id));
+                        fieldNpc.Coord = spawnPoint.Position;
+                        fieldNpc.Rotation = spawnPoint.Rotation;
+                        Field.AddNpc(fieldNpc);
                     }
                 }
             }
         }
+    }
 
-        public void ChangeMonster(int arg1, int arg2)
-        {
-        }
+    public void ChangeMonster(int arg1, int arg2)
+    {
+    }
 
-        public void DestroyMonster(int[] arg1, bool arg2)
-        {
-        }
+    public void DestroyMonster(int[] arg1, bool arg2)
+    {
+    }
 
-        public void StartCombineSpawn(int[] groupId, bool isStart)
-        {
-        }
+    public void StartCombineSpawn(int[] groupId, bool isStart)
+    {
+    }
 
-        public void InitNpcRotation(int[] arg1)
-        {
-        }
+    public void InitNpcRotation(int[] arg1)
+    {
+    }
 
-        public void LimitSpawnNpcCount(byte limitCount)
-        {
-        }
+    public void LimitSpawnNpcCount(byte limitCount)
+    {
+    }
 
-        public void MoveNpc(int spawnTriggerId, string patrolDataName)
-        {
-            PatrolData patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
-        }
+    public void MoveNpc(int spawnTriggerId, string patrolDataName)
+    {
+        PatrolData patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
+    }
 
-        public void MoveNpcToPos(int spawnPointId, Vector3 pos, Vector3 rot)
-        {
-        }
+    public void MoveNpcToPos(int spawnPointId, Vector3 pos, Vector3 rot)
+    {
+    }
 
-        public void NpcRemoveAdditionalEffect(int spawnPointId, int additionalEffectId)
-        {
-        }
+    public void NpcRemoveAdditionalEffect(int spawnPointId, int additionalEffectId)
+    {
+    }
 
-        public void NpcToPatrolInBox(int boxId, int npcId, string spawnId, string patrolName)
-        {
-        }
+    public void NpcToPatrolInBox(int boxId, int npcId, string spawnId, string patrolName)
+    {
+    }
 
-        public void SetNpcDuelHpBar(bool isOpen, int spawnPointId, int durationTick, byte npcHpStep)
-        {
-        }
+    public void SetNpcDuelHpBar(bool isOpen, int spawnPointId, int durationTick, byte npcHpStep)
+    {
+    }
 
-        public void SetNpcEmotionLoop(int arg1, string arg2, float arg3)
-        {
-        }
+    public void SetNpcEmotionLoop(int arg1, string arg2, float arg3)
+    {
+    }
 
-        public void SetNpcEmotionSequence(int arg1, string arg2, int arg3)
-        {
-        }
+    public void SetNpcEmotionSequence(int arg1, string arg2, int arg3)
+    {
+    }
 
-        public void SetNpcRotation(int arg1, int arg2)
-        {
-        }
+    public void SetNpcRotation(int arg1, int arg2)
+    {
+    }
 
-        public void SpawnNpcRange(int[] rangeId, bool isAutoTargeting, byte randomPickCount, int score)
-        {
-        }
+    public void SpawnNpcRange(int[] rangeId, bool isAutoTargeting, byte randomPickCount, int score)
+    {
+    }
 
-        public void TalkNpc(int spawnPointId)
-        {
-        }
+    public void TalkNpc(int spawnPointId)
+    {
+    }
 
-        public void SetAiExtraData(string key, int value, bool isModify, int boxId)
-        {
-        }
+    public void SetAiExtraData(string key, int value, bool isModify, int boxId)
+    {
+    }
 
-        public void SetQuestAccept(int questId, int arg1)
-        {
-        }
+    public void SetQuestAccept(int questId, int arg1)
+    {
+    }
 
-        public void SetQuestComplete(int questId)
-        {
-        }
+    public void SetQuestComplete(int questId)
+    {
     }
 }

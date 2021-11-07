@@ -4,35 +4,34 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class TutorialHandler : GamePacketHandler
 {
-    public class TutorialHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.TUTORIAL;
+
+    public TutorialHandler() : base() { }
+
+    public override void Handle(GameSession session, PacketReader packet)
     {
-        public override RecvOp OpCode => RecvOp.TUTORIAL;
-
-        public TutorialHandler() : base() { }
-
-        public override void Handle(GameSession session, PacketReader packet)
+        JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
         {
-            JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
+            foreach (int taxiMapId in metadata.OpenTaxis)
             {
-                foreach (int taxiMapId in metadata.OpenTaxis)
+                if (session.Player.UnlockedTaxis.Contains(taxiMapId))
                 {
-                    if (session.Player.UnlockedTaxis.Contains(taxiMapId))
-                    {
-                        continue;
-                    }
-                    session.Player.UnlockedTaxis.Add(taxiMapId);
+                    continue;
                 }
+                session.Player.UnlockedTaxis.Add(taxiMapId);
+            }
 
-                foreach (int openMapId in metadata.OpenMaps)
+            foreach (int openMapId in metadata.OpenMaps)
+            {
+                if (session.Player.UnlockedMaps.Contains(openMapId))
                 {
-                    if (session.Player.UnlockedMaps.Contains(openMapId))
-                    {
-                        continue;
-                    }
-                    session.Player.UnlockedMaps.Add(openMapId);
+                    continue;
                 }
+                session.Player.UnlockedMaps.Add(openMapId);
             }
         }
     }

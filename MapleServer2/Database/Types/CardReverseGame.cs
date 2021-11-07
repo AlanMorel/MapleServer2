@@ -1,16 +1,15 @@
-﻿namespace MapleServer2.Database.Types
+﻿namespace MapleServer2.Database.Types;
+
+public class CardReverseGame
 {
-    public class CardReverseGame
-    {
-        public int Id { get; set; }
-        public int ItemId { get; set; }
-        public byte ItemRarity { get; set; }
-        public int ItemAmount { get; set; }
+    public int Id { get; set; }
+    public int ItemId { get; set; }
+    public byte ItemRarity { get; set; }
+    public int ItemAmount { get; set; }
 
-        // Temporarily hardcoding the item and cost
-        public const int TOKEN_ITEM_ID = 30000782; // 2nd Anniversary Commemorative Coin
-        public const int TOKEN_COST = 2;
+    // Temporarily hardcoding the item and cost
+    public const int TOKEN_ITEM_ID = 30000782; // 2nd Anniversary Commemorative Coin
+    public const int TOKEN_COST = 2;
 
-        public CardReverseGame() { }
-    }
+    public CardReverseGame() { }
 }

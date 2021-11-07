@@ -1,16 +1,15 @@
-﻿namespace MapleServer2.Types
+﻿namespace MapleServer2.Types;
+
+public class ChatSticker
 {
-    public class ChatSticker
+    public byte GroupId { get; set; }
+    public long Expiration { get; set; }
+
+    public ChatSticker() { }
+
+    public ChatSticker(byte groupId, long expiration)
     {
-        public byte GroupId { get; set; }
-        public long Expiration { get; set; }
-
-        public ChatSticker() { }
-
-        public ChatSticker(byte groupId, long expiration)
-        {
-            GroupId = groupId;
-            Expiration = expiration;
-        }
+        GroupId = groupId;
+        Expiration = expiration;
     }
 }

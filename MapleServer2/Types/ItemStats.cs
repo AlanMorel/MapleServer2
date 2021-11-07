@@ -3,499 +3,493 @@ using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 
-namespace MapleServer2.Types
+namespace MapleServer2.Types;
+
+public abstract class ItemStat
 {
-    public abstract class ItemStat
+    public dynamic ItemAttribute;
+    public dynamic Flat;
+    public float Percent;
+}
+public class NormalStat : ItemStat
+{
+    public new ItemAttribute ItemAttribute;
+    public new int Flat;
+
+    public NormalStat() { }
+
+    public NormalStat(ItemAttribute attribute, int flat, float percent)
     {
-        public dynamic ItemAttribute;
-        public dynamic Flat;
-        public float Percent;
+        ItemAttribute = attribute;
+        Flat = flat;
+        Percent = percent;
     }
 
-    public class NormalStat : ItemStat
+    public NormalStat(ParserStat stat)
     {
-        public new ItemAttribute ItemAttribute;
-        public new int Flat;
+        ItemAttribute = stat.Id;
+        Flat = stat.Flat;
+        Percent = stat.Percent;
+    }
+}
+public class SpecialStat : ItemStat
+{
+    public new SpecialItemAttribute ItemAttribute;
+    public new float Flat;
 
-        public NormalStat() { }
+    public SpecialStat() { }
 
-        public NormalStat(ItemAttribute attribute, int flat, float percent)
+    public SpecialStat(SpecialItemAttribute attribute, float flat, float percent)
+    {
+        ItemAttribute = attribute;
+        Flat = flat;
+        Percent = percent;
+    }
+
+    public SpecialStat(ParserSpecialStat stat)
+    {
+        ItemAttribute = stat.Id;
+        Flat = stat.Flat;
+        Percent = stat.Percent;
+    }
+}
+public class Gemstone
+{
+    public int Id;
+    public long OwnerId = 0;
+    public string OwnerName = "";
+    public bool IsLocked;
+    public long UnlockTime;
+
+    public Gemstone() { }
+}
+public class GemSocket
+{
+    public bool IsUnlocked;
+    public Gemstone Gemstone;
+
+    public GemSocket() { }
+}
+public class ItemStats
+{
+    public List<ItemStat> BasicStats;
+    public List<ItemStat> BonusStats;
+    public List<GemSocket> GemSockets;
+
+    public ItemStats() { }
+
+    public ItemStats(Item item)
+    {
+        CreateNewStats(item.Id, item.Rarity, item.ItemSlot, item.Level);
+    }
+
+    public ItemStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
+    {
+        CreateNewStats(itemId, rarity, itemSlot, itemLevel);
+    }
+
+    public ItemStats(ItemStats other)
+    {
+        BasicStats = new(other.BasicStats);
+        BonusStats = new(other.BonusStats);
+        GemSockets = new();
+    }
+
+    public void CreateNewStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
+    {
+        BasicStats = new();
+        BonusStats = new();
+        GemSockets = new();
+        if (rarity == 0)
         {
-            ItemAttribute = attribute;
-            Flat = flat;
-            Percent = percent;
+            return;
         }
 
-        public NormalStat(ParserStat stat)
+        GetConstantStats(itemId, rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
+        GetStaticStats(itemId, rarity, normalStats, specialStats);
+        GetBonusStats(itemId, rarity);
+        if (itemLevel >= 50 && rarity >= 3)
         {
-            ItemAttribute = stat.Id;
-            Flat = stat.Flat;
-            Percent = stat.Percent;
+            GetGemSockets(itemSlot, rarity);
         }
     }
 
-    public class SpecialStat : ItemStat
+    public static void GetConstantStats(int itemId, int rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
     {
-        public new SpecialItemAttribute ItemAttribute;
-        public new float Flat;
+        normalStats = new();
+        specialStats = new();
 
-        public SpecialStat() { }
-
-        public SpecialStat(SpecialItemAttribute attribute, float flat, float percent)
+        // Get Constant Stats
+        int constantId = ItemMetadataStorage.GetOptionConstant(itemId);
+        ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, rarity);
+        if (basicOptions == null)
         {
-            ItemAttribute = attribute;
-            Flat = flat;
-            Percent = percent;
+            return;
         }
 
-        public SpecialStat(ParserSpecialStat stat)
+        foreach (ParserStat stat in basicOptions.Stats)
         {
-            ItemAttribute = stat.Id;
-            Flat = stat.Flat;
-            Percent = stat.Percent;
+            normalStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+        }
+
+        foreach (ParserSpecialStat stat in basicOptions.SpecialStats)
+        {
+            specialStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+        }
+
+        if (basicOptions.HiddenDefenseAdd > 0)
+        {
+            AddHiddenNormalStat(normalStats, ItemAttribute.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
+        }
+
+        if (basicOptions.HiddenWeaponAtkAdd > 0)
+        {
+            AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
         }
     }
 
-    public class Gemstone
+    public void GetStaticStats(int itemId, int rarity, List<NormalStat> normalStats, List<SpecialStat> specialStats)
     {
-        public int Id;
-        public long OwnerId = 0;
-        public string OwnerName = "";
-        public bool IsLocked;
-        public long UnlockTime;
+        //Get Static Stats
+        int staticId = ItemMetadataStorage.GetOptionStatic(itemId);
 
-        public Gemstone() { }
-    }
-
-    public class GemSocket
-    {
-        public bool IsUnlocked;
-        public Gemstone Gemstone;
-
-        public GemSocket() { }
-    }
-
-    public class ItemStats
-    {
-        public List<ItemStat> BasicStats;
-        public List<ItemStat> BonusStats;
-        public List<GemSocket> GemSockets;
-
-        public ItemStats() { }
-
-        public ItemStats(Item item)
+        ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, rarity);
+        if (staticOptions == null)
         {
-            CreateNewStats(item.Id, item.Rarity, item.ItemSlot, item.Level);
-        }
-
-        public ItemStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
-        {
-            CreateNewStats(itemId, rarity, itemSlot, itemLevel);
-        }
-
-        public ItemStats(ItemStats other)
-        {
-            BasicStats = new List<ItemStat>(other.BasicStats);
-            BonusStats = new List<ItemStat>(other.BonusStats);
-            GemSockets = new List<GemSocket>();
-        }
-
-        public void CreateNewStats(int itemId, int rarity, ItemSlot itemSlot, int itemLevel)
-        {
-            BasicStats = new List<ItemStat>();
-            BonusStats = new List<ItemStat>();
-            GemSockets = new List<GemSocket>();
-            if (rarity == 0)
-            {
-                return;
-            }
-
-            GetConstantStats(itemId, rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats);
-            GetStaticStats(itemId, rarity, normalStats, specialStats);
-            GetBonusStats(itemId, rarity);
-            if (itemLevel >= 50 && rarity >= 3)
-            {
-                GetGemSockets(itemSlot, rarity);
-            }
-        }
-
-        public static void GetConstantStats(int itemId, int rarity, out List<NormalStat> normalStats, out List<SpecialStat> specialStats)
-        {
-            normalStats = new List<NormalStat>();
-            specialStats = new List<SpecialStat>();
-
-            // Get Constant Stats
-            int constantId = ItemMetadataStorage.GetOptionConstant(itemId);
-            ItemOptionsConstant basicOptions = ItemOptionConstantMetadataStorage.GetMetadata(constantId, rarity);
-            if (basicOptions == null)
-            {
-                return;
-            }
-
-            foreach (ParserStat stat in basicOptions.Stats)
-            {
-                normalStats.Add(new NormalStat(stat.Id, stat.Flat, stat.Percent));
-            }
-
-            foreach (ParserSpecialStat stat in basicOptions.SpecialStats)
-            {
-                specialStats.Add(new SpecialStat(stat.Id, stat.Flat, stat.Percent));
-            }
-
-            if (basicOptions.HiddenDefenseAdd > 0)
-            {
-                AddHiddenNormalStat(normalStats, ItemAttribute.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
-            }
-
-            if (basicOptions.HiddenWeaponAtkAdd > 0)
-            {
-                AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
-                AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
-            }
-        }
-
-        public void GetStaticStats(int itemId, int rarity, List<NormalStat> normalStats, List<SpecialStat> specialStats)
-        {
-            //Get Static Stats
-            int staticId = ItemMetadataStorage.GetOptionStatic(itemId);
-
-            ItemOptionsStatic staticOptions = ItemOptionStaticMetadataStorage.GetMetadata(staticId, rarity);
-            if (staticOptions == null)
-            {
-                BasicStats.AddRange(normalStats);
-                BasicStats.AddRange(specialStats);
-                return;
-            }
-
-            foreach (ParserStat stat in staticOptions.Stats)
-            {
-                NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
-                if (normalStat == null)
-                {
-                    normalStats.Add(new NormalStat(stat.Id, stat.Flat, stat.Percent));
-                    continue;
-                }
-                int index = normalStats.FindIndex(x => x.ItemAttribute == stat.Id);
-                int summedFlat = normalStat.Flat + stat.Flat;
-                float summedPercent = normalStat.Percent + stat.Percent;
-
-                normalStats[index] = new NormalStat(stat.Id, summedFlat, summedPercent);
-            }
-
-            foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
-            {
-                SpecialStat normalStat = specialStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
-                if (normalStat == null)
-                {
-                    specialStats.Add(new SpecialStat(stat.Id, stat.Flat, stat.Percent));
-                    continue;
-                }
-
-                int index = specialStats.FindIndex(x => x.ItemAttribute == stat.Id);
-                float summedFlat = normalStat.Flat + stat.Flat;
-                float summedPercent = normalStat.Percent + stat.Percent;
-
-                specialStats[index] = new SpecialStat(stat.Id, summedFlat, summedPercent);
-            }
-
-            if (staticOptions.HiddenDefenseAdd > 0)
-            {
-                AddHiddenNormalStat(normalStats, ItemAttribute.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
-            }
-
-            if (staticOptions.HiddenWeaponAtkAdd > 0)
-            {
-                AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
-                AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
-            }
-
             BasicStats.AddRange(normalStats);
             BasicStats.AddRange(specialStats);
+            return;
         }
 
-        private static void AddHiddenNormalStat(List<NormalStat> normalStats, ItemAttribute attribute, int value, float calibrationFactor)
+        foreach (ParserStat stat in staticOptions.Stats)
         {
-            NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == attribute);
+            NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
             if (normalStat == null)
             {
-                return;
+                normalStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+                continue;
             }
-            int calibratedValue = (int) (value * calibrationFactor);
+            int index = normalStats.FindIndex(x => x.ItemAttribute == stat.Id);
+            int summedFlat = normalStat.Flat + stat.Flat;
+            float summedPercent = normalStat.Percent + stat.Percent;
 
-            int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
-            int biggerValue = Math.Max(value, calibratedValue);
-            int smallerValue = Math.Min(value, calibratedValue);
-            int summedFlat = normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue);
-            normalStats[index] = new NormalStat(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
+            normalStats[index] = new(stat.Id, summedFlat, summedPercent);
         }
 
-        public void GetBonusStats(int itemId, int rarity)
+        foreach (ParserSpecialStat stat in staticOptions.SpecialStats)
         {
-            int randomId = ItemMetadataStorage.GetOptionRandom(itemId);
-            ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, rarity);
-            if (randomOptions == null)
+            SpecialStat normalStat = specialStats.FirstOrDefault(x => x.ItemAttribute == stat.Id);
+            if (normalStat == null)
             {
-                return;
+                specialStats.Add(new(stat.Id, stat.Flat, stat.Percent));
+                continue;
             }
 
-            // get amount of slots
-            Random random = RandomProvider.Get();
-            int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
+            int index = specialStats.FindIndex(x => x.ItemAttribute == stat.Id);
+            float summedFlat = normalStat.Flat + stat.Flat;
+            float summedPercent = normalStat.Percent + stat.Percent;
 
-            List<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
-            List<ItemStat> selectedStats = itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
-
-            BonusStats.AddRange(selectedStats);
+            specialStats[index] = new(stat.Id, summedFlat, summedPercent);
         }
 
-        public static List<ItemStat> RollStats(ItemOptionRandom randomOptions, int randomId, int itemId)
+        if (staticOptions.HiddenDefenseAdd > 0)
         {
-            List<ItemStat> itemStats = new List<ItemStat>();
-
-            foreach (ParserStat stat in randomOptions.Stats)
-            {
-                Dictionary<ItemAttribute, List<ParserStat>> rangeDictionary = GetRange(randomId);
-                if (!rangeDictionary.ContainsKey(stat.Id))
-                {
-                    continue;
-                }
-
-                NormalStat normalStat = new NormalStat(rangeDictionary[stat.Id][Roll(itemId)]);
-                if (randomOptions.MultiplyFactor > 0)
-                {
-                    normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
-                    normalStat.Percent *= randomOptions.MultiplyFactor;
-                }
-                itemStats.Add(normalStat);
-            }
-
-            foreach (ParserSpecialStat stat in randomOptions.SpecialStats)
-            {
-                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(randomId);
-                if (!rangeDictionary.ContainsKey(stat.Id))
-                {
-                    continue;
-                }
-
-                SpecialStat specialStat = new SpecialStat(rangeDictionary[stat.Id][Roll(itemId)]);
-                if (randomOptions.MultiplyFactor > 0)
-                {
-                    specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
-                    specialStat.Percent *= randomOptions.MultiplyFactor;
-                }
-                itemStats.Add(specialStat);
-            }
-
-            return itemStats;
+            AddHiddenNormalStat(normalStats, ItemAttribute.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
         }
 
-        // Roll new bonus stats and values except the locked stat
-        public static List<ItemStat> RollBonusStatsWithStatLocked(Item item, short ignoreStat, bool isSpecialStat)
+        if (staticOptions.HiddenWeaponAtkAdd > 0)
         {
-            int id = item.Id;
-
-            int randomId = ItemMetadataStorage.GetOptionRandom(id);
-            ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, item.Rarity);
-            if (randomOptions == null)
-            {
-                return null;
-            }
-
-            List<ItemStat> itemStats = new List<ItemStat>();
-
-            List<ParserStat> attributes = isSpecialStat ? randomOptions.Stats : randomOptions.Stats.Where(x => (short) x.Id != ignoreStat).ToList();
-            List<ParserSpecialStat> specialAttributes = isSpecialStat ? randomOptions.SpecialStats.Where(x => (short) x.Id != ignoreStat).ToList() : randomOptions.SpecialStats;
-
-            foreach (ParserStat attribute in attributes)
-            {
-                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(randomId);
-                if (!dictionary.ContainsKey(attribute.Id))
-                {
-                    continue;
-                }
-
-                NormalStat normalStat = new NormalStat(dictionary[attribute.Id][Roll(id)]);
-                if (randomOptions.MultiplyFactor > 0)
-                {
-                    normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
-                    normalStat.Percent *= randomOptions.MultiplyFactor;
-                }
-                itemStats.Add(normalStat);
-            }
-
-            foreach (ParserSpecialStat attribute in specialAttributes)
-            {
-                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(randomId);
-                if (!dictionary.ContainsKey(attribute.Id))
-                {
-                    continue;
-                }
-
-                SpecialStat specialStat = new SpecialStat(dictionary[attribute.Id][Roll(id)]);
-                if (randomOptions.MultiplyFactor > 0)
-                {
-                    specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
-                    specialStat.Percent *= randomOptions.MultiplyFactor;
-                }
-                itemStats.Add(specialStat);
-            }
-
-            return itemStats.OrderBy(x => RandomProvider.Get().Next()).Take(item.Stats.BonusStats.Count).ToList();
+            AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
         }
 
-        // Roll new values for existing bonus stats
-        public static List<ItemStat> RollNewBonusValues(Item item, short ignoreStat, bool isSpecialStat)
+        BasicStats.AddRange(normalStats);
+        BasicStats.AddRange(specialStats);
+    }
+
+    private static void AddHiddenNormalStat(List<NormalStat> normalStats, ItemAttribute attribute, int value, float calibrationFactor)
+    {
+        NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == attribute);
+        if (normalStat == null)
         {
-            List<ItemStat> newBonus = new List<ItemStat>();
+            return;
+        }
+        int calibratedValue = (int) (value * calibrationFactor);
 
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
-            {
-                if (!isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
-                {
-                    newBonus.Add(stat);
-                    continue;
-                }
+        int index = normalStats.FindIndex(x => x.ItemAttribute == attribute);
+        int biggerValue = Math.Max(value, calibratedValue);
+        int smallerValue = Math.Min(value, calibratedValue);
+        int summedFlat = normalStat.Flat + RandomProvider.Get().Next(smallerValue, biggerValue);
+        normalStats[index] = new(normalStat.ItemAttribute, summedFlat, normalStat.Percent);
+    }
 
-                Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(item.Id);
-                if (!dictionary.ContainsKey(stat.ItemAttribute))
-                {
-                    continue;
-                }
-                newBonus.Add(new NormalStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
-            }
-
-            foreach (SpecialStat stat in item.Stats.BonusStats.OfType<SpecialStat>())
-            {
-                if (isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
-                {
-                    newBonus.Add(stat);
-                    continue;
-                }
-
-                Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
-                if (!dictionary.ContainsKey(stat.ItemAttribute))
-                {
-                    continue;
-                }
-                newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
-            }
-
-            return newBonus;
+    public void GetBonusStats(int itemId, int rarity)
+    {
+        int randomId = ItemMetadataStorage.GetOptionRandom(itemId);
+        ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, rarity);
+        if (randomOptions == null)
+        {
+            return;
         }
 
-        private static Dictionary<ItemAttribute, List<ParserStat>> GetRange(int itemId)
+        // get amount of slots
+        Random random = RandomProvider.Get();
+        int slots = random.Next(randomOptions.Slots[0], randomOptions.Slots[1]);
+
+        List<ItemStat> itemStats = RollStats(randomOptions, randomId, itemId);
+        List<ItemStat> selectedStats = itemStats.OrderBy(x => random.Next()).Take(slots).ToList();
+
+        BonusStats.AddRange(selectedStats);
+    }
+
+    public static List<ItemStat> RollStats(ItemOptionRandom randomOptions, int randomId, int itemId)
+    {
+        List<ItemStat> itemStats = new();
+
+        foreach (ParserStat stat in randomOptions.Stats)
         {
-            ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
-            if (Item.IsAccessory(slot))
+            Dictionary<ItemAttribute, List<ParserStat>> rangeDictionary = GetRange(randomId);
+            if (!rangeDictionary.ContainsKey(stat.Id))
             {
-                return ItemOptionRangeStorage.GetAccessoryRanges();
+                continue;
             }
 
-            if (Item.IsArmor(slot))
+            NormalStat normalStat = new(rangeDictionary[stat.Id][Roll(itemId)]);
+            if (randomOptions.MultiplyFactor > 0)
             {
-                return ItemOptionRangeStorage.GetArmorRanges();
+                normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                normalStat.Percent *= randomOptions.MultiplyFactor;
             }
-
-            if (Item.IsWeapon(slot))
-            {
-                return ItemOptionRangeStorage.GetWeaponRanges();
-            }
-
-            return ItemOptionRangeStorage.GetPetRanges();
+            itemStats.Add(normalStat);
         }
 
-        private static Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
+        foreach (ParserSpecialStat stat in randomOptions.SpecialStats)
         {
-            ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
-            if (Item.IsAccessory(slot))
+            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(randomId);
+            if (!rangeDictionary.ContainsKey(stat.Id))
             {
-                return ItemOptionRangeStorage.GetAccessorySpecialRanges();
+                continue;
             }
 
-            if (Item.IsArmor(slot))
+            SpecialStat specialStat = new(rangeDictionary[stat.Id][Roll(itemId)]);
+            if (randomOptions.MultiplyFactor > 0)
             {
-                return ItemOptionRangeStorage.GetArmorSpecialRanges();
+                specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                specialStat.Percent *= randomOptions.MultiplyFactor;
             }
-
-            if (Item.IsWeapon(slot))
-            {
-                return ItemOptionRangeStorage.GetWeaponSpecialRanges();
-            }
-
-            return ItemOptionRangeStorage.GetPetSpecialRanges();
+            itemStats.Add(specialStat);
         }
 
-        // Returns index 0~7 for equip level 70-
-        // Returns index 8~15 for equip level 70+
-        private static int Roll(int itemId)
+        return itemStats;
+    }
+
+    // Roll new bonus stats and values except the locked stat
+    public static List<ItemStat> RollBonusStatsWithStatLocked(Item item, short ignoreStat, bool isSpecialStat)
+    {
+        int id = item.Id;
+
+        int randomId = ItemMetadataStorage.GetOptionRandom(id);
+        ItemOptionRandom randomOptions = ItemOptionRandomMetadataStorage.GetMetadata(randomId, item.Rarity);
+        if (randomOptions == null)
         {
-            int itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
-            Random random = RandomProvider.Get();
-            if (itemLevelFactor >= 70)
+            return null;
+        }
+
+        List<ItemStat> itemStats = new();
+
+        List<ParserStat> attributes = isSpecialStat ? randomOptions.Stats : randomOptions.Stats.Where(x => (short) x.Id != ignoreStat).ToList();
+        List<ParserSpecialStat> specialAttributes = isSpecialStat ? randomOptions.SpecialStats.Where(x => (short) x.Id != ignoreStat).ToList() : randomOptions.SpecialStats;
+
+        foreach (ParserStat attribute in attributes)
+        {
+            Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(randomId);
+            if (!dictionary.ContainsKey(attribute.Id))
             {
-                return random.NextDouble() switch
-                {
-                    >= 0.0 and < 0.24 => 8,
-                    >= 0.24 and < 0.48 => 9,
-                    >= 0.48 and < 0.74 => 10,
-                    >= 0.74 and < 0.9 => 11,
-                    >= 0.9 and < 0.966 => 12,
-                    >= 0.966 and < 0.985 => 13,
-                    >= 0.985 and < 0.9975 => 14,
-                    _ => 15,
-                };
+                continue;
             }
+
+            NormalStat normalStat = new(dictionary[attribute.Id][Roll(id)]);
+            if (randomOptions.MultiplyFactor > 0)
+            {
+                normalStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                normalStat.Percent *= randomOptions.MultiplyFactor;
+            }
+            itemStats.Add(normalStat);
+        }
+
+        foreach (ParserSpecialStat attribute in specialAttributes)
+        {
+            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(randomId);
+            if (!dictionary.ContainsKey(attribute.Id))
+            {
+                continue;
+            }
+
+            SpecialStat specialStat = new(dictionary[attribute.Id][Roll(id)]);
+            if (randomOptions.MultiplyFactor > 0)
+            {
+                specialStat.Flat *= (int) Math.Ceiling(randomOptions.MultiplyFactor);
+                specialStat.Percent *= randomOptions.MultiplyFactor;
+            }
+            itemStats.Add(specialStat);
+        }
+
+        return itemStats.OrderBy(x => RandomProvider.Get().Next()).Take(item.Stats.BonusStats.Count).ToList();
+    }
+
+    // Roll new values for existing bonus stats
+    public static List<ItemStat> RollNewBonusValues(Item item, short ignoreStat, bool isSpecialStat)
+    {
+        List<ItemStat> newBonus = new();
+
+        foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
+        {
+            if (!isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
+            {
+                newBonus.Add(stat);
+                continue;
+            }
+
+            Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(item.Id);
+            if (!dictionary.ContainsKey(stat.ItemAttribute))
+            {
+                continue;
+            }
+            newBonus.Add(new NormalStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+        }
+
+        foreach (SpecialStat stat in item.Stats.BonusStats.OfType<SpecialStat>())
+        {
+            if (isSpecialStat && (short) stat.ItemAttribute == ignoreStat)
+            {
+                newBonus.Add(stat);
+                continue;
+            }
+
+            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
+            if (!dictionary.ContainsKey(stat.ItemAttribute))
+            {
+                continue;
+            }
+            newBonus.Add(new SpecialStat(dictionary[stat.ItemAttribute][Roll(item.Level)]));
+        }
+
+        return newBonus;
+    }
+
+    private static Dictionary<ItemAttribute, List<ParserStat>> GetRange(int itemId)
+    {
+        ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
+        if (Item.IsAccessory(slot))
+        {
+            return ItemOptionRangeStorage.GetAccessoryRanges();
+        }
+
+        if (Item.IsArmor(slot))
+        {
+            return ItemOptionRangeStorage.GetArmorRanges();
+        }
+
+        if (Item.IsWeapon(slot))
+        {
+            return ItemOptionRangeStorage.GetWeaponRanges();
+        }
+
+        return ItemOptionRangeStorage.GetPetRanges();
+    }
+
+    private static Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
+    {
+        ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
+        if (Item.IsAccessory(slot))
+        {
+            return ItemOptionRangeStorage.GetAccessorySpecialRanges();
+        }
+
+        if (Item.IsArmor(slot))
+        {
+            return ItemOptionRangeStorage.GetArmorSpecialRanges();
+        }
+
+        if (Item.IsWeapon(slot))
+        {
+            return ItemOptionRangeStorage.GetWeaponSpecialRanges();
+        }
+
+        return ItemOptionRangeStorage.GetPetSpecialRanges();
+    }
+
+    // Returns index 0~7 for equip level 70-
+    // Returns index 8~15 for equip level 70+
+    private static int Roll(int itemId)
+    {
+        int itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
+        Random random = RandomProvider.Get();
+        if (itemLevelFactor >= 70)
+        {
             return random.NextDouble() switch
             {
-                >= 0.0 and < 0.24 => 0,
-                >= 0.24 and < 0.48 => 1,
-                >= 0.48 and < 0.74 => 2,
-                >= 0.74 and < 0.9 => 3,
-                >= 0.9 and < 0.966 => 4,
-                >= 0.966 and < 0.985 => 5,
-                >= 0.985 and < 0.9975 => 6,
-                _ => 7,
+                >= 0.0 and < 0.24 => 8,
+                >= 0.24 and < 0.48 => 9,
+                >= 0.48 and < 0.74 => 10,
+                >= 0.74 and < 0.9 => 11,
+                >= 0.9 and < 0.966 => 12,
+                >= 0.966 and < 0.985 => 13,
+                >= 0.985 and < 0.9975 => 14,
+                _ => 15
             };
         }
-
-        private void GetGemSockets(ItemSlot itemSlot, int rarity)
+        return random.NextDouble() switch
         {
-            if (itemSlot != ItemSlot.EA &&
-                itemSlot != ItemSlot.RI &&
-                itemSlot != ItemSlot.PD)
-            {
-                return;
-            }
+            >= 0.0 and < 0.24 => 0,
+            >= 0.24 and < 0.48 => 1,
+            >= 0.48 and < 0.74 => 2,
+            >= 0.74 and < 0.9 => 3,
+            >= 0.9 and < 0.966 => 4,
+            >= 0.966 and < 0.985 => 5,
+            >= 0.985 and < 0.9975 => 6,
+            _ => 7
+        };
+    }
 
-            int rollAmount = 0;
-            if (rarity == 3)
-            {
-                rollAmount = 1;
-            }
-            else if (rarity > 3)
-            {
-                rollAmount = 3;
-            }
+    private void GetGemSockets(ItemSlot itemSlot, int rarity)
+    {
+        if (itemSlot != ItemSlot.EA &&
+            itemSlot != ItemSlot.RI &&
+            itemSlot != ItemSlot.PD)
+        {
+            return;
+        }
 
-            // add sockets
-            for (int i = 0; i < rollAmount; i++)
-            {
-                GemSocket socket = new GemSocket();
-                GemSockets.Add(socket);
-            }
+        int rollAmount = 0;
+        if (rarity == 3)
+        {
+            rollAmount = 1;
+        }
+        else if (rarity > 3)
+        {
+            rollAmount = 3;
+        }
 
-            // roll to unlock sockets
-            for (int i = 0; i < GemSockets.Count; i++)
-            {
-                int successNumber = RandomProvider.Get().Next(0, 100);
+        // add sockets
+        for (int i = 0; i < rollAmount; i++)
+        {
+            GemSocket socket = new();
+            GemSockets.Add(socket);
+        }
 
-                // 5% success rate to unlock a gemsocket
-                if (successNumber < 95)
-                {
-                    break;
-                }
-                GemSockets[i].IsUnlocked = true;
+        // roll to unlock sockets
+        for (int i = 0; i < GemSockets.Count; i++)
+        {
+            int successNumber = RandomProvider.Get().Next(0, 100);
+
+            // 5% success rate to unlock a gemsocket
+            if (successNumber < 95)
+            {
+                break;
             }
+            GemSockets[i].IsUnlocked = true;
         }
     }
 }

@@ -4,84 +4,82 @@ using Maple2.File.IO.Crypto.Common;
 using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
-namespace GameDataParser.Parsers
+namespace GameDataParser.Parsers;
+
+public class UGCMapParser : Exporter<List<UGCMapMetadata>>
 {
-    public class UGCMapParser : Exporter<List<UGCMapMetadata>>
+    public UGCMapParser(MetadataResources resources) : base(resources, "ugc-map") { }
+
+    protected override List<UGCMapMetadata> Parse()
     {
-        public UGCMapParser(MetadataResources resources) : base(resources, "ugc-map") { }
-
-        protected override List<UGCMapMetadata> Parse()
+        List<UGCMapMetadata> ugcmap = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-            List<UGCMapMetadata> ugcmap = new List<UGCMapMetadata>();
-            foreach (PackFileEntry entry in Resources.XmlReader.Files)
+            if (!entry.Name.StartsWith("ugcmap"))
             {
-                if (!entry.Name.StartsWith("ugcmap"))
-                {
-                    continue;
-                }
-
-                UGCMapMetadata metadata = new UGCMapMetadata();
-                string filename = Path.GetFileNameWithoutExtension(entry.Name);
-                metadata.MapId = int.Parse(filename);
-
-                XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-                XmlNodeList nodes = document.SelectNodes("/ugcmap/group");
-
-                foreach (XmlNode node in nodes)
-                {
-                    UGCMapGroup group = new UGCMapGroup();
-
-                    group.Id = byte.Parse(node.Attributes["no"].Value);
-                    group.Price = int.Parse(node.Attributes["contractPrice"].Value);
-                    group.PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value);
-                    group.ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value);
-                    group.ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value);
-                    group.ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value);
-                    group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
-                    group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
-                    group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
-                    group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"]?.Value ?? "0");
-                    group.Area = short.Parse(node.Attributes["area"].Value);
-                    group.SellType = byte.Parse(node.Attributes["sellType"].Value);
-                    group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);
-                    group.HouseNumber = short.Parse(node.Attributes["houseNumber"].Value);
-
-                    metadata.Groups.Add(group);
-                }
-                ugcmap.Add(metadata);
+                continue;
             }
-            return ugcmap;
-        }
 
-        public static CurrencyType GetCurrencyType(int itemId)
+            UGCMapMetadata metadata = new();
+            string filename = Path.GetFileNameWithoutExtension(entry.Name);
+            metadata.MapId = int.Parse(filename);
+
+            XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList nodes = document.SelectNodes("/ugcmap/group");
+
+            foreach (XmlNode node in nodes)
+            {
+                UGCMapGroup group = new();
+
+                group.Id = byte.Parse(node.Attributes["no"].Value);
+                group.Price = int.Parse(node.Attributes["contractPrice"].Value);
+                group.PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value);
+                group.ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value);
+                group.ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value);
+                group.ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value);
+                group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
+                group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
+                group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
+                group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"]?.Value ?? "0");
+                group.Area = short.Parse(node.Attributes["area"].Value);
+                group.SellType = byte.Parse(node.Attributes["sellType"].Value);
+                group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);
+                group.HouseNumber = short.Parse(node.Attributes["houseNumber"].Value);
+
+                metadata.Groups.Add(group);
+            }
+            ugcmap.Add(metadata);
+        }
+        return ugcmap;
+    }
+
+    public static CurrencyType GetCurrencyType(int itemId)
+    {
+        switch (itemId)
         {
-            switch (itemId)
-            {
-                case 30000145: // Apartment Permits. This is obsolete content
-                case 30000253:
-                case 30000254:
-                case 30000255:
-                case 90000001:
-                case 90000002:
-                case 90000003:
-                    return CurrencyType.Meso;
-                case 90000004:
-                    return CurrencyType.Meret;
-                case 90000006:
-                    return CurrencyType.ValorToken;
-                case 90000013:
-                    return CurrencyType.Rue;
-                case 90000014:
-                    return CurrencyType.HaviFruit;
-                case 90000017:
-                    return CurrencyType.Treva;
-                case 90000027:
-                    return CurrencyType.MesoToken;
-                default:
-                    break;
-            }
-            throw new ArgumentException($"Unknown Currency Type for: {itemId}");
+            case 30000145: // Apartment Permits. This is obsolete content
+            case 30000253:
+            case 30000254:
+            case 30000255:
+            case 90000001:
+            case 90000002:
+            case 90000003:
+                return CurrencyType.Meso;
+            case 90000004:
+                return CurrencyType.Meret;
+            case 90000006:
+                return CurrencyType.ValorToken;
+            case 90000013:
+                return CurrencyType.Rue;
+            case 90000014:
+                return CurrencyType.HaviFruit;
+            case 90000017:
+                return CurrencyType.Treva;
+            case 90000027:
+                return CurrencyType.MesoToken;
+            default:
+                break;
         }
+        throw new ArgumentException($"Unknown Currency Type for: {itemId}");
     }
 }
-

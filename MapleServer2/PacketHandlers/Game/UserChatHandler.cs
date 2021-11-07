@@ -8,264 +8,262 @@ using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Tools;
 using MapleServer2.Types;
 
-namespace MapleServer2.PacketHandlers.Game
+namespace MapleServer2.PacketHandlers.Game;
+
+public class UserChatHandler : GamePacketHandler
 {
-    public class UserChatHandler : GamePacketHandler
+    public override RecvOp OpCode => RecvOp.USER_CHAT;
+
+    public UserChatHandler() : base() { }
+
+    public override void Handle(GameSession session, PacketReader packet)
     {
-        public override RecvOp OpCode => RecvOp.USER_CHAT;
+        ChatType type = (ChatType) packet.ReadInt();
+        string message = packet.ReadUnicodeString();
+        string recipient = packet.ReadUnicodeString();
+        long clubId = packet.ReadLong();
 
-        public UserChatHandler() : base() { }
-
-        public override void Handle(GameSession session, PacketReader packet)
+        if (message.Length > 0 && message[..1].Equals("/"))
         {
-            ChatType type = (ChatType) packet.ReadInt();
-            string message = packet.ReadUnicodeString();
-            string recipient = packet.ReadUnicodeString();
-            long clubId = packet.ReadLong();
-
-            if (message.Length > 0 && message[..1].Equals("/"))
+            string[] args = message[1..].Split(" ");
+            if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
             {
-                string[] args = message[1..].Split(" ");
-                if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
-                {
-                    session.SendNotice($"No command were found with alias: {args[0]}");
-                }
-                return;
+                session.SendNotice($"No command were found with alias: {args[0]}");
             }
-
-            Packet itemLinkPacket = GetItemLink(message);
-
-            switch (type)
-            {
-                case ChatType.Channel:
-                    HandleChannelChat(/*session, message, type*/);
-                    break;
-                case ChatType.Super:
-                    HandleSuperChat(session, message, type, itemLinkPacket);
-                    break;
-                case ChatType.World:
-                    HandleWorldChat(session, message, type, itemLinkPacket);
-                    break;
-                case ChatType.GuildAlert:
-                    HandleGuildAlert(session, message, type, itemLinkPacket);
-                    break;
-                case ChatType.Guild:
-                    HandleGuildChat(session, message, type, itemLinkPacket);
-                    break;
-                case ChatType.Party:
-                    HandlePartyChat(session, message, type, itemLinkPacket);
-                    break;
-                case ChatType.WhisperTo:
-                    HandleWhisperChat(session, recipient, message, itemLinkPacket);
-                    break;
-                case ChatType.Club:
-                    HandleClubChat(/*session, message, type, clubId, itemLinkPacket*/);
-                    break;
-                default:
-                    HandleChat(session, message, type, itemLinkPacket);
-                    break;
-            }
+            return;
         }
 
-        private static void HandleChannelChat(/*GameSession session, string message, ChatType type*/)
+        PacketWriter itemLinkPacket = GetItemLink(message);
+
+        switch (type)
         {
-            // TODO: Send to all players on current channel
-            // session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
+            case ChatType.Channel:
+                HandleChannelChat( /*session, message, type*/);
+                break;
+            case ChatType.Super:
+                HandleSuperChat(session, message, type, itemLinkPacket);
+                break;
+            case ChatType.World:
+                HandleWorldChat(session, message, type, itemLinkPacket);
+                break;
+            case ChatType.GuildAlert:
+                HandleGuildAlert(session, message, type, itemLinkPacket);
+                break;
+            case ChatType.Guild:
+                HandleGuildChat(session, message, type, itemLinkPacket);
+                break;
+            case ChatType.Party:
+                HandlePartyChat(session, message, type, itemLinkPacket);
+                break;
+            case ChatType.WhisperTo:
+                HandleWhisperChat(session, recipient, message, itemLinkPacket);
+                break;
+            case ChatType.Club:
+                HandleClubChat( /*session, message, type, clubId, itemLinkPacket*/);
+                break;
+            default:
+                HandleChat(session, message, type, itemLinkPacket);
+                break;
+        }
+    }
+
+    private static void HandleChannelChat( /*GameSession session, string message, ChatType type*/)
+    {
+        // TODO: Send to all players on current channel
+        // session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
+    }
+
+    private static void HandleSuperChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        if (session.Player.SuperChat == 0)
+        {
+            return;
         }
 
-        private static void HandleSuperChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Function.Id == session.Player.SuperChat);
+        if (superChatItem == null)
         {
-            if (session.Player.SuperChat == 0)
-            {
-                return;
-            }
-
-            Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Function.Id == session.Player.SuperChat);
-            if (superChatItem == null)
-            {
-                session.Player.SuperChat = 0;
-                session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
-                session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientSuperChatThemes, ChatType.NoticeAlert));
-                return;
-            }
-
-            if (itemLinkPacket != null)
-            {
-                MapleServer.BroadcastPacketAll(itemLinkPacket);
-            }
-            MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
-            InventoryController.Consume(session, superChatItem.Uid, 1);
-            session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
             session.Player.SuperChat = 0;
+            session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientSuperChatThemes, ChatType.NoticeAlert));
+            return;
         }
 
-        private static void HandleWorldChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        if (itemLinkPacket != null)
         {
-            Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
-            if (voucher != null)
-            {
-                session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
-                InventoryController.Consume(session, voucher.Uid, 1);
-            }
-            else if (!session.Player.Account.RemoveMerets(30))
-            {
-                session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
-                return;
-            }
+            MapleServer.BroadcastPacketAll(itemLinkPacket);
+        }
+        MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
+        session.Player.Inventory.ConsumeItem(session, superChatItem.Uid, 1);
+        session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
+        session.Player.SuperChat = 0;
+    }
 
-            if (itemLinkPacket != null)
-            {
-                MapleServer.BroadcastPacketAll(itemLinkPacket);
-            }
-            MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
+    private static void HandleWorldChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
+        if (voucher != null)
+        {
+            session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));
+            session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
+        }
+        else if (!session.Player.Account.RemoveMerets(30))
+        {
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientMerets, ChatType.NoticeAlert));
+            return;
         }
 
-        private static void HandleGuildAlert(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        if (itemLinkPacket != null)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
-            {
-                return;
-            }
+            MapleServer.BroadcastPacketAll(itemLinkPacket);
+        }
+        MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
+    }
 
-            GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
-            if (member == null)
-            {
-                return;
-            }
-
-            if (!((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanGuildAlert))
-            {
-                return;
-            }
-
-            if (itemLinkPacket != null)
-            {
-                guild.BroadcastPacketGuild(itemLinkPacket);
-            }
-            guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
+    private static void HandleGuildAlert(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+        if (guild == null)
+        {
+            return;
         }
 
-        private static void HandleGuildChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        GuildMember member = guild.Members.FirstOrDefault(x => x.Player == session.Player);
+        if (member == null)
         {
-            Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
-            if (guild == null)
-            {
-                return;
-            }
-
-            if (itemLinkPacket != null)
-            {
-                guild.BroadcastPacketGuild(itemLinkPacket);
-            }
-            guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
+            return;
         }
 
-        private static void HandlePartyChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        if (!((GuildRights) guild.Ranks[member.Rank].Rights).HasFlag(GuildRights.CanGuildAlert))
         {
-            Party party = session.Player.Party;
-            if (party == null)
-            {
-                return;
-            }
-
-            if (itemLinkPacket != null)
-            {
-                party.BroadcastPacketParty(itemLinkPacket);
-            }
-            party.BroadcastPacketParty(ChatPacket.Send(session.Player, message, type));
+            return;
         }
 
-        private static void HandleWhisperChat(GameSession session, string recipient, string message, Packet itemLinkPacket)
+        if (itemLinkPacket != null)
         {
-            Player recipientPlayer = GameServer.Storage.GetPlayerByName(recipient);
-            if (recipientPlayer == null)
-            {
-                session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
-                return;
-            }
+            guild.BroadcastPacketGuild(itemLinkPacket);
+        }
+        guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
+    }
 
-            if (BuddyManager.IsBlocked(session.Player, recipientPlayer))
-            {
-                session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
-                return;
-            }
-
-            if (itemLinkPacket != null)
-            {
-                recipientPlayer.Session.Send(itemLinkPacket);
-                session.Send(itemLinkPacket);
-            }
-            recipientPlayer.Session.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
-            session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
+    private static void HandleGuildChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+        if (guild == null)
+        {
+            return;
         }
 
-        private static void HandleClubChat(/*GameSession session, string message, ChatType type, long clubId, Packet itemLinkPacket*/)
+        if (itemLinkPacket != null)
         {
-            // TODO
+            guild.BroadcastPacketGuild(itemLinkPacket);
+        }
+        guild.BroadcastPacketGuild(ChatPacket.Send(session.Player, message, type));
+    }
+
+    private static void HandlePartyChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        Party party = session.Player.Party;
+        if (party == null)
+        {
+            return;
         }
 
-        private static void HandleChat(GameSession session, string message, ChatType type, Packet itemLinkPacket)
+        if (itemLinkPacket != null)
         {
-            if (itemLinkPacket != null)
-            {
-                session.FieldManager.BroadcastPacket(itemLinkPacket);
-            }
-            session.FieldManager.SendChat(session.Player, message, type);
+            party.BroadcastPacketParty(itemLinkPacket);
+        }
+        party.BroadcastPacketParty(ChatPacket.Send(session.Player, message, type));
+    }
+
+    private static void HandleWhisperChat(GameSession session, string recipient, string message, PacketWriter itemLinkPacket)
+    {
+        Player recipientPlayer = GameServer.PlayerManager.GetPlayerByName(recipient);
+        if (recipientPlayer == null)
+        {
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
+            return;
         }
 
-        private static Packet GetItemLink(string message)
+        if (BuddyManager.IsBlocked(session.Player, recipientPlayer))
         {
-            // '<' signals a message containing an item link
-            if (!message.Contains('<'))
+            session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
+            return;
+        }
+
+        if (itemLinkPacket != null)
+        {
+            recipientPlayer.Session.Send(itemLinkPacket);
+            session.Send(itemLinkPacket);
+        }
+        recipientPlayer.Session.Send(ChatPacket.Send(session.Player, message, ChatType.WhisperFrom));
+        session.Send(ChatPacket.Send(recipientPlayer, message, ChatType.WhisperTo));
+    }
+
+    private static void HandleClubChat( /*GameSession session, string message, ChatType type, long clubId, ByteWriter itemLinkPacket*/)
+    {
+        // TODO
+    }
+
+    private static void HandleChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
+    {
+        if (itemLinkPacket != null)
+        {
+            session.FieldManager.BroadcastPacket(itemLinkPacket);
+        }
+        session.FieldManager.SendChat(session.Player, message, type);
+    }
+
+    private static PacketWriter GetItemLink(string message)
+    {
+        // '<' signals a message containing an item link
+        if (!message.Contains('<'))
+        {
+            return null;
+        }
+        PacketWriter itemLinkPacket = null;
+
+        XmlDocument itemLinkMessages = new();
+        itemLinkMessages.LoadXml("<xml>" + message + "</xml>");
+
+        List<Item> items = new();
+
+        foreach (XmlNode itemLinkMessage in itemLinkMessages.SelectNodes("//A"))
+        {
+            string[] itemLinkMessageSplit = itemLinkMessage.Attributes["HREF"].Value.Split(",");
+            string itemLinkType = itemLinkMessageSplit[0].Split(":")[1];
+            long itemUid = long.Parse(itemLinkMessageSplit[1]);
+            Item item = null;
+
+            if (itemLinkType == "itemTooltip")
             {
-                return null;
-            }
-            Packet itemLinkPacket = null;
-
-            XmlDocument itemLinkMessages = new XmlDocument();
-            itemLinkMessages.LoadXml("<xml>" + message + "</xml>");
-
-            List<Item> items = new();
-
-            foreach (XmlNode itemLinkMessage in itemLinkMessages.SelectNodes("//A"))
-            {
-                string[] itemLinkMessageSplit = itemLinkMessage.Attributes["HREF"].Value.Split(",");
-                string itemLinkType = itemLinkMessageSplit[0].Split(":")[1];
-                long itemUid = long.Parse(itemLinkMessageSplit[1]);
-                Item item = null;
-
-                if (itemLinkType == "itemTooltip")
+                int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
+                if (itemToolTipType == 2) // quest/navigator items
                 {
-                    int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
-                    if (itemToolTipType == 2) // quest/navigator items
+                    if (ItemMetadataStorage.IsValid((int) itemUid))
                     {
-                        if (ItemMetadataStorage.IsValid((int) itemUid))
+                        item = new((int) itemUid, false)
                         {
-                            item = new Item((int) itemUid, false)
-                            {
-                                Uid = itemUid
-                            };
-                        }
-                    }
-                    else if (itemToolTipType == 3) // normal item
-                    {
-                        item = DatabaseManager.Items.FindByUid(itemUid);
+                            Uid = itemUid
+                        };
                     }
                 }
-                if (item != null)
+                else if (itemToolTipType == 3) // normal item
                 {
-                    items.Add(item);
+                    item = DatabaseManager.Items.FindByUid(itemUid);
                 }
             }
-            if (items.Count > 0)
+            if (item != null)
             {
-                itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
+                items.Add(item);
             }
-            return itemLinkPacket;
         }
+        if (items.Count > 0)
+        {
+            itemLinkPacket = ItemLinkPacket.SendLinkItem(items);
+        }
+        return itemLinkPacket;
     }
 }

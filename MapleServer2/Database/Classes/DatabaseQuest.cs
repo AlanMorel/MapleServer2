@@ -2,56 +2,61 @@
 using Newtonsoft.Json;
 using SqlKata.Execution;
 
-namespace MapleServer2.Database.Classes
+namespace MapleServer2.Database.Classes;
+
+public class DatabaseQuest : DatabaseTable
 {
-    public class DatabaseQuest : DatabaseTable
+    public DatabaseQuest() : base("quests") { }
+
+    public long Insert(QuestStatus questStatus)
     {
-        public DatabaseQuest() : base("quests") { }
-
-        public long Insert(QuestStatus questStatus)
+        return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            return QueryFactory.Query(TableName).InsertGetId<long>(new
-            {
-                questStatus.Id,
-                questStatus.Started,
-                questStatus.Completed,
-                start_timestamp = questStatus.StartTimestamp,
-                complete_timestamp = questStatus.CompleteTimestamp,
-                questStatus.Tracked,
-                condition = JsonConvert.SerializeObject(questStatus.Condition),
-                character_id = questStatus.CharacterId
-            });
+            questStatus.Id,
+            questStatus.Started,
+            questStatus.Completed,
+            start_timestamp = questStatus.StartTimestamp,
+            complete_timestamp = questStatus.CompleteTimestamp,
+            questStatus.Tracked,
+            condition = JsonConvert.SerializeObject(questStatus.Condition),
+            character_id = questStatus.CharacterId
+        });
+    }
+
+    public List<QuestStatus> FindAllByCharacterId(long characterId)
+    {
+        IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
+        List<QuestStatus> questStatusList = new();
+        foreach (dynamic data in results)
+        {
+            questStatusList.Add((QuestStatus) ReadQuest(data));
         }
 
-        public List<QuestStatus> FindAllByCharacterId(long characterId)
+        return questStatusList;
+    }
+
+    public void Update(QuestStatus questStatus)
+    {
+        QueryFactory.Query(TableName).Where("id", questStatus.Id).Update(new
         {
-            IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
-            List<QuestStatus> questStatusList = new List<QuestStatus>();
-            foreach (dynamic data in results)
-            {
-                questStatusList.Add((QuestStatus) ReadQuest(data));
-            }
+            questStatus.Id,
+            questStatus.Started,
+            questStatus.Completed,
+            start_timestamp = questStatus.StartTimestamp,
+            complete_timestamp = questStatus.CompleteTimestamp,
+            questStatus.Tracked,
+            condition = JsonConvert.SerializeObject(questStatus.Condition),
+            character_id = questStatus.CharacterId
+        });
+    }
 
-            return questStatusList;
-        }
+    public bool Delete(long uid)
+    {
+        return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
+    }
 
-        public void Update(QuestStatus questStatus)
-        {
-            QueryFactory.Query(TableName).Where("id", questStatus.Id).Update(new
-            {
-                questStatus.Id,
-                questStatus.Started,
-                questStatus.Completed,
-                start_timestamp = questStatus.StartTimestamp,
-                complete_timestamp = questStatus.CompleteTimestamp,
-                questStatus.Tracked,
-                condition = JsonConvert.SerializeObject(questStatus.Condition),
-                character_id = questStatus.CharacterId
-            });
-        }
-
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
-
-        private static QuestStatus ReadQuest(dynamic data) => new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.started, data.completed, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
+    private static QuestStatus ReadQuest(dynamic data)
+    {
+        return new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.started, data.completed, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
     }
 }

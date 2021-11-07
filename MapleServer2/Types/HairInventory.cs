@@ -1,12 +1,11 @@
-﻿namespace MapleServer2.Types
-{
-    public class HairInventory
-    {
-        public List<Item> SavedHair = new List<Item>();
-        public Item RandomHair;
+﻿namespace MapleServer2.Types;
 
-        public HairInventory()
-        {
-        }
+public class HairInventory
+{
+    public List<Item> SavedHair = new();
+    public Item RandomHair;
+
+    public HairInventory()
+    {
     }
 }

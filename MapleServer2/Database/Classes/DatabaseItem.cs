@@ -5,15 +5,20 @@ using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 
-namespace MapleServer2.Database.Classes
+namespace MapleServer2.Database.Classes;
+
+public class DatabaseItem : DatabaseTable
 {
-    public class DatabaseItem : DatabaseTable
+    private readonly JsonSerializerSettings Settings = new()
     {
-        private readonly JsonSerializerSettings Settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+        TypeNameHandling = TypeNameHandling.All
+    };
 
-        public DatabaseItem() : base("items") { }
+    public DatabaseItem() : base("items") { }
 
-        public long Insert(Item item)
+    public long Insert(Item item)
+    {
+        return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
             return QueryFactory.Query(TableName).InsertGetId<long>(new
             {
@@ -60,111 +65,116 @@ namespace MapleServer2.Database.Classes
             });
         }
 
-        public Item FindByUid(long uid)
+    public Item FindByUid(long uid)
+    {
+        dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
+
+        if (result == null)
         {
-            dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
-
-            if (result == null)
-            {
-                return null;
-            }
-
-            return ReadItem(result);
+            return null;
         }
 
-        public List<Item> FindAllByInventoryId(long inventoryId)
+        return ReadItem(result);
+    }
+
+    public List<Item> FindAllByInventoryId(long inventoryId)
+    {
+        IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("inventory_id", inventoryId).Get();
+        List<Item> items = new();
+        foreach (dynamic data in result)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("inventory_id", inventoryId).Get();
-            List<Item> items = new List<Item>();
-            foreach (dynamic data in result)
-            {
-                items.Add((Item) ReadItem(data));
-            }
-            return items;
+            items.Add((Item) ReadItem(data));
         }
+        return items;
+    }
 
-        public List<Item> FindAllByBankInventoryId(long bankInventoryId)
+    public List<Item> FindAllByBankInventoryId(long bankInventoryId)
+    {
+        IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("bank_inventory_id", bankInventoryId).Get();
+        List<Item> items = new();
+        foreach (dynamic data in result)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("bank_inventory_id", bankInventoryId).Get();
-            List<Item> items = new List<Item>();
-            foreach (dynamic data in result)
-            {
-                items.Add((Item) ReadItem(data));
-            }
-            return items;
+            items.Add((Item) ReadItem(data));
         }
+        return items;
+    }
 
-        public Dictionary<long, Item> FindAllByHomeId(long homeId)
+    public Dictionary<long, Item> FindAllByHomeId(long homeId)
+    {
+        IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("home_id", homeId).Get();
+        Dictionary<long, Item> items = new();
+        foreach (dynamic data in result)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("home_id", homeId).Get();
-            Dictionary<long, Item> items = new Dictionary<long, Item>();
-            foreach (dynamic data in result)
-            {
-                Item item = (Item) ReadItem(data);
-                items.Add(item.Uid, item);
-            }
-            return items;
+            Item item = (Item) ReadItem(data);
+            items.Add(item.Uid, item);
         }
+        return items;
+    }
 
-        public List<Item> FindAllByMailId(long mailId)
+    public List<Item> FindAllByMailId(long mailId)
+    {
+        IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("mail_id", mailId).Get();
+        List<Item> items = new();
+        foreach (dynamic data in result)
         {
-            IEnumerable<dynamic> result = QueryFactory.Query(TableName).Where("mail_id", mailId).Get();
-            List<Item> items = new List<Item>();
-            foreach (dynamic data in result)
-            {
-                items.Add((Item) ReadItem(data));
-            }
-            return items;
+            items.Add((Item) ReadItem(data));
         }
+        return items;
+    }
 
-        public void Update(Item item)
+    public void Update(Item item)
+    {
+        QueryFactory.Query(TableName).Where("uid", item.Uid).Update(new
         {
-            QueryFactory.Query(TableName).Where("uid", item.Uid).Update(new
-            {
-                item.Level,
-                item_slot = (byte) item.ItemSlot,
-                gem_slot = (byte) item.GemSlot,
-                item.Rarity,
-                play_count = item.PlayCount,
-                item.Amount,
-                bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
-                mail_id = item.MailId == 0 ? null : (int?) item.MailId,
-                repackage_count = item.RepackageCount,
-                item.Charges,
-                color = JsonConvert.SerializeObject(item.Color),
-                creation_time = item.CreationTime,
-                enchant_exp = item.EnchantExp,
-                item.Enchants,
-                expiry_time = item.ExpiryTime,
-                face_decoration_data = JsonConvert.SerializeObject(item.FaceDecorationData),
-                gacha_dismantle_id = item.GachaDismantleId,
-                hair_data = JsonConvert.SerializeObject(item.HairData),
-                hat_data = JsonConvert.SerializeObject(item.HatData),
-                home_id = item.HomeId == 0 ? null : (int?) item.HomeId,
-                item.Id,
-                inventory_id = item.InventoryId == 0 ? null : (int?) item.InventoryId,
-                is_equipped = item.IsEquipped,
-                is_locked = item.IsLocked,
-                owner_character_id = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
-                owner_character_name = item.OwnerCharacterName,
-                paired_character_id = item.PairedCharacterId,
-                paired_character_name = item.PairedCharacterName,
-                pet_skin_badge_id = item.PetSkinBadgeId,
-                remaining_glamor_forges = item.RemainingGlamorForges,
-                remaining_trades = item.RemainingTrades,
-                score = JsonConvert.SerializeObject(item.Score),
-                item.Slot,
-                stats = JsonConvert.SerializeObject(item.Stats, Settings),
-                times_attributes_changed = item.TimesAttributesChanged,
-                transfer_flag = item.TransferFlag,
-                transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
-                unlock_time = item.UnlockTime
-            });
-        }
+            item.Level,
+            item_slot = (byte) item.ItemSlot,
+            gem_slot = (byte) item.GemSlot,
+            item.Rarity,
+            play_count = item.PlayCount,
+            item.Amount,
+            bank_inventory_id = item.BankInventoryId == 0 ? null : (int?) item.BankInventoryId,
+            mail_id = item.MailId == 0 ? null : (int?) item.MailId,
+            repackage_count = item.RepackageCount,
+            item.Charges,
+            color = JsonConvert.SerializeObject(item.Color),
+            creation_time = item.CreationTime,
+            enchant_exp = item.EnchantExp,
+            item.Enchants,
+            expiry_time = item.ExpiryTime,
+            face_decoration_data = JsonConvert.SerializeObject(item.FaceDecorationData),
+            gacha_dismantle_id = item.GachaDismantleId,
+            hair_data = JsonConvert.SerializeObject(item.HairData),
+            hat_data = JsonConvert.SerializeObject(item.HatData),
+            home_id = item.HomeId == 0 ? null : (int?) item.HomeId,
+            item.Id,
+            inventory_id = item.InventoryId == 0 ? null : (int?) item.InventoryId,
+            is_equipped = item.IsEquipped,
+            is_locked = item.IsLocked,
+            owner_character_id = item.OwnerCharacterId == 0 ? null : (int?) item.OwnerCharacterId,
+            owner_character_name = item.OwnerCharacterName,
+            paired_character_id = item.PairedCharacterId,
+            paired_character_name = item.PairedCharacterName,
+            pet_skin_badge_id = item.PetSkinBadgeId,
+            remaining_glamor_forges = item.RemainingGlamorForges,
+            remaining_trades = item.RemainingTrades,
+            score = JsonConvert.SerializeObject(item.Score),
+            item.Slot,
+            stats = JsonConvert.SerializeObject(item.Stats, Settings),
+            times_attributes_changed = item.TimesAttributesChanged,
+            transfer_flag = item.TransferFlag,
+            transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
+            unlock_time = item.UnlockTime
+        });
+    }
 
-        public bool Delete(long uid) => QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
+    public bool Delete(long uid)
+    {
+        return QueryFactory.Query(TableName).Where("uid", uid).Delete() == 1;
+    }
 
-        private Item ReadItem(dynamic data)
+    private Item ReadItem(dynamic data)
+    {
+        return new()
         {
             return new Item()
             {

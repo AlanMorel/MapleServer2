@@ -1,37 +1,58 @@
 ﻿using MapleServer2.Types;
 
-namespace MapleServer2.Managers
+namespace MapleServer2.Managers;
+
+public class GuildManager
 {
-    public class GuildManager
+    private readonly Dictionary<long, Guild> GuildList;
+
+    public GuildManager()
     {
-        private readonly Dictionary<long, Guild> GuildList;
+        GuildList = new();
+    }
 
-        public GuildManager() => GuildList = new Dictionary<long, Guild>();
+    public void AddGuild(Guild guild)
+    {
+        GuildList.Add(guild.Id, guild);
+    }
 
-        public void AddGuild(Guild guild) => GuildList.Add(guild.Id, guild);
+    public void RemoveGuild(Guild guild)
+    {
+        GuildList.Remove(guild.Id);
+    }
 
-        public void RemoveGuild(Guild guild) => GuildList.Remove(guild.Id);
+    public List<Guild> GetGuildList()
+    {
+        return GuildList.Values.Where(x => x.Searchable).ToList();
+    }
 
-        public List<Guild> GetGuildList() => GuildList.Values.Where(x => x.Searchable).ToList();
+    public List<Guild> GetGuildListByName(string name)
+    {
+        List<Guild> allGuilds = GetGuildList();
+        return allGuilds.Where(x => x.Name.Contains(name)).ToList();
+    }
 
-        public List<Guild> GetGuildListByName(string name)
-        {
-            List<Guild> allGuilds = GetGuildList();
-            return allGuilds.Where(x => x.Name.Contains(name)).ToList();
-        }
+    public Guild GetGuildById(long id)
+    {
+        return GuildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;
+    }
 
-        public Guild GetGuildById(long id) => GuildList.TryGetValue(id, out Guild foundGuild) ? foundGuild : null;
-
-        public Guild GetGuildByName(string name) =>
-            GuildList.Values
+    public Guild GetGuildByName(string name)
+    {
+        return GuildList.Values
             .Where(guild => guild.Name == name)
             .FirstOrDefault();
+    }
 
-        public Guild GetGuildByLeader(Player leader) =>
-            GuildList.Values
+    public Guild GetGuildByLeader(Player leader)
+    {
+        return GuildList.Values
             .Where(guild => guild.LeaderCharacterId == leader.CharacterId)
             .FirstOrDefault();
+    }
 
-        public List<Guild> GetAllGuilds() => GuildList.Values.ToList();
+    public List<Guild> GetAllGuilds()
+    {
+        return GuildList.Values.ToList();
     }
 }

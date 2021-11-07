@@ -1,20 +1,19 @@
-﻿namespace GameDataParser.Files
+﻿namespace GameDataParser.Files;
+
+public abstract class Exporter<Metadata> : MetadataExporter
 {
-    public abstract class Exporter<Metadata> : MetadataExporter
+    protected MetadataResources Resources;
+
+    public Exporter(MetadataResources resources, string slug) : base(slug)
     {
-        protected MetadataResources Resources;
-
-        public Exporter(MetadataResources resources, string slug) : base(slug)
-        {
-            Resources = resources;
-        }
-
-        protected override void Serialize()
-        {
-            Metadata entities = Parse();
-            Write(entities);
-        }
-
-        protected abstract Metadata Parse();
+        Resources = resources;
     }
+
+    protected override void Serialize()
+    {
+        Metadata entities = Parse();
+        Write(entities);
+    }
+
+    protected abstract Metadata Parse();
 }

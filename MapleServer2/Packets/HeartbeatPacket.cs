@@ -1,15 +1,14 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 
-namespace MapleServer2.Packets
+namespace MapleServer2.Packets;
+
+public static class HeartbeatPacket
 {
-    public static class HeartbeatPacket
+    public static PacketWriter Request()
     {
-        public static Packet Request()
-        {
-            PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
-            pWriter.WriteInt(Environment.TickCount);
-            return pWriter;
-        }
+        PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_HEARTBEAT);
+        pWriter.WriteInt(Environment.TickCount);
+        return pWriter;
     }
 }

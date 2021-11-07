@@ -2,63 +2,65 @@
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
-namespace MapleServer2.Tools
+namespace MapleServer2.Tools;
+
+public class FieldManagerFactory
 {
-    public class FieldManagerFactory
+    private readonly Dictionary<int, List<FieldManager>> Managers;
+
+    public FieldManagerFactory()
     {
-        private readonly Dictionary<int, List<FieldManager>> Managers;
+        Managers = new();
+    }
 
-        public FieldManagerFactory()
+    public FieldManager GetManager(Player player)
+    {
+        lock (Managers)
         {
-            Managers = new Dictionary<int, List<FieldManager>>();
-        }
-
-        public FieldManager GetManager(Player player)
-        {
-            lock (Managers)
+            if (!Managers.TryGetValue(player.MapId, out List<FieldManager> list))
             {
-                if (!Managers.TryGetValue(player.MapId, out List<FieldManager> list))
+                list = new()
                 {
-                    list = new List<FieldManager>() { new FieldManager(player) };
-                    Managers[player.MapId] = list;
-                }
-
-                FieldManager manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
-                if (manager == default)
-                {
-                    manager = new FieldManager(player);
-                    Managers[player.MapId].Add(manager);
-                }
-
-                manager.Increment();
-                return manager;
+                    new(player)
+                };
+                Managers[player.MapId] = list;
             }
-        }
 
-        public bool Release(int key, long instanceId, Player player)
-        {
-            lock (Managers)
+            FieldManager manager = list.FirstOrDefault(x => x.InstanceId == player.InstanceId);
+            if (manager == default)
             {
-                if (!Managers.TryGetValue(key, out List<FieldManager> managerList))
-                {
-                    return false;
-                }
-
-                FieldManager fieldManager = managerList.FirstOrDefault(x => x.InstanceId == instanceId);
-                if (fieldManager == default || fieldManager.Decrement() > 0)
-                {
-                    return false;
-                }
-
-                //is only called if the leaving player is the last player on the map
-                //get the dungeonsession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
-                if (GameServer.DungeonManager.IsDungeonUsingFieldInstance(fieldManager, player))
-                {
-                    return false;
-                }
-
-                return managerList.Remove(fieldManager);
+                manager = new(player);
+                Managers[player.MapId].Add(manager);
             }
+
+            manager.Increment();
+            return manager;
+        }
+    }
+
+    public bool Release(int key, long instanceId, Player player)
+    {
+        lock (Managers)
+        {
+            if (!Managers.TryGetValue(key, out List<FieldManager> managerList))
+            {
+                return false;
+            }
+
+            FieldManager fieldManager = managerList.FirstOrDefault(x => x.InstanceId == instanceId);
+            if (fieldManager == default || fieldManager.Decrement() > 0)
+            {
+                return false;
+            }
+
+            //is only called if the leaving player is the last player on the map
+            //get the dungeonsession that corresponds with the about to be released instance, in case that the player is in a party (group session) and solo session
+            if (GameServer.DungeonManager.IsDungeonUsingFieldInstance(fieldManager, player))
+            {
+                return false;
+            }
+
+            return managerList.Remove(fieldManager);
         }
     }
 }

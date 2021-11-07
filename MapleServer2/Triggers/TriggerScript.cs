@@ -1,32 +1,31 @@
 ﻿using Maple2.Trigger;
 
-namespace MapleServer2.Triggers
+namespace MapleServer2.Triggers;
+
+public class TriggerScript
 {
-    public class TriggerScript
+    private readonly TriggerContext Context;
+
+    private TriggerState State;
+    private TriggerState NextState;
+
+    public TriggerScript(TriggerContext context, TriggerState start)
     {
-        private readonly TriggerContext Context;
+        Context = context;
+        NextState = start;
+    }
 
-        private TriggerState State;
-        private TriggerState NextState;
-
-        public TriggerScript(TriggerContext context, TriggerState start)
+    public void Next()
+    {
+        if (NextState != null)
         {
-            Context = context;
-            NextState = start;
+            State?.OnExit();
+            Context.NextTick = 0;
+            State = NextState;
+            State.OnEnter();
+            NextState = null;
         }
 
-        public void Next()
-        {
-            if (NextState != null)
-            {
-                State?.OnExit();
-                Context.NextTick = 0;
-                State = NextState;
-                State.OnEnter();
-                NextState = null;
-            }
-
-            NextState = State.Execute();
-        }
+        NextState = State.Execute();
     }
 }
