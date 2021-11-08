@@ -18,6 +18,9 @@ public class Account
     public Currency EventMeret { get; set; }
     public Currency MesoToken { get; private set; }
 
+    public int MesoMarketDailyListings { get; set; }
+    public int MesoMarketMonthlyPurchases { get; set; }
+
     public long HomeId;
     public Home Home;
     public BankInventory BankInventory;
@@ -26,7 +29,7 @@ public class Account
 
     public Account(long accountId, string username, string passwordHash,
         long creationTime, long lastLoginTime, int characterSlots, long meretAmount,
-        long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration,
+        long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration, int mesoMarketDailyListings, int mesoMarketMonthlyPurchases,
         BankInventory bankInventory)
     {
         Id = accountId;
@@ -42,14 +45,16 @@ public class Account
         BankInventory = bankInventory;
         VIPExpiration = vipExpiration;
         HomeId = homeId;
+        MesoMarketDailyListings = mesoMarketDailyListings;
+        MesoMarketMonthlyPurchases = mesoMarketMonthlyPurchases;
     }
 
     public Account(string username, string passwordHash)
     {
         Username = username;
         PasswordHash = passwordHash;
-        CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-        LastLoginTime = CreationTime;
+        CreationTime = TimeInfo.Now() + Environment.TickCount;
+        LastLoginTime = TimeInfo.Now();
         CharacterSlots = 7;
         Meret = new(CurrencyType.Meret, 0);
         GameMeret = new(CurrencyType.GameMeret, 0);
@@ -82,6 +87,6 @@ public class Account
 
     public bool IsVip()
     {
-        return VIPExpiration > DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        return VIPExpiration > TimeInfo.Now();
     }
 }

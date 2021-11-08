@@ -63,7 +63,7 @@ public class QuestHandler : GamePacketHandler
         }
 
         questStatus.Started = true;
-        questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        questStatus.StartTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questId));
     }
@@ -80,7 +80,7 @@ public class QuestHandler : GamePacketHandler
         }
 
         questStatus.Completed = true;
-        questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        questStatus.CompleteTimestamp = TimeInfo.Now();
 
         session.Player.Levels.GainExp(questStatus.Reward.Exp);
         session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
@@ -132,7 +132,7 @@ public class QuestHandler : GamePacketHandler
             session.Player.Inventory.AddItem(session, item, true);
         }
         questStatus.Completed = true;
-        questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        questStatus.CompleteTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.CompleteQuest(questId, false));
     }
@@ -151,7 +151,7 @@ public class QuestHandler : GamePacketHandler
             }
 
             QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-            QuestStatus questStatus = new(session.Player, metadata, true, DateTimeOffset.Now.ToUnixTimeSeconds());
+            QuestStatus questStatus = new(session.Player, metadata, true, TimeInfo.Now());
             list.Add(questStatus);
             session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
         }

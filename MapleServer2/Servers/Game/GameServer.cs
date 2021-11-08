@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Autofac;
+using Maple2Storage.Extensions;
 using MapleServer2.Commands.Core;
 using MapleServer2.Database;
 using MapleServer2.Managers;
@@ -23,6 +24,7 @@ public class GameServer : Server<GameSession>
     public static readonly GlobalEventManager GlobalEventManager = new();
     public static readonly MailManager MailManager = new();
     public static readonly BlackMarketManager BlackMarketManager = new();
+    public static readonly MesoMarketManager MesoMarketManager = new();
 
     private List<GameSession> Sessions;
 
@@ -40,6 +42,7 @@ public class GameServer : Server<GameSession>
         Start(port);
         CommandManager.RegisterAll(Assembly.GetAssembly(typeof(CommandBase)));
         Sessions = new();
+        Logger.Info("Game Server Started.".ColorGreen());
     }
 
     public override void AddSession(GameSession session)

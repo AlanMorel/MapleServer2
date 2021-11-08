@@ -1,0 +1,42 @@
+[
+  {
+    "Key": "MaxCharacterSlots",
+    "Value": "11"
+  },
+  {
+    "Key": "MesoMarketTax",
+    "Value": "0"
+  },
+  {
+    "Key": "MesoMarketPriceRange",
+    "Value": "0.2"
+  },
+  {
+    "Key": "MesoMarketAveragePrice",
+    "Value": "100"
+  },
+  {
+    "Key": "MesoMarketTotaListingsLimit",
+    "Value": "5"
+  },
+  {
+    "Key": "MesoMarketDailyListingsLimit",
+    "Value": "5"
+  },
+  {
+    "Key": "MesoMarketMonthlyPurchaseLimit",
+    "Value": "4"
+  },
+  {
+    "Key": "MesoMarketListingDayDuration",
+    "Value": "2"
+  },
+  {
+    "Key": "MesoMarketListingsDisplayCount",
+    "Value": "100"
+  },
+  {
+    "Key": "BlackMarketSalesFeeRate",
+    "Value": "0.1"
+  }
+]

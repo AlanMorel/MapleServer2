@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -22,7 +23,7 @@ public static class TimeSyncPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
         pWriter.Write(TimeSyncPacketMode.SetSessionServerTick);
         pWriter.WriteInt(Environment.TickCount);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteInt(key);
@@ -35,7 +36,7 @@ public static class TimeSyncPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
         pWriter.Write(TimeSyncPacketMode.SetInitial1);
         pWriter.WriteInt(Environment.TickCount);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
         pWriter.WriteInt();
 
@@ -47,7 +48,7 @@ public static class TimeSyncPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
         pWriter.Write(TimeSyncPacketMode.Request);
         pWriter.WriteInt(Environment.TickCount);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte();
         pWriter.WriteInt();
 
@@ -58,7 +59,7 @@ public static class TimeSyncPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_TIME_SYNC);
         pWriter.Write(TimeSyncPacketMode.SetInitial2);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
 
         return pWriter;
     }

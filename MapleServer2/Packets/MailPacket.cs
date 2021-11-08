@@ -57,7 +57,7 @@ public static class MailPacket
         pWriter.WriteLong(mail.Id);
         pWriter.WriteByte(1);
         pWriter.WriteByte();
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         return pWriter;
     }
 
@@ -138,9 +138,9 @@ public static class MailPacket
 
         pWriter.WriteLong(mail.Mesos);
         pWriter.WriteLong(); // last purchase timestamp?
+        pWriter.WriteLong(mail.Merets);
         pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
+        pWriter.WriteLong(); // red meret
         pWriter.WriteLong();
 
         bool unk = false;
@@ -152,7 +152,7 @@ public static class MailPacket
             pWriter.WriteLong();
             pWriter.WriteLong();
         }
-        pWriter.WriteLong(mail.ReadTimestamp > 0 ? mail.ReadTimestamp + Environment.TickCount : 0);
+        pWriter.WriteLong(mail.ReadTimestamp);
         pWriter.WriteLong(mail.ExpiryTimestamp);
         pWriter.WriteLong(mail.SentTimestamp);
         pWriter.WriteUnicodeString("");

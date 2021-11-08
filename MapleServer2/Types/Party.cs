@@ -33,7 +33,7 @@ public class Party
         };
         PartyFinderId = 0;
         Approval = true;
-        CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
 
         AddMember(partyLeader);
     }
@@ -52,7 +52,7 @@ public class Party
         PartyFinderId = GuidGenerator.Long();
         Leader = player;
         RecruitMemberCount = recruitMemberCount;
-        CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
 
         AddMember(player);
     }

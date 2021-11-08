@@ -17,7 +17,7 @@ public class CharacterInfoPacket
         }
         pWriter.WriteLong(); // unknown
         pWriter.WriteLong(player.CharacterId);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
 
         PacketWriter characterBuffer = new();
         characterBuffer.WriteLong(player.AccountId);

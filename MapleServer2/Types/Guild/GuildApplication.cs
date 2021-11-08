@@ -14,7 +14,7 @@ public class GuildApplication
     {
         CharacterId = player;
         GuildId = guild;
-        CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
+        CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
         Id = DatabaseManager.GuildApplications.Insert(this);
     }
 

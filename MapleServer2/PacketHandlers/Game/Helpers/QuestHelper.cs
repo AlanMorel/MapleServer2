@@ -43,7 +43,7 @@ public class QuestHelper
             }
 
             quest.Completed = true;
-            quest.CompleteTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            quest.CompleteTimestamp = TimeInfo.Now();
             DatabaseManager.Quests.Update(quest);
 
             session.Player.Levels.GainExp(quest.Reward.Exp);

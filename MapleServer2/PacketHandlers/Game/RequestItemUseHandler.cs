@@ -107,7 +107,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
 
         if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
         {
@@ -337,7 +337,7 @@ public class RequestItemUseHandler : GamePacketHandler
                             "",
                             $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
                             items,
-                            0, out Mail mail);
+                            0, 0, out Mail mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
@@ -362,7 +362,7 @@ public class RequestItemUseHandler : GamePacketHandler
         Item badge = new(70100000)
         {
             PetSkinBadgeId = pet.Id,
-            CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            CreationTime = TimeInfo.Now() + Environment.TickCount
         };
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
@@ -395,7 +395,8 @@ public class RequestItemUseHandler : GamePacketHandler
     public static void HandleExpandCharacterSlot(GameSession session, Item item)
     {
         Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
-        if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
+        int maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
+        if (account.CharacterSlots >= maxSlots)
         {
             session.Send(CouponUsePacket.MaxCharacterSlots());
             return;

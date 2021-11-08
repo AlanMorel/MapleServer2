@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Maple2Storage.Extensions;
 using MapleServer2.Network;
 
 namespace MapleServer2.Servers.Login;
@@ -14,6 +15,7 @@ public class LoginServer : Server<LoginSession>
         ushort port = ushort.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
         Start(port);
         Sessions = new();
+        Logger.Info("Login Server started.".ColorGreen());
     }
 
     public override void AddSession(LoginSession session)

@@ -39,7 +39,7 @@ public abstract class Server<T> where T : Session
             while (!Source.IsCancellationRequested)
             {
                 ClientConnected.Reset();
-                Logger.Info($"{GetType().Name} started on Port:{port}");
+                Logger.Info($"Thread from {GetType().Name} has started on Port:{port}");
                 Listener.BeginAcceptTcpClient(AcceptTcpClient, null);
                 ClientConnected.WaitOne();
             }
