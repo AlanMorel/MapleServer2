@@ -20,50 +20,42 @@ public class NpcMetadata
     [XmlElement(Order = 6)]
     public byte Level;
     [XmlElement(Order = 7)]
-    public int[] SkillIds = Array.Empty<int>();
-    [XmlElement(Order = 8)]
-    public byte[] SkillLevels = Array.Empty<byte>();
-    [XmlElement(Order = 9)]
-    public byte[] SkillPriorities = Array.Empty<byte>();
-    [XmlElement(Order = 10)]
-    public short[] SkillProbs = Array.Empty<short>();
-    [XmlElement(Order = 11)]
-    public short SkillCooldown;
-    [XmlElement(Order = 12)]
     public Dictionary<NpcState, (string, NpcAction, short)[]> StateActions = new();
-    [XmlElement(Order = 13)]
+    [XmlElement(Order = 8)]
     public string AiInfo = string.Empty; // This should be a deep structure, parsing the values in path to the XML referenced here.
-    [XmlElement(Order = 14)]
+    [XmlElement(Order = 9)]
     public int Experience; // -1, 0, or some other number 6287481 (max)
-    [XmlElement(Order = 15)]
+    [XmlElement(Order = 10)]
     public int[] GlobalDropBoxIds = Array.Empty<int>();
-    [XmlElement(Order = 16)]
+    [XmlElement(Order = 11)]
     public CoordS Rotation; // In degrees * 10
-    [XmlElement(Order = 17)]
-    public float WalkSpeed;
-    [XmlElement(Order = 18)]
-    public float RunSpeed;
-    [XmlElement(Order = 19)]
+    [XmlElement(Order = 12)]
     public short MoveRange;
-    [XmlElement(Order = 20)]
+    [XmlElement(Order = 13)]
     public CoordS Coord;
-    [XmlElement(Order = 21)]
+    [XmlElement(Order = 14)]
     public short Animation;
-    [XmlElement(Order = 22)]
+    [XmlElement(Order = 15)]
     public NpcMetadataBasic NpcMetadataBasic = new();
-    [XmlElement(Order = 23)]
-    public NpcMetadataCombat NpcMetadataCombat = new();
-    [XmlElement(Order = 24)]
-    public NpcMetadataDead NpcMetadataDead = new();
-    [XmlElement(Order = 25)]
+    [XmlElement(Order = 16)]
+    public NpcMetadataSpeed NpcMetadataSpeed = new();
+    [XmlElement(Order = 17)]
     public NpcMetadataDistance NpcMetadataDistance = new(); // combat related
-    [XmlElement(Order = 26)]
+    [XmlElement(Order = 18)]
+    public NpcMetadataSkill NpcMetadataSkill = new();
+    [XmlElement(Order = 19)]
+    public NpcMetadataEffect NpcMetadataEffect = new();
+    [XmlElement(Order = 20)]
+    public NpcMetadataCombat NpcMetadataCombat = new();
+    [XmlElement(Order = 21)]
+    public NpcMetadataDead NpcMetadataDead = new();
+    [XmlElement(Order = 22)]
     public NpcMetadataInteract NpcMetadataInteract = new();
-    [XmlElement(Order = 27)]
+    [XmlElement(Order = 23)]
     public NpcStats Stats;
-    [XmlElement(Order = 28)]
+    [XmlElement(Order = 24)]
     public short Kind; // 13 = Shop
-    [XmlElement(Order = 29)]
+    [XmlElement(Order = 25)]
     public int ShopId;
 
     public NpcMetadata() { }
@@ -123,6 +115,66 @@ public class NpcMetadataBasic
     }
 }
 [XmlType]
+public class NpcMetadataSpeed
+{
+    [XmlElement(Order = 1)]
+    public float RotationSpeed;
+    [XmlElement(Order = 2)]
+    public float WalkSpeed;
+    [XmlElement(Order = 3)]
+    public float RunSpeed;
+
+    public NpcMetadataSpeed() { }
+}
+[XmlType]
+public class NpcMetadataDistance
+{
+    [XmlElement(Order = 1)]
+    public int Avoid;
+    [XmlElement(Order = 2)]
+    public int Sight;
+    [XmlElement(Order = 3)]
+    public int SightHeightUp;
+    [XmlElement(Order = 4)]
+    public int SightHeightDown;
+    [XmlElement(Order = 5)]
+    public int CustomLastSightRadius;
+    [XmlElement(Order = 6)]
+    public int CustomLastSightUp;
+    [XmlElement(Order = 7)]
+    public int CustomLastSightDown;
+
+    public NpcMetadataDistance() { }
+}
+[XmlType]
+public class NpcMetadataSkill
+{
+    [XmlElement(Order = 1)]
+    public int[] SkillIds = Array.Empty<int>();
+    [XmlElement(Order = 2)]
+    public byte[] SkillLevels = Array.Empty<byte>();
+    [XmlElement(Order = 3)]
+    public byte[] SkillPriorities = Array.Empty<byte>();
+    [XmlElement(Order = 4)]
+    public short[] SkillProbs = Array.Empty<short>();
+    [XmlElement(Order = 5)]
+    public short SkillCooldown;
+
+    public NpcMetadataSkill() { }
+}
+[XmlType]
+public class NpcMetadataEffect
+{
+    [XmlElement(Order = 1)]
+    public int[] EffectIds = Array.Empty<int>();
+    [XmlElement(Order = 2)]
+    public byte[] EffectLevels = Array.Empty<byte>();
+    [XmlElement(Order = 3)]
+    public byte EffectGroup;
+
+    public NpcMetadataEffect() { }
+}
+[XmlType]
 public class NpcMetadataCombat
 {
     [XmlElement]
@@ -145,26 +197,6 @@ public class NpcMetadataDead
     public string[] Actions = Array.Empty<string>();
 
     public NpcMetadataDead() { }
-}
-[XmlType]
-public class NpcMetadataDistance
-{
-    [XmlElement]
-    public short Avoid;
-    [XmlElement]
-    public short Sight;
-    [XmlElement]
-    public int SightHeightUp;
-    [XmlElement]
-    public int SightHeightDown;
-    [XmlElement]
-    public int CustomLastSightRadius;
-    [XmlElement]
-    public int CustomLastSightUp;
-    [XmlElement]
-    public int CustomLastSightDown;
-
-    public NpcMetadataDistance() { }
 }
 [XmlType]
 public class NpcMetadataInteract
