@@ -24,8 +24,8 @@ public static class MapleServer
     public static async Task Main()
     {
         AppDomain currentDomain = AppDomain.CurrentDomain;
-        currentDomain.UnhandledException += new(UnhandledExceptionEventHandler);
-        currentDomain.ProcessExit += new(SaveAll);
+        currentDomain.UnhandledException += UnhandledExceptionEventHandler;
+        currentDomain.ProcessExit += SaveAll;
 
         // Force Globalization to en-US because we use periods instead of commas for decimals
         CultureInfo.CurrentCulture = new("en-US");
@@ -71,7 +71,7 @@ public static class MapleServer
         GameServer = gameScope.Resolve<GameServer>();
         GameServer.Start();
 
-        Logger.Info("Server Started.".ColorGreen());
+        Logger.Info("All Servers have been Started.".ColorGreen());
 
         // Input commands to the server
         while (true)
@@ -138,7 +138,7 @@ public static class MapleServer
         }
         DatabaseManager.RunQuery("UPDATE `characters` SET gathering_count = '[]'");
 
-        DatabaseManager.ServerInfo.SetLastDailyReset(DateTimeOffset.UtcNow.UtcDateTime);
+        DatabaseManager.ServerInfo.SetLastDailyReset(TimeInfo.CurrentDate());
     }
 
     public static void BroadcastPacketAll(PacketWriter packet, GameSession sender = null)

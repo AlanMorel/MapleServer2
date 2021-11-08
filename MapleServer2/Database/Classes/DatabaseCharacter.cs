@@ -16,6 +16,7 @@ public class DatabaseCharacter : DatabaseTable
         {
             account_id = player.AccountId,
             creation_time = player.CreationTime,
+            last_login_time = player.LastLoginTime,
             player.Name,
             player.Gender,
             player.Awakened,
@@ -271,6 +272,11 @@ public class DatabaseCharacter : DatabaseTable
             gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
         });
         DatabaseManager.Accounts.Update(player.Account);
+
+        if (player.GuildMember is not null)
+        {
+            DatabaseManager.GuildMembers.Update(player.GuildMember);
+        }
 
         DatabaseManager.Levels.Update(player.Levels);
         DatabaseManager.Wallets.Update(player.Wallet);

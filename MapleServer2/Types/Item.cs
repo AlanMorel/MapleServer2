@@ -93,7 +93,7 @@ public class Item
         Rarity = ItemMetadataStorage.GetRarity(id);
         PlayCount = ItemMetadataStorage.GetPlayCount(id);
         Color = ItemMetadataStorage.GetEquipColor(id);
-        CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+        CreationTime = TimeInfo.Now();
         RemainingGlamorForges = ItemExtractionMetadataStorage.GetExtractionCount(id);
         Slot = -1;
         Amount = 1;

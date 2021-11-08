@@ -56,7 +56,7 @@ public class AdBalloon : InteractObject
         Title = title;
         Description = description;
         PublicHouse = publicHouse;
-        CreationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount;
-        ExpirationTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + metadata.Duration;
+        CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
+        ExpirationTimestamp = TimeInfo.Now() + Environment.TickCount + metadata.Duration;
     }
 }

@@ -18,7 +18,7 @@ public class MailHelper
     public static void BlackMarketCancellation(BlackMarketListing listing)
     {
         long deposit = 0;
-        if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() > listing.ExpiryTimestamp)
+        if (TimeInfo.Now() > listing.ExpiryTimestamp)
         {
             deposit = listing.Deposit;
         }

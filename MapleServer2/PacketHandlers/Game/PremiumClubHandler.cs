@@ -115,7 +115,7 @@ public class PremiumClubHandler : GamePacketHandler
 
     public static void ActivatePremium(GameSession session, long vipTime)
     {
-        long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + vipTime;
+        long expiration = TimeInfo.Now() + vipTime;
 
         Account account = session.Player.Account;
         if (!account.IsVip())

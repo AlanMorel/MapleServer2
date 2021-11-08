@@ -464,6 +464,11 @@ public class FieldManager
         {
             MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
         }
+
+        if (player.Value.OnlineTimeThread == null)
+        {
+            player.Value.OnlineTimeThread = player.Value.OnlineTimer();
+        }
     }
 
     public void RemovePlayer(GameSession sender, IFieldObject<Player> player)

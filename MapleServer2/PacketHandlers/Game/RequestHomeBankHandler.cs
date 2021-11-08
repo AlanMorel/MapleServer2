@@ -2,6 +2,7 @@
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -23,7 +24,7 @@ public class RequestHomeBankHandler : GamePacketHandler
         switch (mode)
         {
             case BankMode.House:
-                HandleOpen(session, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                HandleOpen(session, TimeInfo.Now());
                 break;
             case BankMode.Inventory:
                 HandleOpen(session);

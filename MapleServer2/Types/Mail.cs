@@ -34,7 +34,7 @@ public class Mail
         SenderName = senderName;
         Title = title;
         Body = body;
-        SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        SentTimestamp = TimeInfo.Now();
         int sellEndtime = int.Parse(ConstantsMetadataStorage.GetConstant("MailExpiryDays")) * 86400;
         ExpiryTimestamp = SentTimestamp + sellEndtime;
         Items = items;
@@ -72,7 +72,7 @@ public class Mail
 
     public void Read(GameSession session)
     {
-        ReadTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        ReadTimestamp = TimeInfo.Now();
         DatabaseManager.Mails.Update(this);
         session.Send(MailPacket.Read(this));
     }

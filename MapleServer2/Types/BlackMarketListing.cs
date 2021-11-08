@@ -19,7 +19,7 @@ public class BlackMarketListing
 
     public BlackMarketListing(Player player, Item item, int listedQuantity, long price, long deposit)
     {
-        ListedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        ListedTimestamp = TimeInfo.Now();
         int sellEndTime = int.Parse(ConstantsMetadataStorage.GetConstant("BlackMarketSellEndDay")) * 86400;
         ExpiryTimestamp = ListedTimestamp + sellEndTime;
         Price = price;
