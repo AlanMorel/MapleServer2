@@ -29,8 +29,7 @@ public class Player
     public bool IsDeleted;
 
     public string Name { get; set; }
-    // Gender - 0 = male, 1 = female
-    public byte Gender { get; set; }
+    public Gender Gender { get; set; }
 
     public bool Awakened { get; set; }
 
@@ -156,7 +155,7 @@ public class Player
     public Player() { }
 
     // Initializes all values to be saved into the database
-    public Player(Account account, string name, byte gender, Job job, SkinColor skinColor)
+    public Player(Account account, string name, Gender gender, Job job, SkinColor skinColor)
     {
         AccountId = account.Id;
         Account = account;

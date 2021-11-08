@@ -457,7 +457,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             metadata.TransferType = (TransferType) byte.Parse(limit.Attributes["transferType"].Value);
             metadata.Sellable = byte.Parse(limit.Attributes["shopSell"].Value) == 1;
             metadata.RecommendJobs = limit.Attributes["recommendJobs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-            metadata.Gender = byte.Parse(limit.Attributes["genderLimit"].Value);
+            metadata.Gender = (Gender) byte.Parse(limit.Attributes["genderLimit"].Value);
 
             XmlNode installNode = item.SelectSingleNode("install");
             metadata.IsCubeSolid = byte.Parse(installNode.Attributes["cubeProp"].Value) == 1;
