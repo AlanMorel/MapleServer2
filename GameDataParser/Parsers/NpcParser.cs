@@ -81,6 +81,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             XmlNode npcSpeedNode = document.SelectSingleNode("ms2/environment/speed") ?? document.SelectSingleNode("ms2/speed");
             XmlNode npcDistanceNode = document.SelectSingleNode("ms2/environment/distance") ?? document.SelectSingleNode("ms2/distance");
             XmlNode npcSkillNode = document.SelectSingleNode("ms2/environment/skill") ?? document.SelectSingleNode("ms2/skill");
+            XmlNode npcEffectNode = document.SelectSingleNode("ms2/environment/additionalEffect") ?? document.SelectSingleNode("ms2/additionalEffect");
             XmlNode npcExpNode = document.SelectSingleNode("ms2/environment/exp") ?? document.SelectSingleNode("ms2/exp");
             XmlNode npcAiInfoNode = document.SelectSingleNode("ms2/environment/aiInfo") ?? document.SelectSingleNode("ms2/aiInfo");
             XmlNode npcNormalNode = document.SelectSingleNode("ms2/environment/normal") ?? document.SelectSingleNode("ms2/normal");
@@ -112,23 +113,33 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             metadata.NpcMetadataBasic.HpBar = byte.Parse(npcBasicNode.Attributes["hpBar"].Value);
 
             metadata.Stats = GetNpcStats(statsCollection);
-            metadata.WalkSpeed = float.Parse(npcSpeedNode.Attributes["walk"]?.Value ?? "0");
-            metadata.RunSpeed = float.Parse(npcSpeedNode.Attributes["run"]?.Value ?? "0");
+
+            // Parse speed
+            metadata.NpcMetadataSpeed.RotationSpeed = float.Parse(npcSpeedNode.Attributes["rotation"]?.Value ?? "0");
+            metadata.NpcMetadataSpeed.WalkSpeed = float.Parse(npcSpeedNode.Attributes["walk"]?.Value ?? "0");
+            metadata.NpcMetadataSpeed.RunSpeed = float.Parse(npcSpeedNode.Attributes["run"]?.Value ?? "0");
 
             // Parse distance
-            // metadata.AttackRange = ;
-            // metadata.AggroRange = ;
-            // metadata.AggroRangeUp = ;
-            // metadata.AggroRangeDown = ;
+            metadata.NpcMetadataDistance.Avoid = int.Parse(npcDistanceNode.Attributes["avoid"]?.Value ?? "0");
+            metadata.NpcMetadataDistance.Sight = int.Parse(npcDistanceNode.Attributes["sight"]?.Value ?? "0");
+            metadata.NpcMetadataDistance.SightHeightUp = int.Parse(npcDistanceNode.Attributes["sightHeightUP"]?.Value ?? "0");
+            metadata.NpcMetadataDistance.SightHeightDown = int.Parse(npcDistanceNode.Attributes["sightHeightDown"]?.Value ?? "0");
 
             // Parse skill
-            metadata.SkillIds = npcSkillNode.Attributes["ids"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
-            if (metadata.SkillIds.Length > 0)
+            metadata.NpcMetadataSkill.SkillIds = npcSkillNode.Attributes["ids"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
+            if (metadata.NpcMetadataSkill.SkillIds.Length > 0)
             {
-                metadata.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
-                metadata.SkillPriorities = npcSkillNode.Attributes["priorities"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
-                metadata.SkillProbs = npcSkillNode.Attributes["probs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(short.Parse).ToArray();
-                metadata.SkillCooldown = short.Parse(npcSkillNode.Attributes["coolDown"].Value);
+                metadata.NpcMetadataSkill.SkillLevels = npcSkillNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
+                metadata.NpcMetadataSkill.SkillPriorities = npcSkillNode.Attributes["priorities"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
+                metadata.NpcMetadataSkill.SkillProbs = npcSkillNode.Attributes["probs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(short.Parse).ToArray();
+                metadata.NpcMetadataSkill.SkillCooldown = short.Parse(npcSkillNode.Attributes["coolDown"].Value);
+            }
+
+            // Parse Additional Effects (Effect / Buff)
+            metadata.NpcMetadataEffect.EffectIds = npcEffectNode.Attributes["codes"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToArray();
+            if (metadata.NpcMetadataEffect.EffectIds.Length > 0)
+            {
+                metadata.NpcMetadataEffect.EffectLevels = npcEffectNode.Attributes["levels"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToArray();
             }
 
             // Parse normal state
@@ -144,6 +155,17 @@ public class NpcParser : Exporter<List<NpcMetadata>>
                 metadata.StateActions[NpcState.Normal] = normalActions.ToArray();
             }
             metadata.MoveRange = short.Parse(npcNormalNode.Attributes["movearea"]?.Value ?? "0");
+
+            // HACK: Parse combat/skills state (does not actually exist)
+            List<(string, NpcAction, short)> combatActions = new();
+            string[] combatActionsIds = new string[] { "Run_A" };
+            if (combatActionsIds.Length > 0)
+            {
+                int equalProb = 10000 / combatActionsIds.Length;
+                int remainder = 10000 % (equalProb * combatActionsIds.Length);
+                combatActions.Add((combatActionsIds[0], GetNpcAction(combatActionsIds[0]), (short) (equalProb + remainder)));
+                metadata.StateActions[NpcState.Combat] = combatActions.ToArray();
+            }
 
             // Parse dead state
             List<(string, NpcAction, short)> deadActions = new();
