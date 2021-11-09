@@ -21,7 +21,7 @@ public class Item
     public bool IsTemplate { get; set; }
     public bool IsCustomScore { get; set; }
     public int PlayCount { get; set; }
-    public byte Gender { get; private set; }
+    public Gender Gender { get; private set; }
     public string FileName { get; set; }
     public int SkillId { get; set; }
     public List<Job> RecommendJobs { get; set; }

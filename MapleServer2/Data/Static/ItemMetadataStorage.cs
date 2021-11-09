@@ -48,7 +48,7 @@ public static class ItemMetadataStorage
 
     public static bool GetIsCustomScore(int itemId) => GetMetadata(itemId).IsCustomScore;
 
-    public static byte GetGender(int itemId) => GetMetadata(itemId).Gender;
+    public static Gender GetGender(int itemId) => GetMetadata(itemId).Gender;
 
     public static int GetPlayCount(int itemId) => GetMetadata(itemId).PlayCount;
 

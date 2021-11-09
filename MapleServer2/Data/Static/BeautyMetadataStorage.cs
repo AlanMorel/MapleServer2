@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using ProtoBuf;
 
@@ -33,9 +34,9 @@ public static class BeautyMetadataStorage
         return shops.GetValueOrDefault(shopId)?.Items;
     }
 
-    public static List<BeautyItem> GetGenderItems(int shopId, byte gender)
+    public static List<BeautyItem> GetGenderItems(int shopId, Gender gender)
     {
         BeautyMetadata targetShop = shops.GetValueOrDefault(shopId);
-        return targetShop.Items.Where(x => x.Gender == gender || x.Gender == 2).OrderByDescending(x => x.Flag).ToList();
+        return targetShop.Items.Where(x => x.Gender == gender || x.Gender == Gender.Neutral).OrderByDescending(x => x.Flag).ToList();
     }
 }
