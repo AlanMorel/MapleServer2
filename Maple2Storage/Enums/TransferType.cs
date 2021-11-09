@@ -8,5 +8,6 @@ public enum TransferType : byte
     BindOnEquip = 3,
     BindOnUse = 4,
     BindOnTrade = 5,
-    TradeableOnBlackMarket = 6 // ??
+    TradeableOnBlackMarket = 6, // ??
+    Unknown = 7
 }

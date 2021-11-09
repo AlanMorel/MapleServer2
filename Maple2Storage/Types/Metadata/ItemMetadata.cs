@@ -40,7 +40,7 @@ public class ItemMetadata
     [XmlElement(Order = 16)]
     public bool IsTemplate;
     [XmlElement(Order = 17)]
-    public byte Gender;
+    public Gender Gender;
     [XmlElement(Order = 18)]
     public int PlayCount;
     [XmlElement(Order = 19)]

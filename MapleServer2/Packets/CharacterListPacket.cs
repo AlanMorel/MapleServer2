@@ -117,7 +117,7 @@ public static class CharacterListPacket
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteByte(player.Gender);
+        pWriter.Write(player.Gender);
         pWriter.WriteByte(1);
 
         pWriter.WriteLong(player.AccountId);

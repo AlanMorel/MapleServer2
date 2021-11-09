@@ -93,7 +93,7 @@ public class CharacterManagementHandler : LoginPacketHandler
 
     public static void HandleCreate(LoginSession session, PacketReader packet)
     {
-        byte gender = packet.ReadByte();
+        Gender gender = (Gender) packet.ReadByte();
         Job job = (Job) packet.ReadShort();
         string name = packet.ReadUnicodeString();
         SkinColor skinColor = packet.Read<SkinColor>();
