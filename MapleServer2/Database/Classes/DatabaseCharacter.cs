@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -18,7 +19,7 @@ public class DatabaseCharacter : DatabaseTable
             creation_time = player.CreationTime,
             last_login_time = player.LastLoginTime,
             player.Name,
-            player.Gender,
+            gender = (byte) player.Gender,
             player.Awakened,
             job = (int) player.Job,
             levels_id = player.Levels.Id,
@@ -98,7 +99,7 @@ public class DatabaseCharacter : DatabaseTable
                                   data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory),
             CreationTime = data.creation_time,
             Name = data.name,
-            Gender = data.gender,
+            Gender = (Gender) data.gender,
             Awakened = data.awakened,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
@@ -216,7 +217,7 @@ public class DatabaseCharacter : DatabaseTable
                 CharacterId = data.character_id,
                 CreationTime = data.creation_time,
                 Name = data.name,
-                Gender = data.gender,
+                Gender = (Gender) data.gender,
                 Awakened = data.awakened,
                 Job = (Job) data.job,
                 Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
@@ -237,7 +238,7 @@ public class DatabaseCharacter : DatabaseTable
         QueryFactory.Query(TableName).Where("character_id", player.CharacterId).Update(new
         {
             player.Name,
-            player.Gender,
+            gender = (byte) player.Gender,
             player.Awakened,
             job = (int) player.Job,
             map_id = player.MapId,
@@ -340,7 +341,7 @@ public class DatabaseCharacter : DatabaseTable
             },
             CreationTime = data.creation_time,
             Name = data.name,
-            Gender = data.gender,
+            Gender = (Gender) data.gender,
             Awakened = data.awakened,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
