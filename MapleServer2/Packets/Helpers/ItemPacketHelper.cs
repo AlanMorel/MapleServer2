@@ -37,7 +37,6 @@ public static class ItemPacketHelper
         pWriter.WriteInt(item.Charges);
         pWriter.WriteStatDiff( /*item.Stats, item.Stats*/);
 
-
         if (item.IsCustomScore)
         {
             pWriter.WriteMusicScore(item);
@@ -45,8 +44,7 @@ public static class ItemPacketHelper
 
         if (item.IsTemplate)
         {
-            // Not implemented, causes issues for non-default character creation outfits
-            pWriter.WriteTemplate();
+            pWriter.WriteTemplate(item.UGC);
         }
 
         if (item.InventoryTab == InventoryTab.Pets)
@@ -234,9 +232,9 @@ public static class ItemPacketHelper
     }
 
     // Writes UGC template data
-    private static PacketWriter WriteTemplate(this PacketWriter pWriter)
+    private static PacketWriter WriteTemplate(this PacketWriter pWriter, UGC ugc)
     {
-        pWriter.WriteUgc();
+        pWriter.WriteUgcTemplate(ugc);
         pWriter.WriteLong();
         pWriter.WriteInt();
         pWriter.WriteInt();

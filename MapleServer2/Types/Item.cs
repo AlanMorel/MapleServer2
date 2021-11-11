@@ -71,6 +71,8 @@ public class Item
     public MusicScore Score;
     public ItemStats Stats;
 
+    public UGC UGC;
+
     public long InventoryId;
     public long BankInventoryId;
     public long HomeId;
@@ -83,7 +85,6 @@ public class Item
         Id = id;
         SetMetadataValues();
         Name = ItemMetadataStorage.GetName(id);
-        IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
         Level = ItemMetadataStorage.GetLevel(id);
         ItemSlot = ItemMetadataStorage.GetSlot(id);
         if (GemSlot == GemSlot.TRANS)
@@ -225,6 +226,7 @@ public class Item
         RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
+        IsTemplate = ItemMetadataStorage.GetIsTemplate(Id);
         Type = GetItemType(Id);
     }
 

@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -7,13 +8,17 @@ public static class UgcPacket
 {
     public enum UgcMode : byte
     {
-        ProfilePicture = 0x0B
+        CreateUGC = 0x02,
+        SetItemURL = 0x04,
+        ProfilePicture = 0x0B,
+        UpdateUGC = 0x0D,
+        SetEndpoint = 0x11,
     }
 
     public static PacketWriter SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x11); // Function
+        pWriter.Write(UgcMode.SetEndpoint); // Function
         pWriter.WriteUnicodeString(unknownEndpoint); // Serves some random irrq.aspx
         pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
         pWriter.WriteUnicodeString(locale); // locale?
@@ -28,14 +33,34 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter Unknown4()
+    public static PacketWriter CreateUGC(bool success, UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x04);
-        pWriter.WriteByte();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("");
-        // ???
+        pWriter.Write(UgcMode.CreateUGC);
+        pWriter.WriteBool(success);
+        if (!success)
+        {
+            return pWriter;
+        }
+
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Guid.ToString());
+
+        return pWriter;
+    }
+
+    public static PacketWriter SetItemUrl(UGC ugc)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        pWriter.Write(UgcMode.SetItemURL);
+        pWriter.WriteBool(ugc is not null);
+        if (ugc is null)
+        {
+            return pWriter;
+        }
+
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Url);
 
         return pWriter;
     }
@@ -88,6 +113,24 @@ public static class UgcPacket
         return pWriter;
     }
 
+    // not sure about the name
+    public static PacketWriter UpdateUGCItem(IFieldObject<Player> fieldPlayer, Item item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
+        pWriter.Write(UgcMode.UpdateUGC);
+        pWriter.WriteInt(fieldPlayer.ObjectId);
+        pWriter.WriteLong(item.Uid);
+        pWriter.WriteInt(item.Id);
+        pWriter.WriteInt(item.Amount);
+        pWriter.WriteUnicodeString(item.UGC.Name);
+        pWriter.WriteByte(1); // unknown
+        pWriter.WriteLong(item.UGC.SalePrice);
+        pWriter.WriteBool(false); // unknown
+        pWriter.WriteUgcTemplate(item.UGC);
+
+        return pWriter;
+    }
+
     public static PacketWriter Unknown13To15()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
@@ -102,7 +145,7 @@ public static class UgcPacket
         pWriter.WriteLong();
         pWriter.WriteBool(false);
         // sub2
-        SharedSub661B00(pWriter);
+        pWriter.WriteUgcTemplate(null);
 
         return pWriter;
     }
@@ -118,7 +161,7 @@ public static class UgcPacket
         pWriter.WriteInt();
         pWriter.WriteUnicodeString("StrW");
         // sub2
-        SharedSub661B00(pWriter);
+        pWriter.WriteUgcTemplate(null);
 
         return pWriter;
     }
@@ -218,19 +261,21 @@ public static class UgcPacket
         return pWriter;
     }
 
-    private static void SharedSub661B00(PacketWriter pWriter)
+    public static PacketWriter WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
     {
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("WstrA");
-        pWriter.WriteUnicodeString("StrW");
+        pWriter.WriteLong(ugc.Uid);
+        pWriter.WriteUnicodeString(ugc.Guid.ToString()); // UUID (filename)
+        pWriter.WriteUnicodeString(ugc.Name); // Name (itemname)
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(1);
+        pWriter.WriteLong(ugc.AccountId); // AccountId
+        pWriter.WriteLong(ugc.CharacterId); // CharacterId
+        pWriter.WriteUnicodeString(ugc.CharacterName); // CharacterName
+        pWriter.WriteLong(ugc.CreationTime); // CreationTime
+        pWriter.WriteUnicodeString(ugc.Url); // URL (no domain)
         pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("StrW");
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("WstrA");
-        pWriter.WriteByte();
+
+        return pWriter;
     }
 
     private static void SharedSubUGC(PacketWriter pWriter)
