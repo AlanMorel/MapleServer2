@@ -1,4 +1,3 @@
-
 using MapleServer2.Types;
 using SqlKata.Execution;
 
@@ -7,7 +6,6 @@ namespace MapleServer2.Database.Classes;
 public class DatabaseUGC : DatabaseTable
 {
     public DatabaseUGC() : base("ugc") { }
-
 
     public long Insert(UGC ugc)
     {

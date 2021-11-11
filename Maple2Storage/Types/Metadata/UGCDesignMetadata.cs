@@ -1,4 +1,3 @@
-
 using System.Xml.Serialization;
 using Maple2Storage.Enums;
 
