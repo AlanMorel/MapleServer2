@@ -15,7 +15,7 @@ public class GameSession : Session
     public int ServerTick;
     public int ClientTick;
 
-    public IFieldObject<Player> FieldPlayer { get; private set; }
+    public IFieldActor<Player> FieldPlayer { get; private set; }
     public Player Player => FieldPlayer.Value;
 
     public FieldManager FieldManager { get; private set; }
@@ -36,7 +36,7 @@ public class GameSession : Session
     {
         Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
         FieldManager = FieldManagerFactory.GetManager(player);
-        FieldPlayer = FieldManager.RequestFieldObject(player);
+        FieldPlayer = FieldManager.RequestCharacter(player);
     }
 
     public void EnterField(Player player)
@@ -60,7 +60,7 @@ public class GameSession : Session
 
             // Initialize for new Map
             FieldManager = FieldManagerFactory.GetManager(player);
-            FieldPlayer = FieldManager.RequestFieldObject(Player);
+            FieldPlayer = FieldManager.RequestCharacter(Player);
         }
 
         FieldManager.AddPlayer(this, FieldPlayer); // Add player

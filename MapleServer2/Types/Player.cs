@@ -48,6 +48,7 @@ public class Player
 
     // Mutable Values
     public Levels Levels { get; set; }
+    public CoordF Coord { get; set; }
     public int MapId { get; set; }
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
@@ -55,8 +56,7 @@ public class Player
     public List<int> Titles { get; set; }
     public List<int> PrestigeRewardsClaimed { get; set; }
 
-    public byte Animation;
-    public PlayerStats Stats;
+    public Stats Stats;
     public IFieldObject<Mount> Mount;
     public IFieldObject<Pet> Pet;
     public IFieldObject<GuideObject> Guide;
@@ -79,8 +79,6 @@ public class Player
 
     public NpcTalk NpcTalk;
 
-    public CoordF Coord;
-    public CoordF Rotation;
     public int ReturnMapId;
     public CoordF ReturnCoord;
     public CoordF SafeBlock = CoordF.From(0, 0, 0);
@@ -99,8 +97,6 @@ public class Player
 
     public int MaxSkillTabs { get; set; }
     public long ActiveSkillTabId { get; set; }
-
-    public SkillCast SkillCast = new();
 
     public List<SkillTab> SkillTabs;
     public StatDistribution StatPointDistribution;
@@ -134,10 +130,6 @@ public class Player
     public Wallet Wallet { get; set; }
     public List<QuestStatus> QuestList;
 
-    public CancellationTokenSource CombatCTS;
-    private Task HpRegenThread;
-    private Task SpRegenThread;
-    private Task StaRegenThread;
     private readonly TimeInfo Timestamps;
 
     public List<GatheringCount> GatheringCount;
@@ -303,12 +295,12 @@ public class Player
         }
         if (coord == default)
         {
-            Coord = spawn.Coord.ToFloat();
+            Session.FieldPlayer.Coord = spawn.Coord.ToFloat();
             SafeBlock = spawn.Coord.ToFloat();
         }
         if (rotation == default)
         {
-            Rotation = spawn.Rotation.ToFloat();
+            Session.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
         }
     }
 
@@ -316,13 +308,13 @@ public class Player
     {
         if (MapEntityStorage.HasSafePortal(MapId))
         {
-            ReturnCoord = Coord;
+            ReturnCoord = Session.FieldPlayer.Coord;
             ReturnMapId = MapId;
         }
         if (coord is not null && rotation is not null)
         {
-            Coord = (CoordF) coord;
-            Rotation = (CoordF) rotation;
+            Session.FieldPlayer.Coord = (CoordF) coord;
+            Session.FieldPlayer.Rotation = (CoordF) rotation;
             SafeBlock = (CoordF) coord;
         }
         MapId = mapId;
@@ -363,53 +355,6 @@ public class Player
         return gearItem;
     }
 
-    public void Cast(SkillCast skillCast)
-    {
-        int spiritCost = skillCast.GetSpCost();
-        int staminaCost = skillCast.GetStaCost();
-
-        if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
-        {
-            ConsumeSp(spiritCost);
-            ConsumeStamina(staminaCost);
-            SkillCast = skillCast;
-            Session.SendNotice(skillCast.SkillId.ToString());
-
-            // TODO: Move this and all others combat cases like recover sp to its own class.
-            // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-            if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
-            {
-                Status status = new(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
-                StatusHandler.Handle(Session, status);
-            }
-
-            // Refresh out-of-combat timer
-            if (CombatCTS != null)
-            {
-                CombatCTS.Cancel();
-            }
-            CombatCTS = new();
-            CombatCTS.Token.Register(() => CombatCTS.Dispose());
-            StartCombatStance(CombatCTS);
-        }
-    }
-
-    private Task StartCombatStance(CancellationTokenSource ct)
-    {
-        Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, true));
-        return Task.Run(async () =>
-        {
-            await Task.Delay(5000);
-
-            if (!ct.Token.IsCancellationRequested)
-            {
-                CombatCTS = null;
-                ct.Dispose();
-                Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
-            }
-        }, ct.Token);
-    }
-
     public Task TimeSyncLoop()
     {
         return Task.Run(async () =>
@@ -432,153 +377,6 @@ public class Player
                 await Task.Delay(300 * 1000); // every 5 minutes
             }
         });
-    }
-
-    public void RecoverHp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Hp];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Hp, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
-            }
-        }
-    }
-
-    public void ConsumeHp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Hp];
-            Stats.Decrease(PlayerStatId.Hp, Math.Min(amount, stat.Current));
-        }
-
-        if (HpRegenThread == null || HpRegenThread.IsCompleted)
-        {
-            HpRegenThread = StartRegen(PlayerStatId.Hp, PlayerStatId.HpRegen, PlayerStatId.HpRegenTime);
-        }
-    }
-
-    public void RecoverSp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Spirit];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Spirit, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Spirit));
-            }
-        }
-    }
-
-    public void ConsumeSp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Spirit];
-            Stats.Decrease(PlayerStatId.Spirit, Math.Min(amount, stat.Current));
-        }
-
-        if (SpRegenThread == null || SpRegenThread.IsCompleted)
-        {
-            SpRegenThread = StartRegen(PlayerStatId.Spirit, PlayerStatId.SpRegen, PlayerStatId.SpRegenTime);
-        }
-    }
-
-    public void RecoverStamina(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Stamina];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Stamina, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Stamina));
-            }
-        }
-    }
-
-    public void ConsumeStamina(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Stamina];
-            Stats.Decrease(PlayerStatId.Stamina, Math.Min(amount, stat.Current));
-        }
-
-        if (StaRegenThread == null || StaRegenThread.IsCompleted)
-        {
-            StaRegenThread = StartRegen(PlayerStatId.Stamina, PlayerStatId.StaRegen, PlayerStatId.StaRegenTime);
-        }
-    }
-
-    private Task StartRegen(PlayerStatId statId, PlayerStatId regenStatId, PlayerStatId timeStatId)
-    {
-        // TODO: merge regen updates with larger packets
-        return Task.Run(async () =>
-        {
-            while (true)
-            {
-                await Task.Delay(Stats[timeStatId].Current);
-
-                lock (Stats)
-                {
-                    if (Stats[statId].Current >= Stats[statId].Max)
-                    {
-                        return;
-                    }
-
-                    // TODO: Check if regen-enabled
-                    Stats[statId] = AddStatRegen(statId, regenStatId);
-                    Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(Session.FieldPlayer, statId));
-                    if (Party != null)
-                    {
-                        Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
-                    }
-                }
-            }
-        });
-    }
-
-    private PlayerStat AddStatRegen(PlayerStatId statIndex, PlayerStatId regenStatIndex)
-    {
-        PlayerStat stat = Stats[statIndex];
-        int regen = Stats[regenStatIndex].Current;
-        int postRegen = Math.Clamp(stat.Current + regen, 0, stat.Max);
-        return new(stat.Max, stat.Min, postRegen);
     }
 
     public void IncrementGatheringCount(int recipeID, int amount)
@@ -639,10 +437,10 @@ public class Player
 
     public void FallDamage()
     {
-        int currentHp = Stats[PlayerStatId.Hp].Current;
-        int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
-        ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
+        long currentHp = Stats[StatId.Hp].TotalLong;
+        int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
+        Session.FieldPlayer.ConsumeHp(fallDamage);
+        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, StatId.Hp));
         Session.Send(FallDamagePacket.FallDamage(Session.FieldPlayer.ObjectId, fallDamage));
     }
 }

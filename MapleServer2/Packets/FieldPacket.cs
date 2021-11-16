@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Extensions;
@@ -25,14 +26,14 @@ public static class FieldPacket
         pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteInt();
-        pWriter.Write(player.Coord);
-        pWriter.Write(player.Rotation);
+        pWriter.Write(player.Session.FieldPlayer.Coord);
+        pWriter.Write(player.Session.FieldPlayer.Rotation);
         pWriter.WriteInt(); // Whatever is here seems to be repeated by client in FIELD_ENTER response.
 
         return pWriter;
     }
 
-    public static PacketWriter AddPlayer(IFieldObject<Player> fieldPlayer)
+    public static PacketWriter AddPlayer(IFieldActor<Player> fieldPlayer)
     {
         Player player = fieldPlayer.Value;
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_USER);
@@ -51,9 +52,9 @@ public static class FieldPacket
         pWriter.WriteByte();
 
         // Stats
-        StatPacket.WriteFieldStats(pWriter, player.Stats);
+        StatPacket.WriteFieldStats(pWriter, fieldPlayer.Stats);
 
-        pWriter.WriteBool(player.CombatCTS != null);
+        pWriter.WriteBool(fieldPlayer.OnCooldown);
         pWriter.WriteBool(player.Guide?.Value.Type == 0);
         pWriter.WriteInt();
         pWriter.WriteLong();
@@ -201,7 +202,7 @@ public static class FieldPacket
         return pWriter;
     }
 
-    public static PacketWriter AddItem(IFieldObject<Item> item, IFieldObject<Mob> sourceMob, IFieldObject<Player> targetPlayer)
+    public static PacketWriter AddItem(IFieldObject<Item> item, IFieldObject<NpcMetadata> sourceMob, IFieldObject<Player> targetPlayer)
     {
         // Works for meso
 
@@ -289,7 +290,7 @@ public static class FieldPacket
         return pWriter;
     }
 
-    public static PacketWriter AddNpc(IFieldObject<Npc> npc)
+    public static PacketWriter AddNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
         pWriter.WriteInt(npc.ObjectId);
@@ -326,7 +327,7 @@ public static class FieldPacket
         return pWriter;
     }
 
-    public static PacketWriter AddBoss(IFieldObject<Mob> mob)
+    public static PacketWriter AddBoss(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
 
@@ -368,7 +369,7 @@ public static class FieldPacket
         return pWriter;
     }
 
-    public static PacketWriter AddMob(IFieldObject<Mob> mob)
+    public static PacketWriter AddMob(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_ADD_NPC);
 
@@ -389,7 +390,7 @@ public static class FieldPacket
         return pWriter;
     }
 
-    public static PacketWriter RemoveMob(IFieldObject<Mob> mob)
+    public static PacketWriter RemoveMob(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
         pWriter.WriteInt(mob.ObjectId);

@@ -146,8 +146,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
         string password = packet.ReadUnicodeString();
         int duration = item.Function.OpenMassiveEvent.Duration + Environment.TickCount;
-        CoordF portalCoord = session.Player.Coord;
-        CoordF portalRotation = session.Player.Rotation;
+        CoordF portalCoord = session.FieldPlayer.Coord;
+        CoordF portalRotation = session.FieldPlayer.Rotation;
 
         session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.OpenMassiveEvent.FieldId));
         //  session.FieldManager.BroadcastPacket(FieldPacket.AddPortal()

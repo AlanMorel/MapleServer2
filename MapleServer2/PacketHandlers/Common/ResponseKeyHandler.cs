@@ -86,7 +86,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.Request();
         session.Send(StatPacket.SetStats(session.FieldPlayer));
         // TODO: Grab Hp/Spirit/Stam from last login
-        player.Stats.InitializePools(player.Stats[PlayerStatId.Hp].Max, player.Stats[PlayerStatId.Spirit].Max, player.Stats[PlayerStatId.Stamina].Max);
+        player.Stats.InitializePools(player.Stats[StatId.Hp].Bonus, player.Stats[StatId.Spirit].Bonus, player.Stats[StatId.Stamina].Bonus);
         session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel());
         session.Send(ServerEnterPacket.Enter(session));

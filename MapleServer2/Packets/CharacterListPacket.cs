@@ -128,8 +128,8 @@ public static class CharacterListPacket
         pWriter.WriteShort();
         pWriter.Write(player.Job);
         pWriter.Write(player.JobCode);
-        pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
-        pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
+        pWriter.WriteInt(player.Stats[StatId.Hp].Total);
+        pWriter.WriteInt(player.Stats[StatId.Hp].Bonus);
         pWriter.WriteShort();
         pWriter.WriteLong();
         pWriter.WriteLong(); // Some timestamp

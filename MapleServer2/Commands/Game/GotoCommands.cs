@@ -164,7 +164,7 @@ public class GotoCoordCommand : InGameCommand
             trigger.Session.SendNotice(trigger.Session.FieldPlayer.Coord.ToString());
             return;
         }
-        trigger.Session.Player.Coord = coordF;
-        trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.FieldPlayer, coordF, trigger.Session.Player.Rotation));
+        trigger.Session.FieldPlayer.Coord = coordF;
+        trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.FieldPlayer, coordF, trigger.Session.FieldPlayer.Rotation));
     }
 }

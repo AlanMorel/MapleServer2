@@ -2,6 +2,7 @@
 using Maple2.Trigger;
 using Maple2.Trigger.Enum;
 using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
@@ -30,6 +31,7 @@ public class FieldManager
     public readonly long InstanceId;
     public readonly CoordS[] BoundingBox;
     public readonly FieldState State = new();
+    public readonly FieldNavigator Navigator;   // TODO: temp remove for PR
     private readonly HashSet<GameSession> Sessions = new();
     public readonly TriggerScript[] Triggers;
     private readonly List<MapTimer> MapTimers = new();
@@ -44,30 +46,18 @@ public class FieldManager
         MapId = player.MapId;
         InstanceId = player.InstanceId;
         BoundingBox = MapEntityStorage.GetBoundingBox(MapId);
+
+        // TOOD: generate navmeshes for all maps
+        //if (MapId == 2000019)
+        //{
+        //    Navigator = new FieldNavigator();
+        //    Navigator.LoadNavMeshFromFile("tok_mesh.snj");
+        //}
+
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
         {
-            IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
-            {
-                ZRotation = (short) (npc.Rotation.Z * 10)
-            });
-
-            if (fieldNpc.Value.Friendly == 2)
-            {
-                fieldNpc.Coord = npc.Coord.ToFloat();
-                AddNpc(fieldNpc);
-            }
-            else
-            {
-                // NPC is an enemy
-                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
-                {
-                    ZRotation = (short) (npc.Rotation.Z * 10)
-                });
-
-                fieldMob.Coord = npc.Coord.ToFloat();
-                AddMob(fieldMob);
-            }
+            RequestNpc(npc.Id, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
         }
 
         // Spawn map's mobs at the mob spawners
@@ -314,21 +304,26 @@ public class FieldManager
         List<PacketWriter> updates = new();
         // Update players locations
         // Update NPCs
-        foreach (IFieldObject<Npc> npc in State.Npcs.Values)
+        foreach (Npc npc in State.Npcs.Values)
         {
             updates.Add(FieldObjectPacket.ControlNpc(npc));
         }
-        foreach (IFieldObject<Player> player in State.Players.Values)
+        foreach (IFieldActor<Player> player in State.Players.Values)
         {
             updates.Add(FieldObjectPacket.UpdatePlayer(player));
         }
-        foreach (IFieldObject<Mob> mob in State.Mobs.Values)
+        foreach (Mob mob in State.Mobs.Values)
         {
             updates.Add(FieldObjectPacket.ControlMob(mob));
-            if (mob.Value.IsDead)
+            if (mob.IsDead)
             {
                 RemoveMob(mob);
             }
+            //else if (mob.SkillCast != null)
+            //{
+            //    updates.Add(SkillUsePacket.MobSkillUse(mob));
+            //    mob.SkillCast = null;
+            //}
         }
         foreach (TriggerScript trigger in Triggers)
         {
@@ -353,9 +348,58 @@ public class FieldManager
         return WrapObject(wrappingObject);
     }
 
-    public void AddPlayer(GameSession sender, IFieldObject<Player> player)
+    public IFieldActor<Player> RequestCharacter(Player player)
+    {
+        return WrapPlayer(player);
+    }
+
+    public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    {
+        NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
+
+        if (meta.Friendly == 2)
+        {
+            Npc npc = WrapNpc(npcId);
+            npc.Coord = coord;
+            npc.Rotation = rotation;
+            npc.Animation = animation;
+            AddNpc(npc);
+            return npc;
+        }
+
+        Mob mob = WrapMob(npcId);
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        mob.Animation = animation;
+        AddMob(mob);
+        return mob;
+    }
+
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    {
+        Mob mob = WrapMob(mobId);
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        mob.Animation = animation;
+        AddMob(mob);
+        return mob;
+    }
+
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    {
+        Mob mob = WrapMob(mobId);
+        mob.OriginSpawn = spawnPoint;
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        mob.Animation = animation;
+        AddMob(mob);
+        return mob;
+    }
+
+    public void AddPlayer(GameSession sender, IFieldActor<Player> player)
     {
         Debug.Assert(player.ObjectId > 0, "Player was added to field without initialized objectId.");
+
         player.Coord = player.Value.Coord;
         player.Value.MapId = MapId;
         // TODO: Determine new coordinates for player as well
@@ -365,7 +409,7 @@ public class FieldManager
         }
 
         // TODO: Send the initialization state of the field
-        foreach (IFieldObject<Player> existingPlayer in State.Players.Values)
+        foreach (IFieldActor<Player> existingPlayer in State.Players.Values)
         {
             sender.Send(FieldPacket.AddPlayer(existingPlayer));
             sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
@@ -383,19 +427,21 @@ public class FieldManager
         {
             sender.Send(FieldPacket.AddItem(existingItem, 123456));
         }
-        foreach (IFieldObject<Npc> existingNpc in State.Npcs.Values)
+        foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
         {
             sender.Send(FieldPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
-        foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
-        {
-            sender.Send(FieldPacket.AddPortal(existingPortal));
-        }
-        foreach (IFieldObject<Mob> existingMob in State.Mobs.Values)
+        foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
         {
             sender.Send(FieldPacket.AddMob(existingMob));
             sender.Send(FieldObjectPacket.LoadMob(existingMob));
+
+            // TODO: Determine if buffs are sent on Field Enter
+        }
+        foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
+        {
+            sender.Send(FieldPacket.AddPortal(existingPortal));
         }
 
         if (player.Value.MapId == (int) Map.PrivateResidence && !player.Value.IsInDecorPlanner)
@@ -504,7 +550,7 @@ public class FieldManager
     }
 
     // Spawned NPCs will not appear until controlled
-    public void AddNpc(IFieldObject<Npc> fieldNpc)
+    public void AddNpc(IFieldActor<NpcMetadata> fieldNpc)
     {
         State.AddNpc(fieldNpc);
 
@@ -515,7 +561,7 @@ public class FieldManager
         });
     }
 
-    public bool RemoveNpc(IFieldObject<Npc> fieldNpc)
+    public bool RemoveNpc(IFieldActor<NpcMetadata> fieldNpc)
     {
         if (!State.RemoveNpc(fieldNpc.ObjectId))
         {
@@ -530,29 +576,35 @@ public class FieldManager
         return true;
     }
 
-    public void AddMob(IFieldObject<Mob> fieldMob)
+    private void AddMob(Mob fieldMob)
     {
-        State.AddMob(fieldMob);
+        // TODO: remove hack, better organize this
+        //fieldMob.Navigator = Navigator;
+        // TODO: fieldMob.Field = this;
 
-        fieldMob.Value.OriginSpawn?.Value.Mobs.Add(fieldMob);
+        fieldMob.OriginSpawn?.Value.Mobs.Add(fieldMob);
+        State.AddMob(fieldMob);
 
         Broadcast(session =>
         {
             session.Send(FieldPacket.AddMob(fieldMob));
             session.Send(FieldObjectPacket.LoadMob(fieldMob));
-            SkillCast skillCast = new(90000814, 1); // Spawned effect
-            session.Send(BuffPacket.SendBuff(0, new(skillCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+            for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
+            {
+                SkillCast effectCast = new(fieldMob.Value.NpcMetadataEffect.EffectIds[i], fieldMob.Value.NpcMetadataEffect.EffectLevels[i]);
+                session.Send(BuffPacket.SendBuff(0, new Status(effectCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+            }
         });
     }
 
-    public bool RemoveMob(IFieldObject<Mob> mob)
+    private bool RemoveMob(Mob mob)
     {
         if (!State.RemoveMob(mob.ObjectId))
         {
             return false;
         }
 
-        IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
+        IFieldObject<MobSpawn> originSpawn = mob.OriginSpawn;
         if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
         {
             StartSpawnTimer(originSpawn);
@@ -633,7 +685,7 @@ public class FieldManager
         return State.RemoveItem(objectId, out item);
     }
 
-    public void AddResource(Item item, IFieldObject<Mob> source, IFieldObject<Player> targetPlayer)
+    public void AddResource(Item item, IFieldObject<NpcMetadata> source, IFieldObject<Player> targetPlayer)
     {
         FieldObject<Item> fieldItem = WrapObject(item);
         fieldItem.Coord = source.Coord;
@@ -689,20 +741,649 @@ public class FieldManager
         return new(objectId, fieldObject);
     }
 
+    // Initializes a FieldActor with an objectId for this field.
+    private Character WrapPlayer(Player player)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, player);
+    }
+
+    // Initializes a FieldActor with an objectId for this field.
+    private Npc WrapNpc(int npcId)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, npcId);
+    }
+
+    // Initializes a FieldActor with an objectId for this field.
+    private Mob WrapMob(int mobId)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, mobId);
+    }
+
     // This class is private to ensure that callers must first request entry.
     private class FieldObject<T> : IFieldObject<T>
     {
         public int ObjectId { get; set; }
         public T Value { get; }
 
-        public CoordF Coord { get; set; }
-
+        public virtual CoordF Coord { get; set; }
         public CoordF Rotation { get; set; }
+        public short LookDirection
+        {
+            get => (short) (Rotation.Z * 10);
+            set => Rotation = CoordF.From(Rotation.X, Rotation.Y, value / 10);
+        }
 
         public FieldObject(int objectId, T value)
         {
             ObjectId = objectId;
             Value = value;
+        }
+    }
+
+    private abstract class FieldActor<T> : FieldObject<T>, IFieldActor<T>
+    {
+        public CoordF Velocity { get; set; }
+        public short Animation { get; set; }
+
+        public virtual Stats Stats { get; set; }
+        public bool IsDead { get; set; }
+
+        public List<Status> Statuses { get; set; }
+        public SkillCast SkillCast { get; set; }
+        public bool OnCooldown { get; set; }
+
+        //public FieldNavigator Navigator;
+
+        // TODO: add navigation
+        //public FieldNavigator Navigator;
+
+        public FieldActor(int objectId, T value) : base(objectId, value) { }
+
+        public virtual void UpdateFixed() { }
+
+        public virtual void Update() { }
+
+        public virtual void MoveBy(CoordF displacement)
+        {
+            // TODO: Break displacement into segements, then set path.
+            Velocity = displacement;
+            Coord += displacement;
+            return;
+        }
+
+        public virtual void MoveTo(CoordF target)
+        {
+            // TODO: Perform pathfinding, then set path.
+            Velocity = target - Coord;
+            Coord = target;
+            return;
+        }
+
+        public virtual void Cast(SkillCast skillCast)
+        {
+            SkillCast = skillCast;
+
+            // TODO: Move this and all others combat cases like recover sp to its own class.
+            // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+            if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
+            {
+                Status status = new(skillCast, ObjectId, ObjectId, 1);
+                //StatusHandler.Handle(Value.Session, status);
+            }
+        }
+
+        public virtual void RecoverHp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Hp];
+                if (stat.Total < stat.Bonus)
+                {
+                    stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                }
+            }
+        }
+
+        public virtual void ConsumeHp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Hp];
+                stat.Decrease(Math.Min(amount, stat.Total));
+            }
+        }
+
+        public virtual void RecoverSp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Spirit];
+                if (stat.Total < stat.Bonus)
+                {
+                    stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                }
+            }
+        }
+
+        public virtual void ConsumeSp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Spirit];
+                Stats[StatId.Spirit].Decrease(Math.Min(amount, stat.Total));
+            }
+        }
+
+        public virtual void RecoverStamina(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Stamina];
+                if (stat.Total < stat.Bonus)
+                {
+                    Stats[StatId.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                }
+            }
+        }
+
+        public virtual void ConsumeStamina(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Stamina];
+                Stats[StatId.Stamina].Decrease(Math.Min(amount, stat.Total));
+            }
+        }
+
+        public virtual void Damage(DamageHandler damage)
+        {
+            Stat health = Stats[StatId.Hp];
+            health.Decrease((long) damage.Damage);
+            if (health.Total <= 0)
+            {
+                Perish();
+            }
+        }
+
+        public virtual void Perish()
+        {
+            IsDead = true;
+        }
+    }
+
+    private class Character : FieldActor<Player>
+    {
+        public override CoordF Coord
+        {
+            get => Value.Coord;
+            set => Value.Coord = value;
+        }
+
+        public override Stats Stats
+        {
+            get => Value.Stats;
+            set => Value.Stats = value;
+        }
+
+        private CancellationTokenSource CombatCTS;
+        private Task HpRegenThread;
+        private Task SpRegenThread;
+        private Task StaRegenThread;
+
+        public Character(int objectId, Player value) : base(objectId, value) { }
+
+        public override void Cast(SkillCast skillCast)
+        {
+            int spiritCost = skillCast.GetSpCost();
+            int staminaCost = skillCast.GetStaCost();
+
+            if (Value.Stats[StatId.Spirit].Total >= spiritCost && Value.Stats[StatId.Stamina].Total >= staminaCost)
+            {
+                SkillCast = skillCast;
+
+                ConsumeSp(spiritCost);
+                ConsumeStamina(staminaCost);
+                Value.Session.SendNotice(skillCast.SkillId.ToString());
+
+                // TODO: Move this and all others combat cases like recover sp to its own class.
+                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
+                {
+                    Status status = new(skillCast, ObjectId, ObjectId, 1);
+                    StatusHandler.Handle(Value.Session, status);
+                }
+
+                StartCombatStance();
+            }
+        }
+
+        public override void RecoverHp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Hp];
+                if (stat.Total < stat.Bonus)
+                {
+                    stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Hp));
+                }
+            }
+        }
+
+        public override void ConsumeHp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Hp];
+                stat.Decrease(Math.Min(amount, stat.Total));
+            }
+
+            if (HpRegenThread == null || HpRegenThread.IsCompleted)
+            {
+                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenTime);
+            }
+        }
+
+        public override void RecoverSp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Spirit];
+                if (stat.Total < stat.Bonus)
+                {
+                    stat.Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Spirit));
+                }
+            }
+        }
+
+        public override void ConsumeSp(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Spirit];
+                Stats[StatId.Spirit].Decrease(Math.Min(amount, stat.Total));
+            }
+
+            if (SpRegenThread == null || SpRegenThread.IsCompleted)
+            {
+                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenTime);
+            }
+        }
+
+        public override void RecoverStamina(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Stamina];
+                if (stat.Total < stat.Bonus)
+                {
+                    Stats[StatId.Stamina].Increase(Math.Min(amount, stat.Bonus - stat.Total));
+                    Value.Session.Send(StatPacket.UpdateStats(this, StatId.Stamina));
+                }
+            }
+        }
+
+        public override void ConsumeStamina(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            lock (Stats)
+            {
+                Stat stat = Stats[StatId.Stamina];
+                Stats[StatId.Stamina].Decrease(Math.Min(amount, stat.Total));
+            }
+
+            if (StaRegenThread == null || StaRegenThread.IsCompleted)
+            {
+                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaRegen, StatId.StaRegenTime);
+            }
+        }
+
+        private Task StartRegen(StatId statId, StatId regenStatId, StatId timeStatId)
+        {
+            // TODO: merge regen updates with larger packets
+            return Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(Stats[timeStatId].Total);
+
+                    lock (Stats)
+                    {
+                        if (Stats[statId].Total >= Stats[statId].Bonus)
+                        {
+                            return;
+                        }
+
+                        // TODO: Check if regen-enabled
+                        AddStatRegen(statId, regenStatId);
+                        Value.Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(this, statId));
+                        if (Value.Party != null)
+                        {
+                            Value.Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(Value));
+                        }
+                    }
+                }
+            });
+        }
+
+        public Task StartCombatStance()
+        {
+            // Refresh out-of-combat timer
+            CombatCTS?.Cancel();
+            CancellationTokenSource cts = new();
+            cts.Token.Register(() => cts.Dispose());
+            CombatCTS = cts;
+
+            // Enter combat
+            Value.Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, true));
+            return Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+
+                if (!cts.Token.IsCancellationRequested)
+                {
+                    CombatCTS = null;
+                    cts.Dispose();
+                    Value.Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, false));
+                }
+            }, cts.Token);
+        }
+
+        private void AddStatRegen(StatId statIndex, StatId regenStatIndex)
+        {
+            int regenAmount = Stats[regenStatIndex].Total;
+            if (regenAmount <= 0)
+            {
+                return;
+            }
+
+            Stat stat = Stats[statIndex];
+            lock (stat)
+            {
+                if (stat.Total < stat.Bonus)
+                {
+                    int missingAmount = stat.Bonus - stat.Total;
+                    stat.Increase(Math.Clamp(regenAmount, 0, missingAmount));
+                }
+            }
+        }
+    }
+
+    private class Npc : FieldActor<NpcMetadata>, INpc
+    {
+        public NpcState State { get; set; }
+        public NpcAction Action { get; set; }
+        public MobMovement Movement { get; set; }
+
+        public Npc(int objectId, int npcId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(npcId)) { }
+
+        public Npc(int objectId, NpcMetadata metadata) : base(objectId, metadata)
+        {
+            Animation = 255;
+            Stats = new(metadata);
+            State = NpcState.Normal;
+            Action = NpcAction.Idle;
+        }
+    }
+
+    private class Mob : FieldActor<NpcMetadata>, INpc
+    {
+        private readonly MobAI AI;
+        public IFieldObject<MobSpawn> OriginSpawn;
+
+        private CoordF SpawnDistance;
+
+        public NpcState State { get; set; }
+        public NpcAction Action { get; set; }
+        public MobMovement Movement { get; set; }
+        public IFieldActor<Player> Target;
+
+        public Mob(int objectId, int mobId) : this(objectId, NpcMetadataStorage.GetNpcMetadata(mobId)) { }
+
+        public Mob(int objectId, NpcMetadata metadata) : base(objectId, metadata)
+        {
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(metadata.Model, "Idle_A");
+            AI = MobAIManager.GetAI(metadata.AiInfo);
+            Stats = new(metadata);
+            State = NpcState.Normal;
+        }
+
+        public void Attack()
+        {
+            Console.WriteLine($"MobId {Value.Id}: {Value.NpcMetadataSkill.SkillIds.Length} {Value.NpcMetadataSkill.SkillLevels.Length} {Value.NpcMetadataSkill.SkillProbs.Length} CD {Value.NpcMetadataSkill.SkillCooldown}");
+            int roll = RandomProvider.Get().Next(100);
+            for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
+            {
+                if (roll < Value.NpcMetadataSkill.SkillProbs[i])
+                {
+                    // Rolled this skill.
+                    Cast(new SkillCast(Value.NpcMetadataSkill.SkillIds[i], Value.NpcMetadataSkill.SkillLevels[i]));
+                    StartSkillTimer((Value.NpcMetadataSkill.SkillCooldown > 0) ? Value.NpcMetadataSkill.SkillCooldown : 1000);
+                }
+
+                roll -= Value.NpcMetadataSkill.SkillProbs[i];
+            }
+        }
+
+        private Task StartSkillTimer(int CooldownMilliseconds)
+        {
+            return Task.Run(async () =>
+            {
+                await Task.Delay(CooldownMilliseconds);
+
+                OnCooldown = false;
+            });
+        }
+
+        public void Act()
+        {
+            if (AI == null)
+            {
+                return;
+            }
+
+            (string actionName, NpcAction actionType) = AI.GetAction(this);
+
+            if (actionName != null)
+            {
+                Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, actionName);
+            }
+            Action = actionType;
+            Movement = AI.GetMovementAction(this);
+
+            switch (Action)
+            {
+                case NpcAction.Idle:
+                    Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
+                    break;
+                case NpcAction.Bore:
+                    Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
+                    break;
+                case NpcAction.Walk:
+                case NpcAction.Run:
+                    Move(Movement);
+                    break;
+                case NpcAction.Skill:
+                    // Cast skill
+                    if (!OnCooldown)
+                    {
+                        Console.WriteLine("ATACK GO");
+                        Attack();
+                        Move(MobMovement.Hold);
+                    }
+                    else
+                    {
+                        Move(Movement);
+                    }
+                    break;
+                case NpcAction.Jump:
+                default:
+                    break;
+            }
+        }
+
+        public void Move(MobMovement moveType)
+        {
+            Random rand = RandomProvider.Get();
+
+            switch (moveType)
+            {
+                case MobMovement.Patrol:
+                    //if (Navigator == null)
+                    //{
+                        // Fallback Dummy Movement
+                        int moveDistance = rand.Next(0, Value.MoveRange);
+                        short moveDir = (short) rand.Next(-1800, 1800);
+
+                        Velocity = CoordF.From(moveDistance, moveDir);
+                        // Keep near spawn
+                        if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
+                        {
+                            moveDir = (short) SpawnDistance.XYAngle();
+                            Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
+                        }
+
+                        LookDirection = moveDir; // looking direction of the monster
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        int moveDistance = rand.Next(0, Value.MoveRange);
+
+                    //        List<CoordF> path = Navigator.GenerateRandomPath(OriginSpawn.Coord, moveDistance);
+                    //        CoordF from = path[0];
+                    //        CoordF to = CoordF.From(0, 0, 0);
+                    //        foreach (CoordF coord in path)
+                    //        {
+                    //            if ((coord - from).Length() > Value.NpcMetadataSpeed.WalkSpeed)
+                    //            {
+                    //                break;
+                    //            }
+                    //            to = coord;
+                    //        }
+
+                    //        MoveTo(to);
+                    //        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        Console.WriteLine($"Patrol: {ex.Message}");
+                    //    }
+                    //}
+                    break;
+                case MobMovement.Follow: // move towards target
+                    //if (Navigator == null)
+                    //{
+                        Velocity = CoordF.From(0, 0, 0);
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        float moveDistance = Math.Min((Coord - Target.Coord).Length(), Value.MoveRange);
+
+                    //        List<CoordF> path = Navigator.GenerateMoveToPath(Coord, Target.Coord);
+                    //        CoordF from = path[0];
+                    //        CoordF to = CoordF.From(0, 0, 0);
+                    //        foreach (CoordF coord in path)
+                    //        {
+                    //            if ((coord - from).Length() > Value.NpcMetadataSpeed.RunSpeed)
+                    //            {
+                    //                break;
+                    //            }
+                    //            to = coord;
+                    //        }
+                    //        MoveTo(to);
+                    //        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        Console.WriteLine($"Follow: {ex.Message}");
+                    //    }
+                    //}
+                    break;
+                case MobMovement.Strafe: // move around target
+                case MobMovement.Run: // move away from target
+                case MobMovement.LookAt:
+                case MobMovement.Hold:
+                default:
+                    Velocity = CoordF.From(0, 0, 0);
+                    break;
+            }
+
+            SpawnDistance -= Velocity;
+        }
+
+        public override void Perish()
+        {
+            IsDead = true;
+            State = NpcState.Dead;
+            int randAnim = RandomProvider.Get().Next(Value.StateActions[NpcState.Dead].Length);
+            Animation = AnimationStorage.GetSequenceIdBySequenceName(Value.Model, Value.StateActions[NpcState.Dead][randAnim].Item1);
         }
     }
 
@@ -712,20 +1393,54 @@ public class FieldManager
         {
             while (!State.Players.IsEmpty)
             {
+                UpdatePhysics();
+                UpdateEvents();
                 HealingSpot();
-                UpdateMobs();
+                UpdateObjects();
                 SendUpdates();
                 await Task.Delay(1000);
             }
         });
     }
 
-    private void UpdateMobs()
+    private void UpdateEvents()
     {
-        foreach (IFieldObject<Mob> mob in State.Mobs.Values)
+        // Manage mob aggro + targets
+        foreach (IFieldActor<Player> player in State.Players.Values)
         {
-            mob.Coord += mob.Value.Velocity; // Set current position (given to ControlMob Packet)
-            mob.Value.Act();
+            foreach (Mob mob in State.Mobs.Values)
+            {
+                float playerMobDist = CoordF.Distance(player.Coord, mob.Coord);
+                if (playerMobDist <= mob.Value.NpcMetadataDistance.Sight)
+                {
+                    mob.State = NpcState.Combat;
+                    mob.Target = player;
+                }
+                else
+                {
+                    if (mob.State == NpcState.Combat)
+                    {
+                        mob.State = NpcState.Normal;
+                        mob.Target = null;
+                    }
+                }
+            }
+        }
+    }
+
+    private void UpdatePhysics()
+    {
+        foreach (Mob mob in State.Mobs.Values)
+        {
+            mob.Coord += mob.Velocity; // Set current position (given to ControlMob Packet)
+        }
+    }
+
+    private void UpdateObjects()
+    {
+        foreach (Mob mob in State.Mobs.Values)
+        {
+            mob.Act();
         }
     }
 
@@ -734,18 +1449,18 @@ public class FieldManager
         foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
         {
             CoordS healingCoord = healingSpot.Value.Coord;
-            foreach (IFieldObject<Player> player in State.Players.Values)
+            foreach (IFieldActor<Player> player in State.Players.Values)
             {
                 if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
                 {
-                    int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
+                    int healAmount = (int) (player.Value.Stats[StatId.Hp].Bonus * 0.03);
                     Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
 
                     player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                     BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
-                    player.Value.Session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
-                    player.Value.Session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                    player.Stats[StatId.Hp].Increase(healAmount);
+                    player.Value.Session.Send(StatPacket.UpdateStats(player, StatId.Hp));
                 }
             }
         }
@@ -769,9 +1484,8 @@ public class FieldManager
 
             for (int i = 0; i < groupSpawnCount; i++)
             {
-                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
-                fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
-                AddMob(fieldMob);
+                CoordF spawnCoord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
+                IFieldActor<NpcMetadata> fieldMob = RequestMob(mob.Id, mobSpawn, spawnCoord);
             }
         }
     }

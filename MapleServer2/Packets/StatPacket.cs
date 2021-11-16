@@ -13,74 +13,73 @@ public static class StatPacket
         UpdateMobStats = 0x4
     }
 
-    public static PacketWriter UpdateStats(IFieldObject<Player> player, PlayerStatId statId, params PlayerStatId[] otherIds)
+    public static PacketWriter UpdateStats(IFieldActor<Player> player, StatId statId, params StatId[] otherIds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
         pWriter.WriteInt(player.ObjectId);
         pWriter.Write(StatsMode.UpdateStats);
         pWriter.WriteByte((byte) (1 + otherIds.Length));
         pWriter.Write(statId);
-        pWriter.WriteStat(statId, player.Value.Stats[statId]);
-        foreach (PlayerStatId otherId in otherIds)
+        pWriter.WriteStat(player.Stats, statId);
+        foreach (StatId otherId in otherIds)
         {
             pWriter.Write(otherId);
-            pWriter.WriteStat(otherId, player.Value.Stats[otherId]);
+            pWriter.WriteStat(player.Stats, statId);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter UpdateStats(IFieldObject<Player> player, List<PlayerStatId> statIds)
+    public static PacketWriter UpdateStats(IFieldActor<Player> player, IEnumerable<StatId> statIds)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
         pWriter.WriteInt(player.ObjectId);
         pWriter.Write(StatsMode.UpdateStats);
-        pWriter.WriteByte((byte) statIds.Count);
-        foreach (PlayerStatId statId in statIds)
+        pWriter.WriteByte((byte) statIds.Count());
+        foreach (StatId statId in statIds)
         {
             pWriter.Write(statId);
-            pWriter.WriteStat(statId, player.Value.Stats[statId]);
+            pWriter.WriteStat(player.Stats, statId);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter SetStats(IFieldObject<Player> player)
+    public static PacketWriter SetStats(IFieldActor<Player> player)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte(); // Unknown (0x00/0x01)
         pWriter.Write(StatsMode.SendStats);
-        foreach (KeyValuePair<PlayerStatId, PlayerStat> entry in player.Value.Stats.Data)
+        foreach (KeyValuePair<StatId, Stat> entry in player.Stats.Data)
         {
-            pWriter.WriteStat(entry.Key, entry.Value);
+            pWriter.WriteStat(player.Stats, entry.Key);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter UpdateMobStats(IFieldObject<Mob> mob)
+    public static PacketWriter UpdateMobStats(IFieldActor mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT);
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteByte();
         pWriter.WriteByte(1);
         pWriter.Write(StatsMode.UpdateMobStats);
-        pWriter.WriteLong(mob.Value.Stats.Hp.Bonus);
-        pWriter.WriteLong(mob.Value.Stats.Hp.Base);
-        pWriter.WriteLong(mob.Value.Stats.Hp.Total);
+        pWriter.WriteStat(mob.Stats, StatId.Hp);
 
         return pWriter;
     }
 
-    public static void DefaultStatsMob(this PacketWriter pWriter, IFieldObject<Mob> mob)
+    public static void DefaultStatsMob(this PacketWriter pWriter, IFieldActor mob)
     {
         pWriter.Write(StatsMode.SendStats);
-        for (int i = 0; i < 3; i++)
-        {
-            pWriter.WriteLong(mob.Value.Stats.Hp[i]);
-            pWriter.WriteInt(100); // Move speed (?)
-        }
+        pWriter.WriteLong(mob.Stats[StatId.Hp].Bonus);
+        pWriter.WriteInt(100); // Move speed (?)
+        pWriter.WriteLong(mob.Stats[StatId.Hp].Base);
+        pWriter.WriteInt(100); // Move speed (?)
+        pWriter.WriteLong(mob.Stats[StatId.Hp].Total);
+        pWriter.WriteInt(100); // Move speed (?)
     }
 
     public static void DefaultStatsNpc(this PacketWriter pWriter)
@@ -115,29 +114,52 @@ public static class StatPacket
         }
     }
 
-    public static void WriteStat(this PacketWriter pWriter, PlayerStatId statId, PlayerStat stat)
+    public static void WriteStat(this PacketWriter pWriter, Stats stats, StatId statId)
     {
-        if (statId == PlayerStatId.Hp)
+        if (statId == StatId.Hp)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                pWriter.WriteLong(stat[i]);
-            }
+            pWriter.WriteLong(stats[statId].BonusLong);
+            pWriter.WriteLong(stats[statId].BaseLong);
+            pWriter.WriteLong(stats[statId].TotalLong);
             return;
         }
-        pWriter.Write(stat);
+
+        for (int i = 0; i < 3; i++)
+        {
+            pWriter.WriteInt(stats[statId][i]);
+        }
     }
 
-    public static void WriteFieldStats(this PacketWriter pWriter, PlayerStats stats)
+    public static void WriteStats(this PacketWriter pWriter, Stats stats)
+    {
+        foreach (KeyValuePair<StatId, Stat> entry in stats.Data)
+        {
+            pWriter.WriteStat(stats, entry.Key);
+        }
+    }
+
+    public static void WriteFieldStats(this PacketWriter pWriter, Stats stats)
     {
         pWriter.Write(StatsMode.SendStats);
         for (int i = 0; i < 3; i++)
         {
-            pWriter.WriteLong(stats[PlayerStatId.Hp][i]);
-            pWriter.WriteInt(stats[PlayerStatId.AtkSpd][i]);
-            pWriter.WriteInt(stats[PlayerStatId.MoveSpd][i]);
-            pWriter.WriteInt(stats[PlayerStatId.MountSpeed][i]);
-            pWriter.WriteInt(stats[PlayerStatId.JumpHeight][i]);
+            switch (i)
+            {
+                case 0:
+                    pWriter.WriteLong(stats[StatId.Hp].Bonus);
+                    break;
+                case 1:
+                    pWriter.WriteLong(stats[StatId.Hp].Base);
+                    break;
+                case 2:
+                default:
+                    pWriter.WriteLong(stats[StatId.Hp].Total);
+                    break;
+            }
+            pWriter.WriteInt(stats[StatId.AtkSpd][i]);
+            pWriter.WriteInt(stats[StatId.MoveSpd][i]);
+            pWriter.WriteInt(stats[StatId.MountSpeed][i]);
+            pWriter.WriteInt(stats[StatId.JumpHeight][i]);
         }
     }
 }

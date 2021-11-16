@@ -106,7 +106,7 @@ public class RideHandler : GamePacketHandler
     {
         int otherPlayerObjectId = packet.ReadInt();
 
-        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldObject<Player> otherPlayer) || otherPlayer.Value.Mount == null)
+        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldActor<Player> otherPlayer) || otherPlayer.Value.Mount == null)
         {
             return;
         }

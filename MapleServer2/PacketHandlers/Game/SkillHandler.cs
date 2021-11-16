@@ -103,8 +103,9 @@ public class SkillHandler : GamePacketHandler
         }
 
         SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.FieldPlayer.ObjectId, clientTick, attackPoint);
-        session.FieldPlayer.Value.Cast(skillCast);
+        session.FieldPlayer.Cast(skillCast);
 
+        // TODO: Move to FieldActor.Cast()
         if (skillCast != null)
         {
             session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
@@ -167,7 +168,6 @@ public class SkillHandler : GamePacketHandler
 
     private static void HandleDamage(GameSession session, PacketReader packet)
     {
-        List<(IFieldObject<Mob>, DamageHandler)> mobs = new();
         long skillSN = packet.ReadLong();
         int attackCounter = packet.ReadInt();
         int playerObjectId = packet.ReadInt();
@@ -178,52 +178,56 @@ public class SkillHandler : GamePacketHandler
         byte count = packet.ReadByte();
         packet.ReadInt();
 
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[PlayerStatId.CritRate].Current);
-        for (int i = 0; i < count; i++)
-        {
-            int entity = packet.ReadInt();
-            packet.ReadByte();
+        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
 
-            IFieldObject<Mob> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entity);
-            if (mob == null)
-            {
-                continue;
-            }
-
-            DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.Value, mob.Value, isCrit);
-
-            mob.Value.Damage(damage.Damage);
-            session.Send(StatPacket.UpdateMobStats(mob));
-
-            if (mob.Value.IsDead)
-            {
-                HandleMobKill(session, mob);
-            }
-
-            mobs.Add((mob, damage));
-
-            // TODO: Check if the skill is a debuff for an entity
-            SkillCast skillCast = session.FieldPlayer.Value.SkillCast;
-            if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
-            {
-                Status status = new(session.FieldPlayer.Value.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
-                StatusHandler.Handle(session, status);
-            }
-        }
+        // TODO: Check if skillSN matches server's current skill for the player
         // TODO: Verify if its the player or an ally
-        if (session.FieldPlayer.Value.SkillCast.IsHeal())
+        if (session.FieldPlayer.SkillCast.IsHeal())
         {
-            Status status = new(session.FieldPlayer.Value.SkillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
+            Status status = new(session.FieldPlayer.SkillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
             StatusHandler.Handle(session, status);
 
             // TODO: Heal based on stats
             session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, 50));
-            session.FieldPlayer.Value.Stats.Increase(PlayerStatId.Hp, 50);
-            session.Send(StatPacket.UpdateStats(session.FieldPlayer, PlayerStatId.Hp));
+            session.FieldPlayer.Stats[StatId.Hp].Increase(50);
+            session.Send(StatPacket.UpdateStats(session.FieldPlayer, StatId.Hp));
         }
         else
         {
-            session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillSN, attackCounter, position, rotation, session.FieldPlayer, mobs));
+            List<DamageHandler> damages = new();
+            for (int i = 0; i < count; i++)
+            {
+                int entityId = packet.ReadInt();
+                packet.ReadByte();
+
+                IFieldActor<NpcMetadata> mob = CollectionExtensions.GetValueOrDefault<int, IFieldActor<NpcMetadata>>(session.FieldManager.State.Mobs, (int) entityId);
+                if (mob == null)
+                {
+                    continue;
+                }
+
+                DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.SkillCast, session.FieldPlayer, mob, isCrit);
+
+                mob.Damage(damage);
+                // TODO: Move logic to Damage()
+                session.FieldManager.BroadcastPacket(StatPacket.UpdateMobStats(mob));
+                if (mob.IsDead)
+                {
+                    HandleMobKill(session, mob);
+                }
+
+                damages.Add(damage);
+
+                // TODO: Check if the skill is a debuff for an entity
+                SkillCast skillCast = session.FieldPlayer.SkillCast;
+                if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
+                {
+                    Status status = new(session.FieldPlayer.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
+                    StatusHandler.Handle(session, status);
+                }
+            }
+
+            session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillSN, attackCounter, position, rotation, session.FieldPlayer, damages));
         }
     }
 
@@ -257,7 +261,7 @@ public class SkillHandler : GamePacketHandler
         }
     }
 
-    private static void HandleMobKill(GameSession session, IFieldObject<Mob> mob)
+    private static void HandleMobKill(GameSession session, IFieldObject<NpcMetadata> mob)
     {
         // TODO: Add trophy + item drops
         // Drop Money

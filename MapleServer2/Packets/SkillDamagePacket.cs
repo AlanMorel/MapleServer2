@@ -50,7 +50,7 @@ public static class SkillDamagePacket
         return pWriter;
     }
 
-    public static PacketWriter Damage(long skillSN, int unkValue, CoordF position, CoordF rotation, IFieldObject<Player> player, List<(IFieldObject<Mob>, DamageHandler)> effects)
+    public static PacketWriter Damage(long skillSN, int unkValue, CoordF position, CoordF rotation, IFieldObject<Player> player, IEnumerable<DamageHandler> effects)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_DAMAGE);
         SkillCast skillCast = SkillUsePacket.SkillCastMap[skillSN];
@@ -68,15 +68,15 @@ public static class SkillDamagePacket
         pWriter.Write(position.ToShort());
         pWriter.Write(rotation.ToShort()); // Position of the image effect of the skillUse, seems to be rotation (0, 0, rotation).
         // TODO: Check if is a player or mob
-        pWriter.WriteByte((byte) effects.Count);
-        foreach ((IFieldObject<Mob> mob, DamageHandler damage) in effects)
+        pWriter.WriteByte((byte) effects.Count());
+        foreach (DamageHandler effect in effects)
         {
-            pWriter.WriteInt(mob.ObjectId);
-            pWriter.WriteBool(damage.Damage > 0);
-            pWriter.WriteBool(damage.IsCrit);
-            if (damage.Damage != 0)
+            pWriter.WriteInt(effect.Target.ObjectId);
+            pWriter.WriteBool(effect.Damage > 0);
+            pWriter.WriteBool(effect.IsCrit);
+            if (effect.Damage != 0)
             {
-                pWriter.WriteLong(-1 * (long) damage.Damage);
+                pWriter.WriteLong(-1 * (long) effect.Damage);
             }
         }
 

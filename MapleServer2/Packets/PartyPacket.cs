@@ -163,8 +163,8 @@ public static class PartyPacket
         pWriter.Write(PartyPacketMode.UpdateHitpoints);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteLong(player.AccountId);
-        pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Max);
-        pWriter.WriteInt(player.Stats[PlayerStatId.Hp].Current);
+        pWriter.WriteInt(player.Stats[StatId.Hp].Bonus);
+        pWriter.WriteInt(player.Stats[StatId.Hp].Total);
         pWriter.WriteShort();
         return pWriter;
     }
