@@ -263,16 +263,16 @@ public static class UgcPacket
 
     public static PacketWriter WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
     {
-        pWriter.WriteLong(ugc.Uid);
-        pWriter.WriteUnicodeString(ugc.Guid.ToString()); // UUID (filename)
-        pWriter.WriteUnicodeString(ugc.Name); // Name (itemname)
+        pWriter.WriteLong(ugc?.Uid ?? 0);
+        pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)
+        pWriter.WriteUnicodeString(ugc?.Name ?? ""); // Name (itemname)
         pWriter.WriteByte(1);
         pWriter.WriteInt(1);
-        pWriter.WriteLong(ugc.AccountId); // AccountId
-        pWriter.WriteLong(ugc.CharacterId); // CharacterId
-        pWriter.WriteUnicodeString(ugc.CharacterName); // CharacterName
-        pWriter.WriteLong(ugc.CreationTime); // CreationTime
-        pWriter.WriteUnicodeString(ugc.Url); // URL (no domain)
+        pWriter.WriteLong(ugc?.AccountId ?? 0); // AccountId
+        pWriter.WriteLong(ugc?.CharacterId ?? 0); // CharacterId
+        pWriter.WriteUnicodeString(ugc?.CharacterName ?? ""); // CharacterName
+        pWriter.WriteLong(ugc?.CreationTime ?? 0); // CreationTime
+        pWriter.WriteUnicodeString(ugc?.Url ?? ""); // URL (no domain)
         pWriter.WriteByte();
 
         return pWriter;
