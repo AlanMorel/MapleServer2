@@ -366,7 +366,7 @@ public class Player
         });
     }
 
-    public void IncrementGatheringCount(int recipeID, int amount)
+    public void IncrementGatheringCount(int recipeId, int amount)
     {
         GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
         if (gatheringCount is null)
