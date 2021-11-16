@@ -353,7 +353,7 @@ public class FieldManager
         return WrapPlayer(player);
     }
 
-    public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
 
@@ -362,7 +362,10 @@ public class FieldManager
             Npc npc = WrapNpc(npcId);
             npc.Coord = coord;
             npc.Rotation = rotation;
-            npc.Animation = animation;
+            if (animation != default)
+            {
+                npc.Animation = animation;
+            }
             AddNpc(npc);
             return npc;
         }
@@ -370,28 +373,37 @@ public class FieldManager
         Mob mob = WrapMob(npcId);
         mob.Coord = coord;
         mob.Rotation = rotation;
-        mob.Animation = animation;
+        if (animation != default)
+        {
+            mob.Animation = animation;
+        }
         AddMob(mob);
         return mob;
     }
 
-    public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         Mob mob = WrapMob(mobId);
         mob.Coord = coord;
         mob.Rotation = rotation;
-        mob.Animation = animation;
+        if (animation != default)
+        {
+            mob.Animation = animation;
+        }
         AddMob(mob);
         return mob;
     }
 
-    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default, short animation = 0)
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         Mob mob = WrapMob(mobId);
         mob.OriginSpawn = spawnPoint;
         mob.Coord = coord;
         mob.Rotation = rotation;
-        mob.Animation = animation;
+        if (animation != default)
+        {
+            mob.Animation = animation;
+        }
         AddMob(mob);
         return mob;
     }
@@ -1270,7 +1282,6 @@ public class FieldManager
                     // Cast skill
                     if (!OnCooldown)
                     {
-                        Console.WriteLine("ATACK GO");
                         Attack();
                         Move(MobMovement.Hold);
                     }
