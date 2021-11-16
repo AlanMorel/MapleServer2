@@ -107,7 +107,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
 
         if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
         {
@@ -254,7 +254,7 @@ public class RequestItemUseHandler : GamePacketHandler
         }
     }
 
-    private static GachaContent HandleSmartGender(GachaMetadata gacha, byte playerGender)
+    private static GachaContent HandleSmartGender(GachaMetadata gacha, Gender playerGender)
     {
         Random random = RandomProvider.Get();
         int index = random.Next(gacha.Contents.Count);
@@ -265,8 +265,8 @@ public class RequestItemUseHandler : GamePacketHandler
             return contents;
         }
 
-        byte itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
-        if (playerGender != itemGender || itemGender != 2) // if it's not the same gender or unisex, roll again
+        Gender itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
+        if (playerGender != itemGender || itemGender != Gender.Neutral) // if it's not the same gender or unisex, roll again
         {
             bool sameGender = false;
             do
@@ -274,9 +274,9 @@ public class RequestItemUseHandler : GamePacketHandler
                 int indexReroll = random.Next(gacha.Contents.Count);
 
                 GachaContent rerollContents = gacha.Contents[indexReroll];
-                byte rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
+                Gender rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
 
-                if (rerollContentsGender == playerGender || rerollContentsGender == 2)
+                if (rerollContentsGender == playerGender || rerollContentsGender == Gender.Neutral)
                 {
                     return rerollContents;
                 }
@@ -337,7 +337,7 @@ public class RequestItemUseHandler : GamePacketHandler
                             "",
                             $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
                             items,
-                            0, out Mail mail);
+                            0, 0, out Mail mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
@@ -362,7 +362,7 @@ public class RequestItemUseHandler : GamePacketHandler
         Item badge = new(70100000)
         {
             PetSkinBadgeId = pet.Id,
-            CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount
+            CreationTime = TimeInfo.Now() + Environment.TickCount
         };
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
@@ -395,7 +395,8 @@ public class RequestItemUseHandler : GamePacketHandler
     public static void HandleExpandCharacterSlot(GameSession session, Item item)
     {
         Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
-        if (account.CharacterSlots >= 11) // TODO: Move the max character slots (of all users) to a centralized location
+        int maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
+        if (account.CharacterSlots >= maxSlots)
         {
             session.Send(CouponUsePacket.MaxCharacterSlots());
             return;

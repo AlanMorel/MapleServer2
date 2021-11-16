@@ -204,7 +204,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 PlotMapId = player.MapId,
                 PlotNumber = land.Id,
-                Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + land.ContractDate * 24 * 60 * 60,
+                Expiration = TimeInfo.Now() + Environment.TickCount + land.ContractDate * 24 * 60 * 60,
                 Name = player.Name
             };
             GameServer.HomeManager.AddHome(player.Account.Home);
@@ -213,7 +213,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             player.Account.Home.PlotMapId = player.MapId;
             player.Account.Home.PlotNumber = land.Id;
-            player.Account.Home.Expiration = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + land.ContractDate * 24 * 60 * 60;
+            player.Account.Home.Expiration = TimeInfo.Now() + Environment.TickCount + land.ContractDate * 24 * 60 * 60;
 
             Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
             home.PlotMapId = player.Account.Home.PlotMapId;
@@ -256,7 +256,7 @@ public class RequestCubeHandler : GamePacketHandler
             RemoveCube(session, session.FieldPlayer, cube, home);
         }
 
-        session.Send(ResponseCubePacket.ForfeitPlot(plotNumber, apartmentNumber, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+        session.Send(ResponseCubePacket.ForfeitPlot(plotNumber, apartmentNumber, TimeInfo.Now()));
         session.Send(ResponseCubePacket.RemovePlot(plotNumber, apartmentNumber));
         session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
         session.Send(ResponseCubePacket.RemovePlot2(plotMapId, plotNumber));
@@ -620,7 +620,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             owner.Value.Session.Send(HomeCommandPacket.UpdateArchitectScore(owner.ObjectId, home.ArchitectScoreCurrent, home.ArchitectScoreTotal));
         }
-        session.Send(ResponseCubePacket.ArchitectScoreExpiration(player.AccountId, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+        session.Send(ResponseCubePacket.ArchitectScoreExpiration(player.AccountId, TimeInfo.Now()));
     }
 
     private static void HandleHomeDescription(GameSession session, PacketReader packet)
@@ -877,13 +877,13 @@ public class RequestCubeHandler : GamePacketHandler
 
         if (session.Player.IsInDecorPlanner)
         {
-            home.Layouts.Add(new(home.Id, layoutId, layoutName, home.DecorPlannerSize, home.DecorPlannerHeight, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.DecorPlannerInventory.Values.ToList()));
+            home.Layouts.Add(new(home.Id, layoutId, layoutName, home.DecorPlannerSize, home.DecorPlannerHeight, TimeInfo.Now(), home.DecorPlannerInventory.Values.ToList()));
         }
         else
         {
-            home.Layouts.Add(new(home.Id, layoutId, layoutName, home.Size, home.Height, DateTimeOffset.UtcNow.ToUnixTimeSeconds(), home.FurnishingInventory.Values.ToList()));
+            home.Layouts.Add(new(home.Id, layoutId, layoutName, home.Size, home.Height, TimeInfo.Now(), home.FurnishingInventory.Values.ToList()));
         }
-        session.Send(ResponseCubePacket.SaveLayout(home.AccountId, layoutId, layoutName, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+        session.Send(ResponseCubePacket.SaveLayout(home.AccountId, layoutId, layoutName, TimeInfo.Now()));
     }
 
     private static void HandleDecorationReward(GameSession session)
@@ -1008,7 +1008,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         home.GainExp(decorationScore);
         session.Player.Inventory.AddItem(session, new(rewardsIds.OrderBy(x => RandomProvider.Get().Next()).First()), true);
-        home.DecorationRewardTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        home.DecorationRewardTimestamp = TimeInfo.Now();
         session.Send(ResponseCubePacket.DecorationScore(home));
     }
 

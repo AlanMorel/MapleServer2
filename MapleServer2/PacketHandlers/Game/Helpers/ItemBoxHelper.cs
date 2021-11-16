@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Tools;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
@@ -10,7 +11,7 @@ namespace MapleServer2.PacketHandlers.Game.Helpers;
 
 public static class ItemBoxHelper
 {
-    public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, byte playerGender, Job job)
+    public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Gender playerGender, Job job)
     {
         List<Item> items = new();
         Random rng = RandomProvider.Get();
@@ -19,8 +20,8 @@ public static class ItemBoxHelper
         {
             if (dropContent.SmartGender)
             {
-                byte itemGender = ItemMetadataStorage.GetGender(id);
-                if (itemGender != playerGender || itemGender != 2)
+                Gender itemGender = ItemMetadataStorage.GetGender(id);
+                if (itemGender != playerGender)
                 {
                     continue;
                 }
@@ -34,7 +35,6 @@ public static class ItemBoxHelper
                     Enchants = dropContent.EnchantLevel,
                     Amount = amount,
                     Rarity = dropContent.Rarity
-
                 };
                 items.Add(newItem);
             }

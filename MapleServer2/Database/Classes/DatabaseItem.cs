@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -58,6 +57,7 @@ public class DatabaseItem : DatabaseTable
             stats = JsonConvert.SerializeObject(item.Stats, Settings),
             times_attributes_changed = item.TimesAttributesChanged,
             transfer_flag = item.TransferFlag,
+            blackmarket_category = item.BlackMarketCategory,
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime
         });
@@ -212,7 +212,7 @@ public class DatabaseItem : DatabaseTable
             UnlockTime = data.unlock_time,
             InventoryId = data.inventory_id ?? 0,
             BankInventoryId = data.bank_inventory_id ?? 0,
-            BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(data.id),
+            BlackMarketCategory = data.blackmarket_category,
             MailId = data.mail_id ?? 0,
             HomeId = data.home_id ?? 0
         };

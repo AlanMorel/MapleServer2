@@ -48,8 +48,8 @@ public class CompleteQuestCommand : InGameCommand
         }
         questStatus.Completed = true;
         questStatus.Started = true;
-        questStatus.StartTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-        questStatus.CompleteTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        questStatus.StartTimestamp = TimeInfo.Now();
+        questStatus.CompleteTimestamp = TimeInfo.Now();
         player.Levels.GainExp(questStatus.Reward.Exp);
         player.Wallet.Meso.Modify(questStatus.Reward.Money);
 
@@ -111,7 +111,7 @@ public class StartQuestCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
-        trigger.Session.Player.QuestList.Add(new(trigger.Session.Player, quest, true, DateTimeOffset.Now.ToUnixTimeSeconds()));
+        trigger.Session.Player.QuestList.Add(new(trigger.Session.Player, quest, true, TimeInfo.Now()));
         trigger.Session.Send(QuestPacket.AcceptQuest(questId));
     }
 }

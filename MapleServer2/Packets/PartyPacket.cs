@@ -228,7 +228,7 @@ public static class PartyPacket
         pWriter.Write(PartyPacketMode.StartReadyCheck);
         pWriter.WriteByte(2); //unk
         pWriter.WriteInt(count);
-        pWriter.WriteLong(DateTimeOffset.Now.ToUnixTimeSeconds() + Environment.TickCount);
+        pWriter.WriteLong(TimeInfo.Now() + Environment.TickCount);
         pWriter.WriteInt(members.Count);
         foreach (Player partyMember in members)
         {

@@ -32,7 +32,7 @@ public class CurrencyCommands : InGameCommand
         if (string.IsNullOrEmpty(currencyName))
         {
             session.SendNotice("No currency type were found. Try one of the list.");
-            session.Send(NoticePacket.Notice("valor, treva, rue, havi, meso, meret".Color(Color.DarkOrange), NoticeType.Chat));
+            session.Send(NoticePacket.Notice("valor, treva, rue, havi, meso, meret, mesotoken".Color(Color.DarkOrange), NoticeType.Chat));
             return;
         }
         if (amount <= 0)
@@ -60,6 +60,9 @@ public class CurrencyCommands : InGameCommand
                 break;
             case "meret":
                 session.Player.Account.Meret.SetAmount(amount);
+                break;
+            case "mesotoken":
+                session.Player.Account.MesoToken.SetAmount(amount);
                 break;
         }
     }

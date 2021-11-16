@@ -20,10 +20,9 @@ public static class SkillMetadataStorage
         }
     }
 
-    public static SkillMetadata GetSkill(int id)
-    {
-        return skill.GetValueOrDefault(id);
-    }
+    public static SkillMetadata GetSkill(int id) => skill.GetValueOrDefault(id);
+
+    public static List<int> GetEmotes() => skill.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
 
     // Get a List of Skills corresponding to the Job
     public static List<SkillMetadata> GetJobSkills(Job job = Job.None)

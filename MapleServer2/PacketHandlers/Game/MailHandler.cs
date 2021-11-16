@@ -119,7 +119,7 @@ public class MailHandler : GamePacketHandler
             recipient = DatabaseManager.Characters.FindPartialPlayerByName(recipientName);
         }
 
-        MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new(), 0, out Mail mail);
+        MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new(), 0, 0, out Mail mail);
 
         session.Send(MailPacket.Send(mail));
     }
@@ -149,7 +149,7 @@ public class MailHandler : GamePacketHandler
             return;
         }
 
-        if (mail.Items.Count == 0 && mail.Mesos == 0)
+        if (mail.Items.Count == 0 && mail.Mesos == 0 && mail.Merets == 0)
         {
             return;
         }
@@ -173,6 +173,15 @@ public class MailHandler : GamePacketHandler
                 return;
             }
             mail.Mesos = 0;
+        }
+
+        if (mail.Merets > 0)
+        {
+            if (!session.Player.Account.Meret.Modify(mail.Merets))
+            {
+                return;
+            }
+            mail.Merets = 0;
         }
         DatabaseManager.Mails.Update(mail);
 

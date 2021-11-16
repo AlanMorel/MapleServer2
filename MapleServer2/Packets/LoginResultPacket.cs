@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -48,7 +49,7 @@ public static class LoginResultPacket
         pWriter.WriteInt(); // Const
         pWriter.WriteUnicodeString(""); // Ban reason
         pWriter.WriteLong(accountId);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // SyncTime
+        pWriter.WriteLong(TimeInfo.Now()); // SyncTime
         pWriter.WriteInt(Environment.TickCount); // SyncTicks
         pWriter.WriteByte(); // TimeZone
         pWriter.WriteByte(); // BlockType

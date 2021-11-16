@@ -24,11 +24,12 @@ public class Player
     public long AccountId { get; set; }
     public long CharacterId { get; set; }
     public long CreationTime { get; set; }
+    public long LastLoginTime { get; set; }
+    private long OnlineTime { get; set; }
     public bool IsDeleted;
 
     public string Name { get; set; }
-    // Gender - 0 = male, 1 = female
-    public byte Gender { get; set; }
+    public Gender Gender { get; set; }
 
     public bool Awakened { get; set; }
 
@@ -119,7 +120,6 @@ public class Player
     public int[] GroupChatId;
 
     public long GuildId;
-    public long GuildMemberId;
     public Guild Guild;
     public GuildMember GuildMember;
     public List<GuildApplication> GuildApplications = new();
@@ -130,7 +130,8 @@ public class Player
     public Wallet Wallet { get; set; }
     public List<QuestStatus> QuestList;
 
-    private readonly TimeInfo Timestamps;
+    public CancellationTokenSource OnlineCTS;
+    public Task OnlineTimeThread;
 
     public List<GatheringCount> GatheringCount;
 
@@ -143,24 +144,10 @@ public class Player
 
     public List<PlayerTrigger> Triggers = new();
 
-    private class TimeInfo
-    {
-        public long CharCreation;
-        public long OnlineDuration;
-        public long LastOnline;
-
-        public TimeInfo(long charCreation = -1, long onlineDuration = 0, long lastOnline = -1)
-        {
-            CharCreation = charCreation;
-            OnlineDuration = onlineDuration;
-            LastOnline = lastOnline;
-        }
-    }
-
     public Player() { }
 
     // Initializes all values to be saved into the database
-    public Player(Account account, string name, byte gender, Job job, SkinColor skinColor)
+    public Player(Account account, string name, Gender gender, Job job, SkinColor skinColor)
     {
         AccountId = account.Id;
         Account = account;
@@ -183,13 +170,13 @@ public class Player
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
         });
-        Timestamps = new(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         MapId = JobMetadataStorage.GetStartMapId((int) job);
         Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(10, 10, 10, 10, 500, 10);
         Motto = "Motto";
         ProfileUrl = "";
-        CreationTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+        CreationTime = TimeInfo.Now();
+        LastLoginTime = TimeInfo.Now();
         TitleId = 0;
         InsigniaId = 0;
         Titles = new();
@@ -280,7 +267,7 @@ public class Player
         Session.Send(MigrationPacket.GameToGame(endpoint, authTokens, this));
     }
 
-    public void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
+    private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)
     {
         if (coord is not null && rotation is not null)
         {
@@ -381,11 +368,11 @@ public class Player
 
     public void IncrementGatheringCount(int recipeID, int amount)
     {
-        GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeID);
+        GatheringCount gatheringCount = GatheringCount.FirstOrDefault(x => x.RecipeId == recipeId);
         if (gatheringCount is null)
         {
-            int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeID).NormalPropLimitCount * 1.4);
-            gatheringCount = new(recipeID, 0, maxLimit);
+            int maxLimit = (int) (RecipeMetadataStorage.GetRecipe(recipeId).NormalPropLimitCount * 1.4);
+            gatheringCount = new(recipeId, 0, maxLimit);
             GatheringCount.Add(gatheringCount);
         }
 
@@ -409,15 +396,16 @@ public class Player
         }
     }
 
-    private Task OnlineTimer()
+    public Task OnlineTimer()
     {
+        OnlineCTS = new();
         return Task.Run(async () =>
         {
-            await Task.Delay(60000);
-            lock (Timestamps)
+            while (!OnlineCTS.IsCancellationRequested)
             {
-                Timestamps.OnlineDuration += 1;
-                Timestamps.LastOnline = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                await Task.Delay(60000);
+                OnlineTime += 1;
+                LastLoginTime = TimeInfo.Now();
                 TrophyUpdate(23100001, 1);
             }
         });
@@ -431,7 +419,7 @@ public class Player
 
     public void GetUnreadMailCount()
     {
-        int unreadCount = Mailbox.Where(x => x.ReadTimestamp == 0).Count();
+        int unreadCount = Mailbox.Count(x => x.ReadTimestamp == 0);
         Session.Send(MailPacket.Notify(unreadCount, true));
     }
 

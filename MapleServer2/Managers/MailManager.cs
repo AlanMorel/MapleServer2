@@ -13,7 +13,7 @@ public class MailManager
         List<Mail> list = DatabaseManager.Mails.FindAll();
         foreach (Mail mail in list)
         {
-            if (mail.ExpiryTimestamp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            if (mail.ExpiryTimestamp < TimeInfo.Now())
             {
                 RemoveMail(mail);
                 DatabaseManager.Mails.Delete(mail.Id);

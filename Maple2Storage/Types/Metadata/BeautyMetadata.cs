@@ -42,7 +42,7 @@ public class BeautyItem
     [XmlElement(Order = 1)]
     public int ItemId;
     [XmlElement(Order = 2)]
-    public byte Gender;
+    public Gender Gender;
     [XmlElement(Order = 3)]
     public ShopItemFlag Flag = ShopItemFlag.None;
     [XmlElement(Order = 4)]

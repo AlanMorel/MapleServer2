@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Packets.Helpers;
 using MapleServer2.Types;
 
@@ -73,11 +74,11 @@ public static class CharacterListPacket
         return pWriter;
     }
 
-    public static PacketWriter SetMax(int unlocked, int total = 11)
+    public static PacketWriter SetMax(int unlocked)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CHAR_MAX_COUNT);
         pWriter.WriteInt(unlocked);
-        pWriter.WriteInt(total);
+        pWriter.WriteInt(int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots")));
 
         return pWriter;
     }
@@ -116,7 +117,7 @@ public static class CharacterListPacket
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteByte(player.Gender);
+        pWriter.Write(player.Gender);
         pWriter.WriteByte(1);
 
         pWriter.WriteLong(player.AccountId);

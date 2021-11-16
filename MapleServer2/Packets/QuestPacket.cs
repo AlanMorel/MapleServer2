@@ -39,7 +39,7 @@ public static class QuestPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.QUEST);
         pWriter.Write(QuestType.AcceptQuest);
         pWriter.WriteInt(questId);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte(1);
         pWriter.WriteInt(0);
 
@@ -67,7 +67,7 @@ public static class QuestPacket
         pWriter.Write(QuestType.CompleteQuest);
         pWriter.WriteInt(questId);
         pWriter.WriteInt(animation ? 1 : 0);
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        pWriter.WriteLong(TimeInfo.Now());
 
         return pWriter;
     }

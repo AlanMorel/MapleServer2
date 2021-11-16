@@ -97,7 +97,7 @@ public static class FieldPacket
             }
         }
         pWriter.WriteInt();
-        pWriter.WriteLong(DateTimeOffset.UtcNow.ToUnixTimeSeconds()); // some timestamp
+        pWriter.WriteLong(TimeInfo.Now()); // some timestamp
         pWriter.WriteInt();
         pWriter.WriteInt();
 

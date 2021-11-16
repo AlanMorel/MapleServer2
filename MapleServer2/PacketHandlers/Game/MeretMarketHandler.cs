@@ -132,7 +132,7 @@ public class MeretMarketHandler : GamePacketHandler
         };
         if (marketItem.Duration != 0)
         {
-            item.ExpiryTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + Environment.TickCount + marketItem.Duration * 24 * 60 * 60;
+            item.ExpiryTime = TimeInfo.Now() + Environment.TickCount + marketItem.Duration * 24 * 60 * 60;
         }
         session.Player.Inventory.AddItem(session, item, true);
         session.Send(MeretMarketPacket.Purchase(marketItem, itemIndex, totalQuantity));

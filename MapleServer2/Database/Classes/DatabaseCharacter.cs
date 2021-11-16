@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -16,8 +17,9 @@ public class DatabaseCharacter : DatabaseTable
         {
             account_id = player.AccountId,
             creation_time = player.CreationTime,
+            last_login_time = player.LastLoginTime,
             player.Name,
-            player.Gender,
+            gender = (byte) player.Gender,
             player.Awakened,
             job = (int) player.Job,
             levels_id = player.Levels.Id,
@@ -72,7 +74,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, vip_expiration}",
+                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
                 "homes.id as home_id")
@@ -94,10 +96,10 @@ public class DatabaseCharacter : DatabaseTable
             CharacterId = data.character_id,
             AccountId = data.account_id,
             Account = new Account(data.account_id, data.username, data.password_hash, data.creation_time, data.last_login_time, data.character_slots,
-                                  data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration, bankInventory),
+                                  data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory),
             CreationTime = data.creation_time,
             Name = data.name,
-            Gender = data.gender,
+            Gender = (Gender) data.gender,
             Awakened = data.awakened,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
@@ -215,7 +217,7 @@ public class DatabaseCharacter : DatabaseTable
                 CharacterId = data.character_id,
                 CreationTime = data.creation_time,
                 Name = data.name,
-                Gender = data.gender,
+                Gender = (Gender) data.gender,
                 Awakened = data.awakened,
                 Job = (Job) data.job,
                 Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
@@ -236,7 +238,7 @@ public class DatabaseCharacter : DatabaseTable
         QueryFactory.Query(TableName).Where("character_id", player.CharacterId).Update(new
         {
             player.Name,
-            player.Gender,
+            gender = (byte) player.Gender,
             player.Awakened,
             job = (int) player.Job,
             map_id = player.MapId,
@@ -271,6 +273,11 @@ public class DatabaseCharacter : DatabaseTable
             gathering_count = JsonConvert.SerializeObject(player.GatheringCount)
         });
         DatabaseManager.Accounts.Update(player.Account);
+
+        if (player.GuildMember is not null)
+        {
+            DatabaseManager.GuildMembers.Update(player.GuildMember);
+        }
 
         DatabaseManager.Levels.Update(player.Levels);
         DatabaseManager.Wallets.Update(player.Wallet);
@@ -334,7 +341,7 @@ public class DatabaseCharacter : DatabaseTable
             },
             CreationTime = data.creation_time,
             Name = data.name,
-            Gender = data.gender,
+            Gender = (Gender) data.gender,
             Awakened = data.awakened,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),

@@ -46,7 +46,7 @@ public class PrestigeHandler : GamePacketHandler
         {
             Item item = new(reward.Id)
             {
-                CreationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                CreationTime = TimeInfo.Now(),
                 Rarity = 4
             };
 
