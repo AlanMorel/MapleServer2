@@ -1,47 +1,8 @@
-﻿using Maple2Storage.Types;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types;
-
-// Player Stats in Packet Order - Count: 35 (0x23)
-public enum StatId : byte
-{
-    Str = 0x00,
-    Dex = 0x01,
-    Int = 0x02,
-    Luk = 0x03,
-    Hp = 0x04, // long
-    HpRegen = 0x05,
-    HpRegenTime = 0x06, // base (3000ms)
-    Spirit = 0x07,
-    SpRegen = 0x08,
-    SpRegenTime = 0x09, // base (200ms)
-    Stamina = 0x0A, // base 120 (20 = 1 block)
-    StaRegen = 0x0B, // base 10  (10 = 0.5 block)
-    StaRegenTime = 0x0C, // base (500ms)
-    AtkSpd = 0x0D,
-    MoveSpd = 0x0E,
-    Acc = 0x0F,
-    Eva = 0x10,
-    CritRate = 0x11,
-    CritDmg = 0x12,
-    CritEva = 0x13,
-    Def = 0x14,
-    Guard = 0x15,
-    JumpHeight = 0x16,
-    PhysAtk = 0x17,
-    MagAtk = 0x18,
-    PhysRes = 0x19,
-    MagRes = 0x1A,
-    MinAtk = 0x1B,
-    MaxAtk = 0x1C,
-    MinDmg = 0x1D,
-    MaxDmg = 0x1E,
-    Pierce = 0x1F,
-    MountSpeed = 0x20,
-    BonusAtk = 0x21,
-    PetBonusAtk = 0x22, // base 0 (bonuses can be added)
-}
 
 public class Stats
 {
@@ -79,7 +40,7 @@ public class Stats
                 new Stat(metadata.Stats.HpRegen)
             },
             {
-                StatId.HpRegenTime,
+                StatId.HpRegenInterval,
                 new Stat(metadata.Stats.HpInterval)
             },
             {
@@ -91,7 +52,7 @@ public class Stats
                 new Stat(metadata.Stats.SpRegen)
             },
             {
-                StatId.SpRegenTime,
+                StatId.SpRegenInterval,
                 new Stat(metadata.Stats.SpInterval)
             },
             {
@@ -99,27 +60,27 @@ public class Stats
                 new Stat(metadata.Stats.Ep)
             }, // Max = 0 on login
             {
-                StatId.StaRegen,
+                StatId.StaminaRegen,
                 new Stat(metadata.Stats.EpRegen)
             },
             {
-                StatId.StaRegenTime,
+                StatId.StaminaRegenInterval,
                 new Stat(metadata.Stats.EpInterval)
             },
             {
-                StatId.AtkSpd,
+                StatId.AttackSpeed,
                 new Stat(metadata.Stats.AtkSpd)
             },
             {
-                StatId.MoveSpd,
+                StatId.MovementSpeed,
                 new Stat(metadata.Stats.MoveSpd)
             },
             {
-                StatId.Acc,
+                StatId.Accuracy,
                 new Stat(metadata.Stats.Accuracy)
             },
             {
-                StatId.Eva,
+                StatId.Evasion,
                 new Stat(metadata.Stats.Evasion)
             }, // changes with job
             {
@@ -127,19 +88,19 @@ public class Stats
                 new Stat(metadata.Stats.CritRate)
             }, // changes with job
             {
-                StatId.CritDmg,
+                StatId.CritDamage,
                 new Stat(metadata.Stats.CritDamage)
             },
             {
-                StatId.CritEva,
+                StatId.CritEvasion,
                 new Stat(metadata.Stats.CritResist)
             },
             {
-                StatId.Def,
+                StatId.Defense,
                 new Stat(metadata.Stats.Defense)
             }, // base affected by something?
             {
-                StatId.Guard,
+                StatId.PerfectGuard,
                 new Stat(metadata.Stats.Guard)
             },
             {
@@ -147,35 +108,35 @@ public class Stats
                 new Stat(metadata.Stats.JumpHeight)
             },
             {
-                StatId.PhysAtk,
+                StatId.PhysicalAtk,
                 new Stat(metadata.Stats.PhysAtk)
             }, // base for mage, 74 thief
             {
-                StatId.MagAtk,
+                StatId.MagicAtk,
                 new Stat(metadata.Stats.MagAtk)
             }, // base for thief, 216 mage
             {
-                StatId.PhysRes,
+                StatId.PhysicalRes,
                 new Stat(metadata.Stats.PhysRes)
             },
             {
-                StatId.MagRes,
+                StatId.MagicRes,
                 new Stat(metadata.Stats.MagRes)
             },
             {
-                StatId.MinAtk,
+                StatId.MinWeaponAtk,
                 new Stat(metadata.Stats.MinAtk)
             },
             {
-                StatId.MaxAtk,
+                StatId.MaxWeaponAtk,
                 new Stat(metadata.Stats.MaxAtk)
             },
             {
-                StatId.MinDmg,
+                StatId.MinDamage,
                 new Stat(metadata.Stats.Damage)
             },
             {
-                StatId.MaxDmg,
+                StatId.MaxDamage,
                 new Stat(metadata.Stats.Damage)
             },
             {
@@ -183,7 +144,7 @@ public class Stats
                 new Stat(metadata.Stats.Pierce)
             },
             {
-                StatId.MountSpeed,
+                StatId.MountMovementSpeed,
                 new Stat(metadata.Stats.MountSpeed)
             },
             {
@@ -219,54 +180,54 @@ public class Stats
             },
             {
                 StatId.Hp,
-                new Stat(hpBase, hpBase, 0)
+                new Stat(hpBase)
             }, // Max = 0 on login
             {
                 StatId.HpRegen,
                 new Stat(10)
             },
             {
-                StatId.HpRegenTime,
+                StatId.HpRegenInterval, // base (3000ms)
                 new Stat(3000)
             },
             {
                 StatId.Spirit,
-                new Stat(100, 100, 0)
+                new Stat(100)
             }, // Max = 0 on login
             {
                 StatId.SpRegen,
                 new Stat(1)
             },
             {
-                StatId.SpRegenTime,
+                StatId.SpRegenInterval, // base (200ms)
                 new Stat(200)
             },
             {
-                StatId.Stamina,
+                StatId.Stamina,         // base 120 (20 = 1 block)
                 new Stat(120)
             }, // Max = 0 on login
             {
-                StatId.StaRegen,
+                StatId.StaminaRegen,    // base 10  (10 = 0.5 block)
                 new Stat(10)
             },
             {
-                StatId.StaRegenTime,
+                StatId.StaminaRegenInterval,    // base (500ms)
                 new Stat(500)
             },
             {
-                StatId.AtkSpd,
+                StatId.AttackSpeed,
                 new Stat(100)
             },
             {
-                StatId.MoveSpd,
+                StatId.MovementSpeed,
                 new Stat(100)
             },
             {
-                StatId.Acc,
+                StatId.Accuracy,
                 new Stat(82)
             },
             {
-                StatId.Eva,
+                StatId.Evasion,
                 new Stat(70)
             }, // changes with job
             {
@@ -274,19 +235,19 @@ public class Stats
                 new Stat(critRateBase)
             }, // changes with job
             {
-                StatId.CritDmg,
+                StatId.CritDamage,
                 new Stat(250)
             },
             {
-                StatId.CritEva,
+                StatId.CritEvasion,
                 new Stat(50)
             },
             {
-                StatId.Def,
+                StatId.Defense,
                 new Stat(16)
             }, // base affected by something?
             {
-                StatId.Guard,
+                StatId.PerfectGuard,
                 new Stat(0)
             },
             {
@@ -294,35 +255,35 @@ public class Stats
                 new Stat(100)
             },
             {
-                StatId.PhysAtk,
+                StatId.PhysicalAtk,
                 new Stat(10)
             }, // base for mage, 74 thief
             {
-                StatId.MagAtk,
+                StatId.MagicAtk,
                 new Stat(2)
             }, // base for thief, 216 mage
             {
-                StatId.PhysRes,
+                StatId.PhysicalRes,
                 new Stat(5)
             },
             {
-                StatId.MagRes,
+                StatId.MagicRes,
                 new Stat(4)
             },
             {
-                StatId.MinAtk,
+                StatId.MinWeaponAtk,
                 new Stat(0)
             },
             {
-                StatId.MaxAtk,
+                StatId.MaxWeaponAtk,
                 new Stat(0)
             },
             {
-                StatId.MinDmg,
+                StatId.MinDamage,
                 new Stat(0)
             },
             {
-                StatId.MaxDmg,
+                StatId.MaxDamage,
                 new Stat(0)
             },
             {
@@ -330,7 +291,7 @@ public class Stats
                 new Stat(0)
             },
             {
-                StatId.MountSpeed,
+                StatId.MountMovementSpeed,
                 new Stat(100)
             },
             {
@@ -338,7 +299,7 @@ public class Stats
                 new Stat(0)
             },
             {
-                StatId.PetBonusAtk,
+                StatId.PetBonusAtk, // base 0 (bonuses can be added)
                 new Stat(0)
             }
         };

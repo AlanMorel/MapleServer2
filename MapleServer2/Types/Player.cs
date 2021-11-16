@@ -250,7 +250,7 @@ public class Player
         SetCoords(mapId, coord, rotation);
 
         DatabaseManager.Characters.Update(this);
-        Session.Send(FieldPacket.RequestEnter(this));
+        Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)

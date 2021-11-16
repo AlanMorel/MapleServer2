@@ -182,7 +182,7 @@ public class MoveFieldHandler : GamePacketHandler
     private static void HandleLeaveInstance(GameSession session)
     {
         Player player = session.Player;
-        player.Warp(player.ReturnMapId, player.ReturnCoord, player.Session.FieldPlayer.Rotation);
+        player.Warp(player.ReturnMapId, player.ReturnCoord, session.FieldPlayer.Rotation);
     }
 
     private static void HandleVisitHouse(GameSession session, PacketReader packet)
@@ -234,7 +234,7 @@ public class MoveFieldHandler : GamePacketHandler
         player.VisitingHomeId = home.Id;
         session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, home));
 
-        player.WarpGameToGame(home.MapId, home.InstanceId, player.Session.FieldPlayer.Coord, player.Session.FieldPlayer.Rotation);
+        player.WarpGameToGame(home.MapId, home.InstanceId, session.FieldPlayer.Coord, session.FieldPlayer.Rotation);
     }
 
     // This also leaves decor planning
@@ -251,7 +251,7 @@ public class MoveFieldHandler : GamePacketHandler
 
         CoordF returnCoord = player.ReturnCoord;
         returnCoord.Z += Block.BLOCK_SIZE;
-        player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, player.Session.FieldPlayer.Rotation);
+        player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, session.FieldPlayer.Rotation);
         player.ReturnMapId = 0;
         player.VisitingHomeId = 0;
     }

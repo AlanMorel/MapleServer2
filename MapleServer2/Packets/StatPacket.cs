@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -156,9 +157,9 @@ public static class StatPacket
                     pWriter.WriteLong(stats[StatId.Hp].Total);
                     break;
             }
-            pWriter.WriteInt(stats[StatId.AtkSpd][i]);
-            pWriter.WriteInt(stats[StatId.MoveSpd][i]);
-            pWriter.WriteInt(stats[StatId.MountSpeed][i]);
+            pWriter.WriteInt(stats[StatId.AttackSpeed][i]);
+            pWriter.WriteInt(stats[StatId.MovementSpeed][i]);
+            pWriter.WriteInt(stats[StatId.MountMovementSpeed][i]);
             pWriter.WriteInt(stats[StatId.JumpHeight][i]);
         }
     }

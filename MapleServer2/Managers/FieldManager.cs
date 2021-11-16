@@ -31,7 +31,6 @@ public class FieldManager
     public readonly long InstanceId;
     public readonly CoordS[] BoundingBox;
     public readonly FieldState State = new();
-    //public readonly FieldNavigator Navigator;   // TODO: temp remove for PR
     private readonly HashSet<GameSession> Sessions = new();
     public readonly TriggerScript[] Triggers;
     private readonly List<MapTimer> MapTimers = new();
@@ -48,11 +47,6 @@ public class FieldManager
         BoundingBox = MapEntityStorage.GetBoundingBox(MapId);
 
         // TOOD: generate navmeshes for all maps
-        //if (MapId == 2000019)
-        //{
-        //    Navigator = new FieldNavigator();
-        //    Navigator.LoadNavMeshFromFile("tok_mesh.snj");
-        //}
 
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
@@ -319,11 +313,6 @@ public class FieldManager
             {
                 RemoveMob(mob);
             }
-            //else if (mob.SkillCast != null)
-            //{
-            //    updates.Add(SkillUsePacket.MobSkillUse(mob));
-            //    mob.SkillCast = null;
-            //}
         }
         foreach (TriggerScript trigger in Triggers)
         {
@@ -603,10 +592,6 @@ public class FieldManager
 
     private void AddMob(Mob fieldMob)
     {
-        // TODO: remove hack, better organize this
-        //fieldMob.Navigator = Navigator;
-        // TODO: fieldMob.Field = this;
-
         fieldMob.OriginSpawn?.Value.Mobs.Add(fieldMob);
         State.AddMob(fieldMob);
 
@@ -820,11 +805,6 @@ public class FieldManager
         public SkillCast SkillCast { get; set; }
         public bool OnCooldown { get; set; }
 
-        //public FieldNavigator Navigator;
-
-        // TODO: add navigation
-        //public FieldNavigator Navigator;
-
         public FieldActor(int objectId, T value) : base(objectId, value) { }
 
         public virtual void UpdateFixed() { }
@@ -833,18 +813,14 @@ public class FieldManager
 
         public virtual void MoveBy(CoordF displacement)
         {
-            // TODO: Break displacement into segements, then set path.
+            // TODO: Break displacement into segments, then set path.
             Velocity = displacement;
-            Coord += displacement;
-            return;
         }
 
         public virtual void MoveTo(CoordF target)
         {
             // TODO: Perform pathfinding, then set path.
             Velocity = target - Coord;
-            Coord = target;
-            return;
         }
 
         public virtual void Cast(SkillCast skillCast)
@@ -993,15 +969,15 @@ public class FieldManager
         {
             if (HpRegenThread == null || HpRegenThread.IsCompleted)
             {
-                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenTime);
+                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenInterval);
             }
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
-                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenTime);
+                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenInterval);
             }
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
-                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaRegen, StatId.StaRegenTime);
+                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaminaRegen, StatId.StaminaRegenInterval);
             }
         }
 
@@ -1063,7 +1039,7 @@ public class FieldManager
 
             if (HpRegenThread == null || HpRegenThread.IsCompleted)
             {
-                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenTime);
+                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenInterval);
             }
         }
 
@@ -1100,7 +1076,7 @@ public class FieldManager
 
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
-                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenTime);
+                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenInterval);
             }
         }
 
@@ -1137,7 +1113,7 @@ public class FieldManager
 
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
-                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaRegen, StatId.StaRegenTime);
+                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaminaRegen, StatId.StaminaRegenInterval);
             }
         }
 
@@ -1253,7 +1229,6 @@ public class FieldManager
 
         public void Attack()
         {
-            Console.WriteLine($"MobId {Value.Id}: {Value.NpcMetadataSkill.SkillIds.Length} {Value.NpcMetadataSkill.SkillLevels.Length} {Value.NpcMetadataSkill.SkillProbs.Length} CD {Value.NpcMetadataSkill.SkillCooldown}");
             int roll = RandomProvider.Get().Next(100);
             for (int i = 0; i < Value.NpcMetadataSkill.SkillIds.Length; i++)
             {
@@ -1297,8 +1272,6 @@ public class FieldManager
             switch (Action)
             {
                 case NpcAction.Idle:
-                    Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
-                    break;
                 case NpcAction.Bore:
                     Move(MobMovement.Hold); // temp, maybe remove the option to specify movement in AI
                     break;
@@ -1312,11 +1285,10 @@ public class FieldManager
                     {
                         Attack();
                         Move(MobMovement.Hold);
+                        break;
                     }
-                    else
-                    {
-                        Move(Movement);
-                    }
+
+                    Move(Movement);
                     break;
                 case NpcAction.Jump:
                 default:
@@ -1331,79 +1303,22 @@ public class FieldManager
             switch (moveType)
             {
                 case MobMovement.Patrol:
-                    //if (Navigator == null)
-                    //{
-                        // Fallback Dummy Movement
-                        int moveDistance = rand.Next(0, Value.MoveRange);
-                        short moveDir = (short) rand.Next(-1800, 1800);
+                    // Fallback Dummy Movement
+                    int moveDistance = rand.Next(0, Value.MoveRange);
+                    short moveDir = (short) rand.Next(-1800, 1800);
 
-                        Velocity = CoordF.From(moveDistance, moveDir);
-                        // Keep near spawn
-                        if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
-                        {
-                            moveDir = (short) SpawnDistance.XYAngle();
-                            Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
-                        }
+                    Velocity = CoordF.From(moveDistance, moveDir);
+                    // Keep near spawn
+                    if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
+                    {
+                        moveDir = (short) SpawnDistance.XYAngle();
+                        Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
+                    }
 
-                        LookDirection = moveDir; // looking direction of the monster
-                    //}
-                    //else
-                    //{
-                    //    try
-                    //    {
-                    //        int moveDistance = rand.Next(0, Value.MoveRange);
-
-                    //        List<CoordF> path = Navigator.GenerateRandomPath(OriginSpawn.Coord, moveDistance);
-                    //        CoordF from = path[0];
-                    //        CoordF to = CoordF.From(0, 0, 0);
-                    //        foreach (CoordF coord in path)
-                    //        {
-                    //            if ((coord - from).Length() > Value.NpcMetadataSpeed.WalkSpeed)
-                    //            {
-                    //                break;
-                    //            }
-                    //            to = coord;
-                    //        }
-
-                    //        MoveTo(to);
-                    //        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        Console.WriteLine($"Patrol: {ex.Message}");
-                    //    }
-                    //}
+                    LookDirection = moveDir; // looking direction of the monster
                     break;
                 case MobMovement.Follow: // move towards target
-                    //if (Navigator == null)
-                    //{
-                        Velocity = CoordF.From(0, 0, 0);
-                    //}
-                    //else
-                    //{
-                    //    try
-                    //    {
-                    //        float moveDistance = Math.Min((Coord - Target.Coord).Length(), Value.MoveRange);
-
-                    //        List<CoordF> path = Navigator.GenerateMoveToPath(Coord, Target.Coord);
-                    //        CoordF from = path[0];
-                    //        CoordF to = CoordF.From(0, 0, 0);
-                    //        foreach (CoordF coord in path)
-                    //        {
-                    //            if ((coord - from).Length() > Value.NpcMetadataSpeed.RunSpeed)
-                    //            {
-                    //                break;
-                    //            }
-                    //            to = coord;
-                    //        }
-                    //        MoveTo(to);
-                    //        LookDirection = (short) Velocity.XYAngle(); // looking direction of the monster
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        Console.WriteLine($"Follow: {ex.Message}");
-                    //    }
-                    //}
+                    Velocity = CoordF.From(0, 0, 0);
                     break;
                 case MobMovement.Strafe: // move around target
                 case MobMovement.Run: // move away from target
@@ -1442,6 +1357,14 @@ public class FieldManager
         });
     }
 
+    private void UpdatePhysics()
+    {
+        foreach (Mob mob in State.Mobs.Values)
+        {
+            mob.Coord += mob.Velocity; // Set current position (given to ControlMob Packet)
+        }
+    }
+
     private void UpdateEvents()
     {
         // Manage mob aggro + targets
@@ -1464,14 +1387,6 @@ public class FieldManager
                     }
                 }
             }
-        }
-    }
-
-    private void UpdatePhysics()
-    {
-        foreach (Mob mob in State.Mobs.Values)
-        {
-            mob.Coord += mob.Velocity; // Set current position (given to ControlMob Packet)
         }
     }
 

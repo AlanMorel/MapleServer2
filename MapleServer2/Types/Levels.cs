@@ -1,4 +1,5 @@
-﻿using MapleServer2.Data.Static;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;

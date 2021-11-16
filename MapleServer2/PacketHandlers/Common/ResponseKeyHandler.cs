@@ -25,9 +25,9 @@ public class ResponseKeyHandler : CommonPacketHandler
         packet.Skip(-8);
         HandleCommon(session, packet);
 
-        Player player = authData.Player;
+        session.InitPlayer(authData.Player);
 
-        session.InitPlayer(player);
+        Player player = session.Player;
 
         player.Session = session;
         player.Wallet.Meso.Session = session;
@@ -173,7 +173,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(FieldPacket.RequestEnter(player));
+        session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)
