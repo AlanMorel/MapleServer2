@@ -31,7 +31,7 @@ public class FieldManager
     public readonly long InstanceId;
     public readonly CoordS[] BoundingBox;
     public readonly FieldState State = new();
-    public readonly FieldNavigator Navigator;   // TODO: temp remove for PR
+    //public readonly FieldNavigator Navigator;   // TODO: temp remove for PR
     private readonly HashSet<GameSession> Sessions = new();
     public readonly TriggerScript[] Triggers;
     private readonly List<MapTimer> MapTimers = new();

@@ -1,4 +1,4 @@
-﻿using Maple2Storage.Tools;
+using Maple2Storage.Tools;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -31,7 +31,8 @@ public static class SkillUsePacket
         return pWriter;
     }
 
-    public static PacketWriter MobSkillUse(IFieldObject<Mob> mob, int skillId, short skillLevel, byte part)
+    // TODO: change to SkillCast (refactor SkillCast / SkillManager)
+    public static PacketWriter MobSkillUse(IFieldObject mob, int skillId, short skillLevel, byte part)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
         pWriter.WriteInt(RandomProvider.Get().Next()); // Seems to be an incrementing number - unique id
