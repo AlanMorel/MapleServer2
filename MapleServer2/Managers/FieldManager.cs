@@ -350,6 +350,14 @@ public class FieldManager
 
     public IFieldActor<Player> RequestCharacter(Player player)
     {
+        if (player.Session?.FieldPlayer != null)
+        {
+            // Bind existing character to this map.
+            int objectId = Interlocked.Increment(ref Counter);
+            ((FieldActor<Player>) player.Session.FieldPlayer).ObjectId = objectId;
+            return player.Session.FieldPlayer;
+        }
+
         return WrapPlayer(player);
     }
 
@@ -976,11 +984,26 @@ public class FieldManager
         }
 
         private CancellationTokenSource CombatCTS;
+
         private Task HpRegenThread;
         private Task SpRegenThread;
         private Task StaRegenThread;
 
-        public Character(int objectId, Player value) : base(objectId, value) { }
+        public Character(int objectId, Player value) : base(objectId, value)
+        {
+            if (HpRegenThread == null || HpRegenThread.IsCompleted)
+            {
+                HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenTime);
+            }
+            if (SpRegenThread == null || SpRegenThread.IsCompleted)
+            {
+                SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenTime);
+            }
+            if (StaRegenThread == null || StaRegenThread.IsCompleted)
+            {
+                StaRegenThread = StartRegen(StatId.Stamina, StatId.StaRegen, StatId.StaRegenTime);
+            }
+        }
 
         public override void Cast(SkillCast skillCast)
         {

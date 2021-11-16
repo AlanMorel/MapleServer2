@@ -25,9 +25,9 @@ public class ResponseKeyHandler : CommonPacketHandler
         packet.Skip(-8);
         HandleCommon(session, packet);
 
-        session.InitPlayer(authData.Player);
+        Player player = authData.Player;
 
-        Player player = session.Player;
+        session.InitPlayer(player);
 
         player.Session = session;
         player.Wallet.Meso.Session = session;
@@ -72,7 +72,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
 
-        session.Player.GetUnreadMailCount();
+        player.GetUnreadMailCount();
         session.Send(BuddyPacket.Initialize());
         session.Send(BuddyPacket.LoadList(player.BuddyList));
         session.Send(BuddyPacket.EndList(player.BuddyList.Count));
@@ -88,8 +88,6 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
         session.Send(StatPacket.SetStats(session.FieldPlayer));
-        // TODO: Grab Hp/Spirit/Stam from last login
-        player.Stats.InitializePools(player.Stats[StatId.Hp].Bonus, player.Stats[StatId.Spirit].Bonus, player.Stats[StatId.Stamina].Bonus);
         session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel());
         session.Send(ServerEnterPacket.Enter(session));
