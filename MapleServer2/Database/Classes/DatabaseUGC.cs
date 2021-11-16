@@ -1,4 +1,4 @@
-using MapleServer2.Types;
+﻿using MapleServer2.Types;
 using SqlKata.Execution;
 
 namespace MapleServer2.Database.Classes;

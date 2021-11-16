@@ -1,4 +1,4 @@
-namespace MapleWebServer.Enums;
+﻿namespace MapleWebServer.Enums;
 
 public enum PostUGCMode : int
 {

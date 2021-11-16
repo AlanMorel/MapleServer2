@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Maple2Storage.Types;
 using MapleServer2.Database;
 using MapleServer2.Types;

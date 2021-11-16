@@ -1,4 +1,4 @@
-using Maple2Storage.Types;
+﻿using Maple2Storage.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MapleWebServer.Controllers;
