@@ -64,6 +64,46 @@ public class NpcMetadata
     {
         return $"Npc:(Id:{Id},Position:{Coord},Model:{Model},Friendly:{Friendly},IsShop:{Kind == 13},ShopId:{ShopId})";
     }
+
+    public bool IsShop()
+    {
+        return Kind == 13;
+    }
+
+    public bool IsBank()
+    {
+        return Kind == 2;
+    }
+
+    public bool IsBeauty()
+    {
+        return IsHair() || IsMakeUp() || IsSkin() || IsDye() || IsMirror();
+    }
+
+    public bool IsMakeUp()
+    {
+        return Kind == 30;
+    }
+
+    public bool IsSkin()
+    {
+        return Kind == 32;
+    }
+
+    public bool IsHair()
+    {
+        return Kind == 33;
+    }
+
+    public bool IsDye()
+    {
+        return Kind == 34;
+    }
+
+    public bool IsMirror()
+    {
+        return Kind == 35;
+    }
 }
 [XmlType]
 public class NpcMetadataBasic

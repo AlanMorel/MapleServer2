@@ -1045,7 +1045,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        List<IFieldObject<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
+        List<IFieldActor<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
         foreach (IFieldObject<Player> fieldPlayer in players)
         {
             fieldPlayer.Value.Session.Send(ResponseCubePacket.KickEveryone());

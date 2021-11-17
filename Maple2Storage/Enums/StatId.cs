@@ -1,12 +1,13 @@
 ﻿namespace Maple2Storage.Enums;
 
-public enum ItemAttribute : short
+// Player Stats in Packet Order - Count: 35 (0x23)
+public enum StatId : byte
 {
-    Strength = 0,
-    Dexterity = 1,
-    Intelligence = 2,
-    Luck = 3,
-    Health = 4,
+    Str = 0,
+    Dex = 1,
+    Int = 2,
+    Luk = 3,
+    Hp = 4,
     HpRegen = 5,
     HpRegenInterval = 6,
     Spirit = 7,
@@ -19,26 +20,27 @@ public enum ItemAttribute : short
     MovementSpeed = 14,
     Accuracy = 15,
     Evasion = 16,
-    CriticalRate = 17,
-    CriticalDamage = 18,
-    CriticalEvasion = 19,
+    CritRate = 17,
+    CritDamage = 18,
+    CritEvasion = 19,
     Defense = 20,
     PerfectGuard = 21,
     JumpHeight = 22,
     PhysicalAtk = 23,
-    MagicalAtk = 24,
+    MagicAtk = 24,
     PhysicalRes = 25,
-    MagicalRes = 26,
+    MagicRes = 26,
     MinWeaponAtk = 27,
     MaxWeaponAtk = 28,
     MinDamage = 29,
     MaxDamage = 30,
-    Piercing = 31,
+    Pierce = 31,
     MountMovementSpeed = 32,
     BonusAtk = 33,
-    PetBonusAtk = 34
+    PetBonusAtk = 34,
 }
-public enum SpecialItemAttribute : short
+
+public enum SpecialStatId : short
 {
     None = 0,
     ExpBonus = 1,

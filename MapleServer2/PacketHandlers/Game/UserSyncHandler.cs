@@ -64,11 +64,11 @@ public class UserSyncHandler : GamePacketHandler
             CoordF safeBlock = session.Player.SafeBlock;
             safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
 
-            session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.Player.Rotation));
+            session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.FieldPlayer.Rotation));
             session.Player.FallDamage();
         }
         // not sure if this needs to be synced here
-        session.Player.Animation = syncStates[0].Animation1;
+        session.FieldPlayer.Animation = syncStates[0].Animation1;
     }
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)

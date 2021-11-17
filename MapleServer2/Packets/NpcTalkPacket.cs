@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -15,7 +16,7 @@ public static class NpcTalkPacket
         Action = 0x03
     }
 
-    public static PacketWriter Respond(IFieldObject<Npc> npc, NpcType npcType, DialogType dialogType, int scriptId)
+    public static PacketWriter Respond(IFieldObject<NpcMetadata> npc, NpcType npcType, DialogType dialogType, int scriptId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NPC_TALK);
         pWriter.Write(NpcTalkMode.Respond);

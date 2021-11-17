@@ -159,10 +159,10 @@ public class MoveFieldHandler : GamePacketHandler
                 {
                     return;
                 }
-                session.Player.Coord = destinationCube.Coord;
+                session.FieldPlayer.Coord = destinationCube.Coord;
                 CoordF coordF = destinationCube.Coord;
                 coordF.Z += 25; // Without this the player falls through the ground.
-                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, coordF, session.Player.Rotation));
+                session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, coordF, session.FieldPlayer.Rotation));
                 break;
             case UGCPortalDestination.SelectedMap:
                 session.Player.Warp(int.Parse(destinationTarget));
@@ -182,7 +182,7 @@ public class MoveFieldHandler : GamePacketHandler
     private static void HandleLeaveInstance(GameSession session)
     {
         Player player = session.Player;
-        player.Warp(player.ReturnMapId, player.ReturnCoord, player.Rotation);
+        player.Warp(player.ReturnMapId, player.ReturnCoord, session.FieldPlayer.Rotation);
     }
 
     private static void HandleVisitHouse(GameSession session, PacketReader packet)
@@ -234,7 +234,7 @@ public class MoveFieldHandler : GamePacketHandler
         player.VisitingHomeId = home.Id;
         session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, home));
 
-        player.WarpGameToGame(home.MapId, home.InstanceId, player.Coord, player.Rotation);
+        player.WarpGameToGame(home.MapId, home.InstanceId, session.FieldPlayer.Coord, session.FieldPlayer.Rotation);
     }
 
     // This also leaves decor planning
@@ -251,7 +251,7 @@ public class MoveFieldHandler : GamePacketHandler
 
         CoordF returnCoord = player.ReturnCoord;
         returnCoord.Z += Block.BLOCK_SIZE;
-        player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, player.Rotation);
+        player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, session.FieldPlayer.Rotation);
         player.ReturnMapId = 0;
         player.VisitingHomeId = 0;
     }

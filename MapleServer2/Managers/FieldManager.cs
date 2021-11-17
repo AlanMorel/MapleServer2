@@ -20,7 +20,7 @@ namespace MapleServer2.Managers;
 // TODO: This needs to be thread safe
 // TODO: FieldManager probably needs its own thread to send updates about user position
 // This seems to be done every ~2s rather than on every update.
-public class FieldManager
+public partial class FieldManager
 {
     private static readonly TriggerLoader TriggerLoader = new();
 
@@ -44,30 +44,13 @@ public class FieldManager
         MapId = player.MapId;
         InstanceId = player.InstanceId;
         BoundingBox = MapEntityStorage.GetBoundingBox(MapId);
+
+        // TOOD: generate navmeshes for all maps
+
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
         {
-            IFieldObject<Npc> fieldNpc = RequestFieldObject(new Npc(npc.Id)
-            {
-                ZRotation = (short) (npc.Rotation.Z * 10)
-            });
-
-            if (fieldNpc.Value.Friendly == 2)
-            {
-                fieldNpc.Coord = npc.Coord.ToFloat();
-                AddNpc(fieldNpc);
-            }
-            else
-            {
-                // NPC is an enemy
-                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(npc.Id)
-                {
-                    ZRotation = (short) (npc.Rotation.Z * 10)
-                });
-
-                fieldMob.Coord = npc.Coord.ToFloat();
-                AddMob(fieldMob);
-            }
+            RequestNpc(npc.Id, npc.Coord.ToFloat(), npc.Rotation.ToFloat());
         }
 
         // Spawn map's mobs at the mob spawners
@@ -314,18 +297,18 @@ public class FieldManager
         List<PacketWriter> updates = new();
         // Update players locations
         // Update NPCs
-        foreach (IFieldObject<Npc> npc in State.Npcs.Values)
+        foreach (Npc npc in State.Npcs.Values)
         {
             updates.Add(FieldObjectPacket.ControlNpc(npc));
         }
-        foreach (IFieldObject<Player> player in State.Players.Values)
+        foreach (IFieldActor<Player> player in State.Players.Values)
         {
             updates.Add(FieldObjectPacket.UpdatePlayer(player));
         }
-        foreach (IFieldObject<Mob> mob in State.Mobs.Values)
+        foreach (Mob mob in State.Mobs.Values)
         {
             updates.Add(FieldObjectPacket.ControlMob(mob));
-            if (mob.Value.IsDead)
+            if (mob.IsDead)
             {
                 RemoveMob(mob);
             }
@@ -353,9 +336,70 @@ public class FieldManager
         return WrapObject(wrappingObject);
     }
 
-    public void AddPlayer(GameSession sender, IFieldObject<Player> player)
+    public IFieldActor<Player> RequestCharacter(Player player)
+    {
+        if (player.Session?.FieldPlayer != null)
+        {
+            // Bind existing character to this map.
+            int objectId = Interlocked.Increment(ref Counter);
+            ((FieldActor<Player>) player.Session.FieldPlayer).ObjectId = objectId;
+            return player.Session.FieldPlayer;
+        }
+
+        return WrapPlayer(player);
+    }
+
+    public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
+    {
+        NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
+
+        if (meta.Friendly == 2)
+        {
+            Npc npc = WrapNpc(npcId);
+            npc.Coord = coord;
+            npc.Rotation = rotation;
+            if (animation != default)
+            {
+                npc.Animation = animation;
+            }
+            AddNpc(npc);
+            return npc;
+        }
+
+        return RequestMob(npcId, coord, rotation, animation);
+    }
+
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
+    {
+        Mob mob = WrapMob(mobId);
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        if (animation != default)
+        {
+            mob.Animation = animation;
+        }
+        AddMob(mob);
+        return mob;
+    }
+
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default, short animation = default)
+    {
+        Mob mob = WrapMob(mobId);
+        mob.OriginSpawn = spawnPoint;
+        mob.Coord = coord;
+        mob.Rotation = rotation;
+        if (animation != default)
+        {
+            mob.Animation = animation;
+        }
+        AddMob(mob);
+        return mob;
+    }
+
+    public void AddPlayer(GameSession sender, IFieldActor<Player> player)
     {
         Debug.Assert(player.ObjectId > 0, "Player was added to field without initialized objectId.");
+
         player.Coord = player.Value.Coord;
         player.Value.MapId = MapId;
         // TODO: Determine new coordinates for player as well
@@ -365,7 +409,7 @@ public class FieldManager
         }
 
         // TODO: Send the initialization state of the field
-        foreach (IFieldObject<Player> existingPlayer in State.Players.Values)
+        foreach (IFieldActor<Player> existingPlayer in State.Players.Values)
         {
             sender.Send(FieldPacket.AddPlayer(existingPlayer));
             sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
@@ -383,19 +427,21 @@ public class FieldManager
         {
             sender.Send(FieldPacket.AddItem(existingItem, 123456));
         }
-        foreach (IFieldObject<Npc> existingNpc in State.Npcs.Values)
+        foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
         {
             sender.Send(FieldPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
-        foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
-        {
-            sender.Send(FieldPacket.AddPortal(existingPortal));
-        }
-        foreach (IFieldObject<Mob> existingMob in State.Mobs.Values)
+        foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
         {
             sender.Send(FieldPacket.AddMob(existingMob));
             sender.Send(FieldObjectPacket.LoadMob(existingMob));
+
+            // TODO: Determine if buffs are sent on Field Enter
+        }
+        foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
+        {
+            sender.Send(FieldPacket.AddPortal(existingPortal));
         }
 
         if (player.Value.MapId == (int) Map.PrivateResidence && !player.Value.IsInDecorPlanner)
@@ -509,7 +555,7 @@ public class FieldManager
     }
 
     // Spawned NPCs will not appear until controlled
-    public void AddNpc(IFieldObject<Npc> fieldNpc)
+    public void AddNpc(IFieldActor<NpcMetadata> fieldNpc)
     {
         State.AddNpc(fieldNpc);
 
@@ -520,7 +566,7 @@ public class FieldManager
         });
     }
 
-    public bool RemoveNpc(IFieldObject<Npc> fieldNpc)
+    public bool RemoveNpc(IFieldActor<NpcMetadata> fieldNpc)
     {
         if (!State.RemoveNpc(fieldNpc.ObjectId))
         {
@@ -535,29 +581,31 @@ public class FieldManager
         return true;
     }
 
-    public void AddMob(IFieldObject<Mob> fieldMob)
+    private void AddMob(Mob fieldMob)
     {
+        fieldMob.OriginSpawn?.Value.Mobs.Add(fieldMob);
         State.AddMob(fieldMob);
-
-        fieldMob.Value.OriginSpawn?.Value.Mobs.Add(fieldMob);
 
         Broadcast(session =>
         {
             session.Send(FieldPacket.AddMob(fieldMob));
             session.Send(FieldObjectPacket.LoadMob(fieldMob));
-            SkillCast skillCast = new(90000814, 1); // Spawned effect
-            session.Send(BuffPacket.SendBuff(0, new(skillCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+            for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
+            {
+                SkillCast effectCast = new(fieldMob.Value.NpcMetadataEffect.EffectIds[i], fieldMob.Value.NpcMetadataEffect.EffectLevels[i]);
+                session.Send(BuffPacket.SendBuff(0, new Status(effectCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+            }
         });
     }
 
-    public bool RemoveMob(IFieldObject<Mob> mob)
+    private bool RemoveMob(Mob mob)
     {
         if (!State.RemoveMob(mob.ObjectId))
         {
             return false;
         }
 
-        IFieldObject<MobSpawn> originSpawn = mob.Value.OriginSpawn;
+        IFieldObject<MobSpawn> originSpawn = mob.OriginSpawn;
         if (originSpawn != null && originSpawn.Value.Mobs.Remove(mob) && originSpawn.Value.Mobs.Count == 0)
         {
             StartSpawnTimer(originSpawn);
@@ -638,7 +686,7 @@ public class FieldManager
         return State.RemoveItem(objectId, out item);
     }
 
-    public void AddResource(Item item, IFieldObject<Mob> source, IFieldObject<Player> targetPlayer)
+    public void AddResource(Item item, IFieldObject<NpcMetadata> source, IFieldObject<Player> targetPlayer)
     {
         FieldObject<Item> fieldItem = WrapObject(item);
         fieldItem.Coord = source.Coord;
@@ -694,21 +742,25 @@ public class FieldManager
         return new(objectId, fieldObject);
     }
 
-    // This class is private to ensure that callers must first request entry.
-    private class FieldObject<T> : IFieldObject<T>
+    // Initializes a FieldActor with an objectId for this field.
+    private Character WrapPlayer(Player player)
     {
-        public int ObjectId { get; set; }
-        public T Value { get; }
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, player);
+    }
 
-        public CoordF Coord { get; set; }
+    // Initializes a FieldActor with an objectId for this field.
+    private Npc WrapNpc(int npcId)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, npcId);
+    }
 
-        public CoordF Rotation { get; set; }
-
-        public FieldObject(int objectId, T value)
-        {
-            ObjectId = objectId;
-            Value = value;
-        }
+    // Initializes a FieldActor with an objectId for this field.
+    private Mob WrapMob(int mobId)
+    {
+        int objectId = Interlocked.Increment(ref Counter);
+        return new(objectId, mobId);
     }
 
     private Task StartMapLoop()
@@ -717,20 +769,54 @@ public class FieldManager
         {
             while (!State.Players.IsEmpty)
             {
+                UpdatePhysics();
+                UpdateEvents();
                 HealingSpot();
-                UpdateMobs();
+                UpdateObjects();
                 SendUpdates();
                 await Task.Delay(1000);
             }
         });
     }
 
-    private void UpdateMobs()
+    private void UpdatePhysics()
     {
-        foreach (IFieldObject<Mob> mob in State.Mobs.Values)
+        foreach (Mob mob in State.Mobs.Values)
         {
-            mob.Coord += mob.Value.Velocity; // Set current position (given to ControlMob Packet)
-            mob.Value.Act();
+            mob.Coord += mob.Velocity; // Set current position (given to ControlMob Packet)
+        }
+    }
+
+    private void UpdateEvents()
+    {
+        // Manage mob aggro + targets
+        foreach (IFieldActor<Player> player in State.Players.Values)
+        {
+            foreach (Mob mob in State.Mobs.Values)
+            {
+                float playerMobDist = CoordF.Distance(player.Coord, mob.Coord);
+                if (playerMobDist <= mob.Value.NpcMetadataDistance.Sight)
+                {
+                    mob.State = NpcState.Combat;
+                    mob.Target = player;
+                }
+                else
+                {
+                    if (mob.State == NpcState.Combat)
+                    {
+                        mob.State = NpcState.Normal;
+                        mob.Target = null;
+                    }
+                }
+            }
+        }
+    }
+
+    private void UpdateObjects()
+    {
+        foreach (Mob mob in State.Mobs.Values)
+        {
+            mob.Act();
         }
     }
 
@@ -739,18 +825,18 @@ public class FieldManager
         foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
         {
             CoordS healingCoord = healingSpot.Value.Coord;
-            foreach (IFieldObject<Player> player in State.Players.Values)
+            foreach (IFieldActor<Player> player in State.Players.Values)
             {
                 if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
                 {
-                    int healAmount = (int) (player.Value.Stats[PlayerStatId.Hp].Max * 0.03);
+                    int healAmount = (int) (player.Value.Stats[StatId.Hp].Bonus * 0.03);
                     Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
 
                     player.Value.Session.Send(BuffPacket.SendBuff(0, status));
                     BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
 
-                    player.Value.Session.Player.Stats.Increase(PlayerStatId.Hp, healAmount);
-                    player.Value.Session.Send(StatPacket.UpdateStats(player, PlayerStatId.Hp));
+                    player.Stats[StatId.Hp].Increase(healAmount);
+                    player.Value.Session.Send(StatPacket.UpdateStats(player, StatId.Hp));
                 }
             }
         }
@@ -774,9 +860,8 @@ public class FieldManager
 
             for (int i = 0; i < groupSpawnCount; i++)
             {
-                IFieldObject<Mob> fieldMob = RequestFieldObject(new Mob(mob.Id, mobSpawn));
-                fieldMob.Coord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
-                AddMob(fieldMob);
+                CoordF spawnCoord = mobSpawn.Coord + spawnPoints[mobSpawn.Value.Mobs.Count % spawnPoints.Count];
+                IFieldActor<NpcMetadata> fieldMob = RequestMob(mob.Id, mobSpawn, spawnCoord);
             }
         }
     }
@@ -836,4 +921,31 @@ public class FieldManager
     {
         SkipScene = enable;
     }
+
+    // This class is private to ensure that callers must first request entry.
+    private class FieldObject<T> : IFieldObject<T>
+    {
+        public int ObjectId { get; set; }
+        public T Value { get; }
+
+        public virtual CoordF Coord { get; set; }
+        public CoordF Rotation { get; set; }
+        public short LookDirection
+        {
+            get => (short) (Rotation.Z * 10);
+            set => Rotation = CoordF.From(Rotation.X, Rotation.Y, value / 10);
+        }
+
+        public FieldObject(int objectId, T value)
+        {
+            ObjectId = objectId;
+            Value = value;
+        }
+    }
+
+    private abstract partial class FieldActor<T> { }
+    private partial class Character { }
+    private partial class Mob { }
+    private partial class Npc { }
+    private abstract partial class FieldActor<T> { }
 }

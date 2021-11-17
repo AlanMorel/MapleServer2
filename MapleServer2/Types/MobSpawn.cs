@@ -13,7 +13,7 @@ public class MobSpawn
     public readonly int MaxPopulation;
     public readonly List<NpcMetadata> SpawnMobs;
     public readonly SpawnMetadata SpawnData;
-    public List<IFieldObject<Mob>> Mobs;
+    public List<IFieldObject<NpcMetadata>> Mobs;
 
     public MobSpawn(int id, CoordF pos, int spawnRadius, int maxPopulation, SpawnMetadata spawnData /*, List<int> mobIDs = null*/)
     {

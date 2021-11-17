@@ -1,4 +1,5 @@
-﻿using MapleServer2.Data.Static;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
@@ -58,7 +59,7 @@ public class Levels
         Player.StatPointDistribution.AddTotalStatPoints(5);
         Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
         // TODO: Gain max HP
-        Player.RecoverHp(Player.Stats[PlayerStatId.Hp].Max);
+        Player.Session.FieldPlayer.RecoverHp(Player.Session.FieldPlayer.Stats[StatId.Hp].Bonus);
         Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
 
         QuestHelper.GetNewQuests(Player.Session, Level);

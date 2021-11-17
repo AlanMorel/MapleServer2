@@ -13,12 +13,12 @@ public abstract class ItemStat
 }
 public class NormalStat : ItemStat
 {
-    public new ItemAttribute ItemAttribute;
+    public new StatId ItemAttribute;
     public new int Flat;
 
     public NormalStat() { }
 
-    public NormalStat(ItemAttribute attribute, int flat, float percent)
+    public NormalStat(StatId attribute, int flat, float percent)
     {
         ItemAttribute = attribute;
         Flat = flat;
@@ -34,12 +34,12 @@ public class NormalStat : ItemStat
 }
 public class SpecialStat : ItemStat
 {
-    public new SpecialItemAttribute ItemAttribute;
+    public new SpecialStatId ItemAttribute;
     public new float Flat;
 
     public SpecialStat() { }
 
-    public SpecialStat(SpecialItemAttribute attribute, float flat, float percent)
+    public SpecialStat(SpecialStatId attribute, float flat, float percent)
     {
         ItemAttribute = attribute;
         Flat = flat;
@@ -139,13 +139,13 @@ public class ItemStats
 
         if (basicOptions.HiddenDefenseAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, ItemAttribute.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.Defense, basicOptions.HiddenDefenseAdd, basicOptions.DefenseCalibrationFactor);
         }
 
         if (basicOptions.HiddenWeaponAtkAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
-            AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.MinWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.MaxWeaponAtk, basicOptions.HiddenWeaponAtkAdd, basicOptions.WeaponAtkCalibrationFactor);
         }
     }
 
@@ -195,20 +195,20 @@ public class ItemStats
 
         if (staticOptions.HiddenDefenseAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, ItemAttribute.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.Defense, staticOptions.HiddenDefenseAdd, staticOptions.DefenseCalibrationFactor);
         }
 
         if (staticOptions.HiddenWeaponAtkAdd > 0)
         {
-            AddHiddenNormalStat(normalStats, ItemAttribute.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
-            AddHiddenNormalStat(normalStats, ItemAttribute.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.MinWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
+            AddHiddenNormalStat(normalStats, StatId.MaxWeaponAtk, staticOptions.HiddenWeaponAtkAdd, staticOptions.WeaponAtkCalibrationFactor);
         }
 
         BasicStats.AddRange(normalStats);
         BasicStats.AddRange(specialStats);
     }
 
-    private static void AddHiddenNormalStat(List<NormalStat> normalStats, ItemAttribute attribute, int value, float calibrationFactor)
+    private static void AddHiddenNormalStat(List<NormalStat> normalStats, StatId attribute, int value, float calibrationFactor)
     {
         NormalStat normalStat = normalStats.FirstOrDefault(x => x.ItemAttribute == attribute);
         if (normalStat == null)
@@ -249,7 +249,7 @@ public class ItemStats
 
         foreach (ParserStat stat in randomOptions.Stats)
         {
-            Dictionary<ItemAttribute, List<ParserStat>> rangeDictionary = GetRange(randomId);
+            Dictionary<StatId, List<ParserStat>> rangeDictionary = GetRange(randomId);
             if (!rangeDictionary.ContainsKey(stat.Id))
             {
                 continue;
@@ -266,7 +266,7 @@ public class ItemStats
 
         foreach (ParserSpecialStat stat in randomOptions.SpecialStats)
         {
-            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(randomId);
+            Dictionary<SpecialStatId, List<ParserSpecialStat>> rangeDictionary = GetSpecialRange(randomId);
             if (!rangeDictionary.ContainsKey(stat.Id))
             {
                 continue;
@@ -303,7 +303,7 @@ public class ItemStats
 
         foreach (ParserStat attribute in attributes)
         {
-            Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(randomId);
+            Dictionary<StatId, List<ParserStat>> dictionary = GetRange(randomId);
             if (!dictionary.ContainsKey(attribute.Id))
             {
                 continue;
@@ -320,7 +320,7 @@ public class ItemStats
 
         foreach (ParserSpecialStat attribute in specialAttributes)
         {
-            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(randomId);
+            Dictionary<SpecialStatId, List<ParserSpecialStat>> dictionary = GetSpecialRange(randomId);
             if (!dictionary.ContainsKey(attribute.Id))
             {
                 continue;
@@ -351,7 +351,7 @@ public class ItemStats
                 continue;
             }
 
-            Dictionary<ItemAttribute, List<ParserStat>> dictionary = GetRange(item.Id);
+            Dictionary<StatId, List<ParserStat>> dictionary = GetRange(item.Id);
             if (!dictionary.ContainsKey(stat.ItemAttribute))
             {
                 continue;
@@ -367,7 +367,7 @@ public class ItemStats
                 continue;
             }
 
-            Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
+            Dictionary<SpecialStatId, List<ParserSpecialStat>> dictionary = GetSpecialRange(item.Id);
             if (!dictionary.ContainsKey(stat.ItemAttribute))
             {
                 continue;
@@ -378,7 +378,7 @@ public class ItemStats
         return newBonus;
     }
 
-    private static Dictionary<ItemAttribute, List<ParserStat>> GetRange(int itemId)
+    private static Dictionary<StatId, List<ParserStat>> GetRange(int itemId)
     {
         ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
         if (Item.IsAccessory(slot))
@@ -399,7 +399,7 @@ public class ItemStats
         return ItemOptionRangeStorage.GetPetRanges();
     }
 
-    private static Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> GetSpecialRange(int itemId)
+    private static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetSpecialRange(int itemId)
     {
         ItemSlot slot = ItemMetadataStorage.GetSlot(itemId);
         if (Item.IsAccessory(slot))

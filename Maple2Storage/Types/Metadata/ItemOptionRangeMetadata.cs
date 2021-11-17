@@ -9,9 +9,9 @@ public class ItemOptionRangeMetadata
     [XmlElement(Order = 1)]
     public ItemOptionRangeType RangeType;
     [XmlElement(Order = 2)]
-    public Dictionary<ItemAttribute, List<ParserStat>> Stats;
+    public Dictionary<StatId, List<ParserStat>> Stats;
     [XmlElement(Order = 3)]
-    public Dictionary<SpecialItemAttribute, List<ParserSpecialStat>> SpecialStats;
+    public Dictionary<SpecialStatId, List<ParserSpecialStat>> SpecialStats;
 
     public ItemOptionRangeMetadata()
     {
@@ -23,7 +23,7 @@ public class ItemOptionRangeMetadata
 public class ParserStat
 {
     [XmlElement(Order = 1)]
-    public ItemAttribute Id;
+    public StatId Id;
     [XmlElement(Order = 2)]
     public int Flat;
     [XmlElement(Order = 3)]
@@ -31,13 +31,13 @@ public class ParserStat
 
     public ParserStat() { }
 
-    public ParserStat(ItemAttribute type, int flat)
+    public ParserStat(StatId type, int flat)
     {
         Id = type;
         Flat = flat;
         Percent = 0;
     }
-    public ParserStat(ItemAttribute type, float percent)
+    public ParserStat(StatId type, float percent)
     {
         Id = type;
         Flat = 0;
@@ -53,7 +53,7 @@ public class ParserStat
 public class ParserSpecialStat
 {
     [XmlElement(Order = 1)]
-    public SpecialItemAttribute Id;
+    public SpecialStatId Id;
     [XmlElement(Order = 2)]
     public float Percent;
     [XmlElement(Order = 3)]
@@ -61,7 +61,7 @@ public class ParserSpecialStat
 
     public ParserSpecialStat() { }
 
-    public ParserSpecialStat(SpecialItemAttribute id, float percent, float flat)
+    public ParserSpecialStat(SpecialStatId id, float percent, float flat)
     {
         Id = id;
         Percent = percent;

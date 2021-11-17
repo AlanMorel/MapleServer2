@@ -150,8 +150,8 @@ public class ChangeAttributesHandler : GamePacketHandler
                     ItemStat stat = newItem.Stats.BonusStats[i];
                     switch (stat)
                     {
-                        case NormalStat ns when ns.ItemAttribute == (ItemAttribute) lockStatId:
-                        case SpecialStat ss when ss.ItemAttribute == (SpecialItemAttribute) lockStatId:
+                        case NormalStat ns when ns.ItemAttribute == (StatId) lockStatId:
+                        case SpecialStat ss when ss.ItemAttribute == (SpecialStatId) lockStatId:
                             continue;
                     }
                     break;

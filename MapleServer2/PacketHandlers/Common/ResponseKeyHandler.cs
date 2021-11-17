@@ -72,7 +72,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
 
-        session.Player.GetUnreadMailCount();
+        player.GetUnreadMailCount();
         session.Send(BuddyPacket.Initialize());
         session.Send(BuddyPacket.LoadList(player.BuddyList));
         session.Send(BuddyPacket.EndList(player.BuddyList.Count));
@@ -88,8 +88,6 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
         session.Send(StatPacket.SetStats(session.FieldPlayer));
-        // TODO: Grab Hp/Spirit/Stam from last login
-        player.Stats.InitializePools(player.Stats[PlayerStatId.Hp].Max, player.Stats[PlayerStatId.Spirit].Max, player.Stats[PlayerStatId.Stamina].Max);
         session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel());
         session.Send(ServerEnterPacket.Enter(session));
@@ -175,7 +173,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(FieldPacket.RequestEnter(player));
+        session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)

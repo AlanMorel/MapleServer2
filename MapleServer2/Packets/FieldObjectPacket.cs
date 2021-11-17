@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -59,7 +60,7 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdatePlayer(IFieldObject<Player> player)
+    public static PacketWriter UpdatePlayer(IFieldActor<Player> player)
     {
         FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
@@ -94,13 +95,13 @@ public static class FieldObjectPacket
         }
         if (flag.HasFlag(FieldObjectUpdate.Animate))
         {
-            pWriter.WriteShort(player.Value.Animation);
+            pWriter.WriteShort(player.Animation);
         }
 
         return pWriter;
     }
 
-    public static PacketWriter LoadNpc(IFieldObject<Npc> npc)
+    public static PacketWriter LoadNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
         pWriter.Write(ProxyGameObjMode.LoadNpc);
@@ -112,7 +113,7 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter LoadMob(IFieldObject<Mob> mob)
+    public static PacketWriter LoadMob(IFieldObject<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
         pWriter.Write(ProxyGameObjMode.LoadNpc);
@@ -124,17 +125,17 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter ControlNpc(IFieldObject<Npc> npc)
+    public static PacketWriter ControlNpc(IFieldActor<NpcMetadata> npc)
     {
         PacketWriter npcBuffer = new();
         npcBuffer.WriteInt(npc.ObjectId);
         npcBuffer.WriteByte();
         npcBuffer.Write(npc.Coord.ToShort());
-        npcBuffer.WriteShort(npc.Value.ZRotation);
-        npcBuffer.Write(npc.Value.Velocity.ToShort()); // Target Position's Displacement
+        npcBuffer.WriteShort(npc.LookDirection);
+        npcBuffer.Write(npc.Velocity.ToShort()); // Target Position's Displacement
         npcBuffer.WriteShort(100); // Unknown
         npcBuffer.WriteByte(1); // Flag ?
-        npcBuffer.WriteShort(npc.Value.Animation);
+        npcBuffer.WriteShort(npc.Animation);
         npcBuffer.WriteShort(1); // counter (increments every packet)
         // There can be more to this packet, probably dependent on Flag.
 
@@ -145,18 +146,19 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter ControlMob(IFieldObject<Mob> mob)
+    public static PacketWriter ControlMob(IFieldActor<NpcMetadata> mob)
     {
         PacketWriter npcBuffer = new();
         npcBuffer.WriteInt(mob.ObjectId);
         npcBuffer.WriteByte();
         npcBuffer.Write(mob.Coord.ToShort());
-        npcBuffer.WriteShort(mob.Value.ZRotation);
-        npcBuffer.Write(mob.Value.Velocity.ToShort()); // Target Position's Displacement
+        // TODO: figure out if it's *10 or *1
+        npcBuffer.WriteShort(mob.LookDirection);
+        npcBuffer.Write(mob.Velocity.ToShort()); // Target Position's Displacement
         npcBuffer.WriteShort(100); // Unknown
         //npcBuffer.WriteInt(); // Unknown but is required for Boss, but not for normal mobs.
         npcBuffer.WriteByte(1); // Flag ?
-        npcBuffer.WriteShort(mob.Value.Animation);
+        npcBuffer.WriteShort(mob.Animation);
         npcBuffer.WriteShort(1); // counter (increments every packet)
         // There can be more to this packet, probably dependent on Flag.
 
@@ -177,7 +179,7 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter RemoveNpc(IFieldObject<Npc> npc)
+    public static PacketWriter RemoveNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
         pWriter.Write(ProxyGameObjMode.RemoveNpc);
@@ -185,7 +187,7 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter RemoveMob(IFieldObject<Mob> mob)
+    public static PacketWriter RemoveMob(IFieldObject<NpcMetadata> mob)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
         pWriter.Write(ProxyGameObjMode.RemoveNpc);
@@ -193,7 +195,7 @@ public static class FieldObjectPacket
         return pWriter;
     }
 
-    public static PacketWriter MoveNpc(IFieldObject<Npc> npc)
+    public static PacketWriter MoveNpc(IFieldObject<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
         pWriter.Write(ProxyGameObjMode.MoveNpc);
