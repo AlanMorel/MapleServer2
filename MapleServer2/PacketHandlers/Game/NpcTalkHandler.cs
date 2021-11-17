@@ -61,7 +61,7 @@ public class NpcTalkHandler : GamePacketHandler
         int objectId = packet.ReadInt();
 
         // Find if npc object id exists in field manager
-        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out IFieldObject<Npc> npc))
+        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out IFieldActor<NpcMetadata> npc))
         {
             return;
         }

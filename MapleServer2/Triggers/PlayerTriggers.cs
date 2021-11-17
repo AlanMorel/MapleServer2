@@ -53,12 +53,12 @@ public partial class TriggerContext
 
     public void MoveUser(int mapId, int triggerId, int boxId)
     {
-        List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+        List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-            List<IFieldObject<Player>> boxedPlayers = new();
-            foreach (IFieldObject<Player> player in players)
+            List<IFieldActor<Player>> boxedPlayers = new();
+            foreach (IFieldActor<Player> player in players)
             {
                 if (FieldManager.IsPlayerInBox(box, player))
                 {
@@ -146,12 +146,12 @@ public partial class TriggerContext
 
     public void SetAchievement(int boxId, string type, string trophySet)
     {
-        List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+        List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
         if (boxId != 0)
         {
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
-            List<IFieldObject<Player>> boxedPlayers = new();
-            foreach (IFieldObject<Player> player in players)
+            List<IFieldActor<Player>> boxedPlayers = new();
+            foreach (IFieldActor<Player> player in players)
             {
                 if (FieldManager.IsPlayerInBox(box, player))
                 {

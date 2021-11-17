@@ -1,11 +1,13 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Tools;
+using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
 public class MobAI
 {
-    public delegate bool Condition(Mob mob);
+    public delegate bool Condition(IFieldActor<NpcMetadata> mob);
     public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
 
     public MobAI()
@@ -13,7 +15,7 @@ public class MobAI
         Rules = new();
     }
 
-    public (string, NpcAction) GetAction(Mob mob)
+    public (string, NpcAction) GetAction(INpc mob)
     {
         if (mob.State == NpcState.Dead)
         {
@@ -29,10 +31,10 @@ public class MobAI
             {
                 return (null, nextAction);
             }
-            else if (mob.StateActions[mob.State].Length > 0)
+            else if (mob.Value.StateActions[mob.State].Length > 0)
             {
                 int roll = RandomProvider.Get().Next(10000);
-                foreach ((string name, NpcAction type, int probability) in mob.StateActions[mob.State])
+                foreach ((string name, NpcAction type, int probability) in mob.Value.StateActions[mob.State])
                 {
                     if (roll < probability)
                     {
@@ -43,10 +45,11 @@ public class MobAI
                 }
             }
         }
-        return (null, mob.CurrentAction);
+
+        return (null, mob.Action);
     }
 
-    public MobMovement GetMovementAction(Mob mob)
+    public MobMovement GetMovementAction(INpc mob)
     {
         if (mob.State == NpcState.Dead)
         {
@@ -60,21 +63,21 @@ public class MobAI
         {
             return movementAction;
         }
-        return mob.CurrentMovement;
+        return mob.Movement;
     }
 
     public static Condition HpPercentCond(int min = 0, int max = 100)
     {
-        return new((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max);
     }
 
     public static Condition HpCond(int min = 0, int max = int.MaxValue)
     {
-        return new((Mob mob) => mob.Stats.Hp.Total >= min && mob.Stats.Hp.Total >= max);
+        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max);
     }
 
     public static Condition SpCond(int min = 0, int max = int.MaxValue)
     {
-        return new((Mob mob) => mob.Stats.Sp.Total >= min && mob.Stats.Sp.Total >= max);
+        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Spirit].Total >= min && mob.Stats[StatId.Spirit].Total >= max);
     }
 }

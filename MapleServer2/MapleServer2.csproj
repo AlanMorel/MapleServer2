@@ -11,9 +11,6 @@
         <PackageReference Include="Autofac" Version="6.3.0"/>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.2"/>
         <PackageReference Include="Maple2.Trigger" Version="1.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.2.21480.5"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0-rc.2.21480.5"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.2.21480.5"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
         <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4"/>
         <PackageReference Include="Pastel" Version="2.1.0"/>
@@ -23,7 +20,7 @@
         <PackageReference Include="MySql.Data" Version="8.0.27"/>
         <PackageReference Include="SqlKata" Version="3.2.3"/>
         <PackageReference Include="SqlKata.Execution" Version="3.2.3"/>
-        <PackageReference Include="System.IO.Pipelines" Version="5.0.1"/>
+        <PackageReference Include="System.IO.Pipelines" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>

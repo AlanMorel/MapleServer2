@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace Maple2Storage.Types;
 
 [XmlType]
-public struct NpcStats
+public class NpcStats
 {
     [XmlElement(Order = 1)]
     public NpcStat<int> Str;
@@ -19,19 +19,19 @@ public struct NpcStats
     [XmlElement(Order = 6)]
     public NpcStat<int> HpRegen;
     [XmlElement(Order = 7)]
-    public NpcStat<int> HpInv;
+    public NpcStat<int> HpInterval;
     [XmlElement(Order = 8)]
     public NpcStat<int> Sp;
     [XmlElement(Order = 9)]
     public NpcStat<int> SpRegen;
     [XmlElement(Order = 10)]
-    public NpcStat<int> SpInv;
+    public NpcStat<int> SpInterval;
     [XmlElement(Order = 11)]
     public NpcStat<int> Ep;
     [XmlElement(Order = 12)]
     public NpcStat<int> EpRegen;
     [XmlElement(Order = 13)]
-    public NpcStat<int> EpInv;
+    public NpcStat<int> EpInterval;
     [XmlElement(Order = 14)]
     public NpcStat<int> AtkSpd;
     [XmlElement(Order = 15)]
@@ -41,15 +41,15 @@ public struct NpcStats
     [XmlElement(Order = 17)]
     public NpcStat<int> Evasion;
     [XmlElement(Order = 18)]
-    public NpcStat<int> Cap;
+    public NpcStat<int> CritRate;
     [XmlElement(Order = 19)]
-    public NpcStat<int> Cad;
+    public NpcStat<int> CritDamage;
     [XmlElement(Order = 20)]
-    public NpcStat<int> Car;
+    public NpcStat<int> CritResist;
     [XmlElement(Order = 21)]
-    public NpcStat<int> Ndd;
+    public NpcStat<int> Defense;
     [XmlElement(Order = 22)]
-    public NpcStat<int> Abp;
+    public NpcStat<int> Guard;
     [XmlElement(Order = 23)]
     public NpcStat<int> JumpHeight;
     [XmlElement(Order = 24)]
@@ -77,7 +77,7 @@ public struct NpcStats
     // There's more on some other NPC but until this point, all of them have it
 }
 [XmlType]
-public struct NpcStat<T>
+public struct NpcStat<T> where T : struct
 {
     [XmlElement(Order = 1)]
     public T Bonus;

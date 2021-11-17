@@ -159,7 +159,7 @@ public partial class TriggerContext
     public bool UserDetected(int[] boxIds, byte jobId)
     {
         Job job = (Job) jobId;
-        List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+        List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
         if (job != Job.None)
         {
             players = players.Where(x => x.Value.Job == job).ToList();

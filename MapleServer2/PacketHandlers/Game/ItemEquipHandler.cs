@@ -166,7 +166,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
@@ -174,7 +174,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
@@ -187,7 +187,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 
@@ -195,7 +195,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 
