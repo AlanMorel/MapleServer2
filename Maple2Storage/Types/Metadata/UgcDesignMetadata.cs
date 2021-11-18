@@ -4,7 +4,7 @@ using Maple2Storage.Enums;
 namespace Maple2Storage.Types.Metadata;
 
 [XmlType]
-public class UGCDesignMetadata
+public class UgcDesignMetadata
 {
     [XmlElement(Order = 1)]
     public int ItemId;
@@ -23,9 +23,9 @@ public class UGCDesignMetadata
     [XmlElement(Order = 8)]
     public long MarketMaxPrice;
 
-    public UGCDesignMetadata() { }
+    public UgcDesignMetadata() { }
 
-    public UGCDesignMetadata(int itemId, bool visible, byte rarity, CurrencyType currencyType, long price, long salePrice, long marketMinPrice, long marketMaxPrice)
+    public UgcDesignMetadata(int itemId, bool visible, byte rarity, CurrencyType currencyType, long price, long salePrice, long marketMinPrice, long marketMaxPrice)
     {
         ItemId = itemId;
         Visible = visible;

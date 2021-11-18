@@ -6,12 +6,12 @@ using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
 
-public class UGCDesignParser : Exporter<List<UGCDesignMetadata>>
+public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
 {
-    public UGCDesignParser(MetadataResources resources) : base(resources, "ugc-design") { }
-    protected override List<UGCDesignMetadata> Parse()
+    public UgcDesignParser(MetadataResources resources) : base(resources, "ugc-design") { }
+    protected override List<UgcDesignMetadata> Parse()
     {
-        List<UGCDesignMetadata> metadatas = new();
+        List<UgcDesignMetadata> metadatas = new();
 
         PackFileEntry file = Resources.XmlReader.Files.FirstOrDefault(x => x.Name.Contains("table/na/ugcdesign.xml"));
         if (file is null)
@@ -37,7 +37,7 @@ public class UGCDesignParser : Exporter<List<UGCDesignMetadata>>
             long salePrice = long.Parse(node.Attributes["salePrice"].Value);
             long marketMinPrice = long.Parse(node.Attributes["marketMinPrice"].Value);
             long marketMaxPrice = long.Parse(node.Attributes["marketMaxPrice"].Value);
-            metadatas.Add(new UGCDesignMetadata(itemId, visible, rarity, currencyType, price, salePrice, marketMinPrice, marketMaxPrice));
+            metadatas.Add(new UgcDesignMetadata(itemId, visible, rarity, currencyType, price, salePrice, marketMinPrice, marketMaxPrice));
         }
 
         return metadatas;

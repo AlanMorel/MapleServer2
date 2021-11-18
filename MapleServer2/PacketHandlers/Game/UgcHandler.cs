@@ -18,8 +18,8 @@ public class UgcHandler : GamePacketHandler
 
     private enum UgcMode : byte
     {
-        CreateUGCItem = 0x01,
-        AddUGCItem = 0x03,
+        CreateUgcItem = 0x01,
+        AddUgcItem = 0x03,
         ProfilePicture = 0x0B
     }
 
@@ -28,11 +28,11 @@ public class UgcHandler : GamePacketHandler
         UgcMode function = (UgcMode) packet.ReadByte();
         switch (function)
         {
-            case UgcMode.CreateUGCItem:
+            case UgcMode.CreateUgcItem:
                 HandleCreateUGCItem(session, packet);
                 break;
-            case UgcMode.AddUGCItem:
-                HandleAddUGCItem(session, packet);
+            case UgcMode.AddUgcItem:
+                HandleAddUgcItem(session, packet);
                 break;
             case UgcMode.ProfilePicture:
                 HandleProfilePicture(session, packet);
@@ -56,42 +56,53 @@ public class UgcHandler : GamePacketHandler
         packet.ReadInt();
         packet.ReadShort();
         packet.ReadShort();
-        long unk = packet.ReadLong();
+        long unk = packet.ReadLong(); // some kind of UID
         int itemId = packet.ReadInt();
         int amount = packet.ReadInt();
         string itemName = packet.ReadUnicodeString();
         packet.ReadByte();
         long cost = packet.ReadLong();
+        bool useVoucher = packet.ReadBool();
 
-        UGCDesignMetadata metadata = UGCDesignMetadataStorage.GetItem(itemId);
+        UgcDesignMetadata metadata = UgcDesignMetadataStorage.GetItem(itemId);
         if (metadata is null)
         {
             return;
         }
 
-        if (metadata.CurrencyType == CurrencyType.Meso && !session.Player.Wallet.Meso.Modify(-cost))
+        if (useVoucher)
         {
-            session.SendNotice("You don't have enough mesos.");
-            return;
+            Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeDesignCoupon");
+            if (voucher is null)
+            {
+                return;
+            }
+            session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
         }
-
-        if (metadata.CurrencyType == CurrencyType.Meret && !session.Player.Account.Meret.Modify(-cost))
+        else
         {
-            session.SendNotice("You don't have enough merets.");
-            return;
+            switch (metadata.CurrencyType)
+            {
+                case CurrencyType.Meso when !session.Player.Wallet.Meso.Modify(-cost):
+                    session.SendNotice("You don't have enough mesos.");
+                    return;
+                case CurrencyType.Meret when !session.Player.Account.Meret.Modify(-cost):
+                    session.SendNotice("You don't have enough merets.");
+                    return;
+            }
         }
 
         Item item = new(itemId, 1)
         {
             Rarity = metadata.Rarity,
-            UGC = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice),
+            UGC = new(itemName, characterId, session.Player.Name, accountId, metadata.SalePrice)
         };
         DatabaseManager.Items.Update(item);
 
-        session.Send(UgcPacket.CreateUGC(item.UGC is not null, item.UGC));
+        session.Send(UgcPacket.CreateUGC(true, item.UGC));
     }
 
-    private static void HandleAddUGCItem(GameSession session, PacketReader packet)
+    private static void HandleAddUgcItem(GameSession session, PacketReader packet)
     {
         packet.ReadByte();
         packet.ReadByte();
@@ -116,7 +127,7 @@ public class UgcHandler : GamePacketHandler
         item.SetMetadataValues();
 
         session.Player.Inventory.AddItem(session, item, true);
-        session.Send(UgcPacket.UpdateUGCItem(session.FieldPlayer, item));
+        session.Send(UgcPacket.UpdateUGCItem(session.Player.FieldPlayer, item));
         session.Send(UgcPacket.SetItemUrl(item.UGC));
     }
 
