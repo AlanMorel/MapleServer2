@@ -98,13 +98,13 @@ public partial class TriggerContext
             return;
         }
 
-        IFieldObject<Portal> portal = Field.State.Portals.Values.First(p => p.Value.Id == portalId);
+        IFieldObject<Portal> portal = Field.State.Portals.Values.FirstOrDefault(p => p.Value.Id == portalId);
         if (portal == null)
         {
             return;
         }
         portal.Value.Update(visible, enabled, minimapVisible);
-        Field.BroadcastPacket(FieldPacket.UpdatePortal(portal));
+        Field.BroadcastPacket(FieldPortalPacket.UpdatePortal(portal));
     }
 
     public void SetRandomMesh(int[] meshIds, bool isVisible, byte meshCount, int arg4, int delayTime)

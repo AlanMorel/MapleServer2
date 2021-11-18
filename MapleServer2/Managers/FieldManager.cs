@@ -412,7 +412,7 @@ public partial class FieldManager
         // TODO: Send the initialization state of the field
         foreach (IFieldActor<Player> existingPlayer in State.Players.Values)
         {
-            sender.Send(FieldPacket.AddPlayer(existingPlayer));
+            sender.Send(FieldPlayerPacket.AddPlayer(existingPlayer));
             sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
         }
 
@@ -420,29 +420,29 @@ public partial class FieldManager
         // Broadcast new player to all players in map
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddPlayer(player));
+            session.Send(FieldPlayerPacket.AddPlayer(player));
             session.Send(FieldObjectPacket.LoadPlayer(player));
         });
 
         foreach (IFieldObject<Item> existingItem in State.Items.Values)
         {
-            sender.Send(FieldPacket.AddItem(existingItem, 123456));
+            sender.Send(FieldItemPacket.AddItem(existingItem, 123456));
         }
         foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
         {
-            sender.Send(FieldPacket.AddNpc(existingNpc));
+            sender.Send(FieldNpcPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
         foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
         {
-            sender.Send(FieldPacket.AddMob(existingMob));
+            sender.Send(FieldNpcPacket.AddMob(existingMob));
             sender.Send(FieldObjectPacket.LoadMob(existingMob));
 
             // TODO: Determine if buffs are sent on Field Enter
         }
         foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
         {
-            sender.Send(FieldPacket.AddPortal(existingPortal));
+            sender.Send(FieldPortalPacket.AddPortal(existingPortal));
         }
 
         if (player.Value.MapId == (int) Map.PrivateResidence && !player.Value.IsInDecorPlanner)
@@ -530,7 +530,7 @@ public partial class FieldManager
         // Remove player
         Broadcast(session =>
         {
-            session.Send(FieldPacket.RemovePlayer(player));
+            session.Send(FieldPlayerPacket.RemovePlayer(player));
             session.Send(FieldObjectPacket.RemovePlayer(player));
         });
 
@@ -562,7 +562,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddNpc(fieldNpc));
+            session.Send(FieldNpcPacket.AddNpc(fieldNpc));
             session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
         });
     }
@@ -589,7 +589,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddMob(fieldMob));
+            session.Send(FieldNpcPacket.AddMob(fieldMob));
             session.Send(FieldObjectPacket.LoadMob(fieldMob));
             for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
@@ -614,7 +614,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.RemoveMob(mob));
+            session.Send(FieldNpcPacket.RemoveMob(mob));
             session.Send(FieldObjectPacket.RemoveMob(mob));
         });
         return true;
@@ -655,13 +655,13 @@ public partial class FieldManager
     public void AddPortal(IFieldObject<Portal> portal)
     {
         State.AddPortal(portal);
-        BroadcastPacket(FieldPacket.AddPortal(portal));
+        BroadcastPacket(FieldPortalPacket.AddPortal(portal));
     }
 
     public void RemovePortal(IFieldObject<Portal> portal)
     {
         State.RemovePortal(portal.ObjectId);
-        BroadcastPacket(FieldPacket.RemovePortal(portal.Value));
+        BroadcastPacket(FieldPortalPacket.RemovePortal(portal.Value));
     }
 
     public void SendChat(Player player, string message, ChatType type)
@@ -678,7 +678,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddItem(fieldItem, session.FieldPlayer.ObjectId));
+            session.Send(FieldItemPacket.AddItem(fieldItem, session.FieldPlayer.ObjectId));
         });
     }
 
@@ -696,7 +696,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddItem(fieldItem, source, targetPlayer));
+            session.Send(FieldItemPacket.AddItem(fieldItem, source, targetPlayer));
         });
     }
 

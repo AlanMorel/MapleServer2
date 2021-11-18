@@ -251,7 +251,7 @@ public class Player
         SetCoords(mapId, coord, rotation);
 
         DatabaseManager.Characters.Update(this);
-        Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
+        Session.Send(RequestFieldEnterPacket.RequestEnter(Session.FieldPlayer));
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
@@ -259,7 +259,7 @@ public class Player
         UpdateCoords(mapId, instanceId, coord, rotation);
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
-        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+        IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         AuthData authTokens = AuthStorage.GetData(AccountId);
         authTokens.Player.IsChangingChannel = true;
@@ -299,12 +299,18 @@ public class Player
             ReturnCoord = Session.FieldPlayer.Coord;
             ReturnMapId = MapId;
         }
-        if (coord is not null && rotation is not null)
+
+        if (coord is not null)
         {
             Coord = (CoordF) coord;
-            Rotation = (CoordF) rotation;
             SafeBlock = (CoordF) coord;
         }
+
+        if (rotation is not null)
+        {
+            Rotation = (CoordF) rotation;
+        }
+
         MapId = mapId;
 
         if (instanceId != 0)

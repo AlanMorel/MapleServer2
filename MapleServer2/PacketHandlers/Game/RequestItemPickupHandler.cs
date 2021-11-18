@@ -53,8 +53,8 @@ public class RequestItemPickupHandler : GamePacketHandler
 
         if (session.FieldManager.RemoveItem(objectId, out Item item))
         {
-            session.FieldManager.BroadcastPacket(FieldPacket.PickupItem(objectId, item, session.FieldPlayer.ObjectId));
-            session.FieldManager.BroadcastPacket(FieldPacket.RemoveItem(objectId));
+            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.FieldPlayer.ObjectId));
+            session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
 
         int countExtra = packet.ReadByte();

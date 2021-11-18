@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
@@ -9,7 +8,7 @@ namespace MapleServer2.Packets;
 
 public static class FieldObjectPacket
 {
-    private enum ProxyGameObjMode : byte
+    private enum FieldObjectMode : byte
     {
         LoadPlayer = 0x03,
         RemovePlayer = 0x04,
@@ -23,8 +22,8 @@ public static class FieldObjectPacket
     public static PacketWriter LoadPlayer(IFieldObject<Player> fieldPlayer)
     {
         Player player = fieldPlayer.Value;
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.LoadPlayer);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.LoadPlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteLong(player.AccountId);
@@ -52,9 +51,8 @@ public static class FieldObjectPacket
 
     public static PacketWriter RemovePlayer(IFieldObject<Player> fieldPlayer)
     {
-        Player player = fieldPlayer.Value;
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.RemovePlayer);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.RemovePlayer);
         pWriter.WriteInt(fieldPlayer.ObjectId);
 
         return pWriter;
@@ -63,8 +61,8 @@ public static class FieldObjectPacket
     public static PacketWriter UpdatePlayer(IFieldActor<Player> player)
     {
         FieldObjectUpdate flag = FieldObjectUpdate.Move | FieldObjectUpdate.Animate;
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.UpdateEntity);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.UpdateEntity);
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte((byte) flag);
 
@@ -103,8 +101,8 @@ public static class FieldObjectPacket
 
     public static PacketWriter LoadNpc(IFieldObject<NpcMetadata> npc)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.LoadNpc);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.LoadNpc);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.WriteInt(npc.Value.Id);
         pWriter.WriteByte();
@@ -115,8 +113,8 @@ public static class FieldObjectPacket
 
     public static PacketWriter LoadMob(IFieldObject<NpcMetadata> mob)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.LoadNpc);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.LoadNpc);
         pWriter.WriteInt(mob.ObjectId);
         pWriter.WriteInt(mob.Value.Id);
         pWriter.WriteByte();
@@ -171,8 +169,8 @@ public static class FieldObjectPacket
 
     public static PacketWriter UpdateEntity(int objectId)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.UpdateEntity);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.UpdateEntity);
         pWriter.WriteInt(objectId);
         pWriter.WriteByte();
         pWriter.WriteShort();
@@ -181,33 +179,27 @@ public static class FieldObjectPacket
 
     public static PacketWriter RemoveNpc(IFieldObject<NpcMetadata> npc)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.RemoveNpc);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.RemoveNpc);
         pWriter.WriteInt(npc.ObjectId);
         return pWriter;
     }
 
     public static PacketWriter RemoveMob(IFieldObject<NpcMetadata> mob)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.RemoveNpc);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.RemoveNpc);
         pWriter.WriteInt(mob.ObjectId);
         return pWriter;
     }
 
     public static PacketWriter MoveNpc(IFieldObject<NpcMetadata> npc)
     {
-        PacketWriter pWriter = PacketWriter.Of(SendOp.PROXY_GAME_OBJ);
-        pWriter.Write(ProxyGameObjMode.MoveNpc);
+        PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_OBJECT);
+        pWriter.Write(FieldObjectMode.MoveNpc);
         pWriter.WriteInt(npc.ObjectId);
         pWriter.WriteByte();
         pWriter.Write(npc.Coord);
         return pWriter;
     }
-}
-public class FieldPlayerUpdateData
-{
-    public FieldObjectUpdate Flags;
-    public CoordF Coord;
-    public short Animation;
 }

@@ -34,15 +34,15 @@ public class QuitHandler : CommonPacketHandler
         switch (mode)
         {
             case QuitMode.ChangeCharacter:
-                if (session is GameSession)
+                if (session is GameSession gameSession)
                 {
-                    HandleChangeCharacter(session as GameSession);
+                    HandleChangeCharacter(gameSession);
                 }
                 break;
             case QuitMode.Quit:
-                if (session is GameSession)
+                if (session is GameSession gameSession2)
                 {
-                    HandleQuit(session as GameSession);
+                    HandleQuit(gameSession2);
                 }
                 session.Dispose();
                 break;
