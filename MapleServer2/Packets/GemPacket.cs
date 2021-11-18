@@ -31,7 +31,7 @@ public static class GemPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
         pWriter.Write(GemMode.EquipItem);
-        pWriter.WriteInt(session.FieldPlayer.ObjectId);
+        pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteInt(item.Id);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Rarity);
@@ -46,7 +46,7 @@ public static class GemPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.GEM);
 
         pWriter.Write(GemMode.UnequipItem);
-        pWriter.WriteInt(session.FieldPlayer.ObjectId);
+        pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.Write(gemSlot);
 
         return pWriter;

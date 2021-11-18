@@ -43,7 +43,7 @@ public class Levels
         Level = level;
         Exp = 0;
         Player.Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
-        Player.Session.Send(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+        Player.Session.Send(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
 
         QuestHelper.GetNewQuests(Player.Session, Level);
     }
@@ -57,9 +57,9 @@ public class Levels
 
         Level++;
         Player.StatPointDistribution.AddTotalStatPoints(5);
-        Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.Session.FieldPlayer, Level));
+        Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
         // TODO: Gain max HP
-        Player.Session.FieldPlayer.RecoverHp(Player.Session.FieldPlayer.Stats[StatId.Hp].Bonus);
+        Player.FieldPlayer.RecoverHp(Player.FieldPlayer.Stats[StatId.Hp].Bonus);
         Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
 
         QuestHelper.GetNewQuests(Player.Session, Level);
@@ -71,13 +71,13 @@ public class Levels
         PrestigeLevel = level;
         PrestigeExp = 0;
         Player.Session.Send(PrestigePacket.ExpUp(Player, 0));
-        Player.Session.Send(PrestigePacket.LevelUp(Player.Session.FieldPlayer, PrestigeLevel));
+        Player.Session.Send(PrestigePacket.LevelUp(Player.FieldPlayer, PrestigeLevel));
     }
 
     public void PrestigeLevelUp()
     {
         PrestigeLevel++;
-        Player.Session.Send(PrestigePacket.LevelUp(Player.Session.FieldPlayer, PrestigeLevel));
+        Player.Session.Send(PrestigePacket.LevelUp(Player.FieldPlayer, PrestigeLevel));
     }
 
     public void GainExp(int amount)

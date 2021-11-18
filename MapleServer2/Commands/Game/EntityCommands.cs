@@ -39,7 +39,7 @@ public class NpcCommand : InGameCommand
         CoordF coord = trigger.Get<CoordF>("coord");
         if (coord == default)
         {
-            coord = trigger.Session.FieldPlayer.Coord;
+            coord = trigger.Session.Player.FieldPlayer.Coord;
         }
 
         trigger.Session.FieldManager.RequestNpc(npcId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));
@@ -77,7 +77,7 @@ public class MobCommand : InGameCommand
         CoordF coord = trigger.Get<CoordF>("coord");
         if (coord == default)
         {
-            coord = trigger.Session.FieldPlayer.Coord;
+            coord = trigger.Session.Player.FieldPlayer.Coord;
         }
 
         trigger.Session.FieldManager.RequestMob(mobId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));

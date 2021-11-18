@@ -38,37 +38,41 @@ public class UserSyncHandler : GamePacketHandler
             packet.ReadInt(); // ServerTicks
         }
 
-        PacketWriter syncPacket = SyncStatePacket.UserSync(session.FieldPlayer, syncStates);
+        PacketWriter syncPacket = SyncStatePacket.UserSync(session.Player.FieldPlayer, syncStates);
         session.FieldManager.BroadcastPacket(syncPacket, session);
         UpdatePlayer(session, syncStates);
     }
 
     public static void UpdatePlayer(GameSession session, SyncState[] syncStates)
     {
+        Player player = session.Player;
+        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
+
         CoordF coord = syncStates[0].Coord.ToFloat();
         CoordF closestBlock = Block.ClosestBlock(coord);
         closestBlock.Z -= Block.BLOCK_SIZE; // Get block under player
 
         if (IsCoordSafe(session, syncStates[0].Coord, closestBlock))
         {
-            session.Player.SafeBlock = closestBlock;
+            CoordF safeBlock = Block.ClosestBlock(coord);
+            safeBlock.Z += 1; // Without this player will spawn inside the block
+
+            player.SafeBlock = closestBlock;
         }
 
-        session.FieldPlayer.Coord = syncStates[0].Coord.ToFloat();
-        CoordF rotation = new();
-        rotation.Z = syncStates[0].Rotation / 10;
-        session.FieldPlayer.Rotation = rotation;
-
-        if (IsOutOfBounds(session.FieldPlayer.Coord, session.FieldManager.BoundingBox))
+        fieldPlayer.Coord = coord;
+        fieldPlayer.Rotation = new()
         {
-            CoordF safeBlock = session.Player.SafeBlock;
-            safeBlock.Z += Block.BLOCK_SIZE + 1; // Without this player will spawn inside the block
+            Z = syncStates[0].Rotation / 10
+        };
 
-            session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, safeBlock, session.FieldPlayer.Rotation));
-            session.Player.FallDamage();
+        if (IsOutOfBounds(fieldPlayer.Coord, session.FieldManager.BoundingBox))
+        {
+            session.Send(UserMoveByPortalPacket.Move(fieldPlayer, player.SafeBlock, fieldPlayer.Rotation));
+            player.FallDamage();
         }
         // not sure if this needs to be synced here
-        session.FieldPlayer.Animation = syncStates[0].Animation1;
+        fieldPlayer.Animation = syncStates[0].Animation1;
     }
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
@@ -84,16 +88,13 @@ public class UserSyncHandler : GamePacketHandler
         {
             return true;
         }
-        else if (coord.Y > higherBoundY || coord.Y < lowerBoundY)
+        
+        if (coord.Y > higherBoundY || coord.Y < lowerBoundY)
         {
             return true;
         }
-        else if (coord.X > higherBoundX || coord.X < lowerBoundX)
-        {
-            return true;
-        }
-
-        return false;
+        
+        return coord.X > higherBoundX || coord.X < lowerBoundX;
     }
 
     private static bool IsCoordSafe(GameSession session, CoordS currentCoord, CoordF closestCoord)
@@ -102,6 +103,6 @@ public class UserSyncHandler : GamePacketHandler
         return MapMetadataStorage.BlockExists(session.Player.MapId, closestCoord.ToShort()) &&
             !session.Player.OnAirMount &&
             (session.Player.SafeBlock - closestCoord).Length() > 350 &&
-            session.FieldPlayer.Coord.Z == currentCoord.Z;
+            session.Player.FieldPlayer.Coord.Z == currentCoord.Z;
     }
 }

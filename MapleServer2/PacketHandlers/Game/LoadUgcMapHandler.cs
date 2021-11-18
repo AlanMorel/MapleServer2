@@ -63,8 +63,8 @@ public class LoadUgcMapHandler : GamePacketHandler
                 coord = CoordF.From(x, x, 151);
                 rotation = CoordF.From(0, 0, 0);
             }
-            session.FieldPlayer.Coord = coord;
-            session.FieldPlayer.Rotation = rotation;
+            session.Player.FieldPlayer.Coord = coord;
+            session.Player.FieldPlayer.Rotation = rotation;
             session.Player.SafeBlock = coord;
             session.Player.InstanceId = home.InstanceId;
         }

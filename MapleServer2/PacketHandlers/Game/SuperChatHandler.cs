@@ -47,11 +47,11 @@ public class SuperChatHandler : GamePacketHandler
         }
 
         session.Player.SuperChat = superChatItem.Function.Id;
-        session.Send(SuperChatPacket.Select(session.FieldPlayer, superChatItem.Id));
+        session.Send(SuperChatPacket.Select(session.Player.FieldPlayer, superChatItem.Id));
     }
 
     private static void HandleDeselect(GameSession session)
     {
-        session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
+        session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
     }
 }

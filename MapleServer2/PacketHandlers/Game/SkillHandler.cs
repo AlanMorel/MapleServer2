@@ -103,14 +103,14 @@ public class SkillHandler : GamePacketHandler
             string unkString = packet.ReadUnicodeString();
         }
 
-        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.FieldPlayer.ObjectId, clientTick, attackPoint);
-        session.FieldPlayer.Cast(skillCast);
+        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.Player.FieldPlayer.ObjectId, clientTick, attackPoint);
+        session.Player.FieldPlayer.Cast(skillCast);
 
         // TODO: Move to FieldActor.Cast()
         if (skillCast != null)
         {
             session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
-            session.Send(StatPacket.SetStats(session.FieldPlayer));
+            session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
         }
     }
 
@@ -128,7 +128,7 @@ public class SkillHandler : GamePacketHandler
         packet.ReadInt();
         packet.ReadByte();
 
-        session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillSN, session.FieldPlayer, position, rotation, toggle), session);
+        session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillSN, session.Player.FieldPlayer, position, rotation, toggle), session);
     }
 
     private static void HandleSyncTick(PacketReader packet)
@@ -164,7 +164,7 @@ public class SkillHandler : GamePacketHandler
             animation.Add(packet.ReadShort());
         }
 
-        session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillSN, position, rotation, session.FieldPlayer, sourceId, count, atkCount, targetId, animation));
+        session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillSN, position, rotation, session.Player.FieldPlayer, sourceId, count, atkCount, targetId, animation));
     }
 
     private static void HandleDamage(GameSession session, PacketReader packet)
@@ -179,19 +179,21 @@ public class SkillHandler : GamePacketHandler
         byte count = packet.ReadByte();
         packet.ReadInt();
 
+        IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
+
         bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
 
         // TODO: Check if skillSN matches server's current skill for the player
         // TODO: Verify if its the player or an ally
-        if (session.FieldPlayer.SkillCast.IsHeal())
+        if (fieldPlayer.SkillCast.IsHeal())
         {
-            Status status = new(session.FieldPlayer.SkillCast, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1);
+            Status status = new(fieldPlayer.SkillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
             StatusHandler.Handle(session, status);
 
             // TODO: Heal based on stats
             session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, 50));
-            session.FieldPlayer.Stats[StatId.Hp].Increase(50);
-            session.Send(StatPacket.UpdateStats(session.FieldPlayer, StatId.Hp));
+            fieldPlayer.Stats[StatId.Hp].Increase(50);
+            session.Send(StatPacket.UpdateStats(fieldPlayer, StatId.Hp));
         }
         else
         {
@@ -207,7 +209,7 @@ public class SkillHandler : GamePacketHandler
                     continue;
                 }
 
-                DamageHandler damage = DamageHandler.CalculateDamage(session.FieldPlayer.SkillCast, session.FieldPlayer, mob, isCrit);
+                DamageHandler damage = DamageHandler.CalculateDamage(fieldPlayer.SkillCast, fieldPlayer, mob, isCrit);
 
                 mob.Damage(damage);
                 // TODO: Move logic to Damage()
@@ -220,15 +222,15 @@ public class SkillHandler : GamePacketHandler
                 damages.Add(damage);
 
                 // TODO: Check if the skill is a debuff for an entity
-                SkillCast skillCast = session.FieldPlayer.SkillCast;
+                SkillCast skillCast = fieldPlayer.SkillCast;
                 if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
                 {
-                    Status status = new(session.FieldPlayer.SkillCast, mob.ObjectId, session.FieldPlayer.ObjectId, 1);
+                    Status status = new(fieldPlayer.SkillCast, mob.ObjectId, fieldPlayer.ObjectId, 1);
                     StatusHandler.Handle(session, status);
                 }
             }
 
-            session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillSN, attackCounter, position, rotation, session.FieldPlayer, damages));
+            session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillSN, attackCounter, position, rotation, fieldPlayer, damages));
         }
     }
 
@@ -258,7 +260,7 @@ public class SkillHandler : GamePacketHandler
             }
 
             SkillCast skillCast = new(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick, parentSkill);
-            RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.FieldPlayer.Coord, skillCast);
+            RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.Player.FieldPlayer.Coord, skillCast);
         }
     }
 
@@ -271,28 +273,28 @@ public class SkillHandler : GamePacketHandler
         {
             // TODO: Calculate meso drop rate
             Item meso = new(90000001, rand.Next(2, 800));
-            session.FieldManager.AddResource(meso, mob, session.FieldPlayer);
+            session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
         }
         // Drop Meret
         bool dropMeret = rand.Next(40) == 0;
         if (dropMeret)
         {
             Item meret = new(90000004, 20);
-            session.FieldManager.AddResource(meret, mob, session.FieldPlayer);
+            session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
         }
         // Drop SP
         bool dropSP = rand.Next(6) == 0;
         if (dropSP)
         {
             Item spBall = new(90000009, 20);
-            session.FieldManager.AddResource(spBall, mob, session.FieldPlayer);
+            session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
         }
         // Drop EP
         bool dropEP = rand.Next(10) == 0;
         if (dropEP)
         {
             Item epBall = new(90000010, 20);
-            session.FieldManager.AddResource(epBall, mob, session.FieldPlayer);
+            session.FieldManager.AddResource(epBall, mob, session.Player.FieldPlayer);
         }
         // Drop Items
         // Send achieves (?)

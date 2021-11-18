@@ -32,7 +32,7 @@ public class RequestMoneyPickupHandler : GamePacketHandler
             }
 
             session.Player.Wallet.Meso.Modify(fieldItem.Value.Amount);
-            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.FieldPlayer.ObjectId));
+            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
             session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
     }

@@ -68,7 +68,7 @@ public class JobHandler : GamePacketHandler
         }
 
         // Send JOB packet that contains all skills then send KEY_TABLE packet to update hotbars
-        session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
+        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
         session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
         DatabaseManager.SkillTabs.Update(skillTab);
     }
@@ -79,7 +79,7 @@ public class JobHandler : GamePacketHandler
 
         SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
         skillTab.ResetSkillTree(session.Player.Job);
-        session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
+        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
         DatabaseManager.SkillTabs.Update(skillTab);
     }
 
@@ -95,7 +95,7 @@ public class JobHandler : GamePacketHandler
             skillTab.AddOrUpdate(skillId, skillLevel, learned);
         }
 
-        session.Send(JobPacket.Save(session.Player, session.FieldPlayer.ObjectId));
+        session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
         session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
         DatabaseManager.SkillTabs.Update(skillTab);
     }

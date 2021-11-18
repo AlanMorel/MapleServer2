@@ -34,10 +34,10 @@ public class RequestItemPickupHandler : GamePacketHandler
                 session.Player.Levels.GainExp(fieldItem.Value.Amount);
                 break;
             case 90000009:
-                session.FieldPlayer.RecoverSp(fieldItem.Value.Amount);
+                session.Player.FieldPlayer.RecoverSp(fieldItem.Value.Amount);
                 break;
             case 90000010:
-                session.FieldPlayer.RecoverStamina(fieldItem.Value.Amount);
+                session.Player.FieldPlayer.RecoverStamina(fieldItem.Value.Amount);
                 break;
             default:
                 if (!session.Player.Inventory.CanHold(fieldItem.Value))
@@ -53,7 +53,7 @@ public class RequestItemPickupHandler : GamePacketHandler
 
         if (session.FieldManager.RemoveItem(objectId, out Item item))
         {
-            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.FieldPlayer.ObjectId));
+            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
             session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
 

@@ -25,13 +25,13 @@ public class FieldEnterHandler : GamePacketHandler
         Player player = session.Player;
         Account account = player.Account;
         session.EnterField(player);
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
 
         if (account.IsVip())
         {
-            session.Send(BuffPacket.SendBuff(0, new(100000014, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, 1, (int) account.VIPExpiration, 1)));
-            session.Send(PremiumClubPacket.ActivatePremium(session.FieldPlayer, account.VIPExpiration));
+            session.Send(BuffPacket.SendBuff(0, new(100000014, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, 1, (int) account.VIPExpiration, 1)));
+            session.Send(PremiumClubPacket.ActivatePremium(session.Player.FieldPlayer, account.VIPExpiration));
         }
 
         session.Send(EmotePacket.LoadEmotes(player));
@@ -39,7 +39,7 @@ public class FieldEnterHandler : GamePacketHandler
 
         session.Send(HomeCommandPacket.LoadHome(player));
         session.Send(ResponseCubePacket.DecorationScore(account.Home));
-        session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
+        session.Send(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
         session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
         session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
 
