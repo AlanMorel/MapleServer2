@@ -19,7 +19,7 @@ public class MyInfoHandler : GamePacketHandler
             case 0: //Set Motto
                 string newmotto = packet.ReadUnicodeString();
                 session.Player.Motto = newmotto;
-                session.FieldManager.BroadcastPacket(MyInfoPacket.SetMotto(session.FieldPlayer, newmotto));
+                session.FieldManager.BroadcastPacket(MyInfoPacket.SetMotto(session.Player.FieldPlayer, newmotto));
                 break;
         }
     }

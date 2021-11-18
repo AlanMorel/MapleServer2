@@ -31,30 +31,38 @@ public class HomeManager
     public Home GetHomeById(long id)
     {
         HomeList.TryGetValue(id, out Home home);
+        if (home != null)
+        {
+            return home;
+        }
+
+        home = DatabaseManager.Homes.FindById(id);
         if (home == null)
         {
-            home = DatabaseManager.Homes.FindById(id);
-            if (home != null)
-            {
-                home.InstanceId = IncrementCounter();
-                AddHome(home);
-            }
+            return null;
         }
+
+        home.InstanceId = IncrementCounter();
+        AddHome(home);
         return home;
     }
 
     public Home GetHomeByAccountId(long accountId)
     {
         Home home = HomeList.Values.FirstOrDefault(x => x.AccountId == accountId);
+        if (home != null)
+        {
+            return home;
+        }
+
+        home = DatabaseManager.Homes.FindByAccountId(accountId);
         if (home == null)
         {
-            home = DatabaseManager.Homes.FindByAccountId(accountId);
-            if (home != null)
-            {
-                home.InstanceId = IncrementCounter();
-                AddHome(home);
-            }
+            return null;
         }
+
+        home.InstanceId = IncrementCounter();
+        AddHome(home);
         return home;
     }
 

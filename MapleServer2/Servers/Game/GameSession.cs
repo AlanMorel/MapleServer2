@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Network;
@@ -16,7 +17,6 @@ public class GameSession : Session
     public int ClientTick;
 
     public Player Player;
-    public IFieldActor<Player> FieldPlayer { get; private set; }
 
     public FieldManager FieldManager { get; private set; }
     private readonly FieldManagerFactory FieldManagerFactory;
@@ -34,11 +34,11 @@ public class GameSession : Session
     // Called first time when starting a new session
     public void InitPlayer(Player player)
     {
-        Debug.Assert(FieldPlayer == null, "Not allowed to reinitialize player.");
+        Debug.Assert(player.FieldPlayer == null, "Not allowed to reinitialize player.");
 
         Player = player;
         FieldManager = FieldManagerFactory.GetManager(player);
-        FieldPlayer = FieldManager.RequestCharacter(player);
+        player.FieldPlayer = FieldManager.RequestCharacter(player);
     }
 
     public void EnterField(Player player)
@@ -46,7 +46,7 @@ public class GameSession : Session
         // If moving maps, need to get the FieldManager for new map
         if (player.MapId != FieldManager.MapId || player.InstanceId != FieldManager.InstanceId)
         {
-            FieldManager.RemovePlayer(this, FieldPlayer); // Leave previous field
+            FieldManager.RemovePlayer(this); // Leave previous field
 
             if (FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player))
             {
@@ -62,21 +62,24 @@ public class GameSession : Session
 
             // Initialize for new Map
             FieldManager = FieldManagerFactory.GetManager(player);
-            FieldPlayer = FieldManager.RequestCharacter(player);
+            player.FieldPlayer = FieldManager.RequestCharacter(player);
         }
 
-        FieldManager.AddPlayer(this, FieldPlayer); // Add player
+        FieldManager.AddPlayer(this);
     }
 
     public override void EndSession()
     {
         FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, Player);
 
-        FieldManager.RemovePlayer(this, FieldPlayer);
-        GameServer.PlayerManager.RemovePlayer(FieldPlayer.Value);
+        FieldManager.RemovePlayer(this);
+        GameServer.PlayerManager.RemovePlayer(Player);
 
         Player.OnlineCTS.Cancel();
         Player.OnlineTimeThread = null;
+
+        Player.SavedCoord = Player.SafeBlock;
+        DatabaseManager.Characters.Update(Player);
 
         // if session is changing channels, dont send the logout message
         if (Player.IsChangingChannel)
@@ -91,10 +94,5 @@ public class GameSession : Session
         Player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedOff(Player));
 
         Player.UpdateBuddies();
-    }
-
-    public void ReleaseField(Player player)
-    {
-        FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, player);
     }
 }

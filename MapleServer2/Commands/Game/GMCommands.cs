@@ -56,7 +56,7 @@ public class SetJobCommand : InGameCommand
         byte awakened = trigger.Get<byte>("awakened");
 
         Player player = trigger.Session.Player;
-        IFieldObject<Player> fieldPlayer = trigger.Session.FieldPlayer;
+        IFieldObject<Player> fieldPlayer = trigger.Session.Player.FieldPlayer;
 
         long activeSkillTabId = player.ActiveSkillTabId;
         SkillTab skillTab = player.SkillTabs.First(tab => tab.TabId == activeSkillTabId);

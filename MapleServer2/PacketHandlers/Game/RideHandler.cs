@@ -71,10 +71,10 @@ public class RideHandler : GamePacketHandler
                 Uid = mountUid
             });
 
-        fieldMount.Value.Players[0] = session.FieldPlayer;
+        fieldMount.Value.Players[0] = session.Player.FieldPlayer;
         session.Player.Mount = fieldMount;
 
-        PacketWriter startPacket = MountPacket.StartRide(session.FieldPlayer);
+        PacketWriter startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
         session.FieldManager.BroadcastPacket(startPacket);
     }
 
@@ -84,7 +84,7 @@ public class RideHandler : GamePacketHandler
         bool forced = packet.ReadBool(); // Going into water without amphibious riding
 
         session.Player.Mount = null; // Remove mount from player
-        PacketWriter stopPacket = MountPacket.StopRide(session.FieldPlayer, forced);
+        PacketWriter stopPacket = MountPacket.StopRide(session.Player.FieldPlayer, forced);
         session.FieldManager.BroadcastPacket(stopPacket);
     }
 
@@ -98,7 +98,7 @@ public class RideHandler : GamePacketHandler
             return;
         }
 
-        PacketWriter changePacket = MountPacket.ChangeRide(session.FieldPlayer.ObjectId, mountId, mountUid);
+        PacketWriter changePacket = MountPacket.ChangeRide(session.Player.FieldPlayer.ObjectId, mountId, mountUid);
         session.FieldManager.BroadcastPacket(changePacket);
     }
 
@@ -123,9 +123,9 @@ public class RideHandler : GamePacketHandler
         }
 
         int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x == null);
-        otherPlayer.Value.Mount.Value.Players[index] = session.FieldPlayer;
+        otherPlayer.Value.Mount.Value.Players[index] = session.Player.FieldPlayer;
         session.Player.Mount = otherPlayer.Value.Mount;
-        session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.FieldPlayer.ObjectId, (byte) (index - 1)));
+        session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.Player.FieldPlayer.ObjectId, (byte) (index - 1)));
     }
 
     private static void HandleStopMultiPersonRide(GameSession session)
@@ -136,12 +136,12 @@ public class RideHandler : GamePacketHandler
             return;
         }
 
-        session.FieldManager.BroadcastPacket(MountPacket.StopTwoPersonRide(otherPlayer.ObjectId, session.FieldPlayer.ObjectId));
-        session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, otherPlayer.Coord, otherPlayer.Rotation));
+        session.FieldManager.BroadcastPacket(MountPacket.StopTwoPersonRide(otherPlayer.ObjectId, session.Player.FieldPlayer.ObjectId));
+        session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, otherPlayer.Coord, otherPlayer.Rotation));
         session.Player.Mount = null;
         if (otherPlayer.Value.Mount != null)
         {
-            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.FieldPlayer.ObjectId);
+            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.Player.FieldPlayer.ObjectId);
             otherPlayer.Value.Mount.Value.Players[index] = null;
         }
     }

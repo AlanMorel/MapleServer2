@@ -2,7 +2,6 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data;
-using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -34,15 +33,15 @@ public class QuitHandler : CommonPacketHandler
         switch (mode)
         {
             case QuitMode.ChangeCharacter:
-                if (session is GameSession)
+                if (session is GameSession gameSession)
                 {
-                    HandleChangeCharacter(session as GameSession);
+                    HandleChangeCharacter(gameSession);
                 }
                 break;
             case QuitMode.Quit:
-                if (session is GameSession)
+                if (session is GameSession gameSession2)
                 {
-                    HandleQuit(session as GameSession);
+                    HandleQuit(gameSession2);
                 }
                 session.Dispose();
                 break;
@@ -54,8 +53,8 @@ public class QuitHandler : CommonPacketHandler
 
     private void HandleChangeCharacter(GameSession session)
     {
-        session.FieldManager.RemovePlayer(session, session.FieldPlayer);
-        DatabaseManager.Characters.Update(session.Player);
+        session.FieldManager.RemovePlayer(session);
+
         AuthData authData = AuthStorage.GetData(session.Player.AccountId);
 
         session.Send(MigrationPacket.GameToLogin(LoginEndpoint, authData));
@@ -63,7 +62,6 @@ public class QuitHandler : CommonPacketHandler
 
     private static void HandleQuit(GameSession session)
     {
-        DatabaseManager.Characters.Update(session.Player);
         session.Disconnect();
     }
 }

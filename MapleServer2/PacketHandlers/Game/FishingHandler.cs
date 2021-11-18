@@ -88,8 +88,8 @@ public class FishingHandler : GamePacketHandler
             session.Send(FishingPacket.Notice((short) FishingNotice.MasteryTooLowForRod));
         }
 
-        int direction = Direction.GetClosestDirection(session.FieldPlayer.Rotation);
-        CoordF startCoord = Block.ClosestBlock(session.FieldPlayer.Coord);
+        int direction = Direction.GetClosestDirection(session.Player.FieldPlayer.Rotation);
+        CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
 
         List<MapBlock> fishingBlocks = CollectFishingBlocks(startCoord, direction, session.Player.MapId);
         if (fishingBlocks.Count == 0)
@@ -100,7 +100,7 @@ public class FishingHandler : GamePacketHandler
         session.Player.FishingRod = fishingRod;
 
         // Adding GuideObject
-        CoordF guideBlock = GetObjectBlock(fishingBlocks, session.FieldPlayer.Coord);
+        CoordF guideBlock = GetObjectBlock(fishingBlocks, session.Player.FieldPlayer.Coord);
         guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
         GuideObject guide = new(1, session.Player.CharacterId);
         IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
@@ -248,7 +248,7 @@ public class FishingHandler : GamePacketHandler
     {
         session.Send(FishingPacket.Stop());
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
-        session.FieldManager.RemoveGuide(session.FieldPlayer.Value.Guide);
+        session.FieldManager.RemoveGuide(session.Player.Guide);
         session.Player.Guide = null; // remove guide from player
     }
 

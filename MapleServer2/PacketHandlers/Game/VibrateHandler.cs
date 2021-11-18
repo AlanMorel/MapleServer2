@@ -30,6 +30,6 @@ public class VibrateHandler : GamePacketHandler
         }
 
         SkillCast skillCast = new(skillId, skillLevel, skillSN, session.ServerTick);
-        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, skillCast, session.FieldPlayer));
+        session.FieldManager.BroadcastPacket(VibratePacket.Vibrate(entityId, skillCast, session.Player.FieldPlayer));
     }
 }

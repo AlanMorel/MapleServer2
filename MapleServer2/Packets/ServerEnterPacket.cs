@@ -14,7 +14,7 @@ public static class ServerEnterPacket
         Wallet wallet = player.Wallet;
 
         PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_ENTER);
-        pWriter.WriteInt(session.FieldPlayer.ObjectId);
+        pWriter.WriteInt(player.FieldPlayer.ObjectId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteShort(player.ChannelId);
         pWriter.WriteLong(player.Levels.Exp);

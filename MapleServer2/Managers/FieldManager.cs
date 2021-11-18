@@ -338,12 +338,12 @@ public partial class FieldManager
 
     public IFieldActor<Player> RequestCharacter(Player player)
     {
-        if (player.Session?.FieldPlayer != null)
+        if (player.FieldPlayer != null)
         {
             // Bind existing character to this map.
             int objectId = Interlocked.Increment(ref Counter);
-            ((FieldActor<Player>) player.Session.FieldPlayer).ObjectId = objectId;
-            return player.Session.FieldPlayer;
+            ((FieldActor<Player>) player.FieldPlayer).ObjectId = objectId;
+            return player.FieldPlayer;
         }
 
         return WrapPlayer(player);
@@ -396,13 +396,15 @@ public partial class FieldManager
         return mob;
     }
 
-    public void AddPlayer(GameSession sender, IFieldActor<Player> player)
+    public void AddPlayer(GameSession sender)
     {
-        Debug.Assert(player.ObjectId > 0, "Player was added to field without initialized objectId.");
+        Player player = sender.Player;
+        Debug.Assert(player.FieldPlayer.ObjectId > 0, "Player was added to field without initialized objectId.");
 
-        player.Coord = player.Value.Coord;
-        player.Value.MapId = MapId;
-        // TODO: Determine new coordinates for player as well
+        player.MapId = MapId;
+        player.FieldPlayer.Coord = player.SavedCoord;
+        player.FieldPlayer.Rotation = player.SavedRotation;
+
         lock (Sessions)
         {
             Sessions.Add(sender);
@@ -411,40 +413,40 @@ public partial class FieldManager
         // TODO: Send the initialization state of the field
         foreach (IFieldActor<Player> existingPlayer in State.Players.Values)
         {
-            sender.Send(FieldPacket.AddPlayer(existingPlayer));
+            sender.Send(FieldPlayerPacket.AddPlayer(existingPlayer));
             sender.Send(FieldObjectPacket.LoadPlayer(existingPlayer));
         }
 
-        State.AddPlayer(player);
+        State.AddPlayer(player.FieldPlayer);
         // Broadcast new player to all players in map
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddPlayer(player));
-            session.Send(FieldObjectPacket.LoadPlayer(player));
+            session.Send(FieldPlayerPacket.AddPlayer(player.FieldPlayer));
+            session.Send(FieldObjectPacket.LoadPlayer(player.FieldPlayer));
         });
 
         foreach (IFieldObject<Item> existingItem in State.Items.Values)
         {
-            sender.Send(FieldPacket.AddItem(existingItem, 123456));
+            sender.Send(FieldItemPacket.AddItem(existingItem, 123456));
         }
         foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
         {
-            sender.Send(FieldPacket.AddNpc(existingNpc));
+            sender.Send(FieldNpcPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
         foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
         {
-            sender.Send(FieldPacket.AddMob(existingMob));
+            sender.Send(FieldNpcPacket.AddMob(existingMob));
             sender.Send(FieldObjectPacket.LoadMob(existingMob));
 
             // TODO: Determine if buffs are sent on Field Enter
         }
         foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
         {
-            sender.Send(FieldPacket.AddPortal(existingPortal));
+            sender.Send(FieldPortalPacket.AddPortal(existingPortal));
         }
 
-        if (player.Value.MapId == (int) Map.PrivateResidence && !player.Value.IsInDecorPlanner)
+        if (player.MapId == (int) Map.PrivateResidence && !player.IsInDecorPlanner)
         {
             // Send function cubes
             List<Cube> functionCubes = State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
@@ -511,29 +513,30 @@ public partial class FieldManager
             MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
         }
 
-        if (player.Value.OnlineTimeThread == null)
+        if (player.OnlineTimeThread == null)
         {
-            player.Value.OnlineTimeThread = player.Value.OnlineTimer();
+            player.OnlineTimeThread = player.OnlineTimer();
         }
     }
 
-    public void RemovePlayer(GameSession sender, IFieldObject<Player> player)
+    public void RemovePlayer(GameSession sender)
     {
+        Player player = sender.Player;
         lock (Sessions)
         {
             Sessions.Remove(sender);
         }
-        State.RemovePlayer(player.ObjectId);
-        player.Value.Triggers.Clear();
+        State.RemovePlayer(player.FieldPlayer.ObjectId);
+        player.Triggers.Clear();
 
         // Remove player
         Broadcast(session =>
         {
-            session.Send(FieldPacket.RemovePlayer(player));
-            session.Send(FieldObjectPacket.RemovePlayer(player));
+            session.Send(FieldPlayerPacket.RemovePlayer(player.FieldPlayer));
+            session.Send(FieldObjectPacket.RemovePlayer(player.FieldPlayer));
         });
 
-        ((FieldObject<Player>) player).ObjectId = -1; // Reset object id
+        ((FieldObject<Player>) player.FieldPlayer).ObjectId = -1; // Reset object id
     }
 
     public static bool IsPlayerInBox(MapTriggerBox box, IFieldObject<Player> player)
@@ -561,7 +564,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddNpc(fieldNpc));
+            session.Send(FieldNpcPacket.AddNpc(fieldNpc));
             session.Send(FieldObjectPacket.LoadNpc(fieldNpc));
         });
     }
@@ -588,7 +591,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddMob(fieldMob));
+            session.Send(FieldNpcPacket.AddMob(fieldMob));
             session.Send(FieldObjectPacket.LoadMob(fieldMob));
             for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
@@ -613,7 +616,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.RemoveMob(mob));
+            session.Send(FieldNpcPacket.RemoveMob(mob));
             session.Send(FieldObjectPacket.RemoveMob(mob));
         });
         return true;
@@ -654,13 +657,13 @@ public partial class FieldManager
     public void AddPortal(IFieldObject<Portal> portal)
     {
         State.AddPortal(portal);
-        BroadcastPacket(FieldPacket.AddPortal(portal));
+        BroadcastPacket(FieldPortalPacket.AddPortal(portal));
     }
 
     public void RemovePortal(IFieldObject<Portal> portal)
     {
         State.RemovePortal(portal.ObjectId);
-        BroadcastPacket(FieldPacket.RemovePortal(portal.Value));
+        BroadcastPacket(FieldPortalPacket.RemovePortal(portal.Value));
     }
 
     public void SendChat(Player player, string message, ChatType type)
@@ -671,13 +674,13 @@ public partial class FieldManager
     public void AddItem(GameSession sender, Item item)
     {
         FieldObject<Item> fieldItem = WrapObject(item);
-        fieldItem.Coord = sender.FieldPlayer.Coord;
+        fieldItem.Coord = sender.Player.FieldPlayer.Coord;
 
         State.AddItem(fieldItem);
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddItem(fieldItem, session.FieldPlayer.ObjectId));
+            session.Send(FieldItemPacket.AddItem(fieldItem, session.Player.FieldPlayer.ObjectId));
         });
     }
 
@@ -695,7 +698,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldPacket.AddItem(fieldItem, source, targetPlayer));
+            session.Send(FieldItemPacket.AddItem(fieldItem, source, targetPlayer));
         });
     }
 
@@ -799,15 +802,15 @@ public partial class FieldManager
                 {
                     mob.State = NpcState.Combat;
                     mob.Target = player;
+                    continue;
                 }
-                else
+
+                if (mob.State != NpcState.Combat)
                 {
-                    if (mob.State == NpcState.Combat)
-                    {
-                        mob.State = NpcState.Normal;
-                        mob.Target = null;
-                    }
+                    continue;
                 }
+                mob.State = NpcState.Normal;
+                mob.Target = null;
             }
         }
     }
@@ -827,17 +830,19 @@ public partial class FieldManager
             CoordS healingCoord = healingSpot.Value.Coord;
             foreach (IFieldActor<Player> player in State.Players.Values)
             {
-                if ((healingCoord - player.Coord.ToShort()).Length() < Block.BLOCK_SIZE * 2 && healingCoord.Z == player.Coord.ToShort().Z - 1) // 3x3x1 area
+                if ((healingCoord - player.Coord.ToShort()).Length() >= Block.BLOCK_SIZE * 2 || healingCoord.Z != player.Coord.ToShort().Z - 1)
                 {
-                    int healAmount = (int) (player.Value.Stats[StatId.Hp].Bonus * 0.03);
-                    Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
-
-                    player.Value.Session.Send(BuffPacket.SendBuff(0, status));
-                    BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
-
-                    player.Stats[StatId.Hp].Increase(healAmount);
-                    player.Value.Session.Send(StatPacket.UpdateStats(player, StatId.Hp));
+                    continue;
                 }
+
+                int healAmount = (int) (player.Value.Stats[StatId.Hp].Bonus * 0.03);
+                Status status = new(new(70000018, 1, 0, 1), player.ObjectId, healingSpot.ObjectId, 1);
+
+                player.Value.Session.Send(BuffPacket.SendBuff(0, status));
+                BroadcastPacket(SkillDamagePacket.Heal(status, healAmount));
+
+                player.Stats[StatId.Hp].Increase(healAmount);
+                player.Value.Session.Send(StatPacket.UpdateStats(player, StatId.Hp));
             }
         }
     }
@@ -880,15 +885,9 @@ public partial class FieldManager
         });
     }
 
-    public int Increment()
-    {
-        return Interlocked.Increment(ref PlayerCount);
-    }
+    public int Increment() => Interlocked.Increment(ref PlayerCount);
 
-    public int Decrement()
-    {
-        return Interlocked.Decrement(ref PlayerCount);
-    }
+    public int Decrement() => Interlocked.Decrement(ref PlayerCount);
 
     public void AddMapTimer(MapTimer timer)
     {

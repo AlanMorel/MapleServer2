@@ -21,15 +21,19 @@ public class RequestMoneyPickupHandler : GamePacketHandler
             int objectId = packet.ReadInt();
 
             bool foundItem = session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem);
-            if (foundItem && fieldItem.Value.Id >= 90000001 && fieldItem.Value.Id <= 90000003)
+            if (!foundItem || fieldItem.Value.Id is < 90000001 or > 90000003)
             {
-                session.Player.Wallet.Meso.Modify(fieldItem.Value.Amount);
-                if (session.FieldManager.RemoveItem(objectId, out Item item))
-                {
-                    session.FieldManager.BroadcastPacket(FieldPacket.PickupItem(objectId, item, session.FieldPlayer.ObjectId));
-                    session.FieldManager.BroadcastPacket(FieldPacket.RemoveItem(objectId));
-                }
+                continue;
             }
+
+            if (!session.FieldManager.RemoveItem(objectId, out Item item))
+            {
+                continue;
+            }
+
+            session.Player.Wallet.Meso.Modify(fieldItem.Value.Amount);
+            session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
+            session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
     }
 }
