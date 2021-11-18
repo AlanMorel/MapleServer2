@@ -86,7 +86,7 @@ public class UserChatHandler : GamePacketHandler
         if (superChatItem == null)
         {
             session.Player.SuperChat = 0;
-            session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
+            session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
             session.Send(ChatPacket.Error(session.Player, SystemNotice.InsufficientSuperChatThemes, ChatType.NoticeAlert));
             return;
         }
@@ -97,7 +97,7 @@ public class UserChatHandler : GamePacketHandler
         }
         MapleServer.BroadcastPacketAll(ChatPacket.Send(session.Player, message, type));
         session.Player.Inventory.ConsumeItem(session, superChatItem.Uid, 1);
-        session.Send(SuperChatPacket.Deselect(session.FieldPlayer));
+        session.Send(SuperChatPacket.Deselect(session.Player.FieldPlayer));
         session.Player.SuperChat = 0;
     }
 

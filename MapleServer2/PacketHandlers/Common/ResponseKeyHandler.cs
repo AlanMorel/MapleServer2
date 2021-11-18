@@ -87,7 +87,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial1();
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
         session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel());
         session.Send(ServerEnterPacket.Enter(session));
@@ -173,7 +173,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(FieldPacket.RequestEnter(session.FieldPlayer));
+        session.Send(RequestFieldEnterPacket.RequestEnter(session.Player.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)
@@ -231,17 +231,5 @@ public class ResponseKeyHandler : CommonPacketHandler
         {
             yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i));
         }
-    }
-
-    public static Task TimeSyncLoop(Session session)
-    {
-        return Task.Run(async () =>
-        {
-            while (session != null)
-            {
-                session.Send(TimeSyncPacket.Request());
-                await Task.Delay(1000);
-            }
-        });
     }
 }

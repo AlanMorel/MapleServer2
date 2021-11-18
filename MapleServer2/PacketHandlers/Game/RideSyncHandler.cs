@@ -33,7 +33,7 @@ public class RideSyncHandler : GamePacketHandler
             packet.ReadInt(); // ServerTicks
         }
 
-        PacketWriter syncPacket = SyncStatePacket.RideSync(session.FieldPlayer, syncStates);
+        PacketWriter syncPacket = SyncStatePacket.RideSync(session.Player.FieldPlayer, syncStates);
         session.FieldManager.BroadcastPacket(syncPacket, session);
         UserSyncHandler.UpdatePlayer(session, syncStates);
     }

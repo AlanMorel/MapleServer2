@@ -126,6 +126,6 @@ public class UgcHandler : GamePacketHandler
         session.Player.ProfileUrl = path;
         DatabaseManager.Characters.UpdateProfileUrl(session.Player.CharacterId, path);
 
-        session.FieldManager.BroadcastPacket(UgcPacket.SetProfilePictureURL(session.FieldPlayer.ObjectId, session.Player.CharacterId, path));
+        session.FieldManager.BroadcastPacket(UgcPacket.SetProfilePictureURL(session.Player.FieldPlayer.ObjectId, session.Player.CharacterId, path));
     }
 }

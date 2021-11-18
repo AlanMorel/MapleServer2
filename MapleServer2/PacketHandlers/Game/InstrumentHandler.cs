@@ -85,13 +85,13 @@ public class InstrumentHandler : GamePacketHandler
         InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.Player.FieldPlayer.ObjectId)
         {
             Improvise = true
         };
 
         session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
-        session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+        session.Player.Instrument.Coord = session.Player.FieldPlayer.Coord;
         session.FieldManager.AddInstrument(session.Player.Instrument);
         session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.Player.Instrument));
     }
@@ -100,7 +100,7 @@ public class InstrumentHandler : GamePacketHandler
     {
         int note = packet.ReadInt();
 
-        session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.FieldPlayer));
+        session.FieldManager.BroadcastPacket(InstrumentPacket.PlayNote(note, session.Player.FieldPlayer));
     }
 
     private static void HandleStopImprovise(GameSession session)
@@ -110,7 +110,7 @@ public class InstrumentHandler : GamePacketHandler
             return;
         }
 
-        session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.FieldPlayer));
+        session.FieldManager.BroadcastPacket(InstrumentPacket.StopImprovise(session.Player.FieldPlayer));
         session.FieldManager.RemoveInstrument(session.Player.Instrument);
         session.Player.Instrument = null;
     }
@@ -137,7 +137,7 @@ public class InstrumentHandler : GamePacketHandler
             return;
         }
 
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
         {
             InstrumentTick = session.ServerTick,
             Score = score,
@@ -146,7 +146,7 @@ public class InstrumentHandler : GamePacketHandler
 
         score.PlayCount -= 1;
         session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
-        session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+        session.Player.Instrument.Coord = session.Player.FieldPlayer.Coord;
         session.FieldManager.AddInstrument(session.Player.Instrument);
         session.FieldManager.BroadcastPacket(InstrumentPacket.PlayScore(session.Player.Instrument));
         session.Send(InstrumentPacket.UpdateScoreUses(scoreItemUid, score.PlayCount));
@@ -214,7 +214,7 @@ public class InstrumentHandler : GamePacketHandler
         Item instrumentItem = session.Player.Inventory.Items[instrumentItemUid];
         InsturmentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
         {
             Score = score,
             Ensemble = true,
@@ -222,7 +222,7 @@ public class InstrumentHandler : GamePacketHandler
         };
 
         session.Player.Instrument = session.FieldManager.RequestFieldObject(instrument);
-        session.Player.Instrument.Coord = session.FieldPlayer.Coord;
+        session.Player.Instrument.Coord = session.Player.FieldPlayer.Coord;
 
         if (session.Player != party.Leader)
         {
@@ -261,7 +261,7 @@ public class InstrumentHandler : GamePacketHandler
 
     private static void HandleFireworks(GameSession session)
     {
-        session.Send(InstrumentPacket.Fireworks(session.FieldPlayer.ObjectId));
+        session.Send(InstrumentPacket.Fireworks(session.Player.FieldPlayer.ObjectId));
     }
 
     private static void HandleAudienceEmote(PacketReader packet)

@@ -39,19 +39,19 @@ public class BuildModeHandler : GamePacketHandler
 
     private static void HandleStop(GameSession session)
     {
-        if (session.FieldPlayer.Value.Guide == null)
+        if (session.Player.Guide == null)
         {
             return;
         }
-        session.Send(BuildModePacket.Use(session.FieldPlayer, false));
-        session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.FieldPlayer.Value.Guide));
-        session.FieldManager.RemoveGuide(session.FieldPlayer.Value.Guide);
+        session.Send(BuildModePacket.Use(session.Player.FieldPlayer, false));
+        session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
+        session.FieldManager.RemoveGuide(session.Player.Guide);
         session.Player.Guide = null; // remove guide from player
     }
 
     private static void HandleStart(GameSession session, PacketReader packet)
     {
-        if (session.FieldPlayer.Value.Guide != null)
+        if (session.Player.Guide != null)
         {
             return;
         }
@@ -61,7 +61,7 @@ public class BuildModeHandler : GamePacketHandler
         long furnishingItemUid = packet.ReadLong();
 
         // Add Guide Object
-        CoordF startCoord = Block.ClosestBlock(session.FieldPlayer.Coord);
+        CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
         startCoord.Z += Block.BLOCK_SIZE;
         GuideObject guide = new(0, session.Player.CharacterId)
         {
@@ -72,6 +72,6 @@ public class BuildModeHandler : GamePacketHandler
         session.FieldManager.AddGuide(fieldGuide);
 
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.FieldPlayer, true, furnishingItemId, furnishingItemUid));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, true, furnishingItemId, furnishingItemUid));
     }
 }

@@ -21,7 +21,7 @@ public class FallDamageHandler : GamePacketHandler
             // TODO: Check if player has Safe ride enabled
             if (session.Player.Mount != null)
             {
-                session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.FieldPlayer, false));
+                session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.Player.FieldPlayer, false));
             }
 
             session.Player.FallDamage();

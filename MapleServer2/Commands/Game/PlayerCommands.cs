@@ -175,9 +175,9 @@ public class SkillCommand : InGameCommand
             return;
         }
 
-        SkillCast skillCast = new(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.FieldPlayer.ObjectId, trigger.Session.ClientTick);
+        SkillCast skillCast = new(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.ClientTick);
         CoordF empty = CoordF.From(0, 0, 0);
-        IFieldObject<Player> player = trigger.Session.FieldPlayer;
+        IFieldObject<Player> player = trigger.Session.Player.FieldPlayer;
 
         trigger.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, player.Coord, empty, empty));
     }
@@ -218,7 +218,7 @@ public class BuffCommand : InGameCommand
         SkillCast skillCast = new(id, level);
         if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() || skillCast.IsHealFromBuff())
         {
-            Status status = new(skillCast, trigger.Session.FieldPlayer.ObjectId, trigger.Session.FieldPlayer.ObjectId, stacks);
+            Status status = new(skillCast, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.Player.FieldPlayer.ObjectId, stacks);
             StatusHandler.Handle(trigger.Session, status);
             return;
         }

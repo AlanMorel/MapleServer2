@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Enums;
-using Maple2Storage.Types;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -9,12 +8,6 @@ public partial class FieldManager
 {
     private partial class Character : FieldActor<Player>
     {
-        public override CoordF Coord
-        {
-            get => Value.Coord;
-            set => Value.Coord = value;
-        }
-
         public override Stats Stats
         {
             get => Value.Stats;

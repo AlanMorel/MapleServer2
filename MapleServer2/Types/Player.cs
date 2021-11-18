@@ -49,7 +49,8 @@ public class Player
 
     // Mutable Values
     public Levels Levels { get; set; }
-    public CoordF Coord { get; set; }
+    public CoordF SavedCoord { get; set; }
+    public CoordF SavedRotation { get; private set; }
     public int MapId { get; set; }
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
@@ -144,6 +145,8 @@ public class Player
 
     public List<PlayerTrigger> Triggers = new();
 
+    public IFieldActor<Player> FieldPlayer;
+
     public Player() { }
 
     // Initializes all values to be saved into the database
@@ -171,7 +174,7 @@ public class Player
             new(MasteryType.PetTaming)
         });
         MapId = JobMetadataStorage.GetStartMapId((int) job);
-        Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
+        SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(10, 10, 10, 10, 500, 10);
         Motto = "Motto";
         ProfileUrl = "";
@@ -250,7 +253,7 @@ public class Player
         SetCoords(mapId, coord, rotation);
 
         DatabaseManager.Characters.Update(this);
-        Session.Send(FieldPacket.RequestEnter(Session.FieldPlayer));
+        Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
@@ -258,7 +261,7 @@ public class Player
         UpdateCoords(mapId, instanceId, coord, rotation);
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
-        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+        IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         AuthData authTokens = AuthStorage.GetData(AccountId);
         authTokens.Player.IsChangingChannel = true;
@@ -275,19 +278,19 @@ public class Player
         }
 
         MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-        if (spawn == null)
+        if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
             return;
         }
-        if (coord == default)
+        if (coord is null)
         {
-            Session.FieldPlayer.Coord = spawn.Coord.ToFloat();
+            SavedCoord = spawn.Coord.ToFloat();
             SafeBlock = spawn.Coord.ToFloat();
         }
-        if (rotation == default)
+        if (rotation is null)
         {
-            Session.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
+            SavedRotation = spawn.Rotation.ToFloat();
         }
     }
 
@@ -295,15 +298,21 @@ public class Player
     {
         if (MapEntityStorage.HasSafePortal(MapId))
         {
-            ReturnCoord = Session.FieldPlayer.Coord;
+            ReturnCoord = FieldPlayer.Coord;
             ReturnMapId = MapId;
         }
-        if (coord is not null && rotation is not null)
+
+        if (coord is not null)
         {
-            Session.FieldPlayer.Coord = (CoordF) coord;
-            Session.FieldPlayer.Rotation = (CoordF) rotation;
+            SavedCoord = (CoordF) coord;
             SafeBlock = (CoordF) coord;
         }
+
+        if (rotation is not null)
+        {
+            SavedRotation = (CoordF) rotation;
+        }
+
         MapId = mapId;
 
         if (instanceId != 0)
@@ -319,16 +328,12 @@ public class Player
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
     {
-        switch (tab)
+        return tab switch
         {
-            case InventoryTab.Gear:
-                return Inventory.Equips;
-            case InventoryTab.Outfit:
-                return Inventory.Cosmetics;
-            default:
-                break;
-        }
-        return null;
+            InventoryTab.Gear => Inventory.Equips,
+            InventoryTab.Outfit => Inventory.Cosmetics,
+            _ => null
+        };
     }
 
     public Item GetEquippedItem(long itemUid)
@@ -427,8 +432,8 @@ public class Player
     {
         long currentHp = Stats[StatId.Hp].TotalLong;
         int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
-        Session.FieldPlayer.ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, StatId.Hp));
-        Session.Send(FallDamagePacket.FallDamage(Session.FieldPlayer.ObjectId, fallDamage));
+        FieldPlayer.ConsumeHp(fallDamage);
+        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatId.Hp));
+        Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
 }

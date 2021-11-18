@@ -2,7 +2,6 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
-using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 
@@ -206,12 +205,12 @@ public static class ResponseCubePacket
         return pWriter;
     }
 
-    public static PacketWriter Pickup(GameSession session, int weaponId, CoordB coords)
+    public static PacketWriter Pickup(IFieldActor<Player> fieldPlayer, int weaponId, CoordB coords)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
         pWriter.Write(ResponseCubePacketMode.Pickup);
         pWriter.WriteZero(1);
-        pWriter.WriteInt(session.FieldPlayer.ObjectId);
+        pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.Write(coords);
         pWriter.WriteZero(1);
         pWriter.WriteInt(weaponId);

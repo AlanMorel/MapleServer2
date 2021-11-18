@@ -129,11 +129,11 @@ public class GotoPlayerCommand : InGameCommand
             trigger.Session.SendNotice($"Couldn't find player with name: {name}!");
             return;
         }
-        IFieldObject<Player> fieldPlayer = target.Session.FieldPlayer;
+        IFieldObject<Player> fieldPlayer = target.Session.Player.FieldPlayer;
 
         if (target.MapId == trigger.Session.Player.MapId && target.InstanceId == trigger.Session.Player.InstanceId)
         {
-            trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.FieldPlayer, fieldPlayer.Coord, fieldPlayer.Rotation));
+            trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, fieldPlayer.Coord, fieldPlayer.Rotation));
             return;
         }
         trigger.Session.Player.Warp(target.MapId, fieldPlayer.Coord, instanceId: target.InstanceId);
@@ -161,10 +161,10 @@ public class GotoCoordCommand : InGameCommand
 
         if (coordF == default)
         {
-            trigger.Session.SendNotice(trigger.Session.FieldPlayer.Coord.ToString());
+            trigger.Session.SendNotice(trigger.Session.Player.FieldPlayer.Coord.ToString());
             return;
         }
-        trigger.Session.FieldPlayer.Coord = coordF;
-        trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.FieldPlayer, coordF, trigger.Session.FieldPlayer.Rotation));
+        trigger.Session.Player.FieldPlayer.Coord = coordF;
+        trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, coordF, trigger.Session.Player.FieldPlayer.Rotation));
     }
 }

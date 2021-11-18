@@ -274,7 +274,7 @@ public class NpcTalkHandler : GamePacketHandler
                 session.Send(NpcTalkPacket.Action(ActionType.OpenWindow, "BeautyShopDialog", "hair,styleSave"));
                 break;
         }
-        session.Send(UserMoveByPortalPacket.Move(session.FieldPlayer, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
+        session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, portal.Coord.ToFloat(), portal.Rotation.ToFloat()));
     }
 
     private static DialogType GetDialogType(ScriptMetadata scriptMetadata, NpcTalk npcTalk, bool hasNextScript)
