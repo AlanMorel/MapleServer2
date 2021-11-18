@@ -9,6 +9,7 @@ namespace GameDataParser.Parsers;
 public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
 {
     public UgcDesignParser(MetadataResources resources) : base(resources, "ugc-design") { }
+
     protected override List<UgcDesignMetadata> Parse()
     {
         List<UgcDesignMetadata> metadatas = new();
