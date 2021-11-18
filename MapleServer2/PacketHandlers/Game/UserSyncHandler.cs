@@ -88,12 +88,12 @@ public class UserSyncHandler : GamePacketHandler
         {
             return true;
         }
-        
+
         if (coord.Y > higherBoundY || coord.Y < lowerBoundY)
         {
             return true;
         }
-        
+
         return coord.X > higherBoundX || coord.X < lowerBoundX;
     }
 
