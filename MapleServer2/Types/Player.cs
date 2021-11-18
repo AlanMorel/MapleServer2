@@ -50,6 +50,7 @@ public class Player
     // Mutable Values
     public Levels Levels { get; set; }
     public CoordF Coord { get; set; }
+    public CoordF Rotation { get; private set; }
     public int MapId { get; set; }
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
@@ -275,19 +276,19 @@ public class Player
         }
 
         MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-        if (spawn == null)
+        if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
             return;
         }
-        if (coord == default)
+        if (coord is null)
         {
-            Session.FieldPlayer.Coord = spawn.Coord.ToFloat();
+            Coord = spawn.Coord.ToFloat();
             SafeBlock = spawn.Coord.ToFloat();
         }
-        if (rotation == default)
+        if (rotation is null)
         {
-            Session.FieldPlayer.Rotation = spawn.Rotation.ToFloat();
+            Rotation = spawn.Rotation.ToFloat();
         }
     }
 
@@ -300,8 +301,8 @@ public class Player
         }
         if (coord is not null && rotation is not null)
         {
-            Session.FieldPlayer.Coord = (CoordF) coord;
-            Session.FieldPlayer.Rotation = (CoordF) rotation;
+            Coord = (CoordF) coord;
+            Rotation = (CoordF) rotation;
             SafeBlock = (CoordF) coord;
         }
         MapId = mapId;

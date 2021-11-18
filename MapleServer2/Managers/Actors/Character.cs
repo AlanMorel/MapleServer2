@@ -9,11 +9,7 @@ public partial class FieldManager
 {
     private partial class Character : FieldActor<Player>
     {
-        public override CoordF Coord
-        {
-            get => Value.Coord;
-            set => Value.Coord = value;
-        }
+        public new CoordF Coord;
 
         public override Stats Stats
         {

@@ -401,6 +401,7 @@ public partial class FieldManager
         Debug.Assert(player.ObjectId > 0, "Player was added to field without initialized objectId.");
 
         player.Coord = player.Value.Coord;
+        player.Rotation = player.Value.Rotation;
         player.Value.MapId = MapId;
         // TODO: Determine new coordinates for player as well
         lock (Sessions)
