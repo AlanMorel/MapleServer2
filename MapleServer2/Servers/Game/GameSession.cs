@@ -77,7 +77,7 @@ public class GameSession : Session
 
         Player.OnlineCTS.Cancel();
         Player.OnlineTimeThread = null;
-        
+
         Player.SavedCoord = Player.SafeBlock;
         DatabaseManager.Characters.Update(Player);
 

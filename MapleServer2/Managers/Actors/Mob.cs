@@ -48,11 +48,11 @@ public partial class FieldManager
             }
         }
 
-        private Task StartSkillTimer(int CooldownMilliseconds)
+        private Task StartSkillTimer(int cooldownMilliseconds)
         {
             return Task.Run(async () =>
             {
-                await Task.Delay(CooldownMilliseconds);
+                await Task.Delay(cooldownMilliseconds);
 
                 OnCooldown = false;
             });
