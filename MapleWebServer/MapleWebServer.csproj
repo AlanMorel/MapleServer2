@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Maple2Storage\Maple2Storage.csproj" />
+    <ProjectReference Include="..\MapleServer2\MapleServer2.csproj" />
   </ItemGroup>
 
 </Project>

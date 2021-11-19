@@ -384,6 +384,7 @@ CREATE TABLE `items`
     `transparency_badge_bools` text,
     `unlock_time`              bigint   NOT NULL,
     `blackmarket_category`     text,
+    `ugc_uid`                  bigint   NULL,
     PRIMARY KEY (`uid`),
     KEY                        `ix_items_bankinventoryid` (`bank_inventory_id`),
     KEY                        `ix_items_guildid` (`guild_id`),
@@ -391,12 +392,14 @@ CREATE TABLE `items`
     KEY                        `ix_items_inventoryid` (`inventory_id`),
     KEY                        `ix_items_mailid` (`mail_id`),
     KEY                        `ix_items_ownercharacterid` (`owner_character_id`),
+    KEY                        `ix_items_ugcuid` (`ugc_uid`),
     CONSTRAINT `fk_items_bankinventories_bankinventoryid` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_characters_ownercharacterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_inventories_inventoryid` FOREIGN KEY (`inventory_id`) REFERENCES `inventories` (`id`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT
+    CONSTRAINT `fk_items_mails_mailid` FOREIGN KEY (`mail_id`) REFERENCES `mails` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_items_ugc_ugcuid` FOREIGN KEY (`ugc_uid`) REFERENCES `ugc` (`uid`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -558,6 +561,7 @@ CREATE TABLE `black_market_listings`
 --
 -- Table structure for table `meso_market_listings`
 --
+
 DROP TABLE IF EXISTS `meso_market_listings`;
 CREATE TABLE `meso_market_listings`
 (
@@ -573,6 +577,28 @@ CREATE TABLE `meso_market_listings`
     KEY                  `ix_meso_market_listings_characterid` (`owner_character_id`),
     CONSTRAINT `fk_meso_market_account_accountid` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_meso_market_characters_characterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `meso_market_listings`
+--
+
+DROP TABLE IF EXISTS `ugc`;
+CREATE TABLE `ugc` (
+  `uid`             bigint NOT NULL AUTO_INCREMENT,
+  `guid`            varchar(100) NOT NULL,
+  `name`            varchar(100) NOT NULL,
+  `url`             varchar(200) NOT NULL,
+  `character_id`    bigint NOT NULL,
+  `character_name`  varchar(100) NOT NULL,
+  `account_id`      bigint NOT NULL,
+  `creation_time`   bigint NOT NULL,
+  `sale_price`      bigint NOT NULL,
+  PRIMARY KEY (`uid`),
+  KEY `ix_ugc_account_id` (`account_id`),
+  KEY `ix_ugc_character_id` (`character_id`), 
+  CONSTRAINT `ugc_FK` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`),
+  CONSTRAINT `ugc_FK_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

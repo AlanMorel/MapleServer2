@@ -59,7 +59,8 @@ public class DatabaseItem : DatabaseTable
             transfer_flag = item.TransferFlag,
             blackmarket_category = item.BlackMarketCategory,
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
-            unlock_time = item.UnlockTime
+            unlock_time = item.UnlockTime,
+            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid,
         });
     }
 
@@ -67,7 +68,19 @@ public class DatabaseItem : DatabaseTable
     {
         dynamic result = QueryFactory.Query(TableName).Where("uid", uid).FirstOrDefault();
 
-        if (result == null)
+        if (result is null)
+        {
+            return null;
+        }
+
+        return ReadItem(result);
+    }
+
+    public Item FindByUGCUid(long ugcUid)
+    {
+        dynamic result = QueryFactory.Query(TableName).Where("ugc_uid", ugcUid).FirstOrDefault();
+
+        if (result is null)
         {
             return null;
         }
@@ -161,7 +174,8 @@ public class DatabaseItem : DatabaseTable
             times_attributes_changed = item.TimesAttributesChanged,
             transfer_flag = item.TransferFlag,
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
-            unlock_time = item.UnlockTime
+            unlock_time = item.UnlockTime,
+            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid
         });
     }
 
@@ -214,7 +228,8 @@ public class DatabaseItem : DatabaseTable
             BankInventoryId = data.bank_inventory_id ?? 0,
             BlackMarketCategory = data.blackmarket_category,
             MailId = data.mail_id ?? 0,
-            HomeId = data.home_id ?? 0
+            HomeId = data.home_id ?? 0,
+            UGC = data.ugc_uid == null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid)
         };
     }
 }

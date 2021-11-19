@@ -50,6 +50,9 @@ public class LapenshardHandler : GamePacketHandler
             case LapenshardMode.Fusion:
                 HandleFusion(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
     }
 
