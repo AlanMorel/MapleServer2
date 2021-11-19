@@ -146,8 +146,8 @@ public class RequestItemUseHandler : GamePacketHandler
 
         string password = packet.ReadUnicodeString();
         int duration = item.Function.OpenMassiveEvent.Duration + Environment.TickCount;
-        CoordF portalCoord = session.Player.Coord;
-        CoordF portalRotation = session.Player.Rotation;
+        CoordF portalCoord = session.Player.FieldPlayer.Coord;
+        CoordF portalRotation = session.Player.FieldPlayer.Rotation;
 
         session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.OpenMassiveEvent.FieldId));
         //  session.FieldManager.BroadcastPacket(FieldPacket.AddPortal()
@@ -386,7 +386,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
         int balloonUid = GuidGenerator.Int();
         string id = "AdBalloon_" + balloonUid.ToString();
-        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
+        AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
         session.FieldManager.State.AddInteractObject(balloon);
         session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
@@ -415,7 +415,7 @@ public class RequestItemUseHandler : GamePacketHandler
             return;
         }
 
-        session.Send(CouponUsePacket.BeautyCoupon(session.FieldPlayer, item.Uid));
+        session.Send(CouponUsePacket.BeautyCoupon(session.Player.FieldPlayer, item.Uid));
     }
 
     public static void HandleRepackingScroll(GameSession session, Item item)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Maple2Storage.Types.Metadata;
 
 namespace MapleServer2.Types;
 
@@ -6,11 +7,11 @@ namespace MapleServer2.Types;
 public class FieldState
 {
     public readonly ConcurrentDictionary<int, IFieldObject<Item>> Items;
-    public readonly ConcurrentDictionary<int, IFieldObject<Player>> Players;
-    public readonly ConcurrentDictionary<int, IFieldObject<Npc>> Npcs;
     public readonly ConcurrentDictionary<int, IFieldObject<Portal>> Portals;
     public readonly ConcurrentDictionary<int, IFieldObject<MobSpawn>> MobSpawns;
-    public readonly ConcurrentDictionary<int, IFieldObject<Mob>> Mobs;
+    public readonly ConcurrentDictionary<int, IFieldActor<Player>> Players;
+    public readonly ConcurrentDictionary<int, IFieldActor<NpcMetadata>> Npcs;
+    public readonly ConcurrentDictionary<int, IFieldActor<NpcMetadata>> Mobs;
     public readonly ConcurrentDictionary<int, IFieldObject<GuideObject>> Guide;
     public readonly ConcurrentDictionary<int, IFieldObject<Cube>> Cubes;
     public readonly ConcurrentDictionary<int, IFieldObject<HealingSpot>> HealingSpots;
@@ -72,7 +73,7 @@ public class FieldState
         return result;
     }
 
-    public void AddPlayer(IFieldObject<Player> player)
+    public void AddPlayer(IFieldActor<Player> player)
     {
         Players[player.ObjectId] = player;
     }
@@ -82,7 +83,7 @@ public class FieldState
         return Players.Remove(objectId, out _);
     }
 
-    public void AddNpc(IFieldObject<Npc> npc)
+    public void AddNpc(IFieldActor<NpcMetadata> npc)
     {
         Npcs[npc.ObjectId] = npc;
     }
@@ -147,7 +148,7 @@ public class FieldState
         return MobSpawns.Remove(objectId, out _);
     }
 
-    public void AddMob(IFieldObject<Mob> mob)
+    public void AddMob(IFieldActor<NpcMetadata> mob)
     {
         Mobs[mob.ObjectId] = mob;
     }

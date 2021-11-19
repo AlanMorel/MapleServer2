@@ -1,8 +1,8 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
@@ -41,15 +41,15 @@ public class StatPointHandler : GamePacketHandler
         byte statTypeIndex = packet.ReadByte();
 
         session.Player.StatPointDistribution.AddPoint(statTypeIndex); // Deprecate?
-        session.Player.Stats.Allocate((PlayerStatId) statTypeIndex);
+        session.Player.Stats.Allocate((StatId) statTypeIndex);
         session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 
     private static void HandleResetStatDistribution(GameSession session)
     {
         session.Player.Stats.ResetAllocations(session.Player.StatPointDistribution);
         session.Send(StatPointPacket.WriteStatPointDistribution(session.Player)); // Deprecate?
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 }

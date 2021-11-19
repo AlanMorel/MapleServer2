@@ -163,7 +163,7 @@ public class RequestCubeHandler : GamePacketHandler
     {
         int itemId = packet.ReadInt();
         long itemUid = packet.ReadLong();
-        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadFurnishingItem(session.FieldPlayer, itemId, itemUid));
+        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadFurnishingItem(session.Player.FieldPlayer, itemId, itemUid));
     }
 
     private static void HandleBuyPlot(GameSession session, PacketReader packet)
@@ -223,7 +223,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         session.FieldManager.BroadcastPacket(ResponseCubePacket.PurchasePlot(player.Account.Home.PlotNumber, 0, player.Account.Home.Expiration));
         session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePlotFurnishing(player));
-        session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
+        session.Send(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
         session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player), session);
         session.Send(ResponseCubePacket.CompletePurchase());
     }
@@ -253,12 +253,12 @@ public class RequestCubeHandler : GamePacketHandler
         IEnumerable<IFieldObject<Cube>> cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == plotNumber);
         foreach (IFieldObject<Cube> cube in cubes)
         {
-            RemoveCube(session, session.FieldPlayer, cube, home);
+            RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
 
         session.Send(ResponseCubePacket.ForfeitPlot(plotNumber, apartmentNumber, TimeInfo.Now()));
         session.Send(ResponseCubePacket.RemovePlot(plotNumber, apartmentNumber));
-        session.Send(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
+        session.Send(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
         session.Send(ResponseCubePacket.RemovePlot2(plotMapId, plotNumber));
         // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
     }
@@ -281,7 +281,7 @@ public class RequestCubeHandler : GamePacketHandler
         int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
         if (plotNumber <= 0)
         {
-            session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer.ObjectId));
+            session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
@@ -290,7 +290,7 @@ public class RequestCubeHandler : GamePacketHandler
         int size = mapIsHome ? home.Size : plot.Area / 2;
         if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || mapIsHome && IsCoordOutsideSizeLimit(coord, size))
         {
-            session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer.ObjectId));
+            session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
@@ -315,7 +315,7 @@ public class RequestCubeHandler : GamePacketHandler
             fieldCube.Rotation = rotation;
             home.DecorPlannerInventory.Add(cube.Uid, cube);
 
-            session.FieldManager.AddCube(fieldCube, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId);
+            session.FieldManager.AddCube(fieldCube, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId);
             return;
         }
 
@@ -357,7 +357,7 @@ public class RequestCubeHandler : GamePacketHandler
         fieldCube = AddCube(session, item, itemId, rotation, coordF, plotNumber, homeOwner, home);
 
         homeOwner.Value.Session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
-        session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+        session.FieldManager.AddCube(fieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
 
         AddFunctionCube(session, coord, fieldCube);
     }
@@ -416,7 +416,7 @@ public class RequestCubeHandler : GamePacketHandler
         Dictionary<long, Cube> inventory = player.IsInDecorPlanner ? home.DecorPlannerInventory : home.FurnishingInventory;
         inventory[cube.Value.Uid].Rotation = cube.Rotation;
 
-        session.Send(ResponseCubePacket.RotateCube(session.FieldPlayer, cube));
+        session.Send(ResponseCubePacket.RotateCube(session.Player.FieldPlayer, cube));
     }
 
     private static void HandleReplaceCube(GameSession session, PacketReader packet)
@@ -438,7 +438,7 @@ public class RequestCubeHandler : GamePacketHandler
         int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
         if (plotNumber <= 0)
         {
-            session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer.ObjectId));
+            session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
@@ -454,13 +454,13 @@ public class RequestCubeHandler : GamePacketHandler
         bool isCubeSolid = ItemMetadataStorage.GetIsCubeSolid(replacementItemId);
         if (!isCubeSolid && coord.Z == groundHeight?.Z)
         {
-            session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer.ObjectId));
+            session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
         if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || mapIsHome && IsCoordOutsideSizeLimit(coord, size))
         {
-            session.Send(ResponseCubePacket.CantPlaceHere(session.FieldPlayer.ObjectId));
+            session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
@@ -490,7 +490,7 @@ public class RequestCubeHandler : GamePacketHandler
             session.FieldManager.State.RemoveCube(oldFieldCube.ObjectId);
 
             home.DecorPlannerInventory.Add(cube.Uid, cube);
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, newFieldCube, false));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, newFieldCube, false));
             session.FieldManager.State.AddCube(newFieldCube);
             return;
         }
@@ -545,8 +545,8 @@ public class RequestCubeHandler : GamePacketHandler
         {
             _ = home.AddWarehouseItem(homeOwner.Value.Session, oldFieldCube.Value.Item.Id, 1, oldFieldCube.Value.Item);
         }
-        session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(homeOwner.ObjectId, session.FieldPlayer.ObjectId, newFieldCube, false));
-        session.FieldManager.AddCube(newFieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+        session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId, newFieldCube, false));
+        session.FieldManager.AddCube(newFieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
 
         AddFunctionCube(session, coord, newFieldCube);
     }
@@ -561,15 +561,15 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        session.Send(ResponseCubePacket.Pickup(session, weaponId, coords));
-        session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, true));
+        session.Send(ResponseCubePacket.Pickup(session.Player.FieldPlayer, weaponId, coords));
+        session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.Player.FieldPlayer, true));
     }
 
     private static void HandleDrop(GameSession session)
     {
         // Drop item then set battle state to false
-        session.Send(ResponseCubePacket.Drop(session.FieldPlayer));
-        session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.FieldPlayer, false));
+        session.Send(ResponseCubePacket.Drop(session.Player.FieldPlayer));
+        session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.Player.FieldPlayer, false));
     }
 
     private static void HandleHomeName(GameSession session, PacketReader packet)
@@ -586,7 +586,7 @@ public class RequestCubeHandler : GamePacketHandler
         home.Name = name;
         GameServer.HomeManager.GetHomeById(home.Id).Name = name;
         session.FieldManager.BroadcastPacket(ResponseCubePacket.HomeName(player));
-        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
+        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
     }
 
     private static void HandleHomePassword(GameSession session, PacketReader packet)
@@ -603,7 +603,7 @@ public class RequestCubeHandler : GamePacketHandler
         home.Password = password;
         GameServer.HomeManager.GetHomeById(home.Id).Password = password;
         session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangePassword());
-        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.FieldPlayer.ObjectId, session.Player.Account.Home));
+        session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
     }
 
     private static void HandleNominateHouse(GameSession session)
@@ -647,7 +647,7 @@ public class RequestCubeHandler : GamePacketHandler
         }
         foreach (IFieldObject<Cube> cube in session.FieldManager.State.Cubes.Values)
         {
-            RemoveCube(session, session.FieldPlayer, cube, home);
+            RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
         session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
     }
@@ -744,7 +744,7 @@ public class RequestCubeHandler : GamePacketHandler
             fieldCube.Rotation = layoutCube.Rotation;
             home.DecorPlannerInventory.Add(layoutCube.Uid, layoutCube);
 
-            session.FieldManager.AddCube(fieldCube, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId);
+            session.FieldManager.AddCube(fieldCube, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId);
         }
 
         session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
@@ -775,13 +775,13 @@ public class RequestCubeHandler : GamePacketHandler
         foreach (Cube cube in layout.Cubes)
         {
             Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Item.Id);
-            IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.FieldPlayer, home);
+            IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.Player.FieldPlayer, home);
             session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
             if (fieldCube.Coord.Z == 0)
             {
-                session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId, fieldCube, false));
+                session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, fieldCube, false));
             }
-            session.FieldManager.AddCube(fieldCube, session.FieldPlayer.ObjectId, session.FieldPlayer.ObjectId);
+            session.FieldManager.AddCube(fieldCube, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId);
         }
 
         session.Send(WarehouseInventoryPacket.Count(home.WarehouseInventory.Count));
@@ -1045,7 +1045,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        List<IFieldObject<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
+        List<IFieldActor<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
         foreach (IFieldObject<Player> fieldPlayer in players)
         {
             fieldPlayer.Value.Session.Send(ResponseCubePacket.KickEveryone());
@@ -1311,7 +1311,7 @@ public class RequestCubeHandler : GamePacketHandler
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
-                        RemoveCube(session, session.FieldPlayer, cube, home);
+                        RemoveCube(session, session.Player.FieldPlayer, cube, home);
                     }
                 }
             }
@@ -1324,7 +1324,7 @@ public class RequestCubeHandler : GamePacketHandler
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
-                        RemoveCube(session, session.FieldPlayer, cube, home);
+                        RemoveCube(session, session.Player.FieldPlayer, cube, home);
                     }
                 }
             }
@@ -1340,7 +1340,7 @@ public class RequestCubeHandler : GamePacketHandler
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
-                        RemoveCube(session, session.FieldPlayer, cube, home);
+                        RemoveCube(session, session.Player.FieldPlayer, cube, home);
                     }
                 }
             }
@@ -1363,7 +1363,7 @@ public class RequestCubeHandler : GamePacketHandler
             homeOwner.Value.Session.Send(WarehouseInventoryPacket.Load(cube.Item, warehouseItems.Values.Count));
             homeOwner.Value.Session.Send(WarehouseInventoryPacket.GainItemMessage(cube.Item, 1));
             homeOwner.Value.Session.Send(WarehouseInventoryPacket.Count(warehouseItems.Values.Count + 1));
-            session.FieldManager.BroadcastPacket(ResponseCubePacket.PlaceFurnishing(fieldCube, homeOwner.ObjectId, session.FieldPlayer.ObjectId, true));
+            session.FieldManager.BroadcastPacket(ResponseCubePacket.PlaceFurnishing(fieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId, true));
             homeOwner.Value.Session.Send(WarehouseInventoryPacket.Remove(cube.Item.Uid));
         }
         else
@@ -1397,7 +1397,7 @@ public class RequestCubeHandler : GamePacketHandler
         if (session.Player.IsInDecorPlanner)
         {
             home.DecorPlannerInventory.Remove(cube.Value.Uid);
-            session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+            session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
             return;
         }
 
@@ -1406,7 +1406,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         DatabaseManager.Cubes.Delete(cube.Value.Uid);
         _ = home.AddWarehouseItem(homeOwner.Value.Session, cube.Value.Item.Id, 1, cube.Value.Item);
-        session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.FieldPlayer.ObjectId);
+        session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
         if (cube.Value.Item.Id == 50400158) // portal cube
         {
             session.FieldManager.State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal> fieldPortal);

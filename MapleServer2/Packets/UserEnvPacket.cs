@@ -27,7 +27,7 @@ public static class UserEnvPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.USER_ENV);
         pWriter.Write(UserEnvPacketMode.UpdateTitles);
-        pWriter.WriteInt(session.FieldPlayer.ObjectId);
+        pWriter.WriteInt(session.Player.FieldPlayer.ObjectId);
         pWriter.WriteInt(titleId);
         return pWriter;
     }

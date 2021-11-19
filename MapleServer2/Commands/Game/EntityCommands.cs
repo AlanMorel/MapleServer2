@@ -3,7 +3,6 @@ using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
-using MapleServer2.Types;
 using Color = System.Drawing.Color;
 
 namespace MapleServer2.Commands.Game;
@@ -36,24 +35,14 @@ public class NpcCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"No NPC was found with the id: {npcId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
             return;
         }
-        Npc npc = new(npcId)
-        {
-            Animation = trigger.Get<short>("ani"),
-            ZRotation = trigger.Get<short>("dir")
-        };
 
-        IFieldObject<Npc> fieldNpc = trigger.Session.FieldManager.RequestFieldObject(npc);
         CoordF coord = trigger.Get<CoordF>("coord");
-
         if (coord == default)
         {
-            fieldNpc.Coord = trigger.Session.FieldPlayer.Coord;
+            coord = trigger.Session.Player.FieldPlayer.Coord;
         }
-        else
-        {
-            fieldNpc.Coord = coord;
-        }
-        trigger.Session.FieldManager.AddNpc(fieldNpc);
+
+        trigger.Session.FieldManager.RequestNpc(npcId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));
     }
 }
 public class MobCommand : InGameCommand
@@ -84,23 +73,13 @@ public class MobCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"No MOB was found with the id: {mobId.ToString().Color(Color.DarkOliveGreen)}", NoticeType.Chat));
             return;
         }
-        Mob mob = new(mobId)
-        {
-            Animation = trigger.Get<short>("ani"),
-            ZRotation = trigger.Get<short>("dir")
-        };
 
-        IFieldObject<Mob> fieldMob = trigger.Session.FieldManager.RequestFieldObject(mob);
         CoordF coord = trigger.Get<CoordF>("coord");
-
         if (coord == default)
         {
-            fieldMob.Coord = trigger.Session.FieldPlayer.Coord;
+            coord = trigger.Session.Player.FieldPlayer.Coord;
         }
-        else
-        {
-            fieldMob.Coord = coord;
-        }
-        trigger.Session.FieldManager.AddMob(fieldMob);
+
+        trigger.Session.FieldManager.RequestMob(mobId, coord, CoordF.From(0.0f, 0.0f, trigger.Get<short>("dir")), trigger.Get<short>("ani"));
     }
 }

@@ -23,7 +23,7 @@ public class StateSkillHandler : GamePacketHandler
             int clientTime = packet.ReadInt();
             int skillId = packet.ReadInt();
             packet.ReadShort(); // 1
-            session.Player.Animation = (byte) packet.ReadInt(); // Animation
+            session.Player.FieldPlayer.Animation = (byte) packet.ReadInt(); // Animation
             int clientTick = packet.ReadInt();
             packet.ReadLong(); // 0
 

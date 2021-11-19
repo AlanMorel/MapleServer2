@@ -326,8 +326,8 @@ public abstract class Session : IDisposable
             case SendOp.FIELD_PORTAL:
             case SendOp.NPC_CONTROL:
             case SendOp.RIDE_SYNC:
-            case SendOp.PROXY_GAME_OBJ:
-            case SendOp.FIELD_ADD_USER:
+            case SendOp.FIELD_OBJECT:
+            case SendOp.FIELD_ADD_PLAYER:
             case SendOp.FIELD_ENTRANCE:
             case SendOp.SERVER_ENTER:
             case SendOp.QUEST:

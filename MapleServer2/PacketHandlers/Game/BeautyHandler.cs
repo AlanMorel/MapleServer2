@@ -179,7 +179,7 @@ public class BeautyHandler : GamePacketHandler
         {
             HatData hatData = packet.Read<HatData>();
             beautyItem.HatData = hatData;
-            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, beautyItem));
+            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, beautyItem));
             return;
         }
 
@@ -208,7 +208,7 @@ public class BeautyHandler : GamePacketHandler
         }
 
         session.Player.SkinColor = skinColor;
-        session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.FieldPlayer, skinColor));
+        session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.Player.FieldPlayer, skinColor));
     }
     private static void HandleRandomHair(GameSession session, PacketReader packet)
     {
@@ -264,12 +264,12 @@ public class BeautyHandler : GamePacketHandler
             previousHair.Slot = -1;
             session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
             DatabaseManager.Items.Delete(previousHair.Uid);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, previousHair));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousHair));
         }
 
         cosmetics[ItemSlot.HR] = newHair;
 
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, newHair, ItemSlot.HR));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, newHair, ItemSlot.HR));
         session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
     }
 
@@ -286,12 +286,12 @@ public class BeautyHandler : GamePacketHandler
             {
                 newHair.Slot = -1;
                 DatabaseManager.Items.Delete(newHair.Uid);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, newHair));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, newHair));
             }
 
             cosmetics[ItemSlot.HR] = player.HairInventory.RandomHair; // apply the previous hair
 
-            session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
 
             Item voucher = new(20300246)
             {
@@ -394,12 +394,12 @@ public class BeautyHandler : GamePacketHandler
         if (cosmetics.Remove(hair.ItemSlot, out Item removeItem))
         {
             removeItem.Slot = -1;
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, removeItem));
         }
 
         cosmetics[removeItem.ItemSlot] = hair;
 
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, hair, hair.ItemSlot));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, hair, hair.ItemSlot));
         session.Send(BeautyPacket.ChangetoSavedHair());
     }
 
@@ -447,7 +447,7 @@ public class BeautyHandler : GamePacketHandler
             }
 
             item.Color = equipColor[i];
-            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.FieldPlayer, item));
+            session.FieldManager.BroadcastPacket(ItemExtraDataPacket.Update(session.Player.FieldPlayer, item));
         }
     }
 
@@ -488,7 +488,7 @@ public class BeautyHandler : GamePacketHandler
                 cosmetics.Remove(itemSlot);
                 removeItem.Slot = -1;
                 DatabaseManager.Items.Delete(removeItem.Uid);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, removeItem));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, removeItem));
             }
         }
 
@@ -507,12 +507,12 @@ public class BeautyHandler : GamePacketHandler
 
                 cosmetics[itemSlot] = beautyItem;
 
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, beautyItem, itemSlot));
                 break;
             case ItemSlot.FA:
                 cosmetics[itemSlot] = beautyItem;
 
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, beautyItem, itemSlot));
                 break;
             case ItemSlot.FD:
                 byte[] faceDecorationPosition = packet.ReadBytes(16);
@@ -521,7 +521,7 @@ public class BeautyHandler : GamePacketHandler
 
                 cosmetics[itemSlot] = beautyItem;
 
-                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, beautyItem, itemSlot));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, beautyItem, itemSlot));
                 break;
         }
     }

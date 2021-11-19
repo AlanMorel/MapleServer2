@@ -99,11 +99,11 @@ public partial class TriggerContext : ITriggerContext
     {
         if (boxId != 0)
         {
-            List<IFieldObject<Player>> players = Field.State.Players.Values.ToList();
+            List<IFieldActor<Player>> players = Field.State.Players.Values.ToList();
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
             int userCount = 0;
 
-            foreach (IFieldObject<Player> player in players)
+            foreach (IFieldActor<Player> player in players)
             {
                 if (FieldManager.IsPlayerInBox(box, player))
                 {

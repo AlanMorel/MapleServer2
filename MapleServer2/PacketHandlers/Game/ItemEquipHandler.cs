@@ -66,7 +66,7 @@ public class ItemEquipHandler : GamePacketHandler
             prevItem.Slot = item.Slot;
             prevItem.IsEquipped = false;
             inventory.AddItem(session, prevItem, false);
-            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem));
 
             if (prevItem.InventoryTab == InventoryTab.Gear)
             {
@@ -87,7 +87,7 @@ public class ItemEquipHandler : GamePacketHandler
                 }
                 prevItem2.IsEquipped = false;
                 inventory.AddItem(session, prevItem2, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));
             }
         }
 
@@ -105,7 +105,7 @@ public class ItemEquipHandler : GamePacketHandler
                         prevItem2.Slot = item.Slot;
                         prevItem2.IsEquipped = false;
                         inventory.AddItem(session, prevItem2, false);
-                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, prevItem2));
+                        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, prevItem2));
                     }
                 }
             }
@@ -115,7 +115,7 @@ public class ItemEquipHandler : GamePacketHandler
         item.IsEquipped = true;
         item.ItemSlot = equipSlot;
         equippedInventory[equipSlot] = item;
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.FieldPlayer, item, equipSlot));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, item, equipSlot));
 
         // Add stats if gear
         if (item.InventoryTab == InventoryTab.Gear)
@@ -138,7 +138,7 @@ public class ItemEquipHandler : GamePacketHandler
                 unequipItem.Slot = -1;
                 unequipItem.IsEquipped = false;
                 inventory.AddItem(session, unequipItem, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
 
                 DecreaseStats(session, unequipItem);
             }
@@ -155,7 +155,7 @@ public class ItemEquipHandler : GamePacketHandler
                 unequipItem.Slot = -1;
                 unequipItem.IsEquipped = false;
                 inventory.AddItem(session, unequipItem, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.FieldPlayer, unequipItem));
+                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
             }
         }
     }
@@ -166,7 +166,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
@@ -174,11 +174,11 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats.DecreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 
     private static void IncreaseStats(GameSession session, Item item)
@@ -187,7 +187,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 
@@ -195,10 +195,10 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats.IncreaseMax((PlayerStatId) stat.ItemAttribute, stat.Flat);
+                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 
-        session.Send(StatPacket.SetStats(session.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 }

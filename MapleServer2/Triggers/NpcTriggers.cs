@@ -49,20 +49,7 @@ public partial class TriggerContext
                 {
                     if (int.TryParse(npcId, out int id))
                     {
-                        Mob mob = new(id);
-                        if (mob.Friendly != 2)
-                        {
-                            IFieldObject<Mob> fieldMob = Field.RequestFieldObject(mob);
-                            fieldMob.Coord = spawnPoint.Position;
-                            fieldMob.Rotation = spawnPoint.Rotation;
-                            Field.AddMob(fieldMob);
-                            continue;
-                        }
-
-                        IFieldObject<Npc> fieldNpc = Field.RequestFieldObject(new Npc(mob.Id));
-                        fieldNpc.Coord = spawnPoint.Position;
-                        fieldNpc.Rotation = spawnPoint.Rotation;
-                        Field.AddNpc(fieldNpc);
+                        Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation);
                     }
                 }
             }

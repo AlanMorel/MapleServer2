@@ -88,22 +88,22 @@ public class CharacterInfoPacket
 
     private static void WriteStats(PacketWriter pWritter, Player player)
     {
-        foreach (PlayerStat item in player.Stats.Data.Values)
+        foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Max);
+            pWritter.WriteLong(item.Bonus);
         }
 
-        foreach (PlayerStat item in player.Stats.Data.Values)
+        foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Min);
+            pWritter.WriteLong(item.Base);
         }
 
-        foreach (PlayerStat item in player.Stats.Data.Values)
+        foreach (Stat item in player.Stats.Data.Values)
         {
-            pWritter.WriteLong(item.Current);
+            pWritter.WriteLong(item.Total);
         }
 
-        foreach (PlayerStat item in player.Stats.Data.Values)
+        foreach (Stat item in player.Stats.Data.Values)
         {
             pWritter.WriteLong();
         }

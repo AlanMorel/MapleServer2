@@ -49,6 +49,8 @@ public class Player
 
     // Mutable Values
     public Levels Levels { get; set; }
+    public CoordF SavedCoord { get; set; }
+    public CoordF SavedRotation { get; private set; }
     public int MapId { get; set; }
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
@@ -56,8 +58,7 @@ public class Player
     public List<int> Titles { get; set; }
     public List<int> PrestigeRewardsClaimed { get; set; }
 
-    public byte Animation;
-    public PlayerStats Stats;
+    public Stats Stats;
     public IFieldObject<Mount> Mount;
     public IFieldObject<Pet> Pet;
     public IFieldObject<GuideObject> Guide;
@@ -80,8 +81,6 @@ public class Player
 
     public NpcTalk NpcTalk;
 
-    public CoordF Coord;
-    public CoordF Rotation;
     public int ReturnMapId;
     public CoordF ReturnCoord;
     public CoordF SafeBlock = CoordF.From(0, 0, 0);
@@ -100,8 +99,6 @@ public class Player
 
     public int MaxSkillTabs { get; set; }
     public long ActiveSkillTabId { get; set; }
-
-    public SkillCast SkillCast = new();
 
     public List<SkillTab> SkillTabs;
     public StatDistribution StatPointDistribution;
@@ -134,10 +131,6 @@ public class Player
     public Wallet Wallet { get; set; }
     public List<QuestStatus> QuestList;
 
-    public CancellationTokenSource CombatCTS;
-    private Task HpRegenThread;
-    private Task SpRegenThread;
-    private Task StaRegenThread;
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
 
@@ -151,6 +144,8 @@ public class Player
     public int DungeonSessionId = -1;
 
     public List<PlayerTrigger> Triggers = new();
+
+    public IFieldActor<Player> FieldPlayer;
 
     public Player() { }
 
@@ -179,7 +174,7 @@ public class Player
             new(MasteryType.PetTaming)
         });
         MapId = JobMetadataStorage.GetStartMapId((int) job);
-        Coord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
+        SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(10, 10, 10, 10, 500, 10);
         Motto = "Motto";
         ProfileUrl = "";
@@ -258,7 +253,7 @@ public class Player
         SetCoords(mapId, coord, rotation);
 
         DatabaseManager.Characters.Update(this);
-        Session.Send(FieldPacket.RequestEnter(this));
+        Session.Send(RequestFieldEnterPacket.RequestEnter(FieldPlayer));
     }
 
     public void WarpGameToGame(int mapId, long instanceId, CoordF? coord = null, CoordF? rotation = null)
@@ -266,7 +261,7 @@ public class Player
         UpdateCoords(mapId, instanceId, coord, rotation);
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
-        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+        IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         AuthData authTokens = AuthStorage.GetData(AccountId);
         authTokens.Player.IsChangingChannel = true;
@@ -283,19 +278,19 @@ public class Player
         }
 
         MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(mapId);
-        if (spawn == null)
+        if (spawn is null)
         {
             Session.SendNotice($"Could not find a spawn for map {mapId}");
             return;
         }
-        if (coord == default)
+        if (coord is null)
         {
-            Coord = spawn.Coord.ToFloat();
+            SavedCoord = spawn.Coord.ToFloat();
             SafeBlock = spawn.Coord.ToFloat();
         }
-        if (rotation == default)
+        if (rotation is null)
         {
-            Rotation = spawn.Rotation.ToFloat();
+            SavedRotation = spawn.Rotation.ToFloat();
         }
     }
 
@@ -303,15 +298,21 @@ public class Player
     {
         if (MapEntityStorage.HasSafePortal(MapId))
         {
-            ReturnCoord = Coord;
+            ReturnCoord = FieldPlayer.Coord;
             ReturnMapId = MapId;
         }
-        if (coord is not null && rotation is not null)
+
+        if (coord is not null)
         {
-            Coord = (CoordF) coord;
-            Rotation = (CoordF) rotation;
+            SavedCoord = (CoordF) coord;
             SafeBlock = (CoordF) coord;
         }
+
+        if (rotation is not null)
+        {
+            SavedRotation = (CoordF) rotation;
+        }
+
         MapId = mapId;
 
         if (instanceId != 0)
@@ -327,16 +328,12 @@ public class Player
 
     public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
     {
-        switch (tab)
+        return tab switch
         {
-            case InventoryTab.Gear:
-                return Inventory.Equips;
-            case InventoryTab.Outfit:
-                return Inventory.Cosmetics;
-            default:
-                break;
-        }
-        return null;
+            InventoryTab.Gear => Inventory.Equips,
+            InventoryTab.Outfit => Inventory.Cosmetics,
+            _ => null
+        };
     }
 
     public Item GetEquippedItem(long itemUid)
@@ -348,53 +345,6 @@ public class Player
             return cosmeticItem;
         }
         return gearItem;
-    }
-
-    public void Cast(SkillCast skillCast)
-    {
-        int spiritCost = skillCast.GetSpCost();
-        int staminaCost = skillCast.GetStaCost();
-
-        if (Stats[PlayerStatId.Spirit].Current >= spiritCost && Stats[PlayerStatId.Stamina].Current >= staminaCost)
-        {
-            ConsumeSp(spiritCost);
-            ConsumeStamina(staminaCost);
-            SkillCast = skillCast;
-            Session.SendNotice(skillCast.SkillId.ToString());
-
-            // TODO: Move this and all others combat cases like recover sp to its own class.
-            // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-            if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
-            {
-                Status status = new(skillCast, Session.FieldPlayer.ObjectId, Session.FieldPlayer.ObjectId, 1);
-                StatusHandler.Handle(Session, status);
-            }
-
-            // Refresh out-of-combat timer
-            if (CombatCTS != null)
-            {
-                CombatCTS.Cancel();
-            }
-            CombatCTS = new();
-            CombatCTS.Token.Register(() => CombatCTS.Dispose());
-            StartCombatStance(CombatCTS);
-        }
-    }
-
-    private Task StartCombatStance(CancellationTokenSource ct)
-    {
-        Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, true));
-        return Task.Run(async () =>
-        {
-            await Task.Delay(5000);
-
-            if (!ct.Token.IsCancellationRequested)
-            {
-                CombatCTS = null;
-                ct.Dispose();
-                Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(Session.FieldPlayer, false));
-            }
-        }, ct.Token);
     }
 
     public Task TimeSyncLoop()
@@ -419,153 +369,6 @@ public class Player
                 await Task.Delay(300 * 1000); // every 5 minutes
             }
         });
-    }
-
-    public void RecoverHp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Hp];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Hp, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
-            }
-        }
-    }
-
-    private void ConsumeHp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Hp];
-            Stats.Decrease(PlayerStatId.Hp, Math.Min(amount, stat.Current));
-        }
-
-        if (HpRegenThread == null || HpRegenThread.IsCompleted)
-        {
-            HpRegenThread = StartRegen(PlayerStatId.Hp, PlayerStatId.HpRegen, PlayerStatId.HpRegenTime);
-        }
-    }
-
-    public void RecoverSp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Spirit];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Spirit, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Spirit));
-            }
-        }
-    }
-
-    private void ConsumeSp(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Spirit];
-            Stats.Decrease(PlayerStatId.Spirit, Math.Min(amount, stat.Current));
-        }
-
-        if (SpRegenThread == null || SpRegenThread.IsCompleted)
-        {
-            SpRegenThread = StartRegen(PlayerStatId.Spirit, PlayerStatId.SpRegen, PlayerStatId.SpRegenTime);
-        }
-    }
-
-    public void RecoverStamina(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Stamina];
-            if (stat.Current < stat.Max)
-            {
-                Stats.Increase(PlayerStatId.Stamina, Math.Min(amount, stat.Max - stat.Current));
-                Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Stamina));
-            }
-        }
-    }
-
-    private void ConsumeStamina(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        lock (Stats)
-        {
-            PlayerStat stat = Stats[PlayerStatId.Stamina];
-            Stats.Decrease(PlayerStatId.Stamina, Math.Min(amount, stat.Current));
-        }
-
-        if (StaRegenThread == null || StaRegenThread.IsCompleted)
-        {
-            StaRegenThread = StartRegen(PlayerStatId.Stamina, PlayerStatId.StaRegen, PlayerStatId.StaRegenTime);
-        }
-    }
-
-    private Task StartRegen(PlayerStatId statId, PlayerStatId regenStatId, PlayerStatId timeStatId)
-    {
-        // TODO: merge regen updates with larger packets
-        return Task.Run(async () =>
-        {
-            while (true)
-            {
-                await Task.Delay(Stats[timeStatId].Current);
-
-                lock (Stats)
-                {
-                    if (Stats[statId].Current >= Stats[statId].Max)
-                    {
-                        return;
-                    }
-
-                    // TODO: Check if regen-enabled
-                    Stats[statId] = AddStatRegen(statId, regenStatId);
-                    Session?.FieldManager.BroadcastPacket(StatPacket.UpdateStats(Session.FieldPlayer, statId));
-                    if (Party != null)
-                    {
-                        Party.BroadcastPacketParty(PartyPacket.UpdateHitpoints(this));
-                    }
-                }
-            }
-        });
-    }
-
-    private PlayerStat AddStatRegen(PlayerStatId statIndex, PlayerStatId regenStatIndex)
-    {
-        PlayerStat stat = Stats[statIndex];
-        int regen = Stats[regenStatIndex].Current;
-        int postRegen = Math.Clamp(stat.Current + regen, 0, stat.Max);
-        return new(stat.Max, stat.Min, postRegen);
     }
 
     public void IncrementGatheringCount(int recipeId, int amount)
@@ -627,10 +430,10 @@ public class Player
 
     public void FallDamage()
     {
-        int currentHp = Stats[PlayerStatId.Hp].Current;
-        int fallDamage = currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100; // TODO: Create accurate damage model
-        ConsumeHp(fallDamage);
-        Session.Send(StatPacket.UpdateStats(Session.FieldPlayer, PlayerStatId.Hp));
-        Session.Send(FallDamagePacket.FallDamage(Session.FieldPlayer.ObjectId, fallDamage));
+        long currentHp = Stats[StatId.Hp].TotalLong;
+        int fallDamage = (int) (currentHp * Math.Clamp(currentHp * 4 / 100 - 1, 0, 25) / 100); // TODO: Create accurate damage model
+        FieldPlayer.ConsumeHp(fallDamage);
+        Session.Send(StatPacket.UpdateStats(FieldPlayer, StatId.Hp));
+        Session.Send(FallDamagePacket.FallDamage(FieldPlayer.ObjectId, fallDamage));
     }
 }

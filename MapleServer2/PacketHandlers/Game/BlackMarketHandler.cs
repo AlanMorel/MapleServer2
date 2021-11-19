@@ -269,7 +269,7 @@ public class BlackMarketHandler : GamePacketHandler
         if (statId >= 1000 && statId < 11000)
         {
             float percent = (float) (value + 5) / 10000;
-            ItemAttribute attribute = (ItemAttribute) statId - 1000;
+            StatId attribute = (StatId) (statId - 1000);
             return new NormalStat(attribute, 0, percent);
         }
 
@@ -277,11 +277,11 @@ public class BlackMarketHandler : GamePacketHandler
         if (statId >= 11000)
         {
             float percent = (float) (value + 5) / 10000;
-            SpecialItemAttribute attribute = (SpecialItemAttribute) statId - 11000;
+            SpecialStatId attribute = (SpecialStatId) (statId - 11000);
             return new SpecialStat(attribute, 0, percent);
         }
 
         // Normal Stat with flat value
-        return new NormalStat((ItemAttribute) statId, value, 0);
+        return new NormalStat((StatId) statId, value, 0);
     }
 }
