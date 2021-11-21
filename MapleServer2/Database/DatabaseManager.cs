@@ -48,6 +48,7 @@ public class DatabaseManager
     public static DatabaseShopItem ShopItems { get; private set; } = new();
     public static DatabaseSkillTab SkillTabs { get; private set; } = new();
     public static DatabaseTrophy Trophies { get; private set; } = new();
+    public static DatabaseUGC UGC { get; private set; } = new();
     public static DatabaseWallet Wallets { get; private set; } = new();
     public static DatabaseMail Mails { get; private set; } = new();
     public static DatabaseBlackMarketListing BlackMarketListings { get; private set; } = new();

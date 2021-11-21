@@ -8,4 +8,5 @@ public class Mount
     public int Id;
     public long Uid;
     public IFieldObject<Player>[] Players = new IFieldObject<Player>[3];
+    public UGC UGC;
 }
