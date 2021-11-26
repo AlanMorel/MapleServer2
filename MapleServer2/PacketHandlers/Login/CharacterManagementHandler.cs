@@ -77,7 +77,7 @@ public class CharacterManagementHandler : LoginPacketHandler
         player.Account.AuthData.OnlineCharacterId = characterId;
 
         DatabaseManager.AuthData.UpdateOnlineCharacterId(player.Account.AuthData);
-        DatabaseManager.Characters.UpdateChannelId(characterId, 1, 1, false);
+        DatabaseManager.Characters.UpdateChannelId(characterId, channelId: 1, instanceId: 1, isMigrating: false);
 
         session.SendFinal(MigrationPacket.LoginToGame(endpoint, player), logoutNotice: false);
     }
