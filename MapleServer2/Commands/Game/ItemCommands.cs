@@ -37,7 +37,7 @@ public class ItemCommand : InGameCommand
         Item item = new(itemId)
         {
             Rarity = rarity >= 0 ? rarity : ItemMetadataStorage.GetRarity(itemId),
-            Amount = amount == 0 ? 1 : amount
+            Amount = amount <= 0 ? 1 : amount
         };
         item.Stats = new(item);
 
