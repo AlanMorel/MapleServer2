@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Maple2Storage.Types;
 using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
@@ -68,7 +69,7 @@ public class GameSession : Session
         FieldManager.AddPlayer(this);
     }
 
-    public override void EndSession()
+    protected override void EndSession(bool logoutNotice)
     {
         FieldManagerFactory.Release(FieldManager.MapId, FieldManager.InstanceId, Player);
 
@@ -78,21 +79,29 @@ public class GameSession : Session
         Player.OnlineCTS.Cancel();
         Player.OnlineTimeThread = null;
 
-        Player.SavedCoord = Player.SafeBlock;
-        DatabaseManager.Characters.Update(Player);
+        CoordF safeCoord = Player.SafeBlock;
+        safeCoord.Z += Block.BLOCK_SIZE;
+        Player.SavedCoord = safeCoord;
 
-        // if session is changing channels, dont send the logout message
-        if (Player.IsChangingChannel)
+        // if session is not changing channels or servers, send the logout message
+        if (logoutNotice)
         {
-            return;
+            Player.Session = null;
+            GameServer.BuddyManager.SetFriendSessions(Player);
+
+            Player.Party?.CheckOfflineParty(Player);
+
+            Player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedOff(Player));
+
+            Player.UpdateBuddies();
+
+            Player.IsMigrating = false;
+
+            AuthData authData = Player.Account.AuthData;
+            authData.OnlineCharacterId = 0;
+            DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
         }
 
-        GameServer.BuddyManager.SetFriendSessions(Player);
-
-        Player.Party?.CheckOffineParty(Player);
-
-        Player.Guild?.BroadcastPacketGuild(GuildPacket.MemberLoggedOff(Player));
-
-        Player.UpdateBuddies();
+        DatabaseManager.Characters.Update(Player);
     }
 }

@@ -21,6 +21,9 @@ public class DatabaseCharacter : DatabaseTable
             player.Name,
             gender = (byte) player.Gender,
             player.Awakened,
+            channel_id = player.ChannelId,
+            instance_id = player.InstanceId,
+            is_migrating = player.IsMigrating,
             job = (int) player.Job,
             levels_id = player.Levels.Id,
             map_id = player.MapId,
@@ -70,6 +73,7 @@ public class DatabaseCharacter : DatabaseTable
             .Join("accounts", "accounts.id", "characters.account_id")
             .Join("game_options", "game_options.id", "characters.game_options_id")
             .Join("wallets", "wallets.id", "characters.wallet_id")
+            .Join("auth_data", "auth_data.account_id", "characters.account_id")
             .LeftJoin("homes", "homes.account_id", "accounts.id")
             .Select(
                 "characters.{*}",
@@ -77,7 +81,8 @@ public class DatabaseCharacter : DatabaseTable
                 "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
-                "homes.id as home_id")
+                "homes.id as home_id",
+                "auth_data.{token_a, token_b, online_character_id}")
             .FirstOrDefault();
 
         List<Hotbar> hotbars = DatabaseManager.Hotbars.FindAllByGameOptionsId(data.game_options_id);
@@ -90,17 +95,22 @@ public class DatabaseCharacter : DatabaseTable
             trophies.Add(trophy.Key, trophy.Value);
         }
         List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.character_id);
+        AuthData authData = new(data.token_a, data.token_b, data.account_id, data.online_character_id ?? 0);
 
         return new()
         {
             CharacterId = data.character_id,
             AccountId = data.account_id,
             Account = new Account(data.account_id, data.username, data.password_hash, data.creation_time, data.last_login_time, data.character_slots,
-                                  data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory),
+                                  data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration,
+                                  data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, authData),
             CreationTime = data.creation_time,
             Name = data.name,
             Gender = (Gender) data.gender,
             Awakened = data.awakened,
+            ChannelId = data.channel_id,
+            InstanceId = data.instance_id,
+            IsMigrating = data.is_migrating,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
             MapId = data.map_id,
@@ -240,6 +250,9 @@ public class DatabaseCharacter : DatabaseTable
             player.Name,
             gender = (byte) player.Gender,
             player.Awakened,
+            channel_id = player.ChannelId,
+            instance_id = player.InstanceId,
+            is_migrating = player.IsMigrating,
             job = (int) player.Job,
             map_id = player.MapId,
             title_id = player.TitleId,
@@ -288,6 +301,16 @@ public class DatabaseCharacter : DatabaseTable
         {
             DatabaseManager.Trophies.Update(trophy.Value);
         }
+    }
+
+    public void UpdateChannelId(long characterId, short channelId, long instanceId, bool isMigrating)
+    {
+        QueryFactory.Query(TableName).Where("character_id", characterId).Update(new
+        {
+            channel_id = channelId,
+            instance_id = instanceId,
+            is_migrating = isMigrating,
+        });
     }
 
     public void UpdateProfileUrl(long characterId, string profileUrl)

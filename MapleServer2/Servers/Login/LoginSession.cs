@@ -1,5 +1,4 @@
-﻿using Maple2Storage.Tools;
-using MapleServer2.Enums;
+﻿using MapleServer2.Enums;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 
@@ -16,12 +15,7 @@ public class LoginSession : Session
 
     public LoginSession() : base() { }
 
-    public static int GetToken()
-    {
-        return RandomProvider.Get().Next();
-    }
-
-    public override void EndSession() { }
+    protected override void EndSession(bool logoutNotice) { }
 
     public Task HeartbeatLoop()
     {

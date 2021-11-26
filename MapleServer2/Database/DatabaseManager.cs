@@ -8,9 +8,9 @@ using SqlKata.Execution;
 
 namespace MapleServer2.Database;
 
-public class DatabaseManager
+public static class DatabaseManager
 {
-    protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private static readonly int MIN_MYSQL_VERSION = 8;
 
@@ -23,37 +23,38 @@ public class DatabaseManager
     private static readonly string User = Environment.GetEnvironmentVariable("DB_USER");
     private static readonly string Password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
-    public static DatabaseAccount Accounts { get; private set; } = new();
-    public static DatabaseBankInventory BankInventories { get; private set; } = new();
-    public static DatabaseBanner Banners { get; private set; } = new();
-    public static DatabaseBuddy Buddies { get; private set; } = new();
-    public static DatabaseCardReverseGame CardReverseGame { get; private set; } = new();
-    public static DatabaseCharacter Characters { get; private set; } = new();
-    public static DatabaseCube Cubes { get; private set; } = new();
-    public static DatabaseEvent Events { get; private set; } = new();
-    public static DatabaseGameOptions GameOptions { get; private set; } = new();
-    public static DatabaseGuild Guilds { get; private set; } = new();
-    public static DatabaseGuildApplication GuildApplications { get; private set; } = new();
-    public static DatabaseGuildMember GuildMembers { get; private set; } = new();
-    public static DatabaseHome Homes { get; private set; } = new();
-    public static DatabaseHomeLayout HomeLayouts { get; private set; } = new();
-    public static DatabaseHotbar Hotbars { get; private set; } = new();
-    public static DatabaseInventory Inventories { get; private set; } = new();
-    public static DatabaseItem Items { get; private set; } = new();
-    public static DatabaseLevels Levels { get; private set; } = new();
-    public static DatabaseMapleopoly Mapleopoly { get; private set; } = new();
-    public static DatabaseMeretMarket MeretMarket { get; private set; } = new();
-    public static DatabaseQuest Quests { get; private set; } = new();
-    public static DatabaseShop Shops { get; private set; } = new();
-    public static DatabaseShopItem ShopItems { get; private set; } = new();
-    public static DatabaseSkillTab SkillTabs { get; private set; } = new();
-    public static DatabaseTrophy Trophies { get; private set; } = new();
-    public static DatabaseUGC UGC { get; private set; } = new();
-    public static DatabaseWallet Wallets { get; private set; } = new();
-    public static DatabaseMail Mails { get; private set; } = new();
-    public static DatabaseBlackMarketListing BlackMarketListings { get; private set; } = new();
-    public static DatabaseMesoMarketListing MesoMarketListings { get; private set; } = new();
-    public static DatabaseServer ServerInfo { get; private set; } = new();
+    public static DatabaseAccount Accounts { get; } = new();
+    public static DatabaseAuthData AuthData { get; } = new();
+    public static DatabaseBankInventory BankInventories { get; } = new();
+    public static DatabaseBanner Banners { get; } = new();
+    public static DatabaseBuddy Buddies { get; } = new();
+    public static DatabaseCardReverseGame CardReverseGame { get; } = new();
+    public static DatabaseCharacter Characters { get; } = new();
+    public static DatabaseCube Cubes { get; } = new();
+    public static DatabaseEvent Events { get; } = new();
+    public static DatabaseGameOptions GameOptions { get; } = new();
+    public static DatabaseGuild Guilds { get; } = new();
+    public static DatabaseGuildApplication GuildApplications { get; } = new();
+    public static DatabaseGuildMember GuildMembers { get; } = new();
+    public static DatabaseHome Homes { get; } = new();
+    public static DatabaseHomeLayout HomeLayouts { get; } = new();
+    public static DatabaseHotbar Hotbars { get; } = new();
+    public static DatabaseInventory Inventories { get; } = new();
+    public static DatabaseItem Items { get; } = new();
+    public static DatabaseLevels Levels { get; } = new();
+    public static DatabaseMapleopoly Mapleopoly { get; } = new();
+    public static DatabaseMeretMarket MeretMarket { get; } = new();
+    public static DatabaseQuest Quests { get; } = new();
+    public static DatabaseShop Shops { get; } = new();
+    public static DatabaseShopItem ShopItems { get; } = new();
+    public static DatabaseSkillTab SkillTabs { get; } = new();
+    public static DatabaseTrophy Trophies { get; } = new();
+    public static DatabaseUGC UGC { get; } = new();
+    public static DatabaseWallet Wallets { get; } = new();
+    public static DatabaseMail Mails { get; } = new();
+    public static DatabaseBlackMarketListing BlackMarketListings { get; } = new();
+    public static DatabaseMesoMarketListing MesoMarketListings { get; } = new();
+    public static DatabaseServer ServerInfo { get; } = new();
 
     static DatabaseManager()
     {
