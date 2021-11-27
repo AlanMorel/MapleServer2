@@ -368,6 +368,7 @@ CREATE TABLE `items`
     `inventory_id`             bigint      DEFAULT NULL,
     `is_equipped`              tinyint(1) NOT NULL,
     `is_locked`                tinyint(1) NOT NULL,
+    `is_template`              tinyint(1) NOT NULL,
     `mail_id`                  bigint      DEFAULT NULL,
     `owner_character_id`       bigint      DEFAULT NULL,
     `owner_character_name`     varchar(25) DEFAULT '',
