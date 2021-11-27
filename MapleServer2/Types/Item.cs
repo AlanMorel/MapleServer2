@@ -87,6 +87,7 @@ public class Item
         Name = ItemMetadataStorage.GetName(id);
         Level = ItemMetadataStorage.GetLevel(id);
         ItemSlot = ItemMetadataStorage.GetSlot(id);
+        IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
         if (GemSlot == GemSlot.TRANS)
         {
             TransparencyBadgeBools = new byte[10];
@@ -226,7 +227,6 @@ public class Item
         RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
-        IsTemplate = ItemMetadataStorage.GetIsTemplate(Id);
         Type = GetItemType(Id);
     }
 
