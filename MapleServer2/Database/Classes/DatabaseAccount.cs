@@ -86,6 +86,6 @@ public class DatabaseAccount : DatabaseTable
 
         return new Account(data.id, data.username, data.password_hash, data.creation_time, data.last_login_time,
                            data.character_slots, data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0,
-                           data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory);
+                           data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, null);
     }
 }

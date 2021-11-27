@@ -206,7 +206,7 @@ public class Inventory
             return;
         }
 
-        if (amount == item.Amount)
+        if (amount == item.Amount || item.Amount - amount <= 0)
         {
             RemoveItem(session, uid, out Item _);
             return;
@@ -214,7 +214,6 @@ public class Inventory
 
         item.Amount -= amount;
         session.Send(ItemInventoryPacket.Update(uid, item.Amount));
-        return;
     }
 
     public bool RemoveItem(GameSession session, long uid, out Item item)

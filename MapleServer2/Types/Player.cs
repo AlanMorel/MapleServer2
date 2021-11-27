@@ -3,7 +3,6 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -50,7 +49,7 @@ public class Player
     // Mutable Values
     public Levels Levels { get; set; }
     public CoordF SavedCoord { get; set; }
-    public CoordF SavedRotation { get; private set; }
+    public CoordF SavedRotation { get; set; }
     public int MapId { get; set; }
     public long InstanceId { get; set; }
     public int TitleId { get; set; }
@@ -68,7 +67,7 @@ public class Player
     public int ShopId; // current shop player is interacting
 
     public short ChannelId;
-    public bool IsChangingChannel;
+    public bool IsMigrating;
 
     // Combat, Adventure, Lifestyle
     public int[] TrophyCount;
@@ -229,7 +228,7 @@ public class Player
         CharacterId = DatabaseManager.Characters.Insert(this);
         SkillTabs = new()
         {
-            new(CharacterId, job, 1, $"Build {(SkillTabs == null ? "1" : SkillTabs.Count + 1)}")
+            new(CharacterId, job, 1, $"Build 1")
         };
     }
 
@@ -263,11 +262,9 @@ public class Player
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
-        AuthData authTokens = AuthStorage.GetData(AccountId);
-        authTokens.Player.IsChangingChannel = true;
+        IsMigrating = true;
 
-        DatabaseManager.Characters.Update(this);
-        Session.Send(MigrationPacket.GameToGame(endpoint, authTokens, this));
+        Session.SendFinal(MigrationPacket.GameToGame(endpoint, this), logoutNotice: false);
     }
 
     private void SetCoords(int mapId, CoordF? coord, CoordF? rotation)

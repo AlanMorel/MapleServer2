@@ -2,10 +2,10 @@
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.PacketHandlers.Common;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
@@ -85,7 +85,7 @@ public class MailHandler : GamePacketHandler
     {
         session.Send(MailPacket.StartOpen());
 
-        IEnumerable<List<Mail>> packetCount = ResponseKeyHandler.SplitList(session.Player.Mailbox, 5);
+        IEnumerable<List<Mail>> packetCount = session.Player.Mailbox.SplitList(5);
 
         foreach (List<Mail> mails in packetCount)
         {
