@@ -4,12 +4,12 @@ public abstract class InGameCommand : CommandBase
 {
     public override void Execute(CommandTrigger trigger)
     {
-        if (trigger is not GameCommandTrigger)
+        if (trigger is not GameCommandTrigger commandTrigger)
         {
             Logger.Error("This command can only be executed in game.");
             return;
         }
-        Execute(trigger as GameCommandTrigger);
+        Execute(commandTrigger);
     }
 
     public abstract void Execute(GameCommandTrigger trigger);

@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum SystemNotice : short
+public enum SystemNotice : int
 {
     ChooseYourName = 0x1,
     Enter2Letters = 0xB,
@@ -122,6 +122,11 @@ public enum SystemNotice : short
     UsedReviveVoucher = 0xAE5,
     UsedPetNameVoucher = 0xAE6,
     CannotFishHere = 0xC00,
+    GravityChanged = 0xC87, // The atmosphere around you has changed. Something has altered the law of gravity itself.
+    RandomNumberSelection = 0xCB9,
+    CantUseRollCommand = 0xCBA, // The roll command is only possible through party chat. Can be used through normal chat when inside a home or dungeon.
+    RandomGroupAssignment = 0xCBB,
+    RandomSelection = 0xCBC,
     PremiumExtended = 0xCE7,
     PremiumActivated = 0xCE8,
     CharacterNotFound = 0xCFA,

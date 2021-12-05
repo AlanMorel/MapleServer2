@@ -461,6 +461,12 @@ public partial class FieldManager
 
         foreach (IFieldObject<GuideObject> guide in State.Guide.Values)
         {
+            if (guide.Value.IsBall)
+            {
+                sender.Send(HomeActionPacket.AddBall(guide));
+                continue;
+            }
+
             sender.Send(GuideObjectPacket.Add(guide));
         }
 
@@ -474,11 +480,10 @@ public partial class FieldManager
             if (instrument.Value.Improvise)
             {
                 sender.Send(InstrumentPacket.StartImprovise(instrument));
+                continue;
             }
-            else
-            {
-                sender.Send(InstrumentPacket.PlayScore(instrument));
-            }
+
+            sender.Send(InstrumentPacket.PlayScore(instrument));
         }
 
         List<BreakableObject> breakables = new();

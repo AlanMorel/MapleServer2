@@ -5,7 +5,6 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
-
 namespace MapleServer2.Types;
 
 // TODO: Implement architect expiration
@@ -60,6 +59,9 @@ public class Home
     // Budget wallet
     public long Mesos;
     public long Merets;
+    
+    // Home commands
+    public HomeSurvey Survey = new();
 
     public Home() { }
 
