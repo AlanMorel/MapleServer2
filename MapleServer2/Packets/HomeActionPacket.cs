@@ -17,6 +17,24 @@ public class HomeActionPacket
         Roll = 0x0B
     }
 
+    private enum SurveyMode : byte
+    {
+        Message = 0x00,
+        Question = 0x02,
+        AddOption = 0x03,
+        Start = 0x04,
+        Answer = 0x05,
+        End = 0x06
+    }
+
+    private enum BallMode : byte
+    {
+        Add = 0x00,
+        Remove = 0x01,
+        Update = 0x02,
+        Hit = 0x03,
+    }
+
     public static PacketWriter SendCubePortalSettings(Cube cube, List<Cube> otherPortals)
     {
         CubePortalSettings portalSettings = cube.PortalSettings;
@@ -40,7 +58,6 @@ public class HomeActionPacket
         return pWriter;
     }
 
-
     public static PacketWriter HostAlarm(string message)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
@@ -56,7 +73,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte();
+        pWriter.Write(SurveyMode.Message);
 
         return pWriter;
     }
@@ -65,7 +82,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte(2);
+        pWriter.Write(SurveyMode.Question);
         pWriter.WriteUnicodeString(survey.Question);
         pWriter.WriteBool(survey.Public);
 
@@ -76,7 +93,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte(3);
+        pWriter.Write(SurveyMode.AddOption);
         pWriter.WriteUnicodeString(survey.Question);
         pWriter.WriteBool(survey.Public);
         pWriter.WriteUnicodeString(survey.Options.Keys.Last());
@@ -89,7 +106,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte(4);
+        pWriter.Write(SurveyMode.Start);
         pWriter.WriteLong(survey.OwnerId); // character id
         pWriter.WriteLong(survey.Id); // unk
         pWriter.WriteBool(survey.Public);
@@ -107,7 +124,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte(5);
+        pWriter.Write(SurveyMode.Answer);
         pWriter.WriteUnicodeString(name);
 
         return pWriter;
@@ -117,7 +134,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Survey);
-        pWriter.WriteByte(6);
+        pWriter.Write(SurveyMode.End);
         pWriter.WriteLong(survey.Id);
         pWriter.WriteBool(survey.Public);
         pWriter.WriteUnicodeString(survey.Question);
@@ -139,12 +156,14 @@ public class HomeActionPacket
         }
 
         pWriter.WriteByte((byte) survey.AvailableCharacters.Count);
-        if (survey.Public)
+        if (!survey.Public)
         {
-            foreach (string characterName in survey.AvailableCharacters)
-            {
-                pWriter.WriteUnicodeString(characterName);
-            }
+            return pWriter;
+        }
+        
+        foreach (string characterName in survey.AvailableCharacters)
+        {
+            pWriter.WriteUnicodeString(characterName);
         }
 
         return pWriter;
@@ -154,7 +173,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Ball);
-        pWriter.WriteByte();
+        pWriter.Write(BallMode.Add);
         pWriter.WriteInt(guide.ObjectId);
         pWriter.WriteLong(guide.Value.BoundCharacterId);
         pWriter.Write(guide.Coord);
@@ -167,7 +186,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Ball);
-        pWriter.WriteByte(1);
+        pWriter.Write(BallMode.Remove);
         pWriter.WriteInt(guide.ObjectId);
 
         return pWriter;
@@ -177,7 +196,7 @@ public class HomeActionPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Ball);
-        pWriter.WriteByte(2);
+        pWriter.Write(BallMode.Update);
         pWriter.WriteInt(guide.ObjectId);
         pWriter.WriteLong(guide.Value.BoundCharacterId);
         pWriter.Write(guide.Coord);
@@ -187,15 +206,15 @@ public class HomeActionPacket
         return pWriter;
     }
 
-    public static PacketWriter HitBall(IFieldObject<GuideObject> guide, CoordF velocity1)
+    public static PacketWriter HitBall(IFieldObject<GuideObject> guide, CoordF velocity)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_HOME_ACTION);
         pWriter.Write(HomeActionMode.Ball);
-        pWriter.WriteByte(3);
+        pWriter.Write(BallMode.Hit);
         pWriter.WriteInt(guide.ObjectId);
         pWriter.WriteLong(guide.Value.BoundCharacterId);
         pWriter.Write(guide.Coord);
-        pWriter.Write(velocity1);
+        pWriter.Write(velocity);
 
         return pWriter;
     }
