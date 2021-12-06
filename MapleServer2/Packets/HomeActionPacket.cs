@@ -169,7 +169,7 @@ public class HomeActionPacket
         pWriter.Write(HomeActionMode.Ball);
         pWriter.WriteByte(1);
         pWriter.WriteInt(guide.ObjectId);
-        
+
         return pWriter;
     }
 

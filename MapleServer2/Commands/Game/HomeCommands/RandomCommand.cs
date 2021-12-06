@@ -36,7 +36,8 @@ public class RandomUserCommand : InGameCommand
 
         trigger.Session.FieldManager.BroadcastPacket(NoticePacket.Notice(SystemNotice.RandomSelection, NoticeType.Chat, new()
         {
-            trigger.Session.Player.Name, randomPlayer
+            trigger.Session.Player.Name,
+            randomPlayer
         }));
     }
 }

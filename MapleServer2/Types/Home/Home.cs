@@ -59,7 +59,7 @@ public class Home
     // Budget wallet
     public long Mesos;
     public long Merets;
-    
+
     // Home commands
     public HomeSurvey Survey = new();
 

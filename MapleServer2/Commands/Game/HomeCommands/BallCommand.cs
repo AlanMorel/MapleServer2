@@ -1,7 +1,6 @@
 ﻿using Maple2Storage.Types;
 using MapleServer2.Commands.Core;
 using MapleServer2.Constants;
-using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -30,7 +29,7 @@ public class BallCommand : InGameCommand
         Player player = trigger.Session.Player;
         IFieldActor<Player> fieldPlayer = player.FieldPlayer;
         FieldManager fieldManager = trigger.Session.FieldManager;
-        
+
         bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
 
         if (!mapIsHome)

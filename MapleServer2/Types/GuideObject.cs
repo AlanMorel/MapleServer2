@@ -1,6 +1,4 @@
-﻿using MapleServer2.Tools;
-
-namespace MapleServer2.Types;
+﻿namespace MapleServer2.Types;
 
 public class GuideObject
 {
