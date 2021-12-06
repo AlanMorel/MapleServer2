@@ -160,7 +160,7 @@ public class HomeActionPacket
         {
             return pWriter;
         }
-        
+
         foreach (string characterName in survey.AvailableCharacters)
         {
             pWriter.WriteUnicodeString(characterName);
