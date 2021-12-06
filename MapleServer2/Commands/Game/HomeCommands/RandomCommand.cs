@@ -41,6 +41,7 @@ public class RandomUserCommand : InGameCommand
         }));
     }
 }
+
 public class RandomNumberCommand : InGameCommand
 {
     public RandomNumberCommand()
