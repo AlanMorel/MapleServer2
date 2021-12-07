@@ -21,7 +21,9 @@ public class HomeActionHandler : GamePacketHandler
     {
         Smite = 0x01,
         Kick = 0x02,
+        Survey = 0x05,
         ChangePortalSettings = 0x06,
+        UpdateBallCoord = 0x07,
         SendPortalSettings = 0x0D
     }
 
@@ -34,13 +36,55 @@ public class HomeActionHandler : GamePacketHandler
             case HomeActionMode.Kick:
                 HandleKick(packet);
                 break;
+            case HomeActionMode.Survey:
+                HandleRespondSurvey(session, packet);
+                break;
             case HomeActionMode.ChangePortalSettings:
                 HandleChangePortalSettings(session, packet);
+                break;
+            case HomeActionMode.UpdateBallCoord:
+                HandleUpdateBallCoord(session, packet);
                 break;
             case HomeActionMode.SendPortalSettings:
                 HandleSendPortalSettings(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
+    }
+
+    private static void HandleRespondSurvey(GameSession session, PacketReader packet)
+    {
+        packet.ReadByte();
+        packet.ReadLong(); // character id
+        long surveyId = packet.ReadLong();
+        byte responseIndex = packet.ReadByte();
+
+        Player player = session.Player;
+
+        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        HomeSurvey homeSurvey = home.Survey;
+
+        string option = homeSurvey.Options.Keys.ToList()[responseIndex];
+        if (!homeSurvey.Started || homeSurvey.Ended || homeSurvey.Id != surveyId || option is null || homeSurvey.Options[option].Contains(player.Name) || !homeSurvey.AvailableCharacters.Contains(player.Name))
+        {
+            return;
+        }
+
+        homeSurvey.AvailableCharacters.Remove(player.Name);
+        homeSurvey.Options[option].Add(player.Name);
+        session.Send(HomeActionPacket.SurveyAnswer(player.Name));
+
+        homeSurvey.Answers++;
+
+        if (homeSurvey.Answers < homeSurvey.MaxAnswers)
+        {
+            return;
+        }
+
+        session.FieldManager.BroadcastPacket(HomeActionPacket.SurveyEnd(homeSurvey));
+        homeSurvey.End();
     }
 
     private static void HandleKick(PacketReader packet)
@@ -78,6 +122,33 @@ public class HomeActionHandler : GamePacketHandler
         DatabaseManager.Cubes.Update(cube);
 
         UpdateAllPortals(session);
+    }
+
+    private static void HandleUpdateBallCoord(GameSession session, PacketReader packet)
+    {
+        byte mode = packet.ReadByte(); // 2 move, 3 hit ball
+        int objectId = packet.ReadInt();
+        CoordF coord = packet.Read<CoordF>();
+        CoordF velocity1 = packet.Read<CoordF>();
+
+        if (!session.FieldManager.State.Guide.TryGetValue(objectId, out IFieldObject<GuideObject> ball))
+        {
+            return;
+        }
+
+        ball.Coord = coord;
+
+        switch (mode)
+        {
+            case 2:
+                CoordF velocity2 = packet.Read<CoordF>();
+
+                session.FieldManager.BroadcastPacket(HomeActionPacket.UpdateBall(ball, velocity1, velocity2), session);
+                break;
+            case 3:
+                session.FieldManager.BroadcastPacket(HomeActionPacket.HitBall(ball, velocity1));
+                break;
+        }
     }
 
     private static void HandleSendPortalSettings(GameSession session, PacketReader packet)

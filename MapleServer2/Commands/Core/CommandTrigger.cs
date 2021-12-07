@@ -48,7 +48,7 @@ public abstract class CommandTrigger
         {
             try
             {
-                if (command.Aliases.Any(x => x == arg) || definedParam.Count < index)
+                if (command.Aliases.Any(x => string.Equals(x, arg, StringComparison.CurrentCultureIgnoreCase)) || definedParam.Count < index)
                 {
                     continue;
                 }
