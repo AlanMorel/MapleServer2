@@ -25,12 +25,8 @@ public class Party
     {
         Id = GuidGenerator.Int();
         Leader = partyLeader;
-        ReadyCheck = new()
-        {
-        };
-        Members = new()
-        {
-        };
+        ReadyCheck = new();
+        Members = new();
         PartyFinderId = 0;
         Approval = true;
         CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
@@ -42,12 +38,8 @@ public class Party
     {
         Id = GuidGenerator.Int();
         Name = pName;
-        ReadyCheck = new()
-        {
-        };
-        Members = new()
-        {
-        };
+        ReadyCheck = new();
+        Members = new();
         Approval = pApproval;
         PartyFinderId = GuidGenerator.Long();
         Leader = player;
@@ -98,7 +90,7 @@ public class Party
         GameServer.PartyManager.RemoveParty(this);
     }
 
-    public void CheckOffineParty(Player player)
+    public void CheckOfflineParty(Player player)
     {
         List<GameSession> sessions = GetSessions();
         if (sessions.Count == 0)

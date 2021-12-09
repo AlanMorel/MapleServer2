@@ -41,11 +41,13 @@ public class CommandManager
             Logger.Error("Cannot create a new instance of {0}", commandType);
             return;
         }
+
         if (instanceCommand.Aliases == null)
         {
             Logger.Error("Cannot register Command {0}, Aliases is null", commandType.Name);
             return;
         }
+
         foreach (string alias in instanceCommand.Aliases)
         {
             if (!CommandsByAlias.TryGetValue(alias, out CommandBase command))
@@ -67,7 +69,7 @@ public class CommandManager
             return false;
         }
 
-        if (!CommandsByAlias.TryGetValue(trigger.Args[0], out CommandBase command))
+        if (!CommandsByAlias.TryGetValue(trigger.Args[0].ToLower(), out CommandBase command))
         {
             return false;
         }

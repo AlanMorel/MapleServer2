@@ -13,11 +13,11 @@ public static class ChatPacket
         pWriter.WriteLong(player.AccountId);
         pWriter.WriteLong(player.CharacterId);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteByte(0);
+        pWriter.WriteByte();
         pWriter.WriteUnicodeString(message);
         pWriter.WriteInt((int) type);
         pWriter.WriteByte();
-        pWriter.WriteInt(); // Channel
+        pWriter.WriteInt(player.ChannelId);
 
         switch (type)
         {

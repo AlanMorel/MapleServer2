@@ -31,7 +31,7 @@ public static class NoticePacket
         pWriter.WriteShort((short) type);
         pWriter.WriteByte(0x1);
         pWriter.WriteInt(0x1);
-        pWriter.WriteInt((int) notice);
+        pWriter.Write(notice);
         pWriter.WriteInt(parameters.Count);
         foreach (string parameter in parameters)
         {

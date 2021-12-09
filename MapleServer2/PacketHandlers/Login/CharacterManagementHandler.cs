@@ -3,7 +3,6 @@ using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
@@ -58,7 +57,7 @@ public class CharacterManagementHandler : LoginPacketHandler
         Logger.Info("Character id {characterId} deleted!", characterId);
     }
 
-    public void HandleSelect(LoginSession session, PacketReader packet)
+    private void HandleSelect(LoginSession session, PacketReader packet)
     {
         long characterId = packet.ReadLong();
         packet.ReadShort(); // 01 00
@@ -66,7 +65,7 @@ public class CharacterManagementHandler : LoginPacketHandler
 
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
-        IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+        IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
         Player player = DatabaseManager.Characters.FindPlayerById(characterId);
         if (player == default)
@@ -75,23 +74,15 @@ public class CharacterManagementHandler : LoginPacketHandler
             return;
         }
 
-        player.ChannelId = 1;
-        player.InstanceId = 1;
+        player.Account.AuthData.OnlineCharacterId = characterId;
 
-        AuthData authData = new AuthData
-        {
-            TokenA = LoginSession.GetToken(),
-            TokenB = LoginSession.GetToken(),
-            Player = player,
-        };
+        DatabaseManager.AuthData.UpdateOnlineCharacterId(player.Account.AuthData);
+        DatabaseManager.Characters.UpdateChannelId(characterId, channelId: 1, instanceId: 1, isMigrating: false);
 
-        // Write AuthData to storage shared with GameServer
-        AuthStorage.SetData(session.AccountId, authData);
-
-        session.Send(MigrationPacket.LoginToGame(endpoint, authData));
+        session.SendFinal(MigrationPacket.LoginToGame(endpoint, player), logoutNotice: false);
     }
 
-    public static void HandleCreate(LoginSession session, PacketReader packet)
+    private static void HandleCreate(LoginSession session, PacketReader packet)
     {
         Gender gender = (Gender) packet.ReadByte();
         Job job = (Job) packet.ReadShort();

@@ -42,6 +42,22 @@ CREATE TABLE `accounts`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `auth_data`
+--
+
+DROP TABLE IF EXISTS `auth_data`;
+CREATE TABLE `auth_data`
+(
+    `account_id`          bigint NOT NULL,
+    `token_a`             INT    NOT NULL,
+    `token_b`             INT    NOT NULL,
+    `online_character_id` bigint NULL,
+    PRIMARY KEY (`account_id`),
+    CONSTRAINT `auth_data_FK` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
+    CONSTRAINT `auth_data_FK_1` FOREIGN KEY (`online_character_id`) REFERENCES `characters` (`character_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+
+--
 -- Table structure for table `bankinventories`
 --
 
@@ -92,6 +108,9 @@ CREATE TABLE `characters`
     `name`                     varchar(25) NOT NULL,
     `gender`                   tinyint unsigned NOT NULL,
     `awakened`                 tinyint(1) NOT NULL,
+    `channel_id`               smallint    NOT NULL,
+    `instance_id`              bigint      NOT NULL,
+    `is_migrating`             tinyint(1)  NOT NULL,
     `job`                      int         NOT NULL,
     `levels_id`                bigint      DEFAULT NULL,
     `map_id`                   int         NOT NULL,
@@ -368,6 +387,7 @@ CREATE TABLE `items`
     `inventory_id`             bigint      DEFAULT NULL,
     `is_equipped`              tinyint(1) NOT NULL,
     `is_locked`                tinyint(1) NOT NULL,
+    `is_template`              tinyint(1) NOT NULL,
     `mail_id`                  bigint      DEFAULT NULL,
     `owner_character_id`       bigint      DEFAULT NULL,
     `owner_character_name`     varchar(25) DEFAULT '',

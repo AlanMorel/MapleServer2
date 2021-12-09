@@ -1,11 +1,12 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
+using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Servers.Login;
+using MapleServer2.Tools;
 using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Common;
@@ -19,13 +20,15 @@ public class ResponseKeyHandler : CommonPacketHandler
     public override void Handle(GameSession session, PacketReader packet)
     {
         long accountId = packet.ReadLong();
-        AuthData authData = AuthStorage.GetData(accountId);
+        AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
+
+        Player dbPlayer = DatabaseManager.Characters.FindPlayerById(authData.OnlineCharacterId);
 
         // Backwards seeking because we read accountId here
         packet.Skip(-8);
         HandleCommon(session, packet);
 
-        session.InitPlayer(authData.Player);
+        session.InitPlayer(dbPlayer);
 
         Player player = session.Player;
 
@@ -48,11 +51,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         GameServer.BuddyManager.SetFriendSessions(player);
 
         // Only send buddy login notification if player is not changing channels
-        if (player.IsChangingChannel)
-        {
-            player.IsChangingChannel = false;
-        }
-        else
+        if (!player.IsMigrating)
         {
             player.UpdateBuddies();
         }
@@ -68,6 +67,8 @@ public class ResponseKeyHandler : CommonPacketHandler
             guild.BroadcastPacketGuild(GuildPacket.MemberJoin(player));
             guild.BroadcastPacketGuild(GuildPacket.MemberLoggedIn(player), session);
         }
+
+        player.IsMigrating = false;
 
         //session.Send(0x27, 0x01); // Meret market related...?
         session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
@@ -126,7 +127,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         session.Send(QuestPacket.Packet1F());
         session.Send(QuestPacket.Packet20());
 
-        IEnumerable<List<QuestStatus>> packetCount = SplitList(player.QuestList, 200); // Split the quest list in 200 quests per packet
+        IEnumerable<List<QuestStatus>> packetCount = player.QuestList.SplitList(200); // Split the quest list in 200 quests per packet
         foreach (List<QuestStatus> item in packetCount)
         {
             session.Send(QuestPacket.SendQuests(item));
@@ -135,7 +136,7 @@ public class ResponseKeyHandler : CommonPacketHandler
 
         session.Send(TrophyPacket.WriteTableStart());
         List<Trophy> trophyList = new(player.TrophyData.Values);
-        IEnumerable<List<Trophy>> trophyListPackets = SplitList(trophyList, 60);
+        IEnumerable<List<Trophy>> trophyListPackets = trophyList.SplitList(60);
 
         foreach (List<Trophy> trophy in trophyListPackets)
         {
@@ -212,24 +213,17 @@ public class ResponseKeyHandler : CommonPacketHandler
         int tokenB = packet.ReadInt();
 
         Logger.Info("LOGIN USER: {accountId}", accountId);
-        AuthData authData = AuthStorage.GetData(accountId);
+        AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
         if (authData == null)
         {
             throw new ArgumentException("Attempted connection to game with unauthorized account");
         }
-        else if (tokenA != authData.TokenA || tokenB != authData.TokenB)
+
+        if (tokenA != authData.TokenA || tokenB != authData.TokenB)
         {
             throw new ArgumentException("Attempted login with invalid tokens...");
         }
 
         session.Send((byte) SendOp.MOVE_RESULT, 0x00, 0x00);
-    }
-
-    public static IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize = 30)
-    {
-        for (int i = 0; i < locations.Count; i += nSize)
-        {
-            yield return locations.GetRange(i, Math.Min(nSize, locations.Count - i));
-        }
     }
 }
