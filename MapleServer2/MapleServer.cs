@@ -40,7 +40,7 @@ public static class MapleServer
         DotEnv.Load(dotenv);
 
         VersionChecker.CheckUpdate();
-        
+
         DatabaseManager.Init();
 
         DateTimeOffset lastReset = DatabaseManager.ServerInfo.GetLastDailyReset();
