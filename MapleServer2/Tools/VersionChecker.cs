@@ -45,9 +45,9 @@ public static class VersionChecker
             }
             
         }
-        catch (WebException)
+        catch (Exception)
         {
-            Logger.Error("The file couldn't be found in the repository!");
+            Logger.Error("Couldn't check for version!");
         }
     }
 }
