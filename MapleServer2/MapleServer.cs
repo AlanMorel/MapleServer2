@@ -20,9 +20,7 @@ public static class MapleServer
     private static GameServer GameServer;
     private static LoginServer LoginServer;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private static string version = "0.0.1";
-    private static string dbversion = "0.0.1";
-    
+
     public static async Task Main()
     {
         AppDomain currentDomain = AppDomain.CurrentDomain;
