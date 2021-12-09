@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using NLog;
+
 namespace MapleServer2.Tools;
 
-public class VersionChecker
+public static class VersionChecker
 {
-    private const string Version = "0.0.1";
+    private static readonly Version Version = new("0.1.0");
     private const string DownloadUrl = "https://github.com/darkvergus/MapleServer2/version.txt";
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -12,22 +13,30 @@ public class VersionChecker
     {
         try
         {
-            WebRequest wr = WebRequest.Create(new Uri(DownloadUrl));
-            WebResponse ws = wr.GetResponse();
-            StreamReader sr = new(ws.GetResponseStream());
+            WebRequest webRequest = WebRequest.Create(new Uri(DownloadUrl));
+            WebResponse webResponse = webRequest.GetResponse();
+            StreamReader streamReader = new(webResponse.GetResponseStream());
 
-            string newVersion = sr.ReadToEnd();
+            Version newVersion = new(streamReader.ReadToEnd());
 
-            if (Version.Contains(newVersion))
+            if (Version.Major.CompareTo(newVersion.Major) != 0)
             {
-                Logger.Info("Server is up to date!");
+                Logger.Error("The Server has a new Major Version. It is seriously recommened that you update it!");
+            } 
+            else if (Version.Minor.CompareTo(newVersion.Minor) != 0)
+            {
+                Logger.Warn("The Server has a new Minor Version. It is recommened that you update it!");
+            } 
+            else if (Version.Build.CompareTo(newVersion.Build) != 0)
+            {
+                Logger.Info("The Server has a new Build Version.");
             }
             else
             {
-                Logger.Warn("Server is out of date. Please consider downloading the new version at https://github.com/AlanMorel/MapleServer2/.");
+                Logger.Info("The Server is Up-to-date.");
             }
         }
-        catch (WebException e)
+        catch (WebException)
         {
             Logger.Error("The file couldn't be found in the repository!");
         }
