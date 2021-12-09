@@ -6,7 +6,7 @@ namespace MapleServer2.Tools;
 
 public static class VersionChecker
 {
-    private const string DownloadUrl = "https://raw.githubusercontent.com/darkvergus/MapleServer2/Dev/version.txt";
+    private const string DownloadUrl = "https://raw.githubusercontent.com/AlanMorel/MapleServer2/master/version.txt";
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public static void CheckUpdate()
