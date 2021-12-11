@@ -344,7 +344,7 @@ public class NpcTalkHandler : GamePacketHandler
             if (questStatus.StartNpcId == npcTalk.Npc.Id && questStatus.Condition.Count != questStatus.Condition.Count(x => x.Completed))
             {
                 // Talking to npc that start the quest and condition is not completed
-                return scriptMetadata.Options.FirstOrDefault(x => x.Id >= 200 && x.Id <= 299 && x.JobId == (int) player.Job)?.Id ?? 200;
+                return scriptMetadata.Options.FirstOrDefault(x => x.Id is >= 200 and <= 299 && x.JobId == (int) player.Job)?.Id ?? 200;
             }
 
             // Talking to npc that end the quest
@@ -364,7 +364,7 @@ public class NpcTalkHandler : GamePacketHandler
         }
 
         // If content has any goto, use the lua scripts to check the requirements
-        if (content.Distractor[index].Goto.Count > 0 && scriptLoader.Script != null)
+        if (content.Distractor[index].Goto.Count > 0 && scriptLoader.Script is not null)
         {
             DynValue result = scriptLoader.Call("handleGoto", content.Distractor[index].Goto[0]);
             if (result is not null && (int) result.Number != -1)

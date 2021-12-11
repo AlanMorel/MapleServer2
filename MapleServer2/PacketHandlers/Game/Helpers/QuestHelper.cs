@@ -13,7 +13,7 @@ public static class QuestHelper
     public static void UpdateExplorationQuest(GameSession session, string code, string type)
     {
         List<QuestStatus> quests = session.Player.QuestList.Where(quest =>
-                quest.Basic.QuestType == QuestType.Exploration
+                quest.Basic.QuestType is QuestType.Exploration
                 && quest.Condition is not null
                 && quest.State is QuestState.Started
                 && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)))
