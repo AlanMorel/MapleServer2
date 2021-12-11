@@ -137,9 +137,9 @@ public partial class TriggerContext
         return false;
     }
 
-    public bool QuestUserDetected(int[] boxes, int[] questIds, byte[] arg3, byte arg4)
+    public bool QuestUserDetected(int[] boxes, int[] questIds, byte[] modes, byte arg4)
     {
-        QuestState mode = (QuestState) arg3[0];
+        QuestState mode = (QuestState) modes[0];
         foreach (int boxId in boxes)
         {
             MapTriggerBox box = MapEntityStorage.GetTriggerBox(Field.MapId, boxId);
