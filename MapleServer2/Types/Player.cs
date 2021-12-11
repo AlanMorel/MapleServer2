@@ -230,7 +230,7 @@ public class Player
         SkillTabs = new() { new(CharacterId, job, id: 1, name: "Build 1") };
 
         // Add initial quests
-        foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, Job.Assassin))
+        foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, job))
         {
             QuestList.Add(new(this, questMetadata));
         }
