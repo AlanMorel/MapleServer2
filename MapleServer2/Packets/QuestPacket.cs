@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
 
@@ -101,20 +102,24 @@ public static class QuestPacket
         {
             pWriter.WriteInt(quest.Basic.Id);
 
-            if (quest.Completed)
+            switch (quest.State)
             {
-                pWriter.WriteInt(2);
-                pWriter.WriteInt(1);
-            }
-            else if (quest.Started)
-            {
-                pWriter.WriteInt(1);
-                pWriter.WriteInt(0);
-            }
-            else
-            {
-                pWriter.WriteInt(0);
-                pWriter.WriteInt(0);
+                case QuestState.None:
+                    pWriter.WriteInt();
+                    pWriter.WriteInt();
+                    break;
+                case QuestState.Started:
+                    pWriter.WriteInt(1);
+                    pWriter.WriteInt();
+                    break;
+                case QuestState.ConditionCompleted:
+                    pWriter.WriteInt(2);
+                    pWriter.WriteInt();
+                    break;
+                case QuestState.Finished:
+                    pWriter.WriteInt(2);
+                    pWriter.WriteInt(1);
+                    break;
             }
 
             pWriter.WriteLong(quest.StartTimestamp);
@@ -122,9 +127,9 @@ public static class QuestPacket
             pWriter.WriteBool(quest.Tracked);
             pWriter.WriteInt(quest.Condition.Count);
 
-            for (int j = 0; j < quest.Condition.Count; j++)
+            foreach (Condition condition in quest.Condition)
             {
-                pWriter.WriteInt(quest.Condition[j].Current);
+                pWriter.WriteInt(condition.Current);
             }
         }
 

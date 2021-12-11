@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
@@ -46,8 +47,7 @@ public class CompleteQuestCommand : InGameCommand
             questStatus = new(player, QuestMetadataStorage.GetMetadata(questId));
             player.QuestList.Add(questStatus);
         }
-        questStatus.Completed = true;
-        questStatus.Started = true;
+        questStatus.State = QuestState.Finished;
         questStatus.StartTimestamp = TimeInfo.Now();
         questStatus.CompleteTimestamp = TimeInfo.Now();
         player.Levels.GainExp(questStatus.Reward.Exp);
@@ -111,7 +111,7 @@ public class StartQuestCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
-        trigger.Session.Player.QuestList.Add(new(trigger.Session.Player, quest, true, TimeInfo.Now()));
+        trigger.Session.Player.QuestList.Add(new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now()));
         trigger.Session.Send(QuestPacket.AcceptQuest(questId));
     }
 }

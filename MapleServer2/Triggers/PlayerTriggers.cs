@@ -65,6 +65,7 @@ public partial class TriggerContext
                     boxedPlayers.Add(player);
                 }
             }
+
             players = boxedPlayers;
         }
 
@@ -75,6 +76,7 @@ public partial class TriggerContext
             {
                 player.Value.Warp(player.Value.ReturnMapId, player.Value.ReturnCoord);
             }
+
             return;
         }
 
@@ -87,6 +89,7 @@ public partial class TriggerContext
                 player.Rotation = portal.Rotation;
                 player.Value.Session.Send(UserMoveByPortalPacket.Move(player, portal.Coord, portal.Rotation));
             }
+
             return;
         }
 
@@ -133,11 +136,12 @@ public partial class TriggerContext
 
     public void SetPcEmotionLoop(string animationState, float duration, bool isLoop)
     {
-        Field.BroadcastPacket(TriggerPacket.SetAnimation(animationState, (int) duration, isLoop));
+        Field.BroadcastPacket(TriggerPacket.SetAnimationLoop(animationState, (int) duration, isLoop));
     }
 
-    public void SetPcEmotionSequence(string arg1)
+    public void SetPcEmotionSequence(string animation)
     {
+        Field.BroadcastPacket(TriggerPacket.SetAnimationSequence(animation));
     }
 
     public void SetPcRotation(Vector3 rotation)
@@ -158,6 +162,7 @@ public partial class TriggerContext
                     boxedPlayers.Add(player);
                 }
             }
+
             players = boxedPlayers;
         }
 
@@ -224,11 +229,7 @@ public partial class TriggerContext
 
     public void SetUserValue(int triggerId, string key, int value)
     {
-        PlayerTrigger playerTrigger = new(key)
-        {
-            TriggerId = triggerId,
-            Value = value
-        };
+        PlayerTrigger playerTrigger = new(key) { TriggerId = triggerId, Value = value };
         foreach (IFieldObject<Player> player in Field.State.Players.Values)
         {
             player.Value.Triggers.Add(playerTrigger);

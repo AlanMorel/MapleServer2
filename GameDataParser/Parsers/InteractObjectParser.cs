@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using GameDataParser.Files;
 using Maple2.File.IO.Crypto.Common;
+using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
 
 namespace GameDataParser.Parsers;
@@ -29,53 +30,74 @@ public class InteractObjectParser : Exporter<List<InteractObjectMetadata>>
                     continue;
                 }
 
-                InteractObjectMetadata metadata = new();
+                InteractObjectMetadata metadata = new()
+                {
+                    Id = int.Parse(interactNode.Attributes["id"].Value)
+                };
 
-                metadata.Id = int.Parse(interactNode.Attributes["id"].Value);
                 _ = Enum.TryParse(interactNode.Attributes["type"].Value, out metadata.Type);
 
                 foreach (XmlNode childNode in interactNode)
                 {
-                    if (childNode.Name == "reward")
+                    switch (childNode.Name)
                     {
-                        InteractObjectRewardMetadata reward = new();
-                        reward.Exp = int.Parse(childNode.Attributes["exp"].Value);
-                        reward.ExpType = childNode.Attributes["expType"].Value;
-                        reward.ExpRate = float.Parse(childNode.Attributes["relativeExpRate"].Value);
-                        reward.FirstExpType = childNode.Attributes["firstExpType"].Value;
-                        reward.FirstExpRate = float.Parse(childNode.Attributes["firstRelativeExpRate"].Value);
-                        metadata.Reward = reward;
-                    }
-                    else if (childNode.Name == "drop")
-                    {
-                        InteractObjectDropMetadata drop = new();
+                        case "reward":
+                            metadata.Reward = new()
+                            {
+                                Exp = int.Parse(childNode.Attributes["exp"].Value),
+                                ExpType = childNode.Attributes["expType"].Value,
+                                ExpRate = float.Parse(childNode.Attributes["relativeExpRate"].Value),
+                                FirstExpType = childNode.Attributes["firstExpType"].Value,
+                                FirstExpRate = float.Parse(childNode.Attributes["firstRelativeExpRate"].Value)
+                            };
+                            break;
+                        case "drop":
+                            InteractObjectDropMetadata drop = new()
+                            {
+                                ObjectLevel = childNode.Attributes["objectLevel"]?.Value ?? "",
+                                GlobalDropBoxId = childNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                                IndividualDropBoxId = childNode.Attributes["individualDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList()
+                            };
+                            _ = int.TryParse(childNode.Attributes["objectDropRank"]?.Value ?? "0", out drop.DropRank);
 
-                        drop.ObjectLevel = childNode.Attributes["objectLevel"]?.Value ?? "";
-                        _ = int.TryParse(childNode.Attributes["objectDropRank"]?.Value ?? "0", out drop.DropRank);
+                            metadata.Drop = drop;
+                            break;
+                        case "gathering":
+                            metadata.Gathering = new()
+                            {
+                                RecipeId = int.Parse(childNode.Attributes["receipeID"].Value)
+                            };
+                            break;
+                        case "webOpen":
+                            metadata.Web = new()
+                            {
+                                Url = childNode.Attributes["url"].Value
+                            };
+                            break;
+                        case "quest":
+                            List<int> questIds = childNode.Attributes["maskQuestID"]?.Value.Split(',', '|').Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                            List<byte> states = childNode.Attributes["maskQuestState"]?.Value.Split(',', '|').Where(x => !string.IsNullOrEmpty(x)).Select(byte.Parse).ToList();
+                            if (questIds == null || states == null)
+                            {
+                                continue;
+                            }
 
-                        drop.GlobalDropBoxId = childNode.Attributes["globalDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-
-                        drop.IndividualDropBoxId = childNode.Attributes["individualDropBoxId"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-
-                        metadata.Drop = drop;
-                    }
-                    else if (childNode.Name == "gathering")
-                    {
-                        InteractObjectGatheringMetadata gathering = new();
-                        gathering.RecipeId = int.Parse(childNode.Attributes["receipeID"].Value);
-                        metadata.Gathering = gathering;
-                    }
-                    else if (childNode.Name == "webOpen")
-                    {
-                        InteractObjectWebMetadata web = new();
-                        web.Url = childNode.Attributes["url"].Value;
-                        metadata.Web = web;
+                            for (int i = 0; i < questIds.Count; i++)
+                            {
+                                if (metadata.Quests.Any(x => x.QuestId == questIds[i]))
+                                {
+                                    continue;
+                                }
+                                metadata.Quests.Add((questIds[i], (QuestState) states[i]));
+                            }
+                            break;
                     }
                 }
 
                 objects.Add(metadata);
             }
         }
+
         return objects;
     }
 }

@@ -12,7 +12,7 @@ public partial class TriggerContext : ITriggerContext
     public int NextTick;
     public TriggerState SkipSceneState;
 
-    public readonly FieldManager Field;
+    private readonly FieldManager Field;
     private readonly ILogger Logger;
 
     public TriggerContext(FieldManager field, ILogger logger)

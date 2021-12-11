@@ -20,6 +20,7 @@ public partial class TriggerContext
                 {
                     return;
                 }
+
                 player.Value.Session.Send(CinematicPacket.BalloonTalk(player.ObjectId, isNpcId, msg, duration, delayTick));
                 return;
             }
@@ -43,6 +44,7 @@ public partial class TriggerContext
             {
                 continue;
             }
+
             for (int i = 0; i < spawnPoint.Count; i++)
             {
                 foreach (string npcId in spawnPoint.NpcIds)
@@ -60,8 +62,32 @@ public partial class TriggerContext
     {
     }
 
-    public void DestroyMonster(int[] arg1, bool arg2)
+    public void DestroyMonster(int[] rangeId, bool arg2)
     {
+        foreach (int spawnPointId in rangeId)
+        {
+            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            if (spawnPoint is null)
+            {
+                continue;
+            }
+
+            foreach (string npcId in spawnPoint.NpcIds)
+            {
+                if (!int.TryParse(npcId, out int id))
+                {
+                    continue;
+                }
+
+                IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
+                if (fieldNpc is null)
+                {
+                    continue;
+                }
+
+                Field.RemoveNpc(fieldNpc);
+            }
+        }
     }
 
     public void StartCombineSpawn(int[] groupId, bool isStart)
@@ -78,7 +104,31 @@ public partial class TriggerContext
 
     public void MoveNpc(int spawnTriggerId, string patrolDataName)
     {
-        PatrolData patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
+        (PatrolData, List<WayPoint>) patrolData = MapEntityStorage.GetPatrolData(Field.MapId, patrolDataName);
+
+        MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnTriggerId);
+        if (spawnPoint is null)
+        {
+            return;
+        }
+
+        foreach (string npcId in spawnPoint.NpcIds)
+        {
+            if (!int.TryParse(npcId, out int id))
+            {
+                continue;
+            }
+
+            IFieldActor<NpcMetadata> fieldNpc = Field.State.Npcs.Values.FirstOrDefault(x => x.Value.Id == id);
+            if (fieldNpc is null)
+            {
+                continue;
+            }
+
+            // Just setting the coord as the last waypoint for now, replace with moveTo later
+            // fieldNpc.MoveTo(patrolData.Item2.Last().Position);
+            fieldNpc.Coord = patrolData.Item2.Last().Position.ToFloat();
+        }
     }
 
     public void MoveNpcToPos(int spawnPointId, Vector3 pos, Vector3 rot)
@@ -111,6 +161,24 @@ public partial class TriggerContext
 
     public void SpawnNpcRange(int[] rangeId, bool isAutoTargeting, byte randomPickCount, int score)
     {
+        foreach (int spawnPointId in rangeId)
+        {
+            MapEventNpcSpawnPoint spawnPoint = MapEntityStorage.GetMapEventNpcSpawnPoint(Field.MapId, spawnPointId);
+            if (spawnPoint == null)
+            {
+                continue;
+            }
+
+            foreach (string npcId in spawnPoint.NpcIds)
+            {
+                if (!int.TryParse(npcId, out int id))
+                {
+                    continue;
+                }
+
+                Field.RequestNpc(id, spawnPoint.Position, spawnPoint.Rotation);
+            }
+        }
     }
 
     public void TalkNpc(int spawnPointId)

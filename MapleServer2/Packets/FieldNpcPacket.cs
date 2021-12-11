@@ -108,10 +108,10 @@ public static class FieldNpcPacket
         return pWriter;
     }
 
-    public static PacketWriter RemoveMob(IFieldActor<NpcMetadata> mob)
+    public static PacketWriter RemoveNpc(IFieldActor<NpcMetadata> npc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.FIELD_REMOVE_NPC);
-        pWriter.WriteInt(mob.ObjectId);
+        pWriter.WriteInt(npc.ObjectId);
         return pWriter;
     }
 }

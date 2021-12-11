@@ -39,8 +39,7 @@ public class TriggerHandler : GamePacketHandler
 
     private static void HandleSkipCutscene(GameSession session)
     {
-        session.FieldManager.SkipScene = true;
-        // TODO: Start the SkipScene state
+        session.FieldManager.Triggers.FirstOrDefault(x => x.HasSkipScene())?.SkipScene();
     }
 
     private static void HandleUpdateWidget(GameSession session, PacketReader packet)
@@ -57,6 +56,7 @@ public class TriggerHandler : GamePacketHandler
                 {
                     return;
                 }
+
                 widget.State = "IsStop";
                 widget.Arg = arg.ToString();
                 session.Send(StopCutscene(arg));
@@ -67,6 +67,7 @@ public class TriggerHandler : GamePacketHandler
                 {
                     return;
                 }
+
                 widget.State = "IsTriggerEvent";
                 widget.Arg = arg.ToString();
                 break;

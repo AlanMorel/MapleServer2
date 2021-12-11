@@ -23,7 +23,8 @@ public static class TriggerPacket
         DisableBanner = 0x3,
         StartCutscene = 0x4,
         StopCutscene = 0x5,
-        SetAnimation = 0x8
+        SetAnimationSequence = 0x7,
+        SetAnimationLoop = 0x8
     }
 
     public static PacketWriter LoadTriggers(List<TriggerObject> triggerObjects)
@@ -134,11 +135,21 @@ public static class TriggerPacket
         return pWriter;
     }
 
-    public static PacketWriter SetAnimation(string animationState, int duration, bool loop)
+    public static PacketWriter SetAnimationSequence(string animationState)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
         pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.SetAnimation);
+        pWriter.Write(TriggerUIMode.SetAnimationSequence);
+        pWriter.WriteInt(1);
+        pWriter.WriteUnicodeString(animationState);
+        return pWriter;
+    }
+
+    public static PacketWriter SetAnimationLoop(string animationState, int duration, bool loop)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
+        pWriter.Write(TriggerPacketMode.UI);
+        pWriter.Write(TriggerUIMode.SetAnimationLoop);
         pWriter.WriteBool(loop);
         pWriter.WriteInt(duration);
         pWriter.WriteUnicodeString(animationState);

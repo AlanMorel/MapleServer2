@@ -51,11 +51,11 @@ public class ScriptManager
 
     public bool HasQuestStarted(int questId)
     {
-        return Player.QuestList.Any(x => x.Id == questId && x.Started == true && x.Completed == false);
+        return Player.QuestList.Any(x => x.Id == questId && x.State is QuestState.Started);
     }
 
     public bool HasQuestStarted(List<int> questIds)
     {
-        return Player.QuestList.Any(x => questIds.Contains(x.Id) && x.Started == true && x.Completed == false);
+        return Player.QuestList.Any(x => questIds.Contains(x.Id) && x.State is QuestState.Started);
     }
 }
