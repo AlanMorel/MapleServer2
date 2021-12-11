@@ -28,4 +28,8 @@ public class TriggerScript
 
         NextState = State.Execute();
     }
+
+    public void SkipScene() => NextState = Context.SkipSceneState;
+
+    public bool HasSkipScene() => Context.SkipSceneState is not null;
 }

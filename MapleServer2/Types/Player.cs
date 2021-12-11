@@ -19,6 +19,7 @@ public class Player
     public GameSession Session;
 
     public Account Account;
+
     // Constant Values
     public long AccountId { get; set; }
     public long CharacterId { get; set; }
@@ -34,6 +35,7 @@ public class Player
 
     // Job Group, according to jobgroupname.xml
     public Job Job { get; set; }
+
     public JobCode JobCode
     {
         get
@@ -42,6 +44,7 @@ public class Player
             {
                 return JobCode.GameMaster;
             }
+
             return (JobCode) ((int) Job * 10 + (Awakened ? 1 : 0));
         }
     }
@@ -114,6 +117,7 @@ public class Player
     public List<Buddy> BuddyList;
 
     public Party Party;
+
     public long ClubId;
     // TODO make this as an array
 
@@ -214,10 +218,7 @@ public class Player
         BuddyList = new();
         QuestList = new();
         GatheringCount = new();
-        TrophyCount = new int[3]
-        {
-            0, 0, 0
-        };
+        TrophyCount = new[] { 0, 0, 0 };
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
         GroupChatId = new int[3];
@@ -226,10 +227,13 @@ public class Player
         UnlockedMaps = new();
         ActiveSkillTabId = 1;
         CharacterId = DatabaseManager.Characters.Insert(this);
-        SkillTabs = new()
+        SkillTabs = new() { new(CharacterId, job, id: 1, name: "Build 1") };
+
+        // Add initial quests
+        foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, Job.Assassin))
         {
-            new(CharacterId, job, 1, $"Build 1")
-        };
+            QuestList.Add(new(this, questMetadata));
+        }
     }
 
     public void UpdateBuddies()
@@ -280,11 +284,13 @@ public class Player
             Session.SendNotice($"Could not find a spawn for map {mapId}");
             return;
         }
+
         if (coord is null)
         {
             SavedCoord = spawn.Coord.ToFloat();
             SafeBlock = spawn.Coord.ToFloat();
         }
+
         if (rotation is null)
         {
             SavedRotation = spawn.Rotation.ToFloat();
@@ -336,12 +342,12 @@ public class Player
     public Item GetEquippedItem(long itemUid)
     {
         Item gearItem = Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-        if (gearItem == null)
+        if (gearItem is not null)
         {
-            Item cosmeticItem = Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-            return cosmeticItem;
+            return gearItem;
         }
-        return gearItem;
+
+        return Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
     }
 
     public Task TimeSyncLoop()
@@ -390,6 +396,7 @@ public class Player
         {
             TrophyData[trophyId] = new(CharacterId, AccountId, trophyId);
         }
+
         TrophyData[trophyId].AddCounter(Session, addAmount);
         if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
         {

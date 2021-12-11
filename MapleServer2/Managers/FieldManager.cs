@@ -34,8 +34,8 @@ public partial class FieldManager
     public readonly TriggerScript[] Triggers;
     private readonly List<MapTimer> MapTimers = new();
     private readonly List<Widget> Widgets = new();
-    public bool SkipScene;
     private Task MapLoopTask;
+    private Task TriggerTask;
     private readonly ILogger Logger = LogManager.GetCurrentClassLogger();
     private int PlayerCount;
 
@@ -61,6 +61,7 @@ public partial class FieldManager
                 Debug.WriteLine($"Missing mob spawn data: {mobSpawn}");
                 continue;
             }
+
             IFieldObject<MobSpawn> fieldMobSpawn = RequestFieldObject(new MobSpawn(mobSpawn));
             fieldMobSpawn.Coord = mobSpawn.Coord.ToFloat();
             State.AddMobSpawn(fieldMobSpawn);
@@ -81,6 +82,7 @@ public partial class FieldManager
                 PortalType = portal.PortalType
             });
             fieldPortal.Coord = portal.Coord.ToFloat();
+            fieldPortal.Rotation = portal.Rotation.ToFloat();
             AddPortal(fieldPortal);
         }
 
@@ -256,6 +258,7 @@ public partial class FieldManager
                                 break;
                         }
                     }
+
                     cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
                     AddPortal(fieldPortal);
                 }
@@ -301,10 +304,12 @@ public partial class FieldManager
         {
             updates.Add(FieldObjectPacket.ControlNpc(npc));
         }
+
         foreach (IFieldActor<Player> player in State.Players.Values)
         {
             updates.Add(FieldObjectPacket.UpdatePlayer(player));
         }
+
         foreach (Mob mob in State.Mobs.Values)
         {
             updates.Add(FieldObjectPacket.ControlMob(mob));
@@ -313,10 +318,7 @@ public partial class FieldManager
                 RemoveMob(mob);
             }
         }
-        foreach (TriggerScript trigger in Triggers)
-        {
-            trigger.Next();
-        }
+
         return updates;
     }
 
@@ -362,6 +364,7 @@ public partial class FieldManager
             {
                 npc.Animation = animation;
             }
+
             AddNpc(npc);
             return npc;
         }
@@ -378,6 +381,7 @@ public partial class FieldManager
         {
             mob.Animation = animation;
         }
+
         AddMob(mob);
         return mob;
     }
@@ -392,6 +396,7 @@ public partial class FieldManager
         {
             mob.Animation = animation;
         }
+
         AddMob(mob);
         return mob;
     }
@@ -429,11 +434,13 @@ public partial class FieldManager
         {
             sender.Send(FieldItemPacket.AddItem(existingItem, 123456));
         }
+
         foreach (IFieldActor<NpcMetadata> existingNpc in State.Npcs.Values)
         {
             sender.Send(FieldNpcPacket.AddNpc(existingNpc));
             sender.Send(FieldObjectPacket.LoadNpc(existingNpc));
         }
+
         foreach (IFieldActor<NpcMetadata> existingMob in State.Mobs.Values)
         {
             sender.Send(FieldNpcPacket.AddMob(existingMob));
@@ -441,6 +448,7 @@ public partial class FieldManager
 
             // TODO: Determine if buffs are sent on Field Enter
         }
+
         foreach (IFieldObject<Portal> existingPortal in State.Portals.Values)
         {
             sender.Send(FieldPortalPacket.AddPortal(existingPortal));
@@ -450,7 +458,7 @@ public partial class FieldManager
         {
             // Send function cubes
             List<Cube> functionCubes = State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
-                                                                    && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)
+                                                                     && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)
                 .Select(x => x.Value).ToList();
 
             if (functionCubes.Count > 0)
@@ -513,12 +521,17 @@ public partial class FieldManager
         triggerObjects.AddRange(State.TriggerSounds.Values.ToList());
         sender.Send(TriggerPacket.LoadTriggers(triggerObjects));
 
-        if (MapLoopTask == null)
+        if (MapLoopTask is null)
         {
             MapLoopTask = StartMapLoop(); //TODO: find a better place to initialise MapLoopTask
         }
 
-        if (player.OnlineTimeThread == null)
+        if (TriggerTask is null)
+        {
+            TriggerTask = StartTriggerTask();
+        }
+
+        if (player.OnlineTimeThread is null)
         {
             player.OnlineTimeThread = player.OnlineTimer();
         }
@@ -531,6 +544,7 @@ public partial class FieldManager
         {
             Sessions.Remove(sender);
         }
+
         State.RemovePlayer(player.FieldPlayer.ObjectId);
         player.Triggers.Clear();
 
@@ -583,7 +597,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            // TODO: Add field remove NPC packet
+            session.Send(FieldNpcPacket.RemoveNpc(fieldNpc));
             session.Send(FieldObjectPacket.RemoveNpc(fieldNpc));
         });
         return true;
@@ -621,7 +635,7 @@ public partial class FieldManager
 
         Broadcast(session =>
         {
-            session.Send(FieldNpcPacket.RemoveMob(mob));
+            session.Send(FieldNpcPacket.RemoveNpc(mob));
             session.Send(FieldObjectPacket.RemoveMob(mob));
         });
         return true;
@@ -726,6 +740,7 @@ public partial class FieldManager
             {
                 return;
             }
+
             session.Send(packet);
         });
     }
@@ -787,6 +802,22 @@ public partial class FieldManager
         });
     }
 
+    private Task StartTriggerTask()
+    {
+        return Task.Run(async () =>
+        {
+            while (!State.Players.IsEmpty)
+            {
+                foreach (TriggerScript trigger in Triggers)
+                {
+                    trigger.Next();
+                }
+
+                await Task.Delay(200);
+            }
+        });
+    }
+
     private void UpdatePhysics()
     {
         foreach (Mob mob in State.Mobs.Values)
@@ -814,6 +845,7 @@ public partial class FieldManager
                 {
                     continue;
                 }
+
                 mob.State = NpcState.Normal;
                 mob.Target = null;
             }
@@ -862,6 +894,7 @@ public partial class FieldManager
             {
                 continue;
             }
+
             int groupSpawnCount = mob.NpcMetadataBasic.GroupSpawnCount; // Spawn count changes due to field effect (?)
             if (mobSpawn.Value.Mobs.Count + groupSpawnCount > mobSpawn.Value.MaxPopulation)
             {
@@ -921,11 +954,6 @@ public partial class FieldManager
         return Widgets.FirstOrDefault(x => x.Type == type);
     }
 
-    public void EnableSceneSkip(bool enable)
-    {
-        SkipScene = enable;
-    }
-
     // This class is private to ensure that callers must first request entry.
     private class FieldObject<T> : IFieldObject<T>
     {
@@ -934,6 +962,7 @@ public partial class FieldManager
 
         public virtual CoordF Coord { get; set; }
         public CoordF Rotation { get; set; }
+
         public short LookDirection
         {
             get => (short) (Rotation.Z * 10);
@@ -947,9 +976,23 @@ public partial class FieldManager
         }
     }
 
-    private abstract partial class FieldActor<T> { }
-    private partial class Character { }
-    private partial class Mob { }
-    private partial class Npc { }
-    private abstract partial class FieldActor<T> { }
+    private abstract partial class FieldActor<T>
+    {
+    }
+
+    private partial class Character
+    {
+    }
+
+    private partial class Mob
+    {
+    }
+
+    private partial class Npc
+    {
+    }
+
+    private abstract partial class FieldActor<T>
+    {
+    }
 }

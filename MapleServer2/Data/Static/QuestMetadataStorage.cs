@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -18,41 +19,19 @@ public static class QuestMetadataStorage
             map[item.Basic.Id] = item;
         }
     }
-    public static QuestMetadata GetMetadata(int questId)
+
+    public static QuestMetadata GetMetadata(int questId) => map.GetValueOrDefault(questId);
+
+    public static List<QuestMetadata> GetAvailableQuests(int level, Job job)
     {
-        return map.GetValueOrDefault(questId);
+        return map.Values.Where(questMetadata => questMetadata.Require.Level <= level
+                                                 && questMetadata.Require.Job.Contains((short) job)
+                                                 && questMetadata.Require.RequiredQuests.Count == 0
+                                                 && questMetadata.Basic.QuestType is QuestType.Epic or QuestType.World)
+            .ToList();
     }
 
-    public static int GetQuestsCount()
-    {
-        return map.Count;
-    }
+    public static Dictionary<int, QuestMetadata> GetAllQuests() => map;
 
-    public static List<QuestMetadata> GetAvailableQuests(int level)
-    {
-        List<QuestMetadata> list = new();
-
-        foreach (KeyValuePair<int, QuestMetadata> item in map)
-        {
-            QuestMetadata questMetadata = item.Value;
-            if (level >= questMetadata.Require.Level && questMetadata.Require.RequiredQuests.Count == 0
-                && (questMetadata.Basic.QuestType == QuestType.Epic || questMetadata.Basic.QuestType == QuestType.World))
-            {
-                list.Add(questMetadata);
-            }
-        }
-
-        return list;
-    }
-
-    public static Dictionary<int, QuestMetadata> GetAllQuests()
-    {
-        return map;
-    }
-
-    public static bool IsValid(int questId)
-    {
-        return map.ContainsKey(questId);
-    }
-
+    public static bool IsValid(int questId) => map.ContainsKey(questId);
 }

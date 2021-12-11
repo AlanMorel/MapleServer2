@@ -45,7 +45,7 @@ public class Levels
         Player.Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
         Player.Session.Send(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
 
-        QuestHelper.GetNewQuests(Player.Session, Level);
+        QuestHelper.GetNewQuests(Player);
     }
 
     public bool LevelUp()
@@ -62,7 +62,7 @@ public class Levels
         Player.FieldPlayer.RecoverHp(Player.FieldPlayer.Stats[StatId.Hp].Bonus);
         Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
 
-        QuestHelper.GetNewQuests(Player.Session, Level);
+        QuestHelper.GetNewQuests(Player);
         return true;
     }
 

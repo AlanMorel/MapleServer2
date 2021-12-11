@@ -474,8 +474,7 @@ CREATE TABLE `quests`
 (
     `uid`                bigint NOT NULL AUTO_INCREMENT,
     `id`                 int    NOT NULL,
-    `started`            tinyint(1) NOT NULL,
-    `completed`          tinyint(1) NOT NULL,
+    `state`              tinyint unsigned NOT NULL,
     `start_timestamp`    bigint NOT NULL,
     `complete_timestamp` bigint NOT NULL,
     `condition`          text,
