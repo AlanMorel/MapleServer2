@@ -80,8 +80,6 @@ internal class InteractObjectHandler : GamePacketHandler
                 GatheringHelper.HandleGathering(session, metadata.Gathering.RecipeId, out int numDrop);
                 session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
                 break;
-            case InteractObjectType.None:
-                break;
             case InteractObjectType.Common:
                 foreach ((int questId, QuestState state) in metadata.Quests)
                 {
@@ -119,10 +117,6 @@ internal class InteractObjectHandler : GamePacketHandler
                         }
                     }
                 }
-                break;
-            case InteractObjectType.GuildPoster:
-                break;
-            case InteractObjectType.MushkingTower:
                 break;
         }
 
