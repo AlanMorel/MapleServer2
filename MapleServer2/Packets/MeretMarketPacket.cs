@@ -8,11 +8,80 @@ public static class MeretMarketPacket
 {
     private enum MeretMarketMode : byte
     {
+        ListItem = 0xD,
         Premium = 0x1B,
         Purchase = 0x1E,
         Initialize = 016,
         Home = 0x65,
         LoadCart = 0x6B
+    }
+
+    public static PacketWriter ListItem()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.ListItem);
+        pWriter.WriteByte(1); // count?
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteByte();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteByte();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteByte();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteByte();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteString();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteByte();
+        return pWriter;
     }
 
     public static PacketWriter Initialize()

@@ -17,6 +17,7 @@ public class MeretMarketHandler : GamePacketHandler
 
     private enum MeretMarketMode : byte
     {
+        ListItem = 0xD,
         Initialize = 0x16,
         OpenPremium = 0x1B,
         SendMarketRequest = 0x1D,
@@ -31,6 +32,9 @@ public class MeretMarketHandler : GamePacketHandler
 
         switch (mode)
         {
+            case MeretMarketMode.ListItem:
+                HandleListItem(session, packet);
+                break;
             case MeretMarketMode.Initialize:
                 HandleInitialize(session);
                 break;
@@ -53,6 +57,24 @@ public class MeretMarketHandler : GamePacketHandler
                 IPacketHandler<GameSession>.LogUnknownMode(mode);
                 break;
         }
+    }
+
+    private static void HandleListItem(GameSession session, PacketReader packet)
+    {
+        long itemUid = packet.ReadLong();
+        long salePrice = packet.ReadLong();
+        bool promote = packet.ReadBool();
+        string tags = packet.ReadUnicodeString();
+        string description = packet.ReadUnicodeString();
+        long listingFee = packet.ReadLong();
+
+        // TODO: Check if item is a ugc block and not an item. Find item from their block inventory
+        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        {
+            return;
+        }
+
+        Item item = session.Player.Inventory.Items[itemUid];
     }
 
     private static void HandleInitialize(GameSession session)
