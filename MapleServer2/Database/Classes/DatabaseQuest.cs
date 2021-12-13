@@ -1,4 +1,5 @@
-﻿using MapleServer2.Types;
+﻿using Maple2Storage.Enums;
+using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 
@@ -13,8 +14,7 @@ public class DatabaseQuest : DatabaseTable
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
             questStatus.Id,
-            questStatus.Started,
-            questStatus.Completed,
+            questStatus.State,
             start_timestamp = questStatus.StartTimestamp,
             complete_timestamp = questStatus.CompleteTimestamp,
             questStatus.Tracked,
@@ -40,8 +40,7 @@ public class DatabaseQuest : DatabaseTable
         QueryFactory.Query(TableName).Where("id", questStatus.Id).Update(new
         {
             questStatus.Id,
-            questStatus.Started,
-            questStatus.Completed,
+            questStatus.State,
             start_timestamp = questStatus.StartTimestamp,
             complete_timestamp = questStatus.CompleteTimestamp,
             questStatus.Tracked,
@@ -57,6 +56,6 @@ public class DatabaseQuest : DatabaseTable
 
     private static QuestStatus ReadQuest(dynamic data)
     {
-        return new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.started, data.completed, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition));
+        return new QuestStatus(data.uid, data.id, data.character_id, data.tracked, data.start_timestamp, data.complete_timestamp, JsonConvert.DeserializeObject<List<Condition>>(data.condition), (QuestState) data.state);
     }
 }

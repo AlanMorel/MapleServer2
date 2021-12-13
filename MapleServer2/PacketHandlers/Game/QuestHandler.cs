@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -62,7 +63,7 @@ public class QuestHandler : GamePacketHandler
             return;
         }
 
-        questStatus.Started = true;
+        questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questId));
@@ -74,12 +75,12 @@ public class QuestHandler : GamePacketHandler
         int objectId = packet.ReadInt();
 
         QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null || questStatus.Completed)
+        if (questStatus == null || questStatus.State is QuestState.Finished)
         {
             return;
         }
 
-        questStatus.Completed = true;
+        questStatus.State = QuestState.Finished;
         questStatus.CompleteTimestamp = TimeInfo.Now();
 
         session.Player.Levels.GainExp(questStatus.Reward.Exp);
@@ -117,7 +118,7 @@ public class QuestHandler : GamePacketHandler
     {
         int questId = packet.ReadInt();
         QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null || questStatus.Completed)
+        if (questStatus == null || questStatus.State is QuestState.Finished)
         {
             return;
         }
@@ -131,7 +132,7 @@ public class QuestHandler : GamePacketHandler
             };
             session.Player.Inventory.AddItem(session, item, true);
         }
-        questStatus.Completed = true;
+        questStatus.State = QuestState.Finished;
         questStatus.CompleteTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.CompleteQuest(questId, false));
@@ -145,13 +146,13 @@ public class QuestHandler : GamePacketHandler
         for (int i = 0; i < listSize; i++)
         {
             int questId = packet.ReadInt();
-            if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.Started))
+            if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.State is QuestState.Started))
             {
                 continue;
             }
 
             QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-            QuestStatus questStatus = new(session.Player, metadata, true, TimeInfo.Now());
+            QuestStatus questStatus = new(session.Player, metadata, QuestState.Started, TimeInfo.Now());
             list.Add(questStatus);
             session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
         }

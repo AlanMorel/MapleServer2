@@ -8,21 +8,22 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public class QuestHelper
+public static class QuestHelper
 {
     public static void UpdateExplorationQuest(GameSession session, string code, string type)
     {
-        List<QuestStatus> quests = session.Player.QuestList.Where(quest => quest.Basic.QuestType == QuestType.Exploration
-                                                                      && quest.Condition is not null
-                                                                      && !quest.Completed
-                                                                      && quest.Started
-                                                                      && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)))
+        List<QuestStatus> quests = session.Player.QuestList.Where(quest =>
+                quest.Basic.QuestType is QuestType.Exploration
+                && quest.Condition is not null
+                && quest.State is QuestState.Started
+                && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)))
             .ToList();
         foreach (QuestStatus quest in quests)
         {
-            Condition condition = quest.Condition.FirstOrDefault(condition => condition.Type == type
-                                                                     && condition.Codes.Contains(code)
-                                                                     && !condition.Completed);
+            Condition condition = quest.Condition.FirstOrDefault(condition =>
+                condition.Type == type
+                && condition.Codes.Contains(code)
+                && !condition.Completed);
             if (condition == null)
             {
                 continue;
@@ -42,7 +43,7 @@ public class QuestHelper
                 return;
             }
 
-            quest.Completed = true;
+            quest.State = QuestState.Finished;
             quest.CompleteTimestamp = TimeInfo.Now();
             DatabaseManager.Quests.Update(quest);
 
@@ -56,20 +57,20 @@ public class QuestHelper
     public static void UpdateQuest(GameSession session, string code, string type, string target = "")
     {
         List<QuestStatus> questList = session.Player.QuestList.Where(quest =>
-                                                                         quest.Condition is not null
-                                                                         && quest.Started
-                                                                         && !quest.Completed
-                                                                         && quest.Condition.Any(condition => condition.Codes is not null
-                                                                                                    && condition.Target is not null
-                                                                                                    && condition.Type == type
-                                                                                                    && condition.Codes.Contains(code)
-                                                                                                    && condition.Target.Contains(target))
+            quest.Condition is not null
+            && quest.State is QuestState.Started
+            && quest.Condition.Any(condition => condition.Codes is not null
+                                                && condition.Target is not null
+                                                && condition.Type == type
+                                                && condition.Codes.Contains(code)
+                                                && (condition.Target.Contains(target) || condition.Target.Count == 0))
         ).ToList();
         foreach (QuestStatus quest in questList)
         {
-            Condition condition = quest.Condition.FirstOrDefault(condition => condition.Codes.Contains(code)
-                                                                     && condition.Target.Contains(target)
-                                                                     && !condition.Completed);
+            Condition condition = quest.Condition.FirstOrDefault(condition =>
+                condition.Codes.Contains(code)
+                && (condition.Target.Contains(target) || condition.Target.Count == 0)
+                && !condition.Completed);
             if (condition == null)
             {
                 continue;
@@ -82,29 +83,32 @@ public class QuestHelper
                     return;
                 }
             }
+
             condition.Current++;
             if (condition.Current >= condition.Goal)
             {
                 condition.Completed = true;
             }
+
             session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
             DatabaseManager.Quests.Update(quest);
             return;
         }
     }
 
-    public static void GetNewQuests(GameSession session, int level)
+    public static void GetNewQuests(Player player)
     {
-        List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(level);
+        List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level, player.Job);
         foreach (QuestMetadata quest in questList)
         {
-            if (session.Player.QuestList.Exists(x => x.Basic.Id == quest.Basic.Id))
+            if (player.QuestList.Any(x => x.Basic.Id == quest.Basic.Id))
             {
                 continue;
             }
-            session.Player.QuestList.Add(new(session.Player, quest));
+
+            player.QuestList.Add(new(player, quest));
         }
 
-        session.Send(QuestPacket.SendQuests(session.Player.QuestList));
+        player.Session.Send(QuestPacket.SendQuests(player.QuestList));
     }
 }

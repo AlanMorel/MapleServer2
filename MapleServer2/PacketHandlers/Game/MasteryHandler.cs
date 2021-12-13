@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
@@ -100,7 +101,7 @@ public class MasteryHandler : GamePacketHandler
             foreach (int questId in recipe.RequireQuest)
             {
                 QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-                if (quest == null || !quest.Completed)
+                if (quest is not { State: QuestState.Finished })
                 {
                     session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
                     return;

@@ -43,10 +43,7 @@ public static class MapEntityStorage
             portals.Add(entity.MapId, entity.Portals);
             playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
             mobSpawns.Add(entity.MapId, entity.MobSpawns);
-            boundingBox.Add(entity.MapId, new CoordS[]
-            {
-                entity.BoundingBox0, entity.BoundingBox1
-            });
+            boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
             healthSpot.Add(entity.MapId, entity.HealingSpot);
             PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
             WayPoints.Add(entity.MapId, entity.WayPoints);
@@ -133,14 +130,22 @@ public static class MapEntityStorage
         return healthSpot.GetValueOrDefault(mapId);
     }
 
-    public static PatrolData GetPatrolData(int mapId, string patrolDataName)
+    public static (PatrolData, List<WayPoint>) GetPatrolData(int mapId, string patrolDataName)
     {
-        return PatrolDatas.GetValueOrDefault(mapId).FirstOrDefault(x => x.Name == patrolDataName);
+        PatrolData patrolData = PatrolDatas.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Name == patrolDataName);
+        if (patrolData is null)
+        {
+            return (null, null);
+        }
+
+        List<WayPoint> wayPoints = patrolData.WayPointIds.Select(wayPointId => GetWayPoint(mapId, wayPointId)).ToList();
+
+        return (patrolData, wayPoints);
     }
 
     public static WayPoint GetWayPoint(int mapId, string id)
     {
-        return WayPoints.GetValueOrDefault(mapId).FirstOrDefault(x => x.Id == id);
+        return WayPoints.GetValueOrDefault(mapId)?.FirstOrDefault(x => x.Id == id);
     }
 
     public static MapEventNpcSpawnPoint GetMapEventNpcSpawnPoint(int mapId, int spawnPointId)
@@ -217,6 +222,7 @@ public static class MapEntityStorage
     {
         return TriggerSkills.GetValueOrDefault(mapId);
     }
+
     public static List<MapInteractObject> GetInteractObjects(int mapId)
     {
         return InteractObjects.GetValueOrDefault(mapId);
