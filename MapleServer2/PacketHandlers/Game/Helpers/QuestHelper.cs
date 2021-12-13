@@ -12,12 +12,11 @@ public static class QuestHelper
 {
     public static void UpdateExplorationQuest(GameSession session, string code, string type)
     {
-        List<QuestStatus> quests = session.Player.QuestList.Where(quest =>
+        IEnumerable<QuestStatus> quests = session.Player.QuestData.Values.Where(quest =>
                 quest.Basic.QuestType is QuestType.Exploration
                 && quest.Condition is not null
                 && quest.State is QuestState.Started
-                && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)))
-            .ToList();
+                && quest.Condition.Any(condition => condition.Type == type && condition.Codes.Contains(code)));
         foreach (QuestStatus quest in quests)
         {
             Condition condition = quest.Condition.FirstOrDefault(condition =>
@@ -56,15 +55,14 @@ public static class QuestHelper
 
     public static void UpdateQuest(GameSession session, string code, string type, string target = "")
     {
-        List<QuestStatus> questList = session.Player.QuestList.Where(quest =>
+        IEnumerable<QuestStatus> questList = session.Player.QuestData.Values.Where(quest =>
             quest.Condition is not null
             && quest.State is QuestState.Started
             && quest.Condition.Any(condition => condition.Codes is not null
                                                 && condition.Target is not null
                                                 && condition.Type == type
                                                 && condition.Codes.Contains(code)
-                                                && (condition.Target.Contains(target) || condition.Target.Count == 0))
-        ).ToList();
+                                                && (condition.Target.Contains(target) || condition.Target.Count == 0)));
         foreach (QuestStatus quest in questList)
         {
             Condition condition = quest.Condition.FirstOrDefault(condition =>
@@ -101,14 +99,14 @@ public static class QuestHelper
         List<QuestMetadata> questList = QuestMetadataStorage.GetAvailableQuests(player.Levels.Level, player.Job);
         foreach (QuestMetadata quest in questList)
         {
-            if (player.QuestList.Any(x => x.Basic.Id == quest.Basic.Id))
+            if (player.QuestData.ContainsKey(quest.Basic.Id))
             {
                 continue;
             }
 
-            player.QuestList.Add(new(player, quest));
+            player.QuestData.Add(quest.Basic.Id, new(player, quest));
         }
 
-        player.Session.Send(QuestPacket.SendQuests(player.QuestList));
+        player.Session.Send(QuestPacket.SendQuests(player.QuestData.Values.ToList()));
     }
 }

@@ -51,11 +51,15 @@ public class ScriptManager
 
     public bool HasQuestStarted(int questId)
     {
-        return Player.QuestList.Any(x => x.Id == questId && x.State is QuestState.Started);
+        return Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && questStatus.State == QuestState.Started;
     }
 
     public bool HasQuestStarted(List<int> questIds)
     {
-        return Player.QuestList.Any(x => questIds.Contains(x.Id) && x.State is QuestState.Started);
+        foreach (int questId in questIds)
+        {
+            return Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) && questStatus.State == QuestState.Started;
+        }
+        return false;
     }
 }

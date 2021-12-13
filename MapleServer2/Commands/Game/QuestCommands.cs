@@ -41,11 +41,10 @@ public class CompleteQuestCommand : InGameCommand
         }
 
         Player player = trigger.Session.Player;
-        QuestStatus questStatus = player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null)
+        if (!player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
             questStatus = new(player, QuestMetadataStorage.GetMetadata(questId));
-            player.QuestList.Add(questStatus);
+            player.QuestData.Add(questId, questStatus);
         }
         questStatus.State = QuestState.Finished;
         questStatus.StartTimestamp = TimeInfo.Now();
@@ -70,9 +69,9 @@ public class CompleteQuestCommand : InGameCommand
 
         // Add next quest
         IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
-        foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+        foreach ((int id, QuestMetadata quest) in questList)
         {
-            player.QuestList.Add(new(player, kvp.Value));
+            player.QuestData.Add(id, new(player, quest));
         }
     }
 }
@@ -106,12 +105,13 @@ public class StartQuestCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice($"Quest not found with id: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
-        if (trigger.Session.Player.QuestList.Any(x => x.Basic.Id == questId))
+        if (trigger.Session.Player.QuestData.ContainsKey(questId))
         {
             trigger.Session.Send(NoticePacket.Notice($"You already have quest: {questId.ToString().Color(Color.Aquamarine)}.", NoticeType.Chat));
             return;
         }
-        trigger.Session.Player.QuestList.Add(new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now()));
+
+        trigger.Session.Player.QuestData.Add(questId, new(trigger.Session.Player, quest, QuestState.Started, TimeInfo.Now()));
         trigger.Session.Send(QuestPacket.AcceptQuest(questId));
     }
 }

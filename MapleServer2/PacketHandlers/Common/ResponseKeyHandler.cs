@@ -127,7 +127,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         session.Send(QuestPacket.Packet1F());
         session.Send(QuestPacket.Packet20());
 
-        IEnumerable<List<QuestStatus>> packetCount = player.QuestList.SplitList(200); // Split the quest list in 200 quests per packet
+        IEnumerable<List<QuestStatus>> packetCount = player.QuestData.Values.ToList().SplitList(200); // Split the quest list in 200 quests per packet
         foreach (List<QuestStatus> item in packetCount)
         {
             session.Send(QuestPacket.SendQuests(item));

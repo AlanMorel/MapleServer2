@@ -154,8 +154,7 @@ public partial class TriggerContext
 
                 foreach (int questId in questIds)
                 {
-                    QuestStatus quest = player.Value.QuestList.FirstOrDefault(x => x.Id == questId);
-                    if (quest is null)
+                    if (!player.Value.QuestData.TryGetValue(questId, out QuestStatus quest))
                     {
                         return false;
                     }
