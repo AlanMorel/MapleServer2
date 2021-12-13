@@ -15,7 +15,7 @@ public class InteractObjectMetadata
     [XmlElement(Order = 4)]
     public InteractObjectDropMetadata Drop;
     [XmlElement(Order = 5)]
-    public List<InteractObjectQuestMetadata> Quests;
+    public List<(int QuestId, QuestState State)> Quests;
     [XmlElement(Order = 6)]
     public InteractObjectGatheringMetadata Gathering;
     [XmlElement(Order = 7)]
@@ -26,6 +26,7 @@ public class InteractObjectMetadata
         Quests = new();
     }
 }
+
 [XmlType]
 public class InteractObjectRewardMetadata
 {
@@ -42,6 +43,7 @@ public class InteractObjectRewardMetadata
 
     public InteractObjectRewardMetadata() { }
 }
+
 [XmlType]
 public class InteractObjectDropMetadata
 {
@@ -60,16 +62,7 @@ public class InteractObjectDropMetadata
         IndividualDropBoxId = new();
     }
 }
-[XmlType]
-public class InteractObjectQuestMetadata
-{
-    [XmlElement(Order = 1)]
-    public List<int> QuestIds = new();
-    [XmlElement(Order = 2)]
-    public List<int> QuestStates = new();
 
-    public InteractObjectQuestMetadata() { }
-}
 [XmlType]
 public class InteractObjectGatheringMetadata
 {

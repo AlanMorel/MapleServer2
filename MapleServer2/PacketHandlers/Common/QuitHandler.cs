@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Data;
 using MapleServer2.Network;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -55,13 +54,11 @@ public class QuitHandler : CommonPacketHandler
     {
         session.FieldManager.RemovePlayer(session);
 
-        AuthData authData = AuthStorage.GetData(session.Player.AccountId);
-
-        session.Send(MigrationPacket.GameToLogin(LoginEndpoint, authData));
+        session.SendFinal(MigrationPacket.GameToLogin(LoginEndpoint, session.Player.Account.AuthData), logoutNotice: true);
     }
 
     private static void HandleQuit(GameSession session)
     {
-        session.Disconnect();
+        session.Disconnect(logoutNotice: true);
     }
 }

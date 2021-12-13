@@ -62,7 +62,7 @@ public class LoginHandler : LoginPacketHandler
 
             if (loggedInAccount != null)
             {
-                loggedInAccount.Disconnect();
+                loggedInAccount.Disconnect(logoutNotice: true);
                 session.Send(LoginResultPacket.AccountAlreadyLoggedIn());
                 return;
             }
@@ -95,8 +95,7 @@ public class LoginHandler : LoginPacketHandler
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(NpsInfoPacket.SendUsername(account.Username));
         session.Send(BannerListPacket.SetBanner(banners));
-        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
-        session.Disconnect();
+        session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs), logoutNotice: true);
     }
 
     private void SendCharacters(LoginSession session, Account account)

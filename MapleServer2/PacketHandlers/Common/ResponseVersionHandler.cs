@@ -40,7 +40,7 @@ public class ResponseVersionHandler : CommonPacketHandler
 
         if (version != Session.VERSION)
         {
-            session.Disconnect();
+            session.Disconnect(logoutNotice: true);
         }
     }
 }

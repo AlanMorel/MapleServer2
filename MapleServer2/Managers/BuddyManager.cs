@@ -34,9 +34,9 @@ public class BuddyManager
 
     public Buddy GetBuddyByPlayerAndId(Player player, long id)
     {
-        return BuddyList.Values.ToList()
-            .Where(o => o.Friend.CharacterId != player.CharacterId && o.SharedId == id)
-            .FirstOrDefault();
+        return BuddyList.Values
+            .ToList()
+            .FirstOrDefault(o => o.Friend.CharacterId != player.CharacterId && o.SharedId == id);
     }
 
     public static bool IsFriend(Player player1, Player player2)

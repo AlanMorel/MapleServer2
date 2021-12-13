@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using Maple2Storage.Tools;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
@@ -78,6 +79,44 @@ internal class InteractObjectHandler : GamePacketHandler
             case InteractObjectType.Gathering:
                 GatheringHelper.HandleGathering(session, metadata.Gathering.RecipeId, out int numDrop);
                 session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
+                break;
+            case InteractObjectType.Common:
+                foreach ((int questId, QuestState state) in metadata.Quests)
+                {
+                    QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Id == questId && x.State == state);
+                    if (questStatus is null)
+                    {
+                        continue;
+                    }
+
+                    foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+                    {
+                        ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                        if (itemDropMetadataStorage is null)
+                        {
+                            continue;
+                        }
+
+                        foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                        {
+                            foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                            {
+                                foreach (int itemId in dropGroupContent.ItemIds)
+                                {
+                                    Item item = new(itemId)
+                                    {
+                                        Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                        Rarity = dropGroupContent.Rarity
+                                    };
+
+                                    session.FieldManager.AddItem(session, item);
+                                    session.Send(InteractObjectPacket.Use(interactObject));
+                                    session.Send(InteractObjectPacket.Interact(interactObject));
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
         }
 

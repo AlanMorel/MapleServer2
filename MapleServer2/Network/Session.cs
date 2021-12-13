@@ -116,14 +116,14 @@ public abstract class Session : IDisposable
         PipeScheduler.Complete();
     }
 
-    public void Disconnect()
+    public void Disconnect(bool logoutNotice)
     {
         if (Disposed)
         {
             return;
         }
 
-        EndSession();
+        EndSession(logoutNotice);
         ((IDisposable) this).Dispose();
     }
 
@@ -162,6 +162,12 @@ public abstract class Session : IDisposable
         SendInternal(packet, packet.Length);
     }
 
+    public void SendFinal(PacketWriter packet, bool logoutNotice)
+    {
+        SendInternal(packet, packet.Length);
+        Disconnect(logoutNotice);
+    }
+
     public override string ToString()
     {
         return $"{GetType().Name} from {Name}";
@@ -192,7 +198,7 @@ public abstract class Session : IDisposable
         }
         finally
         {
-            Disconnect();
+            Disconnect(logoutNotice: true);
         }
     }
 
@@ -227,7 +233,7 @@ public abstract class Session : IDisposable
         }
         catch (Exception)
         {
-            Disconnect();
+            Disconnect(logoutNotice: true);
         }
     }
 
@@ -268,7 +274,7 @@ public abstract class Session : IDisposable
         }
         finally
         {
-            Disconnect();
+            Disconnect(logoutNotice: true);
         }
     }
 
@@ -300,7 +306,7 @@ public abstract class Session : IDisposable
         }
         catch (Exception)
         {
-            Disconnect();
+            Disconnect(logoutNotice: true);
         }
     }
 
@@ -364,5 +370,5 @@ public abstract class Session : IDisposable
         }
     }
 
-    public abstract void EndSession();
+    protected abstract void EndSession(bool logoutNotice);
 }

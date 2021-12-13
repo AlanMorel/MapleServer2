@@ -25,12 +25,14 @@ public class Account
     public Home Home;
     public BankInventory BankInventory;
 
+    public AuthData AuthData;
+
     public Account() { }
 
     public Account(long accountId, string username, string passwordHash,
         long creationTime, long lastLoginTime, int characterSlots, long meretAmount,
         long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration, int mesoMarketDailyListings, int mesoMarketMonthlyPurchases,
-        BankInventory bankInventory)
+        BankInventory bankInventory, AuthData authData)
     {
         Id = accountId;
         Username = username;
@@ -47,6 +49,7 @@ public class Account
         HomeId = homeId;
         MesoMarketDailyListings = mesoMarketDailyListings;
         MesoMarketMonthlyPurchases = mesoMarketMonthlyPurchases;
+        AuthData = authData;
     }
 
     public Account(string username, string passwordHash)
@@ -63,6 +66,7 @@ public class Account
         BankInventory = new();
 
         Id = DatabaseManager.Accounts.Insert(this);
+        AuthData = new(Id);
     }
 
     public bool RemoveMerets(long amount)
@@ -72,21 +76,18 @@ public class Account
             return true;
         }
 
-        if (Meret.Amount + GameMeret.Amount + EventMeret.Amount >= amount)
+        if (Meret.Amount + GameMeret.Amount + EventMeret.Amount < amount)
         {
-            long rest = Meret.Amount + GameMeret.Amount + EventMeret.Amount - amount;
-            Meret.SetAmount(rest);
-            GameMeret.SetAmount(0);
-            EventMeret.SetAmount(0);
-
-            return true;
+            return false;
         }
 
-        return false;
+        long rest = Meret.Amount + GameMeret.Amount + EventMeret.Amount - amount;
+        Meret.SetAmount(rest);
+        GameMeret.SetAmount(0);
+        EventMeret.SetAmount(0);
+
+        return true;
     }
 
-    public bool IsVip()
-    {
-        return VIPExpiration > TimeInfo.Now();
-    }
+    public bool IsVip() => VIPExpiration > TimeInfo.Now();
 }
