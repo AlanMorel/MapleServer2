@@ -94,7 +94,7 @@ public class DatabaseCharacter : DatabaseTable
         {
             trophies.Add(trophy.Key, trophy.Value);
         }
-        List<QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.character_id);
+        Dictionary<int, QuestStatus> questList = DatabaseManager.Quests.FindAllByCharacterId(data.character_id);
         AuthData authData = new(data.token_a, data.token_b, data.account_id, data.online_character_id ?? 0);
 
         return new()
@@ -146,7 +146,7 @@ public class DatabaseCharacter : DatabaseTable
             VisitingHomeId = data.visiting_home_id,
             SkillTabs = skillTabs,
             TrophyData = trophies,
-            QuestList = questList,
+            QuestData = questList,
             GatheringCount = JsonConvert.DeserializeObject<List<GatheringCount>>(data.gathering_count)
         };
     }

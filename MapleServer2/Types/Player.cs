@@ -132,7 +132,7 @@ public class Player
     public Item FishingRod; // Possibly temp solution?
 
     public Wallet Wallet { get; set; }
-    public List<QuestStatus> QuestList;
+    public Dictionary<int, QuestStatus> QuestData;
 
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
@@ -216,7 +216,7 @@ public class Player
         Inventory = new(true);
         Mailbox = new();
         BuddyList = new();
-        QuestList = new();
+        QuestData = new();
         GatheringCount = new();
         TrophyCount = new[] { 0, 0, 0 };
         ReturnMapId = (int) Map.Tria;
@@ -232,7 +232,7 @@ public class Player
         // Add initial quests
         foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, job))
         {
-            QuestList.Add(new(this, questMetadata));
+            QuestData.Add(questMetadata.Basic.Id, new(this, questMetadata));
         }
     }
 
