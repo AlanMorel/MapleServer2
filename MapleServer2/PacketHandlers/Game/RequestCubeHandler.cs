@@ -9,6 +9,7 @@ using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Managers;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -235,6 +236,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             return;
         }
+
         int plotMapId = player.Account.Home.PlotMapId;
         int plotNumber = player.Account.Home.PlotNumber;
         int apartmentNumber = player.Account.Home.ApartmentNumber;
@@ -274,6 +276,13 @@ public class RequestCubeHandler : GamePacketHandler
 
         CoordF coordF = coord.ToFloat();
         Player player = session.Player;
+
+        LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.ItemId == itemId);
+        if (liftable is not null)
+        {
+            HandleAddLiftable(player, session.FieldManager, liftable, coord, rotation);
+            return;
+        }
 
         bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
         Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
@@ -327,6 +336,7 @@ public class RequestCubeHandler : GamePacketHandler
                 session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
                 return;
             }
+
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
                 session.SendNotice("You don't have building rights.");
@@ -362,6 +372,27 @@ public class RequestCubeHandler : GamePacketHandler
         AddFunctionCube(session, coord, fieldCube);
     }
 
+    private static void HandleAddLiftable(Player player, FieldManager fieldManager, LiftableObject liftable, CoordB coord, CoordF rotation)
+    {
+        liftable.Position = coord.ToFloat();
+        liftable.Rotation = rotation;
+
+        liftable.State = LiftableState.Active;
+        liftable.Enabled = true;
+
+        MapLiftableTarget target = MapEntityStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
+        if (target is not null)
+        {
+            liftable.State = LiftableState.Disabled;
+            QuestHelper.UpdateQuest(player.Session, liftable.ItemId.ToString(), "item_move", target.Target.ToString());
+        }
+
+        fieldManager.BroadcastPacket(LiftablePacket.Drop(liftable));
+        fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(liftable, player.FieldPlayer.ObjectId));
+        fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
+        fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
+    }
+
     private static void HandleRemoveCube(GameSession session, PacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
@@ -378,6 +409,7 @@ public class RequestCubeHandler : GamePacketHandler
                 session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
                 return;
             }
+
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
                 session.SendNotice("You don't have building rights.");
@@ -503,6 +535,7 @@ public class RequestCubeHandler : GamePacketHandler
                 session.SendNotice("You cannot do that unless the home owner is present."); // TODO: use notice packet
                 return;
             }
+
             if (!home.BuildingPermissions.Contains(player.Account.Id))
             {
                 session.SendNotice("You don't have building rights.");
@@ -545,6 +578,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             _ = home.AddWarehouseItem(homeOwner.Value.Session, oldFieldCube.Value.Item.Id, 1, oldFieldCube.Value.Item);
         }
+
         session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId, newFieldCube, false));
         session.FieldManager.AddCube(newFieldCube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
 
@@ -620,6 +654,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             owner.Value.Session.Send(HomeCommandPacket.UpdateArchitectScore(owner.ObjectId, home.ArchitectScoreCurrent, home.ArchitectScoreTotal));
         }
+
         session.Send(ResponseCubePacket.ArchitectScoreExpiration(player.AccountId, TimeInfo.Now()));
     }
 
@@ -645,10 +680,12 @@ public class RequestCubeHandler : GamePacketHandler
         {
             return;
         }
+
         foreach (IFieldObject<Cube> cube in session.FieldManager.State.Cubes.Values)
         {
             RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
+
         session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
     }
 
@@ -692,9 +729,11 @@ public class RequestCubeHandler : GamePacketHandler
                 {
                     cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * cube.Value);
                 }
+
                 cubeCount += cube.Value;
                 continue;
             }
+
             if (item.Amount < cube.Value)
             {
                 FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
@@ -707,6 +746,7 @@ public class RequestCubeHandler : GamePacketHandler
                 {
                     cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * missingCubes);
                 }
+
                 cubeCount += missingCubes;
             }
         }
@@ -781,6 +821,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 session.FieldManager.BroadcastPacket(ResponseCubePacket.ReplaceCube(session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId, fieldCube, false));
             }
+
             session.FieldManager.AddCube(fieldCube, session.Player.FieldPlayer.ObjectId, session.Player.FieldPlayer.ObjectId);
         }
 
@@ -795,10 +836,12 @@ public class RequestCubeHandler : GamePacketHandler
         {
             return;
         }
+
         if (mode == RequestCubeMode.IncreaseSize && home.Size + 1 > 25 || mode == RequestCubeMode.IncreaseHeight && home.Height + 1 > 15)
         {
             return;
         }
+
         if (mode == RequestCubeMode.DecreaseSize && home.Size - 1 < 4 || mode == RequestCubeMode.DecreaseHeight && home.Height - 1 < 3)
         {
             return;
@@ -855,6 +898,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
             }
+
             foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
             {
                 fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
@@ -883,6 +927,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             home.Layouts.Add(new(home.Id, layoutId, layoutName, home.Size, home.Height, TimeInfo.Now(), home.FurnishingInventory.Values.ToList()));
         }
+
         session.Send(ResponseCubePacket.SaveLayout(home.AccountId, layoutId, layoutName, TimeInfo.Now()));
     }
 
@@ -891,50 +936,17 @@ public class RequestCubeHandler : GamePacketHandler
         // Decoration score goals
         Dictionary<ItemHousingCategory, int> goals = new()
         {
-            {
-                ItemHousingCategory.Bed,
-                1
-            },
-            {
-                ItemHousingCategory.Table,
-                1
-            },
-            {
-                ItemHousingCategory.SofasChairs,
-                2
-            },
-            {
-                ItemHousingCategory.Storage,
-                1
-            },
-            {
-                ItemHousingCategory.WallDecoration,
-                1
-            },
-            {
-                ItemHousingCategory.WallTiles,
-                3
-            },
-            {
-                ItemHousingCategory.Bathroom,
-                1
-            },
-            {
-                ItemHousingCategory.Lighting,
-                1
-            },
-            {
-                ItemHousingCategory.Electronics,
-                1
-            },
-            {
-                ItemHousingCategory.Fences,
-                2
-            },
-            {
-                ItemHousingCategory.NaturalTerrain,
-                4
-            }
+            { ItemHousingCategory.Bed, 1 },
+            { ItemHousingCategory.Table, 1 },
+            { ItemHousingCategory.SofasChairs, 2 },
+            { ItemHousingCategory.Storage, 1 },
+            { ItemHousingCategory.WallDecoration, 1 },
+            { ItemHousingCategory.WallTiles, 3 },
+            { ItemHousingCategory.Bathroom, 1 },
+            { ItemHousingCategory.Lighting, 1 },
+            { ItemHousingCategory.Electronics, 1 },
+            { ItemHousingCategory.Fences, 2 },
+            { ItemHousingCategory.NaturalTerrain, 4 }
         };
 
         Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
@@ -955,6 +967,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 continue;
             }
+
             if (currentCount >= goals[category])
             {
                 switch (category)
@@ -1050,6 +1063,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             fieldPlayer.Value.Session.Send(ResponseCubePacket.KickEveryone());
         }
+
         Task.Run(async () =>
         {
             await Task.Delay(TimeSpan.FromSeconds(10));
@@ -1101,6 +1115,7 @@ public class RequestCubeHandler : GamePacketHandler
         {
             home.Permissions[permission] = setting;
         }
+
         session.FieldManager.BroadcastPacket(ResponseCubePacket.SetPermission(permission, setting));
     }
 
@@ -1218,6 +1233,7 @@ public class RequestCubeHandler : GamePacketHandler
                     fieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
                     return true;
                 }
+
                 return false;
             case 3: // meret
                 if (home.Merets - shop.Price >= 0)
@@ -1227,6 +1243,7 @@ public class RequestCubeHandler : GamePacketHandler
                     fieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
                     return true;
                 }
+
                 return false;
             default:
                 return false;
@@ -1270,8 +1287,10 @@ public class RequestCubeHandler : GamePacketHandler
                 coordS.Z -= Block.BLOCK_SIZE;
                 continue;
             }
+
             return false;
         }
+
         return true;
     }
 
@@ -1293,8 +1312,10 @@ public class RequestCubeHandler : GamePacketHandler
                 coord -= CoordB.From(0, 0, 1);
                 continue;
             }
+
             return block.Coord.ToByte();
         }
+
         return null;
     }
 
@@ -1385,6 +1406,7 @@ public class RequestCubeHandler : GamePacketHandler
                 session.Send(WarehouseInventoryPacket.Remove(item.Uid));
             }
         }
+
         furnishingInventory.Add(fieldCube.Value.Uid, fieldCube.Value);
         return fieldCube;
     }
@@ -1426,6 +1448,7 @@ public class RequestCubeHandler : GamePacketHandler
                 currency = "merets";
                 break;
         }
+
         session.SendNotice($"You don't have enough {currency}!");
     }
 
@@ -1441,6 +1464,7 @@ public class RequestCubeHandler : GamePacketHandler
                 currency = "merets";
                 break;
         }
+
         session.SendNotice($"Budget doesn't have enough {currency}!");
     }
 
@@ -1451,6 +1475,7 @@ public class RequestCubeHandler : GamePacketHandler
             session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 1, 0));
             session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 2, 1));
         }
+
         if (newFieldCube.Value.Item.Id == 50400158) // portal cube
         {
             session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coord, 0, 0));

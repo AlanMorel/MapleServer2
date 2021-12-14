@@ -211,6 +211,15 @@ public partial class FieldManager
             }
         }
 
+        foreach (MapLiftableObject liftable in MapEntityStorage.GetLiftablesObjects(MapId))
+        {
+            if (liftable != null)
+            {
+                LiftableObject liftableObject = new(liftable.EntityId, liftable.ItemId, liftable.MaskQuestId, liftable.MaskQuestState);
+                State.AddLiftableObject(liftableObject);
+            }
+        }
+
         // Load cubes
         if (MapId == (int) Map.PrivateResidence)
         {
@@ -409,6 +418,7 @@ public partial class FieldManager
         player.MapId = MapId;
         player.FieldPlayer.Coord = player.SavedCoord;
         player.FieldPlayer.Rotation = player.SavedRotation;
+        player.SafeBlock = player.SavedCoord;
 
         lock (Sessions)
         {

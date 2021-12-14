@@ -333,6 +333,9 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                 case IMS2Liftable liftable:
                     metadata.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState));
                     break;
+                case IMS2LiftableTargetBox liftableTargetBox:
+                    metadata.LiftableTargets.Add(new(liftableTargetBox.liftableTarget, CoordF.FromVector3(liftableTargetBox.Position), CoordF.FromVector3(liftableTargetBox.ShapeDimensions)));
+                    break;
                 case IMS2CubeProp prop:
                     if (prop.IsObjectWeapon)
                     {

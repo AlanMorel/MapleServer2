@@ -61,6 +61,8 @@ public class MapEntityMetadata
     public readonly List<MapInteractObject> InteractObjects;
     [XmlElement(Order = 27)]
     public readonly List<MapLiftableObject> LiftableObjects;
+    [XmlElement(Order = 28)]
+    public readonly List<MapLiftableTarget> LiftableTargets;
 
     // Required for deserialization
     public MapEntityMetadata()
@@ -89,6 +91,7 @@ public class MapEntityMetadata
         TriggerSkills = new();
         InteractObjects = new();
         LiftableObjects = new();
+        LiftableTargets = new();
     }
 
     public MapEntityMetadata(int mapId)
@@ -118,6 +121,7 @@ public class MapEntityMetadata
         TriggerSkills = new();
         InteractObjects = new();
         LiftableObjects = new();
+        LiftableTargets = new();
     }
 
     public override string ToString()
@@ -700,5 +704,25 @@ public class MapLiftableObject
         ItemId = itemId;
         MaskQuestId = maskQuestId;
         MaskQuestState = maskQuestState;
+    }
+}
+
+[XmlType]
+public class MapLiftableTarget
+{
+    [XmlElement(Order = 1)]
+    public int Target;
+    [XmlElement(Order = 2)]
+    public CoordF Position;
+    [XmlElement(Order = 3)]
+    public CoordF ShapeDimensions;
+
+    public MapLiftableTarget() { }
+
+    public MapLiftableTarget(int target, CoordF position, CoordF shapeDimensions)
+    {
+        Target = target;
+        Position = position;
+        ShapeDimensions = shapeDimensions;
     }
 }

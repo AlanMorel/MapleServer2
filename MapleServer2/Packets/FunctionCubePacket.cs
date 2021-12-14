@@ -25,7 +25,7 @@ public class FunctionCubePacket
         packetWriter.WriteInt(cubes.Count);
         foreach (Cube cube in cubes)
         {
-            packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(cube.CoordF.ToByte())}");
+            packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(cube.CoordF.ToByte())}");
             switch (cube.Item.HousingCategory)
             {
                 case ItemHousingCategory.Farming:
@@ -36,6 +36,7 @@ public class FunctionCubePacket
                     packetWriter.WriteInt();
                     break;
             }
+
             packetWriter.WriteByte();
         }
 
@@ -47,7 +48,7 @@ public class FunctionCubePacket
         PacketWriter packetWriter = PacketWriter.Of(SendOp.FUNCTION_CUBE);
 
         packetWriter.Write(FunctionCubeMode.Add);
-        packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
         packetWriter.WriteInt(status);
         packetWriter.WriteByte(unkByte);
 
@@ -60,7 +61,7 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.Furniture);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
         packetWriter.WriteBool(inUse);
 
         return packetWriter;
@@ -72,7 +73,7 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.SuccessLifeSkill);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
         packetWriter.WriteLong(TimeInfo.Now());
         packetWriter.WriteInt(status);
 
@@ -85,20 +86,9 @@ public class FunctionCubePacket
 
         packetWriter.Write(FunctionCubeMode.FailLifeSkill);
         packetWriter.WriteLong(characterId);
-        packetWriter.WriteUnicodeString($"4_{CoordBAsHexadimal(coordB)}");
+        packetWriter.WriteUnicodeString($"4_{CoordB.AsHexadecimal(coordB)}");
         packetWriter.WriteLong(TimeInfo.Now());
 
         return packetWriter;
-    }
-
-    private static long CoordBAsHexadimal(CoordB coordB)
-    {
-        /// Get the block coord, transform to hexa, reverse and then transform to long
-        /// Example: (-1, -1, 1)
-        /// Reverse and transform to hexadecimal as string: '1FFFF'
-        /// Convert the string above to long: 65535
-        byte[] coords = coordB.ToArray();
-        string coordRevertedAsString = $"{coords[2]}{coords[1]:X2}{coords[0]:X2}";
-        return Convert.ToInt64(coordRevertedAsString, 16);
     }
 }

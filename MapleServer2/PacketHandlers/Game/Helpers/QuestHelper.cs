@@ -92,7 +92,6 @@ public static class QuestHelper
 
             session.Send(QuestPacket.UpdateCondition(quest.Basic.Id, quest.Condition));
             DatabaseManager.Quests.Update(quest);
-            return;
         }
     }
 

@@ -89,6 +89,10 @@ internal class InteractObjectHandler : GamePacketHandler
                         continue;
                     }
 
+                    QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
+                    session.Send(InteractObjectPacket.QuestUse(interactObject));
+                    session.Send(InteractObjectPacket.Interact(interactObject));
+
                     foreach (int boxId in metadata.Drop.IndividualDropBoxId)
                     {
                         ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
@@ -110,13 +114,12 @@ internal class InteractObjectHandler : GamePacketHandler
                                     };
 
                                     session.FieldManager.AddItem(session, item);
-                                    session.Send(InteractObjectPacket.Use(interactObject));
-                                    session.Send(InteractObjectPacket.Interact(interactObject));
                                 }
                             }
                         }
                     }
                 }
+
                 break;
         }
 

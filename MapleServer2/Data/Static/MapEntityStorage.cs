@@ -32,6 +32,8 @@ public static class MapEntityStorage
     private static readonly Dictionary<int, List<MapTriggerSkill>> TriggerSkills = new();
     private static readonly Dictionary<int, List<MapInteractObject>> InteractObjects = new();
     private static readonly Dictionary<int, List<MapWeaponObject>> WeaponObjects = new();
+    private static readonly Dictionary<int, List<MapLiftableObject>> LiftableObjects = new();
+    private static readonly Dictionary<int, List<MapLiftableTarget>> LiftableTargets = new();
 
     public static void Init()
     {
@@ -63,6 +65,8 @@ public static class MapEntityStorage
             TriggerSkills.Add(entity.MapId, entity.TriggerSkills);
             InteractObjects.Add(entity.MapId, entity.InteractObjects);
             WeaponObjects.Add(entity.MapId, entity.WeaponObjects);
+            LiftableObjects.Add(entity.MapId, entity.LiftableObjects);
+            LiftableTargets.Add(entity.MapId, entity.LiftableTargets);
         }
     }
 
@@ -240,4 +244,8 @@ public static class MapEntityStorage
         int index = random.Next(weaponObject.WeaponItemIds.Count);
         return weaponObject.WeaponItemIds[index];
     }
+
+    public static IEnumerable<MapLiftableObject> GetLiftablesObjects(int mapId) => LiftableObjects[mapId];
+
+    public static IEnumerable<MapLiftableTarget> GetLiftablesTargets(int mapId) => LiftableTargets[mapId];
 }
