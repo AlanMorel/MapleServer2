@@ -23,13 +23,14 @@ public class DatabaseQuest : DatabaseTable
         });
     }
 
-    public List<QuestStatus> FindAllByCharacterId(long characterId)
+    public Dictionary<int, QuestStatus> FindAllByCharacterId(long characterId)
     {
         IEnumerable<dynamic> results = QueryFactory.Query(TableName).Where("character_id", characterId).Get();
-        List<QuestStatus> questStatusList = new();
+        Dictionary<int, QuestStatus> questStatusList = new();
         foreach (dynamic data in results)
         {
-            questStatusList.Add((QuestStatus) ReadQuest(data));
+            QuestStatus questStatus = (QuestStatus) ReadQuest(data);
+            questStatusList.Add(questStatus.Id, questStatus);
         }
 
         return questStatusList;

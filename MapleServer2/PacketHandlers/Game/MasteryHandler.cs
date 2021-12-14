@@ -89,7 +89,7 @@ public class MasteryHandler : GamePacketHandler
 
         if (recipe.RequireMastery > 0)
         {
-            if (session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp < recipe.RequireMastery)
+            if (session.Player.Levels.MasteryExp.First(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp < recipe.RequireMastery)
             {
                 session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMastery));
                 return;
@@ -100,8 +100,7 @@ public class MasteryHandler : GamePacketHandler
         {
             foreach (int questId in recipe.RequireQuest)
             {
-                QuestStatus quest = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-                if (quest is not { State: QuestState.Finished })
+                if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Finished)
                 {
                     session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
                     return;
