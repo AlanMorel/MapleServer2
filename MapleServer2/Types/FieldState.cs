@@ -28,6 +28,7 @@ public class FieldState
     public readonly ConcurrentDictionary<string, BreakableNifObject> BreakableNifs;
     public readonly ConcurrentDictionary<int, IFieldObject<TriggerSkill>> TriggerSkills;
     public readonly ConcurrentDictionary<string, InteractObject> InteractObjects;
+    public readonly ConcurrentDictionary<string, LiftableObject> LiftableObjects;
 
     public FieldState()
     {
@@ -53,6 +54,7 @@ public class FieldState
         BreakableNifs = new();
         TriggerSkills = new();
         InteractObjects = new();
+        LiftableObjects = new();
     }
 
     public bool TryGetItem(int objectId, out IFieldObject<Item> item)
@@ -220,5 +222,10 @@ public class FieldState
     public void AddInteractObject(InteractObject interactObject)
     {
         InteractObjects[interactObject.Id] = interactObject;
+    }
+
+    public void AddLiftableObject(LiftableObject liftableObject)
+    {
+        LiftableObjects[liftableObject.EntityId] = liftableObject;
     }
 }

@@ -9,11 +9,23 @@ internal class InteractObjectPacket
 {
     private enum InteractObjectMode : byte
     {
+        QuestUse = 0x04,
         Use = 0x05,
         SetInteractObject = 0x06,
         LoadInteractObject = 0x08,
         AddAdBalloons = 0x09,
         Interact = 0x0D
+    }
+
+    public static PacketWriter QuestUse(InteractObject interactObject)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        pWriter.Write(InteractObjectMode.QuestUse);
+        pWriter.WriteString(interactObject.Id);
+        pWriter.WriteByte();
+        pWriter.Write(interactObject.Type);
+
+        return pWriter;
     }
 
     public static PacketWriter Use(InteractObject interactObject, short result = 0, int numDrops = 0)

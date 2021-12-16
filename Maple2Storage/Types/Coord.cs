@@ -500,6 +500,17 @@ public struct CoordB
         };
     }
 
+    public static long AsHexadecimal(CoordB coordB)
+    {
+        /// Get the block coord, transform to hexa, reverse and then transform to long
+        /// Example: (-1, -1, 1)
+        /// Reverse and transform to hexadecimal as string: '1FFFF'
+        /// Convert the string above to long: 65535
+        byte[] coords = coordB.ToArray();
+        string coordRevertedAsString = $"{coords[2]}{coords[1]:X2}{coords[0]:X2}";
+        return Convert.ToInt64(coordRevertedAsString, 16);
+    }
+
     #region Overrides
     public bool Equals(CoordB other)
     {
