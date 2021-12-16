@@ -33,9 +33,11 @@ public class HandicraftCommand : InGameCommand
             trigger.Session.Player.Levels.GainMasteryExp(MasteryType.Handicraft, exp);
             return;
         }
+
         trigger.Session.SendNotice("Exp must be a number or more than 0.");
     }
 }
+
 public class PrestigeExpCommand : InGameCommand
 {
     public PrestigeExpCommand()
@@ -61,9 +63,11 @@ public class PrestigeExpCommand : InGameCommand
             trigger.Session.Player.Levels.GainPrestigeExp(exp);
             return;
         }
+
         trigger.Session.SendNotice("Exp must be a number or more than 0.");
     }
 }
+
 public class GainExpCommand : InGameCommand
 {
     public GainExpCommand()
@@ -89,9 +93,11 @@ public class GainExpCommand : InGameCommand
             trigger.Session.Player.Levels.GainExp(exp);
             return;
         }
+
         trigger.Session.SendNotice("Exp must be a number or more than 0.");
     }
 }
+
 public class PrestigeLevelCommand : InGameCommand
 {
     public PrestigeLevelCommand()
@@ -117,9 +123,11 @@ public class PrestigeLevelCommand : InGameCommand
             trigger.Session.Player.Levels.SetPrestigeLevel(level);
             return;
         }
+
         trigger.Session.SendNotice("Level must be a number or more than 0.");
     }
 }
+
 public class LevelCommand : InGameCommand
 {
     public LevelCommand()
@@ -145,9 +153,31 @@ public class LevelCommand : InGameCommand
             trigger.Session.Player.Levels.SetLevel(level);
             return;
         }
+
         trigger.Session.SendNotice("Level must be a number or more than 0.");
     }
 }
+
+public class LevelUpCommand : InGameCommand
+{
+    public LevelUpCommand()
+    {
+        Aliases = new()
+        {
+            "levelup"
+        };
+        Description = "Level up.";
+        Parameters = new()
+            ;
+        Usage = "/levelup";
+    }
+
+    public override void Execute(GameCommandTrigger trigger)
+    {
+        trigger.Session.Player.Levels.LevelUp();
+    }
+}
+
 public class SkillCommand : InGameCommand
 {
     public SkillCommand()
@@ -175,13 +205,15 @@ public class SkillCommand : InGameCommand
             return;
         }
 
-        SkillCast skillCast = new(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.ClientTick);
+        SkillCast skillCast = new(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.Player.FieldPlayer.ObjectId,
+            trigger.Session.ClientTick);
         CoordF empty = CoordF.From(0, 0, 0);
         IFieldObject<Player> player = trigger.Session.Player.FieldPlayer;
 
         trigger.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, player.Coord, empty, empty));
     }
 }
+
 public class BuffCommand : InGameCommand
 {
     public BuffCommand()
@@ -216,7 +248,8 @@ public class BuffCommand : InGameCommand
         int stacks = trigger.Get<int>("stacks") == 0 ? 1 : trigger.Get<int>("stacks");
 
         SkillCast skillCast = new(id, level);
-        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() || skillCast.IsHealFromBuff())
+        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() ||
+            skillCast.IsHealFromBuff())
         {
             Status status = new(skillCast, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.Player.FieldPlayer.ObjectId, stacks);
             StatusHandler.Handle(trigger.Session, status);

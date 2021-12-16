@@ -32,6 +32,6 @@ public class StateHandler : GamePacketHandler
 
     private static void HandleJump(GameSession session)
     {
-        session.Player.TrophyUpdate(22100012, 1, 1);
+        session.Player.TrophyUpdate("jump", addAmount: 1);
     }
 }
