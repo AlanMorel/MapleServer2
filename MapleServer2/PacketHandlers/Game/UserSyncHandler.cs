@@ -49,15 +49,24 @@ public class UserSyncHandler : GamePacketHandler
         IFieldActor<Player> fieldPlayer = player.FieldPlayer;
 
         CoordF coord = syncStates[0].Coord.ToFloat();
-        CoordF closestBlock = Block.ClosestBlock(coord);
-        closestBlock.Z -= Block.BLOCK_SIZE; // Get block under player
 
-        if (IsCoordSafe(session, syncStates[0].Coord, closestBlock))
+        CoordF coordUnderneath = coord;
+        coordUnderneath.Z -= 50;
+
+        CoordF blockUnderneath = Block.ClosestBlock(coordUnderneath);
+        if (IsCoordSafe(player, syncStates[0].Coord, blockUnderneath))
         {
             CoordF safeBlock = Block.ClosestBlock(coord);
-            safeBlock.Z += 1; // Without this player will spawn inside the block
+            // TODO: Knowing the state of the player using the animation is probably not the correct way to do this
+            // we will need to know the state of the player for other things like counting time spent on ropes/running/walking/swimming
+            if (syncStates[0].Animation2 is 7 or 132) // swimming
+            {
+                safeBlock.Z += Block.BLOCK_SIZE; // Without this player will spawn under the water
+            }
 
-            player.SafeBlock = closestBlock;
+            safeBlock.Z += 10; // Without this player will spawn inside the block
+
+            player.SafeBlock = safeBlock;
         }
 
         fieldPlayer.Coord = coord;
@@ -71,18 +80,24 @@ public class UserSyncHandler : GamePacketHandler
             session.Send(UserMoveByPortalPacket.Move(fieldPlayer, player.SafeBlock, fieldPlayer.Rotation));
             player.FallDamage();
         }
+
         // not sure if this needs to be synced here
         fieldPlayer.Animation = syncStates[0].Animation1;
     }
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
     {
-        short higherBoundZ = Math.Max(boundingBox[0].Z, boundingBox[1].Z);
-        short lowerBoundZ = Math.Min(boundingBox[1].Z, boundingBox[0].Z);
-        short higherBoundY = Math.Max(boundingBox[0].Y, boundingBox[1].Y);
-        short lowerBoundY = Math.Min(boundingBox[1].Y, boundingBox[0].Y);
-        short higherBoundX = Math.Max(boundingBox[0].X, boundingBox[1].X);
-        short lowerBoundX = Math.Min(boundingBox[1].X, boundingBox[0].X);
+        CoordS box1 = boundingBox[0];
+        CoordS box2 = boundingBox[1];
+
+        short higherBoundZ = Math.Max(box1.Z, box2.Z);
+        short lowerBoundZ = Math.Min(box2.Z, box1.Z);
+
+        short higherBoundY = Math.Max(box1.Y, box2.Y);
+        short lowerBoundY = Math.Min(box2.Y, box1.Y);
+
+        short higherBoundX = Math.Max(box1.X, box2.X);
+        short lowerBoundX = Math.Min(box2.X, box1.X);
 
         if (coord.Z > higherBoundZ || coord.Z < lowerBoundZ)
         {
@@ -97,12 +112,13 @@ public class UserSyncHandler : GamePacketHandler
         return coord.X > higherBoundX || coord.X < lowerBoundX;
     }
 
-    private static bool IsCoordSafe(GameSession session, CoordS currentCoord, CoordF closestCoord)
+    private static bool IsCoordSafe(Player player, CoordS currentCoord, CoordF closestCoord)
     {
-        // Save last coord if player is not falling and not in a air mount
-        return MapMetadataStorage.BlockExists(session.Player.MapId, closestCoord.ToShort()) &&
-            !session.Player.OnAirMount &&
-            (session.Player.SafeBlock - closestCoord).Length() > 350 &&
-            session.Player.FieldPlayer.Coord.Z == currentCoord.Z;
+        // Check if block exists, if player is not on mount,
+        // if last safe block and current safe block distance is greater than 350 units
+        // to determine if coord is safe
+        return MapMetadataStorage.BlockExists(player.MapId, closestCoord.ToShort())
+               && !player.OnAirMount && (player.SafeBlock - closestCoord).Length() > 350 &&
+               player.FieldPlayer.Coord.Z == currentCoord.Z;
     }
 }
