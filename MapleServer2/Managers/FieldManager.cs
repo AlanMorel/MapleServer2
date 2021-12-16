@@ -215,7 +215,7 @@ public partial class FieldManager
         {
             if (liftable != null)
             {
-                LiftableObject liftableObject = new(liftable.EntityId, liftable.ItemId, liftable.MaskQuestId, liftable.MaskQuestState);
+                LiftableObject liftableObject = new(liftable.EntityId, liftable.ItemId, liftable.EffectQuestID, liftable.EffectQuestState);
                 State.AddLiftableObject(liftableObject);
             }
         }
@@ -289,17 +289,9 @@ public partial class FieldManager
             }
         }
 
-        if (MapEntityStorage.HasHealingSpot(MapId))
+        foreach (CoordS coord in MapEntityStorage.GetHealingSpot(MapId))
         {
-            List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
-            if (State.HealingSpots.IsEmpty)
-            {
-                foreach (CoordS coord in healingSpots)
-                {
-                    int objectId = GuidGenerator.Int();
-                    State.AddHealingSpot(RequestFieldObject(new HealingSpot(objectId, coord)));
-                }
-            }
+            State.AddHealingSpot(RequestFieldObject(new HealingSpot(GuidGenerator.Int(), coord)));
         }
     }
 
@@ -503,6 +495,8 @@ public partial class FieldManager
 
             sender.Send(InstrumentPacket.PlayScore(instrument));
         }
+
+        sender.Send(LiftablePacket.LoadLiftables(State.LiftableObjects.Values.ToList()));
 
         List<BreakableObject> breakables = new();
         breakables.AddRange(State.BreakableActors.Values.ToList());

@@ -53,6 +53,9 @@ public class LiftableHandler : GamePacketHandler
                 return;
             }
 
+            liftable.State = LiftableState.Removed;
+            liftable.Enabled = false;
+
             session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, liftable.Position.ToByte()));
             session.FieldManager.BroadcastPacket(LiftablePacket.RemoveCube(liftable));
             session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable.ItemId));

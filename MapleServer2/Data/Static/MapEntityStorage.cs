@@ -124,11 +124,6 @@ public static class MapEntityStorage
         return items.Count != 0;
     }
 
-    public static bool HasHealingSpot(int mapId)
-    {
-        return healthSpot.GetValueOrDefault(mapId).Count != 0;
-    }
-
     public static List<CoordS> GetHealingSpot(int mapId)
     {
         return healthSpot.GetValueOrDefault(mapId);

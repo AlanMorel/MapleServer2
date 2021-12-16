@@ -692,18 +692,24 @@ public class MapLiftableObject
     [XmlElement(Order = 2)]
     public int ItemId;
     [XmlElement(Order = 3)]
-    public string MaskQuestId;
+    public string EffectQuestID;
     [XmlElement(Order = 4)]
-    public string MaskQuestState;
+    public string EffectQuestState;
+    [XmlElement(Order = 5)]
+    public int ItemLifeTime;
+    [XmlElement(Order = 6)]
+    public int LiftableRegenCheckTime;
 
     public MapLiftableObject() { }
 
-    public MapLiftableObject(string entityId, int itemId, string maskQuestId, string maskQuestState)
+    public MapLiftableObject(string entityId, int itemId, string effectQuestId, string effectQuestState, int itemLifeTime, int liftableRegenCheckTime)
     {
         EntityId = entityId;
         ItemId = itemId;
-        MaskQuestId = maskQuestId;
-        MaskQuestState = maskQuestState;
+        EffectQuestID = effectQuestId;
+        EffectQuestState = effectQuestState;
+        ItemLifeTime = itemLifeTime;
+        LiftableRegenCheckTime = liftableRegenCheckTime;
     }
 }
 

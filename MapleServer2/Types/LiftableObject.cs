@@ -6,19 +6,19 @@ public class LiftableObject
 {
     public string EntityId;
     public int ItemId;
-    public string MaskQuestId;
-    public string MaskQuestState;
+    public string EffectQuestId;
+    public string EffectQuestState;
     public CoordF Position;
     public CoordF Rotation;
     public LiftableState State;
     public bool Enabled;
 
-    public LiftableObject(string entityId, int itemId, string maskQuestId, string maskQuestState)
+    public LiftableObject(string entityId, int itemId, string effectQuestId, string effectQuestState)
     {
         EntityId = entityId;
         ItemId = itemId;
-        MaskQuestId = maskQuestId;
-        MaskQuestState = maskQuestState;
+        EffectQuestId = effectQuestId;
+        EffectQuestState = effectQuestState;
         State = LiftableState.Active;
         Enabled = true;
     }
