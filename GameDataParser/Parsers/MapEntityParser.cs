@@ -137,6 +137,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                     {
                         metadata.BoundingBox1 = CoordS.FromVector3(bounding.Position);
                     }
+
                     break;
                 case IMS2PatrolData patrolData:
                     string patrolDataName = patrolData.EntityName.Replace("-", string.Empty);
@@ -164,10 +165,13 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                     {
                         arriveAnimationTimes.Add((int) entry.Value);
                     }
-                    metadata.PatrolDatas.Add(new(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint, arriveAnimations, approachAnimations, arriveAnimationTimes));
+
+                    metadata.PatrolDatas.Add(new(patrolDataName, wayPointIds, (int) patrolData.PatrolSpeed, patrolData.IsLoop, patrolData.IsAirWayPoint,
+                        arriveAnimations, approachAnimations, arriveAnimationTimes));
                     break;
                 case IMS2WayPoint wayPoint:
-                    metadata.WayPoints.Add(new(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position), CoordS.FromVector3(wayPoint.Rotation)));
+                    metadata.WayPoints.Add(new(wayPoint.EntityId, wayPoint.IsVisible, CoordS.FromVector3(wayPoint.Position),
+                        CoordS.FromVector3(wayPoint.Rotation)));
                     break;
                 // TODO: This can probably be more generally handled as IMS2RegionSkill
                 case IMS2HealingRegionSkillSound healingRegion:
@@ -184,6 +188,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                     {
                         continue;
                     }
+
                     switch (interact)
                     {
                         case IMS2SimpleUiObject uiObject:
@@ -202,6 +207,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             metadata.InteractObjects.Add(new(interactDisplay.EntityId, interactDisplay.interactID, interactDisplay.IsVisible, type));
                             break;
                     }
+
                     break;
                 case ISpawnPoint spawn:
                     switch (spawn)
@@ -211,8 +217,9 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             List<string> npcIds = new();
                             npcIds.AddRange(eventSpawnNpc.NpcList.Keys);
 
-                            metadata.EventNpcSpawnPoints.Add(new(eventSpawnNpc.SpawnPointID, eventSpawnNpc.NpcCount, npcIds, eventSpawnNpc.SpawnAnimation, eventSpawnNpc.SpawnRadius,
-                                                                 CoordF.FromVector3(eventSpawnNpc.Position), CoordF.FromVector3(eventSpawnNpc.Rotation)));
+                            metadata.EventNpcSpawnPoints.Add(new(eventSpawnNpc.SpawnPointID, eventSpawnNpc.NpcCount, npcIds, eventSpawnNpc.SpawnAnimation,
+                                eventSpawnNpc.SpawnRadius,
+                                CoordF.FromVector3(eventSpawnNpc.Position), CoordF.FromVector3(eventSpawnNpc.Rotation)));
                             break;
                         case ISpawnPointPC pcSpawn:
                             metadata.PlayerSpawns.Add(
@@ -228,12 +235,13 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             }
 
                             MapNpc npc = new(npcId, npcSpawn.ModelName, npcSpawn.EntityName, CoordS.FromVector3(npcSpawn.Position),
-                                             CoordS.FromVector3(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
+                                CoordS.FromVector3(npcSpawn.Rotation), npcSpawn.IsSpawnOnFieldCreate, npcSpawn.dayDie, npcSpawn.nightDie);
                             // Parse some additional flat supplemented data about this NPC.
 
                             metadata.Npcs.Add(npc);
                             break;
                     }
+
                     break;
                 case IMS2RegionSpawnBase spawnBase:
                     switch (spawnBase)
@@ -253,7 +261,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                                 21000025 // Placeholder
                             };
                             metadata.MobSpawns.Add(new(boxSpawn.SpawnPointID, CoordS.FromVector3(boxSpawn.Position),
-                                                       mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
+                                mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
                             // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
                             break;
                         case IMS2RegionSpawn regionSpawn:
@@ -271,13 +279,15 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                                 21000025 // Placeholder
                             };
                             metadata.MobSpawns.Add(new(regionSpawn.SpawnPointID, CoordS.FromVector3(regionSpawn.Position),
-                                                       mobNpcCount, mobNpcList, (int) regionSpawn.SpawnRadius, mobSpawnData));
+                                mobNpcCount, mobNpcList, (int) regionSpawn.SpawnRadius, mobSpawnData));
                             break;
                     }
+
                     break;
                 case IPortal portal:
-                    metadata.Portals.Add(new(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible, portal.TargetFieldSN,
-                                             CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (PortalTypes) portal.PortalType));
+                    metadata.Portals.Add(new(portal.PortalID, portal.ModelName, portal.PortalEnable, portal.IsVisible, portal.MinimapIconVisible,
+                        portal.TargetFieldSN,
+                        CoordS.FromVector3(portal.Position), CoordS.FromVector3(portal.Rotation), portal.TargetPortalID, (PortalTypes) portal.PortalType));
                     break;
                 case IMS2Breakable breakable:
                     switch (breakable)
@@ -289,6 +299,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             metadata.BreakableNifs.Add(new(nif.EntityId, nif.Enabled, (int) nif.TriggerBreakableID, nif.hideTimer, nif.resetTimer));
                             break;
                     }
+
                     break;
                 case IMS2TriggerObject triggerObject:
                     switch (triggerObject)
@@ -303,7 +314,8 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             metadata.TriggerCameras.Add(new(triggerCamera.TriggerObjectID, triggerCamera.Enabled));
                             break;
                         case IMS2TriggerBox triggerBox:
-                            metadata.TriggerBoxes.Add(new(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position), CoordF.FromVector3(triggerBox.ShapeDimensions)));
+                            metadata.TriggerBoxes.Add(new(triggerBox.TriggerObjectID, CoordF.FromVector3(triggerBox.Position),
+                                CoordF.FromVector3(triggerBox.ShapeDimensions)));
                             break;
                         case IMS2TriggerLadder triggerLadder: // TODO: Find which parameters correspond to animationeffect (bool) and animation delay (int?)
                             metadata.TriggerLadders.Add(new(triggerLadder.TriggerObjectID, triggerLadder.IsVisible));
@@ -312,8 +324,10 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             metadata.TriggerRopes.Add(new(triggerRope.TriggerObjectID, triggerRope.IsVisible));
                             break;
                         case IMS2TriggerPortal triggerPortal:
-                            metadata.Portals.Add(new(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible, triggerPortal.MinimapIconVisible,
-                                                     triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation), triggerPortal.TargetPortalID, (PortalTypes) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
+                            metadata.Portals.Add(new(triggerPortal.PortalID, triggerPortal.ModelName, triggerPortal.PortalEnable, triggerPortal.IsVisible,
+                                triggerPortal.MinimapIconVisible,
+                                triggerPortal.TargetFieldSN, CoordS.FromVector3(triggerPortal.Position), CoordS.FromVector3(triggerPortal.Rotation),
+                                triggerPortal.TargetPortalID, (PortalTypes) triggerPortal.PortalType, triggerPortal.TriggerObjectID));
                             break;
                         case IMS2TriggerActor triggerActor:
                             metadata.TriggerActors.Add(new(triggerActor.TriggerObjectID, triggerActor.IsVisible, triggerActor.InitialSequence));
@@ -326,12 +340,18 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                             break;
                         case IMS2TriggerSkill triggerSkill:
                             metadata.TriggerSkills.Add(new(triggerSkill.TriggerObjectID, triggerSkill.skillID,
-                                                           (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
+                                (short) triggerSkill.skillLevel, (byte) triggerSkill.count, CoordF.FromVector3(triggerSkill.Position)));
                             break;
                     }
+
                     break;
                 case IMS2Liftable liftable:
-                    metadata.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.MaskQuestID, liftable.MaskQuestState));
+                    metadata.LiftableObjects.Add(new(liftable.EntityId, (int) liftable.ItemID, liftable.EffectQuestID, liftable.EffectQuestState,
+                        liftable.ItemLifeTime, liftable.LiftableRegenCheckTime));
+                    break;
+                case IMS2LiftableTargetBox liftableTargetBox:
+                    metadata.LiftableTargets.Add(new(liftableTargetBox.liftableTarget, CoordF.FromVector3(liftableTargetBox.Position),
+                        CoordF.FromVector3(liftableTargetBox.ShapeDimensions)));
                     break;
                 case IMS2CubeProp prop:
                     if (prop.IsObjectWeapon)
@@ -339,6 +359,7 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                         List<int> weaponIds = prop.ObjectWeaponItemCode.Split(",").Select(int.Parse).ToList();
                         metadata.WeaponObjects.Add(new(CoordB.FromVector3(prop.Position), weaponIds));
                     }
+
                     break;
                 case IMS2Vibrate vibrate:
                     metadata.VibrateObjects.Add(new(vibrate.EntityId));

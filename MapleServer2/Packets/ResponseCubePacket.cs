@@ -123,6 +123,7 @@ public static class ResponseCubePacket
         {
             return pWriter;
         }
+
         pWriter.WriteInt(cube.Value.PlotNumber);
         pWriter.WriteInt();
         pWriter.Write(cube.Coord.ToByte());
@@ -134,6 +135,30 @@ public static class ResponseCubePacket
         pWriter.WriteByte();
         pWriter.WriteByte();
         pWriter.Write(cube.Rotation.Z);
+        pWriter.WriteInt();
+        pWriter.WriteByte();
+
+        return pWriter;
+    }
+
+    public static PacketWriter PlaceLiftable(LiftableObject liftable, int ownerObjectId)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.RESPONSE_CUBE);
+        pWriter.Write(ResponseCubePacketMode.PlaceFurnishing);
+        pWriter.WriteBool(false);
+        pWriter.WriteInt(ownerObjectId);
+        pWriter.WriteInt(ownerObjectId);
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.Write(liftable.Position.ToByte());
+        pWriter.WriteByte();
+        pWriter.WriteLong();
+        pWriter.WriteInt(liftable.ItemId);
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteByte();
+        pWriter.WriteByte(1);
+        pWriter.Write(liftable.Rotation.Z);
         pWriter.WriteInt();
         pWriter.WriteByte();
 
@@ -191,6 +216,7 @@ public static class ResponseCubePacket
         {
             return pWriter;
         }
+
         pWriter.Write(newCube.Coord.ToByte());
         pWriter.WriteByte();
         pWriter.WriteInt(newCube.Value.Item.Id);
