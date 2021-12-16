@@ -114,9 +114,7 @@ public class UserSyncHandler : GamePacketHandler
 
     private static bool IsCoordSafe(Player player, CoordS currentCoord, CoordF closestCoord)
     {
-        // Check if block exists, if player is not on mount,
-        // if last safe block and current safe block distance is greater than 350 units
-        // to determine if coord is safe
+        // Check if current coord is safe to be used as a return point when the character falls off the map
         return MapMetadataStorage.BlockExists(player.MapId, closestCoord.ToShort())
                && !player.OnAirMount && (player.SafeBlock - closestCoord).Length() > 350 &&
                player.FieldPlayer.Coord.Z == currentCoord.Z;
