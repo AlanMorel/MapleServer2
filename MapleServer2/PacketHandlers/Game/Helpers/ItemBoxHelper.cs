@@ -21,7 +21,7 @@ public static class ItemBoxHelper
             if (dropContent.SmartGender)
             {
                 Gender itemGender = ItemMetadataStorage.GetGender(id);
-                if (itemGender != playerGender)
+                if (itemGender != playerGender && itemGender is not Gender.Neutral)
                 {
                     continue;
                 }
