@@ -17,80 +17,13 @@ public class ItemParser : Exporter<List<ItemMetadata>>
     protected override List<ItemMetadata> Parse()
     {
         // Item breaking ingredients
-        Dictionary<int, List<ItemBreakReward>> rewards = new();
-        foreach (PackFileEntry entry in Resources.XmlReader.Files)
-        {
-            if (!entry.Name.StartsWith("table/itembreakingredient"))
-            {
-                continue;
-            }
-
-            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
-            foreach (XmlNode nodes in individualItems)
-            {
-                string locale = nodes.Attributes["locale"]?.Value ?? "";
-                if (locale != "NA" && locale != "")
-                {
-                    continue;
-                }
-                int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
-                rewards[itemID] = new();
-
-                int ingredientItemID1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
-                int ingredientCount1 = int.Parse(nodes.Attributes["IngredientCount1"]?.Value ?? "0");
-                rewards[itemID].Add(new(ingredientItemID1, ingredientCount1));
-
-                _ = int.TryParse(nodes.Attributes["IngredientItemID2"]?.Value ?? "0", out int ingredientItemID2);
-                _ = int.TryParse(nodes.Attributes["IngredientCount2"]?.Value ?? "0", out int ingredientCount2);
-                rewards[itemID].Add(new(ingredientItemID2, ingredientCount2));
-
-                _ = int.TryParse(nodes.Attributes["IngredientItemID3"]?.Value ?? "0", out int ingredientItemID3);
-                _ = int.TryParse(nodes.Attributes["IngredientCount3"]?.Value ?? "0", out int ingredientCount3);
-                rewards[itemID].Add(new(ingredientItemID3, ingredientCount3));
-            }
-        }
+        Dictionary<int, List<ItemBreakReward>> rewards = ParseItemBreakingIngredients();
 
         //Item Name
-        Dictionary<int, string> names = new();
-        foreach (PackFileEntry entry in Resources.XmlReader.Files)
-        {
-            if (!entry.Name.StartsWith("string/en/itemname.xml"))
-            {
-                continue;
-            }
-
-            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
-            foreach (XmlNode node in nodes)
-            {
-                int itemId = int.Parse(node.Attributes["id"].Value);
-                if (node.Attributes["name"] == null)
-                {
-                    continue;
-                }
-                string itemName = node.Attributes["name"].Value;
-                names[itemId] = itemName;
-            }
-        }
+        Dictionary<int, string> names = ParseItemNames();
 
         // Item rarity
-        Dictionary<int, int> rarities = new();
-        foreach (PackFileEntry entry in Resources.XmlReader.Files)
-        {
-            if (!entry.Name.StartsWith("table/na/itemwebfinder"))
-            {
-                continue;
-            }
-            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
-            foreach (XmlNode node in nodes)
-            {
-                int itemId = int.Parse(node.Attributes["id"].Value);
-                int rarity = int.Parse(node.Attributes["grade"].Value);
-                rarities[itemId] = rarity;
-            }
-        }
+        Dictionary<int, int> rarities = ParseItemRarities();
 
         // Items
         List<ItemMetadata> items = new();
@@ -115,7 +48,18 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
             // Parse XML
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNode item = document.SelectSingleNode("ms2/environment");
+
+            XmlNodeList environments = document.SelectNodes("ms2/environment");
+            XmlNode item = environments[0];
+
+            foreach (XmlNode environment in environments)
+            {
+                // If there is an environment with locale "NA", use that.
+                if (environment.Attributes["locale"]?.Value == "NA")
+                {
+                    item = environment;
+                }
+            }
 
             // Tag
             XmlNode basic = item.SelectSingleNode("basic");
@@ -133,116 +77,22 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             int totalSlots = slots.SelectNodes("slot").Count;
             if (totalSlots > 1)
             {
-                if (metadata.Slot == ItemSlot.CL || metadata.Slot == ItemSlot.PA)
+                switch (metadata.Slot)
                 {
-                    metadata.IsDress = true;
-                }
-                else if (metadata.Slot == ItemSlot.RH || metadata.Slot == ItemSlot.LH)
-                {
-                    metadata.IsTwoHand = true;
+                    case ItemSlot.CL or ItemSlot.PA:
+                        metadata.IsDress = true;
+                        break;
+                    case ItemSlot.RH or ItemSlot.LH:
+                        metadata.IsTwoHand = true;
+                        break;
                 }
             }
 
             // Hair data
             if (slot.Attributes["name"].Value == "HR")
             {
-                int assetNodeCount = slot.SelectNodes("asset").Count;
-                XmlNode asset = slot.FirstChild;
-
-                XmlNode scaleNode = slot.SelectSingleNode("scale");
-
-                if (assetNodeCount == 3) // This hair has a front and back positionable hair
-                {
-                    XmlNode backHair = asset.NextSibling; // back hair info
-                    XmlNode frontHair = backHair.NextSibling; // front hair info
-
-                    int backHairNodes = backHair.SelectNodes("custom").Count;
-
-                    CoordF[] bPosCord = new CoordF[backHairNodes];
-                    CoordF[] bPosRotation = new CoordF[backHairNodes];
-                    CoordF[] fPosCord = new CoordF[backHairNodes];
-                    CoordF[] fPosRotation = new CoordF[backHairNodes];
-
-                    for (int i = 0; i < backHairNodes; i++)
-                    {
-                        foreach (XmlNode backPresets in backHair)
-                        {
-                            if (backPresets.Name == "custom")
-                            {
-                                bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
-                                bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
-                            }
-                        }
-                        foreach (XmlNode frontPresets in frontHair)
-                        {
-                            if (frontPresets.Name == "custom")
-                            {
-                                fPosCord[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
-                                fPosRotation[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
-                            }
-                        }
-                        HairPresets hairPresets = new()
-                        {
-                        };
-
-                        hairPresets.BackPositionCoord = bPosCord[i];
-                        hairPresets.BackPositionRotation = bPosRotation[i];
-                        hairPresets.FrontPositionCoord = fPosCord[i];
-                        hairPresets.FrontPositionRotation = fPosRotation[i];
-                        hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
-                        hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
-
-                        metadata.HairPresets.Add(hairPresets);
-                    }
-                }
-                else if (assetNodeCount == 2) // This hair only has back positionable hair
-                {
-                    XmlNode backHair = asset.NextSibling; // back hair info
-
-                    int backHairNodes = backHair.SelectNodes("custom").Count;
-
-                    CoordF[] bPosCord = new CoordF[backHairNodes];
-                    CoordF[] bPosRotation = new CoordF[backHairNodes];
-
-                    for (int i = 0; i < backHairNodes; i++)
-                    {
-                        foreach (XmlNode backPresets in backHair)
-                        {
-                            if (backPresets.Name == "custom")
-                            {
-                                bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
-                                bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
-                            }
-                        }
-
-                        HairPresets hairPresets = new()
-                        {
-                        };
-
-                        hairPresets.BackPositionCoord = bPosCord[i];
-                        hairPresets.BackPositionRotation = bPosRotation[i];
-                        hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
-                        hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
-                        hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
-                        hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
-                        metadata.HairPresets.Add(hairPresets);
-                    }
-                }
-                else // hair does not have back or front positionable hair
-                {
-                    HairPresets hairPresets = new()
-                    {
-                    };
-                    hairPresets.BackPositionCoord = CoordF.Parse("0, 0, 0");
-                    hairPresets.BackPositionRotation = CoordF.Parse("0, 0, 0");
-                    hairPresets.FrontPositionCoord = CoordF.Parse("0, 0, 0");
-                    hairPresets.FrontPositionRotation = CoordF.Parse("0, 0, 0");
-                    hairPresets.MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0");
-                    hairPresets.MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0");
-                    metadata.HairPresets.Add(hairPresets);
-                }
+                ParseHair(slot, metadata);
             }
-
 
             // Color data
             XmlNode customize = item.SelectSingleNode("customize");
@@ -280,6 +130,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             {
                 Console.WriteLine($"Failed to parse tab slot for {itemId}: {e.Message}");
             }
+
             metadata.StackLimit = int.Parse(property.Attributes["slotMax"].Value);
 
             // Rarity
@@ -294,145 +145,187 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             metadata.FunctionData.Name = contentType;
 
             // Item boxes
-            if (contentType == "OpenItemBox")
+            switch (contentType)
             {
                 // selection boxes are SelectItemBox and 1,boxid
                 // normal boxes are OpenItemBox and 0,1,0,boxid
                 // fragments are OpenItemBox and 0,1,0,boxid,required_amount
-                if (function.Attributes["parameter"].Value.Contains('l'))
-                {
+                case "OpenItemBox" when function.Attributes["parameter"].Value.Contains('l'):
                     continue; // TODO: Implement these CN items. Skipping for now
-                }
+                case "OpenItemBox":
+                    {
+                        List<string> parameters = new(function.Attributes["parameter"].Value.Split(","));
+                        OpenItemBox box = new()
+                        {
+                            RequiredItemId = int.Parse(parameters[0]),
+                            ReceiveOneItem = parameters[1] == "1",
+                            BoxId = int.Parse(parameters[3]),
+                            AmountRequired = 1
+                        };
+                        if (parameters.Count == 5)
+                        {
+                            box.AmountRequired = int.Parse(parameters[4]);
+                        }
 
-                List<string> parameters = new(function.Attributes["parameter"].Value.Split(","));
-                OpenItemBox box = new();
-                box.RequiredItemId = int.Parse(parameters[0]);
-                box.ReceiveOneItem = parameters[1] == "1";
-                box.BoxId = int.Parse(parameters[3]);
-                box.AmountRequired = 1;
-                if (parameters.Count == 5)
-                {
-                    box.AmountRequired = int.Parse(parameters[4]);
-                }
-                metadata.FunctionData.OpenItemBox = box;
-            }
-            else if (contentType == "SelectItemBox")
-            {
-                if (function.Attributes["parameter"].Value.Contains('l'))
-                {
+                        metadata.FunctionData.OpenItemBox = box;
+                        break;
+                    }
+                case "SelectItemBox" when function.Attributes["parameter"].Value.Contains('l'):
                     continue; // TODO: Implement these CN items. Skipping for now
-                }
+                case "SelectItemBox":
+                    {
+                        List<string> parameters = new(function.Attributes["parameter"].Value.Split(","));
+                        parameters.RemoveAll(param => param.Length == 0);
+                        SelectItemBox box = new()
+                        {
+                            GroupId = int.Parse(parameters[0]),
+                            BoxId = int.Parse(parameters[1])
+                        };
+                        metadata.FunctionData.SelectItemBox = box;
+                        break;
+                    }
+                case "ChatEmoticonAdd":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
 
-                List<string> parameters = new(function.Attributes["parameter"].Value.Split(","));
-                parameters.RemoveAll(param => param.Length == 0);
-                SelectItemBox box = new();
-                box.GroupId = int.Parse(parameters[0]);
-                box.BoxId = int.Parse(parameters[1]);
-                metadata.FunctionData.SelectItemBox = box;
-            }
-            else if (contentType == "ChatEmoticonAdd")
-            {
-                ChatEmoticonAdd sticker = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                sticker.Id = byte.Parse(functionParameters.Attributes["id"].Value);
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
 
-                sticker.Duration = int.Parse(functionParameters.Attributes["durationSec"]?.Value ?? "0");
-                metadata.FunctionData.ChatEmoticonAdd = sticker;
-            }
-            else if (contentType == "OpenMassive")
-            {
-                OpenMassiveEvent massiveEvent = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
-                string decodedParameter = HttpUtility.HtmlDecode(cleanParameter);
+                        ChatEmoticonAdd sticker = new()
+                        {
+                            Id = byte.Parse(functionParameters.Attributes["id"].Value),
+                            Duration = int.Parse(functionParameters.Attributes["durationSec"]?.Value ?? "0")
+                        };
 
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                massiveEvent.FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value);
-                massiveEvent.Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value);
-                massiveEvent.Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value);
-                metadata.FunctionData.OpenMassiveEvent = massiveEvent;
-            }
-            else if (contentType == "LevelPotion")
-            {
-                LevelPotion levelPotion = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                levelPotion.TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value);
-                metadata.FunctionData.LevelPotion = levelPotion;
-            }
-            else if (contentType == "VIPCoupon")
-            {
-                VIPCoupon coupon = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                coupon.Duration = int.Parse(functionParameters.Attributes["period"].Value);
-                metadata.FunctionData.VIPCoupon = coupon;
-            }
-            else if (contentType == "HongBao")
-            {
-                HongBaoData hongBao = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                hongBao.Id = int.Parse(functionParameters.Attributes["itemId"].Value);
-                hongBao.Count = short.Parse(functionParameters.Attributes["totalCount"].Value);
-                hongBao.TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"].Value);
-                hongBao.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
-                metadata.FunctionData.HongBao = hongBao;
-            }
-            else if (contentType == "SuperWorldChat")
-            {
-                string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
-            }
-            else if (contentType == "OpenGachaBox")
-            {
-                string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
-            }
-            else if (contentType == "OpenCoupleEffectBox")
-            {
-                OpenCoupleEffectBox box = new();
-                string[] parameters = function.Attributes["parameter"].Value.Split(",");
-                box.Id = int.Parse(parameters[0]);
-                box.Rarity = byte.Parse(parameters[1]);
-                metadata.FunctionData.OpenCoupleEffectBox = box;
-            }
-            else if (contentType == "InstallBillBoard")
-            {
-                InstallBillboard balloon = new();
-                string rawParameter = function.Attributes["parameter"].Value;
-                string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
-                XmlDocument xmlParameter = new();
-                xmlParameter.LoadXml(decodedParameter);
-                XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
-                balloon.InteractId = int.Parse(functionParameters.Attributes["interactID"].Value);
-                balloon.Duration = int.Parse(functionParameters.Attributes["durationSec"].Value);
-                balloon.Model = functionParameters.Attributes["model"].Value;
-                balloon.Asset = functionParameters.Attributes["asset"]?.Value ?? "";
-                balloon.NormalState = functionParameters.Attributes["normal"].Value;
-                balloon.Reactable = functionParameters.Attributes["reactable"].Value;
-                balloon.Scale = float.Parse(functionParameters.Attributes["scale"]?.Value ?? "0");
-                metadata.FunctionData.InstallBillboard = balloon;
-            }
-            else if (contentType == "TitleScroll" || contentType == "ItemExchangeScroll" || contentType == "OpenInstrument" || contentType == "StoryBook" || contentType == "FishingRod" || contentType == "ItemChangeBeauty"
-                     || contentType == "ItemRePackingScroll")
-            {
-                metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
+                        metadata.FunctionData.ChatEmoticonAdd = sticker;
+                        break;
+                    }
+                case "OpenMassive":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string cleanParameter = rawParameter.Remove(1, 1); // remove the unwanted space
+                        string decodedParameter = HttpUtility.HtmlDecode(cleanParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+
+                        OpenMassiveEvent massiveEvent = new()
+                        {
+                            FieldId = int.Parse(functionParameters.Attributes["fieldID"].Value),
+                            Duration = int.Parse(functionParameters.Attributes["portalDurationTick"].Value),
+                            Capacity = byte.Parse(functionParameters.Attributes["maxCount"].Value)
+                        };
+                        metadata.FunctionData.OpenMassiveEvent = massiveEvent;
+                        break;
+                    }
+                case "LevelPotion":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+
+                        LevelPotion levelPotion = new()
+                        {
+                            TargetLevel = byte.Parse(functionParameters.Attributes["targetLevel"].Value)
+                        };
+                        metadata.FunctionData.LevelPotion = levelPotion;
+                        break;
+                    }
+                case "VIPCoupon":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+
+                        VIPCoupon coupon = new()
+                        {
+                            Duration = int.Parse(functionParameters.Attributes["period"].Value)
+                        };
+                        metadata.FunctionData.VIPCoupon = coupon;
+                        break;
+                    }
+                case "HongBao":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+
+                        HongBaoData hongBao = new()
+                        {
+                            Id = int.Parse(functionParameters.Attributes["itemId"].Value),
+                            Count = short.Parse(functionParameters.Attributes["totalCount"].Value),
+                            TotalUsers = byte.Parse(functionParameters.Attributes["totalUser"].Value),
+                            Duration = int.Parse(functionParameters.Attributes["durationSec"].Value)
+                        };
+                        metadata.FunctionData.HongBao = hongBao;
+                        break;
+                    }
+                case "SuperWorldChat":
+                    {
+                        string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                        metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Not sure if the server uses the other 2. 
+                        break;
+                    }
+                case "OpenGachaBox":
+                    {
+                        string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                        metadata.FunctionData.Id = int.Parse(parameters[0]); // only storing the first parameter. Unknown what the second parameter is used for.
+                        break;
+                    }
+                case "OpenCoupleEffectBox":
+                    {
+                        string[] parameters = function.Attributes["parameter"].Value.Split(",");
+                        OpenCoupleEffectBox box = new()
+                        {
+                            Id = int.Parse(parameters[0]),
+                            Rarity = byte.Parse(parameters[1])
+                        };
+                        metadata.FunctionData.OpenCoupleEffectBox = box;
+                        break;
+                    }
+                case "InstallBillBoard":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+
+                        InstallBillboard balloon = new()
+                        {
+                            InteractId = int.Parse(functionParameters.Attributes["interactID"].Value),
+                            Duration = int.Parse(functionParameters.Attributes["durationSec"].Value),
+                            Model = functionParameters.Attributes["model"].Value,
+                            Asset = functionParameters.Attributes["asset"]?.Value ?? "",
+                            NormalState = functionParameters.Attributes["normal"].Value,
+                            Reactable = functionParameters.Attributes["reactable"].Value,
+                            Scale = float.Parse(functionParameters.Attributes["scale"]?.Value ?? "0")
+                        };
+                        metadata.FunctionData.InstallBillboard = balloon;
+                        break;
+                    }
+                case "TitleScroll":
+                case "ItemExchangeScroll":
+                case "OpenInstrument":
+                case "StoryBook":
+                case "FishingRod":
+                case "ItemChangeBeauty":
+                case "ItemRePackingScroll":
+                    metadata.FunctionData.Id = int.Parse(function.Attributes["parameter"].Value);
+                    break;
             }
 
             // Music score charges
@@ -493,11 +386,222 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
             items.Add(metadata);
         }
+
         return items;
     }
 
+    private Dictionary<int, int> ParseItemRarities()
+    {
+        Dictionary<int, int> rarities = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
+        {
+            if (!entry.Name.StartsWith("table/na/itemwebfinder"))
+            {
+                continue;
+            }
+
+            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+            foreach (XmlNode node in nodes)
+            {
+                int itemId = int.Parse(node.Attributes["id"].Value);
+                int rarity = int.Parse(node.Attributes["grade"].Value);
+                rarities[itemId] = rarity;
+            }
+        }
+
+        return rarities;
+    }
+
+    private Dictionary<int, string> ParseItemNames()
+    {
+        Dictionary<int, string> names = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
+        {
+            if (!entry.Name.StartsWith("string/en/itemname.xml"))
+            {
+                continue;
+            }
+
+            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+            foreach (XmlNode node in nodes)
+            {
+                int itemId = int.Parse(node.Attributes["id"].Value);
+                if (node.Attributes["name"] == null)
+                {
+                    continue;
+                }
+
+                string itemName = node.Attributes["name"].Value;
+                names[itemId] = itemName;
+            }
+        }
+
+        return names;
+    }
+
+    private Dictionary<int, List<ItemBreakReward>> ParseItemBreakingIngredients()
+    {
+        Dictionary<int, List<ItemBreakReward>> rewards = new();
+        foreach (PackFileEntry entry in Resources.XmlReader.Files)
+        {
+            if (!entry.Name.StartsWith("table/itembreakingredient"))
+            {
+                continue;
+            }
+
+            XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
+            XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
+            foreach (XmlNode nodes in individualItems)
+            {
+                string locale = nodes.Attributes["locale"]?.Value ?? "";
+                if (locale != "NA" && locale != "")
+                {
+                    continue;
+                }
+
+                int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
+                rewards[itemID] = new();
+
+                int ingredientItemID1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
+                int ingredientCount1 = int.Parse(nodes.Attributes["IngredientCount1"]?.Value ?? "0");
+                rewards[itemID].Add(new(ingredientItemID1, ingredientCount1));
+
+                _ = int.TryParse(nodes.Attributes["IngredientItemID2"]?.Value ?? "0", out int ingredientItemID2);
+                _ = int.TryParse(nodes.Attributes["IngredientCount2"]?.Value ?? "0", out int ingredientCount2);
+                rewards[itemID].Add(new(ingredientItemID2, ingredientCount2));
+
+                _ = int.TryParse(nodes.Attributes["IngredientItemID3"]?.Value ?? "0", out int ingredientItemID3);
+                _ = int.TryParse(nodes.Attributes["IngredientCount3"]?.Value ?? "0", out int ingredientCount3);
+                rewards[itemID].Add(new(ingredientItemID3, ingredientCount3));
+            }
+        }
+
+        return rewards;
+    }
+
+    private static void ParseHair(XmlNode slot, ItemMetadata metadata)
+    {
+        int assetNodeCount = slot.SelectNodes("asset").Count;
+        XmlNode asset = slot.FirstChild;
+
+        XmlNode scaleNode = slot.SelectSingleNode("scale");
+
+        CoordF defaultCoord = CoordF.Parse("0, 0, 0");
+        switch (assetNodeCount)
+        {
+            // This hair has a front and back positionable hair
+            case 3:
+                {
+                    XmlNode backHair = asset.NextSibling; // back hair info
+                    XmlNode frontHair = backHair.NextSibling; // front hair info
+
+                    int backHairNodes = backHair.SelectNodes("custom").Count;
+
+                    CoordF[] bPosCord = new CoordF[backHairNodes];
+                    CoordF[] bPosRotation = new CoordF[backHairNodes];
+                    CoordF[] fPosCord = new CoordF[backHairNodes];
+                    CoordF[] fPosRotation = new CoordF[backHairNodes];
+
+                    for (int i = 0; i < backHairNodes; i++)
+                    {
+                        foreach (XmlNode backPresets in backHair)
+                        {
+                            if (backPresets.Name != "custom")
+                            {
+                                continue;
+                            }
+
+                            bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
+                            bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
+                        }
+
+                        foreach (XmlNode frontPresets in frontHair)
+                        {
+                            if (frontPresets.Name != "custom")
+                            {
+                                continue;
+                            }
+
+                            fPosCord[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
+                            fPosRotation[i] = CoordF.Parse(frontPresets.Attributes["position"].Value);
+                        }
+
+                        HairPresets hairPresets = new()
+                        {
+                            BackPositionCoord = bPosCord[i],
+                            BackPositionRotation = bPosRotation[i],
+                            FrontPositionCoord = fPosCord[i],
+                            FrontPositionRotation = fPosRotation[i],
+                            MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0"),
+                            MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0")
+                        };
+
+                        metadata.HairPresets.Add(hairPresets);
+                    }
+
+                    break;
+                }
+            // This hair only has back positionable hair
+            case 2:
+                {
+                    XmlNode backHair = asset.NextSibling; // back hair info
+
+                    int backHairNodes = backHair.SelectNodes("custom").Count;
+
+                    CoordF[] bPosCord = new CoordF[backHairNodes];
+                    CoordF[] bPosRotation = new CoordF[backHairNodes];
+
+                    for (int i = 0; i < backHairNodes; i++)
+                    {
+                        foreach (XmlNode backPresets in backHair)
+                        {
+                            if (backPresets.Name != "custom")
+                            {
+                                continue;
+                            }
+
+                            bPosCord[i] = CoordF.Parse(backPresets.Attributes["position"].Value);
+                            bPosRotation[i] = CoordF.Parse(backPresets.Attributes["rotation"].Value);
+                        }
+
+                        HairPresets hairPresets = new()
+                        {
+                            BackPositionCoord = bPosCord[i],
+                            BackPositionRotation = bPosRotation[i],
+                            FrontPositionCoord = defaultCoord,
+                            FrontPositionRotation = defaultCoord,
+                            MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0"),
+                            MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0")
+                        };
+
+                        metadata.HairPresets.Add(hairPresets);
+                    }
+
+                    break;
+                }
+            // hair does not have back or front positionable hair
+            default:
+                {
+                    HairPresets hairPresets = new()
+                    {
+                        BackPositionCoord = defaultCoord,
+                        BackPositionRotation = defaultCoord,
+                        FrontPositionCoord = defaultCoord,
+                        FrontPositionRotation = defaultCoord,
+                        MinScale = float.Parse(scaleNode?.Attributes["min"]?.Value ?? "0"),
+                        MaxScale = float.Parse(scaleNode?.Attributes["max"]?.Value ?? "0")
+                    };
+
+                    metadata.HairPresets.Add(hairPresets);
+                    break;
+                }
+        }
+    }
+
     // This is an approximation and may not be 100% correct
-    public static InventoryTab GetTab(byte type, byte subType, bool skin = false)
+    private static InventoryTab GetTab(byte type, byte subType, bool skin = false)
     {
         if (skin)
         {
@@ -549,6 +653,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     case 20: // Fishing Pole / Instrument
                         return InventoryTab.FishingMusic;
                 }
+
                 break;
             case 11:
                 return InventoryTab.Pets;
