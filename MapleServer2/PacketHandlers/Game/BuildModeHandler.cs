@@ -19,6 +19,13 @@ public class BuildModeHandler : GamePacketHandler
         Start = 0x1
     }
 
+    public enum BuildModeType : byte
+    {
+        Stop = 0x0,
+        House = 0x1,
+        Liftables = 0x2,
+    }
+
     public override void Handle(GameSession session, PacketReader packet)
     {
         BuildModeMode mode = (BuildModeMode) packet.ReadByte();
@@ -43,7 +50,7 @@ public class BuildModeHandler : GamePacketHandler
         {
             return;
         }
-        session.Send(BuildModePacket.Use(session.Player.FieldPlayer, false));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.Stop));
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
         session.FieldManager.RemoveGuide(session.Player.Guide);
         session.Player.Guide = null; // remove guide from player
@@ -72,6 +79,6 @@ public class BuildModeHandler : GamePacketHandler
         session.FieldManager.AddGuide(fieldGuide);
 
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, true, furnishingItemId, furnishingItemUid));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.House, furnishingItemId, furnishingItemUid));
     }
 }

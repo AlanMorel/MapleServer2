@@ -211,6 +211,15 @@ public partial class FieldManager
             }
         }
 
+        foreach (MapLiftableObject liftable in MapEntityStorage.GetLiftablesObjects(MapId))
+        {
+            if (liftable != null)
+            {
+                LiftableObject liftableObject = new(liftable.EntityId, liftable.ItemId, liftable.EffectQuestID, liftable.EffectQuestState);
+                State.AddLiftableObject(liftableObject);
+            }
+        }
+
         // Load cubes
         if (MapId == (int) Map.PrivateResidence)
         {
@@ -280,17 +289,9 @@ public partial class FieldManager
             }
         }
 
-        if (MapEntityStorage.HasHealingSpot(MapId))
+        foreach (CoordS coord in MapEntityStorage.GetHealingSpot(MapId))
         {
-            List<CoordS> healingSpots = MapEntityStorage.GetHealingSpot(MapId);
-            if (State.HealingSpots.IsEmpty)
-            {
-                foreach (CoordS coord in healingSpots)
-                {
-                    int objectId = GuidGenerator.Int();
-                    State.AddHealingSpot(RequestFieldObject(new HealingSpot(objectId, coord)));
-                }
-            }
+            State.AddHealingSpot(RequestFieldObject(new HealingSpot(GuidGenerator.Int(), coord)));
         }
     }
 
@@ -409,6 +410,7 @@ public partial class FieldManager
         player.MapId = MapId;
         player.FieldPlayer.Coord = player.SavedCoord;
         player.FieldPlayer.Rotation = player.SavedRotation;
+        player.SafeBlock = player.SavedCoord;
 
         lock (Sessions)
         {
@@ -493,6 +495,8 @@ public partial class FieldManager
 
             sender.Send(InstrumentPacket.PlayScore(instrument));
         }
+
+        sender.Send(LiftablePacket.LoadLiftables(State.LiftableObjects.Values.ToList()));
 
         List<BreakableObject> breakables = new();
         breakables.AddRange(State.BreakableActors.Values.ToList());
