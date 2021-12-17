@@ -18,13 +18,10 @@ public static class TrophyMetadataStorage
         }
     }
 
-    public static List<int> GetTrophyIds()
-    {
-        return map.Keys.ToList();
-    }
+    public static IEnumerable<TrophyMetadata> GetTrophiesByCondition(string type, string code, string target) => map.Values.Where(x =>
+        x.Grades[0].ConditionType == type &&
+        (x.Grades[0].ConditionCodes.Length == 0 || x.Grades[0].ConditionCodes.Contains(code)) &&
+        (x.Grades[0].ConditionTargets.Length == 0 || x.Grades[0].ConditionTargets.Contains(target)));
 
-    public static TrophyMetadata GetMetadata(int id)
-    {
-        return map.GetValueOrDefault(id);
-    }
+    public static TrophyMetadata GetMetadata(int id) => map.GetValueOrDefault(id);
 }

@@ -36,6 +36,7 @@ public class UnlockAll : InGameCommand
             {
                 continue;
             }
+
             trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i, 9223372036854775807));
             player.ChatSticker.Add(new((byte) i, 9223372036854775807));
         }
@@ -48,10 +49,12 @@ public class UnlockAll : InGameCommand
             {
                 continue;
             }
+
             if (player.Emotes.Contains(emoteId))
             {
                 continue;
             }
+
             player.Emotes.Add(emoteId);
 
             trigger.Session.Send(EmotePacket.LearnEmote(emoteId));
@@ -65,6 +68,7 @@ public class UnlockAll : InGameCommand
             {
                 continue;
             }
+
             player.Titles.Add(titleId);
 
             trigger.Session.Send(UserEnvPacket.AddTitle(titleId));
@@ -74,6 +78,7 @@ public class UnlockAll : InGameCommand
         trigger.Session.Send(NoticePacket.Notice("Done!", NoticeType.Chat));
     }
 }
+
 public class UnlockTrophyCommand : InGameCommand
 {
     public UnlockTrophyCommand()
@@ -93,6 +98,8 @@ public class UnlockTrophyCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
+        Player player = trigger.Session.Player;
+
         int trophyId = trigger.Get<int>("trophyId");
         int amount = trigger.Get<int>("amount");
         if (trophyId == 0)
@@ -100,10 +107,19 @@ public class UnlockTrophyCommand : InGameCommand
             trigger.Session.Send(NoticePacket.Notice("Type an trophy id!", NoticeType.Chat));
             return;
         }
-        trigger.Session.Player.TrophyUpdate(trophyId, amount);
 
-        trigger.Session.Player.TrophyData.TryGetValue(trophyId, out Trophy trophy);
+        if (!player.TrophyData.ContainsKey(trophyId))
+        {
+            player.TrophyData[trophyId] = new(player.CharacterId, player.AccountId, trophyId);
+        }
+
+        player.TrophyData[trophyId].AddCounter(trigger.Session, amount);
+
+        player.TrophyData.TryGetValue(trophyId, out Trophy trophy);
+
+        trigger.Session.Send(TrophyPacket.WriteUpdate(trophy));
         DatabaseManager.Trophies.Update(trophy);
+
         trigger.Session.Send(NoticePacket.Notice("Done!", NoticeType.Chat));
     }
 }
