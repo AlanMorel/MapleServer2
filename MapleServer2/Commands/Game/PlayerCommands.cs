@@ -167,8 +167,7 @@ public class LevelUpCommand : InGameCommand
             "levelup"
         };
         Description = "Level up.";
-        Parameters = new()
-            ;
+        Parameters = new();
         Usage = "/levelup";
     }
 
