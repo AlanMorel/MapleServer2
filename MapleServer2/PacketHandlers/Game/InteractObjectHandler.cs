@@ -83,11 +83,14 @@ internal class InteractObjectHandler : GamePacketHandler
             case InteractObjectType.Common:
                 foreach ((int questId, QuestState state) in metadata.Quests)
                 {
-                    QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Id == questId && x.State == state);
-                    if (questStatus is null)
+                    if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State != state)
                     {
                         continue;
                     }
+
+                    QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
+                    session.Send(InteractObjectPacket.QuestUse(interactObject));
+                    session.Send(InteractObjectPacket.Interact(interactObject));
 
                     foreach (int boxId in metadata.Drop.IndividualDropBoxId)
                     {
@@ -110,13 +113,12 @@ internal class InteractObjectHandler : GamePacketHandler
                                     };
 
                                     session.FieldManager.AddItem(session, item);
-                                    session.Send(InteractObjectPacket.Use(interactObject));
-                                    session.Send(InteractObjectPacket.Interact(interactObject));
                                 }
                             }
                         }
                     }
                 }
+
                 break;
         }
 

@@ -14,7 +14,7 @@ public static class TrophyPacket
         Favorite = 0x04
     }
 
-    public enum GradeStatus : byte
+    private enum GradeStatus : byte
     {
         InProgress = 0x2,
         Finished = 0x3
@@ -69,7 +69,7 @@ public static class TrophyPacket
     {
         int timestampsCount = trophy.Timestamps.Count;
 
-        pWriter.Write(trophy.GetGradeStatus());
+        pWriter.Write(trophy.IsDone ? GradeStatus.Finished : GradeStatus.InProgress);
         pWriter.WriteInt(trophy.IsDone ? 1 : 0);
         pWriter.WriteInt(trophy.NextGrade);
         pWriter.WriteInt(trophy.LastReward);

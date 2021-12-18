@@ -132,7 +132,7 @@ public class Player
     public Item FishingRod; // Possibly temp solution?
 
     public Wallet Wallet { get; set; }
-    public List<QuestStatus> QuestList;
+    public Dictionary<int, QuestStatus> QuestData;
 
     public CancellationTokenSource OnlineCTS;
     public Task OnlineTimeThread;
@@ -216,9 +216,12 @@ public class Player
         Inventory = new(true);
         Mailbox = new();
         BuddyList = new();
-        QuestList = new();
+        QuestData = new();
         GatheringCount = new();
-        TrophyCount = new[] { 0, 0, 0 };
+        TrophyCount = new[]
+        {
+            0, 0, 0
+        };
         ReturnMapId = (int) Map.Tria;
         ReturnCoord = MapEntityStorage.GetRandomPlayerSpawn(ReturnMapId).Coord.ToFloat();
         GroupChatId = new int[3];
@@ -227,13 +230,19 @@ public class Player
         UnlockedMaps = new();
         ActiveSkillTabId = 1;
         CharacterId = DatabaseManager.Characters.Insert(this);
-        SkillTabs = new() { new(CharacterId, job, id: 1, name: "Build 1") };
+        SkillTabs = new()
+        {
+            new(CharacterId, job, id: 1, name: "Build 1")
+        };
 
         // Add initial quests
         foreach (QuestMetadata questMetadata in QuestMetadataStorage.GetAvailableQuests(Levels.Level, job))
         {
-            QuestList.Add(new(this, questMetadata));
+            QuestData.Add(questMetadata.Basic.Id, new(this, questMetadata));
         }
+
+        // Add initial trophy for level
+        TrophyUpdate("level", 1);
     }
 
     public void UpdateBuddies()
@@ -390,18 +399,33 @@ public class Player
         }
     }
 
-    public void TrophyUpdate(int trophyId, long addAmount, int sendUpdateInterval = 1)
+    public void TrophyUpdate(string type, int addAmount, string code = "", string target = "", int sendUpdateInterval = 1)
     {
-        if (!TrophyData.ContainsKey(trophyId))
+        IEnumerable<TrophyMetadata> trophies = TrophyMetadataStorage.GetTrophiesByCondition(type, code, target);
+        foreach (TrophyMetadata metadata in trophies)
         {
-            TrophyData[trophyId] = new(CharacterId, AccountId, trophyId);
+            if (TrophyData.ContainsKey(metadata.Id))
+            {
+                continue;
+            }
+
+            TrophyData[metadata.Id] = new(CharacterId, AccountId, metadata.Id);
         }
 
-        TrophyData[trophyId].AddCounter(Session, addAmount);
-        if (TrophyData[trophyId].Counter % sendUpdateInterval == 0)
+        IEnumerable<Trophy> enumerable = TrophyData.Values.Where(x =>
+            x.GradeCondition.ConditionType == type &&
+            (x.GradeCondition.ConditionCodes.Length == 0 || x.GradeCondition.ConditionCodes.Contains(code)) &&
+            (x.GradeCondition.ConditionTargets.Length == 0 || x.GradeCondition.ConditionTargets.Contains(target)));
+        foreach (Trophy trophy in enumerable)
         {
-            DatabaseManager.Trophies.Update(TrophyData[trophyId]);
-            Session.Send(TrophyPacket.WriteUpdate(TrophyData[trophyId]));
+            trophy.AddCounter(Session, addAmount);
+            if (trophy.Counter % sendUpdateInterval != 0)
+            {
+                continue;
+            }
+
+            DatabaseManager.Trophies.Update(trophy);
+            Session?.Send(TrophyPacket.WriteUpdate(trophy));
         }
     }
 
@@ -410,12 +434,16 @@ public class Player
         OnlineCTS = new();
         return Task.Run(async () =>
         {
+            // First wait one minute before updating the online time
+            await Task.Delay(60000);
+
+            // Then update the online time every minute if CTS is not requested
             while (!OnlineCTS.IsCancellationRequested)
             {
-                await Task.Delay(60000);
                 OnlineTime += 1;
                 LastLoginTime = TimeInfo.Now();
-                TrophyUpdate(23100001, 1);
+                TrophyUpdate("playtime", 1);
+                await Task.Delay(60000);
             }
         });
     }

@@ -170,33 +170,7 @@ public partial class TriggerContext
         {
             if (type == "trigger")
             {
-                switch (trophySet)
-                {
-                    case "oxquiz_start":
-                        player.Value.TrophyUpdate(23400009, 1);
-                        break;
-                    case "oxquiz_correct":
-                        player.Value.TrophyUpdate(23400010, 1);
-                        break;
-                    case "oxquiz_win":
-                        player.Value.TrophyUpdate(23400011, 1);
-                        break;
-                    case "trapmaster_start":
-                        player.Value.TrophyUpdate(23400001, 1);
-                        break;
-                    case "trapmaster_win":
-                        player.Value.TrophyUpdate(23400002, 1);
-                        break;
-                    case "finalsurvivor_start":
-                        player.Value.TrophyUpdate(23400003, 1);
-                        break;
-                    case "finalsurvivor_win":
-                        player.Value.TrophyUpdate(23400004, 1);
-                        break;
-                    default:
-                        Logger.Warn($"Unhandled trophy set: {trophySet}");
-                        break;
-                }
+                player.Value.TrophyUpdate(type, 1, code: trophySet);
             }
         }
     }
