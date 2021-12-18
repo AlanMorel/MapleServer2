@@ -599,7 +599,7 @@ CREATE TABLE `meso_market_listings`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Table structure for table `meso_market_listings`
+-- Table structure for table `ugc`
 --
 
 DROP TABLE IF EXISTS `ugc`;
@@ -619,6 +619,48 @@ CREATE TABLE `ugc` (
   CONSTRAINT `ugc_FK` FOREIGN KEY (`character_id`) REFERENCES `characters` (`character_id`),
   CONSTRAINT `ugc_FK_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `ugc_market_items`
+--
+
+DROP TABLE IF EXISTS `ugc_market_items`;
+CREATE TABLE `ugc_market_items` (
+  `id`                      bigint NOT NULL AUTO_INCREMENT,
+  `price`                   bigint NOT NULL,
+  `item_uid`                 bigint NOT NULL,
+  `status`                  tinyint NOT NULL,
+  `creation_time`           bigint NOT NULL,
+  `seller_account_id`       bigint NOT NULL,
+  `seller_character_id`     bigint NOT NULL,
+  `seller_character_name`   varchar(100) NOT NULL,
+  `description`             text,
+  `tags`                    text,
+  PRIMARY KEY (`id`),
+  KEY `ix_ugc_market_listing_account_id` (`seller_account_id`), 
+  KEY `ix_ugc_market_listing_character_id` (`seller_character_id`), 
+  CONSTRAINT `fk_ugc_market_listing_character_id` FOREIGN KEY (`seller_character_id`) REFERENCES `characters` (`character_id`),
+  CONSTRAINT `fk_ugc_market_listing_account_id` FOREIGN KEY (`seller_account_id`) REFERENCES `characters` (`character_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+--
+-- Table structure for table `ugc_market_sales`
+--
+
+DROP TABLE IF EXISTS `ugc_market_sales`;
+CREATE TABLE `ugc_market_sales` (
+  `id`                   bigint NOT NULL AUTO_INCREMENT,
+  `price`                bigint NOT NULL,
+  `profit`               bigint NOT NULL,
+  `item_name`            varchar(100) NOT NULL,
+  `sold_timestamp`       bigint NOT NULL,
+  `seller_character_id`  bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_ugc_market_sale_character_id` (`seller_character_id`), 
+  CONSTRAINT `fk_ugc_market_sale_character_id` FOREIGN KEY (`seller_character_id`) REFERENCES `characters` (`character_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

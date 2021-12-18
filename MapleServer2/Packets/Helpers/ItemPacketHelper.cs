@@ -70,7 +70,7 @@ public static class ItemPacketHelper
         }
 
         // Item Transfer Data 0x058AD00
-        pWriter.WriteInt(6); // Transfer Flag. Temporarily changing it to 6 to make items tradeable
+        pWriter.WriteInt(); // Transfer Flag. Temporarily changing it to 6 to make items tradeable
         pWriter.WriteByte();
         pWriter.WriteInt(item.RemainingTrades);
         pWriter.WriteInt();

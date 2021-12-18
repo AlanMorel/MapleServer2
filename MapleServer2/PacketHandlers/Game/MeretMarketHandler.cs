@@ -17,7 +17,10 @@ public class MeretMarketHandler : GamePacketHandler
 
     private enum MeretMarketMode : byte
     {
+        LoadPersonalListings = 0xB,
+        LoadSales = 0xC,
         ListItem = 0xD,
+        CollectProfit = 0x14,
         Initialize = 0x16,
         OpenPremium = 0x1B,
         SendMarketRequest = 0x1D,
@@ -32,8 +35,17 @@ public class MeretMarketHandler : GamePacketHandler
 
         switch (mode)
         {
+            case MeretMarketMode.LoadPersonalListings:
+                HandleLoadPersonalListings(session);
+                break;
+            case MeretMarketMode.LoadSales:
+                HandleLoadSales(session, packet);
+                break;
             case MeretMarketMode.ListItem:
                 HandleListItem(session, packet);
+                break;
+            case MeretMarketMode.CollectProfit:
+                HandleCollectProfit(session, packet);
                 break;
             case MeretMarketMode.Initialize:
                 HandleInitialize(session);
@@ -59,12 +71,25 @@ public class MeretMarketHandler : GamePacketHandler
         }
     }
 
+    private static void HandleLoadPersonalListings(GameSession session)
+    {
+        List<UGCMarketItem> items = new();
+        items = GameServer.UGCMarketManager.GetItemsByCharacterId(session.Player.CharacterId);
+        session.Send(MeretMarketPacket.LoadPersonalListings(items));
+    }
+
+    private static void HandleLoadSales(GameSession session, PacketReader packet)
+    {
+        //TODO get sales from DB
+        session.Send(MeretMarketPacket.LoadSales(new()));
+    }
+
     private static void HandleListItem(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
         long salePrice = packet.ReadLong();
         bool promote = packet.ReadBool();
-        string tags = packet.ReadUnicodeString();
+        List<string> tags = packet.ReadUnicodeString().Split(",").ToList();
         string description = packet.ReadUnicodeString();
         long listingFee = packet.ReadLong();
 
@@ -75,6 +100,21 @@ public class MeretMarketHandler : GamePacketHandler
         }
 
         Item item = session.Player.Inventory.Items[itemUid];
+
+        if (item.UGC is null)
+        {
+            return;
+        }
+
+        UGCMarketItem marketItem = new UGCMarketItem(item, salePrice, session.Player, tags, description, promote);
+
+        session.Send(MeretMarketPacket.ListItem(marketItem));
+        session.Send(MeretMarketPacket.SetExpiration(marketItem));
+    }
+
+    private static void HandleCollectProfit(GameSession session, PacketReader packet)
+    {
+
     }
 
     private static void HandleInitialize(GameSession session)
@@ -86,7 +126,7 @@ public class MeretMarketHandler : GamePacketHandler
     {
         MeretMarketCategory category = (MeretMarketCategory) packet.ReadInt();
         List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(category);
-        if (marketItems == null)
+        if (marketItems is null)
         {
             return;
         }
@@ -109,7 +149,7 @@ public class MeretMarketHandler : GamePacketHandler
         long price = packet.ReadLong();
 
         MeretMarketItem marketItem = DatabaseManager.MeretMarket.FindById(marketItemId);
-        if (marketItem == null)
+        if (marketItem is null)
         {
             return;
         }
@@ -163,7 +203,7 @@ public class MeretMarketHandler : GamePacketHandler
     private static void HandleHome(GameSession session)
     {
         List<MeretMarketItem> marketItems = DatabaseManager.MeretMarket.FindAllByCategoryId(MeretMarketCategory.Promo);
-        if (marketItems == null)
+        if (marketItems is null)
         {
             return;
         }

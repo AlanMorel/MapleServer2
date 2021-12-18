@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database.Types;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -8,7 +9,11 @@ public static class MeretMarketPacket
 {
     private enum MeretMarketMode : byte
     {
+        LoadPersonalListings = 0xB,
+        LoadSales = 0xC,
         ListItem = 0xD,
+        UnlistItem = 0xF,
+        SetExpiration = 0x15,
         Premium = 0x1B,
         Purchase = 0x1E,
         Initialize = 016,
@@ -16,71 +21,64 @@ public static class MeretMarketPacket
         LoadCart = 0x6B
     }
 
-    public static PacketWriter ListItem()
+    public static PacketWriter LoadPersonalListings(List<UGCMarketItem> items)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.LoadPersonalListings);
+        pWriter.WriteLong();
+        pWriter.WriteInt(items.Count);
+        foreach (UGCMarketItem item in items)
+        {
+            pWriter.WriteByte(1);
+            WriteUGCMarketItem(pWriter, item);
+        }
+        return pWriter;
+    }
+
+    public static PacketWriter LoadSales(List<UGCMarketSale> sales)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.LoadSales);
+        pWriter.WriteInt(sales.Count); // count
+
+        foreach(UGCMarketSale sale in sales)
+        {
+            pWriter.WriteLong(sale.Id);
+            pWriter.WriteLong(2); // item id? or listing id?
+            pWriter.WriteUnicodeString(sale.ItemName);
+            pWriter.WriteInt();
+            pWriter.WriteInt();
+            pWriter.WriteLong();
+            pWriter.WriteLong();
+            pWriter.WriteUnicodeString();
+            pWriter.WriteUnicodeString();
+            pWriter.WriteInt();
+            pWriter.WriteLong(sale.Price);
+            pWriter.WriteLong(sale.SoldTimestamp);
+            pWriter.WriteLong(sale.Profit);
+        }
+
+        return pWriter;
+    }
+
+    public static PacketWriter ListItem(UGCMarketItem item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.ListItem);
-        pWriter.WriteByte(1); // count?
+        WriteUGCMarketItem(pWriter, item);
+        return pWriter;
+    }
+
+    public static PacketWriter SetExpiration(UGCMarketItem item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.SetExpiration);
         pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
+        pWriter.WriteLong(item.Id);
+        pWriter.WriteLong(item.Id);
+        pWriter.Write(item.Status);
         pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteByte();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteString();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString();
-        pWriter.WriteByte();
+        pWriter.WriteLong(item.CreationTimestamp * 2);
         return pWriter;
     }
 
@@ -263,5 +261,70 @@ public static class MeretMarketPacket
         pWriter.WriteByte();
         pWriter.WriteInt();
 
+    }
+
+    public static void WriteUGCMarketItem(PacketWriter pWriter, UGCMarketItem item)
+    {
+        pWriter.WriteByte(1);
+        pWriter.WriteInt();
+        pWriter.WriteLong(item.Id);
+        pWriter.WriteInt();
+        pWriter.WriteLong(item.Id);
+        pWriter.Write(item.Status);
+        pWriter.WriteInt(item.Item.Id);
+        pWriter.WriteInt(35);
+        pWriter.WriteByte();
+        pWriter.WriteInt(5);
+        pWriter.WriteLong(item.Price);
+        pWriter.WriteInt(10);
+        pWriter.WriteInt(15);
+        pWriter.WriteInt(20); // amount sold
+        pWriter.WriteInt(25);
+        pWriter.WriteLong(item.CreationTimestamp); // listed time
+        pWriter.WriteLong(item.CreationTimestamp); // listed time
+        pWriter.WriteLong(item.CreationTimestamp * 2); // expiration time
+        pWriter.WriteInt(30);
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteLong(item.CreationTimestamp); // submitted time
+        pWriter.WriteInt(2);
+        pWriter.WriteLong(item.SellerAccountId);
+        pWriter.WriteLong(item.SellerCharacterId);
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString(item.SellerCharacterName);
+        pWriter.WriteUnicodeString(string.Join(",", item.Tags.ToArray()) + ", " + item.Item.UGC.Name);
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString(item.Item.UGC.Name);
+        pWriter.WriteLong(item.Item.UGC.Uid);
+        pWriter.WriteUnicodeString(item.Item.UGC.Guid.ToString());
+        pWriter.WriteUnicodeString(item.Item.UGC.Name);
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(2);
+        pWriter.WriteLong(item.Item.UGC.AccountId);
+        pWriter.WriteLong(item.Item.UGC.CharacterId);
+        pWriter.WriteUnicodeString(item.Item.UGC.CharacterName);
+        pWriter.WriteLong(item.Item.UGC.CreationTime);
+        pWriter.WriteUnicodeString(item.Item.UGC.Url);
+        pWriter.WriteByte();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteString();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteInt();
+        pWriter.WriteLong();
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteByte();
     }
 }
