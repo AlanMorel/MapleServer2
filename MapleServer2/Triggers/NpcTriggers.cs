@@ -33,6 +33,7 @@ public partial class TriggerContext
 
     public void AddCinematicTalk(int npcId, string illustId, string script, int duration, Align align, int delayTick)
     {
+        Field.BroadcastPacket(CinematicPacket.Conversation(npcId, script, duration, align));
     }
 
     public void CreateMonster(int[] spawnPointIds, bool arg2, int arg3)

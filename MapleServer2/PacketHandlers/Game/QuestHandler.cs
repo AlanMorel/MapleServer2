@@ -57,8 +57,7 @@ public class QuestHandler : GamePacketHandler
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
 
-        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
             return;
         }
@@ -74,8 +73,7 @@ public class QuestHandler : GamePacketHandler
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
 
-        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
         {
             return;
         }
@@ -103,22 +101,24 @@ public class QuestHandler : GamePacketHandler
         session.Send(QuestPacket.CompleteQuest(questId, true));
 
         // Add next quest
-        IEnumerable<KeyValuePair<int, QuestMetadata>> questList = QuestMetadataStorage.GetAllQuests().Where(x => x.Value.Require.RequiredQuests.Contains(questId));
-        foreach (KeyValuePair<int, QuestMetadata> kvp in questList)
+        IEnumerable<QuestMetadata> questList = QuestMetadataStorage.GetAllQuests().Values
+            .Where(x => x.Require.RequiredQuests.Contains(questId));
+        foreach (QuestMetadata questMetadata in questList)
         {
-            if (session.Player.QuestList.Exists(x => x.Basic.Id == kvp.Value.Basic.Id))
+            if (session.Player.QuestData.ContainsKey(questMetadata.Basic.Id))
             {
                 continue;
             }
-            session.Player.QuestList.Add(new(session.Player, kvp.Value));
+
+            session.Player.QuestData.Add(questMetadata.Basic.Id, new(session.Player, questMetadata));
         }
     }
 
     private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
     {
         int questId = packet.ReadInt();
-        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null || questStatus.State is QuestState.Finished)
+
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
         {
             return;
         }
@@ -132,6 +132,7 @@ public class QuestHandler : GamePacketHandler
             };
             session.Player.Inventory.AddItem(session, item, true);
         }
+
         questStatus.State = QuestState.Finished;
         questStatus.CompleteTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
@@ -140,24 +141,23 @@ public class QuestHandler : GamePacketHandler
 
     private static void HandleAddExplorationQuests(GameSession session, PacketReader packet)
     {
-        List<QuestStatus> list = new();
-
         int listSize = packet.ReadInt();
         for (int i = 0; i < listSize; i++)
         {
             int questId = packet.ReadInt();
-            if (session.Player.QuestList.Exists(x => x.Basic.Id == questId && x.State is QuestState.Started))
+            session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus);
+
+            session.Send(QuestPacket.AcceptQuest(questId));
+            if (questStatus is null)
             {
-                continue;
+                QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
+                session.Player.QuestData.Add(questId, new(session.Player, metadata, QuestState.Started, TimeInfo.Now()));
+                return;
             }
 
-            QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
-            QuestStatus questStatus = new(session.Player, metadata, QuestState.Started, TimeInfo.Now());
-            list.Add(questStatus);
-            session.Send(QuestPacket.AcceptQuest(questStatus.Basic.Id));
+            questStatus.State = QuestState.Started;
+            DatabaseManager.Quests.Update(questStatus);
         }
-
-        session.Player.QuestList.AddRange(list);
     }
 
     private static void HandleToggleTracking(GameSession session, PacketReader packet)
@@ -165,11 +165,11 @@ public class QuestHandler : GamePacketHandler
         int questId = packet.ReadInt();
         bool tracked = packet.ReadBool();
 
-        QuestStatus questStatus = session.Player.QuestList.FirstOrDefault(x => x.Basic.Id == questId);
-        if (questStatus == null)
+        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
         {
             return;
         }
+
         questStatus.Tracked = tracked;
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.ToggleTracking(questId, tracked));
