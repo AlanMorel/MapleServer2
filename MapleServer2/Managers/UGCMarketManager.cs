@@ -1,4 +1,5 @@
-﻿using MapleServer2.Database;
+﻿using Maple2Storage.Tools;
+using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 
@@ -33,13 +34,27 @@ public class UGCMarketManager
         return Items.Values.Where(b => b.SellerCharacterId == characterId).ToList();
     }
 
+    public List<UGCMarketItem> GetPromoItems()
+    {
+        List<UGCMarketItem> items = Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UGCMarketListingStatus.Active).ToList();
+        Random random = RandomProvider.Get();
+        items = items.OrderBy(x => random.Next()).ToList();
+        return items.Take(12).ToList(); // 12 being the max the shop can display
+    }
+
+    public List<UGCMarketItem> GetNewestItems()
+    {
+        List<UGCMarketItem> items = Items.Values.OrderBy(x => x.ListingExpirationTimestamp).ToList();
+        return items.Where(x => x.Status == UGCMarketListingStatus.Active).Take(6).ToList();
+    }
+
     //public BlackMarketListing GetListingByItemUid(long uid)
     //{
     //    return Listings.Values.FirstOrDefault(b => b.Item.Uid == uid);
     //}
 
-    //public BlackMarketListing GetListingById(long listingId)
-    //{
-    //    return Listings.Values.FirstOrDefault(x => x.Id == listingId);
-    //}
+    public UGCMarketItem FindById(long id)
+    {
+        return Items.Values.FirstOrDefault(x => x.Id == id);
+    }
 }

@@ -38,5 +38,9 @@
   {
     "Key": "BlackMarketSalesFeeRate",
     "Value": "0.1"
+  },
+  {
+    "Key": "UGCShopExpiredListingRemovalHour",
+    "Value":  "72"
   }
 ]

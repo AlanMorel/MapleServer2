@@ -1,6 +1,7 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database.Types;
+using MapleServer2.Enums;
 using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
@@ -12,12 +13,15 @@ public static class MeretMarketPacket
         LoadPersonalListings = 0xB,
         LoadSales = 0xC,
         ListItem = 0xD,
+        RemoveListing = 0xE,
         UnlistItem = 0xF,
-        SetExpiration = 0x15,
+        RelistItem = 0x12,
+        UpdateExpiration = 0x15,
         Premium = 0x1B,
         Purchase = 0x1E,
         Initialize = 016,
         Home = 0x65,
+        OpenDesignShop = 0x66,
         LoadCart = 0x6B
     }
 
@@ -41,7 +45,7 @@ public static class MeretMarketPacket
         pWriter.Write(MeretMarketMode.LoadSales);
         pWriter.WriteInt(sales.Count); // count
 
-        foreach(UGCMarketSale sale in sales)
+        foreach (UGCMarketSale sale in sales)
         {
             pWriter.WriteLong(sale.Id);
             pWriter.WriteLong(2); // item id? or listing id?
@@ -69,16 +73,34 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
-    public static PacketWriter SetExpiration(UGCMarketItem item)
+    public static PacketWriter RemoveListing(long id)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
-        pWriter.Write(MeretMarketMode.SetExpiration);
+        pWriter.Write(MeretMarketMode.RemoveListing);
+        pWriter.WriteInt();
+        pWriter.WriteLong(id);
+        pWriter.WriteLong(id);
+        return pWriter;
+    }
+
+    public static PacketWriter RelistItem(UGCMarketItem item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.RelistItem);
+        WriteUGCMarketItem(pWriter, item);
+        return pWriter;
+    }
+
+    public static PacketWriter UpdateExpiration(UGCMarketItem item)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.UpdateExpiration);
         pWriter.WriteInt();
         pWriter.WriteLong(item.Id);
         pWriter.WriteLong(item.Id);
         pWriter.Write(item.Status);
         pWriter.WriteByte();
-        pWriter.WriteLong(item.CreationTimestamp * 2);
+        pWriter.WriteLong(item.ListingExpirationTimestamp);
         return pWriter;
     }
 
@@ -198,6 +220,24 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
+    public static PacketWriter OpenDesignShop(List<UGCMarketItem> promoItems, List<UGCMarketItem> newItems)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.OpenDesignShop);
+        pWriter.WriteInt(promoItems.Count + newItems.Count);
+        foreach (UGCMarketItem item in promoItems)
+        {
+            pWriter.WriteByte(1);
+            WriteUGCMarketItem(pWriter, item, UGCMarketItemHomeCategory.Promoted);
+        }
+        foreach (UGCMarketItem item in newItems)
+        {
+            pWriter.WriteByte(1);
+            WriteUGCMarketItem(pWriter, item, UGCMarketItemHomeCategory.New);
+        }
+        return pWriter;
+    }
+
     public static PacketWriter LoadCart()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
@@ -263,7 +303,7 @@ public static class MeretMarketPacket
 
     }
 
-    public static void WriteUGCMarketItem(PacketWriter pWriter, UGCMarketItem item)
+    public static void WriteUGCMarketItem(PacketWriter pWriter, UGCMarketItem item, UGCMarketItemHomeCategory category = UGCMarketItemHomeCategory.None)
     {
         pWriter.WriteByte(1);
         pWriter.WriteInt();
@@ -273,28 +313,28 @@ public static class MeretMarketPacket
         pWriter.Write(item.Status);
         pWriter.WriteInt(item.Item.Id);
         pWriter.WriteInt(35);
-        pWriter.WriteByte();
-        pWriter.WriteInt(5);
+        pWriter.WriteByte(1);
+        pWriter.WriteInt(1);
         pWriter.WriteLong(item.Price);
-        pWriter.WriteInt(10);
-        pWriter.WriteInt(15);
-        pWriter.WriteInt(20); // amount sold
-        pWriter.WriteInt(25);
-        pWriter.WriteLong(item.CreationTimestamp); // listed time
-        pWriter.WriteLong(item.CreationTimestamp); // listed time
-        pWriter.WriteLong(item.CreationTimestamp * 2); // expiration time
-        pWriter.WriteInt(30);
+        pWriter.WriteInt(1);
+        pWriter.WriteInt(1);
+        pWriter.WriteInt(item.SalesCount);
+        pWriter.WriteInt();
+        pWriter.WriteLong(item.CreationTimestamp);
+        pWriter.WriteLong(item.CreationTimestamp);
+        pWriter.WriteLong(item.ListingExpirationTimestamp); // TODO: Change name
+        pWriter.WriteInt();
+        pWriter.WriteLong(item.PromotionExpirationTimestamp);
         pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteLong(item.CreationTimestamp); // submitted time
+        pWriter.WriteLong(item.CreationTimestamp);
         pWriter.WriteInt(2);
         pWriter.WriteLong(item.SellerAccountId);
         pWriter.WriteLong(item.SellerCharacterId);
         pWriter.WriteUnicodeString();
         pWriter.WriteUnicodeString(item.SellerCharacterName);
         pWriter.WriteUnicodeString(string.Join(",", item.Tags.ToArray()) + ", " + item.Item.UGC.Name);
-        pWriter.WriteUnicodeString();
-        pWriter.WriteUnicodeString(item.Item.UGC.Name);
+        pWriter.WriteUnicodeString(item.Description);
+        pWriter.WriteUnicodeString(item.Item.UGC.CharacterName);
         pWriter.WriteLong(item.Item.UGC.Uid);
         pWriter.WriteUnicodeString(item.Item.UGC.Guid.ToString());
         pWriter.WriteUnicodeString(item.Item.UGC.Name);
@@ -325,6 +365,6 @@ public static class MeretMarketPacket
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteUnicodeString();
-        pWriter.WriteByte();
+        pWriter.Write(category);
     }
 }

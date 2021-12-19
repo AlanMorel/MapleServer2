@@ -7,3 +7,10 @@ public enum UGCMarketListingStatus : byte
     Active = 2,
     Expired = 3
 }
+
+public enum UGCMarketItemHomeCategory : byte
+{
+    None = 0,
+    Promoted = 1,
+    New = 2
+}
