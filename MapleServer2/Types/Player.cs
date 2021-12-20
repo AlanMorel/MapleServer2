@@ -241,6 +241,12 @@ public class Player
             QuestData.Add(questMetadata.Basic.Id, new(this, questMetadata));
         }
 
+        // Get account trophies
+        foreach ((int key, Trophy value) in DatabaseManager.Trophies.FindAllByAccountId(account.Id))
+        {
+            TrophyData.Add(key, value);
+        }
+
         // Add initial trophy for level
         TrophyUpdate("level", 1);
     }
