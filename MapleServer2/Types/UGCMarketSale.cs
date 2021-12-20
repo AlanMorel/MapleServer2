@@ -16,6 +16,18 @@ public class UGCMarketSale
 
     public UGCMarketSale() { }
 
+    public UGCMarketSale(long price, string itemName, long sellerCharacterId)
+    {
+        Price = price;
+        ItemName = itemName;
+        SellerCharacterId = sellerCharacterId;
+        float fee = float.Parse(ConstantsMetadataStorage.GetConstant("UGCShopProfitFee")) * price;
+        Profit = (long) (price - fee);
+        SoldTimestamp = TimeInfo.Now();
+        Id = DatabaseManager.UGCMarketSales.Insert(this);
+        GameServer.UGCMarketManager.AddSale(this);
+    }
+
     public UGCMarketSale(long id, long price, long profit, string itemName, long soldTimestamp, long sellerCharacterId)
     {
         Id = id;

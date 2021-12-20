@@ -16,6 +16,7 @@ public static class MeretMarketPacket
         RemoveListing = 0xE,
         UnlistItem = 0xF,
         RelistItem = 0x12,
+        CollectProfit = 0x14,
         UpdateExpiration = 0x15,
         Premium = 0x1B,
         Purchase = 0x1E,
@@ -143,13 +144,13 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
-    public static PacketWriter Purchase(MeretMarketItem item, int itemIndex, int totalQuantity)
+    public static PacketWriter Purchase(int premiumMarketId, long ugcMarketItemId, long price, int totalQuantity, int itemIndex = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.Purchase);
         pWriter.WriteByte((byte) totalQuantity);
-        pWriter.WriteInt(item.MarketId);
-        pWriter.WriteLong();
+        pWriter.WriteInt(premiumMarketId);
+        pWriter.WriteLong(ugcMarketItemId);
         pWriter.WriteInt(1);
         pWriter.WriteInt();
         pWriter.WriteLong();
@@ -159,7 +160,7 @@ public static class MeretMarketPacket
         pWriter.WriteByte();
         pWriter.WriteUnicodeString("");
         pWriter.WriteUnicodeString("");
-        pWriter.WriteLong(item.SalePrice);
+        pWriter.WriteLong(price);
         pWriter.WriteByte();
         pWriter.WriteByte();
         pWriter.WriteInt();
@@ -313,11 +314,11 @@ public static class MeretMarketPacket
         pWriter.Write(item.Status);
         pWriter.WriteInt(item.Item.Id);
         pWriter.WriteInt(35);
-        pWriter.WriteByte(1);
-        pWriter.WriteInt(1);
+        pWriter.WriteByte(0);
+        pWriter.WriteInt(0);
         pWriter.WriteLong(item.Price);
-        pWriter.WriteInt(1);
-        pWriter.WriteInt(1);
+        pWriter.WriteInt();
+        pWriter.WriteInt();
         pWriter.WriteInt(item.SalesCount);
         pWriter.WriteInt();
         pWriter.WriteLong(item.CreationTimestamp);

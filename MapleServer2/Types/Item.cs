@@ -163,6 +163,7 @@ public class Item
         HatData = other.HatData;
         Score = new();
         Stats = new(other.Stats);
+        UGC = other.UGC;
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)

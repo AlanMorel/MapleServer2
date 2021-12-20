@@ -255,7 +255,7 @@ public class BlackMarketHandler : GamePacketHandler
             {
                 Amount = amount
             };
-            DatabaseManager.Items.Insert(newItem);
+            newItem.Uid = DatabaseManager.Items.Insert(newItem);
             purchasedItem = newItem;
         }
 

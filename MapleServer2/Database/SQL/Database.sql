@@ -709,7 +709,7 @@ CREATE TABLE `ugc`
     `price`                bigint NOT NULL,
     `profit`               bigint NOT NULL,
     `item_name`            varchar(100) NOT NULL,
-    `sold_timestamp`       bigint NOT NULL,
+    `sold_time`       bigint NOT NULL,
     `seller_character_id`  bigint NOT NULL,
     PRIMARY KEY (`id`),
     KEY `ix_ugc_market_sale_character_id` (`seller_character_id`),

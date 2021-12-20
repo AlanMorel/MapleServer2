@@ -1,6 +1,4 @@
-﻿using Maple2Storage.Enums;
-using MapleServer2.Database.Types;
-using MapleServer2.Enums;
+﻿using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;

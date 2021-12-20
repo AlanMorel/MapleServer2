@@ -91,15 +91,24 @@ public class MeretMarketHandler : GamePacketHandler
 
     private static void HandleLoadPersonalListings(GameSession session)
     {
-        List<UGCMarketItem> items = new();
-        items = GameServer.UGCMarketManager.GetItemsByCharacterId(session.Player.CharacterId);
+        List<UGCMarketItem> items = GameServer.UGCMarketManager.GetItemsByCharacterId(session.Player.CharacterId);
+
+        // TODO: Possibly a better way to implement this?
+        foreach (UGCMarketItem item in items)
+        {
+            if (item.ListingExpirationTimestamp < TimeInfo.Now() && item.Status == UGCMarketListingStatus.Active)
+            {
+                item.Status = UGCMarketListingStatus.Expired;
+                DatabaseManager.UGCMarketItems.Update(item);
+            }
+        }
         session.Send(MeretMarketPacket.LoadPersonalListings(items));
     }
 
     private static void HandleLoadSales(GameSession session, PacketReader packet)
     {
-        //TODO get sales from DB
-        session.Send(MeretMarketPacket.LoadSales(new()));
+        List<UGCMarketSale> sales = GameServer.UGCMarketManager.GetSalesByCharacterId(session.Player.CharacterId);
+        session.Send(MeretMarketPacket.LoadSales(sales));
     }
 
     private static void HandleListItem(GameSession session, PacketReader packet)
@@ -111,6 +120,12 @@ public class MeretMarketHandler : GamePacketHandler
         string description = packet.ReadUnicodeString();
         long listingFee = packet.ReadLong();
 
+        if (salePrice < long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopSellMinPrice")) ||
+            salePrice > long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopSellMaxPrice")))
+        {
+            return;
+        }
+
         // TODO: Check if item is a ugc block and not an item. Find item from their block inventory
         if (!session.Player.Inventory.Items.ContainsKey(itemUid))
         {
@@ -119,7 +134,13 @@ public class MeretMarketHandler : GamePacketHandler
 
         Item item = session.Player.Inventory.Items[itemUid];
 
-        if (item.UGC is null)
+        if (item.UGC is null || item.UGC.CharacterId != session.Player.CharacterId)
+        {
+            return;
+        }
+
+        long totalFee = GetListingFee(session.Player.CharacterId, promote);
+        if (!HandleMarketItemPay(session, listingFee, MeretMarketCurrencyType.Meret))
         {
             return;
         }
@@ -130,13 +151,28 @@ public class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.UpdateExpiration(marketItem));
     }
 
+    private static long GetListingFee(long characterId, bool promote)
+    {
+        int activeListingsCount = GameServer.UGCMarketManager.GetItemsByCharacterId(characterId).Count;
+        long baseFee = long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopBaseListFee"));
+        long fee = baseFee + activeListingsCount * 100;
+
+        // Max fee being 390
+        fee = Math.Min(fee, baseFee + 300);
+        if (promote)
+        {
+            fee += long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopAdFeeMerat"));
+        }
+        return fee;
+    }
+
     private static void HandleRemoveListing(GameSession session, PacketReader packet)
     {
         packet.ReadInt(); // 0
         long ugcMarketItemId = packet.ReadLong();
         packet.ReadLong(); // duplicate id read?
 
-        UGCMarketItem item = GameServer.UGCMarketManager.FindById(ugcMarketItemId);
+        UGCMarketItem item = GameServer.UGCMarketManager.FindItemById(ugcMarketItemId);
         if (item is null || item.SellerCharacterId != session.Player.CharacterId)
         {
             return;
@@ -153,7 +189,7 @@ public class MeretMarketHandler : GamePacketHandler
         long ugcMarketItemId = packet.ReadLong();
         packet.ReadLong(); // duplicate id read?
 
-        UGCMarketItem item = GameServer.UGCMarketManager.FindById(ugcMarketItemId);
+        UGCMarketItem item = GameServer.UGCMarketManager.FindItemById(ugcMarketItemId);
         if (item is null || item.SellerCharacterId != session.Player.CharacterId)
         {
             return;
@@ -175,13 +211,17 @@ public class MeretMarketHandler : GamePacketHandler
         string description = packet.ReadUnicodeString();
         long listingFee = packet.ReadLong();
 
-        UGCMarketItem item = GameServer.UGCMarketManager.FindById(ugcMarketItemId);
+        UGCMarketItem item = GameServer.UGCMarketManager.FindItemById(ugcMarketItemId);
         if (item is null || item.SellerCharacterId != session.Player.CharacterId || item.ListingExpirationTimestamp < TimeInfo.Now())
         {
             return;
         }
 
-        // TODO: Handle fee
+        long totalFee = GetListingFee(session.Player.CharacterId, promote);
+        if (!HandleMarketItemPay(session, listingFee, MeretMarketCurrencyType.Meret))
+        {
+            return;
+        }
 
         item.Price = price;
         item.ListingExpirationTimestamp = long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopSaleDay")) * 86400 + TimeInfo.Now();
@@ -198,7 +238,13 @@ public class MeretMarketHandler : GamePacketHandler
 
     private static void HandleCollectProfit(GameSession session, PacketReader packet)
     {
+        long saleId = packet.ReadLong();
 
+        UGCMarketSale sale = GameServer.UGCMarketManager.FindSaleById(saleId);
+        if (sale is null)
+        {
+            return;
+        }
     }
 
     private static void HandleInitialize(GameSession session)
@@ -224,7 +270,7 @@ public class MeretMarketHandler : GamePacketHandler
         long ugcItemId = packet.ReadLong();
         if (ugcItemId != 0)
         {
-            PurchaseUGCItem(session, packet, ugcItemId);
+            PurchaseUGCItem(session, ugcItemId);
             return;
         }
 
@@ -232,9 +278,31 @@ public class MeretMarketHandler : GamePacketHandler
         return;
     }
 
-    private static void PurchaseUGCItem(GameSession session, PacketReader packet, long ugcMarketItemId)
+    private static void PurchaseUGCItem(GameSession session, long ugcMarketItemId)
     {
-        Console.WriteLine("This is a UGC Item");
+        UGCMarketItem marketItem = GameServer.UGCMarketManager.FindItemById(ugcMarketItemId);
+        if (marketItem is null || marketItem.ListingExpirationTimestamp < TimeInfo.Now())
+        {
+            return;
+        }
+
+        if (!HandleMarketItemPay(session, marketItem.Price, MeretMarketCurrencyType.Meret))
+        {
+            return;
+        }
+
+        marketItem.SalesCount++;
+        DatabaseManager.UGCMarketItems.Update(marketItem);
+        UGCMarketSale sale = new(marketItem.Price, marketItem.Item.UGC.Name, marketItem.SellerCharacterId);
+
+        Item item = new(marketItem.Item)
+        {
+            CreationTime = TimeInfo.Now(),
+        };
+        item.Uid = DatabaseManager.Items.Insert(item);
+
+        session.Player.Inventory.AddItem(session, item, true);
+        session.Send(MeretMarketPacket.Purchase(0, marketItem.Id, marketItem.Price, 1));
     }
 
     private static void PurchasePremiumItem(GameSession session, PacketReader packet, int marketItemId)
@@ -256,11 +324,7 @@ public class MeretMarketHandler : GamePacketHandler
             return;
         }
 
-        if (childMarketItemId == 0)
-        {
-
-        }
-        else
+        if (childMarketItemId != 0)
         {
             marketItem = marketItem.AdditionalQuantities.FirstOrDefault(x => x.MarketId == childMarketItemId);
             if (marketItem is null)
@@ -284,19 +348,17 @@ public class MeretMarketHandler : GamePacketHandler
             item.ExpiryTime = TimeInfo.Now() + Environment.TickCount + marketItem.Duration * 24 * 60 * 60;
         }
         session.Player.Inventory.AddItem(session, item, true);
-        session.Send(MeretMarketPacket.Purchase(marketItem, itemIndex, totalQuantity));
+        session.Send(MeretMarketPacket.Purchase(marketItem.MarketId, 0, marketItem.Price, totalQuantity, itemIndex));
     }
 
     private static bool HandleMarketItemPay(GameSession session, long price, MeretMarketCurrencyType currencyType)
     {
-        switch (currencyType)
+        return currencyType switch
         {
-            case MeretMarketCurrencyType.Meret:
-                return session.Player.Account.RemoveMerets(price);
-            case MeretMarketCurrencyType.Meso:
-                return session.Player.Wallet.Meso.Modify(price);
-        }
-        return false;
+            MeretMarketCurrencyType.Meret => session.Player.Account.RemoveMerets(price),
+            MeretMarketCurrencyType.Meso => session.Player.Wallet.Meso.Modify(price),
+            _ => false,
+        };
     }
 
     private static void HandleHome(GameSession session)

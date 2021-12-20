@@ -8,6 +8,7 @@ namespace MapleServer2.Managers;
 public class UGCMarketManager
 {
     private readonly Dictionary<long, UGCMarketItem> Items;
+    private readonly Dictionary<long, UGCMarketSale> Sales;
 
     public UGCMarketManager()
     {
@@ -16,6 +17,13 @@ public class UGCMarketManager
         foreach (UGCMarketItem item in items)
         {
             AddListing(item);
+        }
+
+        Sales = new();
+        List<UGCMarketSale> sales = DatabaseManager.UGCMarketSales.FindAll();
+        foreach (UGCMarketSale sale in sales)
+        {
+            AddSale(sale);
         }
     }
 
@@ -31,7 +39,7 @@ public class UGCMarketManager
 
     public List<UGCMarketItem> GetItemsByCharacterId(long characterId)
     {
-        return Items.Values.Where(b => b.SellerCharacterId == characterId).ToList();
+        return new(Items.Values.Where(b => b.SellerCharacterId == characterId).ToList());
     }
 
     public List<UGCMarketItem> GetPromoItems()
@@ -44,17 +52,32 @@ public class UGCMarketManager
 
     public List<UGCMarketItem> GetNewestItems()
     {
-        List<UGCMarketItem> items = Items.Values.OrderBy(x => x.ListingExpirationTimestamp).ToList();
+        List<UGCMarketItem> items = new(Items.Values.OrderBy(x => x.ListingExpirationTimestamp).ToList());
         return items.Where(x => x.Status == UGCMarketListingStatus.Active).Take(6).ToList();
     }
 
-    //public BlackMarketListing GetListingByItemUid(long uid)
-    //{
-    //    return Listings.Values.FirstOrDefault(b => b.Item.Uid == uid);
-    //}
-
-    public UGCMarketItem FindById(long id)
+    public UGCMarketItem FindItemById(long id)
     {
         return Items.Values.FirstOrDefault(x => x.Id == id);
+    }
+
+    public void AddSale(UGCMarketSale sale)
+    {
+        Sales.Add(sale.Id, sale);
+    }
+
+    public void RemoveSale(UGCMarketSale sale)
+    {
+        Sales.Remove(sale.Id);
+    }
+
+    public List<UGCMarketSale> GetSalesByCharacterId(long characterId)
+    {
+        return new(Sales.Values.Where(b => b.SellerCharacterId == characterId).ToList());
+    }
+
+    public UGCMarketSale FindSaleById(long id)
+    {
+        return Sales.Values.FirstOrDefault(x => x.Id == id);
     }
 }

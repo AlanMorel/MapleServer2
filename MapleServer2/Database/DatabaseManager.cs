@@ -55,6 +55,7 @@ public static class DatabaseManager
     public static DatabaseBlackMarketListing BlackMarketListings { get; } = new();
     public static DatabaseMesoMarketListing MesoMarketListings { get; } = new();
     public static DatabaseUGCMarketItem UGCMarketItems { get; } = new();
+    public static DatabaseUGCMarketSale UGCMarketSales { get; } = new();
     public static DatabaseServer ServerInfo { get; } = new();
 
     static DatabaseManager()
