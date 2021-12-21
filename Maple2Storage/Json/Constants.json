@@ -50,5 +50,9 @@
   {
     "Key": "UGCShopProfitFee",
     "Value": "0.25"
+  },
+  {
+    "Key": "UGCShopProfitDelayInDays",
+    "Value": "864000"
   }
 ]

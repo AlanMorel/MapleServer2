@@ -68,6 +68,8 @@ public static class ItemMetadataStorage
 
     public static int GetRepackageConsumeCount(int itemId) => GetMetadata(itemId).RepackageItemConsumeCount;
 
+    public static string GetCategory(int itemId) => GetMetadata(itemId).Category;
+
     public static List<Job> GetRecommendJobs(int itemId)
     {
         Converter<int, Job> converter = new((integer) => (Job) integer);

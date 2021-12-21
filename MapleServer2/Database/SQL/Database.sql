@@ -432,6 +432,7 @@ CREATE TABLE `items`
     `transparency_badge_bools` text,
     `unlock_time`              bigint           NOT NULL,
     `blackmarket_category`     text,
+    `category`                 text,
     `ugc_uid`                  bigint           NULL,
     PRIMARY KEY (`uid`),
     KEY `ix_items_bankinventoryid` (`bank_inventory_id`),

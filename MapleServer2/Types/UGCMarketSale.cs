@@ -1,6 +1,5 @@
 ﻿using MapleServer2.Data.Static;
 using MapleServer2.Database;
-using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;

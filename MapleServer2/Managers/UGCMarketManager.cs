@@ -1,6 +1,9 @@
-﻿using Maple2Storage.Tools;
+﻿using Maple2Storage.Enums;
+using Maple2Storage.Tools;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
@@ -59,6 +62,69 @@ public class UGCMarketManager
     public UGCMarketItem FindItemById(long id)
     {
         return Items.Values.FirstOrDefault(x => x.Id == id);
+    }
+
+    public List<UGCMarketItem> FindItemsByCategory(List<string> categories, GenderFlag genderFlag, JobFlag job, short sort)
+    {
+        List<UGCMarketItem> items = new();
+        foreach (UGCMarketItem item in Items.Values)
+        {
+            if (!categories.Contains(item.Item.Category) || item.Status != UGCMarketListingStatus.Active)
+            {
+                continue;
+            }
+
+            // check job
+            if (!JobHelper.CheckJobFlagForJob(item.Item.RecommendJobs, job))
+            {
+                continue;
+            }
+
+            // check gender
+            Gender itemGender = ItemMetadataStorage.GetGender(item.Item.Id);
+            if (!genderFlag.HasFlag(GenderFlag.Male) && !genderFlag.HasFlag(GenderFlag.Female))
+            {
+                Gender gender;
+                if (genderFlag.HasFlag(GenderFlag.Male))
+                {
+                    gender = Gender.Male;
+                }
+                else
+                {
+                    gender = Gender.Female;
+                }
+
+                if (item.Item.Gender != gender || itemGender != Gender.Neutral)
+                {
+                    continue;
+                }
+            }
+
+            items.Add(item);
+        }
+
+        UGCMarketSort marketSort = (UGCMarketSort) sort;
+
+        switch (marketSort)
+        {
+            // TODO: Handle Most Popular sorting.
+            case UGCMarketSort.MostPopular:
+            case UGCMarketSort.TopSeller:
+                items = items.OrderByDescending(x => x.SalesCount).ToList();
+                break;
+            case UGCMarketSort.MostRecent:
+                items = items.OrderByDescending(x => x.CreationTimestamp).ToList();
+                break;
+        }
+
+        return items;
+    }
+
+    private enum UGCMarketSort : short
+    {
+        MostPopular = 1,
+        MostRecent = 4,
+        TopSeller = 6,
     }
 
     public void AddSale(UGCMarketSale sale)

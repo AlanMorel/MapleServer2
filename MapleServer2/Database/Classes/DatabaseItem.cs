@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -61,6 +62,7 @@ public class DatabaseItem : DatabaseTable
             blackmarket_category = item.BlackMarketCategory,
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime,
+            category = item.Category,
             ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid,
         });
     }
@@ -218,6 +220,7 @@ public class DatabaseItem : DatabaseTable
             PairedCharacterId = data.paired_character_id,
             PairedCharacterName = data.paired_character_name,
             PetSkinBadgeId = data.pet_skin_badge_id,
+            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(data.id),
             RemainingGlamorForges = data.remaining_glamor_forges,
             RemainingTrades = data.remaining_trades,
             Score = JsonConvert.DeserializeObject<MusicScore>(data.score),
@@ -230,6 +233,7 @@ public class DatabaseItem : DatabaseTable
             InventoryId = data.inventory_id ?? 0,
             BankInventoryId = data.bank_inventory_id ?? 0,
             BlackMarketCategory = data.blackmarket_category,
+            Category = data.category,
             MailId = data.mail_id ?? 0,
             HomeId = data.home_id ?? 0,
             UGC = data.ugc_uid == null ? null : DatabaseManager.UGC.FindByUid(data.ugc_uid)

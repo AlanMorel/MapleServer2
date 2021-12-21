@@ -87,6 +87,8 @@ public class ItemMetadata
     public int ObjectId;
     [XmlElement(Order = 40)]
     public string BlackMarketCategory;
+    [XmlElement(Order = 41)]
+    public string Category;
 
     // Required for deserialization
     public ItemMetadata()
