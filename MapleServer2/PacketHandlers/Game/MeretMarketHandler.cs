@@ -342,7 +342,7 @@ public class MeretMarketHandler : GamePacketHandler
 
         marketItem.SalesCount++;
         DatabaseManager.UGCMarketItems.Update(marketItem);
-        UGCMarketSale sale = new(marketItem.Price, marketItem.Item.UGC.Name, marketItem.SellerCharacterId);
+        _ = new UGCMarketSale(marketItem.Price, marketItem.Item.UGC.Name, marketItem.SellerCharacterId);
 
         Item item = new(marketItem.Item)
         {
