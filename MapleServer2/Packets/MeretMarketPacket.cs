@@ -101,7 +101,6 @@ public static class MeretMarketPacket
         pWriter.WriteInt();
         pWriter.WriteLong(sale.Id);
         return pWriter;
-
     }
 
 
@@ -338,7 +337,6 @@ public static class MeretMarketPacket
         pWriter.WriteBool(item.PCCafe);
         pWriter.WriteByte();
         pWriter.WriteInt();
-
     }
 
     public static void WriteUGCMarketItem(PacketWriter pWriter, UGCMarketItem item, UGCMarketItemHomeCategory category = UGCMarketItemHomeCategory.None)

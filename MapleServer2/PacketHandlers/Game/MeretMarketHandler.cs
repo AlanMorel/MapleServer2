@@ -158,7 +158,7 @@ public class MeretMarketHandler : GamePacketHandler
         long fee = baseFee + activeListingsCount * 100;
 
         // Max fee being 390
-        fee = Math.Min(fee, baseFee + 300);
+        fee = Math.Min(fee, baseFee + 200);
         if (promote)
         {
             fee += long.Parse(ConstantsMetadataStorage.GetConstant("UGCShopAdFeeMerat"));
