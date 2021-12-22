@@ -12,17 +12,18 @@ namespace MapleServer2.Types;
 public class Inventory
 {
     public readonly long Id;
+
     // This contains ALL inventory Items regardless of tab
     public readonly Dictionary<long, Item> Items;
-    public Dictionary<ItemSlot, Item> Equips;
-    public Dictionary<ItemSlot, Item> Cosmetics;
-    public Item[] Badges;
-    public Item[] LapenshardStorage;
+    public readonly Dictionary<ItemSlot, Item> Equips;
+    public readonly Dictionary<ItemSlot, Item> Cosmetics;
+    public readonly Item[] Badges;
+    public readonly Item[] LapenshardStorage;
 
     // Map of Slot to Uid for each inventory
     private readonly Dictionary<short, long>[] SlotMaps;
 
-    public readonly Dictionary<InventoryTab, short> DefaultSize = new()
+    private readonly Dictionary<InventoryTab, short> DefaultSize = new()
     {
         { InventoryTab.Gear, 48 },
         { InventoryTab.Outfit, 150 },
@@ -41,7 +42,7 @@ public class Inventory
         { InventoryTab.Fragment, 48 }
     };
 
-    public Dictionary<InventoryTab, short> ExtraSize = new()
+    public readonly Dictionary<InventoryTab, short> ExtraSize = new()
     {
         { InventoryTab.Gear, 0 },
         { InventoryTab.Outfit, 0 },
@@ -61,9 +62,10 @@ public class Inventory
     };
 
     // Only use to share information between handler functions. Should always be empty
-    public Dictionary<long, Item> TemporaryStorage = new();
+    public readonly Dictionary<long, Item> TemporaryStorage = new();
 
     #region Constructors
+
     public Inventory(bool addToDatabase)
     {
         Equips = new();
@@ -97,34 +99,31 @@ public class Inventory
             item.SetMetadataValues();
             if (item.IsEquipped)
             {
-                if (item.InventoryTab == InventoryTab.Outfit)
+                switch (item.InventoryTab)
                 {
-                    Cosmetics.Add(item.ItemSlot, item);
-                    continue;
+                    case InventoryTab.Outfit:
+                        Cosmetics.Add(item.ItemSlot, item);
+                        continue;
+                    case InventoryTab.Badge:
+                        Badges[badgeIndex++] = item;
+                        continue;
+                    case InventoryTab.Lapenshard:
+                        LapenshardStorage[item.Slot] = item;
+                        continue;
+                    default:
+                        Equips.Add(item.ItemSlot, item);
+                        continue;
                 }
-
-                if (item.InventoryTab == InventoryTab.Badge)
-                {
-                    Badges[badgeIndex++] = item;
-                    continue;
-                }
-
-                if (item.InventoryTab == InventoryTab.Lapenshard)
-                {
-                    LapenshardStorage[item.Slot] = item;
-                    continue;
-                }
-
-                Equips.Add(item.ItemSlot, item);
-                continue;
             }
 
             Add(item);
         }
     }
+
     #endregion
 
     #region Public Methods
+
     public void AddItem(GameSession session, Item item, bool isNew)
     {
         switch (item.Type)
@@ -233,21 +232,21 @@ public class Inventory
         if (!isBound)
         {
             int remaining = Remove(uid, out Item droppedItem, amount); // Returns remaining amount of item
-            if (remaining < 0)
+            switch (remaining)
             {
-                return; // Removal failed
+                case < 0:
+                    return; // Removal failed
+                // Updates item amount
+                case > 0:
+                    session.Send(ItemInventoryPacket.Update(uid, remaining));
+                    DatabaseManager.Items.Update(Items[uid]);
+                    break;
+                // Removes item
+                default:
+                    session.Send(ItemInventoryPacket.Remove(uid));
+                    break;
             }
 
-            // Updates item amount
-            if (remaining > 0)
-            {
-                session.Send(ItemInventoryPacket.Update(uid, remaining));
-                DatabaseManager.Items.Update(Items[uid]);
-            }
-            else // Removes item
-            {
-                session.Send(ItemInventoryPacket.Remove(uid));
-            }
             session.FieldManager.AddItem(session, droppedItem); // Drops item onto floor
             return;
         }
@@ -257,6 +256,7 @@ public class Inventory
         {
             return; // Removal from inventory failed
         }
+
         session.Send(ItemInventoryPacket.Remove(uid));
         DatabaseManager.Items.Delete(removedItem.Uid);
     }
@@ -332,7 +332,7 @@ public class Inventory
     {
         // Get all items in tab
         Dictionary<short, long> slots = GetSlots(tab);
-        IEnumerable<Item> tabItems = slots.Select(kvp => Items[kvp.Value]);
+        List<Item> tabItems = slots.Select(kvp => Items[kvp.Value]).ToList();
 
         // group items by item id and sum the amount, return a new list of items with updated amount (ty gh copilot)
         List<Item> groupedItems = tabItems.Where(x => x.StackLimit > 1).GroupBy(x => x.Id).Select(x => new Item(x.First())
@@ -348,11 +348,10 @@ public class Inventory
 
         // Update the slot mapping
         slots.Clear();
-        for (short i = 0; i < groupedItems.Count; i++)
-        {
-            groupedItems[i].Slot = i;
-            slots[i] = groupedItems[i].Uid;
-        }
+        short slotId = 0;
+
+        // Items that overflow stack limit
+        List<Item> itemList = new();
 
         // Delete items that got grouped
         foreach (Item oldItem in tabItems)
@@ -360,13 +359,51 @@ public class Inventory
             Item newItem = groupedItems.FirstOrDefault(x => x.Uid == oldItem.Uid);
             if (newItem is null)
             {
-                Remove(oldItem.Uid, out _);
+                Items.Remove(oldItem.Uid);
                 DatabaseManager.Items.Delete(oldItem.Uid);
                 continue;
             }
 
+            if (newItem.Amount > newItem.StackLimit)
+            {
+                // how many times can we split the item?
+                int splitAmount = newItem.Amount / newItem.StackLimit;
+                // how many items are left over?
+                int remainder = newItem.Amount % newItem.StackLimit;
+
+                // split the item
+                for (int i = 0; i < splitAmount; i++)
+                {
+                    if (!newItem.TrySplit(newItem.StackLimit, out Item splitItem))
+                    {
+                        continue;
+                    }
+
+                    itemList.Add(splitItem);
+                }
+
+                // Delete the original item if remainder is 0
+                if (remainder <= 0)
+                {
+                    Items.Remove(oldItem.Uid);
+                    DatabaseManager.Items.Delete(oldItem.Uid);
+                    continue;
+                }
+
+                // set the remainder
+                newItem.Amount = remainder;
+            }
+
+            slots.Add(slotId++, newItem.Uid);
+            newItem.Slot = slotId;
+
             Items[newItem.Uid] = newItem;
             DatabaseManager.Items.Update(newItem);
+        }
+
+        foreach (Item item in itemList)
+        {
+            AddNewItem(session, item, false);
         }
 
         session.Send(ItemInventoryPacket.ResetTab(tab));
@@ -383,14 +420,16 @@ public class Inventory
     public void ExpandInventory(GameSession session, InventoryTab tab)
     {
         long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row"));
-        short expansionAmount = 6;
+        const short ExpansionAmount = 6;
 
-        if (session.Player.Account.RemoveMerets(meretPrice))
+        if (!session.Player.Account.RemoveMerets(meretPrice))
         {
-            ExtraSize[tab] += expansionAmount;
-            session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
-            session.Send(ItemInventoryPacket.Expand());
+            return;
         }
+
+        ExtraSize[tab] += ExpansionAmount;
+        session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
+        session.Send(ItemInventoryPacket.Expand());
     }
 
     public int GetFreeSlots(InventoryTab tab)
@@ -418,9 +457,11 @@ public class Inventory
     {
         return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToImmutableList();
     }
+
     #endregion
 
     #region Private Methods
+
     // TODO: precompute next free slot to avoid iteration on Add
     // Returns false if inventory is full
     private bool Add(Item item)
@@ -444,11 +485,13 @@ public class Inventory
             {
                 continue;
             }
+
             item.Slot = i;
 
             AddInternal(item);
             return true;
         }
+
         return false;
     }
 
@@ -462,17 +505,18 @@ public class Inventory
             return -1;
         }
 
-        if (amount < 0 || item.Amount == amount)
-        { // Remove All
-            if (!RemoveInternal(uid, out removedItem))
-            {
-                return -1;
-            }
-
-            return 0;
+        if (amount >= 0 && item.Amount != amount)
+        {
+            return item.TrySplit(amount, out removedItem) ? item.Amount : -1;
         }
 
-        return item.TrySplit(amount, out removedItem) ? item.Amount : -1;
+        // Remove All
+        if (!RemoveInternal(uid, out removedItem))
+        {
+            return -1;
+        }
+
+        return 0;
     }
 
     // This REQUIRES item.Slot to be set appropriately
@@ -488,17 +532,6 @@ public class Inventory
     private bool RemoveInternal(long uid, out Item item)
     {
         return Items.Remove(uid, out item) && GetSlots(item.InventoryTab).Remove(item.Slot);
-    }
-
-    private bool RemoveInternal(InventoryTab tab, short slot, out Item item)
-    {
-        if (!GetSlots(tab).TryGetValue(slot, out long uid))
-        {
-            item = null;
-            return false;
-        }
-
-        return RemoveInternal(uid, out item);
     }
 
     private Dictionary<short, long> GetSlots(InventoryTab tab)
@@ -522,6 +555,7 @@ public class Inventory
                 return true;
             }
         }
+
         return false;
     }
 
@@ -593,5 +627,7 @@ public class Inventory
                 return;
         }
     }
+
     #endregion
+
 }
