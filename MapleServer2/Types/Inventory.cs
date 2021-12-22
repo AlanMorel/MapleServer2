@@ -236,13 +236,11 @@ public class Inventory
             {
                 case < 0:
                     return; // Removal failed
-                // Updates item amount
-                case > 0:
+                case > 0: // Updates item amount
                     session.Send(ItemInventoryPacket.Update(uid, remaining));
                     DatabaseManager.Items.Update(Items[uid]);
                     break;
-                // Removes item
-                default:
+                default: // Removes item
                     session.Send(ItemInventoryPacket.Remove(uid));
                     break;
             }
