@@ -392,9 +392,11 @@ public class Inventory
                 newItem.Amount = remainder;
             }
 
+            // Update the slot mapping
             slots.Add(slotId++, newItem.Uid);
             newItem.Slot = slotId;
 
+            // Update the item
             Items[newItem.Uid] = newItem;
             DatabaseManager.Items.Update(newItem);
         }
