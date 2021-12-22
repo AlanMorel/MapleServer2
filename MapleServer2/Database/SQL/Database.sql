@@ -673,49 +673,55 @@ CREATE TABLE `ugc`
   COLLATE = utf8mb4_0900_ai_ci
   AUTO_INCREMENT = 1000;
 
-  --
-  -- Table structure for table `ugc_market_items`
-  --
+--
+-- Table structure for table `ugc_market_items`
+--
 
-  DROP TABLE IF EXISTS `ugc_market_items`;
-  CREATE TABLE `ugc_market_items` (
-    `id`                        bigint NOT NULL AUTO_INCREMENT,
-    `price`                     bigint NOT NULL,
-    `item_uid`                  bigint NOT NULL,
-    `status`                    tinyint NOT NULL,
-    `creation_time`             bigint NOT NULL,
-    `listing_expiration_time`   bigint NOT NULL,
-    `promotion_expiration_time` bigint NOT NULL,
-    `seller_account_id`         bigint NOT NULL,
-    `seller_character_id`       bigint NOT NULL,
+DROP TABLE IF EXISTS `ugc_market_items`;
+CREATE TABLE `ugc_market_items`
+(
+    `id`                        bigint       NOT NULL AUTO_INCREMENT,
+    `price`                     bigint       NOT NULL,
+    `item_uid`                  bigint       NOT NULL,
+    `status`                    tinyint      NOT NULL,
+    `creation_time`             bigint       NOT NULL,
+    `listing_expiration_time`   bigint       NOT NULL,
+    `promotion_expiration_time` bigint       NOT NULL,
+    `seller_account_id`         bigint       NOT NULL,
+    `seller_character_id`       bigint       NOT NULL,
     `seller_character_name`     varchar(100) NOT NULL,
     `description`               text,
-    `sales_count`               int NOT NULL,
+    `sales_count`               int          NOT NULL,
     `tags`                      text,
     PRIMARY KEY (`id`),
     KEY `ix_ugc_market_listing_account_id` (`seller_account_id`),
     KEY `ix_ugc_market_listing_character_id` (`seller_character_id`),
     CONSTRAINT `fk_ugc_market_listing_character_id` FOREIGN KEY (`seller_character_id`) REFERENCES `characters` (`character_id`),
     CONSTRAINT `fk_ugc_market_listing_account_id` FOREIGN KEY (`seller_account_id`) REFERENCES `characters` (`character_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
 
 
-  --
-  -- Table structure for table `ugc_market_sales`
-  --
+--
+-- Table structure for table `ugc_market_sales`
+--
 
-  DROP TABLE IF EXISTS `ugc_market_sales`;
-  CREATE TABLE `ugc_market_sales` (
-    `id`                   bigint NOT NULL AUTO_INCREMENT,
-    `price`                bigint NOT NULL,
-    `profit`               bigint NOT NULL,
-    `item_name`            varchar(100) NOT NULL,
-    `sold_time`       bigint NOT NULL,
-    `seller_character_id`  bigint NOT NULL,
+DROP TABLE IF EXISTS `ugc_market_sales`;
+CREATE TABLE `ugc_market_sales`
+(
+    `id`                  bigint       NOT NULL AUTO_INCREMENT,
+    `price`               bigint       NOT NULL,
+    `profit`              bigint       NOT NULL,
+    `item_name`           varchar(100) NOT NULL,
+    `sold_time`           bigint       NOT NULL,
+    `seller_character_id` bigint       NOT NULL,
     PRIMARY KEY (`id`),
     KEY `ix_ugc_market_sale_character_id` (`seller_character_id`),
     CONSTRAINT `fk_ugc_market_sale_character_id` FOREIGN KEY (`seller_character_id`) REFERENCES `characters` (`character_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
 
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
