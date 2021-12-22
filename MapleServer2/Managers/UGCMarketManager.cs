@@ -42,21 +42,18 @@ public class UGCMarketManager
 
     public List<UGCMarketItem> GetItemsByCharacterId(long characterId)
     {
-        return new(Items.Values.Where(b => b.SellerCharacterId == characterId).ToList());
+        return Items.Values.Where(b => b.SellerCharacterId == characterId).ToList();
     }
 
     public List<UGCMarketItem> GetPromoItems()
     {
-        List<UGCMarketItem> items = Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UGCMarketListingStatus.Active).ToList();
-        Random random = RandomProvider.Get();
-        items = items.OrderBy(x => random.Next()).ToList();
-        return items.Take(12).ToList(); // 12 being the max the shop can display
+        return Items.Values.Where(x => x.PromotionExpirationTimestamp > TimeInfo.Now() && x.Status == UGCMarketListingStatus.Active)
+            .OrderBy(_ => RandomProvider.Get().Next()).Take(12).ToList(); // 12 being the max the shop can display
     }
 
     public List<UGCMarketItem> GetNewestItems()
     {
-        List<UGCMarketItem> items = new(Items.Values.OrderBy(x => x.ListingExpirationTimestamp).ToList());
-        return items.Where(x => x.Status == UGCMarketListingStatus.Active).Take(6).ToList();
+        return Items.Values.OrderBy(x => x.ListingExpirationTimestamp).Where(x => x.Status == UGCMarketListingStatus.Active).Take(6).ToList();
     }
 
     public UGCMarketItem FindItemById(long id)
@@ -84,20 +81,7 @@ public class UGCMarketManager
             Gender itemGender = ItemMetadataStorage.GetGender(item.Item.Id);
             if (!genderFlag.HasFlag(GenderFlag.Male) && !genderFlag.HasFlag(GenderFlag.Female))
             {
-                Gender gender;
-                if (genderFlag.HasFlag(GenderFlag.Male))
-                {
-                    gender = Gender.Male;
-                }
-                else
-                {
-                    gender = Gender.Female;
-                }
-
-                if (item.Item.Gender != gender || itemGender != Gender.Neutral)
-                {
-                    continue;
-                }
+                Gender gender = genderFlag.HasFlag(GenderFlag.Male) ? Gender.Male : Gender.Female;
             }
 
             items.Add(item);
@@ -139,7 +123,7 @@ public class UGCMarketManager
 
     public List<UGCMarketSale> GetSalesByCharacterId(long characterId)
     {
-        return new(Sales.Values.Where(b => b.SellerCharacterId == characterId).ToList());
+        return Sales.Values.Where(b => b.SellerCharacterId == characterId).ToList();
     }
 
     public UGCMarketSale FindSaleById(long id)

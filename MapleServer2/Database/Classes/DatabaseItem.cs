@@ -220,7 +220,6 @@ public class DatabaseItem : DatabaseTable
             PairedCharacterId = data.paired_character_id,
             PairedCharacterName = data.paired_character_name,
             PetSkinBadgeId = data.pet_skin_badge_id,
-            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(data.id),
             RemainingGlamorForges = data.remaining_glamor_forges,
             RemainingTrades = data.remaining_trades,
             Score = JsonConvert.DeserializeObject<MusicScore>(data.score),

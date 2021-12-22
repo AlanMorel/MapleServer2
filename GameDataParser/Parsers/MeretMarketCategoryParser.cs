@@ -31,7 +31,6 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                 MeretMarketSection section = (MeretMarketSection) int.Parse(node.Attributes["id"].Value);
 
-
                 foreach (XmlNode tabNode in node)
                 {
                     MeretMarketCategoryMetadata metadata = new();

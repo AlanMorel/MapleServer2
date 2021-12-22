@@ -140,7 +140,7 @@ public class MeretMarketHandler : GamePacketHandler
         }
 
         long totalFee = GetListingFee(session.Player.CharacterId, promote);
-        if (!HandleMarketItemPay(session, listingFee, MeretMarketCurrencyType.Meret))
+        if (!HandleMarketItemPay(session, totalFee, MeretMarketCurrencyType.Meret))
         {
             return;
         }
@@ -218,7 +218,7 @@ public class MeretMarketHandler : GamePacketHandler
         }
 
         long totalFee = GetListingFee(session.Player.CharacterId, promote);
-        if (!HandleMarketItemPay(session, listingFee, MeretMarketCurrencyType.Meret))
+        if (!HandleMarketItemPay(session, totalFee, MeretMarketCurrencyType.Meret))
         {
             return;
         }
@@ -325,7 +325,6 @@ public class MeretMarketHandler : GamePacketHandler
         }
 
         PurchasePremiumItem(session, packet, marketItemId);
-        return;
     }
 
     private static void PurchaseUGCItem(GameSession session, long ugcMarketItemId)

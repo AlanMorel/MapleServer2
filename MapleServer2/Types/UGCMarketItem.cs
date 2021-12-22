@@ -19,7 +19,7 @@ public class UGCMarketItem
     public string SellerCharacterName;
     public string Description;
     public int SalesCount;
-    public List<string> Tags = new List<string>();
+    public List<string> Tags = new();
 
     public UGCMarketItem() { }
 
