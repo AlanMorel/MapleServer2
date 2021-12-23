@@ -48,7 +48,9 @@ public class Item
     public long UnlockTime;
     public short RemainingGlamorForges;
     public int GachaDismantleId;
+
     public int Enchants;
+
     // EnchantExp (10000 = 100%) for Peachy
     public int EnchantExp;
     public int RepackageCount;
@@ -93,6 +95,7 @@ public class Item
         {
             TransparencyBadgeBools = new byte[10];
         }
+
         Rarity = ItemMetadataStorage.GetRarity(id);
         PlayCount = ItemMetadataStorage.GetPlayCount(id);
         Color = ItemMetadataStorage.GetEquipColor(id);
@@ -171,7 +174,7 @@ public class Item
     public bool TrySplit(int splitAmount, out Item splitItem)
     {
         splitItem = null;
-        if (Amount <= splitAmount)
+        if (Amount < splitAmount)
         {
             return false;
         }
@@ -191,22 +194,22 @@ public class Item
 
     public static bool IsWeapon(ItemSlot slot)
     {
-        return slot == ItemSlot.RH || slot == ItemSlot.LH || slot == ItemSlot.OH;
+        return slot is ItemSlot.RH or ItemSlot.LH or ItemSlot.OH;
     }
 
     public static bool IsAccessory(ItemSlot slot)
     {
-        return slot == ItemSlot.FH || slot == ItemSlot.EA || slot == ItemSlot.PD || slot == ItemSlot.RI || slot == ItemSlot.BE;
+        return slot is ItemSlot.FH or ItemSlot.EA or ItemSlot.PD or ItemSlot.RI or ItemSlot.BE;
     }
 
     public static bool IsArmor(ItemSlot slot)
     {
-        return slot == ItemSlot.CP || slot == ItemSlot.CL || slot == ItemSlot.PA || slot == ItemSlot.GL || slot == ItemSlot.SH || slot == ItemSlot.MT;
+        return slot is ItemSlot.CP or ItemSlot.CL or ItemSlot.PA or ItemSlot.GL or ItemSlot.SH or ItemSlot.MT;
     }
 
     public static bool IsPet(int itemId)
     {
-        return itemId >= 60000001 && itemId < 61000000;
+        return itemId is >= 60000001 and < 61000000;
     }
 
     public void SetMetadataValues()
@@ -234,7 +237,7 @@ public class Item
         Type = GetItemType(Id);
     }
 
-    public static ItemType GetItemType(int itemId)
+    private static ItemType GetItemType(int itemId)
     {
         return (itemId / 100000) switch
         {
