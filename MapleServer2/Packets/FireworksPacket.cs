@@ -30,7 +30,7 @@ public static class FireWorksPacket
             pWriter.WriteInt(item.Id);
             pWriter.WriteInt(item.Amount);
             pWriter.WriteInt(item.Rarity);
-            pWriter.WriteByte(0);
+            pWriter.WriteByte();
         }
         return pWriter;
     }

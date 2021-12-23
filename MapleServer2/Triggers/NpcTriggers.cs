@@ -22,7 +22,6 @@ public partial class TriggerContext
                 }
 
                 player.Value.Session.Send(CinematicPacket.BalloonTalk(player.ObjectId, isNpcId, msg, duration, delayTick));
-                return;
             }
         }
     }

@@ -8,13 +8,12 @@ using MapleServer2.Database.Types;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+
 namespace MapleServer2.PacketHandlers.Game;
 
 public class ShopHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SHOP;
-
-    public ShopHandler() : base() { }
 
     private enum ShopMode : byte
     {

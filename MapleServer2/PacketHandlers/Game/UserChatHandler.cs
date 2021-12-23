@@ -16,8 +16,6 @@ public class UserChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_CHAT;
 
-    public UserChatHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         ChatType type = (ChatType) packet.ReadInt();

@@ -72,7 +72,7 @@ public static class ItemMetadataStorage
 
     public static List<Job> GetRecommendJobs(int itemId)
     {
-        Converter<int, Job> converter = new((integer) => (Job) integer);
+        Converter<int, Job> converter = integer => (Job) integer;
 
         return GetMetadata(itemId).RecommendJobs.ConvertAll(converter);
     }

@@ -16,8 +16,6 @@ public class NpcTalkHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.NPC_TALK;
 
-    public NpcTalkHandler() : base() { }
-
     private enum NpcTalkMode : byte
     {
         Close = 0,

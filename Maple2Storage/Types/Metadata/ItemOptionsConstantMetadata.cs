@@ -13,6 +13,4 @@ public class ItemOptionsConstantMetadata
     public List<ParserStat> Stats = new();
     [XmlElement(Order = 4)]
     public List<ParserSpecialStat> SpecialStats = new();
-
-    public ItemOptionsConstantMetadata() { }
 }

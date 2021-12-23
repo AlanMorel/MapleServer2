@@ -44,7 +44,6 @@ public class MasteryGrade
     public string Feature;
 
     // Required for deserialization
-    public MasteryGrade() { }
 
     public override string ToString()
     {

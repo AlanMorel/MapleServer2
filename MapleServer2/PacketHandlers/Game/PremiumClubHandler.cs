@@ -13,8 +13,6 @@ public class PremiumClubHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
 
-    public PremiumClubHandler() : base() { }
-
     private enum PremiumClubMode : byte
     {
         Open = 0x1,

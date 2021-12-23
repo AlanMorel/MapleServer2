@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 
 namespace MaplePacketLib2.Tools;
 
@@ -25,7 +26,7 @@ public class PoolPacketReader : PacketReader, IDisposable
     // Provides warning if Disposed in not called.
     ~PoolPacketReader()
     {
-        System.Diagnostics.Debug.Fail($"PacketReader not disposed: {this}");
+        Debug.Fail($"PacketReader not disposed: {this}");
     }
 #endif
 }

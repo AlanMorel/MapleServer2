@@ -170,11 +170,11 @@ public class MapNpc
     [XmlElement(Order = 6)]
     public string PatrolDataUuid = "00000000-0000-0000-0000-000000000000";
     [XmlElement(Order = 7)]
-    public bool IsSpawnOnFieldCreate = false;
+    public bool IsSpawnOnFieldCreate;
     [XmlElement(Order = 8)]
-    public bool IsDayDie = false;
+    public bool IsDayDie;
     [XmlElement(Order = 9)]
-    public bool IsNightDie = false;
+    public bool IsNightDie;
 
 
     // Required for deserialization
@@ -471,7 +471,8 @@ public class MapTriggerMesh : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerMesh() : base() { }
+    private MapTriggerMesh()
+    { }
 }
 [ProtoContract]
 public class MapTriggerEffect : MapTriggerObject
@@ -484,7 +485,8 @@ public class MapTriggerEffect : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerEffect() : base() { }
+    private MapTriggerEffect()
+    { }
 }
 [ProtoContract]
 public class MapTriggerCamera : MapTriggerObject
@@ -497,7 +499,8 @@ public class MapTriggerCamera : MapTriggerObject
         IsEnabled = isEnabled;
     }
 
-    private MapTriggerCamera() : base() { }
+    private MapTriggerCamera()
+    { }
 }
 [ProtoContract]
 public class MapTriggerBox : MapTriggerObject
@@ -513,7 +516,8 @@ public class MapTriggerBox : MapTriggerObject
         Dimension = dimension;
     }
 
-    private MapTriggerBox() : base() { }
+    private MapTriggerBox()
+    { }
 }
 [ProtoContract]
 public class MapTriggerLadder : MapTriggerObject
@@ -526,7 +530,8 @@ public class MapTriggerLadder : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerLadder() : base() { }
+    private MapTriggerLadder()
+    { }
 }
 [ProtoContract]
 public class MapTriggerActor : MapTriggerObject
@@ -542,7 +547,8 @@ public class MapTriggerActor : MapTriggerObject
         InitialSequence = initialSequence;
     }
 
-    private MapTriggerActor() : base() { }
+    private MapTriggerActor()
+    { }
 }
 [ProtoContract]
 public class MapTriggerCube : MapTriggerObject
@@ -555,7 +561,8 @@ public class MapTriggerCube : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    public MapTriggerCube() : base() { }
+    public MapTriggerCube()
+    { }
 }
 [ProtoContract]
 public class MapTriggerSound : MapTriggerObject
@@ -568,7 +575,8 @@ public class MapTriggerSound : MapTriggerObject
         IsEnabled = enabled;
     }
 
-    public MapTriggerSound() : base() { }
+    public MapTriggerSound()
+    { }
 }
 [ProtoContract]
 public class MapTriggerRope : MapTriggerObject
@@ -581,7 +589,8 @@ public class MapTriggerRope : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerRope() : base() { }
+    private MapTriggerRope()
+    { }
 }
 [ProtoContract]
 [ProtoInclude(20, typeof(MapBreakableNifObject))]
@@ -640,7 +649,8 @@ public class MapTriggerSkill : MapTriggerObject
         SkillId = skillId;
     }
 
-    public MapTriggerSkill() : base() { }
+    public MapTriggerSkill()
+    { }
 }
 [ProtoContract]
 public class MapBreakableActorObject : MapBreakableObject

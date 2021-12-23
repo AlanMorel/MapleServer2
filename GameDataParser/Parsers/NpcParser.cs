@@ -50,9 +50,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             }
         }
 
-        Dictionary<int, string> npcIdToName = new()
-        {
-        };
+        Dictionary<int, string> npcIdToName = new();
         List<NpcMetadata> npcs = new();
 
         // Parse the NpcId -> Names first.
@@ -158,7 +156,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
 
             // HACK: Parse combat/skills state (does not actually exist)
             List<(string, NpcAction, short)> combatActions = new();
-            string[] combatActionsIds = new string[] { "Run_A" };
+            string[] combatActionsIds = { "Run_A" };
             if (combatActionsIds.Length > 0)
             {
                 int equalProb = 10000 / combatActionsIds.Length;

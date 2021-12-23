@@ -42,7 +42,7 @@ public static class QuestPacket
         pWriter.WriteInt(questId);
         pWriter.WriteLong(TimeInfo.Now());
         pWriter.WriteByte(1);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
 
         return pWriter;
     }

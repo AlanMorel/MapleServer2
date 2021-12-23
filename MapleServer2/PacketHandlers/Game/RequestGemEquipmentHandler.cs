@@ -10,8 +10,6 @@ public class RequestGemEquipmentHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_GEM_EQUIPMENT;
 
-    public RequestGemEquipmentHandler() : base() { }
-
     private enum RequestGemEquipmentMode : byte
     {
         EquipItem = 0x00,

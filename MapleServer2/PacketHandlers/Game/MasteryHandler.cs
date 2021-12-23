@@ -14,8 +14,6 @@ public class MasteryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CONSTRUCT_RECIPE;
 
-    public MasteryHandler() : base() { }
-
     private enum MasteryMode : byte
     {
         RewardBox = 0x01,
@@ -58,7 +56,7 @@ public class MasteryHandler : GamePacketHandler
         MasteryMetadata mastery = MasteryMetadataStorage.GetMastery(type);
         if (mastery == null)
         {
-            Logger.Error("Unknown mastery type {type} from user: {session.Player.Name}", type, session.Player.Name);
+            Logger.Error($"Unknown mastery type {type} from user: {session.Player.Name}");
             return;
         }
 
@@ -83,7 +81,7 @@ public class MasteryHandler : GamePacketHandler
         RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
         if (recipe == null)
         {
-            Logger.Error("Unknown recipe ID {recipeId} from user: {session.Player.Name}", recipeId, session.Player.Name);
+            Logger.Error($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
             return;
         }
 

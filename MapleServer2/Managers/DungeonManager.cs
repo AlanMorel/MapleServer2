@@ -5,10 +5,10 @@ namespace MapleServer2.Managers;
 public class DungeonManager
 {
     public readonly Dictionary<int, DungeonSession> DungeonSessionList;
-    private int SessionId = 0;
+    private int SessionId;
     private readonly List<int> RecyclableSessionIds;
     private readonly List<int> RecyclableMapInstanceIds;
-    private int MapInstanceId = 0;
+    private int MapInstanceId;
 
     public DungeonManager()
     {

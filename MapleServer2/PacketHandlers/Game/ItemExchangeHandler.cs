@@ -12,8 +12,6 @@ public class ItemExchangeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EXCHANGE;
 
-    public ItemExchangeHandler() : base() { }
-
     private enum ItemExchangeMode : byte
     {
         Use = 0x1

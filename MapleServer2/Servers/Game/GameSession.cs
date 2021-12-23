@@ -22,7 +22,7 @@ public class GameSession : Session
     public FieldManager FieldManager { get; private set; }
     private readonly FieldManagerFactory FieldManagerFactory;
 
-    public GameSession(FieldManagerFactory fieldManagerFactory) : base()
+    public GameSession(FieldManagerFactory fieldManagerFactory)
     {
         FieldManagerFactory = fieldManagerFactory;
     }

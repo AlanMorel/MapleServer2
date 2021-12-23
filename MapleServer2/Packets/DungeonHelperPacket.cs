@@ -17,7 +17,7 @@ public static class DungeonHelperPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.DUNGEON_HELPER);
         pWriter.Write(DungeonHelperPacketMode.BroadcastAssist);
         pWriter.WriteInt(party.Id);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteLong(); // unk
         pWriter.WriteLong(); // unk
         pWriter.WriteInt(dungeonId);

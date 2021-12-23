@@ -20,8 +20,6 @@ public class RequestCubeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
-    public RequestCubeHandler() : base() { }
-
     private enum RequestCubeMode : byte
     {
         LoadFurnishingItem = 0x1,

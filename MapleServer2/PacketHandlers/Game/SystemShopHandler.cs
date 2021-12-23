@@ -12,8 +12,6 @@ public class SystemShopHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SYSTEM_SHOP;
 
-    public SystemShopHandler() : base() { }
-
     private enum ShopMode : byte
     {
         Arena = 0x03,

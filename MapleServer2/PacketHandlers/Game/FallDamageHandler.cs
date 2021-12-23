@@ -10,8 +10,6 @@ public class FallDamageHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_FALL_DAMAGE;
 
-    public FallDamageHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         float distance = packet.ReadFloat();
@@ -21,7 +19,7 @@ public class FallDamageHandler : GamePacketHandler
             // TODO: Check if player has Safe ride enabled
             if (session.Player.Mount != null)
             {
-                session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.Player.FieldPlayer, false));
+                session.FieldManager.BroadcastPacket(MountPacket.StopRide(session.Player.FieldPlayer));
             }
 
             session.Player.FallDamage();

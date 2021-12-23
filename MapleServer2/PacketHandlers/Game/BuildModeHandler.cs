@@ -11,8 +11,6 @@ public class BuildModeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
 
-    public BuildModeHandler() : base() { }
-
     private enum BuildModeMode : byte
     {
         Stop = 0x0,
@@ -70,9 +68,7 @@ public class BuildModeHandler : GamePacketHandler
         // Add Guide Object
         CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
         startCoord.Z += Block.BLOCK_SIZE;
-        GuideObject guide = new(0, session.Player.CharacterId)
-        {
-        };
+        GuideObject guide = new(0, session.Player.CharacterId);
         IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
         fieldGuide.Coord = startCoord;
         session.Player.Guide = fieldGuide;

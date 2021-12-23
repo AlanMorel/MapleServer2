@@ -10,6 +10,4 @@ public class CardReverseGame
     // Temporarily hardcoding the item and cost
     public const int TOKEN_ITEM_ID = 30000782; // 2nd Anniversary Commemorative Coin
     public const int TOKEN_COST = 2;
-
-    public CardReverseGame() { }
 }

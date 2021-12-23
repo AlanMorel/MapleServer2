@@ -9,8 +9,6 @@ public class StateSkillHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
-    public StateSkillHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte function = packet.ReadByte();

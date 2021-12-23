@@ -9,8 +9,6 @@ public class ItemOptionConstantMetadata
     public int Id;
     [XmlElement(Order = 2)]
     public List<ItemOptionsConstant> ItemOptions = new();
-
-    public ItemOptionConstantMetadata() { }
 }
 [XmlType]
 public class ItemOptionsConstant
@@ -31,6 +29,4 @@ public class ItemOptionsConstant
     public List<ParserStat> Stats = new();
     [XmlElement(Order = 8)]
     public List<ParserSpecialStat> SpecialStats = new();
-
-    public ItemOptionsConstant() { }
 }

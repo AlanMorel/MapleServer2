@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace MaplePacketLib2.Tools;
@@ -57,7 +58,7 @@ public unsafe class PoolPacketWriter : PacketWriter, IDisposable
     // Provides warning if Disposed in not called.
     ~PoolPacketWriter()
     {
-        System.Diagnostics.Debug.Fail($"PacketWriter not disposed: {this}");
+        Debug.Fail($"PacketWriter not disposed: {this}");
     }
 #endif
 }

@@ -11,8 +11,6 @@ public abstract class GamePacketHandler : IPacketHandler<GameSession>
 
     protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    protected GamePacketHandler() { }
-
     public abstract void Handle(GameSession session, PacketReader packet);
 
     public override string ToString()

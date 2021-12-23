@@ -19,8 +19,6 @@ public class JobMetadata
     public List<JobSkillMetadata> Skills = new();
     [XmlElement(Order = 7)]
     public List<JobLearnedSkillsMetadata> LearnedSkills = new();
-
-    public JobMetadata() { }
 }
 [XmlType]
 public class TutorialItemMetadata

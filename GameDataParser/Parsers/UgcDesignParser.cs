@@ -21,7 +21,7 @@ public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
         }
 
         XmlDocument document = Resources.XmlReader.GetXmlDocument(file);
-        XmlNodeList nodes = document.SelectNodes($"/ms2/list");
+        XmlNodeList nodes = document.SelectNodes("/ms2/list");
         foreach (XmlNode node in nodes)
         {
             int itemId = int.Parse(node.Attributes["itemID"].Value);

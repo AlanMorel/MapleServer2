@@ -47,7 +47,7 @@ public static class PartyPacket
         pWriter.Write(PartyPacketMode.Join);
         CharacterListPacket.WriteCharacter(player, pWriter);
         pWriter.WriteInt();
-        JobPacket.WriteSkills(pWriter, player);
+        pWriter.WriteSkills(player);
         pWriter.WriteLong();
         return pWriter;
     }
@@ -201,7 +201,7 @@ public static class PartyPacket
         }
         else
         {
-            pWriter.WriteByte(0);
+            pWriter.WriteByte();
         }
 
         return pWriter;

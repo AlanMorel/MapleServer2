@@ -15,8 +15,6 @@ internal class InteractObjectHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
 
-    public InteractObjectHandler() : base() { }
-
     private enum InteractObjectMode : byte
     {
         Cast = 0x0B,
@@ -44,7 +42,6 @@ internal class InteractObjectHandler : GamePacketHandler
         InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
         if (interactObject == null)
         {
-            return;
         }
 
         // TODO: Change state of object only if player succeeds in the cast.

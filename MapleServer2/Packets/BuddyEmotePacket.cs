@@ -75,7 +75,7 @@ public static class BuddyEmotePacket
         pWriter.WriteLong();
         pWriter.Write(rotation);
 
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         return pWriter;
     }
 

@@ -10,8 +10,6 @@ public class SuperChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SUPER_WORLDCHAT;
 
-    public SuperChatHandler() : base() { }
-
     private enum SuperChatMode : byte
     {
         Select = 0x0,

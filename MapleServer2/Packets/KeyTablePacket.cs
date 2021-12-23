@@ -18,7 +18,7 @@ public static class KeyTablePacket
     public static PacketWriter RequestDefault()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
-        pWriter.WriteByte(0x00);
+        pWriter.WriteByte();
         pWriter.WriteBool(true);
 
         return pWriter;
@@ -27,14 +27,14 @@ public static class KeyTablePacket
     public static PacketWriter SendFullOptions(GameOptions options)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.KEY_TABLE);
-        pWriter.WriteByte(0x00);
+        pWriter.WriteByte();
         pWriter.WriteBool(false);
 
         // Key bindings
         pWriter.WriteInt(options.KeyBinds.Count);
         foreach (KeyBind keyBind in options.KeyBinds.Values)
         {
-            pWriter.Write<KeyBind>(keyBind);
+            pWriter.Write(keyBind);
         }
 
         // Hotbars

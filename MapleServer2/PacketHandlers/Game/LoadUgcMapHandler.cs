@@ -14,8 +14,6 @@ public class LoadUgcMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_LOAD_UGC_MAP;
 
-    public LoadUgcMapHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;

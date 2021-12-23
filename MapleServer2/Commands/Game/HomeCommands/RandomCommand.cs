@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
+
 namespace MapleServer2.Commands.Game.HomeCommands;
 
 public class RandomUserCommand : InGameCommand

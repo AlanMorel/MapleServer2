@@ -10,8 +10,6 @@ public class EmoteHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.EMOTION;
 
-    public EmoteHandler() : base() { }
-
     private enum EmoteMode : byte
     {
         LearnEmote = 0x1,

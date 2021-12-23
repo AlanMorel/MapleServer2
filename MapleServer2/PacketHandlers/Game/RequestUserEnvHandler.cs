@@ -9,8 +9,6 @@ public class RequestUserEnvHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_USER_ENV;
 
-    public RequestUserEnvHandler() : base() { }
-
     private enum UserEnvMode : byte
     {
         Change = 0x1,

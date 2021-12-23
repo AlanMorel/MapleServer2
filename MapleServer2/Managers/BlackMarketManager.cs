@@ -125,7 +125,6 @@ public class BlackMarketManager
             if (containsAll)
             {
                 allResults.Add(listing);
-                continue;
             }
         }
 

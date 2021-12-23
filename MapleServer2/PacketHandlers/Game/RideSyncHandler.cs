@@ -11,8 +11,6 @@ public class RideSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RIDE_SYNC;
 
-    public RideSyncHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte function = packet.ReadByte(); // Unknown what this is for

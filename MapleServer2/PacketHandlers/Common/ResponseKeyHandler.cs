@@ -15,8 +15,6 @@ public class ResponseKeyHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 
-    public ResponseKeyHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         long accountId = packet.ReadLong();
@@ -212,7 +210,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         int tokenA = packet.ReadInt();
         int tokenB = packet.ReadInt();
 
-        Logger.Info("LOGIN USER: {accountId}", accountId);
+        Logger.Info($"LOGIN USER: {accountId}");
         AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
         if (authData == null)
         {

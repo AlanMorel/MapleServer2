@@ -9,8 +9,6 @@ public class ItemDropMetadata
     public int Id;
     [XmlElement(Order = 2)]
     public List<DropGroup> DropGroups = new();
-
-    public ItemDropMetadata() { }
 }
 [XmlType]
 public class DropGroup
@@ -19,8 +17,6 @@ public class DropGroup
     public int Id;
     [XmlElement(Order = 2)]
     public List<DropGroupContent> Contents = new();
-
-    public DropGroup() { }
 }
 [XmlType]
 public class DropGroupContent
@@ -39,6 +35,4 @@ public class DropGroupContent
     public float MaxAmount;
     [XmlElement(Order = 7)]
     public byte Rarity;
-
-    public DropGroupContent() { }
 }

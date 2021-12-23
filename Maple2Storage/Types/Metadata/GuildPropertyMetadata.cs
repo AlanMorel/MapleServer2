@@ -44,8 +44,6 @@ public class GuildPropertyMetadata
     [XmlElement(Order = 19)]
     public int LoseMiniGameGuildCoin;
 
-    public GuildPropertyMetadata() { }
-
     public override string ToString()
     {
         return $"GuildBuff(Level:{Level},AccumExp:{AccumExp},Capacity:{Capacity},FundMax:{FundMax},DonationMax:{DonationMax},AttendExp:{AttendExp},WinMiniGameExp:{WinMiniGameExp},LoseMiniGameExp:{LoseMiniGameExp}" +

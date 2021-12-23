@@ -65,7 +65,7 @@ public class SetJobCommand : InGameCommand
         {
             string[] classes = Enum.GetNames(typeof(Job));
 
-            player.Session.Send(NoticePacket.Notice($"You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
+            player.Session.Send(NoticePacket.Notice("You have to give a classname and specifiy awakening (1 or 0)\nAvailable classes:\n".Bold().Color(Color.DarkOrange) +
                                                     $"{string.Join(", ", classes).Color(Color.Aquamarine)}", NoticeType.Chat));
 
             return;

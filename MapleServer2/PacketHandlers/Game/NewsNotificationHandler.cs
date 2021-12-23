@@ -9,8 +9,6 @@ public class NewsNotificationHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.NEWS_NOTIFICATION;
 
-    public NewsNotificationHandler() : base() { }
-
     private enum NewsNotificationMode : byte
     {
         OpenBrowser = 0x0,

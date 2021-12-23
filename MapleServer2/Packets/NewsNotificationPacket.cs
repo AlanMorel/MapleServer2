@@ -14,22 +14,22 @@ public static class NewsNotificationPacket
     public static PacketWriter OpenBrowser()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NEWS_NOTIFICATION);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
         pWriter.WriteByte(0x1);
         pWriter.Write(NewsNotificationPacketMode.OpenBrowser);
-        pWriter.WriteInt(0x0);
+        pWriter.WriteInt();
         return pWriter;
     }
 
     public static PacketWriter OpenSidebar()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.NEWS_NOTIFICATION);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteUnicodeString("86BFAEA2-DC42-4AEA-ADD5-D234E8810E08"); // random key to display banners
         pWriter.WriteByte(0x1);
         pWriter.Write(NewsNotificationPacketMode.OpenSidebar);
-        pWriter.WriteInt(0x0);
+        pWriter.WriteInt();
         return pWriter;
     }
 }

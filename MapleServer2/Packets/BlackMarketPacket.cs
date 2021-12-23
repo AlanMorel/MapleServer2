@@ -22,7 +22,7 @@ public static class BlackMarketPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BLACK_MARKET);
         pWriter.Write(BlackMarketPacketMode.Error);
-        pWriter.WriteByte(0);
+        pWriter.WriteByte();
         pWriter.WriteInt(errorCode);
         pWriter.WriteLong();
         pWriter.WriteInt(itemId);

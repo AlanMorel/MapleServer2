@@ -13,8 +13,6 @@ public class GuildHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUILD;
 
-    public GuildHandler() : base() { }
-
     private enum GuildMode : byte
     {
         Create = 0x1,

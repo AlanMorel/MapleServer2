@@ -12,7 +12,7 @@ public class QuitHandler : CommonPacketHandler
     public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
     private readonly IPEndPoint LoginEndpoint;
 
-    public QuitHandler() : base()
+    public QuitHandler()
     {
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));

@@ -21,7 +21,7 @@ public static class EmotePacket
         {
             pWriter.WriteInt(emoteId);
             pWriter.WriteInt(1);
-            pWriter.WriteLong(0);
+            pWriter.WriteLong();
         }
         return pWriter;
     }

@@ -15,8 +15,6 @@ public class UserSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_SYNC;
 
-    public UserSyncHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte function = packet.ReadByte(); // Unknown what this is for

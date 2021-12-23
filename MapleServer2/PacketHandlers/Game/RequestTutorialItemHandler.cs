@@ -11,8 +11,6 @@ public class RequestTutorialItemHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
 
-    public RequestTutorialItemHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);

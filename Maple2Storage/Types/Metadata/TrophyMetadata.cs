@@ -53,7 +53,6 @@ public class TrophyGradeMetadata
     public int RewardValue;
 
     // Required for deserialization
-    public TrophyGradeMetadata() { }
 
     public override string ToString()
     {

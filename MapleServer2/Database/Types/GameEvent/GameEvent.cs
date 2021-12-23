@@ -10,8 +10,6 @@ public class GameEvent
     public UGCMapContractSaleEvent UGCMapContractSale;
     public UGCMapExtensionSaleEvent UGCMapExtensionSale;
     public FieldPopupEvent FieldPopupEvent;
-
-    public GameEvent() { }
 }
 public enum GameEventType
 {

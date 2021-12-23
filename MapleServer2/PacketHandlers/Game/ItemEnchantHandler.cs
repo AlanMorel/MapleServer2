@@ -10,8 +10,6 @@ public class ItemEnchantHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
 
-    public ItemEnchantHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte function = packet.ReadByte();

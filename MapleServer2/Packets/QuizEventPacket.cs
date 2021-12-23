@@ -17,7 +17,7 @@ public static class QuizEventPacket
         pWriter.Write(QuizEventPacketMode.Question);
         pWriter.WriteUnicodeString(category);
         pWriter.WriteUnicodeString(question);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteInt(duration);
         return pWriter;
     }

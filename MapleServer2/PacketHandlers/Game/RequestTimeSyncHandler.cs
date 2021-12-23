@@ -9,8 +9,6 @@ public class RequestTimeSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TIME_SYNC;
 
-    public RequestTimeSyncHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         int key = packet.ReadInt();

@@ -158,7 +158,7 @@ public static class ClubPacket
         pWriter.WriteUnicodeString(club.Name);
         pWriter.WriteUnicodeString(club.Leader.Name);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteInt(00); //00 = accept
+        pWriter.WriteInt(); //00 = accept
         return pWriter;
     }
 
@@ -267,7 +267,7 @@ public static class ClubPacket
         pWriter.Write(ClubPacketMode.AssignNewLeader);
         pWriter.WriteLong(club.Id);
         pWriter.WriteUnicodeString(player.Name);
-        pWriter.WriteUnicodeString(""); // new leader
+        pWriter.WriteUnicodeString(); // new leader
         pWriter.WriteByte(0x1);
         return pWriter;
     }

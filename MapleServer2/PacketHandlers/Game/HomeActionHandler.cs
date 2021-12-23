@@ -15,8 +15,6 @@ public class HomeActionHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.HOME_ACTION;
 
-    public HomeActionHandler() : base() { }
-
     private enum HomeActionMode : byte
     {
         Smite = 0x01,

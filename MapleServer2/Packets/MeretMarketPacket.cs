@@ -326,7 +326,7 @@ public static class MeretMarketPacket
             bannerName = item.Banner.Name;
         }
         pWriter.WriteString(bannerName);
-        pWriter.WriteString("");
+        pWriter.WriteString();
         pWriter.WriteByte();
         pWriter.WriteByte();
         pWriter.WriteInt();
@@ -349,8 +349,8 @@ public static class MeretMarketPacket
         pWriter.Write(item.Status);
         pWriter.WriteInt(item.Item.Id);
         pWriter.WriteInt(35);
-        pWriter.WriteByte(0);
-        pWriter.WriteInt(0);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
         pWriter.WriteLong(item.Price);
         pWriter.WriteInt();
         pWriter.WriteInt();

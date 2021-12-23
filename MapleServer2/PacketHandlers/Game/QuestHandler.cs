@@ -14,8 +14,6 @@ public class QuestHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.QUEST;
 
-    public QuestHandler() : base() { }
-
     private enum QuestMode : byte
     {
         AcceptQuest = 0x02,

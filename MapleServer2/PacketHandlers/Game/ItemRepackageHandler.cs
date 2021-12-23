@@ -11,14 +11,12 @@ public class ItemRepackageHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_REPACKAGE;
 
-    public ItemRepackageHandler() : base() { }
-
     private enum ItemRepackageMode : byte
     {
         Repackage = 0x1
     }
 
-    private enum ItemRepackageNotice : int
+    private enum ItemRepackageNotice
     {
         CannotBePackaged = 0x1,
         ItemInvalid = 0x2,

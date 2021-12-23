@@ -13,8 +13,6 @@ public class FieldEnterHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 
-    public FieldEnterHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         packet.ReadInt(); // ?

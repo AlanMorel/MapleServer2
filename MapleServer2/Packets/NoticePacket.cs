@@ -16,7 +16,7 @@ public static class NoticePacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.NOTICE);
         pWriter.Write(NoticePacketMode.Send);
         pWriter.WriteShort((short) type);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteInt();
         pWriter.WriteUnicodeString(message);
         pWriter.WriteShort();

@@ -50,6 +50,4 @@ public class RecipeItem
     public int Amount;
     [XmlElement(Order = 3)]
     public int Rarity;
-
-    public RecipeItem() { }
 }

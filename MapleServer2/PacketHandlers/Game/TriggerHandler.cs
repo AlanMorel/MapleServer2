@@ -11,8 +11,6 @@ public class TriggerHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TRIGGER;
 
-    public TriggerHandler() : base() { }
-
     private enum TriggerMode : byte
     {
         SkipCutscene = 0x7,

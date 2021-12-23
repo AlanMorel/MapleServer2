@@ -8,7 +8,7 @@ public class HomeManager
 {
     private readonly ConcurrentDictionary<long, Home> HomeList;
     private readonly List<int> MapIds; // cache for maps already loaded
-    private long InstanceCounter = 0;
+    private long InstanceCounter;
 
     public HomeManager()
     {

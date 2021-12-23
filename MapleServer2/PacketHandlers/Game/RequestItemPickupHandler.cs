@@ -10,8 +10,6 @@ public class RequestItemPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
 
-    public RequestItemPickupHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         int objectId = packet.ReadInt();

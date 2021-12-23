@@ -170,7 +170,7 @@ public static class CharacterListPacket
         }
 
         // Some function call on CCharacterList property
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteLong(player.UnknownId); // THIS MUST BE CORRECT... BYPASS KEY...
         pWriter.WriteLong(2000);
         pWriter.WriteLong(3000);

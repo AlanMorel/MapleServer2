@@ -9,8 +9,6 @@ public class RequestItemBreakHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_BREAK;
 
-    public RequestItemBreakHandler() : base() { }
-
     private enum ItemBreakMode : byte
     {
         Open = 0x00,

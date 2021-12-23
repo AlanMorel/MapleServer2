@@ -12,8 +12,6 @@ public class ChangeAttributesHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES;
 
-    public ChangeAttributesHandler() : base() { }
-
     private enum ChangeAttributesMode : byte
     {
         ChangeAttributes = 0,
@@ -105,8 +103,7 @@ public class ChangeAttributesHandler : GamePacketHandler
         int metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
 
         // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
-        int[] crystalFragmentsEpicGear = new int[]
-        {
+        int[] crystalFragmentsEpicGear = {
             200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063
         };
 

@@ -58,8 +58,6 @@ public class UGCMapGroup
     [XmlElement(Order = 14)]
     public short HouseNumber;
 
-    public UGCMapGroup() { }
-
     public override string ToString()
     {
         return $"UGCMapGroup(Id:{Id},Price:{Price},PriceItemCode:{PriceItemCode},ExtensionPrice:{ExtensionPrice},ExtensionPriceItemCode:{ExtensionPriceItemCode},ContractDate:{ContractDate}" +

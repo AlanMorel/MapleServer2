@@ -332,8 +332,6 @@ public class Stats
             case StatId.CritRate:
                 gainAmount = 3;
                 break;
-            default:
-                break;
         }
         Data[statId].IncreaseBonus(gainAmount);
     }
@@ -351,8 +349,6 @@ public class Stats
                     break;
                 case StatId.CritRate:
                     gainAmount = 3;
-                    break;
-                default:
                     break;
             }
             Data[statId].DecreaseBonus(entry.Value * gainAmount);

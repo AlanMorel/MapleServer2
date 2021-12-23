@@ -29,9 +29,9 @@ public static class BeautyPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
         pWriter.Write(BeautyPacketMode.LoadBeautyShop);
         WriteBeautyShop(pWriter, beautyShop);
-        pWriter.WriteByte(0);
-        pWriter.WriteByte(0);
-        pWriter.WriteShort(0);
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        pWriter.WriteShort();
         return pWriter;
     }
 
@@ -53,7 +53,7 @@ public static class BeautyPacket
             pWriter.Write(item.TokenType);
             pWriter.WriteInt(item.RequiredItemId);
             pWriter.WriteInt(item.TokenCost);
-            pWriter.WriteString("");
+            pWriter.WriteString();
         }
         return pWriter;
     }
@@ -73,7 +73,7 @@ public static class BeautyPacket
         WriteBeautyShop(pWriter, beautyShop);
         pWriter.WriteByte(30);
         pWriter.WriteByte(6);
-        pWriter.WriteShort(0);
+        pWriter.WriteShort();
         return pWriter;
     }
 
@@ -165,8 +165,8 @@ public static class BeautyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BEAUTY);
         pWriter.Write(BeautyPacketMode.LoadSaveWindow);
-        pWriter.WriteByte(0);
-        pWriter.WriteShort(0);
+        pWriter.WriteByte();
+        pWriter.WriteShort();
         return pWriter;
     }
 
@@ -183,17 +183,17 @@ public static class BeautyPacket
         pWriter.WriteInt(beautyShop.ShopId);
         pWriter.Write(beautyShop.BeautyType);
         pWriter.WriteInt(beautyShop.VoucherId);
-        pWriter.WriteByte(0);
-        pWriter.WriteInt(0);
+        pWriter.WriteByte();
+        pWriter.WriteInt();
         pWriter.WriteInt(beautyShop.UniqueId);
-        pWriter.WriteByte(0);
+        pWriter.WriteByte();
         pWriter.WriteByte(4);
-        pWriter.WriteInt(0);
+        pWriter.WriteInt();
         pWriter.WriteInt(beautyShop.SpecialCost);
-        pWriter.WriteString("");
+        pWriter.WriteString();
         pWriter.Write(beautyShop.TokenType);
         pWriter.WriteInt(beautyShop.RequiredItemId);
         pWriter.WriteInt(beautyShop.TokenCost);
-        pWriter.WriteString("");
+        pWriter.WriteString();
     }
 }

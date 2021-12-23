@@ -8,8 +8,6 @@ public class RequestItemLockHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_LOCK;
 
-    public RequestItemLockHandler() : base() { }
-
     private enum ItemLockMode : byte
     {
         Open = 0x00,

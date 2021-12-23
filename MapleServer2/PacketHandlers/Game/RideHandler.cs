@@ -12,8 +12,6 @@ public class RideHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_RIDE;
 
-    public RideHandler() : base() { }
-
     private enum RideMode : byte
     {
         StartRide = 0x0,

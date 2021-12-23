@@ -17,6 +17,4 @@ public class ItemRepackageMetadata
     public List<int> Rarities = new();
     [XmlElement(Order = 6)]
     public int PetType;
-
-    public ItemRepackageMetadata() { }
 }

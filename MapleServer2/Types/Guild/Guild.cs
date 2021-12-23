@@ -62,7 +62,7 @@ public class Guild
         }
         Id = DatabaseManager.Guilds.Insert(this);
 
-        GuildMember guildMemberLeader = new(leader, (byte) 0, Id);
+        GuildMember guildMemberLeader = new(leader, 0, Id);
         Members.Add(guildMemberLeader);
 
         leader.Guild = this;
@@ -72,7 +72,7 @@ public class Guild
 
     public void AddMember(Player player)
     {
-        GuildMember member = new(player, (byte) 5, Id);
+        GuildMember member = new(player, 5, Id);
         Members.Add(member);
 
         player.Guild = this;
