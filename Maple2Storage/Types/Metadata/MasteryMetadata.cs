@@ -10,7 +10,6 @@ public class MasteryMetadata
     [XmlElement(Order = 2)]
     public List<MasteryGrade> Grades;
 
-    
     public MasteryMetadata()
     {
         Grades = new();
@@ -42,8 +41,6 @@ public class MasteryGrade
     public int RewardJobItemCount;
     [XmlElement(Order = 6)]
     public string Feature;
-
-    
 
     public override string ToString()
     {

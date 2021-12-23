@@ -42,6 +42,7 @@ internal class InteractObjectHandler : GamePacketHandler
         InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
         if (interactObject == null)
         {
+            return;
         }
 
         // TODO: Change state of object only if player succeeds in the cast.

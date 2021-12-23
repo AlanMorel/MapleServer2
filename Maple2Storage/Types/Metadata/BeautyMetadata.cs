@@ -27,8 +27,6 @@ public class BeautyMetadata
     [XmlElement(Order = 10)]
     public List<BeautyItem> Items { get; set; }
 
-    
-
     public override string ToString()
     {
         return $"BeautyMetadata(ShopId:{ShopId},UniqueId:{UniqueId},BeautyCategory:{BeautyCategory},BeautyType:{BeautyType},VoucherId:{VoucherId}," +

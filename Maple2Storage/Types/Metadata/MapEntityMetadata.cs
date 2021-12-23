@@ -64,7 +64,6 @@ public class MapEntityMetadata
     [XmlElement(Order = 28)]
     public readonly List<MapLiftableTarget> LiftableTargets;
 
-    
     public MapEntityMetadata()
     {
         PlayerSpawns = new();
@@ -137,7 +136,6 @@ public class MapWeaponObject
     [XmlElement(Order = 2)]
     public readonly List<int> WeaponItemIds;
 
-    
     public MapWeaponObject()
     {
         WeaponItemIds = new();
@@ -176,8 +174,6 @@ public class MapNpc
     [XmlElement(Order = 9)]
     public bool IsNightDie;
 
-
-    
     public MapNpc() { }
 
     public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation, bool isSpawnOnFieldCreate, bool isDayDie, bool isNightDie)
@@ -225,7 +221,6 @@ public class MapPortal
     [XmlElement(Order = 11)]
     public readonly int TriggerId;
 
-    
     public MapPortal() { }
 
     public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, PortalTypes portalType, int triggerId = 0)
@@ -257,7 +252,6 @@ public class MapPlayerSpawn
     [XmlElement(Order = 2)]
     public readonly CoordS Rotation;
 
-    
     public MapPlayerSpawn() { }
 
     public MapPlayerSpawn(CoordS coord, CoordS rotation)
@@ -471,8 +465,7 @@ public class MapTriggerMesh : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerMesh()
-    { }
+    private MapTriggerMesh() { }
 }
 [ProtoContract]
 public class MapTriggerEffect : MapTriggerObject
@@ -485,8 +478,7 @@ public class MapTriggerEffect : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerEffect()
-    { }
+    private MapTriggerEffect() { }
 }
 [ProtoContract]
 public class MapTriggerCamera : MapTriggerObject
@@ -499,8 +491,7 @@ public class MapTriggerCamera : MapTriggerObject
         IsEnabled = isEnabled;
     }
 
-    private MapTriggerCamera()
-    { }
+    private MapTriggerCamera() { }
 }
 [ProtoContract]
 public class MapTriggerBox : MapTriggerObject
@@ -516,8 +507,7 @@ public class MapTriggerBox : MapTriggerObject
         Dimension = dimension;
     }
 
-    private MapTriggerBox()
-    { }
+    private MapTriggerBox() { }
 }
 [ProtoContract]
 public class MapTriggerLadder : MapTriggerObject
@@ -530,8 +520,7 @@ public class MapTriggerLadder : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerLadder()
-    { }
+    private MapTriggerLadder() { }
 }
 [ProtoContract]
 public class MapTriggerActor : MapTriggerObject
@@ -547,8 +536,7 @@ public class MapTriggerActor : MapTriggerObject
         InitialSequence = initialSequence;
     }
 
-    private MapTriggerActor()
-    { }
+    private MapTriggerActor() { }
 }
 [ProtoContract]
 public class MapTriggerCube : MapTriggerObject
@@ -561,8 +549,7 @@ public class MapTriggerCube : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    public MapTriggerCube()
-    { }
+    public MapTriggerCube() { }
 }
 [ProtoContract]
 public class MapTriggerSound : MapTriggerObject
@@ -575,8 +562,7 @@ public class MapTriggerSound : MapTriggerObject
         IsEnabled = enabled;
     }
 
-    public MapTriggerSound()
-    { }
+    public MapTriggerSound() { }
 }
 [ProtoContract]
 public class MapTriggerRope : MapTriggerObject
@@ -589,8 +575,7 @@ public class MapTriggerRope : MapTriggerObject
         IsVisible = isVisible;
     }
 
-    private MapTriggerRope()
-    { }
+    private MapTriggerRope() { }
 }
 [ProtoContract]
 [ProtoInclude(20, typeof(MapBreakableNifObject))]
@@ -649,8 +634,7 @@ public class MapTriggerSkill : MapTriggerObject
         SkillId = skillId;
     }
 
-    public MapTriggerSkill()
-    { }
+    public MapTriggerSkill() { }
 }
 [ProtoContract]
 public class MapBreakableActorObject : MapBreakableObject

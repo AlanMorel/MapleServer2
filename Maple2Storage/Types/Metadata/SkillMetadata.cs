@@ -85,7 +85,6 @@ public class SkillLevel
     [XmlElement(Order = 10)]
     public readonly SkillUpgrade SkillUpgrade;
 
-    
     public SkillLevel()
     {
         SkillAttacks = new();

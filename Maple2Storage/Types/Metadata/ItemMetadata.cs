@@ -90,7 +90,6 @@ public class ItemMetadata
     [XmlElement(Order = 41)]
     public string Category;
 
-    
     public ItemMetadata()
     {
         BreakRewards = new();

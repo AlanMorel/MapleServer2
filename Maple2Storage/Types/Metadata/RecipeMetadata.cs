@@ -34,7 +34,6 @@ public class RecipeMetadata
     [XmlElement(Order = 18)]
     public List<RecipeItem> RewardItems;
 
-    
     public RecipeMetadata()
     {
         RequiredItems = new();

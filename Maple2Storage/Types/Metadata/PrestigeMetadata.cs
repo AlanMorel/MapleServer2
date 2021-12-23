@@ -8,7 +8,6 @@ public class PrestigeMetadata
     [XmlElement(Order = 1)]
     public readonly List<PrestigeReward> Rewards;
 
-    
     public PrestigeMetadata()
     {
         Rewards = new();
@@ -31,7 +30,6 @@ public class PrestigeReward
     [XmlElement(Order = 4)]
     public readonly int Value;
 
-    
     public PrestigeReward() { }
 
     public PrestigeReward(int level, string type, int id, int value)
