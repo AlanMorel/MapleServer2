@@ -6,3 +6,10 @@ public enum Gender : byte
     Female = 1,
     Neutral = 2
 }
+
+[Flags]
+public enum GenderFlag : byte
+{
+    Male = 1,
+    Female = 2
+}

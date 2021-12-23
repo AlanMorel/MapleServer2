@@ -30,6 +30,7 @@ public class Item
     public int ShopID { get; set; }
     public ItemHousingCategory HousingCategory;
     public string BlackMarketCategory;
+    public string Category;
     public ItemType Type { get; set; }
 
     public int Id;
@@ -157,12 +158,14 @@ public class Item
         InventoryId = other.InventoryId;
         BankInventoryId = other.BankInventoryId;
         BlackMarketCategory = other.BlackMarketCategory;
+        Category = other.Category;
         HomeId = other.HomeId;
         Color = other.Color;
         HairData = other.HairData;
         HatData = other.HatData;
         Score = new();
         Stats = new(other.Stats);
+        UGC = other.UGC;
     }
 
     public bool TrySplit(int splitAmount, out Item splitItem)
@@ -227,6 +230,7 @@ public class Item
         RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);
         HousingCategory = ItemMetadataStorage.GetHousingCategory(Id);
         BlackMarketCategory = ItemMetadataStorage.GetBlackMarketCategory(Id);
+        Category = ItemMetadataStorage.GetCategory(Id);
         Type = GetItemType(Id);
     }
 

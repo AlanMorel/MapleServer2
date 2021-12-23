@@ -120,6 +120,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                 metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
                 metadata.BlackMarketCategory = property.Attributes["blackMarketCategory"].Value;
+                metadata.Category = property.Attributes["category"].Value;
 
                 // sales price
                 XmlNode sell = property.SelectSingleNode("sell");
