@@ -85,7 +85,7 @@ public class SkillLevel
     [XmlElement(Order = 10)]
     public readonly SkillUpgrade SkillUpgrade;
 
-    // Required for deserialization
+    
     public SkillLevel()
     {
         SkillAttacks = new();

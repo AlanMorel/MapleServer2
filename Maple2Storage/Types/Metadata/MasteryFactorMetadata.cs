@@ -10,7 +10,7 @@ public class MasteryFactorMetadata
     [XmlElement(Order = 2)]
     public int Factor;
 
-    // Required for deserialization
+    
     public MasteryFactorMetadata() { }
 
     public MasteryFactorMetadata(int differential, int factor)

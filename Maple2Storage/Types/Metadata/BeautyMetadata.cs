@@ -27,7 +27,7 @@ public class BeautyMetadata
     [XmlElement(Order = 10)]
     public List<BeautyItem> Items { get; set; }
 
-    // Required for deserialization
+    
 
     public override string ToString()
     {

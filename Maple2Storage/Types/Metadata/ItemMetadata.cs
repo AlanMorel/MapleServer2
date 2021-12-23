@@ -90,7 +90,7 @@ public class ItemMetadata
     [XmlElement(Order = 41)]
     public string Category;
 
-    // Required for deserialization
+    
     public ItemMetadata()
     {
         BreakRewards = new();

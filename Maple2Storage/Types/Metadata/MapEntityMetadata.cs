@@ -64,7 +64,7 @@ public class MapEntityMetadata
     [XmlElement(Order = 28)]
     public readonly List<MapLiftableTarget> LiftableTargets;
 
-    // Required for deserialization
+    
     public MapEntityMetadata()
     {
         PlayerSpawns = new();
@@ -137,7 +137,7 @@ public class MapWeaponObject
     [XmlElement(Order = 2)]
     public readonly List<int> WeaponItemIds;
 
-    // Required for deserialization
+    
     public MapWeaponObject()
     {
         WeaponItemIds = new();
@@ -177,7 +177,7 @@ public class MapNpc
     public bool IsNightDie;
 
 
-    // Required for deserialization
+    
     public MapNpc() { }
 
     public MapNpc(int id, string modelName, string instanceName, CoordS coord, CoordS rotation, bool isSpawnOnFieldCreate, bool isDayDie, bool isNightDie)
@@ -225,7 +225,7 @@ public class MapPortal
     [XmlElement(Order = 11)]
     public readonly int TriggerId;
 
-    // Required for deserialization
+    
     public MapPortal() { }
 
     public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, PortalTypes portalType, int triggerId = 0)
@@ -257,7 +257,7 @@ public class MapPlayerSpawn
     [XmlElement(Order = 2)]
     public readonly CoordS Rotation;
 
-    // Required for deserialization
+    
     public MapPlayerSpawn() { }
 
     public MapPlayerSpawn(CoordS coord, CoordS rotation)
