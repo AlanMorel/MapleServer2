@@ -24,12 +24,13 @@ public class PremiumClubPackageParser : Exporter<List<PremiumClubPackageMetadata
 
             foreach (XmlNode node in nodes)
             {
-                PremiumClubPackageMetadata metadata = new();
-
-                metadata.Id = int.Parse(node.Attributes["id"].Value);
-                metadata.VipPeriod = int.Parse(node.Attributes["vipPeriod"].Value);
-                metadata.Price = int.Parse(node.Attributes["price"].Value);
-                metadata.BuyLimit = byte.Parse(node.Attributes["buyLimit"].Value);
+                PremiumClubPackageMetadata metadata = new()
+                {
+                    Id = int.Parse(node.Attributes["id"].Value),
+                    VipPeriod = int.Parse(node.Attributes["vipPeriod"].Value),
+                    Price = int.Parse(node.Attributes["price"].Value),
+                    BuyLimit = byte.Parse(node.Attributes["buyLimit"].Value)
+                };
 
                 BonusItem bonusItem = new();
 
@@ -54,6 +55,7 @@ public class PremiumClubPackageParser : Exporter<List<PremiumClubPackageMetadata
                 package.Add(metadata);
             }
         }
+
         return package;
     }
 }

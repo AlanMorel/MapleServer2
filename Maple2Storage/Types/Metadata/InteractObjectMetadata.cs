@@ -15,16 +15,11 @@ public class InteractObjectMetadata
     [XmlElement(Order = 4)]
     public InteractObjectDropMetadata Drop;
     [XmlElement(Order = 5)]
-    public List<(int QuestId, QuestState State)> Quests;
+    public List<(int QuestId, QuestState State)> Quests = new();
     [XmlElement(Order = 6)]
     public InteractObjectGatheringMetadata Gathering;
     [XmlElement(Order = 7)]
     public InteractObjectWebMetadata Web;
-
-    public InteractObjectMetadata()
-    {
-        Quests = new();
-    }
 }
 
 [XmlType]
@@ -50,15 +45,9 @@ public class InteractObjectDropMetadata
     [XmlElement(Order = 2)]
     public int DropRank;
     [XmlElement(Order = 3)]
-    public List<int> GlobalDropBoxId;
+    public List<int> GlobalDropBoxId = new();
     [XmlElement(Order = 4)]
-    public List<int> IndividualDropBoxId;
-
-    public InteractObjectDropMetadata()
-    {
-        GlobalDropBoxId = new();
-        IndividualDropBoxId = new();
-    }
+    public List<int> IndividualDropBoxId = new();
 }
 
 [XmlType]
@@ -67,6 +56,7 @@ public class InteractObjectGatheringMetadata
     [XmlElement(Order = 1)]
     public int RecipeId;
 }
+
 [XmlType]
 public class InteractObjectWebMetadata
 {

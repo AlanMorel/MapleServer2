@@ -24,15 +24,17 @@ public class ChatStickerParser : Exporter<List<ChatStickerMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                ChatStickerMetadata metadata = new();
-
-                metadata.StickerId = int.Parse(node.Attributes["id"].Value);
-                metadata.GroupId = byte.Parse(node.Attributes["group_id"].Value);
-                metadata.CategoryId = short.Parse(node.Attributes["category_id"].Value);
+                ChatStickerMetadata metadata = new()
+                {
+                    StickerId = int.Parse(node.Attributes["id"].Value),
+                    GroupId = byte.Parse(node.Attributes["group_id"].Value),
+                    CategoryId = short.Parse(node.Attributes["category_id"].Value)
+                };
 
                 chatStickers.Add(metadata);
             }
         }
+
         return chatStickers;
     }
 }

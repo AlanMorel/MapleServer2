@@ -10,8 +10,6 @@ public class ConstantsMetadata
     [XmlElement(Order = 2)]
     public string Value;
 
-    public ConstantsMetadata() { }
-
     public ConstantsMetadata(string key, string value)
     {
         Key = key;

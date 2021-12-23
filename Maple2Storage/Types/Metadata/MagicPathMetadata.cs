@@ -10,10 +10,7 @@ public class MagicPathMetadata
     [XmlElement(Order = 2)]
     public readonly List<MagicPathMove> MagicPathMoves = new();
 
-    public MagicPathMetadata()
-    {
-        MagicPathMoves = new();
-    }
+    public MagicPathMetadata() { }
 
     public MagicPathMetadata(long id, List<MagicPathMove> magicPathMoves)
     {
@@ -26,6 +23,7 @@ public class MagicPathMetadata
         return $"ID:{Id} {string.Join(",", MagicPathMoves)}";
     }
 }
+
 [XmlType]
 public class MagicPathMove
 {
@@ -57,6 +55,6 @@ public class MagicPathMove
     public override string ToString()
     {
         return $"Rotation:{Rotation}, FireOffsetPos:{FireOffsetPosition}," +
-            $"Direction:{Direction}, ControlValue0:{ControlValue0}, ControlValue1:{ControlValue1}, IgnoreAdjust:{IgnoreAdjust}";
+               $"Direction:{Direction}, ControlValue0:{ControlValue0}, ControlValue1:{ControlValue1}, IgnoreAdjust:{IgnoreAdjust}";
     }
 }

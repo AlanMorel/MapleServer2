@@ -10,14 +10,6 @@ public class MasteryFactorMetadata
     [XmlElement(Order = 2)]
     public int Factor;
 
-    public MasteryFactorMetadata() { }
-
-    public MasteryFactorMetadata(int differential, int factor)
-    {
-        Differential = differential;
-        Factor = factor;
-    }
-
     public override string ToString()
     {
         return $"MasteryFactorMetadata(Differential:{Differential},Factor:{Factor})";

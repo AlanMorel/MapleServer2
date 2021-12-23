@@ -24,24 +24,26 @@ public class DungeonParser : Exporter<List<DungeonMetadata>>
 
             foreach (XmlNode dungeonNode in nodes)
             {
-                DungeonMetadata metadata = new();
-
-                metadata.DungeonRoomId = int.Parse(dungeonNode.Attributes["dungeonRoomID"]?.Value ?? "0");
-                metadata.DungeonLevelRequirement = int.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0");
-                metadata.GroupType = dungeonNode.Attributes["groupType"]?.Value ?? "";
-                metadata.CooldownType = dungeonNode.Attributes["cooldownType"]?.Value ?? "";
-                metadata.UnionRewardId = int.Parse(dungeonNode.Attributes["unionRewardID"]?.Value ?? "0");
-                metadata.RewardCount = short.Parse(dungeonNode.Attributes["rewardCount"]?.Value ?? "0");
-                metadata.RewardExp = int.Parse(dungeonNode.Attributes["rewardExp"]?.Value ?? "0");
-                metadata.RewardMeso = int.Parse(dungeonNode.Attributes["rewardMeso"]?.Value ?? "0");
-                metadata.LobbyFieldId = int.Parse(dungeonNode.Attributes["lobbyFieldID"]?.Value ?? "0");
-                metadata.FieldIds = dungeonNode.Attributes["fieldIDs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                metadata.MaxUserCount = byte.Parse(dungeonNode.Attributes["maxUserCount"]?.Value ?? "0");
-                metadata.LimitPlayerLevel = byte.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0");
+                DungeonMetadata metadata = new()
+                {
+                    DungeonRoomId = int.Parse(dungeonNode.Attributes["dungeonRoomID"]?.Value ?? "0"),
+                    DungeonLevelRequirement = int.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0"),
+                    GroupType = dungeonNode.Attributes["groupType"]?.Value ?? "",
+                    CooldownType = dungeonNode.Attributes["cooldownType"]?.Value ?? "",
+                    UnionRewardId = int.Parse(dungeonNode.Attributes["unionRewardID"]?.Value ?? "0"),
+                    RewardCount = short.Parse(dungeonNode.Attributes["rewardCount"]?.Value ?? "0"),
+                    RewardExp = int.Parse(dungeonNode.Attributes["rewardExp"]?.Value ?? "0"),
+                    RewardMeso = int.Parse(dungeonNode.Attributes["rewardMeso"]?.Value ?? "0"),
+                    LobbyFieldId = int.Parse(dungeonNode.Attributes["lobbyFieldID"]?.Value ?? "0"),
+                    FieldIds = dungeonNode.Attributes["fieldIDs"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                    MaxUserCount = byte.Parse(dungeonNode.Attributes["maxUserCount"]?.Value ?? "0"),
+                    LimitPlayerLevel = byte.Parse(dungeonNode.Attributes["limitPlayerLevel"]?.Value ?? "0")
+                };
 
                 dungeons.Add(metadata);
             }
         }
+
         return dungeons;
     }
 }

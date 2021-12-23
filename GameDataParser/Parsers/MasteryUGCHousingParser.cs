@@ -22,10 +22,12 @@ public class MasteryUGCHousingParser : Exporter<List<MasteryUGCHousingMetadata>>
             XmlNodeList document = Resources.XmlReader.GetXmlDocument(entry).GetElementsByTagName("v");
             foreach (XmlNode node in document)
             {
-                MasteryUGCHousingMetadata metadata = new();
+                MasteryUGCHousingMetadata metadata = new()
+                {
+                    Grade = byte.Parse(node.Attributes["grade"].Value),
+                    MasteryRequired = short.Parse(node.Attributes["value"].Value)
+                };
 
-                metadata.Grade = byte.Parse(node.Attributes["grade"].Value);
-                metadata.MasteryRequired = short.Parse(node.Attributes["value"].Value);
                 _ = int.TryParse(node.Attributes["rewardJobItemID"]?.Value ?? "0", out metadata.ItemId);
 
                 metadataList.Add(metadata);

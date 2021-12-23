@@ -24,16 +24,18 @@ public class PremiumClubDailyBenefitParser : Exporter<List<PremiumClubDailyBenef
 
             foreach (XmlNode node in nodes)
             {
-                PremiumClubDailyBenefitMetadata metadata = new();
-
-                metadata.BenefitId = int.Parse(node.Attributes["id"].Value);
-                metadata.ItemId = int.Parse(node.Attributes["itemID"].Value);
-                metadata.ItemAmount = short.Parse(node.Attributes["itemCount"].Value);
-                metadata.ItemRarity = byte.Parse(node.Attributes["itemRank"].Value);
+                PremiumClubDailyBenefitMetadata metadata = new()
+                {
+                    BenefitId = int.Parse(node.Attributes["id"].Value),
+                    ItemId = int.Parse(node.Attributes["itemID"].Value),
+                    ItemAmount = short.Parse(node.Attributes["itemCount"].Value),
+                    ItemRarity = byte.Parse(node.Attributes["itemRank"].Value)
+                };
 
                 metadataList.Add(metadata);
             }
         }
+
         return metadataList;
     }
 }

@@ -24,16 +24,18 @@ public class InstrumentCategoryInfoParser : Exporter<List<InstrumentCategoryInfo
 
             foreach (XmlNode node in nodes)
             {
-                InstrumentCategoryInfoMetadata metadata = new();
-
-                metadata.CategoryId = byte.Parse(node.Attributes["id"].Value);
-                metadata.GMId = byte.Parse(node.Attributes["GMId"]?.Value ?? "0");
-                metadata.Octave = node.Attributes["defaultOctave"]?.Value ?? "";
-                metadata.PercussionId = byte.Parse(node.Attributes["percussionId"]?.Value ?? "0");
+                InstrumentCategoryInfoMetadata metadata = new()
+                {
+                    CategoryId = byte.Parse(node.Attributes["id"].Value),
+                    GMId = byte.Parse(node.Attributes["GMId"]?.Value ?? "0"),
+                    Octave = node.Attributes["defaultOctave"]?.Value ?? "",
+                    PercussionId = byte.Parse(node.Attributes["percussionId"]?.Value ?? "0")
+                };
 
                 instrument.Add(metadata);
             }
         }
+
         return instrument;
     }
 }

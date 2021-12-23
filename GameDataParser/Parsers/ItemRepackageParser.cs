@@ -22,18 +22,20 @@ public class ItemRepackageParser : Exporter<List<ItemRepackageMetadata>>
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
             foreach (XmlNode node in document.DocumentElement.ChildNodes)
             {
-                ItemRepackageMetadata metadata = new();
-
-                metadata.Id = int.Parse(node.Attributes["id"].Value);
-                metadata.MinLevel = int.Parse(node.Attributes["minLv"].Value);
-                metadata.MaxLevel = int.Parse(node.Attributes["maxLv"].Value);
-                metadata.Slots = node.Attributes["slot"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                metadata.PetType = int.Parse(node.Attributes["petType"]?.Value ?? "0");
-                metadata.Rarities = node.Attributes["rank"].Value.Split(",").Select(int.Parse).ToList();
+                ItemRepackageMetadata metadata = new()
+                {
+                    Id = int.Parse(node.Attributes["id"].Value),
+                    MinLevel = int.Parse(node.Attributes["minLv"].Value),
+                    MaxLevel = int.Parse(node.Attributes["maxLv"].Value),
+                    Slots = node.Attributes["slot"].Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                    PetType = int.Parse(node.Attributes["petType"]?.Value ?? "0"),
+                    Rarities = node.Attributes["rank"].Value.Split(",").Select(int.Parse).ToList()
+                };
 
                 items.Add(metadata);
             }
         }
+
         return items;
     }
 }

@@ -14,6 +14,7 @@ public class HomeTemplateMetadata
     [XmlElement(Order = 4)]
     public List<CubeTemplate> Cubes;
 }
+
 [XmlType]
 public class CubeTemplate
 {

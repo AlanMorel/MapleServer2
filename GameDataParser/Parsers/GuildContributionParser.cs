@@ -25,13 +25,16 @@ public class GuildContributionParser : Exporter<List<GuildContributionMetadata>>
 
             foreach (XmlNode contribution in contributions)
             {
-                GuildContributionMetadata metadata = new();
-                metadata.Type = contribution.Attributes["type"].Value;
-                metadata.Value = int.Parse(contribution.Attributes["value"].Value);
+                GuildContributionMetadata metadata = new()
+                {
+                    Type = contribution.Attributes["type"].Value,
+                    Value = int.Parse(contribution.Attributes["value"].Value)
+                };
 
                 guildContribution.Add(metadata);
             }
         }
+
         return guildContribution;
     }
 }

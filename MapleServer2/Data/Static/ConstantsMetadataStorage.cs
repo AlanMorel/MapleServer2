@@ -7,7 +7,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ConstantsMetadataStorage
 {
-    private static readonly Dictionary<string, ConstantsMetadata> constants = new Dictionary<string, ConstantsMetadata>();
+    private static readonly Dictionary<string, ConstantsMetadata> constants = new();
 
     public static void Init()
     {

@@ -8,12 +8,7 @@ public class ColorPaletteMetadata
     [XmlElement(Order = 1)]
     public int PaletteId;
     [XmlElement(Order = 2)]
-    public List<MixedColor> DefaultColors;
-
-    public ColorPaletteMetadata()
-    {
-        DefaultColors = new();
-    }
+    public List<MixedColor> DefaultColors = new();
 
     public override string ToString()
     {

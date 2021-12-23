@@ -10,6 +10,7 @@ public class ItemOptionStaticMetadata
     [XmlElement(Order = 2)]
     public List<ItemOptionsStatic> ItemOptions = new();
 }
+
 [XmlType]
 public class ItemOptionsStatic
 {

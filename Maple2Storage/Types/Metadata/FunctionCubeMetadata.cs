@@ -10,8 +10,6 @@ public class FunctionCubeMetadata
     [XmlElement(Order = 2)]
     public int RecipeId;
 
-    public FunctionCubeMetadata() { }
-
     public FunctionCubeMetadata(int cubeId, int recipeId)
     {
         CubeId = cubeId;

@@ -11,7 +11,7 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
 
     protected override List<ConstantsMetadata> Parse()
     {
-        List<ConstantsMetadata> constants = new List<ConstantsMetadata>();
+        List<ConstantsMetadata> constants = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
             if (!entry.Name.StartsWith("table/constants.xml"))
@@ -36,6 +36,7 @@ public class ConstantsParser : Exporter<List<ConstantsMetadata>>
                 constants.Add(new(node.Attributes["key"].Value, node.Attributes["value"].Value));
             }
         }
+
         return constants;
     }
 }

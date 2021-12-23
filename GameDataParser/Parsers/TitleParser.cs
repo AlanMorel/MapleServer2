@@ -31,7 +31,7 @@ public class TitleParser : Exporter<List<TitleMetadata>>
 
             string name = node.Attributes["name"].Value;
             string feature = node.Attributes["feature"]?.Value ?? string.Empty;
-            metadatas.Add(new TitleMetadata(id, name, feature));
+            metadatas.Add(new(id, name, feature));
         }
 
         return metadatas;

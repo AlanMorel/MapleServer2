@@ -12,13 +12,9 @@ public class MapMetadata
     [XmlElement(Order = 3)]
     public string XBlockName = "";
     [XmlElement(Order = 4)]
-    public Dictionary<CoordS, MapBlock> Blocks;
-
-    public MapMetadata()
-    {
-        Blocks = new();
-    }
+    public Dictionary<CoordS, MapBlock> Blocks = new();
 }
+
 [XmlType]
 public class MapBlock
 {
@@ -30,13 +26,4 @@ public class MapBlock
     public string Type;
     [XmlElement(Order = 4)]
     public int SaleableGroup;
-
-    public MapBlock() { }
-
-    public MapBlock(CoordS coord, string attribute, string type)
-    {
-        Coord = coord;
-        Attribute = attribute;
-        Type = type;
-    }
 }

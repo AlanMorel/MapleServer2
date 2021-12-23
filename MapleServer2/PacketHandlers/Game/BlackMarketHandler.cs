@@ -180,7 +180,7 @@ public class BlackMarketHandler : GamePacketHandler
         packet.ReadShort();
         bool additionalOptionsEnabled = packet.ReadBool();
 
-        List<ItemStat> stats = new List<ItemStat>();
+        List<ItemStat> stats = new();
         if (additionalOptionsEnabled)
         {
             packet.ReadByte(); // always 1

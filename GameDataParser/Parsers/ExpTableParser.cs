@@ -30,9 +30,11 @@ internal class ExpParser : Exporter<List<ExpMetadata>>
                     continue;
                 }
 
-                ExpMetadata expTable = new();
-                expTable.Level = level;
-                expTable.Experience = long.Parse(node.Attributes["value"].Value);
+                ExpMetadata expTable = new()
+                {
+                    Level = level,
+                    Experience = long.Parse(node.Attributes["value"].Value)
+                };
                 expList.Add(expTable);
             }
         }

@@ -14,16 +14,6 @@ public class PremiumClubDailyBenefitMetadata
     [XmlElement(Order = 4)]
     public short ItemAmount;
 
-    public PremiumClubDailyBenefitMetadata() { }
-
-    public PremiumClubDailyBenefitMetadata(int benefitId, int itemId, byte itemRarity, short itemAmount)
-    {
-        BenefitId = benefitId;
-        ItemId = itemId;
-        ItemRarity = itemRarity;
-        ItemAmount = itemAmount;
-    }
-
     public override string ToString()
     {
         return $"ItemRequirement(BenefitId:{BenefitId},ItemId:{ItemId},ItemRarity:{ItemRarity},ItemAmount:{ItemAmount})";

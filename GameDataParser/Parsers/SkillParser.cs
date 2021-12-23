@@ -44,6 +44,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     {
                         continue;
                     }
+
                     int spirit = int.Parse(level.SelectSingleNode("consume/stat").Attributes["sp"]?.Value ?? "0");
                     int stamina = int.Parse(level.SelectSingleNode("consume/stat").Attributes["ep"]?.Value ?? "0");
                     float damageRate = float.Parse(level.SelectSingleNode("motion/attack/damageProperty")?.Attributes["rate"].Value ?? "0");
@@ -95,6 +96,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                     SkillLevel skillLevel = new(levelValue, spirit, stamina, damageRate, feature, skillMotion, skillAttacks, skillConditions, skillUpgrade);
                     skillLevels.Add(skillLevel);
                 }
+
                 skillList.Add(new(skillId, skillLevels, skillState, skillAttackType, skillType, skillSubType, skillElement, skillSuperArmor, skillRecovery));
                 continue;
             }
@@ -132,6 +134,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                             }
                         }
                     }
+
                     XmlNodeList learnSkills = job.SelectNodes("learn/skill");
                     foreach (XmlNode learnSkill in learnSkills)
                     {
@@ -167,6 +170,7 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                         skillLevels.Find(x => x.Level == currentLevel).SkillAdditionalData = ParseSkillData(level);
                     }
                 }
+
                 continue;
             }
 
@@ -177,9 +181,10 @@ public class SkillParser : Exporter<List<SkillMetadata>>
                 int currentLevel = int.Parse(level.SelectSingleNode("BasicProperty").Attributes["level"]?.Value ?? "0");
                 skillLevels.Add(new(currentLevel, ParseSkillData(level)));
             }
-            skillList.Add(new(skillId, skillLevels));
 
+            skillList.Add(new(skillId, skillLevels));
         }
+
         return skillList;
     }
 

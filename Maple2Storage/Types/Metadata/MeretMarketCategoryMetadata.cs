@@ -11,10 +11,5 @@ public class MeretMarketCategoryMetadata
     [XmlElement(Order = 2)]
     public MeretMarketSection Section;
     [XmlElement(Order = 3)]
-    public List<string> ItemCategories;
-
-    public MeretMarketCategoryMetadata()
-    {
-        ItemCategories = new();
-    }
+    public List<string> ItemCategories = new();
 }

@@ -24,16 +24,18 @@ public class ItemExtractionParser : Exporter<List<ItemExtractionMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                ItemExtractionMetadata metadata = new();
-
-                metadata.SourceItemId = int.Parse(node.Attributes["TargetItemID"].Value);
-                metadata.TryCount = byte.Parse(node.Attributes["TryCount"].Value);
-                metadata.ScrollCount = byte.Parse(node.Attributes["ScrollCount"].Value);
-                metadata.ResultItemId = int.Parse(node.Attributes["ResultItemID"].Value);
+                ItemExtractionMetadata metadata = new()
+                {
+                    SourceItemId = int.Parse(node.Attributes["TargetItemID"].Value),
+                    TryCount = byte.Parse(node.Attributes["TryCount"].Value),
+                    ScrollCount = byte.Parse(node.Attributes["ScrollCount"].Value),
+                    ResultItemId = int.Parse(node.Attributes["ResultItemID"].Value)
+                };
 
                 palette.Add(metadata);
             }
         }
+
         return palette;
     }
 }

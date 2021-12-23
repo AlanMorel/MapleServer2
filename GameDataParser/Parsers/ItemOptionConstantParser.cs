@@ -346,12 +346,15 @@ public class ItemOptionConstantParser : Exporter<List<ItemOptionConstantMetadata
 
             foreach (KeyValuePair<int, List<ItemOptionsConstant>> optionsData in itemOptionsConstant)
             {
-                ItemOptionConstantMetadata metadata = new();
-                metadata.Id = optionsData.Key;
-                metadata.ItemOptions.AddRange(optionsData.Value);
+                ItemOptionConstantMetadata metadata = new()
+                {
+                    Id = optionsData.Key,
+                    ItemOptions = optionsData.Value
+                };
                 items.Add(metadata);
             }
         }
+
         return items;
     }
 }

@@ -24,8 +24,10 @@ internal class MasteryParser : Exporter<List<MasteryMetadata>>
 
             foreach (XmlNode mastery in masteries)
             {
-                MasteryMetadata newMastery = new();
-                newMastery.Type = int.Parse(mastery.Attributes["type"].Value);
+                MasteryMetadata newMastery = new()
+                {
+                    Type = int.Parse(mastery.Attributes["type"].Value)
+                };
 
                 XmlNodeList grades = mastery.SelectNodes("v");
 

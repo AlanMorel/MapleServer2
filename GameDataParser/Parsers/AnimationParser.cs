@@ -28,6 +28,7 @@ public class AnimationParser : Exporter<List<AnimationMetadata>>
                 {
                     metadata.ActorId = animationNode.Attributes["name"].Value;
                 }
+
                 foreach (XmlNode sequenceNode in animationNode)
                 {
                     if (sequenceNode.Name != "seq")
@@ -35,21 +36,28 @@ public class AnimationParser : Exporter<List<AnimationMetadata>>
                         continue;
                     }
 
-                    SequenceMetadata sequence = new();
-                    sequence.SequenceId = short.Parse(sequenceNode.Attributes["id"].Value);
-                    sequence.SequenceName = sequenceNode.Attributes["name"].Value;
+                    SequenceMetadata sequence = new()
+                    {
+                        SequenceId = short.Parse(sequenceNode.Attributes["id"].Value),
+                        SequenceName = sequenceNode.Attributes["name"].Value
+                    };
                     foreach (XmlNode keyNode in sequenceNode)
                     {
-                        KeyMetadata key = new();
-                        key.KeyName = keyNode.Attributes["name"].Value;
-                        key.KeyTime = float.Parse(keyNode.Attributes["time"].Value);
+                        KeyMetadata key = new()
+                        {
+                            KeyName = keyNode.Attributes["name"].Value,
+                            KeyTime = float.Parse(keyNode.Attributes["time"].Value)
+                        };
                         sequence.Keys.Add(key);
                     }
+
                     metadata.Sequence.Add(sequence);
                 }
+
                 animations.Add(metadata);
             }
         }
+
         return animations;
     }
 }

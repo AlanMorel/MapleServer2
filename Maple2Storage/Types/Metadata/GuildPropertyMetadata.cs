@@ -46,7 +46,8 @@ public class GuildPropertyMetadata
 
     public override string ToString()
     {
-        return $"GuildBuff(Level:{Level},AccumExp:{AccumExp},Capacity:{Capacity},FundMax:{FundMax},DonationMax:{DonationMax},AttendExp:{AttendExp},WinMiniGameExp:{WinMiniGameExp},LoseMiniGameExp:{LoseMiniGameExp}" +
+        return
+            $"GuildBuff(Level:{Level},AccumExp:{AccumExp},Capacity:{Capacity},FundMax:{FundMax},DonationMax:{DonationMax},AttendExp:{AttendExp},WinMiniGameExp:{WinMiniGameExp},LoseMiniGameExp:{LoseMiniGameExp}" +
             $",RaidGuildExp:{RaidGuildExp},AttendFunds:{AttendFunds},WinMiniGameFunds:{WinMiniGameFunds},LoseMiniGameFunds:{LoseMiniGameFunds},RaidGuildFunds:{RaidGuildFunds}," +
             $"AttendUserExpFactor:{AttendUserExpFactor},DonateUserExpFactor:{DonateUserExpFactor},AttendGuildCoin:{AttendGuildCoin},DonateGuildCoin:{DonateGuildCoin}" +
             $",WinMiniGameGuildCoin:{WinMiniGameGuildCoin},LoseMiniGameGuildCoin:{LoseMiniGameGuildCoin})";

@@ -6,18 +6,14 @@ namespace Maple2Storage.Types.Metadata;
 public class PrestigeMetadata
 {
     [XmlElement(Order = 1)]
-    public readonly List<PrestigeReward> Rewards;
-
-    public PrestigeMetadata()
-    {
-        Rewards = new();
-    }
+    public readonly List<PrestigeReward> Rewards = new();
 
     public override string ToString()
     {
         return $"PrestigeMetadata(Rewards:{string.Join(",", Rewards)})";
     }
 }
+
 [XmlType]
 public class PrestigeReward
 {

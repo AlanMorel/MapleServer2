@@ -24,15 +24,17 @@ public class InstrumentInfoParser : Exporter<List<InsturmentInfoMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                InsturmentInfoMetadata metadata = new();
-
-                metadata.InstrumentId = byte.Parse(node.Attributes["id"].Value);
-                metadata.Category = byte.Parse(node.Attributes["category"].Value);
-                metadata.ScoreCount = byte.Parse(node.Attributes["soloRelayScoreCount"].Value);
+                InsturmentInfoMetadata metadata = new()
+                {
+                    InstrumentId = byte.Parse(node.Attributes["id"].Value),
+                    Category = byte.Parse(node.Attributes["category"].Value),
+                    ScoreCount = byte.Parse(node.Attributes["soloRelayScoreCount"].Value)
+                };
 
                 instrument.Add(metadata);
             }
         }
+
         return instrument;
     }
 }

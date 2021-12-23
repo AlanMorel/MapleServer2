@@ -65,13 +65,14 @@ public class ItemExchangeScrollParser : Exporter<List<ItemExchangeScrollMetadata
                             item.Amount = short.Parse(parameters[2]);
 
                             metadata.ItemCost.Add(item);
-
                         }
                     }
                 }
+
                 exchangeScroll.Add(metadata);
             }
         }
+
         return exchangeScroll;
     }
 }

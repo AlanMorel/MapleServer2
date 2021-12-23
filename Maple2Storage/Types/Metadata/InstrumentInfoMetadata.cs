@@ -12,15 +12,6 @@ public class InsturmentInfoMetadata
     [XmlElement(Order = 3)]
     public byte ScoreCount;
 
-    public InsturmentInfoMetadata() { }
-
-    public InsturmentInfoMetadata(byte instrumentId, byte category, byte scoreCount)
-    {
-        InstrumentId = instrumentId;
-        Category = category;
-        ScoreCount = scoreCount;
-    }
-
     public override string ToString()
     {
         return $"InstrumentInfo(InstrumentId:{InstrumentId},Category:{Category},ScoreCount:{ScoreCount})";
