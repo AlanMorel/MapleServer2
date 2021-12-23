@@ -30,8 +30,8 @@ public static class CinematicPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.View);
         pWriter.WriteInt(type);
-        pWriter.WriteUnicodeString("");
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
         return pWriter;
     }
 
@@ -79,7 +79,7 @@ public static class CinematicPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CINEMATIC);
         pWriter.Write(CinematicPacketMode.Caption);
-        pWriter.WriteUnicodeString(type.ToString() + "Caption");
+        pWriter.WriteUnicodeString(type + "Caption");
         pWriter.WriteUnicodeString(title);
         pWriter.WriteUnicodeString(script);
         pWriter.WriteUnicodeString(align);

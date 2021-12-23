@@ -5,6 +5,7 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+
 namespace MapleServer2.Types;
 
 // TODO: Implement architect expiration
@@ -30,8 +31,7 @@ public class Home
     public List<int> InteriorRewardsClaimed { get; set; }
     public List<HomeLayout> Layouts;
 
-    private readonly long[] DecorationExpTable = new long[]
-    {
+    private readonly long[] DecorationExpTable = {
         0, 100, 300, 1000, 2100, 5500, 7700, 9900, 13200, 16500
     };
 

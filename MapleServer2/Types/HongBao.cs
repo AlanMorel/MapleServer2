@@ -23,9 +23,7 @@ public class HongBao
     {
         Id = GuidGenerator.Int();
         Expiration = 0;
-        Receivers = new()
-        {
-        };
+        Receivers = new();
         Giver = giver;
         MaxReceivers = (byte) (totalUserCount - 1); // subtract one because the giver already received one
         ItemId = itemId;

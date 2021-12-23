@@ -16,10 +16,10 @@ internal class WorldMapPacket
         // 00 00 00 0X breaks map => wants 1 more byte
         // seems like map data seems to be sent elsewhere, perhaps FIELD_ADD_USER
 
-        pWriter.WriteByte(0);
-        pWriter.WriteByte(0);
-        pWriter.WriteByte(0);
-        pWriter.WriteByte(0);
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        pWriter.WriteByte();
+        pWriter.WriteByte();
 
         return pWriter;
     }

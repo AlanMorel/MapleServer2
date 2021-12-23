@@ -27,7 +27,7 @@ public class LoginHandler : LoginPacketHandler
         SendCharacters = 0x02
     }
 
-    public LoginHandler() : base()
+    public LoginHandler()
     {
         ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
         string ipAddress = Environment.GetEnvironmentVariable("IP");

@@ -10,7 +10,6 @@ public class MasteryMetadata
     [XmlElement(Order = 2)]
     public List<MasteryGrade> Grades;
 
-    // Required for deserialization
     public MasteryMetadata()
     {
         Grades = new();
@@ -42,9 +41,6 @@ public class MasteryGrade
     public int RewardJobItemCount;
     [XmlElement(Order = 6)]
     public string Feature;
-
-    // Required for deserialization
-    public MasteryGrade() { }
 
     public override string ToString()
     {

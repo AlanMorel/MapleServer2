@@ -11,8 +11,6 @@ public class GlobalPortalHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GLOBAL_PORTAL;
 
-    public GlobalPortalHandler() : base() { }
-
     private enum GlobalPortalMode : byte
     {
         Enter = 0x2

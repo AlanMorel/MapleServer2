@@ -11,8 +11,6 @@ public class SkillBookTreeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
 
-    public SkillBookTreeHandler() : base() { }
-
     private enum SkillBookMode : byte
     {
         Open = 0x00,

@@ -33,10 +33,10 @@ public class ItemGemstoneUpgradeParser : Exporter<List<ItemGemstoneUpgradeMetada
 
                 for (int i = 1; i < 5; i++)
                 {
-                    if (key.Attributes["IngredientItemID" + i.ToString()] != null)
+                    if (key.Attributes["IngredientItemID" + i] != null)
                     {
-                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID" + i.ToString()].Value, @"[a-zA-Z]+").Value);
-                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount" + i.ToString()].Value));
+                        metadata.IngredientItems.Add(Regex.Match(key.Attributes["IngredientItemID" + i].Value, @"[a-zA-Z]+").Value);
+                        metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount" + i].Value));
                     }
                 }
                 gems.Add(metadata);

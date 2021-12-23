@@ -756,7 +756,7 @@ public static class GuildPacket
         pWriter.WriteLong();
         pWriter.WriteLong();
         pWriter.WriteShort();
-        pWriter.WriteUnicodeString(""); //GuildMark url
+        pWriter.WriteUnicodeString(); //GuildMark url
         pWriter.WriteInt();
         pWriter.WriteInt();
         pWriter.WriteInt(); //guild Member Total

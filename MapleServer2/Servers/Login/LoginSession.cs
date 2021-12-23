@@ -13,8 +13,6 @@ public class LoginSession : Session
     public int ServerTick;
     public int ClientTick;
 
-    public LoginSession() : base() { }
-
     protected override void EndSession(bool logoutNotice) { }
 
     public Task HeartbeatLoop()

@@ -11,8 +11,6 @@ public class JobHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.JOB;
 
-    public JobHandler() : base() { }
-
     private enum JobMode : byte
     {
         Close = 0x08,

@@ -12,8 +12,6 @@ public class DungeonHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ROOM_DUNGEON;
 
-    public DungeonHandler() : base() { }
-
     private enum DungeonMode : byte
     {
         ResetDungeon = 0x01,
@@ -107,7 +105,7 @@ public class DungeonHandler : GamePacketHandler
                 }
             }
             party.DungeonSessionId = dungeonSession.SessionId;
-            party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId, 1));
+            party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
             //TODO: Update Party with dungeon Info via party packets (0d,0e and others are involved).
         }
         else // solo join dungeon

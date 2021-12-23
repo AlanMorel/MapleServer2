@@ -91,7 +91,7 @@ public class MapCommand : InGameCommand
 
         if (MapMetadataStorage.GetMetadata(mapId) is null)
         {
-            trigger.Session.SendNotice($"Map doesn't exists.");
+            trigger.Session.SendNotice("Map doesn't exists.");
             return;
         }
         if (trigger.Session.Player.MapId == mapId)

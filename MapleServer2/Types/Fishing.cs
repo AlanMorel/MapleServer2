@@ -13,7 +13,6 @@ public class Fishing
     public int TotalCaught;
     public int TotalPrizeFish;
     public int LargestFish;
-    public Fishing() { }
 
     public static void AddExistingFish(GameSession session, FishMetadata fish, int size)
     {

@@ -52,10 +52,10 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
 
                 for (int i = 1; i < 6; i++) // 6 being the max amount of required items there can be
                 {
-                    if (recipe.Attributes["requireItem" + i.ToString()].Value != "")
+                    if (recipe.Attributes["requireItem" + i].Value != "")
                     {
                         RecipeItem requiredItem = new();
-                        List<int> itemMetadata = recipe.Attributes["requireItem" + i.ToString()].Value.Split(",").Select(int.Parse).ToList();
+                        List<int> itemMetadata = recipe.Attributes["requireItem" + i].Value.Split(",").Select(int.Parse).ToList();
                         requiredItem.ItemId = itemMetadata[0];
                         requiredItem.Rarity = itemMetadata[1];
                         requiredItem.Amount = itemMetadata[2];
@@ -65,10 +65,10 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
 
                 for (int i = 1; i < 6; i++) // 6 being the max amount of reward items there can be
                 {
-                    if (recipe.Attributes["rewardItem" + i.ToString()].Value != "")
+                    if (recipe.Attributes["rewardItem" + i].Value != "")
                     {
                         RecipeItem rewardItem = new();
-                        List<int> itemMetadata = recipe.Attributes["rewardItem" + i.ToString()].Value.Split(",").Select(int.Parse).ToList();
+                        List<int> itemMetadata = recipe.Attributes["rewardItem" + i].Value.Split(",").Select(int.Parse).ToList();
                         rewardItem.ItemId = itemMetadata[0];
                         rewardItem.Rarity = itemMetadata[1];
                         rewardItem.Amount = itemMetadata[2];

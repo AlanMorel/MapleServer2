@@ -14,9 +14,7 @@ public class GroupChat
     {
         Id = GuidGenerator.Int();
         MaxMembers = 20;
-        Members = new()
-        {
-        };
+        Members = new();
 
         AddMember(player);
     }

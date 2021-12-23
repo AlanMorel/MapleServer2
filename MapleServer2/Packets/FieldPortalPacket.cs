@@ -28,7 +28,7 @@ public static class FieldPortalPacket
         pWriter.Write(coord);
         pWriter.Write(portal.Rotation);
         pWriter.Write(CoordF.From(150, 150, 150)); // not sure (200,200,250) was used a lot
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteInt(portal.TargetMapId);
         pWriter.WriteInt(fieldPortal.ObjectId);
         pWriter.WriteInt((int) portal.UGCPortalMethod);
@@ -39,9 +39,9 @@ public static class FieldPortalPacket
         pWriter.WriteShort();
         pWriter.WriteInt();
         pWriter.WriteBool(portal.IsPassEnabled);
-        pWriter.WriteUnicodeString("");
-        pWriter.WriteUnicodeString("");
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteUnicodeString();
 
         return pWriter;
     }

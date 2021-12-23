@@ -55,7 +55,7 @@ public static class FieldNpcPacket
         pWriter.WriteString(mob.Value.Model); // StrA - kfm model string
         // If NPC is not valid, the packet seems to stop here
 
-        StatPacket.DefaultStatsMob(pWriter, mob);
+        pWriter.DefaultStatsMob(mob);
 
         pWriter.WriteByte();
         pWriter.WriteLong();

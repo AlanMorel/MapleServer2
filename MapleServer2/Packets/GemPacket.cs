@@ -36,7 +36,7 @@ public static class GemPacket
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Rarity);
         pWriter.WriteByte((byte) index);
-        ItemPacketHelper.WriteItem(pWriter, item);
+        pWriter.WriteItem(item);
 
         return pWriter;
     }

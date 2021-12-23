@@ -24,8 +24,8 @@ public class MeretMarketItem
     public short MaxLevelRequirement;
     public int RequiredAchievementId;
     public int RequiredAchievementGrade;
-    public bool PCCafe = false;
-    public bool RestockUnavailable = false;
+    public bool PCCafe;
+    public bool RestockUnavailable;
     public int ParentMarketId;
     public long BannerId;
     public Banner Banner;

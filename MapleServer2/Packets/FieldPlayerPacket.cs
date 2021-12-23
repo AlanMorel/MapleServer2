@@ -41,15 +41,15 @@ public static class FieldPlayerPacket
         if (flagA)
         {
             pWriter.WriteLong();
-            pWriter.WriteUnicodeString("");
-            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString();
+            pWriter.WriteUnicodeString();
             pWriter.WriteByte();
             pWriter.WriteInt();
             pWriter.WriteLong();
             pWriter.WriteLong();
-            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString();
             pWriter.WriteLong();
-            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString();
             pWriter.WriteByte();
         }
 

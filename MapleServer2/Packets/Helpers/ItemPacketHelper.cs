@@ -97,7 +97,7 @@ public static class ItemPacketHelper
 
         // Unknwon | BoundCharacter?
         pWriter.WriteLong();
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
 
         return pWriter;
     }
@@ -243,14 +243,14 @@ public static class ItemPacketHelper
         pWriter.WriteInt();
         pWriter.WriteLong();
         pWriter.WriteLong();
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
 
         return pWriter;
     }
 
     private static PacketWriter WritePet(this PacketWriter pWriter)
     {
-        pWriter.WriteUnicodeString(""); // Name
+        pWriter.WriteUnicodeString(); // Name
         pWriter.WriteLong(); // Exp
         pWriter.WriteInt();
         pWriter.WriteInt(1); // Level

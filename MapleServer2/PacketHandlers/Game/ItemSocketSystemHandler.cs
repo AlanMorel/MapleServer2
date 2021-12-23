@@ -12,8 +12,6 @@ public class ItemSocketSystemHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_SOCKET_SYSTEM;
 
-    public ItemSocketSystemHandler() : base() { }
-
     private enum ItemSocketSystemMode : byte
     {
         UnlockSocket = 0x0,
@@ -24,7 +22,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         ExtractGem = 0xA
     }
 
-    private enum ItemSocketSystemNotice : int
+    private enum ItemSocketSystemNotice
     {
         TargetIsNotInYourInventory = 0x1,
         ItemIsNotInYourInventory = 0x2,
@@ -80,7 +78,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
         Item equip = inventory.Items[itemUid];
-        int equipUnlockedSlotCount = equip.Stats.GemSockets.Where(x => x.IsUnlocked == true).Count();
+        int equipUnlockedSlotCount = equip.Stats.GemSockets.Where(x => x.IsUnlocked).Count();
 
         foreach (long uid in fodderUids)
         {
@@ -91,7 +89,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
             }
 
             Item fodder = inventory.Items[uid];
-            int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Where(x => x.IsUnlocked == true).Count();
+            int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Where(x => x.IsUnlocked).Count();
             if (equipUnlockedSlotCount != fodderUnlockedSlotCount)
             {
                 session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.CannotBeUsedAsMaterial));
@@ -133,11 +131,9 @@ public class ItemSocketSystemHandler : GamePacketHandler
                 inventory.ConsumeItem(session, item.Key, crystalFragmentCost);
                 break;
             }
-            else
-            {
-                crystalFragmentCost -= item.Value.Amount;
-                inventory.ConsumeItem(session, item.Key, item.Value.Amount);
-            }
+
+            crystalFragmentCost -= item.Value.Amount;
+            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
         }
         foreach (long uid in fodderUids)
         {
@@ -145,7 +141,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         }
 
         equip.Stats.GemSockets[slot].IsUnlocked = true;
-        List<GemSocket> unlockedSockets = equip.Stats.GemSockets.Where(x => x.IsUnlocked == true).ToList();
+        List<GemSocket> unlockedSockets = equip.Stats.GemSockets.Where(x => x.IsUnlocked).ToList();
 
         session.Send(ItemSocketSystemPacket.UnlockSocket(equip, (byte) slot, unlockedSockets));
     }

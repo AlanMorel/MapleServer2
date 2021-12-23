@@ -44,7 +44,7 @@ public class BuddyPacket
         pWriter.Write(BuddyPacketMode.Notice);
         pWriter.WriteByte(notice);
         pWriter.WriteUnicodeString(playerName);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         return pWriter;
     }
 
@@ -52,7 +52,7 @@ public class BuddyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
         pWriter.Write(BuddyPacketMode.AcceptRequest);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteLong(buddy.Friend.CharacterId);
         pWriter.WriteLong(buddy.Friend.AccountId);
@@ -64,7 +64,7 @@ public class BuddyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
         pWriter.Write(BuddyPacketMode.DeclineRequest);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
     }
@@ -84,7 +84,7 @@ public class BuddyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
         pWriter.Write(BuddyPacketMode.Unblock);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         return pWriter;
     }
@@ -93,7 +93,7 @@ public class BuddyPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.BUDDY);
         pWriter.Write(BuddyPacketMode.RemoveFromList);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         pWriter.WriteLong(buddy.SharedId);
         pWriter.WriteLong(buddy.Friend.AccountId);
         pWriter.WriteLong(buddy.Friend.CharacterId);
@@ -197,7 +197,7 @@ public class BuddyPacket
         pWriter.WriteBool(buddy.IsPending);
         pWriter.WriteBool(buddy.Blocked);
         pWriter.WriteBool(buddy.Friend?.Session?.Connected() ?? false);
-        pWriter.WriteByte(0);
+        pWriter.WriteByte();
         pWriter.WriteLong(buddy.Timestamp);
         pWriter.WriteUnicodeString(buddy.Friend.ProfileUrl);
         pWriter.WriteUnicodeString(buddy.Friend.Motto);

@@ -15,7 +15,6 @@ public class TrophyMetadata
     [XmlElement(Order = 4)]
     public List<TrophyGradeMetadata> Grades;
 
-    // Required for deserialization
     public TrophyMetadata()
     {
         Grades = new();
@@ -51,9 +50,6 @@ public class TrophyGradeMetadata
     public int RewardCode;
     [XmlElement(Order = 8)]
     public int RewardValue;
-
-    // Required for deserialization
-    public TrophyGradeMetadata() { }
 
     public override string ToString()
     {

@@ -18,8 +18,6 @@ public class SkillHandler : GamePacketHandler
 
     public override RecvOp OpCode => RecvOp.SKILL;
 
-    public SkillHandler() : base() { }
-
     private enum SkillHandlerMode : byte
     {
         Cast = 0x0,
@@ -203,7 +201,7 @@ public class SkillHandler : GamePacketHandler
                 int entityId = packet.ReadInt();
                 packet.ReadByte();
 
-                IFieldActor<NpcMetadata> mob = CollectionExtensions.GetValueOrDefault<int, IFieldActor<NpcMetadata>>(session.FieldManager.State.Mobs, (int) entityId);
+                IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
                 if (mob == null)
                 {
                     continue;

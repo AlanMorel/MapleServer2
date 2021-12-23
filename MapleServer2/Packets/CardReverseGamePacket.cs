@@ -49,7 +49,7 @@ public static class CardReverseGamePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
         pWriter.Write(CardReverseGamePacketMode.Notice);
-        pWriter.WriteByte(0x0);
+        pWriter.WriteByte();
         return pWriter;
     }
 }

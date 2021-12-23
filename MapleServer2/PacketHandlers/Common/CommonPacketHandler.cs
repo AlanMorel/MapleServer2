@@ -13,8 +13,6 @@ public abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPacke
 
     protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    protected CommonPacketHandler() { }
-
     public virtual void Handle(GameSession session, PacketReader packet)
     {
         HandleCommon(session, packet);

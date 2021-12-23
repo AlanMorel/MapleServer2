@@ -59,11 +59,11 @@ public static class ServerEnterPacket
         }
 
         pWriter.WriteLong();
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteUnicodeString("http://nxcache.nexon.net/maplestory2/maplenews/index.html");
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteUnicodeString(@"^https?://test-nxcache\.nexon\.net ^https?://nxcache\.nexon\.net");
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
 
 
         return pWriter;

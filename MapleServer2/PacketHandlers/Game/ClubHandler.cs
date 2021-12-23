@@ -11,8 +11,6 @@ public class ClubHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CLUB;
 
-    public ClubHandler() : base() { }
-
     private enum ClubMode : byte
     {
         Create = 0x1,

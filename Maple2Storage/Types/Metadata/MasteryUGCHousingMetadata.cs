@@ -11,6 +11,4 @@ public class MasteryUGCHousingMetadata
     public short MasteryRequired;
     [XmlElement(Order = 3)]
     public int ItemId;
-
-    public MasteryUGCHousingMetadata() { }
 }

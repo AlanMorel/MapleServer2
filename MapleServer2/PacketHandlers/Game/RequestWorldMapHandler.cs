@@ -9,8 +9,6 @@ public class RequestWorldMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
 
-    public RequestWorldMapHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte mode = packet.ReadByte();

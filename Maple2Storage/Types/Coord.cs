@@ -79,9 +79,9 @@ public struct CoordF
 
     public static CoordF operator +(CoordF left, CoordF right)
     {
-        return From((float) (left.X + right.X),
-                    (float) (left.Y + right.Y),
-                    (float) (left.Z + right.Z));
+        return From(left.X + right.X,
+                    left.Y + right.Y,
+                    left.Z + right.Z);
     }
 
     public static CoordF operator +(CoordF coord, float value)
@@ -102,9 +102,9 @@ public struct CoordF
 
     public static CoordF operator -(CoordF left, CoordF right)
     {
-        return From((float) (left.X - right.X),
-                    (float) (left.Y - right.Y),
-                    (float) (left.Z - right.Z));
+        return From(left.X - right.X,
+                    left.Y - right.Y,
+                    left.Z - right.Z);
     }
 
     public static CoordF operator -(CoordF coord, float value)

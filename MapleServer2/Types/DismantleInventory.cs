@@ -56,10 +56,8 @@ public class DismantleInventory
                 UpdateRewards(session);
                 return;
             }
-            else
-            {
-                slot = -1;
-            }
+
+            slot = -1;
         }
 
         if (slot == -1)

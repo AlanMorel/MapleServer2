@@ -23,7 +23,7 @@ public abstract class CommandTrigger
         {
             return (T) CommandsParametersByName[name].DefaultValue;
         }
-        Logger.Error("{0} is not an existing parameter.", name);
+        Logger.Error($"{name} is not an existing parameter.");
         return default;
     }
 
@@ -77,7 +77,6 @@ public abstract class CommandTrigger
             catch (Exception)
             {
                 Logger.Warn($"Error parsing argument => {arg}\n Make sure you have either defined the parameter or the argument is correct.");
-                continue;
             }
         }
         CommandsParametersByName = Command.Parameters.ToDictionary(entry => entry.Name);

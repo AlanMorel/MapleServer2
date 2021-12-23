@@ -17,8 +17,6 @@ public class BeautyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BEAUTY;
 
-    public BeautyHandler() : base() { }
-
     private enum BeautyMode : byte
     {
         LoadShop = 0x0,
@@ -293,9 +291,7 @@ public class BeautyHandler : GamePacketHandler
 
             session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
 
-            Item voucher = new(20300246)
-            {
-            }; // Chic Salon Voucher
+            Item voucher = new(20300246); // Chic Salon Voucher
             player.Inventory.AddItem(session, voucher, true);
 
             session.Send(BeautyPacket.ChooseRandomHair(voucher.Id));

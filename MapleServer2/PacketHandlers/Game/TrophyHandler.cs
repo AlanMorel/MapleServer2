@@ -20,8 +20,6 @@ public class TrophyHandler : GamePacketHandler
         Favorite = 0x04
     }
 
-    public TrophyHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();

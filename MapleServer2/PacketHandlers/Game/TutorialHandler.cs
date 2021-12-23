@@ -10,8 +10,6 @@ public class TutorialHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TUTORIAL;
 
-    public TutorialHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);

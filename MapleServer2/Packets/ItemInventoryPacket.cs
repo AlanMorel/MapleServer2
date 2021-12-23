@@ -30,9 +30,9 @@ public static class ItemInventoryPacket
         pWriter.WriteLong(item.Uid);
         pWriter.WriteShort(item.Slot);
         pWriter.WriteInt(item.Rarity);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         pWriter.WriteItem(item);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
 
         return pWriter;
     }
@@ -93,7 +93,7 @@ public static class ItemInventoryPacket
         pWriter.Write(InventoryMode.MarkItemNew);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(amount);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
 
         return pWriter;
     }

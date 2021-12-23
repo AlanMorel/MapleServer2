@@ -10,8 +10,6 @@ public class RequestHomeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_HOME;
 
-    public RequestHomeHandler() : base() { }
-
     private enum RequestHomeMode : byte
     {
         InviteToHome = 0x01,

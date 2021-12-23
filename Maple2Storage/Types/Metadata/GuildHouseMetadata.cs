@@ -18,8 +18,6 @@ public class GuildHouseMetadata
     [XmlElement(Order = 6)]
     public int RethemeCost;
 
-    public GuildHouseMetadata() { }
-
     public override string ToString()
     {
         return $"GuildBuff(FieldId:{FieldId},Level:{Level},Theme:{Theme},RequiredLevel:{RequiredLevel},UpgradeCost:{UpgradeCost},RethemeCost:{RethemeCost}";

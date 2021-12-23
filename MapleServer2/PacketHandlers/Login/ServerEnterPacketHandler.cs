@@ -18,7 +18,7 @@ public class ServerEnterPacketHandler : LoginPacketHandler
     private readonly ImmutableList<IPEndPoint> ServerIPs;
     private readonly string ServerName;
 
-    public ServerEnterPacketHandler() : base()
+    public ServerEnterPacketHandler()
     {
         ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
         string ipAddress = Environment.GetEnvironmentVariable("IP");

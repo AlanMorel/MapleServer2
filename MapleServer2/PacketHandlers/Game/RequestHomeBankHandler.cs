@@ -10,8 +10,6 @@ public class RequestHomeBankHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_HOME_BANK;
 
-    public RequestHomeBankHandler() : base() { }
-
     private enum BankMode : byte
     {
         House = 0x01,

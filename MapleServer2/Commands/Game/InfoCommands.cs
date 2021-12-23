@@ -146,7 +146,7 @@ public class OnlineCommand : InGameCommand
     {
         List<Player> players = GameServer.PlayerManager.GetAllPlayers();
         StringBuilder stringBuilder = new();
-        stringBuilder.Append($"Online players:".Color(Color.DarkOrange).Bold() + "\n");
+        stringBuilder.Append("Online players:".Color(Color.DarkOrange).Bold() + "\n");
         stringBuilder.Append(string.Join(", ", players.Select(p => p.Name)));
 
         trigger.Session.Send(NoticePacket.Notice(stringBuilder.ToString(), NoticeType.Chat));
@@ -155,8 +155,7 @@ public class OnlineCommand : InGameCommand
 
 public class FindCommand : InGameCommand
 {
-    readonly string[] Options = new string[]
-    {
+    readonly string[] Options = {
         "item",
         "map",
         "npc",
@@ -172,8 +171,8 @@ public class FindCommand : InGameCommand
         Description = $"Find id by {string.Join("/", Options)} name.";
         Parameters = new()
         {
-            new Parameter<string>("type", $"The search type."),
-            new Parameter<string[]>("name", $"The search name."),
+            new Parameter<string>("type", "The search type."),
+            new Parameter<string[]>("name", "The search name."),
         };
         Usage = $"/find [{string.Join("/", Options)}] [name]";
     }

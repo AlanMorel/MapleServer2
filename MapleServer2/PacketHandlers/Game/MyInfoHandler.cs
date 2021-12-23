@@ -9,8 +9,6 @@ public class MyInfoHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MY_INFO;
 
-    public MyInfoHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         byte mode = packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.

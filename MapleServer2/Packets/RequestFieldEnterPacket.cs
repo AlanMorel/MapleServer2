@@ -9,7 +9,7 @@ public static class RequestFieldEnterPacket
     public static PacketWriter RequestEnter(IFieldActor<Player> fieldPlayer)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.REQUEST_FIELD_ENTER);
-        pWriter.WriteByte(0x00);
+        pWriter.WriteByte();
         pWriter.WriteInt(fieldPlayer.Value.MapId);
         pWriter.WriteByte();
         pWriter.WriteByte();

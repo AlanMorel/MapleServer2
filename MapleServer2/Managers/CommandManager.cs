@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Reflection;
+﻿using System.Reflection;
 using MapleServer2.Commands.Core;
 using NLog;
 
@@ -38,13 +37,13 @@ public class CommandManager
     {
         if (Activator.CreateInstance(commandType) is not CommandBase instanceCommand)
         {
-            Logger.Error("Cannot create a new instance of {0}", commandType);
+            Logger.Error($"Cannot create a new instance of {commandType}");
             return;
         }
 
         if (instanceCommand.Aliases == null)
         {
-            Logger.Error("Cannot register Command {0}, Aliases is null", commandType.Name);
+            Logger.Error($"Cannot register Command {commandType.Name}, Aliases is null");
             return;
         }
 
@@ -56,7 +55,7 @@ public class CommandManager
             }
             else
             {
-                Logger.Error("Found two Commands with Alias \"{0}\": {1} and {2}", alias, command, instanceCommand);
+                Logger.Error($"Found two Commands with Alias \"{alias}\": {command} and {instanceCommand}");
             }
         }
     }

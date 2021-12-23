@@ -31,7 +31,8 @@ public class MobAI
             {
                 return (null, nextAction);
             }
-            else if (mob.Value.StateActions[mob.State].Length > 0)
+
+            if (mob.Value.StateActions[mob.State].Length > 0)
             {
                 int roll = RandomProvider.Get().Next(10000);
                 foreach ((string name, NpcAction type, int probability) in mob.Value.StateActions[mob.State])
@@ -68,16 +69,16 @@ public class MobAI
 
     public static Condition HpPercentCond(int min = 0, int max = 100)
     {
-        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max);
+        return mob => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max;
     }
 
     public static Condition HpCond(int min = 0, int max = int.MaxValue)
     {
-        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max);
+        return mob => mob.Stats[StatId.Hp].Total >= min && mob.Stats[StatId.Hp].Total >= max;
     }
 
     public static Condition SpCond(int min = 0, int max = int.MaxValue)
     {
-        return new((IFieldActor<NpcMetadata> mob) => mob.Stats[StatId.Spirit].Total >= min && mob.Stats[StatId.Spirit].Total >= max);
+        return mob => mob.Stats[StatId.Spirit].Total >= min && mob.Stats[StatId.Spirit].Total >= max;
     }
 }

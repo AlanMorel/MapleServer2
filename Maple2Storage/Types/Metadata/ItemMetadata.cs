@@ -90,7 +90,6 @@ public class ItemMetadata
     [XmlElement(Order = 41)]
     public string Category;
 
-    // Required for deserialization
     public ItemMetadata()
     {
         BreakRewards = new();
@@ -175,8 +174,6 @@ public class OpenItemBox
     public int BoxId;
     [XmlElement(Order = 4)]
     public int AmountRequired;
-
-    public OpenItemBox() { }
 }
 [XmlType]
 public class SelectItemBox
@@ -185,8 +182,6 @@ public class SelectItemBox
     public int GroupId;
     [XmlElement(Order = 2)]
     public int BoxId;
-
-    public SelectItemBox() { }
 }
 [XmlType]
 public class ChatEmoticonAdd
@@ -195,8 +190,6 @@ public class ChatEmoticonAdd
     public int Id;
     [XmlElement(Order = 2)]
     public int Duration;
-
-    public ChatEmoticonAdd() { }
 }
 [XmlType]
 public class OpenMassiveEvent
@@ -207,24 +200,18 @@ public class OpenMassiveEvent
     public int Capacity;
     [XmlElement(Order = 3)]
     public int Duration;
-
-    public OpenMassiveEvent() { }
 }
 [XmlType]
 public class LevelPotion
 {
     [XmlElement(Order = 1)]
     public short TargetLevel;
-
-    public LevelPotion() { }
 }
 [XmlType]
 public class VIPCoupon
 {
     [XmlElement(Order = 1)]
     public int Duration;
-
-    public VIPCoupon() { }
 }
 [XmlType]
 public class HongBaoData
@@ -237,8 +224,6 @@ public class HongBaoData
     public byte TotalUsers;
     [XmlElement(Order = 4)]
     public int Duration;
-
-    public HongBaoData() { }
 }
 [XmlType]
 public class OpenCoupleEffectBox
@@ -247,8 +232,6 @@ public class OpenCoupleEffectBox
     public int Id;
     [XmlElement(Order = 2)]
     public int Rarity;
-
-    public OpenCoupleEffectBox() { }
 }
 [XmlType]
 public class InstallBillboard
@@ -267,8 +250,6 @@ public class InstallBillboard
     public float Scale = 1;
     [XmlElement(Order = 7)]
     public int Duration;
-
-    public InstallBillboard() { }
 
     public override string ToString()
     {
@@ -291,8 +272,6 @@ public class HairPresets
     public float MinScale;
     [XmlElement(Order = 6)]
     public float MaxScale;
-
-    public HairPresets() { }
 
     public override string ToString()
     {

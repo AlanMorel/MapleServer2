@@ -12,6 +12,7 @@ using MapleServer2.Servers.Login;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 using NLog;
+using TaskScheduler = MapleServer2.Tools.TaskScheduler;
 
 namespace MapleServer2;
 
@@ -52,7 +53,7 @@ public static class MapleServer
         }
 
         // Schedule daily reset and repeat every 24 hours
-        Tools.TaskScheduler.Instance.ScheduleTask(0, 0, 24, DailyReset);
+        TaskScheduler.Instance.ScheduleTask(0, 0, 24, DailyReset);
 
         // Load Mob AI files
         string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");

@@ -10,8 +10,6 @@ public class CharacterNameChangeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHECK_CHAR_NAME;
 
-    public CharacterNameChangeHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();

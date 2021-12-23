@@ -12,8 +12,6 @@ public class PrestigeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PRESTIGE;
 
-    public PrestigeHandler() : base() { }
-
     private enum PrestigeMode : byte
     {
         Reward = 0x03

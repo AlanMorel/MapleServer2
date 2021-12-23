@@ -9,8 +9,6 @@ public class BreakableHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BREAKABLE;
 
-    public BreakableHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         string entityId = packet.ReadString();

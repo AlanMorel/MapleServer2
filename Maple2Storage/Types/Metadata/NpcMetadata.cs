@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Maple2Storage.Enums;
 
 namespace Maple2Storage.Types.Metadata;
@@ -57,8 +56,6 @@ public class NpcMetadata
     public short Kind; // 13 = Shop
     [XmlElement(Order = 25)]
     public int ShopId;
-
-    public NpcMetadata() { }
 
     public override string ToString()
     {
@@ -147,8 +144,6 @@ public class NpcMetadataBasic
     [XmlElement(Order = 19)]
     public string Race; // (plane|animal|"|spirit|fairy|combine|bug|devil)
 
-    public NpcMetadataBasic() { }
-
     public override string ToString()
     {
         return $"NpcMetadataBasic:(NpcAttackGroup:{NpcAttackGroup},NpcDefenseGroup:{NpcDefenseGroup},AttackDamage:{AttackDamage},Difficulty:{Difficulty},MaxSpawnCount:{MaxSpawnCount},GroupSpawnCount:{GroupSpawnCount})";
@@ -163,8 +158,6 @@ public class NpcMetadataSpeed
     public float WalkSpeed;
     [XmlElement(Order = 3)]
     public float RunSpeed;
-
-    public NpcMetadataSpeed() { }
 }
 [XmlType]
 public class NpcMetadataDistance
@@ -183,8 +176,6 @@ public class NpcMetadataDistance
     public int CustomLastSightUp;
     [XmlElement(Order = 7)]
     public int CustomLastSightDown;
-
-    public NpcMetadataDistance() { }
 }
 [XmlType]
 public class NpcMetadataSkill
@@ -199,8 +190,6 @@ public class NpcMetadataSkill
     public short[] SkillProbs = Array.Empty<short>();
     [XmlElement(Order = 5)]
     public short SkillCooldown;
-
-    public NpcMetadataSkill() { }
 }
 [XmlType]
 public class NpcMetadataEffect
@@ -211,8 +200,6 @@ public class NpcMetadataEffect
     public byte[] EffectLevels = Array.Empty<byte>();
     [XmlElement(Order = 3)]
     public byte EffectGroup;
-
-    public NpcMetadataEffect() { }
 }
 [XmlType]
 public class NpcMetadataCombat
@@ -225,8 +212,6 @@ public class NpcMetadataCombat
     public bool CanIgnoreExtendedLifetime; // "true" or "false" in xml. Coerced to bool here.
     [XmlElement]
     public bool CanShowHiddenTarget; // "true" or "false' in xml. Coerced to bool here.
-
-    public NpcMetadataCombat() { }
 }
 [XmlType]
 public class NpcMetadataDead
@@ -235,8 +220,6 @@ public class NpcMetadataDead
     public float Time;
     [XmlElement]
     public string[] Actions = Array.Empty<string>();
-
-    public NpcMetadataDead() { }
 }
 [XmlType]
 public class NpcMetadataInteract
@@ -247,6 +230,4 @@ public class NpcMetadataInteract
     public ushort InteractCastingTime; // 0, 500, 800, 1000, 2000, 4000
     [XmlElement]
     public ushort InteractCooldownTime; // 0, 5400, 7000, 8000, 12000
-
-    public NpcMetadataInteract() { }
 }

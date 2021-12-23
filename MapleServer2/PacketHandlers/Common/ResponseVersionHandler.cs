@@ -11,8 +11,6 @@ public class ResponseVersionHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_VERSION;
 
-    public ResponseVersionHandler() : base() { }
-
     public override void Handle(LoginSession session, PacketReader packet)
     {
         HandleCommon(session, packet);

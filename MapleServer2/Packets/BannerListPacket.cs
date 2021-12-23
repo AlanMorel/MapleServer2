@@ -21,9 +21,9 @@ public static class BannerListPacket
             }
             else
             {
-                pWriter.WriteUnicodeString("");
+                pWriter.WriteUnicodeString();
             }
-            pWriter.WriteUnicodeString("");
+            pWriter.WriteUnicodeString();
             pWriter.WriteUnicodeString(banner.ImageUrl);
             pWriter.Write(banner.Language);
             pWriter.WriteLong(banner.BeginTime);

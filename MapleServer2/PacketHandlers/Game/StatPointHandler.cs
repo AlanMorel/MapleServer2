@@ -10,8 +10,6 @@ public class StatPointHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STAT_POINT;
 
-    public StatPointHandler() : base() { }
-
     private enum StatPointMode : byte
     {
         Increment = 0x2,

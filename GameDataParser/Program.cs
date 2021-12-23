@@ -26,7 +26,7 @@ internal static class Program
         int count = 1;
         foreach (Type parserClass in parserClassList)
         {
-            ConstructorInfo newConstructor = parserClass.GetConstructor(new Type[]
+            ConstructorInfo newConstructor = parserClass.GetConstructor(new[]
             {
                 typeof(MetadataResources)
             });

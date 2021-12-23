@@ -7,7 +7,7 @@ public enum NpcType : byte
     Quest = 4,
     QuestOptions = 14
 }
-public enum DialogType : int // All this worked with NpcType 10
+public enum DialogType // All this worked with NpcType 10
 {
     None = 0,
     NoOptions = 1, // no options to continue or exit

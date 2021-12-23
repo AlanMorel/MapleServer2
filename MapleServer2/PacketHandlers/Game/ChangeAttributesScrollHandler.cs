@@ -10,8 +10,6 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES_SCROLL;
 
-    public ChangeAttributesScrollHandler() : base() { }
-
     private enum ChangeAttributeMode : byte
     {
         ChangeAttributes = 1,

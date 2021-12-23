@@ -65,7 +65,7 @@ public unsafe class PacketWriter : IPacketWriter
         Length = position;
     }
 
-    public unsafe void Write<T>(in T value) where T : struct
+    public void Write<T>(in T value) where T : struct
     {
         int size = Unsafe.SizeOf<T>();
         EnsureCapacity(size);
@@ -153,7 +153,7 @@ public unsafe class PacketWriter : IPacketWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteString(string value = "")
     {
-        Write<ushort>((ushort) value.Length);
+        Write((ushort) value.Length);
         WriteRawString(value);
     }
 
@@ -174,7 +174,7 @@ public unsafe class PacketWriter : IPacketWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteUnicodeString(string value = "")
     {
-        Write<ushort>((ushort) value.Length);
+        Write((ushort) value.Length);
         WriteRawUnicodeString(value);
     }
 

@@ -10,8 +10,6 @@ public class GroupChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GROUP_CHAT;
 
-    public GroupChatHandler() : base() { }
-
     private enum GroupChatMode : byte
     {
         Create = 0x1,
@@ -44,7 +42,7 @@ public class GroupChatHandler : GamePacketHandler
         }
     }
 
-    private enum GroupChatError : int
+    private enum GroupChatError
     {
         OfflinePlayer = 0x3,
         MaxGroups = 0xA

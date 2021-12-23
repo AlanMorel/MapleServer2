@@ -21,7 +21,7 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
             }
 
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList individualBoxItems = document.SelectNodes($"/ms2/individualDropBox");
+            XmlNodeList individualBoxItems = document.SelectNodes("/ms2/individualDropBox");
             foreach (XmlNode node in individualBoxItems)
             {
                 string locale = node.Attributes["locale"]?.Value ?? "";

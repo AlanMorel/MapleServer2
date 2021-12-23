@@ -15,8 +15,6 @@ internal class InteractObjectHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
 
-    public InteractObjectHandler() : base() { }
-
     private enum InteractObjectMode : byte
     {
         Cast = 0x0B,

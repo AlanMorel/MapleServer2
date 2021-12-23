@@ -13,6 +13,4 @@ public class FishingRodMetadata
     public short MasteryLimit;
     [XmlElement(Order = 4)]
     public int ReduceTime;
-
-    public FishingRodMetadata() { }
 }

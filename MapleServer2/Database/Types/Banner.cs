@@ -40,7 +40,7 @@ public enum BannerSubType
 {
     cash
 }
-public enum BannerLanguage : int
+public enum BannerLanguage
 {
     All = -1,
     Korean = 2

@@ -27,9 +27,6 @@ public class BeautyMetadata
     [XmlElement(Order = 10)]
     public List<BeautyItem> Items { get; set; }
 
-    // Required for deserialization
-    public BeautyMetadata() { }
-
     public override string ToString()
     {
         return $"BeautyMetadata(ShopId:{ShopId},UniqueId:{UniqueId},BeautyCategory:{BeautyCategory},BeautyType:{BeautyType},VoucherId:{VoucherId}," +
@@ -57,8 +54,6 @@ public class BeautyItem
     public int RequiredItemId;
     [XmlElement(Order = 9)]
     public int TokenCost;
-
-    public BeautyItem() { }
 
     public override string ToString()
     {

@@ -27,14 +27,14 @@ public class MailHelper
         string title = "<ms2><v key=\"s_blackmarket_mail_to_cancel_title\" /></ms2>";
         string body = "<ms2><v key=\"s_blackmarket_mail_to_cancel_content\" /></ms2>";
         string addParameter1 = $"<ms2><v item=\"{listing.Item.Id}\" ></v></ms2>";
-        string addParameter2 = $"<ms2>" +
-            $"<v key=\"s_blackmarket_mail_to_cancel_direct\" ></v>" +
+        string addParameter2 = "<ms2>" +
+            "<v key=\"s_blackmarket_mail_to_cancel_direct\" ></v>" +
             $"<v item=\"{listing.Item.Id}\" ></v>" +
             $"<v str=\"{listing.ListedQuantity}\" ></v>" +
             $"<v money=\"{listing.Price * listing.ListedQuantity}\" ></v>" +
             $"<v money=\"{listing.Price}\" ></v>" +
             $"<v money=\"{deposit}\" ></v>" +
-            $"</ms2>";
+            "</ms2>";
 
         Mail mail = new(MailType.BlackMarketListingCancel, listing.OwnerCharacterId, 0, senderName, title, body, addParameter1, addParameter2, new()
         {

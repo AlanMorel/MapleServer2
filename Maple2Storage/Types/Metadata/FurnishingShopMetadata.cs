@@ -14,8 +14,6 @@ public class FurnishingShopMetadata
     [XmlElement(Order = 4)]
     public int Price;
 
-    public FurnishingShopMetadata() { }
-
     public override string ToString()
     {
         return $"FurnishingShopMetadata(ItemId:{ItemId},Buyable:{Buyable},FurnishingTokenType:{FurnishingTokenType},Price:{Price})";

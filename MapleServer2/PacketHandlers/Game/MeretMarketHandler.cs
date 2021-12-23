@@ -16,8 +16,6 @@ public class MeretMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MERET_MARKET;
 
-    public MeretMarketHandler() : base() { }
-
     private enum MeretMarketMode : byte
     {
         LoadPersonalListings = 0xB,

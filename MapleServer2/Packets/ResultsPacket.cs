@@ -42,9 +42,9 @@ public static class ResultsPacket
             pWriter.WriteInt(item.Id);
             pWriter.WriteInt(item.Amount);
             pWriter.WriteInt(item.Rarity);
-            pWriter.WriteByte(0x0);
-            pWriter.WriteByte(0x0);
-            pWriter.WriteByte(0x0);
+            pWriter.WriteByte();
+            pWriter.WriteByte();
+            pWriter.WriteByte();
         }
 
         if (bonus)
@@ -59,7 +59,7 @@ public static class ResultsPacket
             }
         }
 
-        pWriter.WriteInt(0x0);
+        pWriter.WriteInt();
         return pWriter;
     }
 
@@ -73,9 +73,9 @@ public static class ResultsPacket
 
         // loop rewards
         pWriter.WriteByte(1); // 1 = mesos, 2 = exp
-        pWriter.WriteInt(0); // amount of mesos/exp
+        pWriter.WriteInt(); // amount of mesos/exp
 
-        pWriter.WriteInt(0); // amount of items
+        pWriter.WriteInt(); // amount of items
 
         // loop items
         //pWriter.WriteInt(); // item Id

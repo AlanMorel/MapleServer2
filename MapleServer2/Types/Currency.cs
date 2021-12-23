@@ -61,8 +61,6 @@ public class Currency
             case CurrencyType.BankMesos:
                 Session.Send(StorageInventoryPacket.UpdateMesos(Amount));
                 break;
-            default:
-                break;
         }
     }
 }

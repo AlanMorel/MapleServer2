@@ -15,8 +15,6 @@ public class FishingHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FISHING;
 
-    public FishingHandler() : base() { }
-
     private enum FishingMode : byte
     {
         PrepareFishing = 0x0,

@@ -124,7 +124,7 @@ public static class DatabaseManager
 
     private static void Seed(string type)
     {
-        Logger.Info("Seeding " + type + "...");
+        Logger.Info($"Seeding {type}...");
         ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
     }
 

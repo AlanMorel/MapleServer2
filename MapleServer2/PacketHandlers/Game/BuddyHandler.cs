@@ -13,8 +13,6 @@ public class BuddyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BUDDY;
 
-    public BuddyHandler() : base() { }
-
     private enum BuddyMode : byte
     {
         SendRequest = 0x2,

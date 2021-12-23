@@ -16,8 +16,6 @@ public class CharacterManagementHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-    public CharacterManagementHandler() : base() { }
-
     private enum CharacterManagementMode : byte
     {
         Login = 0x0,
@@ -54,7 +52,7 @@ public class CharacterManagementHandler : LoginPacketHandler
             return;
         }
         session.Send(CharacterListPacket.DeleteCharacter(characterId));
-        Logger.Info("Character id {characterId} deleted!", characterId);
+        Logger.Info($"Character id {characterId} deleted!");
     }
 
     private void HandleSelect(LoginSession session, PacketReader packet)

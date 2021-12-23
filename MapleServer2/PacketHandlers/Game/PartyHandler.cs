@@ -10,7 +10,6 @@ namespace MapleServer2.PacketHandlers.Game;
 public class PartyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PARTY;
-    public PartyHandler() : base() { }
 
     private enum PartyMode : byte
     {
@@ -132,7 +131,7 @@ public class PartyHandler : GamePacketHandler
                 otherParty.Leader.Session.Send(PartyPacket.JoinRequest(session.Player));
                 return;
             }
-            else
+
             {
                 // create party
                 Party newParty = new(session.Player);
@@ -321,7 +320,6 @@ public class PartyHandler : GamePacketHandler
     public static void HandleSummonParty()
     {
         //TODO: implement Summon Party Button
-        return;
     }
     private static void HandleStartReadyCheck(GameSession session)
     {

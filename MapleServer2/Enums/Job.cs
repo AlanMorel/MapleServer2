@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum Job : int
+public enum Job
 {
     None = 0,
     Beginner = 1,
@@ -17,7 +17,7 @@ public enum Job : int
     SoulBinder = 110,
     GameMaster = 999
 }
-public enum JobCode : int
+public enum JobCode
 {
     None = 0,
     Beginner = 10,

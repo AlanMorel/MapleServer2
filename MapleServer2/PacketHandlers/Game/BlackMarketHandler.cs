@@ -16,8 +16,6 @@ public class BlackMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BLACK_MARKET;
 
-    public BlackMarketHandler() : base() { }
-
     private enum BlackMarketMode : byte
     {
         Open = 0x1,
@@ -28,7 +26,7 @@ public class BlackMarketHandler : GamePacketHandler
         PrepareListing = 0x8
     }
 
-    private enum BlackMarketError : int
+    private enum BlackMarketError
     {
         FailedToListItem = 0x05,
         ItemNotInInventory = 0x0E,

@@ -45,8 +45,6 @@ public class QuestMetadata
     [XmlElement(Order = 19)]
     public List<QuestNavigation> Navigation = new();
 
-    public QuestMetadata() { }
-
     public override string ToString()
     {
         return $"Feature: {Feature}, Locale: {Locale}, Basic: {Basic}, Notify: {Notify},  Require: {Require}," +
@@ -90,8 +88,6 @@ public class QuestBasic
     [XmlElement(Order = 15)]
     public bool UseNavigation;
 
-    public QuestBasic() { }
-
     public override string ToString()
     {
         return $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
@@ -109,8 +105,6 @@ public class QuestNotify
     public string AcceptSoundKey;
     [XmlElement(Order = 3)]
     public string CompleteSoundKey;
-
-    public QuestNotify() { }
 
     public override string ToString()
     {
@@ -145,8 +139,6 @@ public class QuestRequire
     [XmlElement(Order = 12)]
     public int GearScore;
 
-    public QuestRequire() { }
-
     public override string ToString()
     {
         return $"\r\nLevel: {Level}, maxLevel: {MaxLevel}, job: {string.Join(", ", Job)}, quest: {string.Join(", ", RequiredQuests)}, " +
@@ -167,8 +159,6 @@ public class QuestReward
     public int Karma;
     [XmlElement(Order = 5)]
     public int Lu;
-
-    public QuestReward() { }
 
     public override string ToString()
     {
@@ -213,8 +203,6 @@ public class QuestGuide
     [XmlElement(Order = 5)]
     public string Group;
 
-    public QuestGuide() { }
-
     public override string ToString()
     {
         return $"\r\nguideType: {Type}, guideIcon: {Icon}, guideMinLevel: {MinLevel}, guideMaxLevel: {MaxLevel}, guideGroup: {Group}";
@@ -229,8 +217,6 @@ public class QuestNpc
     public int GoToField;
     [XmlElement(Order = 3)]
     public int GoToPortal;
-
-    public QuestNpc() { }
 
     public override string ToString()
     {
@@ -247,8 +233,6 @@ public class QuestDungeon
     [XmlElement(Order = 3)]
     public int GoToInstanceID;
 
-    public QuestDungeon() { }
-
     public override string ToString()
     {
         return $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceID}";
@@ -261,8 +245,6 @@ public class QuestRemoteAccept
     public string UseRemote;
     [XmlElement(Order = 2)]
     public int RequireField;
-
-    public QuestRemoteAccept() { }
 
     public override string ToString()
     {
@@ -279,8 +261,6 @@ public class QuestRemoteComplete
     [XmlElement(Order = 3)]
     public int RequireDungeonClear;
 
-    public QuestRemoteComplete() { }
-
     public override string ToString()
     {
         return $"\r\nuseRemote: {UseRemote}, requireField: {RequireField}, requireDungeonClear: {RequireDungeonClear}";
@@ -293,7 +273,6 @@ public class QuestSummonPortal
     public int FieldID;
     [XmlElement(Order = 2)]
     public int PortalID;
-    public QuestSummonPortal() { }
 
     public override string ToString()
     {
