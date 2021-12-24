@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemDropMetadataStorage
 {
-    private static readonly Dictionary<int, ItemDropMetadata> drops = new();
+    private static readonly Dictionary<int, ItemDropMetadata> Drops = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class ItemDropMetadataStorage
         List<ItemDropMetadata> items = Serializer.Deserialize<List<ItemDropMetadata>>(stream);
         foreach (ItemDropMetadata item in items)
         {
-            drops[item.Id] = item;
+            Drops[item.Id] = item;
         }
     }
 
     public static ItemDropMetadata GetItemDropMetadata(int boxId)
     {
-        return drops.GetValueOrDefault(boxId);
+        return Drops.GetValueOrDefault(boxId);
     }
 }

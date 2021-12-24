@@ -55,9 +55,11 @@ public class MapParser : Exporter<List<MapMetadata>>
             return;
         }
 
-        MapMetadata metadata = new();
-        metadata.Id = int.Parse(mapIdStr);
-        metadata.XBlockName = xblock;
+        MapMetadata metadata = new()
+        {
+            Id = int.Parse(mapIdStr),
+            XBlockName = xblock
+        };
 
         foreach (IMapEntity entity in entities)
         {
@@ -69,8 +71,8 @@ public class MapParser : Exporter<List<MapMetadata>>
             MapBlock mapBlock = new()
             {
                 Coord = CoordS.From((short) cube.Position.X,
-                                    (short) cube.Position.Y,
-                                    (short) cube.Position.Z),
+                    (short) cube.Position.Y,
+                    (short) cube.Position.Z),
                 Type = cube.CubeType,
                 SaleableGroup = cube.CubeSalableGroup,
                 Attribute = cube.MapAttribute
@@ -88,6 +90,7 @@ public class MapParser : Exporter<List<MapMetadata>>
         {
             metadata.Name = MapNames[metadata.Id];
         }
+
         MapsList.Add(metadata);
     }
 }

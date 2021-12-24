@@ -8,7 +8,7 @@ public class SkillMetadata
     [XmlElement(Order = 1)]
     public readonly int SkillId;
     [XmlElement(Order = 2)]
-    public readonly List<SkillLevel> SkillLevels;
+    public readonly List<SkillLevel> SkillLevels = new();
     [XmlElement(Order = 3)]
     public int[] SubSkills = Array.Empty<int>();
     [XmlElement(Order = 4)]
@@ -32,10 +32,7 @@ public class SkillMetadata
     [XmlElement(Order = 13)]
     public short MaxLevel;
 
-    public SkillMetadata()
-    {
-        SkillLevels = new();
-    }
+    public SkillMetadata() { }
 
     public SkillMetadata(int id, List<SkillLevel> skillLevels)
     {
@@ -43,7 +40,8 @@ public class SkillMetadata
         SkillLevels = skillLevels;
     }
 
-    public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte subType, byte element, byte superArmor, bool isSpRecovery)
+    public SkillMetadata(int id, List<SkillLevel> skillLevels, string state, byte damageType, byte type, byte subType, byte element, byte superArmor,
+        bool isSpRecovery)
     {
         SkillId = id;
         SkillLevels = skillLevels;
@@ -61,6 +59,7 @@ public class SkillMetadata
         return $"Skill:(Id:{SkillId},Job:{Job},SkillLevel:{string.Join(",", SkillLevels)}";
     }
 }
+
 [XmlType]
 public class SkillLevel
 {
@@ -77,27 +76,21 @@ public class SkillLevel
     [XmlElement(Order = 6)]
     public readonly SkillMotion SkillMotions;
     [XmlElement(Order = 7)]
-    public readonly List<SkillAttack> SkillAttacks;
+    public readonly List<SkillAttack> SkillAttacks = new();
     [XmlElement(Order = 8)]
-    public readonly List<SkillCondition> SkillConditions;
+    public readonly List<SkillCondition> SkillConditions = new();
     [XmlElement(Order = 9)]
     public SkillAdditionalData SkillAdditionalData;
     [XmlElement(Order = 10)]
     public readonly SkillUpgrade SkillUpgrade;
 
-    public SkillLevel()
-    {
-        SkillAttacks = new();
-        SkillConditions = new();
-    }
+    public SkillLevel() { }
 
     public SkillLevel(int level, SkillAdditionalData data)
     {
         Level = level;
         SkillAdditionalData = data;
         SkillMotions = new();
-        SkillAttacks = new();
-        SkillConditions = new();
     }
 
     public SkillLevel(int level, int spirit, int stamina, float damageRate, string feature,
@@ -118,9 +111,10 @@ public class SkillLevel
     public override string ToString()
     {
         return $"SkillLevel(Level:{Level},Spirit:{Spirit},Stamina:{Stamina},DamageRate:{DamageRate},Feature:{Feature}," +
-            $"SkillMotion:{SkillMotions},SkillAttacks:{SkillAttacks},SkillConditions: {SkillConditions})";
+               $"SkillMotion:{SkillMotions},SkillAttacks:{SkillAttacks},SkillConditions: {SkillConditions})";
     }
 }
+
 [XmlType]
 public class SkillUpgrade
 {
@@ -145,6 +139,7 @@ public class SkillUpgrade
         return $"LevelRequired: {LevelRequired},SkillIds:{string.Join(",", SkillIdsRequired)}, SkillLevels: {string.Join(",", SkillLevelsRequired)}";
     }
 }
+
 [XmlType] // TODO: More to implement from attack attribute.
 public class SkillAttack
 {
@@ -172,6 +167,7 @@ public class SkillAttack
         return $"Point:{AttackPoint}, TargetCount:{TargetCount}, MagicPathId:{MagicPathId}";
     }
 }
+
 [XmlType]
 public class SkillMotion
 {
@@ -193,6 +189,7 @@ public class SkillMotion
         return $"SequenceName:{SequenceName},MotionEffect:{MotionEffect}";
     }
 }
+
 [XmlType] // TODO: More to implement, like skill sequences, stats power up, additional MotionEffects...
 public class SkillAdditionalData
 {
@@ -228,6 +225,7 @@ public class SkillAdditionalData
         return $"DurationTick: {Duration}; Type:{BuffType}; SubType:{BuffSubType};";
     }
 }
+
 [XmlType]
 public class SkillCondition
 {

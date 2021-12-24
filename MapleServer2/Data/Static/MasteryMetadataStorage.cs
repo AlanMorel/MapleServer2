@@ -7,7 +7,7 @@ namespace MapleServer2.Data.Static;
 
 public static class MasteryMetadataStorage
 {
-    private static readonly Dictionary<int, MasteryMetadata> masteries = new();
+    private static readonly Dictionary<int, MasteryMetadata> Masteries = new();
 
     public static void Init()
     {
@@ -15,18 +15,18 @@ public static class MasteryMetadataStorage
         List<MasteryMetadata> masteryList = Serializer.Deserialize<List<MasteryMetadata>>(stream);
         foreach (MasteryMetadata mastery in masteryList)
         {
-            masteries[mastery.Type] = mastery;
+            Masteries[mastery.Type] = mastery;
         }
     }
 
     public static List<int> GetMasteryTypes()
     {
-        return new(masteries.Keys);
+        return new(Masteries.Keys);
     }
 
     public static MasteryMetadata GetMastery(int type)
     {
-        return masteries.GetValueOrDefault(type);
+        return Masteries.GetValueOrDefault(type);
     }
 
     public static int GetGradeFromXP(MasteryType type, long xp)

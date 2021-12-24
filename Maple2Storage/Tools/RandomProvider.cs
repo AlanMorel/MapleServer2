@@ -6,13 +6,13 @@
 /// </summary>
 public static class RandomProvider
 {
-    private static readonly Random _seed = new();
+    private static readonly Random Seed = new();
 
-    private static readonly ThreadLocal<Random> randomWrapper = new(() =>
+    private static readonly ThreadLocal<Random> RandomWrapper = new(() =>
     {
-        lock (_seed)
+        lock (Seed)
         {
-            return new(_seed.Next());
+            return new(Seed.Next());
         }
     });
 
@@ -22,6 +22,6 @@ public static class RandomProvider
     /// <returns></returns>
     public static Random Get()
     {
-        return randomWrapper.Value;
+        return RandomWrapper.Value;
     }
 }

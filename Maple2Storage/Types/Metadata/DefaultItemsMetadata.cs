@@ -11,6 +11,7 @@ public class DefaultItemsMetadata
     [XmlElement(Order = 2)]
     public List<DefaultItem> DefaultItems = new();
 }
+
 [XmlType]
 public class DefaultItem
 {

@@ -62,12 +62,15 @@ public class GuildBuffParser : Exporter<List<GuildBuffMetadata>>
 
             foreach (KeyValuePair<int, List<GuildBuffLevel>> buffData in buffLevels)
             {
-                GuildBuffMetadata metadata = new();
-                metadata.BuffId = buffData.Key;
-                metadata.Levels.AddRange(buffData.Value);
+                GuildBuffMetadata metadata = new()
+                {
+                    BuffId = buffData.Key,
+                    Levels = buffData.Value
+                };
                 buffs.Add(metadata);
             }
         }
+
         return buffs;
     }
 }

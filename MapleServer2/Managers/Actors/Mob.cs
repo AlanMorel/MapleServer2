@@ -40,7 +40,7 @@ public partial class FieldManager
                 if (roll < Value.NpcMetadataSkill.SkillProbs[i])
                 {
                     // Rolled this skill.
-                    Cast(new SkillCast(Value.NpcMetadataSkill.SkillIds[i], Value.NpcMetadataSkill.SkillLevels[i]));
+                    Cast(new(Value.NpcMetadataSkill.SkillIds[i], Value.NpcMetadataSkill.SkillLevels[i]));
                     StartSkillTimer((Value.NpcMetadataSkill.SkillCooldown > 0) ? Value.NpcMetadataSkill.SkillCooldown : 1000);
                 }
 

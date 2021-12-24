@@ -24,16 +24,18 @@ public class FishingSpotParser : Exporter<List<FishingSpotMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                FishingSpotMetadata metadata = new();
-
-                metadata.Id = int.Parse(node.Attributes["id"].Value);
-                metadata.MinMastery = short.Parse(node.Attributes["minMastery"].Value);
-                metadata.MaxMastery = short.Parse(node.Attributes["maxMastery"].Value);
-                metadata.LiquidType = node.Attributes["liquidType"].Value.Split(",").ToList();
+                FishingSpotMetadata metadata = new()
+                {
+                    Id = int.Parse(node.Attributes["id"].Value),
+                    MinMastery = short.Parse(node.Attributes["minMastery"].Value),
+                    MaxMastery = short.Parse(node.Attributes["maxMastery"].Value),
+                    LiquidType = node.Attributes["liquidType"].Value.Split(",").ToList()
+                };
 
                 spots.Add(metadata);
             }
         }
+
         return spots;
     }
 }

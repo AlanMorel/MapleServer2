@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class HomeTemplateMetadataStorage
 {
-    private static readonly Dictionary<string, HomeTemplateMetadata> templates = new();
+    private static readonly Dictionary<string, HomeTemplateMetadata> Templates = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class HomeTemplateMetadataStorage
         List<HomeTemplateMetadata> homeTemplates = Serializer.Deserialize<List<HomeTemplateMetadata>>(stream);
         foreach (HomeTemplateMetadata template in homeTemplates)
         {
-            templates[template.Id] = template;
+            Templates[template.Id] = template;
         }
     }
 
     public static HomeTemplateMetadata GetTemplate(string id)
     {
-        templates.TryGetValue(id, out HomeTemplateMetadata metadata);
+        Templates.TryGetValue(id, out HomeTemplateMetadata metadata);
         return metadata;
     }
 }

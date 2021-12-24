@@ -28,13 +28,13 @@ public class JobParser : Exporter<List<JobMetadata>>
                     continue;
                 }
 
-                JobMetadata metadata = new();
-
-                metadata.JobId = short.Parse(jobNode.Attributes["code"].Value);
-                metadata.StartMapId = int.Parse(jobNode.Attributes["startField"].Value);
-
-                metadata.OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                metadata.OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
+                JobMetadata metadata = new()
+                {
+                    JobId = short.Parse(jobNode.Attributes["code"].Value),
+                    StartMapId = int.Parse(jobNode.Attributes["startField"].Value),
+                    OpenTaxis = jobNode.Attributes["tutorialClearOpenTaxis"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                    OpenMaps = jobNode.Attributes["tutorialClearOpenMaps"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList()
+                };
 
                 foreach (XmlNode childNode in jobNode)
                 {
@@ -43,10 +43,12 @@ public class JobParser : Exporter<List<JobMetadata>>
                         Dictionary<int, TutorialItemMetadata> tutorialItemsDictionary = new();
                         foreach (XmlNode startItem in childNode)
                         {
-                            TutorialItemMetadata tutorialItem = new();
-                            tutorialItem.ItemId = int.Parse(startItem.Attributes["itemID"].Value);
-                            tutorialItem.Rarity = byte.Parse(startItem.Attributes["grade"].Value);
-                            tutorialItem.Amount = byte.Parse(startItem.Attributes["count"].Value);
+                            TutorialItemMetadata tutorialItem = new()
+                            {
+                                ItemId = int.Parse(startItem.Attributes["itemID"].Value),
+                                Rarity = byte.Parse(startItem.Attributes["grade"].Value),
+                                Amount = byte.Parse(startItem.Attributes["count"].Value)
+                            };
 
                             if (tutorialItemsDictionary.ContainsKey(tutorialItem.ItemId))
                             {
@@ -56,6 +58,7 @@ public class JobParser : Exporter<List<JobMetadata>>
 
                             tutorialItemsDictionary[tutorialItem.ItemId] = tutorialItem;
                         }
+
                         metadata.TutorialItems.AddRange(tutorialItemsDictionary.Values);
                     }
                     else if (childNode.Name.Equals("skills"))
@@ -73,12 +76,15 @@ public class JobParser : Exporter<List<JobMetadata>>
                     }
                     else if (childNode.Name.Equals("learn"))
                     {
-                        JobLearnedSkillsMetadata learnedSkills = new();
-                        learnedSkills.Level = int.Parse(childNode.Attributes["level"].Value);
+                        JobLearnedSkillsMetadata learnedSkills = new()
+                        {
+                            Level = int.Parse(childNode.Attributes["level"].Value)
+                        };
                         foreach (XmlNode skillNode in childNode)
                         {
                             learnedSkills.SkillIds.Add(int.Parse(skillNode.Attributes["id"].Value));
                         }
+
                         metadata.LearnedSkills.Add(learnedSkills);
                     }
                 }
@@ -86,6 +92,7 @@ public class JobParser : Exporter<List<JobMetadata>>
                 jobs.Add(metadata);
             }
         }
+
         return jobs;
     }
 }

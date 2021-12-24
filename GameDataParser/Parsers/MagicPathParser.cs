@@ -48,6 +48,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                 magicPathList.Add(newMagicPath);
             }
         }
+
         return magicPathList;
     }
 
@@ -69,6 +70,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
         {
             return ParseCoordFromString(input.Remove(input.Length - 1));
         }
+
         return ParseCoordFromString(input);
     }
 

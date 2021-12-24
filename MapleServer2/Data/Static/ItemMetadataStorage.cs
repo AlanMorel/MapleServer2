@@ -10,7 +10,7 @@ namespace MapleServer2.Data.Static;
 // This is an in-memory storage to help with determining some metadata of items
 public static class ItemMetadataStorage
 {
-    private static readonly Dictionary<int, ItemMetadata> map = new();
+    private static readonly Dictionary<int, ItemMetadata> ItemMetadatas = new();
 
     public static void Init()
     {
@@ -18,13 +18,13 @@ public static class ItemMetadataStorage
         List<ItemMetadata> items = Serializer.Deserialize<List<ItemMetadata>>(stream);
         foreach (ItemMetadata item in items)
         {
-            map[item.Id] = item;
+            ItemMetadatas[item.Id] = item;
         }
     }
 
-    public static bool IsValid(int itemId) => map.ContainsKey(itemId);
+    public static bool IsValid(int itemId) => ItemMetadatas.ContainsKey(itemId);
 
-    public static ItemMetadata GetMetadata(int itemId) => map.GetValueOrDefault(itemId);
+    public static ItemMetadata GetMetadata(int itemId) => ItemMetadatas.GetValueOrDefault(itemId);
 
     public static string GetName(int itemId) => GetMetadata(itemId).Name;
 
@@ -154,5 +154,5 @@ public static class ItemMetadataStorage
 
     public static string GetBlackMarketCategory(int itemId) => GetMetadata(itemId).BlackMarketCategory;
 
-    public static IEnumerable<ItemMetadata> GetAll() => map.Values;
+    public static IEnumerable<ItemMetadata> GetAll() => ItemMetadatas.Values;
 }

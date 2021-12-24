@@ -28,18 +28,13 @@ public class RecipeMetadata
     [XmlElement(Order = 11)]
     public int NormalPropLimitCount;
     [XmlElement(Order = 12)]
-    public List<RecipeItem> RequiredItems;
+    public List<RecipeItem> RequiredItems = new();
     [XmlElement(Order = 17)]
     public int HabitatMapId;
     [XmlElement(Order = 18)]
-    public List<RecipeItem> RewardItems;
-
-    public RecipeMetadata()
-    {
-        RequiredItems = new();
-        RewardItems = new();
-    }
+    public List<RecipeItem> RewardItems = new();
 }
+
 [XmlType]
 public class RecipeItem
 {

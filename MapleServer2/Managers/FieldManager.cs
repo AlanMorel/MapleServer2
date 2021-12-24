@@ -619,7 +619,7 @@ public partial class FieldManager
             for (int i = 0; i < fieldMob.Value.NpcMetadataEffect.EffectIds.Length; i++)
             {
                 SkillCast effectCast = new(fieldMob.Value.NpcMetadataEffect.EffectIds[i], fieldMob.Value.NpcMetadataEffect.EffectLevels[i]);
-                session.Send(BuffPacket.SendBuff(0, new Status(effectCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
+                session.Send(BuffPacket.SendBuff(0, new(effectCast, fieldMob.ObjectId, fieldMob.ObjectId, 1)));
             }
         });
     }

@@ -92,7 +92,7 @@ public class MesoMarketHandler : GamePacketHandler
             return;
         }
 
-        MesoMarketListing listing = new MesoMarketListing(session.Player, price, mesos);
+        MesoMarketListing listing = new(session.Player, price, mesos);
 
         session.Player.Account.MesoMarketDailyListings++;
         DatabaseManager.Accounts.Update(session.Player.Account);

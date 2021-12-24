@@ -18,8 +18,8 @@ namespace MapleServer2;
 
 public static class MapleServer
 {
-    private static GameServer GameServer;
-    private static LoginServer LoginServer;
+    private static GameServer _gameServer;
+    private static LoginServer _loginServer;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public static async Task Main()
@@ -64,13 +64,13 @@ public static class MapleServer
 
         IContainer loginContainer = LoginContainerConfig.Configure();
         using ILifetimeScope loginScope = loginContainer.BeginLifetimeScope();
-        LoginServer = loginScope.Resolve<LoginServer>();
-        LoginServer.Start();
+        _loginServer = loginScope.Resolve<LoginServer>();
+        _loginServer.Start();
 
         IContainer gameContainer = GameContainerConfig.Configure();
         using ILifetimeScope gameScope = gameContainer.BeginLifetimeScope();
-        GameServer = gameScope.Resolve<GameServer>();
-        GameServer.Start();
+        _gameServer = gameScope.Resolve<GameServer>();
+        _gameServer.Start();
 
         Logger.Info("All Servers have been Started.".ColorGreen());
 
@@ -82,8 +82,8 @@ public static class MapleServer
             {
                 case "exit":
                 case "quit":
-                    GameServer.Stop();
-                    LoginServer.Stop();
+                    _gameServer.Stop();
+                    _loginServer.Stop();
                     return;
                 case "send":
                     if (input.Length <= 1)
@@ -95,7 +95,7 @@ public static class MapleServer
                     pWriter.WriteBytes(packet.ToByteArray());
                     Logger.Info(pWriter);
 
-                    foreach (Session session in GetSessions(LoginServer, GameServer))
+                    foreach (Session session in GetSessions(_loginServer, _gameServer))
                     {
                         Logger.Info($"Sending packet to {session}: {pWriter}");
                         session.Send(pWriter);
@@ -109,7 +109,7 @@ public static class MapleServer
                     {
                         break;
                     }
-                    GameSession first = GameServer.GetSessions().Single();
+                    GameSession first = _gameServer.GetSessions().Single();
                     resolver.Start(first);
                     break;
                 default:
@@ -121,12 +121,12 @@ public static class MapleServer
 
     public static GameServer GetGameServer()
     {
-        return GameServer;
+        return _gameServer;
     }
 
     public static LoginServer GetLoginServer()
     {
-        return LoginServer;
+        return _loginServer;
     }
 
     private static void DailyReset()
@@ -156,7 +156,7 @@ public static class MapleServer
 
     public static void BroadcastAll(Action<GameSession> action)
     {
-        IEnumerable<GameSession> sessions = GameServer.GetSessions();
+        IEnumerable<GameSession> sessions = _gameServer.GetSessions();
         lock (sessions)
         {
             foreach (GameSession session in sessions)

@@ -15,7 +15,6 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
         List<MeretMarketCategoryMetadata> categories = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-
             if (!entry.Name.StartsWith("table/na/meratmarketcategory"))
             {
                 continue;
@@ -33,16 +32,19 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                 foreach (XmlNode tabNode in node)
                 {
-                    MeretMarketCategoryMetadata metadata = new();
-
-                    metadata.Section = section;
-                    metadata.CategoryId = int.Parse(tabNode.Attributes["id"].Value);
+                    MeretMarketCategoryMetadata metadata = new()
+                    {
+                        Section = section,
+                        CategoryId = int.Parse(tabNode.Attributes["id"].Value)
+                    };
 
                     foreach (XmlNode subTabNode in tabNode.ChildNodes)
                     {
-                        MeretMarketCategoryMetadata subTab = new();
-                        subTab.Section = section;
-                        subTab.CategoryId = int.Parse(subTabNode.Attributes["id"].Value);
+                        MeretMarketCategoryMetadata subTab = new()
+                        {
+                            Section = section,
+                            CategoryId = int.Parse(subTabNode.Attributes["id"].Value)
+                        };
                         if (subTabNode.Attributes["category"] is not null)
                         {
                             List<string> itemCategories = new();
@@ -53,10 +55,12 @@ public class MeretMarketCategoryParser : Exporter<List<MeretMarketCategoryMetada
 
                         categories.Add(subTab);
                     }
+
                     categories.Add(metadata);
                 }
             }
         }
+
         return categories;
     }
 }

@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class FurnishingShopMetadataStorage
 {
-    private static readonly Dictionary<int, FurnishingShopMetadata> map = new();
+    private static readonly Dictionary<int, FurnishingShopMetadata> FurnishingShop = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class FurnishingShopMetadataStorage
         List<FurnishingShopMetadata> items = Serializer.Deserialize<List<FurnishingShopMetadata>>(stream);
         foreach (FurnishingShopMetadata item in items)
         {
-            map[item.ItemId] = item;
+            FurnishingShop[item.ItemId] = item;
         }
     }
 
     public static bool IsValid(int itemId)
     {
-        return map.ContainsKey(itemId);
+        return FurnishingShop.ContainsKey(itemId);
     }
 
     public static FurnishingShopMetadata GetMetadata(int itemId)
     {
-        return map.GetValueOrDefault(itemId);
+        return FurnishingShop.GetValueOrDefault(itemId);
     }
 }

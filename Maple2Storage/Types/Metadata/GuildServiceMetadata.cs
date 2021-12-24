@@ -20,6 +20,7 @@ public class GuildServiceMetadata
 
     public override string ToString()
     {
-        return $"GuildBuff(Id:{Id},Type:{Type},Level:{Level},UpgradeCost:{UpgradeCost},LevelRequirement:{LevelRequirement},HouseLevelRequirement:{HouseLevelRequirement}";
+        return $"GuildBuff(Id:{Id}, Type:{Type}, Level:{Level}, UpgradeCost:{UpgradeCost}, LevelRequirement:{LevelRequirement}," +
+               $" HouseLevelRequirement:{HouseLevelRequirement}";
     }
 }

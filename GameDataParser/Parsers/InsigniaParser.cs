@@ -24,10 +24,12 @@ public class InsigniaParser : Exporter<List<InsigniaMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                InsigniaMetadata metadata = new();
+                InsigniaMetadata metadata = new()
+                {
+                    InsigniaId = short.Parse(node.Attributes["id"].Value),
+                    ConditionType = node.Attributes["conditionType"].Value
+                };
 
-                metadata.InsigniaId = short.Parse(node.Attributes["id"].Value);
-                metadata.ConditionType = node.Attributes["conditionType"].Value;
                 _ = int.TryParse(node.Attributes["code"]?.Value ?? "0", out metadata.TitleId);
 
                 insignias.Add(metadata);

@@ -7,7 +7,7 @@ namespace MapleServer2.Data.Static;
 
 public static class BeautyMetadataStorage
 {
-    private static readonly Dictionary<int, BeautyMetadata> shops = new();
+    private static readonly Dictionary<int, BeautyMetadata> Shops = new();
 
     public static void Init()
     {
@@ -15,28 +15,28 @@ public static class BeautyMetadataStorage
         List<BeautyMetadata> shopList = Serializer.Deserialize<List<BeautyMetadata>>(stream);
         foreach (BeautyMetadata shop in shopList)
         {
-            shops[shop.ShopId] = shop;
+            Shops[shop.ShopId] = shop;
         }
     }
 
     public static List<int> GetShopIds()
     {
-        return new(shops.Keys);
+        return new(Shops.Keys);
     }
 
     public static BeautyMetadata GetShopById(int shopId)
     {
-        return shops.GetValueOrDefault(shopId);
+        return Shops.GetValueOrDefault(shopId);
     }
 
     public static List<BeautyItem> GetItems(int shopId)
     {
-        return shops.GetValueOrDefault(shopId)?.Items;
+        return Shops.GetValueOrDefault(shopId)?.Items;
     }
 
     public static List<BeautyItem> GetGenderItems(int shopId, Gender gender)
     {
-        BeautyMetadata targetShop = shops.GetValueOrDefault(shopId);
+        BeautyMetadata targetShop = Shops.GetValueOrDefault(shopId);
         return targetShop.Items.Where(x => x.Gender == gender || x.Gender == Gender.Neutral).OrderByDescending(x => x.Flag).ToList();
     }
 }

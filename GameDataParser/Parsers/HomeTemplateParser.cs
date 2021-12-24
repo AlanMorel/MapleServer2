@@ -28,9 +28,11 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
                 continue;
             }
 
-            HomeTemplateMetadata homeTemplate = new();
-            homeTemplate.Cubes = new();
-            homeTemplate.Id = filename;
+            HomeTemplateMetadata homeTemplate = new()
+            {
+                Cubes = new(),
+                Id = filename
+            };
 
             XmlNode item = document.SelectSingleNode("ugcmap");
             string[] size = item.Attributes["indoorSizeType"].Value.Split('x');

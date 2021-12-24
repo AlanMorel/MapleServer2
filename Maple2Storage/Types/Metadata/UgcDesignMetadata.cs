@@ -25,7 +25,8 @@ public class UgcDesignMetadata
 
     public UgcDesignMetadata() { }
 
-    public UgcDesignMetadata(int itemId, bool visible, byte rarity, CurrencyType currencyType, long price, long salePrice, long marketMinPrice, long marketMaxPrice)
+    public UgcDesignMetadata(int itemId, bool visible, byte rarity, CurrencyType currencyType, long price, long salePrice, long marketMinPrice,
+        long marketMaxPrice)
     {
         ItemId = itemId;
         Visible = visible;

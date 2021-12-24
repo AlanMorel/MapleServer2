@@ -7,7 +7,7 @@ namespace MapleServer2.Data.Static;
 
 public static class RewardContentMetadataStorage
 {
-    private static readonly Dictionary<int, RewardContentMetadata> rewards = new();
+    private static readonly Dictionary<int, RewardContentMetadata> RewardContent = new();
 
     public static void Init()
     {
@@ -15,13 +15,13 @@ public static class RewardContentMetadataStorage
         List<RewardContentMetadata> items = Serializer.Deserialize<List<RewardContentMetadata>>(stream);
         foreach (RewardContentMetadata item in items)
         {
-            rewards[item.Id] = item;
+            RewardContent[item.Id] = item;
         }
     }
 
     public static List<Item> GetRewardItems(int id, int playerLevel)
     {
-        RewardContentMetadata metadata = rewards.GetValueOrDefault(id);
+        RewardContentMetadata metadata = RewardContent.GetValueOrDefault(id);
         List<Item> items = new();
         foreach (RewardContentItemMetadata rewardItem in metadata.RewardItems)
         {

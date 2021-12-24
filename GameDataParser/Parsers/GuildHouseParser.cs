@@ -25,17 +25,20 @@ public class GuildHouseParser : Exporter<List<GuildHouseMetadata>>
 
             foreach (XmlNode property in properties)
             {
-                GuildHouseMetadata metadata = new();
-                metadata.FieldId = int.Parse(property.Attributes["fieldID"].Value);
-                metadata.Level = int.Parse(property.Attributes["level"].Value);
-                metadata.Theme = int.Parse(property.Attributes["theme"].Value);
-                metadata.RequiredLevel = int.Parse(property.Attributes["upgradeReqGuildLevel"].Value);
-                metadata.UpgradeCost = int.Parse(property.Attributes["upgradeCost"].Value);
-                metadata.RethemeCost = int.Parse(property.Attributes["rethemeCost"].Value);
+                GuildHouseMetadata metadata = new()
+                {
+                    FieldId = int.Parse(property.Attributes["fieldID"].Value),
+                    Level = int.Parse(property.Attributes["level"].Value),
+                    Theme = int.Parse(property.Attributes["theme"].Value),
+                    RequiredLevel = int.Parse(property.Attributes["upgradeReqGuildLevel"].Value),
+                    UpgradeCost = int.Parse(property.Attributes["upgradeCost"].Value),
+                    RethemeCost = int.Parse(property.Attributes["rethemeCost"].Value)
+                };
 
                 houses.Add(metadata);
             }
         }
+
         return houses;
     }
 }

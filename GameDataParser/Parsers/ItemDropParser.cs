@@ -79,21 +79,25 @@ public class ItemDropParser : Exporter<List<ItemDropMetadata>>
                 }
 
                 itemGroups[boxId] = new();
-                newGroup = new();
-                newGroup.Id = dropGroupId;
+                newGroup = new()
+                {
+                    Id = dropGroupId
+                };
                 newGroup.Contents.Add(contents);
                 itemGroups[boxId].Add(newGroup);
-
             }
 
             foreach (KeyValuePair<int, List<DropGroup>> kvp in itemGroups)
             {
-                ItemDropMetadata metadata = new();
-                metadata.Id = kvp.Key;
-                metadata.DropGroups = kvp.Value;
+                ItemDropMetadata metadata = new()
+                {
+                    Id = kvp.Key,
+                    DropGroups = kvp.Value
+                };
                 drops.Add(metadata);
             }
         }
+
         return drops;
     }
 }

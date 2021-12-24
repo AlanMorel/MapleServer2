@@ -20,6 +20,7 @@ public class JobMetadata
     [XmlElement(Order = 7)]
     public List<JobLearnedSkillsMetadata> LearnedSkills = new();
 }
+
 [XmlType]
 public class TutorialItemMetadata
 {
@@ -29,16 +30,8 @@ public class TutorialItemMetadata
     public byte Rarity;
     [XmlElement(Order = 3)]
     public byte Amount;
-
-    public TutorialItemMetadata() { }
-
-    public TutorialItemMetadata(int itemId, byte rarity, byte amount)
-    {
-        ItemId = itemId;
-        Rarity = rarity;
-        Amount = amount;
-    }
 }
+
 [XmlType]
 public class JobSkillMetadata
 {
@@ -61,6 +54,7 @@ public class JobSkillMetadata
         SubSkillIds = subSkillIds;
     }
 }
+
 [XmlType]
 public class JobLearnedSkillsMetadata
 {
@@ -68,12 +62,4 @@ public class JobLearnedSkillsMetadata
     public int Level;
     [XmlElement(Order = 2)]
     public List<int> SkillIds = new();
-
-    public JobLearnedSkillsMetadata() { }
-
-    public JobLearnedSkillsMetadata(int level, List<int> skillIds)
-    {
-        Level = level;
-        SkillIds = skillIds;
-    }
 }

@@ -52,7 +52,6 @@ public class GachaParser : Exporter<List<GachaMetadata>>
         List<GachaMetadata> gacha = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-
             if (!entry.Name.StartsWith("table/gacha_info"))
             {
                 continue;
@@ -89,6 +88,7 @@ public class GachaParser : Exporter<List<GachaMetadata>>
                 gacha.Add(metadata);
             }
         }
+
         return gacha;
     }
 }

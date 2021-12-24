@@ -5,7 +5,7 @@ namespace MapleServer2.Data.Static;
 
 public static class FishingRewardsMetadataStorage
 {
-    private static readonly Dictionary<int, FishingRewardItem> fishItems = new();
+    private static readonly Dictionary<int, FishingRewardItem> FishItems = new();
 
     public static void Init()
     {
@@ -13,14 +13,14 @@ public static class FishingRewardsMetadataStorage
         List<FishingRewardItem> items = JsonConvert.DeserializeObject<List<FishingRewardItem>>(json);
         foreach (FishingRewardItem item in items)
         {
-            fishItems[item.Id] = item;
+            FishItems[item.Id] = item;
         }
     }
 
     public static FishingRewardItem GetFishingRewardItem(FishingItemType type)
     {
         Random random = new();
-        List<FishingRewardItem> items = fishItems.Values.Where(x => x.Type == type).ToList();
+        List<FishingRewardItem> items = FishItems.Values.Where(x => x.Type == type).ToList();
         int index = random.Next(items.Count);
         return items[index];
     }

@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ExpMetadataStorage
 {
-    private static readonly Dictionary<int, ExpMetadata> map = new();
+    private static readonly Dictionary<int, ExpMetadata> ExpMetadatas = new();
 
     public static void Init()
     {
@@ -14,22 +14,22 @@ public static class ExpMetadataStorage
         List<ExpMetadata> items = Serializer.Deserialize<List<ExpMetadata>>(stream);
         foreach (ExpMetadata item in items)
         {
-            map[item.Level] = item;
+            ExpMetadatas[item.Level] = item;
         }
     }
 
     public static ExpMetadata GetMetadata(short level)
     {
-        return map.GetValueOrDefault(level);
+        return ExpMetadatas.GetValueOrDefault(level);
     }
 
     public static bool LevelExist(short level)
     {
-        return map.ContainsKey(level);
+        return ExpMetadatas.ContainsKey(level);
     }
 
     public static long GetExpToLevel(short level)
     {
-        return LevelExist(level) ? map.GetValueOrDefault(level).Experience : 0;
+        return LevelExist(level) ? ExpMetadatas.GetValueOrDefault(level).Experience : 0;
     }
 }

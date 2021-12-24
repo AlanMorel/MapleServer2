@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class MeretMarketCategoryMetadataStorage
 {
-    private static readonly Dictionary<int, MeretMarketCategoryMetadata> map = new();
+    private static readonly Dictionary<int, MeretMarketCategoryMetadata> MeretMarketCategoryMetadatas = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class MeretMarketCategoryMetadataStorage
         List<MeretMarketCategoryMetadata> items = Serializer.Deserialize<List<MeretMarketCategoryMetadata>>(stream);
         foreach (MeretMarketCategoryMetadata item in items)
         {
-            map[item.CategoryId] = item;
+            MeretMarketCategoryMetadatas[item.CategoryId] = item;
         }
     }
 
     public static MeretMarketCategoryMetadata GetMetadata(int categoryId)
     {
-        return map.GetValueOrDefault(categoryId);
+        return MeretMarketCategoryMetadatas.GetValueOrDefault(categoryId);
     }
 }

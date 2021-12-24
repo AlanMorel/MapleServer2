@@ -23,16 +23,18 @@ public class RewardContentParser : Exporter<List<RewardContentMetadata>>
             XmlNodeList tableNodes = document.GetElementsByTagName("table");
             foreach (XmlNode tableNode in tableNodes)
             {
-                RewardContentMetadata metadata = new();
-
-                metadata.Id = int.Parse(tableNode.Attributes["itemTableID"].Value);
+                RewardContentMetadata metadata = new()
+                {
+                    Id = int.Parse(tableNode.Attributes["itemTableID"].Value)
+                };
 
                 foreach (XmlNode childNode in tableNode)
                 {
-                    RewardContentItemMetadata metadataItem = new();
-
-                    metadataItem.MinLevel = int.Parse(childNode.Attributes["minLevel"]?.Value ?? "0");
-                    metadataItem.MaxLevel = int.Parse(childNode.Attributes["maxLevel"]?.Value ?? "0");
+                    RewardContentItemMetadata metadataItem = new()
+                    {
+                        MinLevel = int.Parse(childNode.Attributes["minLevel"]?.Value ?? "0"),
+                        MaxLevel = int.Parse(childNode.Attributes["maxLevel"]?.Value ?? "0")
+                    };
 
                     foreach (XmlNode itemNode in childNode)
                     {
@@ -41,11 +43,14 @@ public class RewardContentParser : Exporter<List<RewardContentMetadata>>
                         int rarity = int.Parse(itemNode.Attributes["grade"].Value);
                         metadataItem.Items.Add(new(itemId, amount, rarity));
                     }
+
                     metadata.RewardItems.Add(metadataItem);
                 }
+
                 rewards.Add(metadata);
             }
         }
+
         return rewards;
     }
 }

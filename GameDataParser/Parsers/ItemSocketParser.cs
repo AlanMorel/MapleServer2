@@ -25,14 +25,17 @@ public class ItemSocketParser : Exporter<List<ItemSocketMetadata>>
 
             foreach (XmlNode property in properties)
             {
-                ItemSocketMetadata metadata = new();
-                metadata.Id = int.Parse(property.Attributes["id"].Value);
-                metadata.MaxCount = int.Parse(property.Attributes["maxCount"].Value);
-                metadata.FixedOpenCount = int.Parse(property.Attributes["fixOpenCount"].Value);
+                ItemSocketMetadata metadata = new()
+                {
+                    Id = int.Parse(property.Attributes["id"].Value),
+                    MaxCount = int.Parse(property.Attributes["maxCount"].Value),
+                    FixedOpenCount = int.Parse(property.Attributes["fixOpenCount"].Value)
+                };
 
                 itemSockets.Add(metadata);
             }
         }
+
         return itemSockets;
     }
 }

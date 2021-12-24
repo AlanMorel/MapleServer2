@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class MapMetadataStorage
 {
-    private static readonly Dictionary<int, MapMetadata> map = new();
+    private static readonly Dictionary<int, MapMetadata> Maps = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class MapMetadataStorage
         List<MapMetadata> items = Serializer.Deserialize<List<MapMetadata>>(stream);
         foreach (MapMetadata item in items)
         {
-            map[item.Id] = item;
+            Maps[item.Id] = item;
         }
     }
 
-    public static MapMetadata GetMetadata(int mapId) => map.GetValueOrDefault(mapId);
+    public static MapMetadata GetMetadata(int mapId) => Maps.GetValueOrDefault(mapId);
 
-    public static List<MapMetadata> GetAll() => map.Values.ToList();
+    public static List<MapMetadata> GetAll() => Maps.Values.ToList();
 
     public static bool BlockExists(int mapId, CoordS coord)
     {

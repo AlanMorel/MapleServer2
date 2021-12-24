@@ -47,7 +47,7 @@ public class BlackMarketManager
     public List<BlackMarketListing> GetSearchedListings(List<string> itemCategories, int minLevel, int maxLevel, int rarity, string name, JobFlag jobFlag,
         int minEnchantLevel, int maxEnchantLevel, byte minSockets, byte maxSockets, int startPage, long sort, bool searchStat, List<ItemStat> searchedStats)
     {
-        List<BlackMarketListing> allResults = new List<BlackMarketListing>();
+        List<BlackMarketListing> allResults = new();
         foreach (BlackMarketListing listing in Listings.Values)
         {
             Item item = listing.Item;
@@ -78,8 +78,8 @@ public class BlackMarketManager
                 continue;
             }
 
-            List<NormalStat> normalStats = new List<NormalStat>();
-            List<SpecialStat> specialStats = new List<SpecialStat>();
+            List<NormalStat> normalStats = new();
+            List<SpecialStat> specialStats = new();
             foreach (ItemStat stat in item.Stats.BasicStats)
             {
                 if (stat is NormalStat normalStat)

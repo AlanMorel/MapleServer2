@@ -8,13 +8,9 @@ public class AnimationMetadata
     [XmlElement(Order = 1)]
     public string ActorId;
     [XmlElement(Order = 2)]
-    public List<SequenceMetadata> Sequence;
-
-    public AnimationMetadata()
-    {
-        Sequence = new();
-    }
+    public List<SequenceMetadata> Sequence = new();
 }
+
 [XmlType]
 public class SequenceMetadata
 {
@@ -23,13 +19,9 @@ public class SequenceMetadata
     [XmlElement(Order = 2)]
     public string SequenceName;
     [XmlElement(Order = 3)]
-    public List<KeyMetadata> Keys;
-
-    public SequenceMetadata()
-    {
-        Keys = new();
-    }
+    public List<KeyMetadata> Keys = new();
 }
+
 [XmlType]
 public class KeyMetadata
 {

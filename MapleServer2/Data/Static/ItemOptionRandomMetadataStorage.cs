@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemOptionRandomMetadataStorage
 {
-    private static readonly Dictionary<int, ItemOptionRandomMetadata> map = new();
+    private static readonly Dictionary<int, ItemOptionRandomMetadata> ItemOptionRandom = new();
 
     public static void Init()
     {
@@ -14,18 +14,18 @@ public static class ItemOptionRandomMetadataStorage
         List<ItemOptionRandomMetadata> items = Serializer.Deserialize<List<ItemOptionRandomMetadata>>(stream);
         foreach (ItemOptionRandomMetadata item in items)
         {
-            map[item.Id] = item;
+            ItemOptionRandom[item.Id] = item;
         }
     }
 
     public static bool IsValid(int id)
     {
-        return map.ContainsKey(id);
+        return ItemOptionRandom.ContainsKey(id);
     }
 
     public static ItemOptionRandom GetMetadata(int id, int rarity)
     {
-        ItemOptionRandomMetadata metadata = map.Values.FirstOrDefault(x => x.Id == id);
+        ItemOptionRandomMetadata metadata = ItemOptionRandom.Values.FirstOrDefault(x => x.Id == id);
         if (metadata == null)
         {
             return null;

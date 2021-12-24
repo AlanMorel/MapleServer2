@@ -32,17 +32,20 @@ public class GuildServiceParser : Exporter<List<GuildServiceMetadata>>
                     continue;
                 }
 
-                GuildServiceMetadata metadata = new();
-                metadata.Id = int.Parse(property.Attributes["stringKey"].Value);
-                metadata.Type = property.Attributes["type"].Value;
-                metadata.Level = int.Parse(property.Attributes["level"].Value);
-                metadata.UpgradeCost = int.Parse(property.Attributes["upgradeCost"].Value);
-                metadata.LevelRequirement = int.Parse(property.Attributes["requireGuildLevel"].Value);
-                metadata.HouseLevelRequirement = int.Parse(property.Attributes["requireHouseLevel"].Value);
+                GuildServiceMetadata metadata = new()
+                {
+                    Id = int.Parse(property.Attributes["stringKey"].Value),
+                    Type = property.Attributes["type"].Value,
+                    Level = int.Parse(property.Attributes["level"].Value),
+                    UpgradeCost = int.Parse(property.Attributes["upgradeCost"].Value),
+                    LevelRequirement = int.Parse(property.Attributes["requireGuildLevel"].Value),
+                    HouseLevelRequirement = int.Parse(property.Attributes["requireHouseLevel"].Value)
+                };
 
                 services.Add(metadata);
             }
         }
+
         return services;
     }
 }

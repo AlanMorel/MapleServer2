@@ -10,6 +10,7 @@ public class ItemDropMetadata
     [XmlElement(Order = 2)]
     public List<DropGroup> DropGroups = new();
 }
+
 [XmlType]
 public class DropGroup
 {
@@ -18,6 +19,7 @@ public class DropGroup
     [XmlElement(Order = 2)]
     public List<DropGroupContent> Contents = new();
 }
+
 [XmlType]
 public class DropGroupContent
 {

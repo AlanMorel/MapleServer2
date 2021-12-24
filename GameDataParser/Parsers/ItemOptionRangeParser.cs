@@ -316,10 +316,11 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
                     case "additionaleffect_95000014Value":
                         continue;
                 }
-
             }
+
             items.Add(metadata);
         }
+
         return items;
     }
 
@@ -330,6 +331,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
         {
             values.Add(new(attribute, int.Parse(node.Attributes[$"idx{i}"].Value)));
         }
+
         return values;
     }
 
@@ -340,6 +342,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
         {
             values.Add(new(attribute, float.Parse(node.Attributes[$"idx{i}"].Value)));
         }
+
         return values;
     }
 
@@ -351,6 +354,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
             float value = float.Parse(node.Attributes[$"idx{i}"].Value);
             values.Add(new(attribute, isPercent ? value : 0, !isPercent ? value : 0));
         }
+
         return values;
     }
 }

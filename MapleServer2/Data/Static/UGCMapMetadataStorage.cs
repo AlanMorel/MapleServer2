@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class UGCMapMetadataStorage
 {
-    private static readonly Dictionary<int, UGCMapMetadata> map = new();
+    private static readonly Dictionary<int, UGCMapMetadata> UgcMap = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class UGCMapMetadataStorage
         List<UGCMapMetadata> items = Serializer.Deserialize<List<UGCMapMetadata>>(stream);
         foreach (UGCMapMetadata item in items)
         {
-            map[item.MapId] = item;
+            UgcMap[item.MapId] = item;
         }
     }
 
     public static bool IsValid(int mapId)
     {
-        return map.ContainsKey(mapId);
+        return UgcMap.ContainsKey(mapId);
     }
 
     public static UGCMapGroup GetGroupMetadata(int mapId, byte groupId)
@@ -30,11 +30,11 @@ public static class UGCMapMetadataStorage
 
     public static UGCMapMetadata GetMetadata(int mapId)
     {
-        return map.GetValueOrDefault(mapId);
+        return UgcMap.GetValueOrDefault(mapId);
     }
 
     public static int GetId(int exchangeId)
     {
-        return map.GetValueOrDefault(exchangeId).MapId;
+        return UgcMap.GetValueOrDefault(exchangeId).MapId;
     }
 }

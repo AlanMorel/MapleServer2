@@ -61,16 +61,16 @@ public class FishParser : Exporter<List<FishMetadata>>
                     continue;
                 }
 
-                FishMetadata metadata = new();
-
-                metadata.Id = int.Parse(fishnode.Attributes["id"].Value);
-                metadata.Habitat = fishnode.Attributes["habitat"].Value;
-                metadata.CompanionId = int.Parse(fishnode.Attributes["companion"]?.Value ?? "0");
-
-                metadata.Mastery = short.Parse(fishnode.Attributes["fishMastery"]?.Value ?? "0");
-                metadata.Rarity = byte.Parse(fishnode.Attributes["rank"].Value);
-                metadata.SmallSize = fishnode.Attributes["smallSize"].Value.Split("-").Select(short.Parse).ToArray();
-                metadata.BigSize = fishnode.Attributes["bigSize"].Value.Split("-").Select(short.Parse).ToArray();
+                FishMetadata metadata = new()
+                {
+                    Id = int.Parse(fishnode.Attributes["id"].Value),
+                    Habitat = fishnode.Attributes["habitat"].Value,
+                    CompanionId = int.Parse(fishnode.Attributes["companion"]?.Value ?? "0"),
+                    Mastery = short.Parse(fishnode.Attributes["fishMastery"]?.Value ?? "0"),
+                    Rarity = byte.Parse(fishnode.Attributes["rank"].Value),
+                    SmallSize = fishnode.Attributes["smallSize"].Value.Split("-").Select(short.Parse).ToArray(),
+                    BigSize = fishnode.Attributes["bigSize"].Value.Split("-").Select(short.Parse).ToArray()
+                };
 
                 if (fishnode.Attributes["ignoreSpotMastery"] != null)
                 {
@@ -89,6 +89,7 @@ public class FishParser : Exporter<List<FishMetadata>>
                 fishes.Add(metadata);
             }
         }
+
         return fishes;
     }
 }

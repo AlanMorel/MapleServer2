@@ -344,12 +344,15 @@ public class ItemOptionStaticParser : Exporter<List<ItemOptionStaticMetadata>>
 
             foreach (KeyValuePair<int, List<ItemOptionsStatic>> optionsData in itemOptionsStatic)
             {
-                ItemOptionStaticMetadata metadata = new();
-                metadata.Id = optionsData.Key;
-                metadata.ItemOptions.AddRange(optionsData.Value);
+                ItemOptionStaticMetadata metadata = new()
+                {
+                    Id = optionsData.Key,
+                    ItemOptions = optionsData.Value
+                };
                 items.Add(metadata);
             }
         }
+
         return items;
     }
 }

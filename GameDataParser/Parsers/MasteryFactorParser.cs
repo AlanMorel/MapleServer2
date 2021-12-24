@@ -24,9 +24,11 @@ internal class MasteryFactorParser : Exporter<List<MasteryFactorMetadata>>
 
             foreach (XmlNode factor in factors)
             {
-                MasteryFactorMetadata newFactor = new();
-                newFactor.Differential = int.Parse(factor.Attributes["differential"].Value);
-                newFactor.Factor = int.Parse(factor.Attributes["factor"].Value);
+                MasteryFactorMetadata newFactor = new()
+                {
+                    Differential = int.Parse(factor.Attributes["differential"].Value),
+                    Factor = int.Parse(factor.Attributes["factor"].Value)
+                };
                 masteryFactorList.Add(newFactor);
             }
         }

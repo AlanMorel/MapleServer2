@@ -10,6 +10,7 @@ public class RewardContentMetadata
     [XmlElement(Order = 2)]
     public List<RewardContentItemMetadata> RewardItems = new();
 }
+
 [XmlType]
 public class RewardContentItemMetadata
 {
@@ -20,6 +21,7 @@ public class RewardContentItemMetadata
     [XmlElement(Order = 3)]
     public List<RewardItemData> Items = new();
 }
+
 [XmlType]
 public class RewardItemData
 {
