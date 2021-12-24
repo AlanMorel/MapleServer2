@@ -88,8 +88,10 @@ public class InteractObjectParser : Exporter<List<InteractObjectMetadata>>
                                 {
                                     continue;
                                 }
+
                                 metadata.Quests.Add((questIds[i], (QuestState) states[i]));
                             }
+
                             break;
                     }
                 }

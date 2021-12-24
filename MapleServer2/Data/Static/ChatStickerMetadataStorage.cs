@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ChatStickerMetadataStorage
 {
-    private static readonly Dictionary<int, ChatStickerMetadata> map = new();
+    private static readonly Dictionary<int, ChatStickerMetadata> ChatSticker = new();
 
     public static void Init()
     {
@@ -14,27 +14,27 @@ public static class ChatStickerMetadataStorage
         List<ChatStickerMetadata> items = Serializer.Deserialize<List<ChatStickerMetadata>>(stream);
         foreach (ChatStickerMetadata item in items)
         {
-            map[item.StickerId] = item;
+            ChatSticker[item.StickerId] = item;
         }
     }
 
     public static bool IsValid(int stickerId)
     {
-        return map.ContainsKey(stickerId);
+        return ChatSticker.ContainsKey(stickerId);
     }
 
     public static ChatStickerMetadata GetMetadata(int stickerId)
     {
-        return map.GetValueOrDefault(stickerId);
+        return ChatSticker.GetValueOrDefault(stickerId);
     }
 
     public static byte GetGroupId(int stickerId)
     {
-        return map.GetValueOrDefault(stickerId).GroupId;
+        return ChatSticker.GetValueOrDefault(stickerId).GroupId;
     }
 
     public static short GetCategoryId(int stickerId)
     {
-        return map.GetValueOrDefault(stickerId).CategoryId;
+        return ChatSticker.GetValueOrDefault(stickerId).CategoryId;
     }
 }

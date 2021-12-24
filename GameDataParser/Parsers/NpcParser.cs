@@ -31,6 +31,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
                     {
                         continue;
                     }
+
                     foreach (XmlNode tableNode in node.ChildNodes)
                     {
                         if (tableNode.Name == "base")
@@ -88,8 +89,10 @@ public class NpcParser : Exporter<List<NpcMetadata>>
             XmlAttributeCollection statsCollection = npcStatsNode.Attributes;
 
             // Metadata
-            NpcMetadata metadata = new();
-            metadata.Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name));
+            NpcMetadata metadata = new()
+            {
+                Id = int.Parse(Path.GetFileNameWithoutExtension(entry.Name))
+            };
             metadata.Name = npcIdToName.ContainsKey(metadata.Id) ? npcIdToName[metadata.Id] : "";
             metadata.Model = npcModelNode.Attributes["kfm"].Value;
 
@@ -150,13 +153,18 @@ public class NpcParser : Exporter<List<NpcMetadata>>
                 {
                     normalActions.Add((normalActionIds[i], GetNpcAction(normalActionIds[i]), actionProbs[i]));
                 }
+
                 metadata.StateActions[NpcState.Normal] = normalActions.ToArray();
             }
+
             metadata.MoveRange = short.Parse(npcNormalNode.Attributes["movearea"]?.Value ?? "0");
 
             // HACK: Parse combat/skills state (does not actually exist)
             List<(string, NpcAction, short)> combatActions = new();
-            string[] combatActionsIds = { "Run_A" };
+            string[] combatActionsIds =
+            {
+                "Run_A"
+            };
             if (combatActionsIds.Length > 0)
             {
                 int equalProb = 10000 / combatActionsIds.Length;
@@ -177,6 +185,7 @@ public class NpcParser : Exporter<List<NpcMetadata>>
                 {
                     deadActions.Add((deadActionIds[i], GetNpcAction(deadActionIds[i]), (short) equalProb));
                 }
+
                 metadata.StateActions[NpcState.Dead] = deadActions.ToArray();
             }
 
@@ -197,40 +206,41 @@ public class NpcParser : Exporter<List<NpcMetadata>>
     private static NpcStats GetNpcStats(XmlAttributeCollection collection)
     {
         // MUST be in ORDER
-        NpcStats npcStats = new();
-
-        npcStats.Str = new(int.Parse(collection["str"].Value));
-        npcStats.Dex = new(int.Parse(collection["dex"].Value));
-        npcStats.Int = new(int.Parse(collection["int"].Value));
-        npcStats.Luk = new(int.Parse(collection["luk"].Value));
-        npcStats.Hp = new(long.Parse(collection["hp"].Value));
-        npcStats.HpRegen = new(int.Parse(collection["hp_rgp"].Value));
-        npcStats.HpInterval = new(int.Parse(collection["hp_inv"].Value));
-        npcStats.Sp = new(int.Parse(collection["sp"].Value));
-        npcStats.SpRegen = new(int.Parse(collection["sp_rgp"].Value));
-        npcStats.SpInterval = new(int.Parse(collection["sp_inv"].Value));
-        npcStats.Ep = new(int.Parse(collection["ep"].Value));
-        npcStats.EpRegen = new(int.Parse(collection["ep_rgp"].Value));
-        npcStats.EpInterval = new(int.Parse(collection["ep_inv"].Value));
-        npcStats.AtkSpd = new(int.Parse(collection["asp"].Value));
-        npcStats.MoveSpd = new(int.Parse(collection["msp"].Value));
-        npcStats.Accuracy = new(int.Parse(collection["atp"].Value));
-        npcStats.Evasion = new(int.Parse(collection["evp"].Value));
-        npcStats.CritRate = new(int.Parse(collection["cap"].Value));
-        npcStats.CritDamage = new(int.Parse(collection["cad"].Value));
-        npcStats.CritResist = new(int.Parse(collection["car"].Value));
-        npcStats.Defense = new(int.Parse(collection["ndd"].Value));
-        npcStats.Guard = new(int.Parse(collection["abp"].Value));
-        npcStats.JumpHeight = new(int.Parse(collection["jmp"].Value));
-        npcStats.PhysAtk = new(int.Parse(collection["pap"].Value));
-        npcStats.MagAtk = new(int.Parse(collection["map"].Value));
-        npcStats.PhysRes = new(int.Parse(collection["par"].Value));
-        npcStats.MagRes = new(int.Parse(collection["mar"].Value));
-        npcStats.MinAtk = new(int.Parse(collection["wapmin"].Value));
-        npcStats.MaxAtk = new(int.Parse(collection["wapmax"].Value));
-        npcStats.Damage = new(int.Parse(collection["dmg"].Value));
-        npcStats.Pierce = new(int.Parse(collection["pen"].Value));
-        npcStats.MountSpeed = new(int.Parse(collection["rmsp"].Value));
+        NpcStats npcStats = new()
+        {
+            Str = new(int.Parse(collection["str"].Value)),
+            Dex = new(int.Parse(collection["dex"].Value)),
+            Int = new(int.Parse(collection["int"].Value)),
+            Luk = new(int.Parse(collection["luk"].Value)),
+            Hp = new(long.Parse(collection["hp"].Value)),
+            HpRegen = new(int.Parse(collection["hp_rgp"].Value)),
+            HpInterval = new(int.Parse(collection["hp_inv"].Value)),
+            Sp = new(int.Parse(collection["sp"].Value)),
+            SpRegen = new(int.Parse(collection["sp_rgp"].Value)),
+            SpInterval = new(int.Parse(collection["sp_inv"].Value)),
+            Ep = new(int.Parse(collection["ep"].Value)),
+            EpRegen = new(int.Parse(collection["ep_rgp"].Value)),
+            EpInterval = new(int.Parse(collection["ep_inv"].Value)),
+            AtkSpd = new(int.Parse(collection["asp"].Value)),
+            MoveSpd = new(int.Parse(collection["msp"].Value)),
+            Accuracy = new(int.Parse(collection["atp"].Value)),
+            Evasion = new(int.Parse(collection["evp"].Value)),
+            CritRate = new(int.Parse(collection["cap"].Value)),
+            CritDamage = new(int.Parse(collection["cad"].Value)),
+            CritResist = new(int.Parse(collection["car"].Value)),
+            Defense = new(int.Parse(collection["ndd"].Value)),
+            Guard = new(int.Parse(collection["abp"].Value)),
+            JumpHeight = new(int.Parse(collection["jmp"].Value)),
+            PhysAtk = new(int.Parse(collection["pap"].Value)),
+            MagAtk = new(int.Parse(collection["map"].Value)),
+            PhysRes = new(int.Parse(collection["par"].Value)),
+            MagRes = new(int.Parse(collection["mar"].Value)),
+            MinAtk = new(int.Parse(collection["wapmin"].Value)),
+            MaxAtk = new(int.Parse(collection["wapmax"].Value)),
+            Damage = new(int.Parse(collection["dmg"].Value)),
+            Pierce = new(int.Parse(collection["pen"].Value)),
+            MountSpeed = new(int.Parse(collection["rmsp"].Value))
+        };
 
         return npcStats;
     }

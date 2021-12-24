@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class MasteryFactorMetadataStorage
 {
-    private static readonly Dictionary<int, MasteryFactorMetadata> map = new();
+    private static readonly Dictionary<int, MasteryFactorMetadata> MasteryFactorMetadatas = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class MasteryFactorMetadataStorage
         List<MasteryFactorMetadata> masteryFactors = Serializer.Deserialize<List<MasteryFactorMetadata>>(stream);
         foreach (MasteryFactorMetadata masteryFactor in masteryFactors)
         {
-            map[masteryFactor.Differential] = masteryFactor;
+            MasteryFactorMetadatas[masteryFactor.Differential] = masteryFactor;
         }
     }
 
     public static List<int> GetMasteryFactorIds()
     {
-        return new(map.Keys);
+        return new(MasteryFactorMetadatas.Keys);
     }
 
     public static int GetFactor(int id)
     {
-        return map.GetValueOrDefault(id).Factor;
+        return MasteryFactorMetadatas.GetValueOrDefault(id).Factor;
     }
 }

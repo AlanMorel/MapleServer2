@@ -15,6 +15,7 @@ public class GuildBuffMetadata
         return $"GuildBuff(BuffId:{BuffId},Levels:{Levels}";
     }
 }
+
 [XmlType]
 public class GuildBuffLevel
 {
@@ -35,6 +36,7 @@ public class GuildBuffLevel
 
     public override string ToString()
     {
-        return $"BuffLevel(Level:{Level},EffectId:{EffectId},EffectLevel:{EffectLevel},LevelRequirement:{LevelRequirement},UpgradeCost:{UpgradeCost},Cost:{Cost},Duration:{Duration}";
+        return
+            $"BuffLevel(Level:{Level},EffectId:{EffectId},EffectLevel:{EffectLevel},LevelRequirement:{LevelRequirement},UpgradeCost:{UpgradeCost},Cost:{Cost},Duration:{Duration}";
     }
 }

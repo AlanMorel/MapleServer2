@@ -29,27 +29,30 @@ public class UGCMapParser : Exporter<List<UGCMapMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                UGCMapGroup group = new();
-
-                group.Id = byte.Parse(node.Attributes["no"].Value);
-                group.Price = int.Parse(node.Attributes["contractPrice"].Value);
-                group.PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value);
-                group.ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value);
-                group.ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value);
-                group.ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value);
-                group.ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value);
-                group.HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value);
-                group.BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value);
-                group.ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"]?.Value ?? "0");
-                group.Area = short.Parse(node.Attributes["area"].Value);
-                group.SellType = byte.Parse(node.Attributes["sellType"].Value);
-                group.BlockCode = byte.Parse(node.Attributes["blockCode"].Value);
-                group.HouseNumber = short.Parse(node.Attributes["houseNumber"].Value);
+                UGCMapGroup group = new()
+                {
+                    Id = byte.Parse(node.Attributes["no"].Value),
+                    Price = int.Parse(node.Attributes["contractPrice"].Value),
+                    PriceItemCode = int.Parse(node.Attributes["contractPriceItemCode"].Value),
+                    ExtensionPrice = int.Parse(node.Attributes["extensionPrice"].Value),
+                    ExtensionPriceItemCode = int.Parse(node.Attributes["extensionPriceItemCode"].Value),
+                    ContractDate = short.Parse(node.Attributes["ugcHomeContractDate"].Value),
+                    ExtensionDate = short.Parse(node.Attributes["ugcHomeExtensionDate"].Value),
+                    HeightLimit = byte.Parse(node.Attributes["heightLimit"].Value),
+                    BuildingCount = short.Parse(node.Attributes["installableBuildingCount"].Value),
+                    ReturnPlaceId = byte.Parse(node.Attributes["returnPlaceID"]?.Value ?? "0"),
+                    Area = short.Parse(node.Attributes["area"].Value),
+                    SellType = byte.Parse(node.Attributes["sellType"].Value),
+                    BlockCode = byte.Parse(node.Attributes["blockCode"].Value),
+                    HouseNumber = short.Parse(node.Attributes["houseNumber"].Value)
+                };
 
                 metadata.Groups.Add(group);
             }
+
             ugcmap.Add(metadata);
         }
+
         return ugcmap;
     }
 
@@ -78,6 +81,7 @@ public class UGCMapParser : Exporter<List<UGCMapMetadata>>
             case 90000027:
                 return CurrencyType.MesoToken;
         }
+
         throw new ArgumentException($"Unknown Currency Type for: {itemId}");
     }
 }

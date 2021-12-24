@@ -24,20 +24,18 @@ public class FurnishingShopParser : Exporter<List<FurnishingShopMetadata>>
             XmlNodeList nodes = document.SelectNodes("/ms2/key");
             foreach (XmlNode node in nodes)
             {
-                FurnishingShopMetadata metadata = new();
-
-                metadata.ItemId = int.Parse(node.Attributes["id"].Value);
-                byte buyable = byte.Parse(node.Attributes["ugcHousingBuy"].Value);
-                if (buyable == 1)
+                FurnishingShopMetadata metadata = new()
                 {
-                    metadata.Buyable = true;
-                }
-                metadata.FurnishingTokenType = byte.Parse(node.Attributes["ugcHousingMoneyType"].Value);
-                metadata.Price = int.Parse(node.Attributes["ugcHousingDefaultPrice"].Value);
+                    ItemId = int.Parse(node.Attributes["id"].Value),
+                    Buyable = byte.Parse(node.Attributes["ugcHousingBuy"].Value) == 1,
+                    FurnishingTokenType = byte.Parse(node.Attributes["ugcHousingMoneyType"].Value),
+                    Price = int.Parse(node.Attributes["ugcHousingDefaultPrice"].Value)
+                };
 
                 furnishingShops.Add(metadata);
             }
         }
+
         return furnishingShops;
     }
 }

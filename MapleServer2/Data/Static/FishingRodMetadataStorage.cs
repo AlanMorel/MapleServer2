@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class FishingRodMetadataStorage
 {
-    private static readonly Dictionary<int, FishingRodMetadata> map = new();
+    private static readonly Dictionary<int, FishingRodMetadata> FishingRod = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class FishingRodMetadataStorage
         List<FishingRodMetadata> items = Serializer.Deserialize<List<FishingRodMetadata>>(stream);
         foreach (FishingRodMetadata item in items)
         {
-            map[item.RodId] = item;
+            FishingRod[item.RodId] = item;
         }
     }
 
     public static bool IsValid(int rodId)
     {
-        return map.ContainsKey(rodId);
+        return FishingRod.ContainsKey(rodId);
     }
 
     public static FishingRodMetadata GetMetadata(int rodId)
     {
-        return map.GetValueOrDefault(rodId);
+        return FishingRod.GetValueOrDefault(rodId);
     }
 }

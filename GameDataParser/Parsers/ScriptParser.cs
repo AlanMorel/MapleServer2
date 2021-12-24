@@ -36,6 +36,7 @@ public class ScriptParser : Exporter<List<ScriptMetadata>>
                 {
                     continue;
                 }
+
                 // Skip locales other than NA and null
                 string locale = node.Attributes["locale"]?.Value ?? "";
 
@@ -120,6 +121,7 @@ public class ScriptParser : Exporter<List<ScriptMetadata>>
                 scripts.Add(metadata);
             }
         }
+
         return scripts;
     }
 
@@ -149,6 +151,7 @@ public class ScriptParser : Exporter<List<ScriptMetadata>>
                 gotoFailList.AddRange(distractorNode.Attributes["gotoFail"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList());
                 distractors.Add(new(gotoList, gotoFailList));
             }
+
             contents.Add(new(functionId, dialogType, distractors));
         }
     }

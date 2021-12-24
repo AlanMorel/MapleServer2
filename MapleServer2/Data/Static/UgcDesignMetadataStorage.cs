@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class UgcDesignMetadataStorage
 {
-    private static readonly Dictionary<int, UgcDesignMetadata> dict = new();
+    private static readonly Dictionary<int, UgcDesignMetadata> UgcDesign = new();
 
     public static void Init()
     {
@@ -14,9 +14,9 @@ public static class UgcDesignMetadataStorage
         List<UgcDesignMetadata> items = Serializer.Deserialize<List<UgcDesignMetadata>>(stream);
         foreach (UgcDesignMetadata item in items)
         {
-            dict[item.ItemId] = item;
+            UgcDesign[item.ItemId] = item;
         }
     }
 
-    public static UgcDesignMetadata GetItem(int itemId) => dict.TryGetValue(itemId, out UgcDesignMetadata item) ? item : null;
+    public static UgcDesignMetadata GetItem(int itemId) => UgcDesign.TryGetValue(itemId, out UgcDesignMetadata item) ? item : null;
 }

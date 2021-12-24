@@ -10,6 +10,7 @@ public class ItemOptionRandomMetadata
     [XmlElement(Order = 2)]
     public List<ItemOptionRandom> ItemOptions = new();
 }
+
 [XmlType]
 public class ItemOptionRandom
 {

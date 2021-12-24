@@ -25,9 +25,10 @@ public class ColorPaletteParser : Exporter<List<ColorPaletteMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                ColorPaletteMetadata metadata = new();
-
-                metadata.PaletteId = int.Parse(node.Attributes["id"].Value);
+                ColorPaletteMetadata metadata = new()
+                {
+                    PaletteId = int.Parse(node.Attributes["id"].Value)
+                };
 
                 foreach (XmlNode colorNode in node)
                 {
@@ -55,9 +56,11 @@ public class ColorPaletteParser : Exporter<List<ColorPaletteMetadata>>
                     );
                     metadata.DefaultColors.Add(newColor);
                 }
+
                 palette.Add(metadata);
             }
         }
+
         return palette;
     }
 }

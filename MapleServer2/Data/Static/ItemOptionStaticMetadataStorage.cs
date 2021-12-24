@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemOptionStaticMetadataStorage
 {
-    private static readonly Dictionary<int, ItemOptionStaticMetadata> map = new();
+    private static readonly Dictionary<int, ItemOptionStaticMetadata> ItemOptionStatic = new();
 
     public static void Init()
     {
@@ -14,18 +14,18 @@ public static class ItemOptionStaticMetadataStorage
         List<ItemOptionStaticMetadata> items = Serializer.Deserialize<List<ItemOptionStaticMetadata>>(stream);
         foreach (ItemOptionStaticMetadata item in items)
         {
-            map[item.Id] = item;
+            ItemOptionStatic[item.Id] = item;
         }
     }
 
     public static bool IsValid(int id)
     {
-        return map.ContainsKey(id);
+        return ItemOptionStatic.ContainsKey(id);
     }
 
     public static ItemOptionsStatic GetMetadata(int id, int rarity)
     {
-        ItemOptionStaticMetadata metadata = map.Values.FirstOrDefault(x => x.Id == id);
+        ItemOptionStaticMetadata metadata = ItemOptionStatic.Values.FirstOrDefault(x => x.Id == id);
         if (metadata == null)
         {
             return null;

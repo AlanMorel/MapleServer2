@@ -10,136 +10,83 @@ public class MapEntityMetadata
     [XmlElement(Order = 1)]
     public readonly int MapId;
     [XmlElement(Order = 2)]
-    public readonly List<MapNpc> Npcs;
+    public readonly List<MapNpc> Npcs = new();
     [XmlElement(Order = 3)]
-    public readonly List<MapPortal> Portals;
+    public readonly List<MapPortal> Portals = new();
     [XmlElement(Order = 4)]
-    public readonly List<MapPlayerSpawn> PlayerSpawns;
+    public readonly List<MapPlayerSpawn> PlayerSpawns = new();
     [XmlElement(Order = 5)]
-    public readonly List<MapMobSpawn> MobSpawns;
+    public readonly List<MapMobSpawn> MobSpawns = new();
     [XmlElement(Order = 6)]
-    public readonly List<MapWeaponObject> WeaponObjects;
+    public readonly List<MapWeaponObject> WeaponObjects = new();
     [XmlElement(Order = 7)]
     public CoordS BoundingBox0;
     [XmlElement(Order = 8)]
     public CoordS BoundingBox1;
     [XmlElement(Order = 9)]
-    public List<CoordS> HealingSpot;
+    public List<CoordS> HealingSpot = new();
     [XmlElement(Order = 10)]
-    public List<PatrolData> PatrolDatas;
+    public List<PatrolData> PatrolDatas = new();
     [XmlElement(Order = 11)]
-    public List<WayPoint> WayPoints;
+    public List<WayPoint> WayPoints = new();
     [XmlElement(Order = 12)]
-    public readonly List<MapTriggerMesh> TriggerMeshes;
+    public readonly List<MapTriggerMesh> TriggerMeshes = new();
     [XmlElement(Order = 13)]
-    public readonly List<MapTriggerEffect> TriggerEffects;
+    public readonly List<MapTriggerEffect> TriggerEffects = new();
     [XmlElement(Order = 14)]
-    public readonly List<MapTriggerCamera> TriggerCameras;
+    public readonly List<MapTriggerCamera> TriggerCameras = new();
     [XmlElement(Order = 15)]
-    public readonly List<MapTriggerBox> TriggerBoxes;
+    public readonly List<MapTriggerBox> TriggerBoxes = new();
     [XmlElement(Order = 16)]
-    public readonly List<MapTriggerLadder> TriggerLadders;
+    public readonly List<MapTriggerLadder> TriggerLadders = new();
     [XmlElement(Order = 17)]
-    public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints;
+    public readonly List<MapEventNpcSpawnPoint> EventNpcSpawnPoints = new();
     [XmlElement(Order = 18)]
-    public readonly List<MapTriggerActor> TriggerActors;
+    public readonly List<MapTriggerActor> TriggerActors = new();
     [XmlElement(Order = 19)]
-    public readonly List<MapTriggerCube> TriggerCubes;
+    public readonly List<MapTriggerCube> TriggerCubes = new();
     [XmlElement(Order = 20)]
-    public readonly List<MapTriggerSound> TriggerSounds;
+    public readonly List<MapTriggerSound> TriggerSounds = new();
     [XmlElement(Order = 21)]
-    public readonly List<MapTriggerRope> TriggerRopes;
+    public readonly List<MapTriggerRope> TriggerRopes = new();
     [XmlElement(Order = 22)]
-    public readonly List<MapBreakableActorObject> BreakableActors;
+    public readonly List<MapBreakableActorObject> BreakableActors = new();
     [XmlElement(Order = 23)]
-    public readonly List<MapBreakableNifObject> BreakableNifs;
+    public readonly List<MapBreakableNifObject> BreakableNifs = new();
     [XmlElement(Order = 24)]
-    public readonly List<MapVibrateObject> VibrateObjects;
+    public readonly List<MapVibrateObject> VibrateObjects = new();
     [XmlElement(Order = 25)]
-    public readonly List<MapTriggerSkill> TriggerSkills;
+    public readonly List<MapTriggerSkill> TriggerSkills = new();
     [XmlElement(Order = 26)]
-    public readonly List<MapInteractObject> InteractObjects;
+    public readonly List<MapInteractObject> InteractObjects = new();
     [XmlElement(Order = 27)]
-    public readonly List<MapLiftableObject> LiftableObjects;
+    public readonly List<MapLiftableObject> LiftableObjects = new();
     [XmlElement(Order = 28)]
-    public readonly List<MapLiftableTarget> LiftableTargets;
+    public readonly List<MapLiftableTarget> LiftableTargets = new();
 
-    public MapEntityMetadata()
-    {
-        PlayerSpawns = new();
-        MobSpawns = new();
-        Npcs = new();
-        Portals = new();
-        WeaponObjects = new();
-        HealingSpot = new();
-        PatrolDatas = new();
-        WayPoints = new();
-        TriggerMeshes = new();
-        TriggerEffects = new();
-        TriggerCameras = new();
-        TriggerBoxes = new();
-        TriggerLadders = new();
-        EventNpcSpawnPoints = new();
-        TriggerActors = new();
-        TriggerCubes = new();
-        TriggerSounds = new();
-        TriggerRopes = new();
-        BreakableActors = new();
-        BreakableNifs = new();
-        VibrateObjects = new();
-        TriggerSkills = new();
-        InteractObjects = new();
-        LiftableObjects = new();
-        LiftableTargets = new();
-    }
+    public MapEntityMetadata() { }
 
     public MapEntityMetadata(int mapId)
     {
         MapId = mapId;
-        PlayerSpawns = new();
-        MobSpawns = new();
-        Npcs = new();
-        Portals = new();
-        WeaponObjects = new();
-        HealingSpot = new();
-        PatrolDatas = new();
-        WayPoints = new();
-        TriggerMeshes = new();
-        TriggerEffects = new();
-        TriggerCameras = new();
-        TriggerBoxes = new();
-        TriggerLadders = new();
-        EventNpcSpawnPoints = new();
-        TriggerActors = new();
-        TriggerCubes = new();
-        TriggerSounds = new();
-        TriggerRopes = new();
-        BreakableActors = new();
-        BreakableNifs = new();
-        VibrateObjects = new();
-        TriggerSkills = new();
-        InteractObjects = new();
-        LiftableObjects = new();
-        LiftableTargets = new();
     }
 
     public override string ToString()
     {
-        return $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
+        return
+            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
     }
 }
+
 [XmlType]
 public class MapWeaponObject
 {
     [XmlElement(Order = 1)]
     public readonly CoordB Coord;
     [XmlElement(Order = 2)]
-    public readonly List<int> WeaponItemIds;
+    public readonly List<int> WeaponItemIds = new();
 
-    public MapWeaponObject()
-    {
-        WeaponItemIds = new();
-    }
+    public MapWeaponObject() { }
 
     public MapWeaponObject(CoordB coord, List<int> weaponIds)
     {
@@ -152,6 +99,7 @@ public class MapWeaponObject
         return $"MapObject(Coord:{Coord},WeaponId:{WeaponItemIds})";
     }
 }
+
 [XmlType]
 public class MapNpc
 {
@@ -195,6 +143,7 @@ public class MapNpc
 
     // TODO: Add other methods which idenntify the Type of NPC (always, event, etc)
 }
+
 [XmlType]
 public class MapPortal
 {
@@ -223,7 +172,8 @@ public class MapPortal
 
     public MapPortal() { }
 
-    public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId, PortalTypes portalType, int triggerId = 0)
+    public MapPortal(int id, string name, bool enable, bool isVisible, bool minimapVisible, int target, CoordS coord, CoordS rotation, int targetPortalId,
+        PortalTypes portalType, int triggerId = 0)
     {
         Id = id;
         Name = name;
@@ -241,9 +191,10 @@ public class MapPortal
     public override string ToString()
     {
         return $"MapPortal(Id:{Id},String:{Name},Enable:{Enable},IsVisible:{IsVisible},MinimapVisible:{MinimapVisible}," +
-            $"Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType},TriggerId:{TriggerId})";
+               $"Target:{Target},Rotation:{Rotation},Coord:{Coord},TargetPortalId:{TargetPortalId}, PortalType:{PortalType},TriggerId:{TriggerId})";
     }
 }
+
 [XmlType]
 public class MapPlayerSpawn
 {
@@ -265,6 +216,7 @@ public class MapPlayerSpawn
         return $"MapPlayerSpawn(Coord:{Coord},Rotation:{Rotation})";
     }
 }
+
 [XmlType]
 public class MapMobSpawn
 {
@@ -298,6 +250,7 @@ public class MapMobSpawn
         return $"MapMobSpawn(Id:{Id},Coord:{Coord},NpcCount:{NpcCount},NpcList{NpcList},SpawnRadius:{SpawnRadius})";
     }
 }
+
 [XmlType]
 public class SpawnMetadata
 {
@@ -326,6 +279,7 @@ public class SpawnMetadata
         IsPetSpawn = isPetSpawn;
     }
 }
+
 [XmlType]
 public class PatrolData
 {
@@ -348,7 +302,8 @@ public class PatrolData
 
     public PatrolData() { }
 
-    public PatrolData(string name, List<string> wayPointIds, int patrolSpeed, bool isLoop, bool isAirWayPoint, List<string> arriveAnimations, List<string> approachAnimations, List<int> arriveAnimationTimes)
+    public PatrolData(string name, List<string> wayPointIds, int patrolSpeed, bool isLoop, bool isAirWayPoint, List<string> arriveAnimations,
+        List<string> approachAnimations, List<int> arriveAnimationTimes)
     {
         Name = name;
         WayPointIds = wayPointIds;
@@ -365,6 +320,7 @@ public class PatrolData
         return $"PatrolData(Name:{Name},PatrolSpeed:{PatrolSpeed},IsLoop:{IsLoop},IsAirWayPoint:{IsAirWayPoint})";
     }
 }
+
 [XmlType]
 public class WayPoint
 {
@@ -392,6 +348,7 @@ public class WayPoint
         return $"PatrolData(Id:{Id},IsVisible:{IsVisible},Position:{Position},Rotation:{Rotation})";
     }
 }
+
 [XmlType]
 [ProtoContract]
 public class MapEventNpcSpawnPoint
@@ -431,6 +388,7 @@ public class MapEventNpcSpawnPoint
         Rotation = rotation;
     }
 }
+
 [ProtoContract]
 [ProtoInclude(50, typeof(MapTriggerMesh))]
 [ProtoInclude(51, typeof(MapTriggerEffect))]
@@ -454,6 +412,7 @@ public class MapTriggerObject
         Id = id;
     }
 }
+
 [ProtoContract]
 public class MapTriggerMesh : MapTriggerObject
 {
@@ -467,6 +426,7 @@ public class MapTriggerMesh : MapTriggerObject
 
     private MapTriggerMesh() { }
 }
+
 [ProtoContract]
 public class MapTriggerEffect : MapTriggerObject
 {
@@ -480,6 +440,7 @@ public class MapTriggerEffect : MapTriggerObject
 
     private MapTriggerEffect() { }
 }
+
 [ProtoContract]
 public class MapTriggerCamera : MapTriggerObject
 {
@@ -493,6 +454,7 @@ public class MapTriggerCamera : MapTriggerObject
 
     private MapTriggerCamera() { }
 }
+
 [ProtoContract]
 public class MapTriggerBox : MapTriggerObject
 {
@@ -509,6 +471,7 @@ public class MapTriggerBox : MapTriggerObject
 
     private MapTriggerBox() { }
 }
+
 [ProtoContract]
 public class MapTriggerLadder : MapTriggerObject
 {
@@ -522,6 +485,7 @@ public class MapTriggerLadder : MapTriggerObject
 
     private MapTriggerLadder() { }
 }
+
 [ProtoContract]
 public class MapTriggerActor : MapTriggerObject
 {
@@ -538,6 +502,7 @@ public class MapTriggerActor : MapTriggerObject
 
     private MapTriggerActor() { }
 }
+
 [ProtoContract]
 public class MapTriggerCube : MapTriggerObject
 {
@@ -551,6 +516,7 @@ public class MapTriggerCube : MapTriggerObject
 
     public MapTriggerCube() { }
 }
+
 [ProtoContract]
 public class MapTriggerSound : MapTriggerObject
 {
@@ -564,6 +530,7 @@ public class MapTriggerSound : MapTriggerObject
 
     public MapTriggerSound() { }
 }
+
 [ProtoContract]
 public class MapTriggerRope : MapTriggerObject
 {
@@ -577,6 +544,7 @@ public class MapTriggerRope : MapTriggerObject
 
     private MapTriggerRope() { }
 }
+
 [ProtoContract]
 [ProtoInclude(20, typeof(MapBreakableNifObject))]
 [ProtoInclude(21, typeof(MapBreakableActorObject))]
@@ -601,6 +569,7 @@ public class MapBreakableObject
         ResetDuration = resetDuration;
     }
 }
+
 [ProtoContract]
 public class MapBreakableNifObject : MapBreakableObject
 {
@@ -609,11 +578,13 @@ public class MapBreakableNifObject : MapBreakableObject
 
     public MapBreakableNifObject() { }
 
-    public MapBreakableNifObject(string id, bool isEnabled, int triggerId, int hideDuration, int resetDuration) : base(id, isEnabled, hideDuration, resetDuration)
+    public MapBreakableNifObject(string id, bool isEnabled, int triggerId, int hideDuration, int resetDuration) : base(id, isEnabled, hideDuration,
+        resetDuration)
     {
         TriggerId = triggerId;
     }
 }
+
 [ProtoContract]
 public class MapTriggerSkill : MapTriggerObject
 {
@@ -636,6 +607,7 @@ public class MapTriggerSkill : MapTriggerObject
 
     public MapTriggerSkill() { }
 }
+
 [ProtoContract]
 public class MapBreakableActorObject : MapBreakableObject
 {
@@ -643,6 +615,7 @@ public class MapBreakableActorObject : MapBreakableObject
 
     public MapBreakableActorObject(string id, bool isEnabled, int hideDuration, int resetDuration) : base(id, isEnabled, hideDuration, resetDuration) { }
 }
+
 [XmlType]
 public class MapVibrateObject
 {
@@ -656,6 +629,7 @@ public class MapVibrateObject
         EntityId = id;
     }
 }
+
 [XmlType]
 public class MapInteractObject
 {
@@ -678,6 +652,7 @@ public class MapInteractObject
         Type = type;
     }
 }
+
 [XmlType]
 public class MapLiftableObject
 {

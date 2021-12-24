@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class PrestigeMetadataStorage
 {
-    private static readonly Dictionary<int, PrestigeReward> rewards = new();
+    private static readonly Dictionary<int, PrestigeReward> Rewards = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class PrestigeMetadataStorage
         PrestigeMetadata metadata = Serializer.Deserialize<PrestigeMetadata>(stream);
         foreach (PrestigeReward reward in metadata.Rewards)
         {
-            rewards.Add(reward.Level, reward);
+            Rewards.Add(reward.Level, reward);
         }
     }
 
     public static PrestigeReward GetReward(int level)
     {
-        return rewards.GetValueOrDefault(level);
+        return Rewards.GetValueOrDefault(level);
     }
 }

@@ -14,16 +14,6 @@ public class ItemExtractionMetadata
     [XmlElement(Order = 4)]
     public int ResultItemId;
 
-    public ItemExtractionMetadata() { }
-
-    public ItemExtractionMetadata(int sourceItemId, byte tryCount, byte scrollCount, int resultItemId)
-    {
-        SourceItemId = sourceItemId;
-        TryCount = tryCount;
-        ScrollCount = scrollCount;
-        ResultItemId = resultItemId;
-    }
-
     public override string ToString()
     {
         return $"ItemExtractionMetadata(SourceItemId:{SourceItemId}, TryCount:{TryCount}, ScrollCount:{ScrollCount}, ResultItemId:{ResultItemId})";

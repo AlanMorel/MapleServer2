@@ -29,17 +29,21 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
             {
                 int jobCode = int.Parse(keyNode.Attributes["jobCode"].Value);
 
-                DefaultItemsMetadata metadata = new();
-                metadata.JobCode = jobCode;
+                DefaultItemsMetadata metadata = new()
+                {
+                    JobCode = jobCode
+                };
 
                 foreach (XmlNode childNode in keyNode)
                 {
                     _ = Enum.TryParse(childNode.Attributes["name"].Value, out ItemSlot slot);
                     foreach (XmlNode itemNode in childNode)
                     {
-                        DefaultItem defaultItem = new();
-                        defaultItem.ItemSlot = slot;
-                        defaultItem.ItemId = int.Parse(itemNode.Attributes["id"].Value);
+                        DefaultItem defaultItem = new()
+                        {
+                            ItemSlot = slot,
+                            ItemId = int.Parse(itemNode.Attributes["id"].Value)
+                        };
                         metadata.DefaultItems.Add(defaultItem);
                     }
                 }
@@ -56,12 +60,15 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
 
             foreach (KeyValuePair<int, List<DefaultItem>> job in jobDictionary)
             {
-                DefaultItemsMetadata jobMetadata = new();
-                jobMetadata.JobCode = job.Key;
+                DefaultItemsMetadata jobMetadata = new()
+                {
+                    JobCode = job.Key
+                };
                 jobMetadata.DefaultItems.AddRange(job.Value);
                 items.Add(jobMetadata);
             }
         }
+
         return items;
     }
 }

@@ -14,27 +14,14 @@ public class PremiumClubPackageMetadata
     [XmlElement(Order = 4)]
     public byte BuyLimit;
     [XmlElement(Order = 5)]
-    public List<BonusItem> BonusItem;
-
-    public PremiumClubPackageMetadata()
-    {
-        BonusItem = new();
-    }
-
-    public PremiumClubPackageMetadata(int id, int vipPeriod, int price, byte buyLimit, List<BonusItem> bonusItems)
-    {
-        Id = id;
-        VipPeriod = vipPeriod;
-        Price = price;
-        BuyLimit = buyLimit;
-        BonusItem = bonusItems;
-    }
+    public List<BonusItem> BonusItem = new();
 
     public override string ToString()
     {
         return $"PremiumClubPackage(Id:{Id},VipPeriod:{VipPeriod},Price:{Price},BuyLimit:{BuyLimit},BonusItem:{BonusItem}}}";
     }
 }
+
 [XmlType]
 public class BonusItem
 {
@@ -44,15 +31,6 @@ public class BonusItem
     public byte Rarity;
     [XmlElement(Order = 3)]
     public short Amount;
-
-    public BonusItem() { }
-
-    public BonusItem(int id, byte rarity, short amount)
-    {
-        Id = id;
-        Rarity = rarity;
-        Amount = amount;
-    }
 
     public override string ToString()
     {

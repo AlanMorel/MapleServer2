@@ -3,7 +3,7 @@
 namespace Maple2Storage.Types.Metadata;
 
 [XmlType]
-public class InsturmentInfoMetadata
+public class InstrumentInfoMetadata
 {
     [XmlElement(Order = 1)]
     public byte InstrumentId;
@@ -11,15 +11,6 @@ public class InsturmentInfoMetadata
     public byte Category;
     [XmlElement(Order = 3)]
     public byte ScoreCount;
-
-    public InsturmentInfoMetadata() { }
-
-    public InsturmentInfoMetadata(byte instrumentId, byte category, byte scoreCount)
-    {
-        InstrumentId = instrumentId;
-        Category = category;
-        ScoreCount = scoreCount;
-    }
 
     public override string ToString()
     {

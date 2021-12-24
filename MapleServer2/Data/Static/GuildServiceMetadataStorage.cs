@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class GuildServiceMetadataStorage
 {
-    private static readonly Dictionary<int, GuildServiceMetadata> services = new();
+    private static readonly Dictionary<int, GuildServiceMetadata> Services = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class GuildServiceMetadataStorage
         List<GuildServiceMetadata> items = Serializer.Deserialize<List<GuildServiceMetadata>>(stream);
         foreach (GuildServiceMetadata item in items)
         {
-            services[item.Level] = item;
+            Services[item.Level] = item;
         }
     }
 
     public static GuildServiceMetadata GetMetadata(int id, int level)
     {
-        return services.Values.Where(x => x.Id == id && x.Level == level + 1).First();
+        return Services.Values.Where(x => x.Id == id && x.Level == level + 1).First();
     }
 }

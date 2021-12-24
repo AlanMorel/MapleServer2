@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class JobMetadataStorage
 {
-    private static readonly Dictionary<int, JobMetadata> jobs = new();
+    private static readonly Dictionary<int, JobMetadata> Jobs = new();
 
     public static void Init()
     {
@@ -14,32 +14,32 @@ public static class JobMetadataStorage
         List<JobMetadata> jobList = Serializer.Deserialize<List<JobMetadata>>(stream);
         foreach (JobMetadata job in jobList)
         {
-            jobs[job.JobId] = job;
+            Jobs[job.JobId] = job;
         }
     }
 
     public static JobMetadata GetJobMetadata(int jobId)
     {
-        return jobs.GetValueOrDefault(jobId);
+        return Jobs.GetValueOrDefault(jobId);
     }
 
     public static List<TutorialItemMetadata> GetTutorialItems(int jobId)
     {
-        return jobs.GetValueOrDefault(jobId).TutorialItems;
+        return Jobs.GetValueOrDefault(jobId).TutorialItems;
     }
 
     public static List<JobLearnedSkillsMetadata> GetLearnedSkills(int jobId)
     {
-        return jobs.GetValueOrDefault(jobId).LearnedSkills;
+        return Jobs.GetValueOrDefault(jobId).LearnedSkills;
     }
 
     public static List<JobSkillMetadata> GetJobskills(int jobId)
     {
-        return jobs.GetValueOrDefault(jobId).Skills;
+        return Jobs.GetValueOrDefault(jobId).Skills;
     }
 
     public static int GetStartMapId(int jobId)
     {
-        return jobs.GetValueOrDefault(jobId).StartMapId;
+        return Jobs.GetValueOrDefault(jobId).StartMapId;
     }
 }

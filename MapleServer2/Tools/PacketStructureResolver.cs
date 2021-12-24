@@ -27,7 +27,7 @@ public class PacketStructureResolver
     private readonly Dictionary<uint, SockHintInfo> Overrides;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private static readonly Regex infoRegex = new(@"\[type=(\d+)\]\[offset=(\d+)\]\[hint=(\w+)\]");
+    private static readonly Regex InfoRegex = new(@"\[type=(\d+)\]\[offset=(\d+)\]\[hint=(\w+)\]");
 
     private PacketStructureResolver(ushort opCode)
     {
@@ -185,7 +185,7 @@ public class PacketStructureResolver
 
     private static SockExceptionInfo ParseError(string error)
     {
-        Match match = infoRegex.Match(error);
+        Match match = InfoRegex.Match(error);
         if (match.Groups.Count != 4)
         {
             throw new ArgumentException($"Failed to parse error: {error}");

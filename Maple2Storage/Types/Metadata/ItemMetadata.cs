@@ -56,9 +56,9 @@ public class ItemMetadata
     [XmlElement(Order = 24)]
     public List<int> RecommendJobs = new();
     [XmlElement(Order = 25)]
-    public List<ItemBreakReward> BreakRewards;
+    public List<ItemBreakReward> BreakRewards = new();
     [XmlElement(Order = 26)]
-    public ItemFunction FunctionData;
+    public ItemFunction FunctionData = new();
     [XmlElement(Order = 27)]
     public string Tag;
     [XmlElement(Order = 28)]
@@ -90,19 +90,15 @@ public class ItemMetadata
     [XmlElement(Order = 41)]
     public string Category;
 
-    public ItemMetadata()
-    {
-        BreakRewards = new();
-        FunctionData = new();
-    }
-
     public override string ToString()
     {
-        return $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
+        return
+            $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
             $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
             $"Tag:{Tag},ShopID:{ShopID}";
     }
 }
+
 [XmlType]
 public class ItemBreakReward
 {
@@ -124,6 +120,7 @@ public class ItemBreakReward
         return $"Id: {Id}, Amount: {Count}";
     }
 }
+
 [XmlType]
 public class ItemFunction
 {
@@ -150,19 +147,12 @@ public class ItemFunction
     [XmlElement(Order = 11)]
     public InstallBillboard InstallBillboard;
 
-    public ItemFunction() { }
-
-    public ItemFunction(string name, int id)
-    {
-        Name = name;
-        Id = id;
-    }
-
     public override string ToString()
     {
         return $"Function(Name: {Name}, Id: {Id}";
     }
 }
+
 [XmlType]
 public class OpenItemBox
 {
@@ -175,6 +165,7 @@ public class OpenItemBox
     [XmlElement(Order = 4)]
     public int AmountRequired;
 }
+
 [XmlType]
 public class SelectItemBox
 {
@@ -183,6 +174,7 @@ public class SelectItemBox
     [XmlElement(Order = 2)]
     public int BoxId;
 }
+
 [XmlType]
 public class ChatEmoticonAdd
 {
@@ -191,6 +183,7 @@ public class ChatEmoticonAdd
     [XmlElement(Order = 2)]
     public int Duration;
 }
+
 [XmlType]
 public class OpenMassiveEvent
 {
@@ -201,18 +194,21 @@ public class OpenMassiveEvent
     [XmlElement(Order = 3)]
     public int Duration;
 }
+
 [XmlType]
 public class LevelPotion
 {
     [XmlElement(Order = 1)]
     public short TargetLevel;
 }
+
 [XmlType]
 public class VIPCoupon
 {
     [XmlElement(Order = 1)]
     public int Duration;
 }
+
 [XmlType]
 public class HongBaoData
 {
@@ -225,6 +221,7 @@ public class HongBaoData
     [XmlElement(Order = 4)]
     public int Duration;
 }
+
 [XmlType]
 public class OpenCoupleEffectBox
 {
@@ -233,6 +230,7 @@ public class OpenCoupleEffectBox
     [XmlElement(Order = 2)]
     public int Rarity;
 }
+
 [XmlType]
 public class InstallBillboard
 {
@@ -254,9 +252,10 @@ public class InstallBillboard
     public override string ToString()
     {
         return $"AdBalloonData(InteractId:{InteractId}, Model:{Model}, Asset:{Asset}, " +
-            $"NormalState:{NormalState}, Reactable:{Reactable}, Scale:{Scale}, Duration:{Duration})";
+               $"NormalState:{NormalState}, Reactable:{Reactable}, Scale:{Scale}, Duration:{Duration})";
     }
 }
+
 [XmlType]
 public class HairPresets
 {
@@ -276,6 +275,6 @@ public class HairPresets
     public override string ToString()
     {
         return $"HairPreset(BackPositionCoord: {BackPositionCoord}, BackPositionRotation: {BackPositionRotation}, " +
-            $"FrontPositionCoord: {FrontPositionCoord}, FrontPositionRotation: {FrontPositionRotation}), MinScale:{MinScale}, MaxScale:{MaxScale}";
+               $"FrontPositionCoord: {FrontPositionCoord}, FrontPositionRotation: {FrontPositionRotation}), MinScale:{MinScale}, MaxScale:{MaxScale}";
     }
 }

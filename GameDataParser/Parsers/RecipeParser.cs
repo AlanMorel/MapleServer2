@@ -35,15 +35,16 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                     continue;
                 }
 
-                RecipeMetadata newRecipe = new();
-                newRecipe.Id = int.Parse(recipe.Attributes["id"]?.Value ?? "0");
-
-                newRecipe.MasteryType = short.Parse(recipe.Attributes["masteryType"]?.Value ?? "0");
-                newRecipe.ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1;
-                newRecipe.RequireMastery = long.Parse(recipe.Attributes["requireMastery"]?.Value ?? "0");
-                newRecipe.RequireQuest = recipe.Attributes["requireQuest"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
-                newRecipe.RewardMastery = long.Parse(recipe.Attributes["rewardMastery"]?.Value ?? "0");
-                newRecipe.GatheringTime = recipe.Attributes["gatheringTime"].Value;
+                RecipeMetadata newRecipe = new()
+                {
+                    Id = int.Parse(recipe.Attributes["id"]?.Value ?? "0"),
+                    MasteryType = short.Parse(recipe.Attributes["masteryType"]?.Value ?? "0"),
+                    ExceptRewardExp = int.Parse(recipe.Attributes["exceptRewardExp"].Value) == 1,
+                    RequireMastery = long.Parse(recipe.Attributes["requireMastery"]?.Value ?? "0"),
+                    RequireQuest = recipe.Attributes["requireQuest"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList(),
+                    RewardMastery = long.Parse(recipe.Attributes["rewardMastery"]?.Value ?? "0"),
+                    GatheringTime = recipe.Attributes["gatheringTime"].Value
+                };
 
                 _ = long.TryParse(recipe.Attributes["requireMeso"]?.Value ?? "0", out newRecipe.RequireMeso);
                 _ = long.TryParse(recipe.Attributes["rewardExp"]?.Value ?? "0", out newRecipe.RewardExp);
@@ -80,6 +81,7 @@ internal class RecipeParser : Exporter<List<RecipeMetadata>>
                 recipeList.Add(newRecipe);
             }
         }
+
         return recipeList;
     }
 }

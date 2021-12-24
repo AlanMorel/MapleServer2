@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemGemstoneUpgradeMetadataStorage
 {
-    private static readonly Dictionary<int, ItemGemstoneUpgradeMetadata> gem = new();
+    private static readonly Dictionary<int, ItemGemstoneUpgradeMetadata> ItemGemstoneUpgradeMetadatas = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class ItemGemstoneUpgradeMetadataStorage
         List<ItemGemstoneUpgradeMetadata> items = Serializer.Deserialize<List<ItemGemstoneUpgradeMetadata>>(stream);
         foreach (ItemGemstoneUpgradeMetadata item in items)
         {
-            gem[item.ItemId] = item;
+            ItemGemstoneUpgradeMetadatas[item.ItemId] = item;
         }
     }
 
     public static ItemGemstoneUpgradeMetadata GetMetadata(int itemId)
     {
-        return gem.GetValueOrDefault(itemId);
+        return ItemGemstoneUpgradeMetadatas.GetValueOrDefault(itemId);
     }
 }

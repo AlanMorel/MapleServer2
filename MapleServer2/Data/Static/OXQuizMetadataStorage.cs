@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class OXQuizMetadataStorage
 {
-    private static readonly Dictionary<int, OXQuizQuestion> questions = new();
+    private static readonly Dictionary<int, OXQuizQuestion> Questions = new();
 
     public static void Init()
     {
@@ -14,14 +14,14 @@ public static class OXQuizMetadataStorage
         List<OXQuizQuestion> items = JsonConvert.DeserializeObject<List<OXQuizQuestion>>(json);
         foreach (OXQuizQuestion item in items)
         {
-            questions[item.Id] = item;
+            Questions[item.Id] = item;
         }
     }
 
     public static OXQuizQuestion GetQuestion()
     {
         Random random = new();
-        int index = random.Next(questions.Count);
-        return questions[index];
+        int index = random.Next(Questions.Count);
+        return Questions[index];
     }
 }

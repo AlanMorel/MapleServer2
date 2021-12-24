@@ -53,8 +53,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                         metadata.Basic.Locking = byte.Parse(node.Attributes["locking"]?.Value ?? "0");
                         metadata.Basic.TabIndex = int.Parse(node.Attributes["tabIndex"]?.Value ?? "0");
                         metadata.Basic.ForceRegistGuide = byte.Parse(node.Attributes["forceRegistGuide"]?.Value ?? "0");
-                        metadata.Basic.UseNavigation = !(node.Attributes["useNavi"].Value == "FALSE");
-
+                        metadata.Basic.UseNavigation = node.Attributes["useNavi"].Value != "FALSE";
                     }
                     else if (node.Name == "notify")
                     {
@@ -103,6 +102,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                             {
                                 continue;
                             }
+
                             int itemId = int.Parse(reward.Attributes["code"]?.Value ?? "0");
                             if (itemId == 0)
                             {
@@ -170,6 +170,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                         {
                             targets = new(node.Attributes["target"].Value.Split(","));
                         }
+
                         metadata.Condition.Add(new(type, codes, value, targets));
                     }
                     else if (node.Name == "navi")
@@ -185,6 +186,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                 quests.Add(metadata);
             }
         }
+
         return quests;
     }
 }

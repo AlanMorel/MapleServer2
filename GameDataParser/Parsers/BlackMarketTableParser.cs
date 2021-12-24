@@ -14,7 +14,6 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
         List<BlackMarketTableMetadata> tables = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-
             if (!entry.Name.StartsWith("table/blackmarkettable"))
             {
                 continue;
@@ -32,10 +31,11 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
                 {
                     if (tabNode.Attributes["category"] != null)
                     {
-                        BlackMarketTableMetadata metadata = new();
-
-                        metadata.CategoryId = int.Parse(tabNode.Attributes["id"].Value);
-                        metadata.ItemCategories = tabNode.Attributes["category"].Value.Split(",").ToList();
+                        BlackMarketTableMetadata metadata = new()
+                        {
+                            CategoryId = int.Parse(tabNode.Attributes["id"].Value),
+                            ItemCategories = tabNode.Attributes["category"].Value.Split(",").ToList()
+                        };
 
                         tables.Add(metadata);
                     }
@@ -45,10 +45,11 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
                         Console.WriteLine(subtabNode.Attributes["name"].Value);
                         if (subtabNode.Attributes["category"] != null)
                         {
-                            BlackMarketTableMetadata metadata = new();
-
-                            metadata.CategoryId = int.Parse(subtabNode.Attributes["id"].Value);
-                            metadata.ItemCategories = subtabNode.Attributes["category"].Value.Split(",").ToList();
+                            BlackMarketTableMetadata metadata = new()
+                            {
+                                CategoryId = int.Parse(subtabNode.Attributes["id"].Value),
+                                ItemCategories = subtabNode.Attributes["category"].Value.Split(",").ToList()
+                            };
 
                             tables.Add(metadata);
                         }
@@ -60,20 +61,21 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
                                 Console.WriteLine(subsubNode.Attributes["name"].Value);
                                 if (subsubNode.Attributes["category"] != null)
                                 {
-                                    BlackMarketTableMetadata metadata = new();
-
-                                    metadata.CategoryId = int.Parse(subsubNode.Attributes["id"].Value);
-                                    metadata.ItemCategories = subsubNode.Attributes["category"].Value.Split(",").ToList();
+                                    BlackMarketTableMetadata metadata = new()
+                                    {
+                                        CategoryId = int.Parse(subsubNode.Attributes["id"].Value),
+                                        ItemCategories = subsubNode.Attributes["category"].Value.Split(",").ToList()
+                                    };
 
                                     tables.Add(metadata);
                                 }
                             }
                         }
                     }
-
                 }
             }
         }
+
         return tables;
     }
 }

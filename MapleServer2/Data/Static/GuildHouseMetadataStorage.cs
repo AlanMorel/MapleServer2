@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class GuildHouseMetadataStorage
 {
-    private static readonly Dictionary<int, GuildHouseMetadata> houses = new();
+    private static readonly Dictionary<int, GuildHouseMetadata> Houses = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class GuildHouseMetadataStorage
         List<GuildHouseMetadata> items = Serializer.Deserialize<List<GuildHouseMetadata>>(stream);
         foreach (GuildHouseMetadata item in items)
         {
-            houses[item.FieldId] = item;
+            Houses[item.FieldId] = item;
         }
     }
 
     public static GuildHouseMetadata GetMetadataByThemeId(int level, int themeId)
     {
-        return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId);
+        return Houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId);
     }
 
     public static int GetFieldId(int level, int themeId)
     {
-        return houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId).FieldId;
+        return Houses.Values.FirstOrDefault(x => x.Level == level && x.Theme == themeId).FieldId;
     }
 }

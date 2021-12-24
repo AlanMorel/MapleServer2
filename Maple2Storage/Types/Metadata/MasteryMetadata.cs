@@ -8,24 +8,14 @@ public class MasteryMetadata
     [XmlElement(Order = 1)]
     public int Type;
     [XmlElement(Order = 2)]
-    public List<MasteryGrade> Grades;
-
-    public MasteryMetadata()
-    {
-        Grades = new();
-    }
-
-    public MasteryMetadata(int type, List<MasteryGrade> grades)
-    {
-        Type = type;
-        Grades = grades;
-    }
+    public List<MasteryGrade> Grades = new();
 
     public override string ToString()
     {
         return $"MasteryMetadata(Type:{Type},Grades:{string.Join(",", Grades)})";
     }
 }
+
 [XmlType]
 public class MasteryGrade
 {
@@ -44,6 +34,7 @@ public class MasteryGrade
 
     public override string ToString()
     {
-        return $"MasteryGradeMetadata(Grade:{Grade},Value:{Value},RewardJobItemID:{RewardJobItemID},RewardJobItemRank:{RewardJobItemRank},RewardJobItemCount:{RewardJobItemCount},Feature:{Feature})";
+        return $"MasteryGradeMetadata(Grade:{Grade},Value:{Value},RewardJobItemID:{RewardJobItemID},RewardJobItemRank:{RewardJobItemRank}," +
+               $"RewardJobItemCount:{RewardJobItemCount},Feature:{Feature})";
     }
 }

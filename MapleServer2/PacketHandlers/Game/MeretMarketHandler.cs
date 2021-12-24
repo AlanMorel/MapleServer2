@@ -143,7 +143,7 @@ public class MeretMarketHandler : GamePacketHandler
             return;
         }
 
-        UGCMarketItem marketItem = new UGCMarketItem(item, salePrice, session.Player, tags, description, promote);
+        UGCMarketItem marketItem = new(item, salePrice, session.Player, tags, description, promote);
 
         session.Send(MeretMarketPacket.ListItem(marketItem));
         session.Send(MeretMarketPacket.UpdateExpiration(marketItem));

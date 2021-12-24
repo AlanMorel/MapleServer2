@@ -26,9 +26,11 @@ public class ItemGemstoneUpgradeParser : Exporter<List<ItemGemstoneUpgradeMetada
 
             foreach (XmlNode key in keys)
             {
-                ItemGemstoneUpgradeMetadata metadata = new();
-                metadata.ItemId = int.Parse(key.Attributes["ItemId"].Value);
-                metadata.GemLevel = byte.Parse(key.Attributes["GemLevel"].Value);
+                ItemGemstoneUpgradeMetadata metadata = new()
+                {
+                    ItemId = int.Parse(key.Attributes["ItemId"].Value),
+                    GemLevel = byte.Parse(key.Attributes["GemLevel"].Value)
+                };
                 _ = int.TryParse(key.Attributes["NextItemID"]?.Value ?? "0", out metadata.NextItemId);
 
                 for (int i = 1; i < 5; i++)
@@ -39,9 +41,11 @@ public class ItemGemstoneUpgradeParser : Exporter<List<ItemGemstoneUpgradeMetada
                         metadata.IngredientAmounts.Add(int.Parse(key.Attributes["IngredientCount" + i].Value));
                     }
                 }
+
                 gems.Add(metadata);
             }
         }
+
         return gems;
     }
 }

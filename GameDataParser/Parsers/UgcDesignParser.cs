@@ -38,7 +38,7 @@ public class UgcDesignParser : Exporter<List<UgcDesignMetadata>>
             long salePrice = long.Parse(node.Attributes["salePrice"].Value);
             long marketMinPrice = long.Parse(node.Attributes["marketMinPrice"].Value);
             long marketMaxPrice = long.Parse(node.Attributes["marketMaxPrice"].Value);
-            metadatas.Add(new UgcDesignMetadata(itemId, visible, rarity, currencyType, price, salePrice, marketMinPrice, marketMaxPrice));
+            metadatas.Add(new(itemId, visible, rarity, currencyType, price, salePrice, marketMinPrice, marketMaxPrice));
         }
 
         return metadatas;

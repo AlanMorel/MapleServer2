@@ -14,7 +14,7 @@ namespace MapleServer2.PacketHandlers.Game;
 
 public class SkillHandler : GamePacketHandler
 {
-    private static readonly Random rand = RandomProvider.Get();
+    private static readonly Random Rand = RandomProvider.Get();
 
     public override RecvOp OpCode => RecvOp.SKILL;
 
@@ -266,29 +266,29 @@ public class SkillHandler : GamePacketHandler
     {
         // TODO: Add trophy + item drops
         // Drop Money
-        bool dropMeso = rand.Next(2) == 0;
+        bool dropMeso = Rand.Next(2) == 0;
         if (dropMeso)
         {
             // TODO: Calculate meso drop rate
-            Item meso = new(90000001, rand.Next(2, 800));
+            Item meso = new(90000001, Rand.Next(2, 800));
             session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
         }
         // Drop Meret
-        bool dropMeret = rand.Next(40) == 0;
+        bool dropMeret = Rand.Next(40) == 0;
         if (dropMeret)
         {
             Item meret = new(90000004, 20);
             session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
         }
         // Drop SP
-        bool dropSP = rand.Next(6) == 0;
+        bool dropSP = Rand.Next(6) == 0;
         if (dropSP)
         {
             Item spBall = new(90000009, 20);
             session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
         }
         // Drop EP
-        bool dropEP = rand.Next(10) == 0;
+        bool dropEP = Rand.Next(10) == 0;
         if (dropEP)
         {
             Item epBall = new(90000010, 20);

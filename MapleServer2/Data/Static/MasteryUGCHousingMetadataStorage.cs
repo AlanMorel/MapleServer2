@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class MasteryUGCHousingMetadataStorage
 {
-    private static readonly Dictionary<byte, MasteryUGCHousingMetadata> masteryMetadata = new();
+    private static readonly Dictionary<byte, MasteryUGCHousingMetadata> MasteryMetadata = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class MasteryUGCHousingMetadataStorage
         List<MasteryUGCHousingMetadata> masteryMetadatas = Serializer.Deserialize<List<MasteryUGCHousingMetadata>>(stream);
         foreach (MasteryUGCHousingMetadata metadata in masteryMetadatas)
         {
-            masteryMetadata[metadata.Grade] = metadata;
+            MasteryMetadata[metadata.Grade] = metadata;
         }
     }
 
     public static MasteryUGCHousingMetadata GetMetadata(byte grade)
     {
-        masteryMetadata.TryGetValue(grade, out MasteryUGCHousingMetadata metadata);
+        MasteryMetadata.TryGetValue(grade, out MasteryUGCHousingMetadata metadata);
         return metadata;
     }
 }

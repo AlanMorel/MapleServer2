@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class BlackMarketTableMetadataStorage
 {
-    private static readonly Dictionary<int, BlackMarketTableMetadata> map = new();
+    private static readonly Dictionary<int, BlackMarketTableMetadata> BlackMarketTable = new();
 
     public static void Init()
     {
@@ -14,14 +14,14 @@ public static class BlackMarketTableMetadataStorage
         List<BlackMarketTableMetadata> items = Serializer.Deserialize<List<BlackMarketTableMetadata>>(stream);
         foreach (BlackMarketTableMetadata item in items)
         {
-            map[item.CategoryId] = item;
+            BlackMarketTable[item.CategoryId] = item;
         }
     }
 
     public static List<string> GetItemCategories(int minCategoryId, int maxCategoryId)
     {
         List<string> itemCategories = new();
-        foreach (BlackMarketTableMetadata metadata in map.Values)
+        foreach (BlackMarketTableMetadata metadata in BlackMarketTable.Values)
         {
             if (metadata.CategoryId >= minCategoryId && metadata.CategoryId <= maxCategoryId)
             {

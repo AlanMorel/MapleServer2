@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static;
 
 public static class QuestMetadataStorage
 {
-    private static readonly Dictionary<int, QuestMetadata> map = new();
+    private static readonly Dictionary<int, QuestMetadata> Quests = new();
 
     public static void Init()
     {
@@ -16,22 +16,22 @@ public static class QuestMetadataStorage
         List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
         foreach (QuestMetadata item in items)
         {
-            map[item.Basic.Id] = item;
+            Quests[item.Basic.Id] = item;
         }
     }
 
-    public static QuestMetadata GetMetadata(int questId) => map.GetValueOrDefault(questId);
+    public static QuestMetadata GetMetadata(int questId) => Quests.GetValueOrDefault(questId);
 
     public static List<QuestMetadata> GetAvailableQuests(int level, Job job)
     {
-        return map.Values.Where(questMetadata => questMetadata.Require.Level <= level
+        return Quests.Values.Where(questMetadata => questMetadata.Require.Level <= level
                                                  && (questMetadata.Require.Job.Contains((short) job) || questMetadata.Require.Job.Count == 0)
                                                  && questMetadata.Require.RequiredQuests.Count == 0
                                                  && questMetadata.Basic.QuestType is QuestType.Epic or QuestType.World)
             .ToList();
     }
 
-    public static Dictionary<int, QuestMetadata> GetAllQuests() => map;
+    public static Dictionary<int, QuestMetadata> GetAllQuests() => Quests;
 
-    public static bool IsValid(int questId) => map.ContainsKey(questId);
+    public static bool IsValid(int questId) => Quests.ContainsKey(questId);
 }

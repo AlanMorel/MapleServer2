@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class GuildBuffMetadataStorage
 {
-    private static readonly Dictionary<int, GuildBuffMetadata> buffs = new();
+    private static readonly Dictionary<int, GuildBuffMetadata> Buffs = new();
 
     public static void Init()
     {
@@ -14,19 +14,19 @@ public static class GuildBuffMetadataStorage
         List<GuildBuffMetadata> items = Serializer.Deserialize<List<GuildBuffMetadata>>(stream);
         foreach (GuildBuffMetadata item in items)
         {
-            buffs[item.BuffId] = item;
+            Buffs[item.BuffId] = item;
         }
     }
 
     public static bool IsValid(int buffId)
     {
-        return buffs.ContainsKey(buffId);
+        return Buffs.ContainsKey(buffId);
     }
 
     public static List<int> GetBuffList()
     {
         List<int> buffIds = new();
-        foreach (GuildBuffMetadata buffmetadata in buffs.Values)
+        foreach (GuildBuffMetadata buffmetadata in Buffs.Values)
         {
             buffIds.Add(buffmetadata.BuffId);
         }
@@ -35,7 +35,7 @@ public static class GuildBuffMetadataStorage
 
     public static GuildBuffLevel GetGuildBuffLevelData(int buffId, int buffLevel)
     {
-        GuildBuffMetadata metadata = buffs.GetValueOrDefault(buffId);
+        GuildBuffMetadata metadata = Buffs.GetValueOrDefault(buffId);
         return metadata.Levels.FirstOrDefault(x => x.Level == buffLevel);
     }
 }

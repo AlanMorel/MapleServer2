@@ -24,16 +24,18 @@ public class FishingRodParser : Exporter<List<FishingRodMetadata>>
 
             foreach (XmlNode node in nodes)
             {
-                FishingRodMetadata metadata = new();
-
-                metadata.RodId = int.Parse(node.Attributes["rodCode"].Value);
-                metadata.ItemId = int.Parse(node.Attributes["itemCode"].Value);
-                metadata.MasteryLimit = short.Parse(node.Attributes["fishMasteryLimit"].Value);
-                metadata.ReduceTime = int.Parse(node.Attributes["reduceFishingTime"].Value);
+                FishingRodMetadata metadata = new()
+                {
+                    RodId = int.Parse(node.Attributes["rodCode"].Value),
+                    ItemId = int.Parse(node.Attributes["itemCode"].Value),
+                    MasteryLimit = short.Parse(node.Attributes["fishMasteryLimit"].Value),
+                    ReduceTime = int.Parse(node.Attributes["reduceFishingTime"].Value)
+                };
 
                 rods.Add(metadata);
             }
         }
+
         return rods;
     }
 }

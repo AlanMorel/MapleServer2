@@ -23,32 +23,36 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
             XmlDocument document = Resources.XmlReader.GetXmlDocument(entry);
             XmlNode trophy = document.SelectSingleNode("/ms2/achieves");
 
-            TrophyMetadata newTrophy = new();
-            newTrophy.Id = int.Parse(trophy.Attributes["id"].Value);
-            newTrophy.Categories = trophy.Attributes["categoryTag"]?.Value.Split(",");
-            newTrophy.AccountWide = trophy.Attributes["account"].Value == "1";
+            TrophyMetadata newTrophy = new()
+            {
+                Id = int.Parse(trophy.Attributes["id"].Value),
+                Categories = trophy.Attributes["categoryTag"]?.Value.Split(","),
+                AccountWide = trophy.Attributes["account"].Value == "1"
+            };
 
             XmlNodeList grades = trophy.SelectNodes("grade");
 
             foreach (XmlNode grade in grades)
             {
-                TrophyGradeMetadata newGrade = new();
-                newGrade.Grade = int.Parse(grade.Attributes["value"].Value);
-
                 XmlNode condition = grade.SelectSingleNode("condition");
-                newGrade.Condition = long.Parse(condition.Attributes["value"].Value);
-                newGrade.ConditionType = condition.Attributes["type"].Value;
-                newGrade.ConditionCodes = condition.Attributes["code"].Value.Split(",");
-                newGrade.ConditionTargets = condition.Attributes["target"].Value.Split(",");
-
                 XmlNode reward = grade.SelectSingleNode("reward");
                 Enum.TryParse(reward.Attributes["type"].Value, true, out RewardType type);
-                newGrade.RewardType = type;
-                newGrade.RewardCode = int.Parse(reward.Attributes["code"].Value);
-                newGrade.RewardValue = int.Parse(reward.Attributes["value"].Value);
+
+                TrophyGradeMetadata newGrade = new()
+                {
+                    Grade = int.Parse(grade.Attributes["value"].Value),
+                    Condition = long.Parse(condition.Attributes["value"].Value),
+                    ConditionType = condition.Attributes["type"].Value,
+                    ConditionCodes = condition.Attributes["code"].Value.Split(","),
+                    ConditionTargets = condition.Attributes["target"].Value.Split(","),
+                    RewardType = type,
+                    RewardCode = int.Parse(reward.Attributes["code"].Value),
+                    RewardValue = int.Parse(reward.Attributes["value"].Value)
+                };
 
                 newTrophy.Grades.Add(newGrade);
             }
+
             trophyList.Add(newTrophy);
         }
 

@@ -7,7 +7,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ConstantsMetadataStorage
 {
-    private static readonly Dictionary<string, ConstantsMetadata> constants = new Dictionary<string, ConstantsMetadata>();
+    private static readonly Dictionary<string, ConstantsMetadata> Constants = new();
 
     public static void Init()
     {
@@ -15,7 +15,7 @@ public static class ConstantsMetadataStorage
         List<ConstantsMetadata> constantsList = Serializer.Deserialize<List<ConstantsMetadata>>(stream);
         foreach (ConstantsMetadata constant in constantsList)
         {
-            constants[constant.Key] = constant;
+            Constants[constant.Key] = constant;
         }
 
         // add/override
@@ -23,12 +23,12 @@ public static class ConstantsMetadataStorage
         List<ConstantsMetadata> addedConstants = JsonConvert.DeserializeObject<List<ConstantsMetadata>>(json);
         foreach (ConstantsMetadata constant in addedConstants)
         {
-            constants[constant.Key] = constant;
+            Constants[constant.Key] = constant;
         }
     }
 
     public static string GetConstant(string key)
     {
-        return constants.GetValueOrDefault(key).Value;
+        return Constants.GetValueOrDefault(key).Value;
     }
 }

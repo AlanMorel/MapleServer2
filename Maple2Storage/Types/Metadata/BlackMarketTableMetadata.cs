@@ -8,10 +8,5 @@ public class BlackMarketTableMetadata
     [XmlElement(Order = 1)]
     public int CategoryId;
     [XmlElement(Order = 2)]
-    public List<string> ItemCategories;
-
-    public BlackMarketTableMetadata()
-    {
-        ItemCategories = new();
-    }
+    public List<string> ItemCategories = new();
 }

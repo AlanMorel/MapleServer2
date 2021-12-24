@@ -43,7 +43,7 @@ public abstract class Session : IDisposable
     protected abstract PatchType Type { get; }
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    private static readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
+    private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
     protected Session()
     {
@@ -70,8 +70,8 @@ public abstract class Session : IDisposable
 
         byte[] sivBytes = new byte[4];
         byte[] rivBytes = new byte[4];
-        rng.GetBytes(sivBytes);
-        rng.GetBytes(rivBytes);
+        Rng.GetBytes(sivBytes);
+        Rng.GetBytes(rivBytes);
         Siv = BitConverter.ToUInt32(sivBytes);
         Riv = BitConverter.ToUInt32(rivBytes);
 
