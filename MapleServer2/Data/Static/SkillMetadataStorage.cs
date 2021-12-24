@@ -8,7 +8,7 @@ namespace MapleServer2.Data.Static;
 
 public static class SkillMetadataStorage
 {
-    private static readonly Dictionary<int, SkillMetadata> skill = new();
+    private static readonly Dictionary<int, SkillMetadata> Skills = new();
 
     public static void Init()
     {
@@ -16,13 +16,13 @@ public static class SkillMetadataStorage
         List<SkillMetadata> skillList = Serializer.Deserialize<List<SkillMetadata>>(stream);
         foreach (SkillMetadata skills in skillList)
         {
-            skill[skills.SkillId] = skills;
+            Skills[skills.SkillId] = skills;
         }
     }
 
-    public static SkillMetadata GetSkill(int id) => skill.GetValueOrDefault(id);
+    public static SkillMetadata GetSkill(int id) => Skills.GetValueOrDefault(id);
 
-    public static List<int> GetEmotes() => skill.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
+    public static List<int> GetEmotes() => Skills.Values.Where(x => x.SkillId / 100000 == 902).Select(x => x.SkillId).ToList();
 
     // Get a List of Skills corresponding to the Job
     public static List<SkillMetadata> GetJobSkills(Job job = Job.None)
@@ -34,13 +34,13 @@ public static class SkillMetadataStorage
         {
             foreach (int skillId in gmSkills)
             {
-                jobSkill.Add(skill[skillId]);
+                jobSkill.Add(Skills[skillId]);
                 jobSkill.First(skill => skill.SkillId == skillId).CurrentLevel = 1;
             }
             return jobSkill;
         }
 
-        foreach (KeyValuePair<int, SkillMetadata> skills in skill)
+        foreach (KeyValuePair<int, SkillMetadata> skills in Skills)
         {
             if (skills.Value.Job == (int) job)
             {

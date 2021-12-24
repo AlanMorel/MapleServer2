@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemExtractionMetadataStorage
 {
-    private static readonly Dictionary<int, ItemExtractionMetadata> map = new();
+    private static readonly Dictionary<int, ItemExtractionMetadata> ItemExtractionMetadatas = new();
 
     public static void Init()
     {
@@ -14,27 +14,27 @@ public static class ItemExtractionMetadataStorage
         List<ItemExtractionMetadata> items = Serializer.Deserialize<List<ItemExtractionMetadata>>(stream);
         foreach (ItemExtractionMetadata item in items)
         {
-            map[item.SourceItemId] = item;
+            ItemExtractionMetadatas[item.SourceItemId] = item;
         }
     }
 
     public static bool IsValid(int itemId)
     {
-        return map.ContainsKey(itemId);
+        return ItemExtractionMetadatas.ContainsKey(itemId);
     }
 
     public static ItemExtractionMetadata GetMetadata(int itemId)
     {
-        return map.GetValueOrDefault(itemId);
+        return ItemExtractionMetadatas.GetValueOrDefault(itemId);
     }
 
     public static byte GetExtractionCount(int itemId)
     {
-        ItemExtractionMetadata metadata = map.GetValueOrDefault(itemId);
+        ItemExtractionMetadata metadata = ItemExtractionMetadatas.GetValueOrDefault(itemId);
         if (metadata == null)
         {
             return 0;
         }
-        return map.GetValueOrDefault(itemId).TryCount;
+        return ItemExtractionMetadatas.GetValueOrDefault(itemId).TryCount;
     }
 }

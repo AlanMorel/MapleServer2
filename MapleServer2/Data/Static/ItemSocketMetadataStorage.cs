@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemSocketMetadataStorage
 {
-    private static readonly Dictionary<int, ItemSocketMetadata> map = new();
+    private static readonly Dictionary<int, ItemSocketMetadata> ItemSocketMetadatas = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class ItemSocketMetadataStorage
         List<ItemSocketMetadata> items = Serializer.Deserialize<List<ItemSocketMetadata>>(stream);
         foreach (ItemSocketMetadata item in items)
         {
-            map[item.Id] = item;
+            ItemSocketMetadatas[item.Id] = item;
         }
     }
 
     public static ItemSocketMetadata GetMetadata(int socketDataId)
     {
-        return map.GetValueOrDefault(socketDataId);
+        return ItemSocketMetadatas.GetValueOrDefault(socketDataId);
     }
 }

@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class GachaMetadataStorage
 {
-    private static readonly Dictionary<int, GachaMetadata> gacha = new();
+    private static readonly Dictionary<int, GachaMetadata> Gacha = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class GachaMetadataStorage
         List<GachaMetadata> items = Serializer.Deserialize<List<GachaMetadata>>(stream);
         foreach (GachaMetadata item in items)
         {
-            gacha[item.GachaId] = item;
+            Gacha[item.GachaId] = item;
         }
     }
 
     public static bool IsValid(int gachaId)
     {
-        return gacha.ContainsKey(gachaId);
+        return Gacha.ContainsKey(gachaId);
     }
 
     public static GachaMetadata GetMetadata(int gachaId)
     {
-        return gacha.GetValueOrDefault(gachaId);
+        return Gacha.GetValueOrDefault(gachaId);
     }
 }

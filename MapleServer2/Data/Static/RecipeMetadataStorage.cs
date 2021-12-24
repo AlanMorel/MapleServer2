@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class RecipeMetadataStorage
 {
-    private static readonly Dictionary<int, RecipeMetadata> recipes = new();
+    private static readonly Dictionary<int, RecipeMetadata> Recipes = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class RecipeMetadataStorage
         List<RecipeMetadata> recipeList = Serializer.Deserialize<List<RecipeMetadata>>(stream);
         foreach (RecipeMetadata recipe in recipeList)
         {
-            recipes[recipe.Id] = recipe;
+            Recipes[recipe.Id] = recipe;
         }
     }
 
     public static List<int> GetRecipeIds()
     {
-        return new(recipes.Keys);
+        return new(Recipes.Keys);
     }
 
     public static RecipeMetadata GetRecipe(int id)
     {
-        return recipes.GetValueOrDefault(id);
+        return Recipes.GetValueOrDefault(id);
     }
 }

@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ColorPaletteMetadataStorage
 {
-    private static readonly Dictionary<int, ColorPaletteMetadata> palette = new();
+    private static readonly Dictionary<int, ColorPaletteMetadata> Palette = new();
 
     public static void Init()
     {
@@ -14,17 +14,17 @@ public static class ColorPaletteMetadataStorage
         List<ColorPaletteMetadata> items = Serializer.Deserialize<List<ColorPaletteMetadata>>(stream);
         foreach (ColorPaletteMetadata item in items)
         {
-            palette[item.PaletteId] = item;
+            Palette[item.PaletteId] = item;
         }
     }
 
     public static bool IsValid(int paletteId)
     {
-        return palette.ContainsKey(paletteId);
+        return Palette.ContainsKey(paletteId);
     }
 
     public static ColorPaletteMetadata GetMetadata(int paletteId)
     {
-        return palette.GetValueOrDefault(paletteId);
+        return Palette.GetValueOrDefault(paletteId);
     }
 }

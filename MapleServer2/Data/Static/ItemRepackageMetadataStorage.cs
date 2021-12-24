@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class ItemRepackageMetadataStorage
 {
-    private static readonly Dictionary<int, ItemRepackageMetadata> itemsDictionary = new();
+    private static readonly Dictionary<int, ItemRepackageMetadata> ItemsRepackageMetadatas = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class ItemRepackageMetadataStorage
         List<ItemRepackageMetadata> items = Serializer.Deserialize<List<ItemRepackageMetadata>>(stream);
         foreach (ItemRepackageMetadata item in items)
         {
-            itemsDictionary[item.Id] = item;
+            ItemsRepackageMetadatas[item.Id] = item;
         }
     }
 
     public static bool ItemCanRepackage(int functionId, int itemLevel, int rarity)
     {
-        ItemRepackageMetadata metadata = itemsDictionary.GetValueOrDefault(functionId);
+        ItemRepackageMetadata metadata = ItemsRepackageMetadatas.GetValueOrDefault(functionId);
         if (itemLevel < metadata.MinLevel || itemLevel > metadata.MaxLevel)
         {
             return false;

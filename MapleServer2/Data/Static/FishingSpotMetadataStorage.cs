@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class FishingSpotMetadataStorage
 {
-    private static readonly Dictionary<int, FishingSpotMetadata> map = new();
+    private static readonly Dictionary<int, FishingSpotMetadata> FishingSpot = new();
 
     public static void Init()
     {
@@ -14,23 +14,23 @@ public static class FishingSpotMetadataStorage
         List<FishingSpotMetadata> items = Serializer.Deserialize<List<FishingSpotMetadata>>(stream);
         foreach (FishingSpotMetadata item in items)
         {
-            map[item.Id] = item;
+            FishingSpot[item.Id] = item;
         }
     }
 
     public static bool IsValid(int mapId)
     {
-        return map.ContainsKey(mapId);
+        return FishingSpot.ContainsKey(mapId);
     }
 
     public static FishingSpotMetadata GetMetadata(int mapId)
     {
-        return map.GetValueOrDefault(mapId);
+        return FishingSpot.GetValueOrDefault(mapId);
     }
 
     public static bool CanFish(int mapId, long playerExp)
     {
-        int minExpRequired = map.Values.FirstOrDefault(x => x.Id == mapId).MinMastery;
+        int minExpRequired = FishingSpot.Values.FirstOrDefault(x => x.Id == mapId).MinMastery;
         if (playerExp < minExpRequired)
         {
             return false;

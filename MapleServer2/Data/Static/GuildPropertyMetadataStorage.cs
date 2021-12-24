@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class GuildPropertyMetadataStorage
 {
-    private static readonly Dictionary<int, GuildPropertyMetadata> properties = new();
+    private static readonly Dictionary<int, GuildPropertyMetadata> Properties = new();
 
     public static void Init()
     {
@@ -14,13 +14,13 @@ public static class GuildPropertyMetadataStorage
         List<GuildPropertyMetadata> items = Serializer.Deserialize<List<GuildPropertyMetadata>>(stream);
         foreach (GuildPropertyMetadata item in items)
         {
-            properties[item.Level] = item;
+            Properties[item.Level] = item;
         }
     }
 
     public static GuildPropertyMetadata GetMetadata(int guildExp)
     {
-        foreach (GuildPropertyMetadata property in properties.Values)
+        foreach (GuildPropertyMetadata property in Properties.Values)
         {
             if (guildExp < property.AccumExp)
             {
@@ -28,6 +28,6 @@ public static class GuildPropertyMetadataStorage
             }
         }
         // otherwise guild is max level
-        return properties.Values.Last();
+        return Properties.Values.Last();
     }
 }

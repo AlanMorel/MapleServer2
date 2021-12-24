@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class InteractObjectMetadataStorage
 {
-    private static readonly Dictionary<int, InteractObjectMetadata> interacts = new();
+    private static readonly Dictionary<int, InteractObjectMetadata> Interacts = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class InteractObjectMetadataStorage
         List<InteractObjectMetadata> interactList = Serializer.Deserialize<List<InteractObjectMetadata>>(stream);
         foreach (InteractObjectMetadata interact in interactList)
         {
-            interacts[interact.Id] = interact;
+            Interacts[interact.Id] = interact;
         }
     }
 
     public static InteractObjectMetadata GetInteractObjectMetadata(int interactId)
     {
-        return interacts.GetValueOrDefault(interactId);
+        return Interacts.GetValueOrDefault(interactId);
     }
 }

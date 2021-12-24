@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class FunctionCubeMetadataStorage
 {
-    private static readonly Dictionary<int, FunctionCubeMetadata> map = new();
+    private static readonly Dictionary<int, FunctionCubeMetadata> FunctionCube = new();
 
     public static void Init()
     {
@@ -14,12 +14,12 @@ public static class FunctionCubeMetadataStorage
         List<FunctionCubeMetadata> list = Serializer.Deserialize<List<FunctionCubeMetadata>>(stream);
         foreach (FunctionCubeMetadata metadata in list)
         {
-            map[metadata.CubeId] = metadata;
+            FunctionCube[metadata.CubeId] = metadata;
         }
     }
 
     public static int GetRecipeId(int cubeId)
     {
-        return map.GetValueOrDefault(cubeId)?.RecipeId ?? 0;
+        return FunctionCube.GetValueOrDefault(cubeId)?.RecipeId ?? 0;
     }
 }

@@ -7,13 +7,13 @@ namespace MapleServer2.Data.Static;
 
 public static class MapEntityStorage
 {
-    private static readonly Dictionary<int, List<MapNpc>> npcs = new();
-    private static readonly Dictionary<int, List<MapPortal>> portals = new();
-    private static readonly Dictionary<int, List<MapPlayerSpawn>> playerSpawns = new();
-    private static readonly Dictionary<int, List<MapMobSpawn>> mobSpawns = new();
-    private static readonly Dictionary<int, List<MapInteractObject>> interactObject = new();
-    private static readonly Dictionary<int, CoordS[]> boundingBox = new();
-    private static readonly Dictionary<int, List<CoordS>> healthSpot = new();
+    private static readonly Dictionary<int, List<MapNpc>> Npcs = new();
+    private static readonly Dictionary<int, List<MapPortal>> Portals = new();
+    private static readonly Dictionary<int, List<MapPlayerSpawn>> PlayerSpawns = new();
+    private static readonly Dictionary<int, List<MapMobSpawn>> MobSpawns = new();
+    private static readonly Dictionary<int, List<MapInteractObject>> InteractObject = new();
+    private static readonly Dictionary<int, CoordS[]> BoundingBox = new();
+    private static readonly Dictionary<int, List<CoordS>> HealthSpot = new();
     private static readonly Dictionary<int, List<PatrolData>> PatrolDatas = new();
     private static readonly Dictionary<int, List<WayPoint>> WayPoints = new();
     private static readonly Dictionary<int, List<MapEventNpcSpawnPoint>> EventNpcSpawnPoints = new();
@@ -41,12 +41,12 @@ public static class MapEntityStorage
         List<MapEntityMetadata> entities = Serializer.Deserialize<List<MapEntityMetadata>>(stream);
         foreach (MapEntityMetadata entity in entities)
         {
-            npcs.Add(entity.MapId, entity.Npcs);
-            portals.Add(entity.MapId, entity.Portals);
-            playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
-            mobSpawns.Add(entity.MapId, entity.MobSpawns);
-            boundingBox.Add(entity.MapId, new[] { entity.BoundingBox0, entity.BoundingBox1 });
-            healthSpot.Add(entity.MapId, entity.HealingSpot);
+            Npcs.Add(entity.MapId, entity.Npcs);
+            Portals.Add(entity.MapId, entity.Portals);
+            PlayerSpawns.Add(entity.MapId, entity.PlayerSpawns);
+            MobSpawns.Add(entity.MapId, entity.MobSpawns);
+            BoundingBox.Add(entity.MapId, new[] { entity.BoundingBox0, entity.BoundingBox1 });
+            HealthSpot.Add(entity.MapId, entity.HealingSpot);
             PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
             WayPoints.Add(entity.MapId, entity.WayPoints);
             EventNpcSpawnPoints.Add(entity.MapId, entity.EventNpcSpawnPoints);
@@ -72,61 +72,61 @@ public static class MapEntityStorage
 
     public static IEnumerable<MapNpc> GetNpcs(int mapId)
     {
-        return npcs.GetValueOrDefault(mapId);
+        return Npcs.GetValueOrDefault(mapId);
     }
 
     public static IEnumerable<MapPortal> GetPortals(int mapId)
     {
-        return portals.GetValueOrDefault(mapId);
+        return Portals.GetValueOrDefault(mapId);
     }
 
     public static IEnumerable<MapPlayerSpawn> GetPlayerSpawns(int mapId)
     {
-        return playerSpawns.GetValueOrDefault(mapId);
+        return PlayerSpawns.GetValueOrDefault(mapId);
     }
 
     public static IEnumerable<MapMobSpawn> GetMobSpawns(int mapId)
     {
-        return mobSpawns.GetValueOrDefault(mapId);
+        return MobSpawns.GetValueOrDefault(mapId);
     }
 
     public static IEnumerable<MapInteractObject> GetInteractObject(int mapId)
     {
-        return interactObject.GetValueOrDefault(mapId);
+        return InteractObject.GetValueOrDefault(mapId);
     }
 
     public static MapPlayerSpawn GetRandomPlayerSpawn(int mapId)
     {
-        List<MapPlayerSpawn> list = playerSpawns.GetValueOrDefault(mapId);
+        List<MapPlayerSpawn> list = PlayerSpawns.GetValueOrDefault(mapId);
         return list?.Count > 0 ? list[RandomProvider.Get().Next(list.Count)] : null;
     }
 
     public static bool HasPortals(int mapId)
     {
-        List<MapPortal> items = portals.GetValueOrDefault(mapId);
+        List<MapPortal> items = Portals.GetValueOrDefault(mapId);
         return items?.Count > 0;
     }
 
     public static MapPortal GetFirstPortal(int mapId)
     {
-        List<MapPortal> items = portals.GetValueOrDefault(mapId);
+        List<MapPortal> items = Portals.GetValueOrDefault(mapId);
         return items?.Count > 0 ? items[0] : null;
     }
 
     public static CoordS[] GetBoundingBox(int mapId)
     {
-        return boundingBox.GetValueOrDefault(mapId);
+        return BoundingBox.GetValueOrDefault(mapId);
     }
 
     public static bool HasSafePortal(int mapId)
     {
-        List<MapPortal> items = portals.GetValueOrDefault(mapId).Where(x => x.TargetPortalId != 0).ToList();
+        List<MapPortal> items = Portals.GetValueOrDefault(mapId).Where(x => x.TargetPortalId != 0).ToList();
         return items.Count != 0;
     }
 
     public static List<CoordS> GetHealingSpot(int mapId)
     {
-        return healthSpot.GetValueOrDefault(mapId);
+        return HealthSpot.GetValueOrDefault(mapId);
     }
 
     public static (PatrolData, List<WayPoint>) GetPatrolData(int mapId, string patrolDataName)

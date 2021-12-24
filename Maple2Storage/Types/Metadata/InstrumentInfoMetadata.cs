@@ -3,7 +3,7 @@
 namespace Maple2Storage.Types.Metadata;
 
 [XmlType]
-public class InsturmentInfoMetadata
+public class InstrumentInfoMetadata
 {
     [XmlElement(Order = 1)]
     public byte InstrumentId;

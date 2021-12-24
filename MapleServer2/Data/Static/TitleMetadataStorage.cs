@@ -6,7 +6,7 @@ namespace MapleServer2.Data.Static;
 
 public static class TitleMetadataStorage
 {
-    private static readonly Dictionary<int, TitleMetadata> map = new();
+    private static readonly Dictionary<int, TitleMetadata> Titles = new();
 
     public static void Init()
     {
@@ -14,9 +14,9 @@ public static class TitleMetadataStorage
         List<TitleMetadata> items = Serializer.Deserialize<List<TitleMetadata>>(stream);
         foreach (TitleMetadata item in items)
         {
-            map[item.Id] = item;
+            Titles[item.Id] = item;
         }
     }
 
-    public static List<TitleMetadata> GetAll() => map.Values.ToList();
+    public static List<TitleMetadata> GetAll() => Titles.Values.ToList();
 }

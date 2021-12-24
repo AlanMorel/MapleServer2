@@ -6,30 +6,30 @@ namespace MapleServer2.Data.Static;
 
 public static class InstrumentInfoMetadataStorage
 {
-    private static readonly Dictionary<int, InsturmentInfoMetadata> package = new();
+    private static readonly Dictionary<int, InstrumentInfoMetadata> Instruments = new();
 
     public static void Init()
     {
         using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-instrument-info-metadata");
-        List<InsturmentInfoMetadata> items = Serializer.Deserialize<List<InsturmentInfoMetadata>>(stream);
-        foreach (InsturmentInfoMetadata item in items)
+        List<InstrumentInfoMetadata> items = Serializer.Deserialize<List<InstrumentInfoMetadata>>(stream);
+        foreach (InstrumentInfoMetadata item in items)
         {
-            package[item.InstrumentId] = item;
+            Instruments[item.InstrumentId] = item;
         }
     }
 
     public static bool IsValid(int instrumentId)
     {
-        return package.ContainsKey(instrumentId);
+        return Instruments.ContainsKey(instrumentId);
     }
 
-    public static InsturmentInfoMetadata GetMetadata(int instrumentId)
+    public static InstrumentInfoMetadata GetMetadata(int instrumentId)
     {
-        return package.GetValueOrDefault(instrumentId);
+        return Instruments.GetValueOrDefault(instrumentId);
     }
 
     public static int GetId(int instrumentId)
     {
-        return package.GetValueOrDefault(instrumentId).InstrumentId;
+        return Instruments.GetValueOrDefault(instrumentId).InstrumentId;
     }
 }
