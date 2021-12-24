@@ -38,5 +38,21 @@
   {
     "Key": "BlackMarketSalesFeeRate",
     "Value": "0.1"
+  },
+  {
+    "Key": "UGCShopExpiredListingRemovalHour",
+    "Value": "72"
+  },
+  {
+    "Key": "UGCShopBaseListFee",
+    "Value": "190"
+  },
+  {
+    "Key": "UGCShopProfitFee",
+    "Value": "0.25"
+  },
+  {
+    "Key": "UGCShopProfitDelayInDays",
+    "Value": "864000"
   }
 ]

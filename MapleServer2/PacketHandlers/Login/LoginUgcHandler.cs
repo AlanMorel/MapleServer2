@@ -10,8 +10,6 @@ public class LoginUgcHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    public LoginUgcHandler() : base() { }
-
     private enum UgcMode : byte
     {
         ProfilePicture = 0x0B

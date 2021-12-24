@@ -58,7 +58,7 @@ public static class FieldItemPacket
         {
             // Extra for special items
             pWriter.WriteInt(1); // 0 = SP/EP, 1 = quest item?
-            pWriter.WriteInt(0);
+            pWriter.WriteInt();
             pWriter.WriteInt(-1);
             pWriter.WriteInt(targetPlayer.ObjectId); // Unknown
             for (int i = 0; i < 14; i++)

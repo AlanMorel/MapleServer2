@@ -23,6 +23,4 @@ public class FishMetadata
     public bool IgnoreMastery;
     [XmlElement(Order = 9)]
     public List<int> HabitatMapId = new();
-
-    public FishMetadata() { }
 }

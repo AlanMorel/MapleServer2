@@ -12,8 +12,6 @@ public class ItemExtractionHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EXTRACTION;
 
-    public ItemExtractionHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         long anvilItemUid = packet.ReadLong();

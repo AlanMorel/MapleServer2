@@ -9,8 +9,6 @@ public class RequestItemInventoryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
-    public RequestItemInventoryHandler() : base() { }
-
     private enum RequestItemInventoryMode : byte
     {
         Move = 0x3,
@@ -18,7 +16,7 @@ public class RequestItemInventoryHandler : GamePacketHandler
         DropBound = 0x5,
         Sort = 0xA,
         Expand = 0xB
-    };
+    }
 
     public override void Handle(GameSession session, PacketReader packet)
     {

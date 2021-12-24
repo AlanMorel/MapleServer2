@@ -10,8 +10,6 @@ public class RequestItemStorage : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_STORAGE;
 
-    public RequestItemStorage() : base() { }
-
     private enum ItemStorageMode : byte
     {
         Add = 0x00,

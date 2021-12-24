@@ -16,8 +16,6 @@ public class ItemGemstoneUpgradeMetadata
     [XmlElement(Order = 5)]
     public List<int> IngredientAmounts = new();
 
-    public ItemGemstoneUpgradeMetadata() { }
-
     public override string ToString()
     {
         return $"ItemGemstoneUpgradeMetadata(ItemId:{ItemId},GemLevel:{GemLevel},NextItemId{NextItemId})";

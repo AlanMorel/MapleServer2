@@ -45,7 +45,7 @@ public static class MapEntityStorage
             portals.Add(entity.MapId, entity.Portals);
             playerSpawns.Add(entity.MapId, entity.PlayerSpawns);
             mobSpawns.Add(entity.MapId, entity.MobSpawns);
-            boundingBox.Add(entity.MapId, new CoordS[] { entity.BoundingBox0, entity.BoundingBox1 });
+            boundingBox.Add(entity.MapId, new[] { entity.BoundingBox0, entity.BoundingBox1 });
             healthSpot.Add(entity.MapId, entity.HealingSpot);
             PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
             WayPoints.Add(entity.MapId, entity.WayPoints);

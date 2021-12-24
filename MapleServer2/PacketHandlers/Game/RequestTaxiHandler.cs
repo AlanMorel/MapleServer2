@@ -13,15 +13,13 @@ internal class RequestTaxiHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 
-    public RequestTaxiHandler() : base() { }
-
     private enum RequestTaxiMode : byte
     {
         Car = 0x1,
         RotorsMeso = 0x3,
         RotorsMeret = 0x4,
         DiscoverTaxi = 0x5
-    };
+    }
 
     public override void Handle(GameSession session, PacketReader packet)
     {

@@ -40,8 +40,6 @@ public class InteractObjectRewardMetadata
     public string FirstExpType;
     [XmlElement(Order = 5)]
     public float FirstExpRate;
-
-    public InteractObjectRewardMetadata() { }
 }
 
 [XmlType]
@@ -68,14 +66,10 @@ public class InteractObjectGatheringMetadata
 {
     [XmlElement(Order = 1)]
     public int RecipeId;
-
-    public InteractObjectGatheringMetadata() { }
 }
 [XmlType]
 public class InteractObjectWebMetadata
 {
     [XmlElement(Order = 1)]
     public string Url;
-
-    public InteractObjectWebMetadata() { }
 }

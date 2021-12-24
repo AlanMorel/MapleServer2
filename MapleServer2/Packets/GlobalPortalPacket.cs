@@ -22,7 +22,7 @@ public static class GlobalPortalPacket
         pWriter.WriteUnicodeString("System_Quiz_Global_Portal"); // SystemSound key
         foreach (GlobalEventType eventMap in globalEvent.Events)
         {
-            pWriter.WriteUnicodeString("s_massive_event_name_" + eventMap.ToString());
+            pWriter.WriteUnicodeString("s_massive_event_name_" + eventMap);
         }
         return pWriter;
     }

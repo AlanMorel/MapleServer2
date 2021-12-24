@@ -14,8 +14,6 @@ public class UgcHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    public UgcHandler() : base() { }
-
     private enum UgcMode : byte
     {
         CreateUgcItem = 0x01,

@@ -16,8 +16,6 @@ public class MoveFieldHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_MOVE_FIELD;
 
-    public MoveFieldHandler() : base() { }
-
     private enum RequestMoveFieldMode : byte
     {
         Move = 0x0,

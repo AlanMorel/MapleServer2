@@ -13,8 +13,6 @@ public class CardReverseGameHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CARD_REVERSE_GAME;
 
-    public CardReverseGameHandler() : base() { }
-
     private enum CardReverseGameMode : byte
     {
         Open = 0x0,

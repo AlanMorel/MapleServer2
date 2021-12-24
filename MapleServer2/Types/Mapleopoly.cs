@@ -10,8 +10,6 @@ public class Mapleopoly
     // Temporarily hardcoding the item and cost
     public const int TOKEN_ITEM_ID = 30001445; // Aetherine Coin
     public const int TOKEN_COST = 2;
-
-    public Mapleopoly() { }
 }
 public class MapleopolyTile
 {

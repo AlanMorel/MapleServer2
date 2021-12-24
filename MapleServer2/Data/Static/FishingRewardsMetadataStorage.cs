@@ -31,8 +31,6 @@ public class FishingRewardItem
     public FishingItemType Type;
     public int Amount;
     public int Rarity;
-
-    public FishingRewardItem() { }
 }
 public enum FishingItemType
 {

@@ -26,7 +26,7 @@ public interface IFieldActor : IFieldObject
     public void RecoverStamina(int amount);
     public void ConsumeStamina(int amount);
 
-    public abstract void Perish();
+    public void Perish();
 }
 
 public interface IFieldActor<out T> : IFieldActor, IFieldObject<T> { }

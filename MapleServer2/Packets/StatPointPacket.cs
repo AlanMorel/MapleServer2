@@ -19,7 +19,7 @@ public static class StatPointPacket
         // sends back 41 character length packet which represents the total number of stat points gained and
         // how each stat point was obtained (ie quest, trophy, exploration, prestige)
 
-        pWriter.WriteByte((byte) StatPointPacketMode.TotalPoints);
+        pWriter.Write(StatPointPacketMode.TotalPoints);
         // write number of attribute points the character has
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         // write the number of sources from which stat points have been received

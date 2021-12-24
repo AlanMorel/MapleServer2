@@ -46,7 +46,7 @@ public class BuddyManager
 
     public static bool IsBlocked(Player player, Player otherPlayer)
     {
-        return otherPlayer.BuddyList.Any(o => o.Friend.CharacterId == player.CharacterId && o.Blocked == true);
+        return otherPlayer.BuddyList.Any(o => o.Friend.CharacterId == player.CharacterId && o.Blocked);
     }
 
     public void SetFriendSessions(Player player)

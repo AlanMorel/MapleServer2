@@ -9,8 +9,6 @@ public class CharacterInfoHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHARACTER_INFO;
 
-    public CharacterInfoHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         long characterId = packet.ReadLong();

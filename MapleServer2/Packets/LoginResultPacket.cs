@@ -47,7 +47,7 @@ public static class LoginResultPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
         pWriter.Write(LoginModes.LoginOk);
         pWriter.WriteInt(); // Const
-        pWriter.WriteUnicodeString(""); // Ban reason
+        pWriter.WriteUnicodeString(); // Ban reason
         pWriter.WriteLong(accountId);
         pWriter.WriteLong(TimeInfo.Now()); // SyncTime
         pWriter.WriteInt(Environment.TickCount); // SyncTicks
@@ -92,7 +92,7 @@ public static class LoginResultPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_RESULT);
         pWriter.Write(LoginModes.AccountSuspended);
         pWriter.WriteInt(); // Const
-        pWriter.WriteUnicodeString(""); // Ban reason
+        pWriter.WriteUnicodeString(); // Ban reason
         pWriter.WriteLong(); // account id
         pWriter.WriteLong(); // SyncTime
         pWriter.WriteInt(); // SyncTicks

@@ -10,8 +10,6 @@ public class PlayerHostHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PLAYER_HOST;
 
-    public PlayerHostHandler() : base() { }
-
     private enum PlayerHostMode : byte
     {
         Claim = 0x1

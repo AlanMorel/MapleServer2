@@ -8,8 +8,6 @@ public class FileHashHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FILE_HASH;
 
-    public FileHashHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         packet.ReadInt();

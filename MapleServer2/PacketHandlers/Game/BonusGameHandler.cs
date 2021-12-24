@@ -10,8 +10,6 @@ public class BonusGameHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BONUS_GAME;
 
-    public BonusGameHandler() : base() { }
-
     private enum BonusGameType : byte
     {
         Open = 0x00,

@@ -12,8 +12,6 @@ public class LapenshardHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_LAPENSHARD;
 
-    public LapenshardHandler() : base() { }
-
     private enum LapenshardMode : byte
     {
         Equip = 0x1,

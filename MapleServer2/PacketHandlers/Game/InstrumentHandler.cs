@@ -2,18 +2,16 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
-using Instrument = MapleServer2.Types.Instrument;
 
 namespace MapleServer2.PacketHandlers.Game;
 
 public class InstrumentHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PLAY_INSTRUMENT;
-
-    public InstrumentHandler() : base() { }
 
     private enum InstrumentMode : byte
     {
@@ -156,7 +154,7 @@ public class InstrumentHandler : GamePacketHandler
     {
         int masteryExpGain = (session.ServerTick - session.Player.Instrument.Value.InstrumentTick) / 1000;
         // TODO: Find any exp cap
-        session.Player.Levels.GainMasteryExp(Enums.MasteryType.Performance, masteryExpGain);
+        session.Player.Levels.GainMasteryExp(MasteryType.Performance, masteryExpGain);
         session.FieldManager.BroadcastPacket(InstrumentPacket.StopScore(session.Player.Instrument));
         session.FieldManager.RemoveInstrument(session.Player.Instrument);
         session.Player.Instrument = null;

@@ -60,15 +60,11 @@ public class Gemstone
     public string OwnerName = "";
     public bool IsLocked;
     public long UnlockTime;
-
-    public Gemstone() { }
 }
 public class GemSocket
 {
     public bool IsUnlocked;
     public Gemstone Gemstone;
-
-    public GemSocket() { }
 }
 public class ItemStats
 {

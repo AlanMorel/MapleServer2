@@ -13,8 +13,6 @@ public class MesoMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MESO_MARKET;
 
-    public MesoMarketHandler() : base() { }
-
     private enum MesoMarketMode : byte
     {
         Load = 0x3,
@@ -24,7 +22,7 @@ public class MesoMarketHandler : GamePacketHandler
         Purchase = 0x8,
     }
 
-    private enum MesoMarketError : int
+    private enum MesoMarketError
     {
         TryAgain = 0x2,
         TradingUnavailable = 0x3,

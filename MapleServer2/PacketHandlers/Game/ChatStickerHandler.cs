@@ -10,8 +10,6 @@ public class ChatStickerHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHAT_STICKER;
 
-    public ChatStickerHandler() : base() { }
-
     private enum ChatStickerMode : byte
     {
         OpenWindow = 0x1,

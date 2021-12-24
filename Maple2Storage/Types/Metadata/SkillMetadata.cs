@@ -1,6 +1,5 @@
 ﻿using System.Xml.Serialization;
 
-
 namespace Maple2Storage.Types.Metadata;
 
 [XmlType]
@@ -15,7 +14,7 @@ public class SkillMetadata
     [XmlElement(Order = 4)]
     public int Job;
     [XmlElement(Order = 5)]
-    public short CurrentLevel = 0;
+    public short CurrentLevel;
     [XmlElement(Order = 6)]
     public readonly string State;
     [XmlElement(Order = 7)]
@@ -86,7 +85,6 @@ public class SkillLevel
     [XmlElement(Order = 10)]
     public readonly SkillUpgrade SkillUpgrade;
 
-    // Required for deserialization
     public SkillLevel()
     {
         SkillAttacks = new();

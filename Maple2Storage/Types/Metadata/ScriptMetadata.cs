@@ -13,8 +13,6 @@ public class ScriptMetadata
     [XmlElement(Order = 3)]
     public List<Option> Options = new();
 
-    public ScriptMetadata() { }
-
     public override string ToString()
     {
         return $"IsQuestScript: {IsQuestScript}, Id: {Id}, Options: ({string.Join(", ", Options)})";

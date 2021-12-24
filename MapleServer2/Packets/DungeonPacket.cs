@@ -16,16 +16,16 @@ public static class DungeonPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ROOM_DUNGEON);
         pWriter.Write(DungeonPacketMode.DungeonInfo);
         pWriter.WriteInt(dungeonId);
-        pWriter.WriteLong(0); //timestamp
+        pWriter.WriteLong(); //timestamp
         pWriter.WriteByte(weeklyClearCountMax);
         pWriter.WriteByte();
-        pWriter.WriteLong(0); //timestamp
+        pWriter.WriteLong(); //timestamp
         pWriter.WriteByte(addRewards);
         pWriter.WriteByte();
-        pWriter.WriteLong(0); //timestamp
+        pWriter.WriteLong(); //timestamp
         pWriter.WriteInt(clearCount);
         pWriter.WriteShort(lifetimeRecord);
-        pWriter.WriteLong(0); //timestamp
+        pWriter.WriteLong(); //timestamp
         pWriter.WriteShort(lifetimeRecord);
         pWriter.WriteByte(toggle); // tbd
         return pWriter;

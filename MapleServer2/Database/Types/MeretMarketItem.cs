@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Enums;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Database.Types;
 
@@ -18,13 +19,13 @@ public class MeretMarketItem
     public int Duration; // in days
     public long SellBeginTime;
     public long SellEndTime;
-    public MeretMarketJobRequirement JobRequirement;
+    public JobFlag JobRequirement;
     public short MinLevelRequirement;
     public short MaxLevelRequirement;
     public int RequiredAchievementId;
     public int RequiredAchievementGrade;
-    public bool PCCafe = false;
-    public bool RestockUnavailable = false;
+    public bool PCCafe;
+    public bool RestockUnavailable;
     public int ParentMarketId;
     public long BannerId;
     public Banner Banner;
@@ -47,7 +48,7 @@ public class MeretMarketItem
         Flag = (MeretMarketItemFlag) flag;
         ItemId = itemId;
         ItemName = itemName;
-        JobRequirement = (MeretMarketJobRequirement) jobRequirement;
+        JobRequirement = (JobFlag) jobRequirement;
         MaxLevelRequirement = maxLevelRequirement;
         MinLevelRequirement = minLevelRequirement;
         PCCafe = pcCafe;

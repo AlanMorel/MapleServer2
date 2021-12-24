@@ -120,6 +120,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 metadata.RepackageCount = byte.Parse(property.Attributes["rePackingLimitCount"].Value);
                 metadata.RepackageItemConsumeCount = byte.Parse(property.Attributes["rePackingItemConsumeCount"].Value);
                 metadata.BlackMarketCategory = property.Attributes["blackMarketCategory"].Value;
+                metadata.Category = property.Attributes["category"].Value;
 
                 // sales price
                 XmlNode sell = property.SelectSingleNode("sell");
@@ -401,7 +402,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+            XmlNodeList nodes = innerDocument.SelectNodes("/ms2/key");
             foreach (XmlNode node in nodes)
             {
                 int itemId = int.Parse(node.Attributes["id"].Value);
@@ -424,7 +425,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList nodes = innerDocument.SelectNodes($"/ms2/key");
+            XmlNodeList nodes = innerDocument.SelectNodes("/ms2/key");
             foreach (XmlNode node in nodes)
             {
                 int itemId = int.Parse(node.Attributes["id"].Value);
@@ -452,7 +453,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             }
 
             XmlDocument innerDocument = Resources.XmlReader.GetXmlDocument(entry);
-            XmlNodeList individualItems = innerDocument.SelectNodes($"/ms2/item");
+            XmlNodeList individualItems = innerDocument.SelectNodes("/ms2/item");
             foreach (XmlNode nodes in individualItems)
             {
                 string locale = nodes.Attributes["locale"]?.Value ?? "";

@@ -10,8 +10,6 @@ public class GuildBuffMetadata
     [XmlElement(Order = 2)]
     public List<GuildBuffLevel> Levels = new();
 
-    public GuildBuffMetadata() { }
-
     public override string ToString()
     {
         return $"GuildBuff(BuffId:{BuffId},Levels:{Levels}";
@@ -34,8 +32,6 @@ public class GuildBuffLevel
     public int Cost;
     [XmlElement(Order = 8)]
     public short Duration;
-
-    public GuildBuffLevel() { }
 
     public override string ToString()
     {

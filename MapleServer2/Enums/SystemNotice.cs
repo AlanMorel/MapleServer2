@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum SystemNotice : int
+public enum SystemNotice
 {
     ChooseYourName = 0x1,
     Enter2Letters = 0xB,

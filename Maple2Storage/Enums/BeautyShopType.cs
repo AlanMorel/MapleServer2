@@ -1,6 +1,6 @@
 ﻿namespace Maple2Storage.Enums;
 
-public enum BeautyShopType : int
+public enum BeautyShopType
 {
     Hair = 1,
     Makeup = 2,

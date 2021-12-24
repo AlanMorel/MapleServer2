@@ -10,8 +10,6 @@ public class LogSendHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.LOG_SEND;
 
-    public LogSendHandler() : base() { }
-
     protected override void HandleCommon(Session session, PacketReader packet)
     {
         packet.ReadByte();
@@ -32,7 +30,7 @@ public class LogSendHandler : CommonPacketHandler
                 {
                     // Read remaining string
                     string debug = packet.ReadUnicodeString();
-                    Logger.Error("[{message}] {debug}", message, debug);
+                    Logger.Error($"[{message}] {debug}");
 
                     session.OnError?.Invoke(session, debug);
                     return;
@@ -40,11 +38,11 @@ public class LogSendHandler : CommonPacketHandler
 
                 builder.Append(message);
             }
-            Logger.Warn("Client Log: {builder}", builder);
+            Logger.Warn($"Client Log: {builder}");
         }
         catch (Exception ex)
         {
-            Logger.Error("Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}", packet, function, ex);
+            Logger.Error($"Error parsing DEBUG_MSG packet:{packet} f({function}), {ex}");
         }
     }
 }

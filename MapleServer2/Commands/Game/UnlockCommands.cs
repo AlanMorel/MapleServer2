@@ -37,7 +37,7 @@ public class UnlockAll : InGameCommand
                 continue;
             }
 
-            trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i, 9223372036854775807));
+            trigger.Session.Send(ChatStickerPacket.AddSticker(21100000 + i, i));
             player.ChatSticker.Add(new((byte) i, 9223372036854775807));
         }
 
@@ -90,7 +90,7 @@ public class UnlockTrophyCommand : InGameCommand
         Description = "Unlock an trophy!";
         Parameters = new()
         {
-            new Parameter<int>("trophyId", "The trophy id to unlock;", 0),
+            new Parameter<int>("trophyId", "The trophy id to unlock;"),
             new Parameter<int>("amount", "The amount of trophy goals.", 1)
         };
         Usage = "/trophy [trophyId] [amount]";

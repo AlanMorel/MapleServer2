@@ -8,8 +8,6 @@ public class ClientTickSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_CLIENTTICK_SYNC;
 
-    public ClientTickSyncHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         session.ClientTick = packet.ReadInt();

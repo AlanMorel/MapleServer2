@@ -18,7 +18,7 @@ public static class VibratePacket
         pWriter.WriteByte();
         pWriter.Write(player.Coord.ToShort());
         pWriter.Write(player.Value.Session.ServerTick);
-        pWriter.WriteString("");
+        pWriter.WriteString();
         pWriter.WriteByte();
 
         return pWriter;

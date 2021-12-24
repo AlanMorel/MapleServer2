@@ -10,8 +10,6 @@ public class KeyTableHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.KEY_TABLE;
 
-    public KeyTableHandler() : base() { }
-
     private enum KeyTableEnum : byte
     {
         SetKeyBind = 0x02,
@@ -53,7 +51,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
+            Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 
@@ -81,7 +79,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
+            Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 
@@ -98,7 +96,7 @@ public class KeyTableHandler : GamePacketHandler
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
         {
-            Logger.Warn("Invalid hotbar id {hotbarId}", hotbarId);
+            Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 

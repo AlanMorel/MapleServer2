@@ -10,8 +10,6 @@ public class InsigniaHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INSIGNIA;
 
-    public InsigniaHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
 
@@ -45,7 +43,7 @@ public class InsigniaHandler : GamePacketHandler
             case "adventure_level":
                 return session.Player.Levels.PrestigeLevel >= 100;
             default:
-                Logger.Warn("Unhandled condition type for insigniaid: " + insigniaId + ", type: " + type);
+                Logger.Warn($"Unhandled condition type for insigniaid: {insigniaId}, type: {type}");
                 return false;
         }
     }

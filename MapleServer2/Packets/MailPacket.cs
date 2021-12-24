@@ -155,7 +155,7 @@ public static class MailPacket
         pWriter.WriteLong(mail.ReadTimestamp);
         pWriter.WriteLong(mail.ExpiryTimestamp);
         pWriter.WriteLong(mail.SentTimestamp);
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         return pWriter;
     }
 }

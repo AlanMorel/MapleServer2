@@ -8,8 +8,6 @@ public class SystemInfoHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.SYSTEM_INFO;
 
-    public SystemInfoHandler() : base() { }
-
     protected override void HandleCommon(Session session, PacketReader packet)
     {
         string info = packet.ReadUnicodeString();

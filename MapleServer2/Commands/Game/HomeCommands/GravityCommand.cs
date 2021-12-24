@@ -1,6 +1,7 @@
 ﻿using MapleServer2.Commands.Core;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+
 namespace MapleServer2.Commands.Game.HomeCommands;
 
 public class GravityCommand : InGameCommand

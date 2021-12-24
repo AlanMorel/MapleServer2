@@ -19,8 +19,6 @@ public class RequestItemUseHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-    public RequestItemUseHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         long itemUid = packet.ReadLong();
@@ -95,7 +93,7 @@ public class RequestItemUseHandler : GamePacketHandler
                 HandleNameVoucher(session, packet, item);
                 break;
             default:
-                Logger.Warn("Unhandled item function: " + item.Function.Name);
+                Logger.Warn($"Unhandled item function: {item.Function.Name}");
                 break;
         }
     }
@@ -184,7 +182,6 @@ public class RequestItemUseHandler : GamePacketHandler
     {
         if (!InstrumentCategoryInfoMetadataStorage.IsValid(item.Function.Id))
         {
-            return;
         }
     }
 
@@ -217,9 +214,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
         GachaMetadata gacha = GachaMetadataStorage.GetMetadata(capsule.Function.Id);
 
-        List<Item> items = new()
-        {
-        };
+        List<Item> items = new();
 
         if (amount == "single")
         {
@@ -385,7 +380,7 @@ public class RequestItemUseHandler : GamePacketHandler
         bool publicHouse = parameters[2].Equals("1");
 
         int balloonUid = GuidGenerator.Int();
-        string id = "AdBalloon_" + balloonUid.ToString();
+        string id = "AdBalloon_" + balloonUid;
         AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
         session.FieldManager.State.AddInteractObject(balloon);
         session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));

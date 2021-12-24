@@ -1,5 +1,6 @@
 ﻿using DijkstraAlgorithm.Graphing;
 using DijkstraAlgorithm.Pathing;
+using Path = DijkstraAlgorithm.Pathing.Path;
 
 namespace MapleServer2.Data.Static;
 
@@ -439,7 +440,7 @@ public static class WorldMapGraphStorage
             return false;
         }
 
-        DijkstraAlgorithm.Pathing.Path path = pathFinder.FindShortestPath(originNode, destinationNode);
+        Path path = pathFinder.FindShortestPath(originNode, destinationNode);
         if (path == null)
         {
             return false;

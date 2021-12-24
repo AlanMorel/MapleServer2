@@ -1,25 +1,25 @@
 ﻿namespace MapleServer2.Enums;
 
-public enum SkillType : int
+public enum SkillType
 {
     None = 0,
     Attack = 1,
     GM = 3
 }
-public enum SkillSubType : int
+public enum SkillSubType
 {
     None = 0,
     Status = 2,
     GM = 5,
     Global = 6
 }
-public enum BuffType : int
+public enum BuffType
 {
     None = 0,
     Buff = 1,
     Debuff = 2
 }
-public enum BuffSubType : int
+public enum BuffSubType
 {
     None = 0,
     Owner = 1,
@@ -31,7 +31,7 @@ public enum BuffSubType : int
     Unknown2 = 64,
     Unknown3 = 1024
 }
-public enum BuffCategroy : int
+public enum BuffCategroy
 {
     Stun = 7,
     Slow = 8

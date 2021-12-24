@@ -11,7 +11,7 @@ public static class SyncStatePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SYNC);
         pWriter.WriteInt(player.ObjectId);
-        SyncStateHelper.WriteSyncStates(pWriter, syncStates);
+        pWriter.WriteSyncStates(syncStates);
 
         return pWriter;
     }
@@ -20,7 +20,7 @@ public static class SyncStatePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.RIDE_SYNC);
         pWriter.WriteInt(player.ObjectId);
-        SyncStateHelper.WriteSyncStates(pWriter, syncStates);
+        pWriter.WriteSyncStates(syncStates);
 
         return pWriter;
     }

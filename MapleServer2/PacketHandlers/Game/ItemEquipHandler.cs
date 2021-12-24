@@ -11,8 +11,6 @@ public class ItemEquipHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
 
-    public ItemEquipHandler() : base() { }
-
     private enum ItemEquipMode : byte
     {
         Equip = 0,
@@ -40,7 +38,7 @@ public class ItemEquipHandler : GamePacketHandler
         string equipSlotStr = packet.ReadUnicodeString();
         if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
         {
-            Logger.Warn("Unknown equip slot: {equipSlotStr}", equipSlotStr);
+            Logger.Warn($"Unknown equip slot: {equipSlotStr}");
             return;
         }
 
@@ -56,7 +54,7 @@ public class ItemEquipHandler : GamePacketHandler
         Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
         if (equippedInventory == null)
         {
-            Logger.Warn("equippedInventory was null: {item.InventoryTab}", item.InventoryTab);
+            Logger.Warn($"equippedInventory was null: {item.InventoryTab}");
             return;
         }
 
@@ -166,7 +164,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
+                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
@@ -174,7 +172,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats[(StatId) stat.ItemAttribute].DecreaseBonus(stat.Flat);
+                session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
         }
 
@@ -187,7 +185,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
-                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
+                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 
@@ -195,7 +193,7 @@ public class ItemEquipHandler : GamePacketHandler
         {
             foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
-                session.Player.Stats[(StatId) stat.ItemAttribute].IncreaseBonus(stat.Flat);
+                session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
         }
 

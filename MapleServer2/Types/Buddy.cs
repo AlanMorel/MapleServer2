@@ -40,7 +40,7 @@ public class Buddy
         Blocked = blocked;
         Timestamp = TimeInfo.Now() + Environment.TickCount;
 
-        if (blocked == true)
+        if (blocked)
         {
             BlockReason = message;
             Message = "";

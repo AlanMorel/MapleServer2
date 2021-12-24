@@ -55,15 +55,15 @@ public static class TriggerPacket
             case TriggerMesh triggerMesh:
                 pWriter.WriteInt(triggerMesh.Id);
                 pWriter.WriteBool(triggerMesh.IsVisible);
-                pWriter.WriteByte(0);
+                pWriter.WriteByte();
                 pWriter.WriteInt(triggerMesh.Animation);
-                pWriter.WriteUnicodeString("");
+                pWriter.WriteUnicodeString();
                 pWriter.WriteFloat(1); //constant
                 break;
             case TriggerEffect triggerEffect:
                 pWriter.WriteInt(triggerEffect.Id);
                 pWriter.WriteBool(triggerEffect.IsVisible);
-                pWriter.WriteByte(0x00);
+                pWriter.WriteByte();
                 pWriter.WriteInt(3); //not sure where this value is coming from.
                 break;
 
@@ -178,7 +178,7 @@ public static class TriggerPacket
         pWriter.WriteInt(msTime);
         pWriter.WriteBool(clearAtZero);
         pWriter.WriteInt();
-        pWriter.WriteUnicodeString("");
+        pWriter.WriteUnicodeString();
         return pWriter;
     }
 }

@@ -11,8 +11,6 @@ public class BuddyEmoteHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BUDDY_EMOTE;
 
-    public BuddyEmoteHandler() : base() { }
-
     private enum BuddyEmoteMode : byte
     {
         InviteBuddyEmote = 0x0,

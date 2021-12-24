@@ -9,8 +9,6 @@ public class RewardContentMetadata
     public int Id;
     [XmlElement(Order = 2)]
     public List<RewardContentItemMetadata> RewardItems = new();
-
-    public RewardContentMetadata() { }
 }
 [XmlType]
 public class RewardContentItemMetadata
@@ -21,8 +19,6 @@ public class RewardContentItemMetadata
     public int MaxLevel;
     [XmlElement(Order = 3)]
     public List<RewardItemData> Items = new();
-
-    public RewardContentItemMetadata() { }
 }
 [XmlType]
 public class RewardItemData

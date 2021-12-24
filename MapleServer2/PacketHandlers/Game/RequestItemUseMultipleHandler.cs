@@ -13,8 +13,6 @@ public class RequestItemUseMultipleHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
 
-    public RequestItemUseMultipleHandler() : base() { }
-
     private enum BoxType : byte
     {
         OPEN = 0x00,

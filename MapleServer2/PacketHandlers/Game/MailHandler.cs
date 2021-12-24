@@ -14,8 +14,6 @@ public class MailHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAIL;
 
-    public MailHandler() : base() { }
-
     private enum MailMode : byte
     {
         Open = 0x0,

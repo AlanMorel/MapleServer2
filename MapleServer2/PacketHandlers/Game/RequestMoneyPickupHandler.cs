@@ -10,8 +10,6 @@ public class RequestMoneyPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_MONEY_PICKUP;
 
-    public RequestMoneyPickupHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         int objectCount = packet.ReadByte();

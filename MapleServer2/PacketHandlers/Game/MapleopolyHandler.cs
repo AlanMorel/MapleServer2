@@ -13,8 +13,6 @@ public class MapleopolyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
 
-    public MapleopolyHandler() : base() { }
-
     private enum MapleopolyMode : byte
     {
         Open = 0x0,

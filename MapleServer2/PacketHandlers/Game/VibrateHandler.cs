@@ -12,8 +12,6 @@ public class VibrateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.VIBRATE;
 
-    public VibrateHandler() : base() { }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         string entityId = packet.ReadString();
