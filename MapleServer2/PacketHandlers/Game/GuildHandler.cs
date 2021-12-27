@@ -553,7 +553,7 @@ public class GuildHandler : GamePacketHandler
         string body = packet.ReadUnicodeString();
 
         Player sender = session.Player;
-        Guild guild = session.Player.Guild;
+        Guild guild = sender.Guild;
 
         if (guild == null)
         {
