@@ -568,7 +568,7 @@ public class GuildHandler : GamePacketHandler
             session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.InsufficientPermissions));
             return;
         }
-        
+
         session.Send(GuildPacket.SendMail());
 
         IEnumerable<long> recipientIds = guild.Members.Select(c => c.Player.CharacterId);
