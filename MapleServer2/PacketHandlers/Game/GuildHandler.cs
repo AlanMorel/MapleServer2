@@ -555,6 +555,11 @@ public class GuildHandler : GamePacketHandler
         Player sender = session.Player;
         Guild guild = session.Player.Guild;
 
+        if (guild == null)
+        {
+            return;
+        }
+
         byte senderRank = sender.GuildMember.Rank;
         GuildRank guildRank = guild.Ranks[senderRank];
 
