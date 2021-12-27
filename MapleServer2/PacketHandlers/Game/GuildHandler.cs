@@ -4,6 +4,8 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
+using MapleServer2.Network;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -568,16 +570,13 @@ public class GuildHandler : GamePacketHandler
             session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.InsufficientPermissions));
             return;
         }
+        
+        session.Send(GuildPacket.SendMail());
 
-        IEnumerable<long> guildMemberCharacterIds = guild.Members
-            .Select(m => m.Player.CharacterId)
-            .Where(i => i != sender.CharacterId);
-
-        foreach (long characterId in guildMemberCharacterIds)
+        IEnumerable<long> recipientIds = guild.Members.Select(c => c.Player.CharacterId);
+        foreach (long recipientId in recipientIds)
         {
-            MailHelper.SendMail(MailType.Player, characterId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
-
-            session.Send(MailPacket.Send(mail));
+            MailHelper.SendMail(MailType.Player, recipientId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
         }
     }
 
