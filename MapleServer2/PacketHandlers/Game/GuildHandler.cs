@@ -555,6 +555,15 @@ public class GuildHandler : GamePacketHandler
         Player sender = session.Player;
         Guild guild = session.Player.Guild;
 
+        byte senderRank = sender.GuildMember.Rank;
+        GuildRank guildRank = guild.Ranks[senderRank];
+
+        if (!guildRank.HasRight(GuildRights.CanGuildMail))
+        {
+            session.Send(GuildPacket.ErrorNotice((byte)GuildErrorNotice.InsufficientPermissions));
+            return;
+        }
+
         IEnumerable<long> guildMemberCharacterIds = guild.Members
             .Select(m => m.Player.CharacterId)
             .Where(i => i != sender.CharacterId);
