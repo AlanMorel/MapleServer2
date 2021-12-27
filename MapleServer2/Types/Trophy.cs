@@ -35,7 +35,7 @@ public class Trophy
         Timestamps = new();
         MaxGrade = trophyMetadata.Grades.Count;
         GradeCondition = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
-        Type = trophyMetadata.Categories[0];
+        Type = trophyMetadata.Categories?[0] ?? "";
         if (trophyMetadata.AccountWide)
         {
             AccountId = accountId;
@@ -56,7 +56,7 @@ public class Trophy
         NextGrade = nextGrade;
         MaxGrade = trophyMetadata.Grades.Count;
         GradeCondition = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
-        Type = trophyMetadata.Categories[0];
+        Type = trophyMetadata.Categories?[0] ?? "";
         Counter = counter;
         IsDone = isDone;
         LastReward = lastReward;
@@ -133,5 +133,26 @@ public class Trophy
             RewardType.item or RewardType.title => true,
             _ => false
         };
+    }
+
+    public static bool IsInConditionRange(string trophyCondition, string condition)
+    {
+        string[] parts = trophyCondition.Split('-');
+        if (!long.TryParse(condition, out long conditionValue))
+        {
+            return false;
+        }
+
+        if (!long.TryParse(parts[0], out long lowerBound))
+        {
+            return false;
+        }
+
+        if (!long.TryParse(parts[1], out long upperBound))
+        {
+            return false;
+        }
+
+        return conditionValue >= lowerBound && conditionValue <= upperBound;
     }
 }

@@ -418,12 +418,33 @@ public class Player
             TrophyData[metadata.Id] = new(CharacterId, AccountId, metadata.Id);
         }
 
-        IEnumerable<Trophy> enumerable = TrophyData.Values.Where(x =>
-            x.GradeCondition.ConditionType == type &&
-            (x.GradeCondition.ConditionCodes.Length == 0 || x.GradeCondition.ConditionCodes.Contains(code)) &&
-            (x.GradeCondition.ConditionTargets.Length == 0 || x.GradeCondition.ConditionTargets.Contains(target)));
-        foreach (Trophy trophy in enumerable)
+        foreach (Trophy trophy in TrophyData.Values)
         {
+            if (trophy.GradeCondition.ConditionType != type)
+            {
+                continue;
+            }
+
+            if (trophy.GradeCondition.ConditionTargets.Length != 0 && !trophy.GradeCondition.ConditionTargets.Contains(target))
+            {
+                continue;
+            }
+
+            if (trophy.GradeCondition.ConditionCodes[0].Contains('-'))
+            {
+                if (!Trophy.IsInConditionRange(trophy.GradeCondition.ConditionCodes[0], code))
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if (trophy.GradeCondition.ConditionCodes.Length != 0 && !trophy.GradeCondition.ConditionCodes.Contains(code))
+                {
+                    continue;
+                }
+            }
+
             trophy.AddCounter(Session, addAmount);
             if (trophy.Counter % sendUpdateInterval != 0)
             {
