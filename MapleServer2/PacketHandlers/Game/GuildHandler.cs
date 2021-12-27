@@ -565,14 +565,14 @@ public class GuildHandler : GamePacketHandler
 
         if (!guildRank.HasRight(GuildRights.CanGuildMail))
         {
-            session.Send(GuildPacket.ErrorNotice((byte)GuildErrorNotice.InsufficientPermissions));
+            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.InsufficientPermissions));
             return;
         }
 
         IEnumerable<long> guildMemberCharacterIds = guild.Members
             .Select(m => m.Player.CharacterId)
             .Where(i => i != sender.CharacterId);
-        
+
         foreach (long characterId in guildMemberCharacterIds)
         {
             MailHelper.SendMail(MailType.Player, characterId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
