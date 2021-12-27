@@ -3,6 +3,8 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -545,9 +547,24 @@ public class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.ListGuildUpdate(session.Player, toggle));
     }
 
-    private static void HandleGuildMail(GameSession session, PacketReader packet)
+    private static void HandleGuildMail(GameSession session, IPacketReader packet)
     {
-        throw new NotImplementedException();
+        string title = packet.ReadUnicodeString();
+        string body = packet.ReadUnicodeString();
+
+        Player sender = session.Player;
+        Guild guild = session.Player.Guild;
+
+        IEnumerable<long> guildMemberCharacterIds = guild.Members
+            .Select(m => m.Player.CharacterId)
+            .Where(i => i != sender.CharacterId);
+        
+        foreach (long characterId in guildMemberCharacterIds)
+        {
+            MailHelper.SendMail(MailType.Player, characterId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
+
+            session.Send(MailPacket.Send(mail));
+        }
     }
 
     private static void HandleSubmitApplication(GameSession session, PacketReader packet)
