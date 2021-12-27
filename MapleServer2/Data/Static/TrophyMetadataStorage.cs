@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
-using MapleServer2.Types;
 using ProtoBuf;
 
 namespace MapleServer2.Data.Static;
@@ -35,7 +34,7 @@ public static class TrophyMetadataStorage
 
             if (x.Grades[0].ConditionCodes[0].Contains('-'))
             {
-                if (Trophy.IsInConditionRange(x.Grades[0].ConditionCodes[0], code))
+                if (IsInConditionRange(x.Grades[0].ConditionCodes[0], code))
                 {
                     yield return x;
                 }
@@ -51,4 +50,25 @@ public static class TrophyMetadataStorage
     }
 
     public static TrophyMetadata GetMetadata(int id) => Trophies.GetValueOrDefault(id);
+
+    public static bool IsInConditionRange(string trophyCondition, string condition)
+    {
+        string[] parts = trophyCondition.Split('-');
+        if (!long.TryParse(condition, out long conditionValue))
+        {
+            return false;
+        }
+
+        if (!long.TryParse(parts[0], out long lowerBound))
+        {
+            return false;
+        }
+
+        if (!long.TryParse(parts[1], out long upperBound))
+        {
+            return false;
+        }
+
+        return conditionValue >= lowerBound && conditionValue <= upperBound;
+    }
 }

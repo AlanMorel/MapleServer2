@@ -432,7 +432,7 @@ public class Player
 
             if (trophy.GradeCondition.ConditionCodes[0].Contains('-'))
             {
-                if (!Trophy.IsInConditionRange(trophy.GradeCondition.ConditionCodes[0], code))
+                if (!TrophyMetadataStorage.IsInConditionRange(trophy.GradeCondition.ConditionCodes[0], code))
                 {
                     continue;
                 }

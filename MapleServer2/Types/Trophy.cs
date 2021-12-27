@@ -134,25 +134,4 @@ public class Trophy
             _ => false
         };
     }
-
-    public static bool IsInConditionRange(string trophyCondition, string condition)
-    {
-        string[] parts = trophyCondition.Split('-');
-        if (!long.TryParse(condition, out long conditionValue))
-        {
-            return false;
-        }
-
-        if (!long.TryParse(parts[0], out long lowerBound))
-        {
-            return false;
-        }
-
-        if (!long.TryParse(parts[1], out long upperBound))
-        {
-            return false;
-        }
-
-        return conditionValue >= lowerBound && conditionValue <= upperBound;
-    }
 }
