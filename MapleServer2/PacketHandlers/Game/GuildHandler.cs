@@ -28,6 +28,7 @@ public class GuildHandler : GamePacketHandler
         GuildNotice = 0x3E,
         UpdateRank = 0x41,
         ListGuild = 0x42,
+        GuildMail = 0x45,
         SubmitApplication = 0x50,
         WithdrawApplication = 0x51,
         ApplicationResponse = 0x52,
@@ -122,6 +123,9 @@ public class GuildHandler : GamePacketHandler
                 break;
             case GuildMode.ListGuild:
                 HandleListGuild(session, packet);
+                break;
+            case GuildMode.GuildMail:
+                HandleGuildMail(session, packet);
                 break;
             case GuildMode.SubmitApplication:
                 HandleSubmitApplication(session, packet);
@@ -539,6 +543,11 @@ public class GuildHandler : GamePacketHandler
         guild.Searchable = toggle;
         session.Send(GuildPacket.ListGuildConfirm(toggle));
         session.Send(GuildPacket.ListGuildUpdate(session.Player, toggle));
+    }
+
+    private static void HandleGuildMail(GameSession session, PacketReader packet)
+    {
+        throw new NotImplementedException();
     }
 
     private static void HandleSubmitApplication(GameSession session, PacketReader packet)
