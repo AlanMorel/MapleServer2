@@ -10,6 +10,12 @@ public class GuildRank
         Name = name;
         Rights = rights;
     }
+
+    public bool HasRight(GuildRights guildRight)
+    {
+        GuildRights rights = (GuildRights) Rights;
+        return rights.HasFlag(guildRight);
+    }
 }
 [Flags]
 public enum GuildRights
