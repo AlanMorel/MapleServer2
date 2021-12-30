@@ -6,6 +6,7 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
@@ -469,7 +470,7 @@ public class Player
             {
                 OnlineTime += 1;
                 LastLoginTime = TimeInfo.Now();
-                TrophyUpdate("playtime", 1);
+                TrophyManager.OnPlayTimeTick(this);
                 await Task.Delay(60000);
             }
         });

@@ -1,5 +1,6 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Managers;
 using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
@@ -30,6 +31,6 @@ public class StateHandler : GamePacketHandler
 
     private static void HandleJump(GameSession session)
     {
-        session.Player.TrophyUpdate("jump", addAmount: 1);
+        TrophyManager.OnJump(session.Player);
     }
 }

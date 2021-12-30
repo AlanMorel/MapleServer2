@@ -26,6 +26,20 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
     
+    public static void OnJump(Player player)
+    {
+        IEnumerable<TrophyMetadata> jumpTrophies = GetRelevantTrophies(TrophyTypes.Jump);
+
+        UpdateMatchingTrophies(player, jumpTrophies, 1);
+    }
+    
+    public static void OnPlayTimeTick(Player player)
+    {
+        IEnumerable<TrophyMetadata> playtimeTrophies = GetRelevantTrophies(TrophyTypes.PlayTime);
+
+        UpdateMatchingTrophies(player, playtimeTrophies, 1);
+    }
+    
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 
