@@ -157,7 +157,6 @@ public class Levels
         }
 
         masteryExp.Level = currLevel;
-        Player.TrophyUpdate("mastery_grade", 1);
-        Player.TrophyUpdate("set_mastery_grade", 1);
+        TrophyManager.OnGainMasteryLevel(Player);
     }
 }
