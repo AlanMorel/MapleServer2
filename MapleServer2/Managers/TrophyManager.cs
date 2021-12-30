@@ -17,6 +17,15 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
     
+    public static void OnMapEntered(Player player, long mapId)
+    {
+        IEnumerable<TrophyMetadata> mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
+        IEnumerable<TrophyMetadata> matchingTrophies = mapTrophies
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, mapId));
+
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+    }
+    
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 
