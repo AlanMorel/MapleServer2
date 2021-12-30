@@ -35,7 +35,7 @@ public class Trophy
         Timestamps = new();
         MaxGrade = trophyMetadata.Grades.Count;
         GradeCondition = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
-        Type = trophyMetadata.Categories[0];
+        Type = trophyMetadata.Categories?[0] ?? "";
         if (trophyMetadata.AccountWide)
         {
             AccountId = accountId;
@@ -56,7 +56,7 @@ public class Trophy
         NextGrade = nextGrade;
         MaxGrade = trophyMetadata.Grades.Count;
         GradeCondition = trophyMetadata.Grades.FirstOrDefault(x => x.Grade == NextGrade);
-        Type = trophyMetadata.Categories[0];
+        Type = trophyMetadata.Categories?[0] ?? "";
         Counter = counter;
         IsDone = isDone;
         LastReward = lastReward;
