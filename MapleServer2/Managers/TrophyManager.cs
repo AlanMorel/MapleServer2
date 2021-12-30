@@ -8,23 +8,32 @@ namespace MapleServer2.Managers;
 
 internal static class TrophyManager
 {
+    public static void OnAcceptQuest(Player player, int questId)
+    {
+        IEnumerable<TrophyMetadata> questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept);
+        IEnumerable<TrophyMetadata> matchingTrophies = questAcceptTrophies
+            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, questId)));
+
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+    }
+    
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 
     private static bool IsMatchingCondition(IEnumerable<string> trophyConditions, long condition)
     {
-        foreach (var trophyCondition in trophyConditions)
+        foreach (string trophyCondition in trophyConditions)
         {
             if (trophyCondition.Contains('-'))
             {
-                var isinRange = IsInConditionRange(trophyCondition, condition);
+                bool isinRange = IsInConditionRange(trophyCondition, condition);
                 if (isinRange)
                 {
                     return true;
                 }
             }
 
-            if (!long.TryParse(trophyCondition, out var parsedCondition))
+            if (!long.TryParse(trophyCondition, out long parsedCondition))
             {
                 continue;
             }
@@ -40,13 +49,13 @@ internal static class TrophyManager
 
     private static bool IsInConditionRange(string trophyCondition, long condition)
     {
-        var parts = trophyCondition.Split('-');
-        if (!long.TryParse(parts[0], out var lowerBound))
+        string[] parts = trophyCondition.Split('-');
+        if (!long.TryParse(parts[0], out long lowerBound))
         {
             return false;
         }
 
-        if (!long.TryParse(parts[1], out var upperBound))
+        if (!long.TryParse(parts[1], out long upperBound))
         {
             return false;
         }
@@ -56,17 +65,17 @@ internal static class TrophyManager
 
     private static void UpdateMatchingTrophies(Player player, IEnumerable<TrophyMetadata> trophies, int progress)
     {
-        var trophyIds = trophies.Select(t => t.Id);
-        foreach (var trophyId in trophyIds)
+        IEnumerable<int> trophyIds = trophies.Select(t => t.Id);
+        foreach (int trophyId in trophyIds)
         {
             if (!player.TrophyData.ContainsKey(trophyId))
             {
-                player.TrophyData[trophyId] = new Trophy(player.CharacterId, player.AccountId, trophyId);
+                player.TrophyData[trophyId] = new(player.CharacterId, player.AccountId, trophyId);
             }
 
             player.TrophyData[trophyId].AddCounter(player.Session, progress);
 
-            player.TrophyData.TryGetValue(trophyId, out var trophy);
+            player.TrophyData.TryGetValue(trophyId, out Trophy trophy);
 
             player.Session?.Send(TrophyPacket.WriteUpdate(trophy));
             DatabaseManager.Trophies.Update(trophy);
