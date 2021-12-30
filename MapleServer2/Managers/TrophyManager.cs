@@ -40,6 +40,20 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, playtimeTrophies, 1);
     }
     
+    public static void OnLevelUp(Player player)
+    {
+        int jobId = (int)player.JobCode;
+        IEnumerable<TrophyMetadata> levelUpTrophies = GetRelevantTrophies(TrophyTypes.LevelUp);
+        IEnumerable<TrophyMetadata> levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
+
+        // TODO: This might not be right :D
+        IEnumerable<TrophyMetadata> matchingTrophies = levelUpTrophies
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, jobId));
+
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, levelTrophies, 1);
+    }
+    
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 

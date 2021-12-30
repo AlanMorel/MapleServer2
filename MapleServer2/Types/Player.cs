@@ -249,7 +249,7 @@ public class Player
         }
 
         // Add initial trophy for level
-        TrophyUpdate("level", 1);
+        TrophyManager.OnLevelUp(this);
     }
 
     public void UpdateBuddies()

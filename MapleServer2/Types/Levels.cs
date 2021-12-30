@@ -2,6 +2,7 @@
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 
@@ -58,8 +59,7 @@ public class Levels
 
         Level++;
 
-        Player.TrophyUpdate("level_up", 1, code: Player.Job.GetHashCode().ToString(), target: Level.ToString());
-        Player.TrophyUpdate("level", 1);
+        TrophyManager.OnLevelUp(Player);
 
         Player.StatPointDistribution.AddTotalStatPoints(5);
         Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
