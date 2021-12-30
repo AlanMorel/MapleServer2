@@ -113,7 +113,6 @@ public class MushkingRoyaleSystemPacket
         pWriter.WriteInt();
         pWriter.WriteInt();
         return pWriter;
-
     }
 
     public static PacketWriter LoadStats(MushkingRoyaleStats stats, long expGained = 0)
