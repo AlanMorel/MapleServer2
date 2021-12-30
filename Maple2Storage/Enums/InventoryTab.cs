@@ -19,5 +19,4 @@ public enum InventoryTab : byte
     // 14 Removed
     Lapenshard = 15,
     Fragment = 16
-
 }

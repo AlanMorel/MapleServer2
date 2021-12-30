@@ -1,5 +1,7 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -7,16 +9,34 @@ public class MushkingRoyaleSystemPacket
 {
     private enum MushkingRoyaleSystemPacketMode : byte
     {
+        JoinSoloQueue = 0x0,
+        WithdrawSoloQueue = 0x1,
         MatchFound = 0x2,
         Results = 0x11,
         LastStandingNotice = 0x14,
+        Unk16 = 0x16,
         LoadStats = 0x17,
         NewSeasonNotice = 0x18,
         KillNotices = 0x19,
         UpdateKills = 0x1A,
         SurvivalSessionStats = 0x1B,
         Poisoned = 0x1D,
+        LoadMedals = 0x1E,
         ClaimRewards = 0x23
+    }
+
+    public static PacketWriter JoinSoloQueue()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.JoinSoloQueue);
+        return pWriter;
+    }
+
+    public static PacketWriter WithdrawSoloQueue()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.WithdrawSoloQueue);
+        return pWriter;
     }
 
     public static PacketWriter MatchFound()
@@ -77,18 +97,37 @@ public class MushkingRoyaleSystemPacket
 
     }
 
-    public static PacketWriter LoadStats(long accountId)
+    public static PacketWriter Unk16()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.Unk16);
+        pWriter.WriteInt();
+        pWriter.WriteInt(1);
+        pWriter.WriteLong();
+        pWriter.WriteUnicodeString();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        pWriter.WriteInt();
+        return pWriter;
+
+    }
+
+    public static PacketWriter LoadStats(MushkingRoyaleStats stats, long expGained = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
         pWriter.Write(MushkingRoyaleSystemPacketMode.LoadStats);
-        pWriter.WriteLong(accountId);
+        pWriter.WriteLong(stats.Id);
         pWriter.WriteInt();
-        pWriter.WriteByte();
-        pWriter.WriteLong(); // exp
-        pWriter.WriteInt(1); // royal level
-        pWriter.WriteInt();
-        pWriter.WriteInt();
-        pWriter.WriteLong(); // exp gained
+        pWriter.WriteBool(stats.IsGoldPassActive);
+        pWriter.WriteLong(stats.Exp);
+        pWriter.WriteInt(stats.Level);
+        pWriter.WriteInt(stats.SilverLevelClaimedRewards);
+        pWriter.WriteInt(stats.GoldLevelClaimedRewards);
+        pWriter.WriteLong(expGained);
 
         return pWriter;
     }
@@ -125,15 +164,33 @@ public class MushkingRoyaleSystemPacket
         return pWriter;
     }
 
-    public static PacketWriter ClaimRewards()
+    public static PacketWriter LoadMedals(Account account)
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
+        pWriter.Write(MushkingRoyaleSystemPacketMode.LoadMedals);
+        pWriter.WriteByte((byte) Enum.GetNames(typeof(MedalSlot)).Length);
+        foreach (MedalSlot slot in Enum.GetValues(typeof(MedalSlot)))
+        {
+            pWriter.WriteInt(account.EquippedMedals[slot]?.Id ?? 0);
+            List<Medal> medals = account.Medals.Where(x => x.Slot == slot).ToList();
+            pWriter.WriteInt(medals.Count);
+            foreach (Medal medal in medals)
+            {
+                pWriter.WriteInt(medal.Id);
+                pWriter.WriteLong(medal.ExpirationTimeStamp);
+            }
+        }
+        return pWriter;
+    }
+
+    public static PacketWriter ClaimRewards(int silverStartLevel, int silverEndLevel, int goldStartLevel, int goldEndLevel)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MUSHKING_ROYALE_SYSTEM);
         pWriter.Write(MushkingRoyaleSystemPacketMode.ClaimRewards);
-        pWriter.WriteInt(); // silver reward claim start level
-        pWriter.WriteInt(); // silver reward claim end level
-        pWriter.WriteInt(); // gold reward claim start level
-        pWriter.WriteInt(); // gold reward claim end level
+        pWriter.WriteInt(silverStartLevel);
+        pWriter.WriteInt(silverEndLevel);
+        pWriter.WriteInt(goldStartLevel);
+        pWriter.WriteInt(goldEndLevel);
         return pWriter;
-
     }
 }

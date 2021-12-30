@@ -16,78 +16,80 @@ public class ItemMetadata
     [XmlElement(Order = 4)]
     public GemSlot Gem;
     [XmlElement(Order = 5)]
-    public InventoryTab Tab;
+    public MedalSlot Medal;
     [XmlElement(Order = 6)]
-    public int Rarity;
+    public InventoryTab Tab;
     [XmlElement(Order = 7)]
-    public int StackLimit;
+    public int Rarity;
     [XmlElement(Order = 8)]
-    public bool EnableBreak;
+    public int StackLimit;
     [XmlElement(Order = 9)]
-    public bool Sellable;
+    public bool EnableBreak;
     [XmlElement(Order = 10)]
-    public TransferType TransferType;
+    public bool Sellable;
     [XmlElement(Order = 11)]
-    public byte TradeableCount;
+    public TransferType TransferType;
     [XmlElement(Order = 12)]
-    public byte RepackageCount;
+    public byte TradeableCount;
     [XmlElement(Order = 13)]
-    public byte RepackageItemConsumeCount;
+    public byte RepackageCount;
     [XmlElement(Order = 14)]
-    public bool IsTwoHand;
+    public byte RepackageItemConsumeCount;
     [XmlElement(Order = 15)]
-    public bool IsDress;
+    public bool IsTwoHand;
     [XmlElement(Order = 16)]
-    public bool IsTemplate;
+    public bool IsDress;
     [XmlElement(Order = 17)]
-    public Gender Gender;
+    public bool IsTemplate;
     [XmlElement(Order = 18)]
-    public int PlayCount;
+    public Gender Gender;
     [XmlElement(Order = 19)]
-    public bool IsCustomScore;
+    public int PlayCount;
     [XmlElement(Order = 20)]
-    public List<int> SellPrice = new();
+    public bool IsCustomScore;
     [XmlElement(Order = 21)]
-    public List<int> SellPriceCustom = new();
+    public List<int> SellPrice = new();
     [XmlElement(Order = 22)]
-    public string FileName;
+    public List<int> SellPriceCustom = new();
     [XmlElement(Order = 23)]
-    public int SkillID;
+    public string FileName;
     [XmlElement(Order = 24)]
-    public List<int> RecommendJobs = new();
+    public int SkillID;
     [XmlElement(Order = 25)]
-    public List<ItemBreakReward> BreakRewards = new();
+    public List<int> RecommendJobs = new();
     [XmlElement(Order = 26)]
-    public ItemFunction FunctionData = new();
+    public List<ItemBreakReward> BreakRewards = new();
     [XmlElement(Order = 27)]
-    public string Tag;
+    public ItemFunction FunctionData = new();
     [XmlElement(Order = 28)]
-    public int ShopID;
+    public string Tag;
     [XmlElement(Order = 29)]
-    public int Level;
+    public int ShopID;
     [XmlElement(Order = 30)]
-    public List<HairPresets> HairPresets = new();
+    public int Level;
     [XmlElement(Order = 31)]
-    public int ColorIndex;
+    public List<HairPresets> HairPresets = new();
     [XmlElement(Order = 32)]
-    public int ColorPalette;
+    public int ColorIndex;
     [XmlElement(Order = 33)]
-    public int OptionStatic;
+    public int ColorPalette;
     [XmlElement(Order = 34)]
-    public int OptionRandom;
+    public int OptionStatic;
     [XmlElement(Order = 35)]
-    public int OptionConstant;
+    public int OptionRandom;
     [XmlElement(Order = 36)]
-    public int OptionLevelFactor;
+    public int OptionConstant;
     [XmlElement(Order = 37)]
-    public bool IsCubeSolid;
+    public int OptionLevelFactor;
     [XmlElement(Order = 38)]
-    public ItemHousingCategory HousingCategory;
+    public bool IsCubeSolid;
     [XmlElement(Order = 39)]
-    public int ObjectId;
+    public ItemHousingCategory HousingCategory;
     [XmlElement(Order = 40)]
-    public string BlackMarketCategory;
+    public int ObjectId;
     [XmlElement(Order = 41)]
+    public string BlackMarketCategory;
+    [XmlElement(Order = 42)]
     public string Category;
 
     public override string ToString()
@@ -146,6 +148,10 @@ public class ItemFunction
     public OpenCoupleEffectBox OpenCoupleEffectBox;
     [XmlElement(Order = 11)]
     public InstallBillboard InstallBillboard;
+    [XmlElement(Order = 12)]
+    public SurvivalSkin SurvivalSkin;
+    [XmlElement(Order = 13)]
+    public SurvivalLevelExp SurvivalLevelExp;
 
     public override string ToString()
     {
@@ -254,6 +260,22 @@ public class InstallBillboard
         return $"AdBalloonData(InteractId:{InteractId}, Model:{Model}, Asset:{Asset}, " +
                $"NormalState:{NormalState}, Reactable:{Reactable}, Scale:{Scale}, Duration:{Duration})";
     }
+}
+
+[XmlType]
+public class SurvivalSkin
+{
+    [XmlElement(Order = 1)]
+    public int Id;
+    [XmlElement(Order = 2)]
+    public MedalSlot Slot;
+}
+
+[XmlType]
+public class SurvivalLevelExp
+{
+    [XmlElement(Order = 1)]
+    public int SurvivalExp;
 }
 
 [XmlType]

@@ -1,5 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MapleServer2.Database;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
@@ -24,6 +26,9 @@ public class Account
     public long HomeId;
     public Home Home;
     public BankInventory BankInventory;
+    public Dictionary<MedalSlot, Medal> EquippedMedals;
+    public List<Medal> Medals;
+    public MushkingRoyaleStats MushkingRoyaleStats;
 
     public AuthData AuthData;
 
@@ -32,7 +37,7 @@ public class Account
     public Account(long accountId, string username, string passwordHash,
         long creationTime, long lastLoginTime, int characterSlots, long meretAmount,
         long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration, int mesoMarketDailyListings, int mesoMarketMonthlyPurchases,
-        BankInventory bankInventory, AuthData authData)
+        BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData authData)
     {
         Id = accountId;
         Username = username;
@@ -45,11 +50,26 @@ public class Account
         EventMeret = new(CurrencyType.EventMeret, eventMeretAmount);
         MesoToken = new(CurrencyType.MesoToken, mesoTokens);
         BankInventory = bankInventory;
+        MushkingRoyaleStats = royaleStats;
         VIPExpiration = vipExpiration;
         HomeId = homeId;
         MesoMarketDailyListings = mesoMarketDailyListings;
         MesoMarketMonthlyPurchases = mesoMarketMonthlyPurchases;
         AuthData = authData;
+        EquippedMedals = new()
+        {
+            { MedalSlot.Tail, null },
+            { MedalSlot.GroundMount, null },
+            { MedalSlot.Glider, null }
+        };
+        Medals = medals;
+        foreach (Medal medal in medals)
+        {
+            if (medal.IsEquipped)
+            {
+                EquippedMedals[medal.Slot] = medal;
+            }
+        }
     }
 
     public Account(string username, string passwordHash)
@@ -64,7 +84,14 @@ public class Account
         EventMeret = new(CurrencyType.EventMeret, 0);
         MesoToken = new(CurrencyType.MesoToken, 0);
         BankInventory = new();
-
+        EquippedMedals = new()
+        {
+            { MedalSlot.Tail, null },
+            { MedalSlot.GroundMount, null },
+            { MedalSlot.Glider, null }
+        };
+        Medals = new();
+        MushkingRoyaleStats = new();
         Id = DatabaseManager.Accounts.Insert(this);
         AuthData = new(Id);
     }
@@ -90,4 +117,12 @@ public class Account
     }
 
     public bool IsVip() => VIPExpiration > TimeInfo.Now();
+
+    public void AddMedal(GameSession session, Item item)
+    {
+        Medal medal = new(item.Function.SurvivalSkin.Id, item, session.Player.AccountId, item.Function.SurvivalSkin.Slot);
+        Medals.Add(medal);
+
+        session.Send(MushkingRoyaleSystemPacket.LoadMedals(this));
+    }
 }
