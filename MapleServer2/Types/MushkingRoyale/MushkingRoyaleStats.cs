@@ -53,7 +53,7 @@ public class MushkingRoyaleStats
         session.Send(MushkingRoyaleSystemPacket.LoadStats(this, newExp));
     }
 
-    public bool LevelUp()
+    private bool LevelUp()
     {
         if (!SurvivaLevelMetadataStorage.LevelExist(Level + 1))
         {

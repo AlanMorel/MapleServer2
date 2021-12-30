@@ -170,12 +170,12 @@ public class MushkingRoyaleSystemPacket
         pWriter.WriteByte((byte) Enum.GetNames(typeof(MedalSlot)).Length);
         foreach (MedalSlot slot in Enum.GetValues(typeof(MedalSlot)))
         {
-            pWriter.WriteInt(account.EquippedMedals[slot]?.Id ?? 0);
+            pWriter.WriteInt(account.EquippedMedals[slot]?.EffectId ?? 0);
             List<Medal> medals = account.Medals.Where(x => x.Slot == slot).ToList();
             pWriter.WriteInt(medals.Count);
             foreach (Medal medal in medals)
             {
-                pWriter.WriteInt(medal.Id);
+                pWriter.WriteInt(medal.EffectId);
                 pWriter.WriteLong(medal.ExpirationTimeStamp);
             }
         }

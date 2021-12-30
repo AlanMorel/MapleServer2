@@ -12,7 +12,7 @@ public class DatabaseMedal : DatabaseTable
     {
         return QueryFactory.Query(TableName).InsertGetId<long>(new
         {
-            effect_id = medal.Id,
+            effect_id = medal.EffectId,
             is_equipped = medal.IsEquipped,
             medal_slot = medal.Slot,
             expiration_time = medal.ExpirationTimeStamp,
@@ -50,7 +50,7 @@ public class DatabaseMedal : DatabaseTable
         return new Medal()
         {
             Uid = data.uid,
-            Id = data.effect_id,
+            EffectId = data.effect_id,
             IsEquipped = data.is_equipped,
             ExpirationTimeStamp = data.expiration_time,
             Item = DatabaseManager.Items.FindByUid(data.item_uid),

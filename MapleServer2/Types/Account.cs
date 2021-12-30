@@ -125,4 +125,14 @@ public class Account
 
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(this));
     }
+
+    public void UnequipMedal(MedalSlot slot)
+    {
+        Medal oldMedal = EquippedMedals[slot];
+        if (oldMedal is not null)
+        {
+            oldMedal.IsEquipped = false;
+            DatabaseManager.MushkingRoyaleMedals.Update(oldMedal);
+        }
+    }
 }

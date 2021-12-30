@@ -6,7 +6,7 @@ namespace MapleServer2.Types;
 public class Medal
 {
     public long Uid;
-    public int Id;
+    public int EffectId;
     public bool IsEquipped;
     public long ExpirationTimeStamp;
     public Item Item;
@@ -15,9 +15,9 @@ public class Medal
 
     public Medal() { }
 
-    public Medal(int id, Item item, long accountId, MedalSlot slot)
+    public Medal(int effectId, Item item, long accountId, MedalSlot slot)
     {
-        Id = id;
+        EffectId = effectId;
         Item = item;
         AccountId = accountId;
         Slot = slot;
@@ -25,10 +25,10 @@ public class Medal
         Uid = DatabaseManager.MushkingRoyaleMedals.Insert(this);
     }
 
-    public Medal(long uid, int id, bool isEquipped, long expiration, Item item, MedalSlot slot, long accountId)
+    public Medal(long uid, int effectId, bool isEquipped, long expiration, Item item, MedalSlot slot, long accountId)
     {
         Uid = uid;
-        Id = id;
+        EffectId = effectId;
         IsEquipped = isEquipped;
         ExpirationTimeStamp = expiration;
         Item = item;

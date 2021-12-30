@@ -49,18 +49,18 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler
 
         if (effectId == 0)
         {
-            UnequipMedal(session, slot);
+            session.Player.Account.UnequipMedal(slot);
             return;
         }
 
-        Medal newMedal = session.Player.Account.Medals.FirstOrDefault(x => x.Id == effectId);
+        Medal newMedal = session.Player.Account.Medals.FirstOrDefault(x => x.EffectId == effectId);
         if (newMedal is null)
         {
             return;
         }
 
         // unequip medal if present
-        UnequipMedal(session, slot);
+        session.Player.Account.UnequipMedal(slot);
 
         // equip new medal
         session.Player.Account.EquippedMedals[slot] = newMedal;
@@ -70,15 +70,7 @@ public class MushkingRoyaleSystemHandler : GamePacketHandler
         session.Send(MushkingRoyaleSystemPacket.LoadMedals(session.Player.Account));
     }
 
-    private static void UnequipMedal(GameSession session, MedalSlot slot)
-    {
-        Medal oldMedal = session.Player.Account.EquippedMedals[slot];
-        if (oldMedal is not null)
-        {
-            oldMedal.IsEquipped = false;
-            DatabaseManager.MushkingRoyaleMedals.Update(oldMedal);
-        }
-    }
+
 
     private static void HandlePurchaseGoldPass(GameSession session, PacketReader packet)
     {
