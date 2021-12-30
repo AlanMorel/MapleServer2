@@ -48,7 +48,7 @@ public class DamageHandler
     {
         if (source.Value.GmFlags.Contains("oneshot"))
         {
-            return new(target.Stats[StatId.Hp].Total, true);
+            return new(source, target, target.Stats[StatId.Hp].Total, true);
         }
 
         return CalculateDamage(skill, (IFieldActor) source, target, isCrit);
