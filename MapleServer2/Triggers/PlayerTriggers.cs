@@ -170,7 +170,9 @@ public partial class TriggerContext
         {
             if (type == "trigger")
             {
-                player.Value.TrophyUpdate(type, 1, code: trophySet);
+                // TODO: I'm not convinced this ever did anything, there is no trophy of type
+                // "trigger", what was it meant to be doing?
+                //player.Value.TrophyUpdate(type, 1, code: trophySet);
             }
         }
     }

@@ -406,57 +406,6 @@ public class Player
         }
     }
 
-    public void TrophyUpdate(string type, int addAmount, string code = "", string target = "", int sendUpdateInterval = 1)
-    {
-        IEnumerable<TrophyMetadata> trophies = TrophyMetadataStorage.GetTrophiesByCondition(type, code, target);
-        foreach (TrophyMetadata metadata in trophies)
-        {
-            if (TrophyData.ContainsKey(metadata.Id))
-            {
-                continue;
-            }
-
-            TrophyData[metadata.Id] = new(CharacterId, AccountId, metadata.Id);
-        }
-
-        foreach (Trophy trophy in TrophyData.Values)
-        {
-            if (trophy.GradeCondition.ConditionType != type)
-            {
-                continue;
-            }
-
-            if (trophy.GradeCondition.ConditionTargets.Length != 0 && !trophy.GradeCondition.ConditionTargets.Contains(target))
-            {
-                continue;
-            }
-
-            if (trophy.GradeCondition.ConditionCodes[0].Contains('-'))
-            {
-                if (!TrophyMetadataStorage.IsInConditionRange(trophy.GradeCondition.ConditionCodes[0], code))
-                {
-                    continue;
-                }
-            }
-            else
-            {
-                if (trophy.GradeCondition.ConditionCodes.Length != 0 && !trophy.GradeCondition.ConditionCodes.Contains(code))
-                {
-                    continue;
-                }
-            }
-
-            trophy.AddCounter(Session, addAmount);
-            if (trophy.Counter % sendUpdateInterval != 0)
-            {
-                continue;
-            }
-
-            DatabaseManager.Trophies.Update(trophy);
-            Session?.Send(TrophyPacket.WriteUpdate(trophy));
-        }
-    }
-
     public Task OnlineTimer()
     {
         OnlineCTS = new();

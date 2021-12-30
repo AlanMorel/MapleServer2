@@ -72,14 +72,14 @@ internal static class TrophyManager
 
         UpdateMatchingTrophies(player, masteryTrophies, 1);
     }
-    
+
     public static void OnGuildJoin(Player player)
     {
         IEnumerable<TrophyMetadata> guildJoinTrophies = GetRelevantTrophies(TrophyTypes.GuildJoin);
 
         UpdateMatchingTrophies(player, guildJoinTrophies, 1);
     }
-    
+
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 
