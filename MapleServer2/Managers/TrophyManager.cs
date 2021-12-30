@@ -96,12 +96,40 @@ internal static class TrophyManager
                 }
             }
 
+            if (trophyCondition.Contains(','))
+            {
+                bool isInList = IsInConditionList(trophyCondition, condition);
+                if (isInList)
+                {
+                    return true;
+                }
+            }
+
             if (!long.TryParse(trophyCondition, out long parsedCondition))
             {
                 continue;
             }
 
             if (parsedCondition == condition)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsInConditionList(string trophyCondition, long condition)
+    {
+        string[] conditions = trophyCondition.Split(',');
+        foreach (string c in conditions)
+        {
+            if (!long.TryParse(c, out long listItem))
+            {
+                continue;
+            }
+
+            if (condition == listItem)
             {
                 return true;
             }
