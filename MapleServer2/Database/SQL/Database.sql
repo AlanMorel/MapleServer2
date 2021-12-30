@@ -271,7 +271,7 @@ DROP TABLE IF EXISTS `guilds`;
 CREATE TABLE `guilds`
 (
     `id`                  bigint           NOT NULL AUTO_INCREMENT,
-    `name`                varchar(12)      NOT NULL,
+    `name`                varchar(25)      NOT NULL,
     `creation_timestamp`  bigint           NOT NULL,
     `leader_account_id`   bigint           NOT NULL,
     `leader_character_id` bigint           NOT NULL,
