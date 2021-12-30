@@ -54,6 +54,17 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, levelTrophies, 1);
     }
     
+    public static void OnObjectInteract(Player player, long objectId)
+    {
+        IEnumerable<TrophyMetadata> interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
+            .Concat(GetRelevantTrophies(TrophyTypes.Controller));
+
+        IEnumerable<TrophyMetadata> matchingTrophies = interactTrophies
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, objectId));
+
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+    }
+    
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 

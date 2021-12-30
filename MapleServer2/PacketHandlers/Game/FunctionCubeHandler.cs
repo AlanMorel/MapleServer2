@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -52,12 +53,14 @@ public class FunctionCubeHandler : GamePacketHandler
         {
             return;
         }
+        
+        int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
+        TrophyManager.OnObjectInteract(session.Player, objectId);
 
         switch (fieldCube.Value.Item.HousingCategory)
         {
             case ItemHousingCategory.Ranching:
             case ItemHousingCategory.Farming:
-                int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
                 int recipeId = FunctionCubeMetadataStorage.GetRecipeId(objectId);
                 GatheringHelper.HandleGathering(session, recipeId, out int numDrops);
                 session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, 1, 1));
