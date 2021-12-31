@@ -80,8 +80,23 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, guildJoinTrophies, 1);
     }
 
+    public static void OnTrigger(Player player, string trigger)
+    {
+        IEnumerable<TrophyMetadata> triggerTrophies = GetRelevantTrophies(TrophyTypes.Trigger);
+        
+        IEnumerable<TrophyMetadata> matchingTrophies = triggerTrophies
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, trigger));
+        
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+    }
+
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
+
+    private static bool IsMatchingCondition(IEnumerable<string> trophyConditions, string condition)
+    {
+        return trophyConditions.Any(m => m.Equals(condition, StringComparison.OrdinalIgnoreCase));
+    }
 
     private static bool IsMatchingCondition(IEnumerable<string> trophyConditions, long condition)
     {
