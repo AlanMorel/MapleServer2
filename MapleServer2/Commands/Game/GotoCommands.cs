@@ -35,11 +35,13 @@ public class GotoMapCommand : InGameCommand
             trigger.Session.SendNotice($"Current map id:{trigger.Session.Player.MapId} instance: {trigger.Session.Player.InstanceId}");
             return;
         }
+
         if (trigger.Session.Player.MapId == mapId && trigger.Session.Player.InstanceId == instanceId)
         {
             trigger.Session.SendNotice("You are already on that map.");
             return;
         }
+
         trigger.Session.Player.Warp(mapId, instanceId: instanceId);
     }
 }
@@ -86,6 +88,7 @@ public class MapCommand : InGameCommand
                 trigger.Session.SendNotice($"Map '{mapName}' not found.");
                 return;
             }
+
             mapId = mapMetadata.Id;
         }
 
@@ -94,11 +97,13 @@ public class MapCommand : InGameCommand
             trigger.Session.SendNotice("Map doesn't exists.");
             return;
         }
+
         if (trigger.Session.Player.MapId == mapId)
         {
             trigger.Session.SendNotice("You are already on that map.");
             return;
         }
+
         trigger.Session.Player.Warp(mapId, instanceId: trigger.Session.Player.InstanceId);
     }
 }
@@ -129,6 +134,7 @@ public class GotoPlayerCommand : InGameCommand
             trigger.Session.SendNotice($"Couldn't find player with name: {name}!");
             return;
         }
+
         IFieldObject<Player> fieldPlayer = target.Session.Player.FieldPlayer;
 
         if (target.MapId == trigger.Session.Player.MapId && target.InstanceId == trigger.Session.Player.InstanceId)
@@ -136,9 +142,11 @@ public class GotoPlayerCommand : InGameCommand
             trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, fieldPlayer.Coord, fieldPlayer.Rotation));
             return;
         }
+
         trigger.Session.Player.Warp(target.MapId, fieldPlayer.Coord, instanceId: target.InstanceId);
     }
 }
+
 public class GotoCoordCommand : InGameCommand
 {
     public GotoCoordCommand()
@@ -161,9 +169,11 @@ public class GotoCoordCommand : InGameCommand
 
         if (coordF == default)
         {
-            trigger.Session.SendNotice(trigger.Session.Player.FieldPlayer.Coord.ToString());
+            trigger.Session.SendNotice($"Coord: {trigger.Session.Player.FieldPlayer.Coord.ToString()}");
+            trigger.Session.SendNotice($"Closest Block: {Block.ClosestBlock(trigger.Session.Player.FieldPlayer.Coord).ToString()}");
             return;
         }
+
         trigger.Session.Player.FieldPlayer.Coord = coordF;
         trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, coordF, trigger.Session.Player.FieldPlayer.Rotation));
     }

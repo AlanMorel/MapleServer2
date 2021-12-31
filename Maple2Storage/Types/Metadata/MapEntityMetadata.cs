@@ -63,6 +63,8 @@ public class MapEntityMetadata
     public readonly List<MapLiftableObject> LiftableObjects = new();
     [XmlElement(Order = 28)]
     public readonly List<MapLiftableTarget> LiftableTargets = new();
+    [XmlElement(Order = 29)]
+    public readonly List<MapChestMetadata> MapChests = new();
 
     public MapEntityMetadata() { }
 
@@ -73,8 +75,8 @@ public class MapEntityMetadata
 
     public override string ToString()
     {
-        return
-            $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)},Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
+        return $"MapEntityMetadata(Id:{MapId},PlayerSpawns:{string.Join(",", PlayerSpawns)},MobSpawns:{string.Join(",", MobSpawns)}," +
+               $"Npcs:{string.Join(",", Npcs)},Portals:{string.Join(",", Portals)},Objects:{string.Join(",", WeaponObjects)})";
     }
 }
 
@@ -700,4 +702,15 @@ public class MapLiftableTarget
         Position = position;
         ShapeDimensions = shapeDimensions;
     }
+}
+
+[XmlType]
+public class MapChestMetadata
+{
+    [XmlElement(Order = 1)]
+    public CoordF Position;
+    [XmlElement(Order = 2)]
+    public CoordF Rotation;
+    [XmlElement(Order = 3)]
+    public bool IsGolden;
 }
