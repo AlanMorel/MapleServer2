@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -215,6 +216,7 @@ public class GuildHandler : GamePacketHandler
             application.Remove(session.Player, guild);
         }
         DatabaseManager.Characters.Update(session.Player);
+        TrophyManager.OnGuildJoin(session.Player);
     }
 
     private static void HandleDisband(GameSession session)
@@ -320,6 +322,7 @@ public class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.MemberBroadcastJoinNotice(member, inviterName, true));
         guild.BroadcastPacketGuild(GuildPacket.MemberJoin(session.Player), session);
         session.Send(GuildPacket.UpdateGuild(guild));
+        TrophyManager.OnGuildJoin(session.Player);
     }
 
     private static void HandleLeave(GameSession session)

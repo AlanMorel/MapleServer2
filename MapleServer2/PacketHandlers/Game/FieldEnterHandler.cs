@@ -3,6 +3,7 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
+using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -61,7 +62,6 @@ public class FieldEnterHandler : GamePacketHandler
         session.Send(GameEventPacket.Load(gameEvents));
 
         // get map id as string and size of 8 digits
-        string mapId = player.MapId.ToString().PadLeft(8, '0');
-        player.TrophyUpdate(type: "map", addAmount: 1, code: mapId);
+        TrophyManager.OnMapEntered(player, player.MapId);
     }
 }
