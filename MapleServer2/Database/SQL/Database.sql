@@ -1,4 +1,4 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
+﻿/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
 /*!50503 SET NAMES utf8mb4 */;
@@ -32,13 +32,16 @@ CREATE TABLE `accounts`
     `event_meret`                   bigint DEFAULT NULL,
     `meso_token`                    bigint DEFAULT NULL,
     `bank_inventory_id`             bigint DEFAULT NULL,
+    `mushking_royale_id`            bigint       NOT NULL,
     `vip_expiration`                bigint       NOT NULL,
     `meso_market_daily_listings`    int          NOT NULL,
     `meso_market_monthly_purchases` int          NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `ix_accounts_username` (`username`),
     KEY `accounts_bankinventoryid_fk` (`bank_inventory_id`),
-    CONSTRAINT `accounts_bankinventoryid_fk` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT
+    KEY `accounts_mushkingroyaleid_fk` (`mushking_royale_id`),
+    CONSTRAINT `accounts_bankinventoryid_fk` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `accounts_mushkingroyaleid_fk` FOREIGN KEY (`mushking_royale_id`) REFERENCES `mushking_royale_stats` (`id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -417,6 +420,7 @@ CREATE TABLE `items`
     `is_locked`                tinyint(1)       NOT NULL,
     `is_template`              tinyint(1)       NOT NULL,
     `mail_id`                  bigint      DEFAULT NULL,
+    `owner_account_id`         bigint      DEFAULT NULL,
     `owner_character_id`       bigint      DEFAULT NULL,
     `owner_character_name`     varchar(25) DEFAULT '',
     `paired_character_id`      bigint           NOT NULL,
@@ -440,9 +444,11 @@ CREATE TABLE `items`
     KEY `ix_items_homeid` (`home_id`),
     KEY `ix_items_inventoryid` (`inventory_id`),
     KEY `ix_items_mailid` (`mail_id`),
+    KEY `ix_items_owneraccountid` (`owner_account_id`),
     KEY `ix_items_ownercharacterid` (`owner_character_id`),
     KEY `ix_items_ugcuid` (`ugc_uid`),
     CONSTRAINT `fk_items_bankinventories_bankinventoryid` FOREIGN KEY (`bank_inventory_id`) REFERENCES `bank_inventories` (`id`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_items_characters_owneraccountid` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_characters_ownercharacterid` FOREIGN KEY (`owner_character_id`) REFERENCES `characters` (`character_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_guilds_guildid` FOREIGN KEY (`guild_id`) REFERENCES `guilds` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_items_homes_homeid` FOREIGN KEY (`home_id`) REFERENCES `homes` (`id`) ON DELETE RESTRICT,
@@ -702,7 +708,6 @@ CREATE TABLE `ugc_market_items`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-
 --
 -- Table structure for table `ugc_market_sales`
 --
@@ -719,6 +724,47 @@ CREATE TABLE `ugc_market_sales`
     PRIMARY KEY (`id`),
     KEY `ix_ugc_market_sale_character_id` (`seller_character_id`),
     CONSTRAINT `fk_ugc_market_sale_character_id` FOREIGN KEY (`seller_character_id`) REFERENCES `characters` (`character_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `mushking_royale_stats`
+--
+
+DROP TABLE IF EXISTS `mushking_royale_stats`;
+CREATE TABLE `mushking_royale_stats`
+(
+    `id`                               bigint       NOT NULL AUTO_INCREMENT,
+    `exp`                              bigint       NOT NULL,
+    `active_gold_pass`                 tinyint(1)   NOT NULL,
+    `royale_level`                     int          NOT NULL,
+    `silver_level_claimed_rewards`     int          NOT NULL,
+    `gold_level_claimed_rewards`       int          NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `medals`
+--
+
+DROP TABLE IF EXISTS `medals`;
+CREATE TABLE `medals`
+(
+    `uid`                              bigint           NOT NULL AUTO_INCREMENT,
+    `effect_id`                        int              NOT NULL,
+    `expiration_time`                  bigint           NOT NULL,
+    `medal_slot`                       tinyint unsigned NOT NULL,
+    `is_equipped`                      tinyint(1)       NOT NULL,
+    `item_uid`                         bigint           NOT NULL,
+    `owner_account_id`                 bigint           NOT NULL,
+    PRIMARY KEY (`uid`),
+    KEY `ix_medal_item_uid` (`item_uid`),
+    KEY `ix_medal_owner_account_id` (`owner_account_id`),
+    CONSTRAINT `fk_medal_items_itemuid` FOREIGN KEY (`item_uid`) REFERENCES `items` (`uid`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_medal_accounts_account_id` FOREIGN KEY (`owner_account_id`) REFERENCES `accounts` (`id`) ON DELETE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

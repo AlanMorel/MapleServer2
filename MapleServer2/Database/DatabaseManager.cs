@@ -57,6 +57,8 @@ public static class DatabaseManager
     public static DatabaseUGCMarketItem UGCMarketItems { get; } = new();
     public static DatabaseUGCMarketSale UGCMarketSales { get; } = new();
     public static DatabaseServer ServerInfo { get; } = new();
+    public static DatabaseMushkingRoyaleStats MushkingRoyaleStats { get; } = new();
+    public static DatabaseMedal MushkingRoyaleMedals { get; } = new();
 
     static DatabaseManager()
     {

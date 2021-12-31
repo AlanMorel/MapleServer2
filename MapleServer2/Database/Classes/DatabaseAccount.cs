@@ -21,6 +21,7 @@ public class DatabaseAccount : DatabaseTable
             event_meret = account.EventMeret.Amount,
             meso_token = account.MesoToken.Amount,
             bank_inventory_id = account.BankInventory.Id,
+            mushking_royale_id = account.MushkingRoyaleStats.Id,
             vip_expiration = account.VIPExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
@@ -73,6 +74,7 @@ public class DatabaseAccount : DatabaseTable
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
         });
         DatabaseManager.BankInventories.Update(account.BankInventory);
+        DatabaseManager.MushkingRoyaleStats.Update(account.MushkingRoyaleStats);
     }
 
     public bool Delete(long id)
@@ -83,9 +85,11 @@ public class DatabaseAccount : DatabaseTable
     private static Account ReadAccount(dynamic data)
     {
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
+        MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
+        List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.id);
 
         return new Account(data.id, data.username, data.password_hash, data.creation_time, data.last_login_time,
                            data.character_slots, data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0,
-                           data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, null);
+                           data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, null);
     }
 }

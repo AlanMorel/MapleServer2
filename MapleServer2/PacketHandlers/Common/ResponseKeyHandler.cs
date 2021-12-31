@@ -69,7 +69,8 @@ public class ResponseKeyHandler : CommonPacketHandler
         player.IsMigrating = false;
 
         //session.Send(0x27, 0x01); // Meret market related...?
-        session.Send(MushkingRoyaleSystemPacket.LoadStats(accountId));
+        session.Send(MushkingRoyaleSystemPacket.LoadStats(session.Player.Account.MushkingRoyaleStats));
+        session.Send(MushkingRoyaleSystemPacket.LoadMedals(session.Player.Account));
 
         player.GetUnreadMailCount();
         session.Send(BuddyPacket.Initialize());

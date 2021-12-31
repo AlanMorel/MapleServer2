@@ -65,6 +65,7 @@ public class Item
     public int PetSkinBadgeId;
     public byte[] TransparencyBadgeBools;
 
+    public long OwnerAccountId;
     public long OwnerCharacterId;
     public string OwnerCharacterName;
     public EquipColor Color;
@@ -241,6 +242,7 @@ public class Item
     {
         return (itemId / 100000) switch
         {
+            209 => ItemType.Medal,
             410 or 420 or 430 => ItemType.Lapenshard,
             501 or 502 or 503 or 504 or 505 => ItemType.Furnishing,
             600 => ItemType.Pet,

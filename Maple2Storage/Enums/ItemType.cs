@@ -6,5 +6,6 @@ public enum ItemType
     Currency,
     Furnishing,
     Pet,
-    Lapenshard
+    Lapenshard,
+    Medal
 }
