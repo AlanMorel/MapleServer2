@@ -48,7 +48,7 @@ public static class TrophyMetadataStorage
             }
         }
     }
-    
+
     public static IEnumerable<TrophyMetadata> GetTrophiesByType(string type)
         => Trophies.Values.Where(m => m.Grades.Any(g => g.ConditionType == type));
 

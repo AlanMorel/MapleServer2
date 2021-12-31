@@ -16,7 +16,7 @@ internal static class TrophyManager
 
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
-    
+
     public static void OnMapEntered(Player player, long mapId)
     {
         IEnumerable<TrophyMetadata> mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
@@ -25,24 +25,24 @@ internal static class TrophyManager
 
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
-    
+
     public static void OnJump(Player player)
     {
         IEnumerable<TrophyMetadata> jumpTrophies = GetRelevantTrophies(TrophyTypes.Jump);
 
         UpdateMatchingTrophies(player, jumpTrophies, 1);
     }
-    
+
     public static void OnPlayTimeTick(Player player)
     {
         IEnumerable<TrophyMetadata> playtimeTrophies = GetRelevantTrophies(TrophyTypes.PlayTime);
 
         UpdateMatchingTrophies(player, playtimeTrophies, 1);
     }
-    
+
     public static void OnLevelUp(Player player)
     {
-        int jobId = (int)player.JobCode;
+        int jobId = (int) player.JobCode;
         IEnumerable<TrophyMetadata> levelUpTrophies = GetRelevantTrophies(TrophyTypes.LevelUp);
         IEnumerable<TrophyMetadata> levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
 
@@ -53,7 +53,7 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, matchingTrophies, 1);
         UpdateMatchingTrophies(player, levelTrophies, 1);
     }
-    
+
     public static void OnObjectInteract(Player player, long objectId)
     {
         IEnumerable<TrophyMetadata> interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
@@ -64,7 +64,7 @@ internal static class TrophyManager
 
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
-    
+
     public static void OnGainMasteryLevel(Player player)
     {
         IEnumerable<TrophyMetadata> masteryTrophies = GetRelevantTrophies(TrophyTypes.MasteryGrade)
@@ -83,10 +83,10 @@ internal static class TrophyManager
     public static void OnTrigger(Player player, string trigger)
     {
         IEnumerable<TrophyMetadata> triggerTrophies = GetRelevantTrophies(TrophyTypes.Trigger);
-        
+
         IEnumerable<TrophyMetadata> matchingTrophies = triggerTrophies
             .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, trigger));
-        
+
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
 

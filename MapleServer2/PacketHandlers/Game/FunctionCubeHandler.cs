@@ -44,16 +44,18 @@ public class FunctionCubeHandler : GamePacketHandler
         {
             coordHexa = "0" + coordHexa;
         }
-        CoordB coordB = CoordB.From((sbyte) Convert.ToByte(coordHexa[4..], 16),
-                                    (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
-                                    (sbyte) Convert.ToByte(coordHexa[..2], 16));
 
-        IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes.FirstOrDefault(cube => cube.Value.Coord == coordB.ToFloat()).Value;
+        CoordB coordB = CoordB.From((sbyte) Convert.ToByte(coordHexa[4..], 16),
+            (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
+            (sbyte) Convert.ToByte(coordHexa[..2], 16));
+
+        IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes
+            .FirstOrDefault(cube => cube.Value.Coord == coordB.ToFloat()).Value;
         if (fieldCube is null)
         {
             return;
         }
-        
+
         int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
         TrophyManager.OnObjectInteract(session.Player, objectId);
 
@@ -72,14 +74,17 @@ public class FunctionCubeHandler : GamePacketHandler
                 {
                     session.Send(FunctionCubePacket.FailLikeSkill(session.Player.CharacterId, coordB));
                 }
+
                 session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, 2, 1));
                 break;
             default:
                 Cube cube = fieldCube.Value;
                 cube.InUse = !cube.InUse;
 
-                session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, cube.InUse ? 1 : 0, 1));
-                session.FieldManager.BroadcastPacket(FunctionCubePacket.UseFurniture(session.Player.CharacterId, coordB, cube.InUse));
+                session.FieldManager.BroadcastPacket(
+                    FunctionCubePacket.UpdateFunctionCube(coordB, cube.InUse ? 1 : 0, 1));
+                session.FieldManager.BroadcastPacket(FunctionCubePacket.UseFurniture(session.Player.CharacterId, coordB,
+                    cube.InUse));
                 break;
         }
     }
