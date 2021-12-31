@@ -80,6 +80,8 @@ public class UGCMapParser : Exporter<List<UGCMapMetadata>>
                 return CurrencyType.Treva;
             case 90000027:
                 return CurrencyType.MesoToken;
+            default:
+                break;
         }
 
         throw new ArgumentException($"Unknown Currency Type for: {itemId}");

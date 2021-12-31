@@ -318,6 +318,42 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         metadata.FunctionData.InstallBillboard = balloon;
                         break;
                     }
+                case "SurvivalSkin":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                        MedalSlot medalSlot = functionParameters.Attributes["type"].Value switch
+                        {
+                            "effectTail" => MedalSlot.Tail,
+                            "riding" => MedalSlot.GroundMount,
+                            "gliding" => MedalSlot.Glider,
+                            _ => throw new ArgumentException($"Unknown slot for: {functionParameters.Attributes["type"].Value}")
+                        };
+                        metadata.FunctionData.SurvivalSkin = new()
+                        {
+                            Id = int.Parse(functionParameters.Attributes["id"].Value),
+                            Slot = medalSlot
+                        };
+                    }
+                    break;
+                case "SurvivalLevelExp":
+                    {
+                        string rawParameter = function.Attributes["parameter"].Value;
+                        string decodedParameter = HttpUtility.HtmlDecode(rawParameter);
+
+                        XmlDocument xmlParameter = new();
+                        xmlParameter.LoadXml(decodedParameter);
+                        XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
+                        metadata.FunctionData.SurvivalLevelExp = new()
+                        {
+                            SurvivalExp = int.Parse(functionParameters.Attributes["SurvivalExp"].Value)
+                        };
+                    }
+                    break;
                 case "TitleScroll":
                 case "ItemExchangeScroll":
                 case "OpenInstrument":
@@ -645,7 +681,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     case 0:
                     case 4:
                     case 5: // Ad Balloon
-                    case 11: // Tail Medal
+                    case 11: // Survival Medals
                     case 15: // Voucher
                     case 17: // Packages
                     case 18: // Packages

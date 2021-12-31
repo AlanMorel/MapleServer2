@@ -32,6 +32,8 @@ public static class ItemMetadataStorage
 
     public static GemSlot GetGem(int itemId) => GetMetadata(itemId).Gem;
 
+    public static MedalSlot GetMedalSlot(int itemId) => GetMetadata(itemId).Medal;
+
     public static InventoryTab GetTab(int itemId) => GetMetadata(itemId).Tab;
 
     public static int GetRarity(int itemId) => GetMetadata(itemId).Rarity;

@@ -92,6 +92,9 @@ public class RequestItemUseHandler : GamePacketHandler
             case "ChangeCharName":
                 HandleNameVoucher(session, packet, item);
                 break;
+            case "SurvivalLevelExp":
+                HandleSurvivalLevelExp(session, item);
+                break;
             default:
                 Logger.Warn($"Unhandled item function: {item.Function.Name}");
                 break;
@@ -427,5 +430,10 @@ public class RequestItemUseHandler : GamePacketHandler
 
         session.Send(CharacterListPacket.NameChanged(session.Player.CharacterId, characterName));
         // TODO: Needs to redirect player to character selection screen after pop-up
+    }
+
+    public static void HandleSurvivalLevelExp(GameSession session, Item item)
+    {
+        session.Player.Account.MushkingRoyaleStats.AddExp(session, item.Function.SurvivalLevelExp.SurvivalExp);
     }
 }

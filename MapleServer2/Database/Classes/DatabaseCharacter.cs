@@ -78,7 +78,7 @@ public class DatabaseCharacter : DatabaseTable
             .Select(
                 "characters.{*}",
                 "levels.{level, exp, rest_exp, prestige_level, prestige_exp, mastery_exp}",
-                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
+                "accounts.{username, password_hash, creation_time, last_login_time, character_slots, meret, game_meret, event_meret, meso_token, bank_inventory_id, mushking_royale_id, vip_expiration, meso_market_daily_listings, meso_market_monthly_purchases}",
                 "game_options.{keybinds, active_hotbar_id}",
                 "wallets.{meso, valor_token, treva, rue, havi_fruit}",
                 "homes.id as home_id",
@@ -89,6 +89,8 @@ public class DatabaseCharacter : DatabaseTable
         List<SkillTab> skillTabs = DatabaseManager.SkillTabs.FindAllByCharacterId(data.character_id, data.job);
         Inventory inventory = DatabaseManager.Inventories.FindById(data.inventory_id);
         BankInventory bankInventory = DatabaseManager.BankInventories.FindById(data.bank_inventory_id);
+        MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
+        List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.account_id);
         Dictionary<int, Trophy> trophies = DatabaseManager.Trophies.FindAllByCharacterId(data.character_id);
         foreach (KeyValuePair<int, Trophy> trophy in DatabaseManager.Trophies.FindAllByAccountId(data.account_id))
         {
@@ -103,7 +105,7 @@ public class DatabaseCharacter : DatabaseTable
             AccountId = data.account_id,
             Account = new Account(data.account_id, data.username, data.password_hash, data.creation_time, data.last_login_time, data.character_slots,
                                   data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration,
-                                  data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, authData),
+                                  data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, authData),
             CreationTime = data.creation_time,
             Name = data.name,
             Gender = (Gender) data.gender,
