@@ -17,11 +17,11 @@ public static class BonusGamePacket
         pWriter.Write(BonusGameMode.OpenWheel);
         pWriter.WriteByte();
         pWriter.WriteInt(items.Count);
-        foreach (Tuple<int, byte, int> item in items)
+        foreach ((int id, byte rarity, int amount) in items)
         {
-            pWriter.WriteInt(item.Item1);
-            pWriter.WriteByte(item.Item2);
-            pWriter.WriteInt(item.Item3);
+            pWriter.WriteInt(id);
+            pWriter.WriteByte(rarity);
+            pWriter.WriteInt(amount);
         }
         pWriter.WriteInt();
 

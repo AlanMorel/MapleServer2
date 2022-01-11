@@ -38,11 +38,11 @@ public static class ItemBreakPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_BREAK);
         pWriter.Write(ItemBreakMode.Results);
         pWriter.WriteInt(rewards.Count);
-        foreach (KeyValuePair<int, int> item in rewards)
+        foreach ((int id, int amount) in rewards)
         {
-            pWriter.WriteInt(item.Key);
-            pWriter.WriteInt(item.Value);
-            pWriter.WriteInt(item.Value);
+            pWriter.WriteInt(id);
+            pWriter.WriteInt(amount);
+            pWriter.WriteInt(amount);
         }
 
         return pWriter;
@@ -54,10 +54,10 @@ public static class ItemBreakPacket
         pWriter.Write(ItemBreakMode.ShowRewards);
         pWriter.WriteByte(1); // unknown
         pWriter.WriteInt(rewards.Count);
-        foreach (KeyValuePair<int, int> item in rewards)
+        foreach ((int id, int amount) in rewards)
         {
-            pWriter.WriteInt(item.Key);
-            pWriter.WriteInt(item.Value);
+            pWriter.WriteInt(id);
+            pWriter.WriteInt(amount);
         }
 
         return pWriter;

@@ -15,7 +15,7 @@ public static class BannerListPacket
             pWriter.WriteInt(banner.Id);
             pWriter.WriteUnicodeString(banner.Name);
             pWriter.WriteUnicodeString(banner.Type.ToString());
-            if (banner.Type == BannerType.left || banner.Type == BannerType.right)
+            if (banner.Type is BannerType.left or BannerType.right)
             {
                 pWriter.WriteUnicodeString(banner.SubType.ToString());
             }

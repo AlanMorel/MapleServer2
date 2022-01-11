@@ -372,10 +372,10 @@ public static class ResponseCubePacket
         pWriter.Write(ResponseCubePacketMode.LoadLayout);
         pWriter.WriteByte((byte) cubeCosts.Keys.Count);
         pWriter.WriteInt(cubeCount);
-        foreach (KeyValuePair<byte, long> kvp in cubeCosts)
+        foreach ((byte key, long value) in cubeCosts)
         {
-            pWriter.WriteByte(kvp.Key);
-            pWriter.WriteLong(kvp.Value);
+            pWriter.WriteByte(key);
+            pWriter.WriteLong(value);
         }
 
         return pWriter;

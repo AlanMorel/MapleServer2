@@ -235,7 +235,7 @@ public static class CharacterListPacket
 
     public static void WriteBadges(PacketWriter pWriter, Player player)
     {
-        pWriter.WriteByte((byte) player.Inventory.Badges.Where(x => x != null).Count());
+        pWriter.WriteByte((byte) player.Inventory.Badges.Count(x => x != null));
         for (int i = 0; i < player.Inventory.Badges.Length; i++)
         {
             Item badge = player.Inventory.Badges[i];

@@ -46,7 +46,7 @@ public class Hotbar
 
     public void MoveQuickSlot(int targetSlotIndex, QuickSlot quickSlot)
     {
-        if (targetSlotIndex < 0 || targetSlotIndex >= MAX_SLOTS)
+        if (targetSlotIndex is < 0 or >= MAX_SLOTS)
         {
             // This should never occur
             throw new ArgumentException($"Invalid target slot {targetSlotIndex}");
@@ -84,7 +84,7 @@ public class Hotbar
     public bool RemoveQuickSlot(int skillId, long itemUid)
     {
         int targetSlotIndex = FindQuickSlotIndex(skillId, itemUid);
-        if (targetSlotIndex < 0 || targetSlotIndex >= MAX_SLOTS)
+        if (targetSlotIndex is < 0 or >= MAX_SLOTS)
         {
             // TODO - There is either a) hotbar desync or b) something unintended occuring
             return false;

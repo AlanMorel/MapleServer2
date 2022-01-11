@@ -91,7 +91,7 @@ public class ItemEquipHandler : GamePacketHandler
 
         // Handle unequipping dresses when equipping pants
         // Handle unequipping two-handed main-hands when equipping off-hand weapons
-        if (item.ItemSlot == ItemSlot.PA || item.ItemSlot == ItemSlot.LH)
+        if (item.ItemSlot is ItemSlot.PA or ItemSlot.LH)
         {
             ItemSlot prevItemSlot = item.ItemSlot == ItemSlot.PA ? ItemSlot.CL : ItemSlot.RH;
             if (equippedInventory.ContainsKey(prevItemSlot))
@@ -128,34 +128,39 @@ public class ItemEquipHandler : GamePacketHandler
         Inventory inventory = session.Player.Inventory;
 
         // Unequip gear
-        KeyValuePair<ItemSlot, Item> kvpEquips = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
-        if (kvpEquips.Value != null)
+        (ItemSlot itemSlot, Item item) = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
+        if (item is not null)
         {
-            if (inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
+            if (!inventory.Equips.Remove(itemSlot, out Item unequipItem))
             {
-                unequipItem.Slot = -1;
-                unequipItem.IsEquipped = false;
-                inventory.AddItem(session, unequipItem, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
-
-                DecreaseStats(session, unequipItem);
+                return;
             }
 
+            unequipItem.Slot = -1;
+            unequipItem.IsEquipped = false;
+            inventory.AddItem(session, unequipItem, false);
+            session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
+
+            DecreaseStats(session, unequipItem);
             return;
         }
 
         // Unequip cosmetics
-        KeyValuePair<ItemSlot, Item> kvpCosmetics = inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
-        if (kvpCosmetics.Value != null)
+        (ItemSlot itemSlot2, Item item2) = inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
+        if (item2 is null)
         {
-            if (inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
-            {
-                unequipItem.Slot = -1;
-                unequipItem.IsEquipped = false;
-                inventory.AddItem(session, unequipItem, false);
-                session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem));
-            }
+            return;
         }
+
+        if (!inventory.Cosmetics.Remove(itemSlot2, out Item unequipItem2))
+        {
+            return;
+        }
+
+        unequipItem2.Slot = -1;
+        unequipItem2.IsEquipped = false;
+        inventory.AddItem(session, unequipItem2, false);
+        session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, unequipItem2));
     }
 
     private static void DecreaseStats(GameSession session, Item item)

@@ -58,13 +58,13 @@ public class DefaultItemsParser : Exporter<List<DefaultItemsMetadata>>
                 }
             }
 
-            foreach (KeyValuePair<int, List<DefaultItem>> job in jobDictionary)
+            foreach ((int id, List<DefaultItem> defaultItems) in jobDictionary)
             {
                 DefaultItemsMetadata jobMetadata = new()
                 {
-                    JobCode = job.Key
+                    JobCode = id,
+                    DefaultItems = defaultItems
                 };
-                jobMetadata.DefaultItems.AddRange(job.Value);
                 items.Add(jobMetadata);
             }
         }

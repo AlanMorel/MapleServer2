@@ -338,9 +338,9 @@ public class Stats
 
     public void ResetAllocations(StatDistribution statDist)
     {
-        foreach (KeyValuePair<byte, int> entry in statDist.AllocatedStats)
+        foreach ((byte id, int value) in statDist.AllocatedStats)
         {
-            StatId statId = (StatId) entry.Key;
+            StatId statId = (StatId) id;
             int gainAmount = 1;
             switch (statId)
             {
@@ -351,7 +351,7 @@ public class Stats
                     gainAmount = 3;
                     break;
             }
-            Data[statId].DecreaseBonus(entry.Value * gainAmount);
+            Data[statId].DecreaseBonus(value * gainAmount);
         }
         statDist.ResetPoints();
     }

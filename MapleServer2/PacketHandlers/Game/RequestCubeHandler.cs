@@ -713,29 +713,29 @@ public class RequestCubeHandler : GamePacketHandler
 
         int cubeCount = 0;
         Dictionary<byte, long> cubeCosts = new();
-        foreach (KeyValuePair<int, int> cube in groupedCubes)
+        foreach ((int id, int amount) in groupedCubes)
         {
-            Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Key);
+            Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == id);
             if (item == null)
             {
-                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
+                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(id);
                 if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
                 {
-                    cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * cube.Value;
+                    cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * amount;
                 }
                 else
                 {
-                    cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * cube.Value);
+                    cubeCosts.Add(shopMetadata.FurnishingTokenType, shopMetadata.Price * amount);
                 }
 
-                cubeCount += cube.Value;
+                cubeCount += amount;
                 continue;
             }
 
-            if (item.Amount < cube.Value)
+            if (item.Amount < amount)
             {
-                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
-                int missingCubes = cube.Value - item.Amount;
+                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(id);
+                int missingCubes = amount - item.Amount;
                 if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
                 {
                     cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * missingCubes;
@@ -885,7 +885,7 @@ public class RequestCubeHandler : GamePacketHandler
         }
 
         // move players to safe coord
-        if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
+        if (mode is RequestCubeMode.DecreaseHeight or RequestCubeMode.DecreaseSize)
         {
             int x;
             if (session.Player.IsInDecorPlanner)
@@ -1032,7 +1032,7 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        if (rewardId <= 1 || rewardId >= 11 || home == null || home.InteriorRewardsClaimed.Contains(rewardId))
+        if (rewardId is <= 1 or >= 11 || home == null || home.InteriorRewardsClaimed.Contains(rewardId))
         {
             return;
         }

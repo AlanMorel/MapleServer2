@@ -344,12 +344,12 @@ public class ItemOptionConstantParser : Exporter<List<ItemOptionConstantMetadata
                 }
             }
 
-            foreach (KeyValuePair<int, List<ItemOptionsConstant>> optionsData in itemOptionsConstant)
+            foreach ((int id, List<ItemOptionsConstant> itemOptions) in itemOptionsConstant)
             {
                 ItemOptionConstantMetadata metadata = new()
                 {
-                    Id = optionsData.Key,
-                    ItemOptions = optionsData.Value
+                    Id = id,
+                    ItemOptions = itemOptions
                 };
                 items.Add(metadata);
             }

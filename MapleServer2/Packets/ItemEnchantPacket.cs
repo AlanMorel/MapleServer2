@@ -23,11 +23,11 @@ public static class ItemEnchantPacket
             new(102, 3000) // Chaos Onyx
         };
         pWriter.WriteByte((byte) requiredItems.Length);
-        foreach (Tuple<int, int> requiredItem in requiredItems)
+        foreach ((int item1, int item2) in requiredItems)
         {
             pWriter.WriteInt();
-            pWriter.WriteInt(requiredItem.Item1);
-            pWriter.WriteInt(requiredItem.Item2);
+            pWriter.WriteInt(item1);
+            pWriter.WriteInt(item2);
         }
 
         pWriter.WriteShort();
@@ -55,7 +55,7 @@ public static class ItemEnchantPacket
         }
 
         // Item copies required
-        if (type == 1 || type == 2)
+        if (type is 1 or 2)
         {
             pWriter.WriteInt(); // ItemId
             pWriter.WriteShort(); // Rarity

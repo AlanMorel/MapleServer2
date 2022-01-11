@@ -92,11 +92,11 @@ public static class FishingPacket
         PacketWriter pWriter = PacketWriter.Of(SendOp.FISHING);
         pWriter.Write(FishingPacketMode.LoadAlbum);
         pWriter.WriteInt(player.FishAlbum.Count);
-        foreach (KeyValuePair<int, Fishing> fish in player.FishAlbum)
+        foreach ((int _, Fishing fishing) in player.FishAlbum)
         {
-            pWriter.WriteInt(fish.Value.FishId);
-            pWriter.WriteInt(fish.Value.TotalPrizeFish);
-            pWriter.WriteInt(fish.Value.LargestFish);
+            pWriter.WriteInt(fishing.FishId);
+            pWriter.WriteInt(fishing.TotalPrizeFish);
+            pWriter.WriteInt(fishing.LargestFish);
         }
         return pWriter;
     }
