@@ -342,12 +342,12 @@ public class ItemOptionStaticParser : Exporter<List<ItemOptionStaticMetadata>>
                 }
             }
 
-            foreach (KeyValuePair<int, List<ItemOptionsStatic>> optionsData in itemOptionsStatic)
+            foreach ((int id, List<ItemOptionsStatic> itemOptions) in itemOptionsStatic)
             {
                 ItemOptionStaticMetadata metadata = new()
                 {
-                    Id = optionsData.Key,
-                    ItemOptions = optionsData.Value
+                    Id = id,
+                    ItemOptions = itemOptions
                 };
                 items.Add(metadata);
             }

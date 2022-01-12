@@ -40,21 +40,27 @@ public static class SkillMetadataStorage
             return jobSkill;
         }
 
-        foreach (KeyValuePair<int, SkillMetadata> skills in Skills)
+        foreach ((int _, SkillMetadata metadata) in Skills)
         {
-            if (skills.Value.Job == (int) job)
+            if (metadata.Job == (int) job)
             {
-                jobSkill.Add(skills.Value);
+                jobSkill.Add(metadata);
             }
-            else if (skills.Value.SkillId == 20000001) // Swiming
+            else
             {
-                jobSkill.Add(skills.Value);
-                skills.Value.CurrentLevel = 1;
-            }
-            else if (skills.Value.SkillId == 20000011) // Climbing walls
-            {
-                jobSkill.Add(skills.Value);
-                skills.Value.CurrentLevel = 1;
+                switch (metadata.SkillId)
+                {
+                    // Swiming
+                    case 20000001:
+                        jobSkill.Add(metadata);
+                        metadata.CurrentLevel = 1;
+                        break;
+                    // Climbing walls
+                    case 20000011:
+                        jobSkill.Add(metadata);
+                        metadata.CurrentLevel = 1;
+                        break;
+                }
             }
         }
         return jobSkill;

@@ -13,19 +13,21 @@ public class DismantleInventory
 
     public void Dismantle(GameSession session)
     {
-        foreach (Tuple<long, int> slot in Slots.Where(i => i != null))
+        foreach ((long uid, int amount) in Slots.Where(i => i != null))
         {
-            session.Player.Inventory.ConsumeItem(session, slot.Item1, slot.Item2);
+            session.Player.Inventory.ConsumeItem(session, uid, amount);
         }
-        foreach (KeyValuePair<int, int> reward in Rewards)
+
+        foreach ((int id, int amount) in Rewards)
         {
-            Item item = new(reward.Key)
+            Item item = new(id)
             {
-                Amount = reward.Value
+                Amount = amount
             };
 
             session.Player.Inventory.AddItem(session, item, true);
         }
+
         Slots = new Tuple<long, int>[100];
         session.Send(ItemBreakPacket.ShowRewards(Rewards));
     }
@@ -34,14 +36,14 @@ public class DismantleInventory
     {
         Dictionary<long, Item> items = session.Player.Inventory.Items;
 
-        foreach (KeyValuePair<long, Item> item in items)
+        foreach ((long uid, Item item) in items)
         {
-            if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType
-                || !item.Value.EnableBreak || Slots.Any(x => x != null && x.Item1 == item.Key))
+            if (item.InventoryTab != inventoryTab || item.Rarity > rarityType || !item.EnableBreak || Slots.Any(x => x != null && x.Item1 == uid))
             {
                 continue;
             }
-            DismantleAdd(session, -1, item.Value.Uid, item.Value.Amount);
+
+            DismantleAdd(session, -1, item.Uid, item.Amount);
         }
     }
 
@@ -68,6 +70,7 @@ public class DismantleInventory
                 {
                     continue;
                 }
+
                 Slots[slot] = new(uid, amount);
                 session.Send(ItemBreakPacket.Add(uid, slot, amount));
                 UpdateRewards(session);
@@ -93,9 +96,9 @@ public class DismantleInventory
     public void UpdateRewards(GameSession session)
     {
         Rewards = new();
-        foreach (Tuple<long, int> slot in Slots.Where(x => x != null))
+        foreach ((long uid, int amount) in Slots.Where(x => x != null))
         {
-            Item item = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Item1).Value;
+            Item item = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == uid).Value;
             if (!ItemMetadataStorage.IsValid(item.Id))
             {
                 continue;
@@ -109,22 +112,26 @@ public class DismantleInventory
 
             foreach (ItemBreakReward ingredient in breakRewards)
             {
-                if (ingredient.Id != 0)
+                if (ingredient.Id == 0)
                 {
-                    if (Rewards.ContainsKey(ingredient.Id))
-                    {
-                        Rewards[ingredient.Id] += ingredient.Count;
-                    }
-                    else
-                    {
-                        Rewards[ingredient.Id] = ingredient.Count;
-                    }
-                    Rewards[ingredient.Id] *= slot.Item2;
+                    continue;
                 }
+
+                if (Rewards.ContainsKey(ingredient.Id))
+                {
+                    Rewards[ingredient.Id] += ingredient.Count;
+                }
+                else
+                {
+                    Rewards[ingredient.Id] = ingredient.Count;
+                }
+
+                Rewards[ingredient.Id] *= amount;
             }
             // TODO: Add Onyx Crystal (40100023) and Chaos Onyx Crystal (40100024) to rewards if InventoryTab = Gear, based on level and rarity
             // TODO: Add rewards for outfits
         }
+
         session.Send(ItemBreakPacket.Results(Rewards));
     }
 }

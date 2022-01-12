@@ -212,13 +212,7 @@ public class FishingHandler : GamePacketHandler
             return false;
         }
 
-        return block.Attribute == "water" ||
-            block.Attribute == "seawater" ||
-            block.Attribute == "devilwater" ||
-            block.Attribute == "lava" ||
-            block.Attribute == "poison" ||
-            block.Attribute == "oil" ||
-            block.Attribute == "emeraldwater";
+        return block.Attribute is "water" or "seawater" or "devilwater" or "lava" or "poison" or "oil" or "emeraldwater";
     }
 
     private static MapBlock ScanZAxisForLiquidBlock(CoordF checkBlock, int mapId)
