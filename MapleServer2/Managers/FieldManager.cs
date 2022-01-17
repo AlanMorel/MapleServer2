@@ -66,58 +66,7 @@ public partial class FieldManager
         // Add to state home cubes
         if (MapId == (int) Map.PrivateResidence)
         {
-            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
-            if (home is null)
-            {
-                return;
-            }
-
-            // Add cubes to state
-            Dictionary<long, Cube> cubes = home.FurnishingInventory;
-            foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
-            {
-                IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                ugcCube.Coord = cube.CoordF;
-                ugcCube.Rotation = cube.Rotation;
-                State.AddCube(ugcCube);
-            }
-
-            // Add portals to state
-            IEnumerable<Cube> cubePortals = cubes.Values.Where(x => x.Item.Id == 50400158);
-            foreach (Cube cubePortal in cubePortals)
-            {
-                Portal portal = new(GuidGenerator.Int())
-                {
-                    IsVisible = true,
-                    IsEnabled = true,
-                    IsMinimapVisible = false,
-                    Rotation = cubePortal.Rotation,
-                    PortalType = PortalTypes.Home
-                };
-
-                IFieldObject<Portal> fieldPortal = RequestFieldObject(portal);
-                fieldPortal.Coord = cubePortal.CoordF;
-                fieldPortal.Value.UGCPortalMethod = cubePortal.PortalSettings.Method;
-                if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
-                {
-                    switch (cubePortal.PortalSettings.Destination)
-                    {
-                        case UGCPortalDestination.PortalInHome:
-                            fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
-                            break;
-                        case UGCPortalDestination.SelectedMap:
-                            fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
-                            break;
-                        case UGCPortalDestination.FriendHome:
-                            fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
-                            break;
-                    }
-                }
-
-                cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
-                AddPortal(fieldPortal);
-            }
-
+            AddHomeCubes(player);
             return;
         }
 
@@ -133,6 +82,61 @@ public partial class FieldManager
                 ugcCube.Rotation = cube.Rotation;
                 State.AddCube(ugcCube);
             }
+        }
+    }
+
+    private void AddHomeCubes(Player player)
+    {
+        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        if (home is null)
+        {
+            return;
+        }
+
+        // Add cubes to state
+        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
+        {
+            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+            ugcCube.Coord = cube.CoordF;
+            ugcCube.Rotation = cube.Rotation;
+            State.AddCube(ugcCube);
+        }
+
+        // Add portals to state
+        IEnumerable<Cube> cubePortals = cubes.Values.Where(x => x.Item.Id == 50400158);
+        foreach (Cube cubePortal in cubePortals)
+        {
+            Portal portal = new(GuidGenerator.Int())
+            {
+                IsVisible = true,
+                IsEnabled = true,
+                IsMinimapVisible = false,
+                Rotation = cubePortal.Rotation,
+                PortalType = PortalTypes.Home
+            };
+
+            IFieldObject<Portal> fieldPortal = RequestFieldObject(portal);
+            fieldPortal.Coord = cubePortal.CoordF;
+            fieldPortal.Value.UGCPortalMethod = cubePortal.PortalSettings.Method;
+            if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
+            {
+                switch (cubePortal.PortalSettings.Destination)
+                {
+                    case UGCPortalDestination.PortalInHome:
+                        fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
+                        break;
+                    case UGCPortalDestination.SelectedMap:
+                        fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
+                        break;
+                    case UGCPortalDestination.FriendHome:
+                        fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
+                        break;
+                }
+            }
+
+            cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
+            AddPortal(fieldPortal);
         }
     }
 
