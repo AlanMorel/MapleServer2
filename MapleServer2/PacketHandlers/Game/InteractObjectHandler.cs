@@ -96,7 +96,7 @@ internal class InteractObjectHandler : GamePacketHandler
                 // Unsure if all interact objects need to be set as disabled.
                 interactObject.State = InteractObjectState.Disable;
 
-                session.Send(InteractObjectPacket.QuestUse(interactObject));
+                session.Send(InteractObjectPacket.Update(interactObject));
                 session.Send(InteractObjectPacket.Interact(interactObject));
 
                 foreach (int boxId in metadata.Drop.IndividualDropBoxId)
@@ -162,8 +162,8 @@ internal class InteractObjectHandler : GamePacketHandler
                         await Task.Delay(TimeSpan.FromSeconds(10));
                         session.FieldManager.State.RemoveInteractObject(interactObject.Id);
 
-                        session.Send(InteractObjectPacket.QuestUse(interactObject));
-                        session.Send(InteractObjectPacket.RemoveInteractObject(interactObject));
+                        session.FieldManager.BroadcastPacket(InteractObjectPacket.Update(interactObject));
+                        session.FieldManager.BroadcastPacket(InteractObjectPacket.Remove(interactObject));
                     });
                 }
                 return;

@@ -557,16 +557,16 @@ public partial class FieldManager
         breakables.AddRange(State.BreakableNifs.Values.ToList());
         sender.Send(BreakablePacket.LoadBreakables(breakables));
 
-        sender.Send(InteractObjectPacket.LoadInteractObject(State.InteractObjects.Values.Where(t => t is not AdBalloon && t is not MapChest).ToList()));
+        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t is not AdBalloon && t is not MapChest).ToList()));
 
         foreach (MapChest mapChest in State.InteractObjects.Values.OfType<MapChest>())
         {
-            sender.Send(InteractObjectPacket.AddInteractObject(mapChest));
+            sender.Send(InteractObjectPacket.Add(mapChest));
         }
 
         foreach (AdBalloon balloon in State.InteractObjects.Values.OfType<AdBalloon>())
         {
-            sender.Send(InteractObjectPacket.AddInteractObject(balloon));
+            sender.Send(InteractObjectPacket.Add(balloon));
         }
 
         List<TriggerObject> triggerObjects = new();
