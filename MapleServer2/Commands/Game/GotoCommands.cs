@@ -167,14 +167,15 @@ public class GotoCoordCommand : InGameCommand
     {
         CoordF coordF = trigger.Get<CoordF>("pos");
 
+        IFieldActor<Player> fieldPlayer = trigger.Session.Player.FieldPlayer;
         if (coordF == default)
         {
-            trigger.Session.SendNotice($"Coord: {trigger.Session.Player.FieldPlayer.Coord.ToString()}");
-            trigger.Session.SendNotice($"Closest Block: {Block.ClosestBlock(trigger.Session.Player.FieldPlayer.Coord).ToString()}");
+            trigger.Session.SendNotice($"Coord: {fieldPlayer.Coord.ToString()}");
+            trigger.Session.SendNotice($"Closest Block: {Block.ClosestBlock(fieldPlayer.Coord).ToString()}");
             return;
         }
 
-        trigger.Session.Player.FieldPlayer.Coord = coordF;
-        trigger.Session.Send(UserMoveByPortalPacket.Move(trigger.Session.Player.FieldPlayer, coordF, trigger.Session.Player.FieldPlayer.Rotation));
+        fieldPlayer.Coord = coordF;
+        trigger.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, coordF, fieldPlayer.Rotation));
     }
 }
