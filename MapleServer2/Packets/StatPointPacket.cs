@@ -1,4 +1,5 @@
-﻿using MaplePacketLib2.Tools;
+﻿using Maple2Storage.Enums;
+using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
@@ -13,44 +14,38 @@ public static class StatPointPacket
         StatDistribution = 0x1
     }
 
+    // packet which represents the total number of stat points gained and
+    // how each stat point was obtained (ie quest, trophy, exploration, prestige)
     public static PacketWriter WriteTotalStatPoints(Player character)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
-        // sends back 41 character length packet which represents the total number of stat points gained and
-        // how each stat point was obtained (ie quest, trophy, exploration, prestige)
 
         pWriter.Write(StatPointPacketMode.TotalPoints);
-        // write number of attribute points the character has
         pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
-        // write the number of sources from which stat points have been received
         pWriter.WriteInt(character.StatPointDistribution.OtherStats.Count);
 
-        foreach (OtherStatsIndex pointSrc in character.StatPointDistribution.OtherStats.Keys)
+        foreach ((OtherStatsIndex statIndex, int value) in character.StatPointDistribution.OtherStats)
         {
-            pWriter.WriteInt((int) pointSrc);
-            pWriter.WriteInt(character.StatPointDistribution.OtherStats[pointSrc]);
+            pWriter.WriteInt((int) statIndex);
+            pWriter.WriteInt(value);
         }
 
         return pWriter;
     }
 
+    // packet that updates or loads the character's current stat distribution
     public static PacketWriter WriteStatPointDistribution(Player character)
     {
-        // sends back a packet that updates or loads the character's current stat distribution
         PacketWriter pWriter = PacketWriter.Of(SendOp.STAT_POINT);
 
         pWriter.WriteByte((byte) StatPointPacketMode.StatDistribution);
-        // write number of attribute points the character has
-        pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints); //TODO: FIGURE OUT HOW TO SAVE TOTAL NUMBER OF ATTRIBUTE POINTS 
-
-        // write the number of types of stat points that have points allocated
+        pWriter.WriteInt(character.StatPointDistribution.TotalStatPoints);
         pWriter.WriteInt(character.StatPointDistribution.GetStatTypeCount());
 
-        foreach (byte statType in character.StatPointDistribution.AllocatedStats.Keys.ToList())
+        foreach ((StatId statType, int amount) in character.StatPointDistribution.AllocatedStats)
         {
-            // write the Stat Type (ex. Strength), then int value of points allocated
-            pWriter.WriteByte(statType);
-            pWriter.WriteInt(character.StatPointDistribution.AllocatedStats[statType]);
+            pWriter.Write(statType);
+            pWriter.WriteInt(amount);
         }
 
         return pWriter;

@@ -88,6 +88,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
         session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel());
         session.Send(ServerEnterPacket.Enter(session));

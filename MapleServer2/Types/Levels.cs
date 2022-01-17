@@ -17,12 +17,9 @@ public class Levels
     public long RestExp { get; private set; }
     public int PrestigeLevel { get; private set; }
     public long PrestigeExp { get; private set; }
-    public List<MasteryExp> MasteryExp { get; private set; }
+    public List<MasteryExp> MasteryExp { get; }
 
-    public Levels() { }
-
-    public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
-        List<MasteryExp> masteryExp, long id = 0)
+    public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp, List<MasteryExp> masteryExp, long id = 0)
     {
         Level = playerLevel;
         Exp = exp;
@@ -61,11 +58,11 @@ public class Levels
 
         TrophyManager.OnLevelUp(Player);
 
-        Player.StatPointDistribution.AddTotalStatPoints(5);
-        Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
-        // TODO: Gain max HP
+        Player.Stats.AddBaseStats(Player);
         Player.FieldPlayer.RecoverHp(Player.FieldPlayer.Stats[StatId.Hp].Bonus);
-        Player.Session.Send(StatPointPacket.WriteTotalStatPoints(Player));
+
+        Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
+        Player.Session.Send(StatPacket.SetStats(Player.FieldPlayer));
 
         QuestHelper.GetNewQuests(Player);
         return true;
@@ -106,11 +103,13 @@ public class Levels
         while (newExp >= ExpMetadataStorage.GetExpToLevel(Level))
         {
             newExp -= ExpMetadataStorage.GetExpToLevel(Level);
-            if (!LevelUp()) // If can't level up because next level doesn't exist, exit the loop
+            if (LevelUp())
             {
-                newExp = 0;
-                break;
+                continue;
             }
+
+            newExp = 0;
+            break;
         }
 
         Exp = newExp;

@@ -26,6 +26,8 @@ public class FieldEnterHandler : GamePacketHandler
         session.EnterField(player);
         session.Send(StatPacket.SetStats(player.FieldPlayer));
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
+        session.Send(StatPointPacket.WriteTotalStatPoints(player));
+        session.Send(StatPointPacket.WriteStatPointDistribution(player));
 
         if (account.IsVip())
         {

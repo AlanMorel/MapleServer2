@@ -36,10 +36,10 @@ public class StatPointHandler : GamePacketHandler
 
     private static void HandleStatIncrement(GameSession session, PacketReader packet)
     {
-        byte statTypeIndex = packet.ReadByte();
+        StatId statTypeIndex = (StatId) packet.ReadByte();
 
-        session.Player.StatPointDistribution.AddPoint(statTypeIndex); // Deprecate?
-        session.Player.Stats.Allocate((StatId) statTypeIndex);
+        session.Player.StatPointDistribution.AddPoint(statTypeIndex);
+        session.Player.Stats.Allocate(statTypeIndex);
         session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
@@ -47,7 +47,7 @@ public class StatPointHandler : GamePacketHandler
     private static void HandleResetStatDistribution(GameSession session)
     {
         session.Player.Stats.ResetAllocations(session.Player.StatPointDistribution);
-        session.Send(StatPointPacket.WriteStatPointDistribution(session.Player)); // Deprecate?
+        session.Send(StatPointPacket.WriteStatPointDistribution(session.Player));
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
     }
 }
