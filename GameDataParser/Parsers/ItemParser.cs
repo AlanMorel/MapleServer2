@@ -66,13 +66,13 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 IsCustomScore = musicScore.isCustomNote,
                 ShopID = data.Shop?.systemShopID ?? 0,
                 SkillID = data.skill.skillID,
-                EnableBreak = limit.enableBreak == 1,
+                EnableBreak = limit.enableBreak != 0,
                 Level = limit.levelLimit,
                 TransferType = (TransferType) limit.transferType,
-                Sellable = limit.shopSell == 1,
+                Sellable = limit.shopSell != 0,
                 RecommendJobs = limit.recommendJobs.ToList(),
                 Gender = (Gender) limit.genderLimit,
-                IsCubeSolid = install.cubeProp == 1,
+                IsCubeSolid = install.cubeProp != 0,
                 ObjectId = install.objCode
             };
 
@@ -86,8 +86,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 Console.WriteLine($"Failed to parse item slot for {id}: {firstSlot.name}");
             }
 
-            int totalSlots = data.slots.slot.Count;
-            if (totalSlots > 1)
+            if (data.slots.slot.Count > 1)
             {
                 switch (metadata.Slot)
                 {
@@ -100,7 +99,7 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 }
             }
 
-            if (firstSlot.name == "HR")
+            if (metadata.Slot is ItemSlot.HR)
             {
                 ParseHair(firstSlot, metadata);
             }
@@ -417,11 +416,9 @@ public class ItemParser : Exporter<List<ItemMetadata>>
 
     private static void ParseHair(Slot slot, ItemMetadata metadata)
     {
-        int assetNodeCount = slot.asset.Count;
         Slot.Scale scaleNode = slot.scale?.FirstOrDefault();
 
-        CoordF defaultCoord = CoordF.Parse("0, 0, 0");
-        switch (assetNodeCount)
+        switch (slot.asset.Count)
         {
             // This hair has a front and back positionable hair
             case 3:
@@ -487,8 +484,8 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                         {
                             BackPositionCoord = bPosCord[i],
                             BackPositionRotation = bPosRotation[i],
-                            FrontPositionCoord = defaultCoord,
-                            FrontPositionRotation = defaultCoord,
+                            FrontPositionCoord = default,
+                            FrontPositionRotation = default,
                             MinScale = scaleNode?.min ?? 0,
                             MaxScale = scaleNode?.max ?? 0
                         };
@@ -503,10 +500,10 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 {
                     HairPresets hairPresets = new()
                     {
-                        BackPositionCoord = defaultCoord,
-                        BackPositionRotation = defaultCoord,
-                        FrontPositionCoord = defaultCoord,
-                        FrontPositionRotation = defaultCoord,
+                        BackPositionCoord = default,
+                        BackPositionRotation = default,
+                        FrontPositionCoord = default,
+                        FrontPositionRotation = default,
                         MinScale = scaleNode?.min ?? 0,
                         MaxScale = scaleNode?.max ?? 0
                     };
