@@ -90,6 +90,8 @@ internal static class TrophyManager
         UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
 
+    #region Helper Methods
+
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) => TrophyMetadataStorage.GetTrophiesByType(category);
 
     /// <summary>
@@ -174,6 +176,8 @@ internal static class TrophyManager
             DatabaseManager.Trophies.Update(trophy);
         }
     }
+
+    #endregion
 
     private static class TrophyTypes
     {
