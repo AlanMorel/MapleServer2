@@ -47,6 +47,7 @@ public class QuestStatus
         {
             Condition.Add(new(condition.Type, condition.Codes, condition.Goal, 0, condition.Target));
         }
+
         Reward = metadata.Reward;
         RewardItems = metadata.RewardItem;
         State = state;
@@ -65,6 +66,7 @@ public class QuestStatus
         RewardItems = metadata.RewardItem;
     }
 }
+
 public class Condition
 {
     public string Type { get; set; }

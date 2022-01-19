@@ -65,19 +65,20 @@ public class CharacterManagementHandler : LoginPacketHandler
         int port = int.Parse(Environment.GetEnvironmentVariable("GAME_PORT"));
         IPEndPoint endpoint = new(IPAddress.Parse(ipAddress), port);
 
-        Player player = DatabaseManager.Characters.FindPlayerById(characterId);
-        if (player == default)
+        AuthData authData = DatabaseManager.AuthData.GetByAccountId(session.AccountId);
+        Player player = DatabaseManager.Characters.FindPartialPlayerById(characterId);
+        if (player is null)
         {
             Logger.Error("Character not found!");
             return;
         }
 
-        player.Account.AuthData.OnlineCharacterId = characterId;
+        authData.OnlineCharacterId = characterId;
 
-        DatabaseManager.AuthData.UpdateOnlineCharacterId(player.Account.AuthData);
+        DatabaseManager.AuthData.UpdateOnlineCharacterId(authData);
         DatabaseManager.Characters.UpdateChannelId(characterId, channelId: 1, instanceId: 1, isMigrating: false);
 
-        session.SendFinal(MigrationPacket.LoginToGame(endpoint, player), logoutNotice: false);
+        session.SendFinal(MigrationPacket.LoginToGame(endpoint, player.MapId, authData), logoutNotice: false);
     }
 
     private static void HandleCreate(LoginSession session, PacketReader packet)
