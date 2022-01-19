@@ -43,8 +43,8 @@ internal class TrophyParser : Exporter<List<TrophyMetadata>>
                     Grade = int.Parse(grade.Attributes["value"].Value),
                     Condition = long.Parse(condition.Attributes["value"].Value),
                     ConditionType = condition.Attributes["type"].Value,
-                    ConditionCodes = condition.Attributes["code"].Value.Split(","),
-                    ConditionTargets = condition.Attributes["target"].Value.Split(","),
+                    ConditionCodes = condition.Attributes["code"].Value,
+                    ConditionTargets = condition.Attributes["target"].Value,
                     RewardType = type,
                     RewardCode = int.Parse(reward.Attributes["code"].Value),
                     RewardValue = int.Parse(reward.Attributes["value"].Value)

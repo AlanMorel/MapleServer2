@@ -3,7 +3,6 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
-using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
@@ -65,7 +64,7 @@ public class Trophy
         AccountId = accountId;
     }
 
-    public void AddCounter(GameSession session, long amount)
+    public void AddCounter(Player player, long amount)
     {
         Counter += amount;
         if (IsDone)
@@ -84,7 +83,7 @@ public class Trophy
             switch (GradeCondition.RewardType)
             {
                 case RewardType.statPoint:
-                    session.Player.AddStatPoint(GradeCondition.RewardValue, OtherStatsIndex.Trophy);
+                    player.AddStatPoint(GradeCondition.RewardValue, OtherStatsIndex.Trophy);
                     break;
                 case RewardType.skillPoint:
                     // TODO: Add skill points
@@ -114,13 +113,13 @@ public class Trophy
             switch (category)
             {
                 case string s when s.Contains("combat"):
-                    session.Player.TrophyCount[0] += 1;
+                    player.TrophyCount[0] += 1;
                     break;
                 case string s when s.Contains("adventure"):
-                    session.Player.TrophyCount[1] += 1;
+                    player.TrophyCount[1] += 1;
                     break;
                 case string s when s.Contains("lifestyle"):
-                    session.Player.TrophyCount[2] += 1;
+                    player.TrophyCount[2] += 1;
                     break;
             }
         }
