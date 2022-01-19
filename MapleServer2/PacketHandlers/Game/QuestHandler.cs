@@ -133,6 +133,10 @@ public class QuestHandler : GamePacketHandler
             session.Player.Inventory.AddItem(session, item, true);
         }
 
+        Condition firstCondition = questStatus.Condition.First();
+        firstCondition.Current++;
+        firstCondition.Completed = true;
+
         questStatus.State = QuestState.Finished;
         questStatus.CompleteTimestamp = TimeInfo.Now();
         DatabaseManager.Quests.Update(questStatus);
@@ -152,7 +156,7 @@ public class QuestHandler : GamePacketHandler
             {
                 QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
                 session.Player.QuestData.Add(questId, new(session.Player, metadata, QuestState.Started, TimeInfo.Now()));
-                return;
+                continue;
             }
 
             questStatus.State = QuestState.Started;

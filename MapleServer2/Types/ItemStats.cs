@@ -420,7 +420,7 @@ public class ItemStats
     // Returns index 8~15 for equip level 70+
     private static int Roll(int itemId)
     {
-        int itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
+        float itemLevelFactor = ItemMetadataStorage.GetOptionLevelFactor(itemId);
         Random random = RandomProvider.Get();
         if (itemLevelFactor >= 70)
         {

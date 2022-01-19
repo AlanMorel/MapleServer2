@@ -38,9 +38,8 @@ public class DatabaseQuest : DatabaseTable
 
     public void Update(QuestStatus questStatus)
     {
-        QueryFactory.Query(TableName).Where("id", questStatus.Id).Update(new
+        QueryFactory.Query(TableName).Where("uid", questStatus.Uid).Update(new
         {
-            questStatus.Id,
             questStatus.State,
             start_timestamp = questStatus.StartTimestamp,
             complete_timestamp = questStatus.CompleteTimestamp,

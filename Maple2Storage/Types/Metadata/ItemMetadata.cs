@@ -48,9 +48,9 @@ public class ItemMetadata
     [XmlElement(Order = 20)]
     public bool IsCustomScore;
     [XmlElement(Order = 21)]
-    public List<int> SellPrice = new();
+    public List<long> SellPrice = new();
     [XmlElement(Order = 22)]
-    public List<int> SellPriceCustom = new();
+    public List<long> SellPriceCustom = new();
     [XmlElement(Order = 23)]
     public string FileName;
     [XmlElement(Order = 24)]
@@ -80,7 +80,7 @@ public class ItemMetadata
     [XmlElement(Order = 36)]
     public int OptionConstant;
     [XmlElement(Order = 37)]
-    public int OptionLevelFactor;
+    public float OptionLevelFactor;
     [XmlElement(Order = 38)]
     public bool IsCubeSolid;
     [XmlElement(Order = 39)]

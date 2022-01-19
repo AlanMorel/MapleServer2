@@ -7,15 +7,15 @@ namespace MapleServer2.Packets;
 
 public static class MigrationPacket
 {
-    public static PacketWriter LoginToGame(IPEndPoint endpoint, Player player)
+    public static PacketWriter LoginToGame(IPEndPoint endpoint, int mapId, AuthData authData)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LOGIN_TO_GAME);
         pWriter.WriteByte(); // 0 = Success
         pWriter.WriteBytes(endpoint.Address.GetAddressBytes());
         pWriter.Write((ushort) endpoint.Port);
-        pWriter.WriteInt(player.Account.AuthData.TokenA);
-        pWriter.WriteInt(player.Account.AuthData.TokenB);
-        pWriter.WriteInt(player.MapId);
+        pWriter.WriteInt(authData.TokenA);
+        pWriter.WriteInt(authData.TokenB);
+        pWriter.WriteInt(mapId);
 
         return pWriter;
     }
