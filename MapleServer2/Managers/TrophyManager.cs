@@ -111,13 +111,13 @@ internal static class TrophyManager
     /// <returns>True or false</returns>
     private static bool IsMatching(string trophyCondition, long value)
     {
-        // If the condition contains - it's a range.
+        // Check if the value is in the range
         if (trophyCondition.Contains('-') && IsInRange(trophyCondition, value))
         {
             return true;
         }
 
-        // If the condition contains , it's a list.
+        // Check if the value is in the list
         if (trophyCondition.Contains(',') && IsInList(trophyCondition, value))
         {
             return true;
@@ -126,12 +126,12 @@ internal static class TrophyManager
         return long.TryParse(trophyCondition, out long parsedCondition) && parsedCondition == value;
     }
 
-    private static bool IsInList(string trophyCondition, long condition)
+    private static bool IsInList(string trophyCondition, long value)
     {
         string[] conditions = trophyCondition.Split(',');
         foreach (string c in conditions)
         {
-            if (long.TryParse(c, out long listItem) && condition == listItem)
+            if (long.TryParse(c, out long listItem) && value == listItem)
             {
                 return true;
             }
@@ -140,7 +140,7 @@ internal static class TrophyManager
         return false;
     }
 
-    private static bool IsInRange(string trophyCondition, long condition)
+    private static bool IsInRange(string trophyCondition, long value)
     {
         string[] parts = trophyCondition.Split('-');
         if (!long.TryParse(parts[0], out long lowerBound))
@@ -153,7 +153,7 @@ internal static class TrophyManager
             return false;
         }
 
-        return condition >= lowerBound && condition <= upperBound;
+        return value >= lowerBound && value <= upperBound;
     }
 
     private static void UpdateMatchingTrophies(Player player, IEnumerable<TrophyMetadata> trophies, int progress)
