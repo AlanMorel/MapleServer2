@@ -42,7 +42,6 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
 
                     foreach (XmlNode subtabNode in tabNode.ChildNodes)
                     {
-                        Console.WriteLine(subtabNode.Attributes["name"].Value);
                         if (subtabNode.Attributes["category"] != null)
                         {
                             BlackMarketTableMetadata metadata = new()
@@ -58,7 +57,6 @@ public class BlackMarketTableParser : Exporter<List<BlackMarketTableMetadata>>
                         {
                             foreach (XmlNode subsubNode in subtabNode.ChildNodes)
                             {
-                                Console.WriteLine(subsubNode.Attributes["name"].Value);
                                 if (subsubNode.Attributes["category"] != null)
                                 {
                                     BlackMarketTableMetadata metadata = new()
