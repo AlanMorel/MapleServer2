@@ -5,24 +5,25 @@ using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
-internal class InteractObjectPacket
+public static class InteractObjectPacket
 {
     private enum InteractObjectMode : byte
     {
-        QuestUse = 0x04,
+        Update = 0x04,
         Use = 0x05,
-        SetInteractObject = 0x06,
-        LoadInteractObject = 0x08,
-        AddAdBalloons = 0x09,
+        Set = 0x06,
+        Load = 0x08,
+        Add = 0x09,
+        Remove = 0x0A,
         Interact = 0x0D
     }
 
-    public static PacketWriter QuestUse(InteractObject interactObject)
+    public static PacketWriter Update(InteractObject interactObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-        pWriter.Write(InteractObjectMode.QuestUse);
+        pWriter.Write(InteractObjectMode.Update);
         pWriter.WriteString(interactObject.Id);
-        pWriter.WriteByte();
+        pWriter.Write(interactObject.State);
         pWriter.Write(interactObject.Type);
 
         return pWriter;
@@ -40,22 +41,23 @@ internal class InteractObjectPacket
             pWriter.WriteShort(result);
             pWriter.WriteInt(numDrops);
         }
+
         return pWriter;
     }
 
-    public static PacketWriter SetInteractObject(InteractObject interactObject)
+    public static PacketWriter Set(InteractObject interactObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-        pWriter.Write(InteractObjectMode.SetInteractObject);
+        pWriter.Write(InteractObjectMode.Set);
         pWriter.WriteInt(interactObject.InteractId);
         pWriter.Write(interactObject.State);
         return pWriter;
     }
 
-    public static PacketWriter LoadInteractObject(List<InteractObject> interactObjects)
+    public static PacketWriter LoadObjects(List<InteractObject> interactObjects)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-        pWriter.Write(InteractObjectMode.LoadInteractObject);
+        pWriter.Write(InteractObjectMode.Load);
         pWriter.WriteInt(interactObjects.Count);
         foreach (InteractObject interactObject in interactObjects)
         {
@@ -65,35 +67,38 @@ internal class InteractObjectPacket
         return pWriter;
     }
 
-    public static void WriteInteractObject(PacketWriter pWriter, InteractObject interactObject)
+    public static PacketWriter Add(InteractObject interactObject)
     {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
+        pWriter.Write(InteractObjectMode.Add);
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.State);
         pWriter.Write(interactObject.Type);
-        if (interactObject.Type == InteractObjectType.Gathering)
+        pWriter.WriteInt(interactObject.InteractId);
+        pWriter.Write(interactObject.Position);
+        pWriter.Write(interactObject.Rotation);
+        pWriter.WriteUnicodeString(interactObject.Model);
+        pWriter.WriteUnicodeString(interactObject.Asset);
+        pWriter.WriteUnicodeString(interactObject.NormalState);
+        pWriter.WriteUnicodeString(interactObject.Reactable);
+        pWriter.WriteFloat(interactObject.Scale);
+        pWriter.WriteByte();
+        if (interactObject is AdBalloon adBalloon)
         {
-            pWriter.WriteInt();
+            pWriter.WriteLong(adBalloon.Owner.CharacterId);
+            pWriter.WriteUnicodeString(adBalloon.Owner.Name);
         }
+
+        return pWriter;
     }
 
-    public static PacketWriter LoadAdBallon(AdBalloon balloon)
+    public static PacketWriter Remove(InteractObject interactObject)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.INTERACT_OBJECT);
-        pWriter.Write(InteractObjectMode.AddAdBalloons);
-        pWriter.WriteString(balloon.Id);
-        pWriter.Write(balloon.State);
-        pWriter.Write(balloon.Type);
-        pWriter.WriteInt(balloon.InteractId);
-        pWriter.Write(balloon.Position);
-        pWriter.Write(balloon.Rotation);
-        pWriter.WriteUnicodeString(balloon.Model);
-        pWriter.WriteUnicodeString(balloon.Asset);
-        pWriter.WriteUnicodeString(balloon.NormalState);
-        pWriter.WriteUnicodeString(balloon.Reactable);
-        pWriter.WriteFloat(balloon.Scale);
-        pWriter.WriteByte();
-        pWriter.WriteLong(balloon.Owner.CharacterId);
-        pWriter.WriteUnicodeString(balloon.Owner.Name);
+        pWriter.Write(InteractObjectMode.Remove);
+        pWriter.WriteString(interactObject.Id);
+        pWriter.WriteUnicodeString();
+
         return pWriter;
     }
 
@@ -105,5 +110,16 @@ internal class InteractObjectPacket
         pWriter.WriteString(interactObject.Id);
         pWriter.Write(interactObject.Type);
         return pWriter;
+    }
+
+    private static void WriteInteractObject(PacketWriter pWriter, InteractObject interactObject)
+    {
+        pWriter.WriteString(interactObject.Id);
+        pWriter.Write(interactObject.State);
+        pWriter.Write(interactObject.Type);
+        if (interactObject.Type == InteractObjectType.Gathering)
+        {
+            pWriter.WriteInt();
+        }
     }
 }

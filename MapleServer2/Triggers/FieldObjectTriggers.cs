@@ -1,4 +1,5 @@
 ﻿using Maple2Storage.Tools;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Types;
 
@@ -49,7 +50,7 @@ public partial class TriggerContext
                 continue;
             }
             interactObject.State = objectState;
-            Field.BroadcastPacket(InteractObjectPacket.SetInteractObject(interactObject));
+            Field.BroadcastPacket(InteractObjectPacket.Set(interactObject));
         }
     }
 

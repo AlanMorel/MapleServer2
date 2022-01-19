@@ -34,6 +34,7 @@ public static class MapEntityStorage
     private static readonly Dictionary<int, List<MapWeaponObject>> WeaponObjects = new();
     private static readonly Dictionary<int, List<MapLiftableObject>> LiftableObjects = new();
     private static readonly Dictionary<int, List<MapLiftableTarget>> LiftableTargets = new();
+    private static readonly Dictionary<int, List<MapChestMetadata>> MapChests = new();
 
     public static void Init()
     {
@@ -45,7 +46,10 @@ public static class MapEntityStorage
             Portals.Add(entity.MapId, entity.Portals);
             PlayerSpawns.Add(entity.MapId, entity.PlayerSpawns);
             MobSpawns.Add(entity.MapId, entity.MobSpawns);
-            BoundingBox.Add(entity.MapId, new[] { entity.BoundingBox0, entity.BoundingBox1 });
+            BoundingBox.Add(entity.MapId, new[]
+            {
+                entity.BoundingBox0, entity.BoundingBox1
+            });
             HealthSpot.Add(entity.MapId, entity.HealingSpot);
             PatrolDatas.Add(entity.MapId, entity.PatrolDatas);
             WayPoints.Add(entity.MapId, entity.WayPoints);
@@ -67,6 +71,7 @@ public static class MapEntityStorage
             WeaponObjects.Add(entity.MapId, entity.WeaponObjects);
             LiftableObjects.Add(entity.MapId, entity.LiftableObjects);
             LiftableTargets.Add(entity.MapId, entity.LiftableTargets);
+            MapChests.Add(entity.MapId, entity.MapChests);
         }
     }
 
@@ -240,7 +245,9 @@ public static class MapEntityStorage
         return weaponObject.WeaponItemIds[index];
     }
 
-    public static IEnumerable<MapLiftableObject> GetLiftablesObjects(int mapId) => LiftableObjects[mapId];
+    public static IEnumerable<MapLiftableObject> GetLiftablesObjects(int mapId) => LiftableObjects.GetValueOrDefault(mapId);
 
-    public static IEnumerable<MapLiftableTarget> GetLiftablesTargets(int mapId) => LiftableTargets[mapId];
+    public static IEnumerable<MapLiftableTarget> GetLiftablesTargets(int mapId) => LiftableTargets.GetValueOrDefault(mapId);
+
+    public static IEnumerable<MapChestMetadata> GetMapChests(int mapId) => MapChests.GetValueOrDefault(mapId);
 }

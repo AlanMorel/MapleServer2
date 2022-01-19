@@ -247,26 +247,24 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                     switch (spawnBase)
                     {
                         case IMS2RegionBoxSpawn boxSpawn:
-                            SpawnMetadata mobSpawnDataBox =
-                                SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(boxSpawn.SpawnPointID)
-                                    ? SpawnTagMap[mapId][boxSpawn.SpawnPointID]
-                                    : null;
-
-                            int mobNpcCountBox = mobSpawnDataBox?.Population ?? 6;
-                            int mobSpawnRadiusBox = 150;
-                            // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
-                            // MS2RegionSpawn, it's only set for SpawnPointNPC.
-                            List<int> mobNpcListBox = new()
+                            SpawnMetadata mobSpawnDataBox = SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(boxSpawn.SpawnPointID)
+                                ? SpawnTagMap[mapId][boxSpawn.SpawnPointID]
+                                : null;
+                            if (boxSpawn.ModelName.Contains("chest", StringComparison.CurrentCultureIgnoreCase))
                             {
-                                21000025 // Placeholder
-                            };
-                            metadata.MobSpawns.Add(new(boxSpawn.SpawnPointID, CoordS.FromVector3(boxSpawn.Position),
-                                mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
-                            // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
+                                metadata.MapChests.Add(new()
+                                {
+                                    IsGolden = boxSpawn.ModelName.Contains("rare", StringComparison.CurrentCultureIgnoreCase),
+                                    Position = CoordF.FromVector3(boxSpawn.Position),
+                                    Rotation = CoordF.FromVector3(boxSpawn.Rotation),
+                                });
+                                continue;
+                            }
+
+                            AddMobSpawn(mobSpawnDataBox, metadata, boxSpawn);
                             break;
                         case IMS2RegionSpawn regionSpawn:
-                            SpawnMetadata mobSpawnData =
-                                SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID)
+                            SpawnMetadata mobSpawnData = SpawnTagMap.ContainsKey(mapId) && SpawnTagMap[mapId].ContainsKey(regionSpawn.SpawnPointID)
                                     ? SpawnTagMap[mapId][regionSpawn.SpawnPointID]
                                     : null;
 
@@ -407,6 +405,21 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
         }
 
         Entities.Add(metadata);
+    }
+
+    private static void AddMobSpawn(SpawnMetadata mobSpawnDataBox, MapEntityMetadata metadata, IMS2RegionBoxSpawn boxSpawn)
+    {
+        int mobNpcCountBox = mobSpawnDataBox?.Population ?? 6;
+        int mobSpawnRadiusBox = 150;
+        // TODO: This previously relied in "NpcList" to be set. NpcList is impossible to be set on
+        // MS2RegionSpawn, it's only set for SpawnPointNPC.
+        List<int> mobNpcListBox = new()
+        {
+            21000025 // Placeholder
+        };
+        metadata.MobSpawns.Add(new(boxSpawn.SpawnPointID, CoordS.FromVector3(boxSpawn.Position),
+            mobNpcCountBox, mobNpcListBox, mobSpawnRadiusBox, mobSpawnDataBox));
+        // "QR_10000264_" is Quest Reward Chest? This is tied to a MS2TriggerAgent making this object appear.
     }
 
     private InteractObjectType GetInteractObjectType(int interactId)
