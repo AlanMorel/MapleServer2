@@ -10,20 +10,18 @@ internal static class TrophyManager
 {
     public static void OnAcceptQuest(Player player, int questId)
     {
-        IEnumerable<TrophyMetadata> questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept);
-        IEnumerable<TrophyMetadata> matchingTrophies = questAcceptTrophies
-            .Where(t => t.Grades.Any(g => IsMatching(g.ConditionCodes, questId)));
+        IEnumerable<TrophyMetadata> questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept)
+            .Where(t => IsMatching(t.Grades.First().ConditionCodes, questId));
 
-        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, questAcceptTrophies, 1);
     }
 
     public static void OnMapEntered(Player player, long mapId)
     {
-        IEnumerable<TrophyMetadata> mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
-        IEnumerable<TrophyMetadata> matchingTrophies = mapTrophies
+        IEnumerable<TrophyMetadata> mapTrophies = GetRelevantTrophies(TrophyTypes.Map)
             .Where(t => IsMatching(t.Grades.First().ConditionCodes, mapId));
 
-        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, mapTrophies, 1);
     }
 
     public static void OnJump(Player player)
@@ -44,25 +42,22 @@ internal static class TrophyManager
     {
         int jobId = (int) player.Job;
         int level = player.Levels.Level;
-        IEnumerable<TrophyMetadata> levelUpTrophies = GetRelevantTrophies(TrophyTypes.LevelUp);
-        IEnumerable<TrophyMetadata> levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
-
-        IEnumerable<TrophyMetadata> matchingTrophies = levelUpTrophies
+        IEnumerable<TrophyMetadata> jobSpecificLevelTrophies = GetRelevantTrophies(TrophyTypes.LevelUp)
             .Where(t => IsMatching(t.Grades.First().ConditionCodes, jobId) && IsMatching(t.Grades.First().ConditionTargets, level));
 
-        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        IEnumerable<TrophyMetadata> levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
+
+        UpdateMatchingTrophies(player, jobSpecificLevelTrophies, 1);
         UpdateMatchingTrophies(player, levelTrophies, 1);
     }
 
     public static void OnObjectInteract(Player player, long objectId)
     {
         IEnumerable<TrophyMetadata> interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
-            .Concat(GetRelevantTrophies(TrophyTypes.Controller));
-
-        IEnumerable<TrophyMetadata> matchingTrophies = interactTrophies
+            .Concat(GetRelevantTrophies(TrophyTypes.Controller))
             .Where(t => IsMatching(t.Grades.First().ConditionCodes, objectId));
 
-        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, interactTrophies, 1);
     }
 
     public static void OnGainMasteryLevel(Player player)
@@ -82,12 +77,10 @@ internal static class TrophyManager
 
     public static void OnTrigger(Player player, string trigger)
     {
-        IEnumerable<TrophyMetadata> triggerTrophies = GetRelevantTrophies(TrophyTypes.Trigger);
-
-        IEnumerable<TrophyMetadata> matchingTrophies = triggerTrophies
+        IEnumerable<TrophyMetadata> triggerTrophies = GetRelevantTrophies(TrophyTypes.Trigger)
             .Where(t => IsMatching(t.Grades.First().ConditionCodes, trigger));
 
-        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, triggerTrophies, 1);
     }
 
     #region Helper Methods
@@ -99,7 +92,6 @@ internal static class TrophyManager
     /// </summary>
     /// <param name="trophyCondition">Trophy code or target</param>
     /// <param name="value">Value to try match</param>
-    /// <returns>True or false</returns>
     private static bool IsMatching(string trophyCondition, string value)
     {
         return trophyCondition.Equals(value, StringComparison.OrdinalIgnoreCase);
@@ -110,7 +102,6 @@ internal static class TrophyManager
     /// </summary>
     /// <param name="trophyCondition">Trophy codes or targets</param>
     /// <param name="value">Value to try match</param>
-    /// <returns>True or false</returns>
     private static bool IsMatching(string trophyCondition, long value)
     {
         // Check if the value is in the range
