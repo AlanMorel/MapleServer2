@@ -133,7 +133,7 @@ public class MapleCipher
             }
 
             // Only decode sequence once we know there is sufficient data because it mutates IV
-            short decSeq = DecodeSeqBase(encSeq);
+            ushort decSeq = DecodeSeqBase(encSeq);
             if (decSeq != Cipher.Version)
             {
                 throw new ArgumentException($"Packet has invalid sequence header: {decSeq}");
