@@ -26,7 +26,7 @@ public class FieldEnterHandler : GamePacketHandler
         session.EnterField(player);
         session.Send(StatPacket.SetStats(player.FieldPlayer));
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
-        session.Send(StatPointPacket.WriteTotalStatPoints(player));
+        session.Send(StatPointPacket.WriteTotalStatPoints(player)); // This packet is sent twice on GMS, not sure why 
         session.Send(StatPointPacket.WriteStatPointDistribution(player));
 
         if (account.IsVip())
@@ -63,7 +63,6 @@ public class FieldEnterHandler : GamePacketHandler
         List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
         session.Send(GameEventPacket.Load(gameEvents));
 
-        // get map id as string and size of 8 digits
         TrophyManager.OnMapEntered(player, player.MapId);
     }
 }
