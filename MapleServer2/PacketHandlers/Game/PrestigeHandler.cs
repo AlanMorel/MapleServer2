@@ -2,6 +2,7 @@
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -40,19 +41,19 @@ public class PrestigeHandler : GamePacketHandler
         // Get reward data
         PrestigeReward reward = PrestigeMetadataStorage.GetReward(rank);
 
-        if (reward.Type.Equals("item"))
+        switch (reward.Type)
         {
-            Item item = new(reward.Id)
-            {
-                CreationTime = TimeInfo.Now(),
-                Rarity = 4
-            };
+            case "item":
+                Item item = new(reward.Id)
+                {
+                    Rarity = 4
+                };
 
-            session.Player.Inventory.AddItem(session, item, true);
-        }
-        else if (reward.Type.Equals("statPoint"))
-        {
-            session.Player.StatPointDistribution.AddTotalStatPoints(reward.Value);
+                session.Player.Inventory.AddItem(session, item, true);
+                break;
+            case "statPoint":
+                session.Player.AddStatPoint(reward.Value, OtherStatsIndex.Trophy);
+                break;
         }
 
         session.Send(PrestigePacket.Reward(rank));

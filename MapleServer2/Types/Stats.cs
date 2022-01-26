@@ -304,6 +304,11 @@ public class Stats
                 new(0) // base 0 (bonuses can be added)
             }
         };
+
+        if (job is Job.Runeblade)
+        {
+            Data[StatId.Int].IncreaseBonus(5);
+        }
     }
 
     public Stat this[StatId statIndex]
@@ -432,7 +437,7 @@ public class Stats
             case Job.Runeblade:
                 strBase = 8;
                 dexBase = 6;
-                intBase = 7;
+                intBase = 2;
                 lukBase = 1;
                 hpBase = 64;
                 critBase = 46;
