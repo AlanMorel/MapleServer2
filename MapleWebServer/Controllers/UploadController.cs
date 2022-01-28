@@ -19,7 +19,7 @@ public class UploadController : ControllerBase
         Stream bodyStream = Request.Body;
 
         MemoryStream memoryStream = await CopyStream(bodyStream);
-        if (memoryStream.Capacity == 0)
+        if (memoryStream.Length == 0)
         {
             return BadRequest();
         }
