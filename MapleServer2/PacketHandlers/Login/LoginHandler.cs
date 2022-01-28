@@ -39,7 +39,6 @@ public class LoginHandler : LoginPacketHandler
         ServerIPs = builder.ToImmutable();
         ServerName = Environment.GetEnvironmentVariable("NAME");
         ChannelCount = short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"));
-
     }
 
     public override void Handle(LoginSession session, PacketReader packet)

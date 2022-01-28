@@ -6,7 +6,7 @@ namespace MapleServer2.Types;
 
 public class Currency
 {
-    public GameSession Session;
+    private readonly GameSession Session;
     private readonly CurrencyType Type;
     public long Amount { get; private set; }
 
