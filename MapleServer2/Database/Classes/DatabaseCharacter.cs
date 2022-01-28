@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using MapleServer2.Enums;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 using Newtonsoft.Json;
 using SqlKata.Execution;
@@ -66,7 +67,7 @@ public class DatabaseCharacter : DatabaseTable
     /// Return the full player with the given id, with Hotbars, SkillTabs, Inventories, etc.
     /// </summary>
     /// <returns>Player</returns>
-    public Player FindPlayerById(long characterId)
+    public Player FindPlayerById(long characterId, GameSession session)
     {
         dynamic data = QueryFactory.Query(TableName).Where("character_id", characterId)
             .Join("levels", "levels.id", "characters.levels_id")
@@ -102,11 +103,12 @@ public class DatabaseCharacter : DatabaseTable
 
         return new()
         {
+            Session = session,
             CharacterId = data.character_id,
             AccountId = data.account_id,
             Account = new Account(data.account_id, data.username, data.password_hash, data.creation_time, data.last_login_time, data.character_slots,
                 data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0, data.vip_expiration,
-                data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, authData),
+                data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, authData, session),
             CreationTime = data.creation_time,
             Name = data.name,
             Gender = (Gender) data.gender,
@@ -115,8 +117,8 @@ public class DatabaseCharacter : DatabaseTable
             InstanceId = data.instance_id,
             IsMigrating = data.is_migrating,
             Job = (Job) data.job,
-            Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level,
-                data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
+            Levels = new(data.level, data.exp, data.rest_exp, data.prestige_level, data.prestige_exp,
+                JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), session, data.levels_id),
             MapId = data.map_id,
             TitleId = data.title_id,
             InsigniaId = data.insignia_id,
@@ -126,7 +128,7 @@ public class DatabaseCharacter : DatabaseTable
             ActiveSkillTabId = data.active_skill_tab_id,
             GameOptions = new GameOptions(JsonConvert.DeserializeObject<Dictionary<int, KeyBind>>(data.keybinds),
                 hotbars, data.active_hotbar_id, data.game_options_id),
-            Wallet = new Wallet(data.meso, data.valor_token, data.treva, data.rue, data.havi_fruit, data.wallet_id),
+            Wallet = new Wallet(data.meso, data.valor_token, data.treva, data.rue, data.havi_fruit, session, data.wallet_id),
             Inventory = inventory,
             ChatSticker = JsonConvert.DeserializeObject<List<ChatSticker>>(data.chat_sticker),
             ClubId = data.club_id,
@@ -236,7 +238,7 @@ public class DatabaseCharacter : DatabaseTable
                 Awakened = data.awakened,
                 Job = (Job) data.job,
                 Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level,
-                    data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
+                    data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
                 MapId = data.map_id,
                 Stats = JsonConvert.DeserializeObject<Stats>(data.stats),
                 TrophyCount = JsonConvert.DeserializeObject<int[]>(data.trophy_count),
@@ -381,7 +383,7 @@ public class DatabaseCharacter : DatabaseTable
             Awakened = data.awakened,
             Job = (Job) data.job,
             Levels = new Levels(data.level, data.exp, data.rest_exp, data.prestige_level,
-                data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), data.levels_id),
+                data.prestige_exp, JsonConvert.DeserializeObject<List<MasteryExp>>(data.mastery_exp), null, data.levels_id),
             MapId = data.map_id,
             GuildApplications = JsonConvert.DeserializeObject<List<GuildApplication>>(data.guild_applications),
             Motto = data.motto,

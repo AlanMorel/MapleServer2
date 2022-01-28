@@ -37,7 +37,7 @@ public class Account
     public Account(long accountId, string username, string passwordHash,
         long creationTime, long lastLoginTime, int characterSlots, long meretAmount,
         long gameMeretAmount, long eventMeretAmount, long mesoTokens, long homeId, long vipExpiration, int mesoMarketDailyListings, int mesoMarketMonthlyPurchases,
-        BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData authData)
+        BankInventory bankInventory, MushkingRoyaleStats royaleStats, List<Medal> medals, AuthData authData, GameSession gameSession)
     {
         Id = accountId;
         Username = username;
@@ -45,10 +45,10 @@ public class Account
         CreationTime = creationTime;
         LastLoginTime = lastLoginTime;
         CharacterSlots = characterSlots;
-        Meret = new(CurrencyType.Meret, meretAmount);
-        GameMeret = new(CurrencyType.GameMeret, gameMeretAmount);
-        EventMeret = new(CurrencyType.EventMeret, eventMeretAmount);
-        MesoToken = new(CurrencyType.MesoToken, mesoTokens);
+        Meret = new(CurrencyType.Meret, meretAmount, gameSession);
+        GameMeret = new(CurrencyType.GameMeret, gameMeretAmount, gameSession);
+        EventMeret = new(CurrencyType.EventMeret, eventMeretAmount, gameSession);
+        MesoToken = new(CurrencyType.MesoToken, mesoTokens, gameSession);
         BankInventory = bankInventory;
         MushkingRoyaleStats = royaleStats;
         VIPExpiration = vipExpiration;

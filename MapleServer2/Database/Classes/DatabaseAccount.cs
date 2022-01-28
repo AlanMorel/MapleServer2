@@ -31,9 +31,9 @@ public class DatabaseAccount : DatabaseTable
     public Account FindById(long id)
     {
         return ReadAccount(QueryFactory.Query(TableName).Where("accounts.id", id)
-                               .LeftJoin("homes", "homes.account_id", "accounts.id")
-                               .Select("accounts.{*}", "homes.id as home_id")
-                               .FirstOrDefault());
+            .LeftJoin("homes", "homes.account_id", "accounts.id")
+            .Select("accounts.{*}", "homes.id as home_id")
+            .FirstOrDefault());
     }
 
     public Account FindByUsername(string username)
@@ -51,6 +51,7 @@ public class DatabaseAccount : DatabaseTable
             account = dbAccount;
             return true;
         }
+
         return false;
     }
 
@@ -88,8 +89,8 @@ public class DatabaseAccount : DatabaseTable
         MushkingRoyaleStats royaleStats = DatabaseManager.MushkingRoyaleStats.FindById(data.mushking_royale_id);
         List<Medal> medals = DatabaseManager.MushkingRoyaleMedals.FindAllByAccountId(data.id);
 
-        return new Account(data.id, data.username, data.password_hash, data.creation_time, data.last_login_time,
-                           data.character_slots, data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0,
-                           data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, null);
+        return new(data.id, data.username, data.password_hash, data.creation_time, data.last_login_time,
+            data.character_slots, data.meret, data.game_meret, data.event_meret, data.meso_token, data.home_id ?? 0,
+            data.vip_expiration, data.meso_market_daily_listings, data.meso_market_monthly_purchases, bankInventory, royaleStats, medals, null, null);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Network;
 using MapleServer2.Packets;
@@ -20,7 +21,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         long accountId = packet.ReadLong();
         AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
 
-        Player dbPlayer = DatabaseManager.Characters.FindPlayerById(authData.OnlineCharacterId);
+        Player dbPlayer = DatabaseManager.Characters.FindPlayerById(authData.OnlineCharacterId, session);
 
         // Backwards seeking because we read accountId here
         packet.Skip(-8);
@@ -30,18 +31,6 @@ public class ResponseKeyHandler : CommonPacketHandler
 
         Player player = session.Player;
 
-        player.Session = session;
-        player.Wallet.Meso.Session = session;
-        player.Wallet.ValorToken.Session = session;
-        player.Wallet.Treva.Session = session;
-        player.Wallet.Rue.Session = session;
-        player.Wallet.HaviFruit.Session = session;
-        player.Account.Meret.Session = session;
-        player.Account.GameMeret.Session = session;
-        player.Account.EventMeret.Session = session;
-        player.Account.MesoToken.Session = session;
-        player.Account.BankInventory.Mesos.Session = session;
-        player.Levels.Player = player;
         player.BuddyList = GameServer.BuddyManager.GetBuddies(player.CharacterId);
         player.Mailbox = GameServer.MailManager.GetMails(player.CharacterId);
 
@@ -69,8 +58,8 @@ public class ResponseKeyHandler : CommonPacketHandler
         player.IsMigrating = false;
 
         //session.Send(0x27, 0x01); // Meret market related...?
-        session.Send(MushkingRoyaleSystemPacket.LoadStats(session.Player.Account.MushkingRoyaleStats));
-        session.Send(MushkingRoyaleSystemPacket.LoadMedals(session.Player.Account));
+        session.Send(MushkingRoyaleSystemPacket.LoadStats(player.Account.MushkingRoyaleStats));
+        session.Send(MushkingRoyaleSystemPacket.LoadMedals(player.Account));
 
         player.GetUnreadMailCount();
         session.Send(BuddyPacket.Initialize());
@@ -87,9 +76,9 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial1();
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
-        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
-        session.Player.ClientTickSyncLoop();
-        session.Send(DynamicChannelPacket.DynamicChannel());
+        session.Send(StatPacket.SetStats(player.FieldPlayer));
+        player.ClientTickSyncLoop();
+        session.Send(DynamicChannelPacket.DynamicChannel(short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"))));
         session.Send(ServerEnterPacket.Enter(session));
         // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
         session.Send(SyncNumberPacket.Send());
@@ -173,7 +162,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         // 0xF0, ResponsePet P(0F 01)
         // RequestFieldEnter
         //session.Send("16 00 00 41 75 19 03 00 01 8A 42 0F 00 00 00 00 00 00 C0 28 C4 00 40 03 44 00 00 16 44 00 00 00 00 00 00 00 00 55 FF 33 42 E8 49 01 00".ToByteArray());
-        session.Send(RequestFieldEnterPacket.RequestEnter(session.Player.FieldPlayer));
+        session.Send(RequestFieldEnterPacket.RequestEnter(player.FieldPlayer));
 
         Party party = GameServer.PartyManager.GetPartyByMember(player.CharacterId);
         if (party != null)
@@ -186,7 +175,7 @@ public class ResponseKeyHandler : CommonPacketHandler
         // SendUgc: 15 01 00 00 00 00 00 00 00 00 00 00 00 4B 00 00 00
         // SendHomeCommand: 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00
 
-        session.Player.TimeSyncLoop();
+        player.TimeSyncLoop();
         session.Send(TimeSyncPacket.SetSessionServerTick(0));
         //session.Send("B9 00 00 E1 0F 26 89 7F 98 3C 26 00 00 00 00 00 00 00 00".ToByteArray());
         session.Send(ServerEnterPacket.Confirm());

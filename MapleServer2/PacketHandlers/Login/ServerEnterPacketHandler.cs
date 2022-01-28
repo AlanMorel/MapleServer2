@@ -2,6 +2,7 @@
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Packets;
@@ -17,23 +18,26 @@ public class ServerEnterPacketHandler : LoginPacketHandler
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;
     private readonly string ServerName;
+    private readonly short ChannelCount;
 
     public ServerEnterPacketHandler()
     {
         ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
         string ipAddress = Environment.GetEnvironmentVariable("IP");
         int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
+
         builder.Add(new(IPAddress.Parse(ipAddress), port));
 
         ServerIPs = builder.ToImmutable();
         ServerName = Environment.GetEnvironmentVariable("NAME");
+        ChannelCount = short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"));
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(BannerListPacket.SetBanner(banners));
-        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs));
+        session.Send(ServerListPacket.SetServers(ServerName, ServerIPs, ChannelCount));
 
         List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
