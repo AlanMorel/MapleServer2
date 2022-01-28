@@ -2,6 +2,7 @@
 using System.Net;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
+using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Database.Types;
 using MapleServer2.Network;
@@ -20,6 +21,7 @@ public class LoginHandler : LoginPacketHandler
     // TODO: This data needs to be dynamic
     private readonly ImmutableList<IPEndPoint> ServerIPs;
     private readonly string ServerName;
+    private readonly short ChannelCount;
 
     private enum LoginMode : byte
     {
@@ -36,6 +38,7 @@ public class LoginHandler : LoginPacketHandler
 
         ServerIPs = builder.ToImmutable();
         ServerName = Environment.GetEnvironmentVariable("NAME");
+        ChannelCount = short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"));
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
@@ -87,6 +90,9 @@ public class LoginHandler : LoginPacketHandler
             case LoginMode.SendCharacters:
                 SendCharacters(session, account);
                 break;
+            default:
+                IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                break;
         }
     }
 
@@ -95,7 +101,7 @@ public class LoginHandler : LoginPacketHandler
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(NpsInfoPacket.SendUsername(account.Username));
         session.Send(BannerListPacket.SetBanner(banners));
-        session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs), logoutNotice: true);
+        session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs, ChannelCount), logoutNotice: true);
     }
 
     private void SendCharacters(LoginSession session, Account account)

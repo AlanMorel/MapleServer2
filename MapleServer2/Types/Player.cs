@@ -162,8 +162,8 @@ public class Player
         Gender = gender;
         Job = job;
         GameOptions = new();
-        Wallet = new(0, 0, 0, 0, 0);
-        Levels = new(1, 0, 0, 1, 0, new()
+        Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
+        Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
         {
             new(MasteryType.Fishing),
             new(MasteryType.Performance),
@@ -176,7 +176,7 @@ public class Player
             new(MasteryType.Alchemy),
             new(MasteryType.Cooking),
             new(MasteryType.PetTaming)
-        });
+        }, gameSession: null);
         MapId = JobMetadataStorage.GetStartMapId((int) job);
         SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
         Stats = new(job);

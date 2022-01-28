@@ -7,11 +7,11 @@ namespace MapleServer2.Packets;
 
 public static class ServerListPacket
 {
-    public static PacketWriter SetServers(string serverName, ImmutableList<IPEndPoint> serverIps)
+    public static PacketWriter SetServers(string serverName, ImmutableList<IPEndPoint> serverIps, short channelCount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SERVER_LIST);
 
-        pWriter.WriteByte(1); // If false packet isn't processed
+        pWriter.WriteBool(true); // If false packet isn't processed
         pWriter.WriteInt(1); // Unk.
         pWriter.WriteUnicodeString(serverName);
         pWriter.WriteByte(); // Unk.
@@ -25,9 +25,8 @@ public static class ServerListPacket
 
         pWriter.WriteInt(100); // Unk.
 
-        short nMultiServerChannel = 10; // Doesn't seems to go past 9 channels ingame ??
-        pWriter.WriteShort(nMultiServerChannel);
-        for (short i = 1; i <= nMultiServerChannel; ++i)
+        pWriter.WriteShort(channelCount);
+        for (short i = 1; i <= channelCount; ++i)
         {
             pWriter.WriteShort(i);
         }

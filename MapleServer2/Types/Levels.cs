@@ -5,13 +5,17 @@ using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
 public class Levels
 {
     public readonly long Id;
-    public Player Player;
+    private readonly GameSession Session;
+    private Player Player => Session.Player;
+    private IFieldActor<Player> FieldPlayer => Player.FieldPlayer;
+
     public short Level { get; private set; }
     public long Exp { get; private set; }
     public long RestExp { get; private set; }
@@ -19,7 +23,8 @@ public class Levels
     public long PrestigeExp { get; private set; }
     public List<MasteryExp> MasteryExp { get; }
 
-    public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp, List<MasteryExp> masteryExp, long id = 0)
+    public Levels(short playerLevel, long exp, long restExp, int prestigeLevel, long prestigeExp,
+        List<MasteryExp> masteryExp, GameSession gameSession, long id = 0)
     {
         Level = playerLevel;
         Exp = exp;
@@ -27,6 +32,7 @@ public class Levels
         PrestigeLevel = prestigeLevel;
         PrestigeExp = prestigeExp;
         MasteryExp = masteryExp;
+        Session = gameSession;
 
         if (id == 0)
         {
@@ -41,8 +47,8 @@ public class Levels
     {
         Level = level;
         Exp = 0;
-        Player.Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
-        Player.Session.Send(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
+        Session.Send(ExperiencePacket.ExpUp(0, Exp, 0));
+        Session.Send(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
 
         QuestHelper.GetNewQuests(Player);
     }
@@ -59,10 +65,10 @@ public class Levels
         TrophyManager.OnLevelUp(Player);
 
         Player.Stats.AddBaseStats(Player);
-        Player.FieldPlayer.RecoverHp(Player.FieldPlayer.Stats[StatId.Hp].Bonus);
+        Player.FieldPlayer.RecoverHp(FieldPlayer.Stats[StatId.Hp].Bonus);
 
-        Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
-        Player.Session.Send(StatPacket.SetStats(Player.FieldPlayer));
+        Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(FieldPlayer.ObjectId, Level));
+        Session.Send(StatPacket.SetStats(FieldPlayer));
 
         QuestHelper.GetNewQuests(Player);
         return true;
@@ -72,14 +78,14 @@ public class Levels
     {
         PrestigeLevel = level;
         PrestigeExp = 0;
-        Player.Session.Send(PrestigePacket.ExpUp(Player, 0));
-        Player.Session.Send(PrestigePacket.LevelUp(Player.FieldPlayer, PrestigeLevel));
+        Session.Send(PrestigePacket.ExpUp(0, 0));
+        Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
     }
 
     public void PrestigeLevelUp()
     {
         PrestigeLevel++;
-        Player.Session.Send(PrestigePacket.LevelUp(Player.FieldPlayer, PrestigeLevel));
+        Session.Send(PrestigePacket.LevelUp(FieldPlayer.ObjectId, PrestigeLevel));
     }
 
     public void GainExp(int amount)
@@ -113,7 +119,7 @@ public class Levels
         }
 
         Exp = newExp;
-        Player.Session.Send(ExperiencePacket.ExpUp(amount, newExp, RestExp));
+        Session.Send(ExperiencePacket.ExpUp(amount, newExp, RestExp));
     }
 
     public void GainPrestigeExp(long amount)
@@ -134,7 +140,7 @@ public class Levels
         }
 
         PrestigeExp = newPrestigeExp;
-        Player.Session.Send(PrestigePacket.ExpUp(Player, amount));
+        Session.Send(PrestigePacket.ExpUp(PrestigeExp, amount));
     }
 
     public void GainMasteryExp(MasteryType type, long amount)
@@ -147,7 +153,7 @@ public class Levels
         }
 
         // user already has some exp in mastery, so simply update it
-        Player.Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
+        Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
         int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
 
         if (currLevel <= masteryExp.Level)

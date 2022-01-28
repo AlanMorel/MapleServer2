@@ -32,23 +32,23 @@ public static class PrestigePacket
         return pWriter;
     }
 
-    public static PacketWriter ExpUp(Player player, long amount)
+    public static PacketWriter ExpUp(long prestigeExp, long amount)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
         pWriter.Write(PrestigePacketMode.PrestigeExp);
-        pWriter.WriteLong(player.Levels.PrestigeExp);
+        pWriter.WriteLong(prestigeExp);
         pWriter.WriteLong(amount);
 
         return pWriter;
     }
 
-    public static PacketWriter LevelUp(IFieldObject<Player> player, int level)
+    public static PacketWriter LevelUp(int playerObjectId, int level)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.PRESTIGE);
 
         pWriter.Write(PrestigePacketMode.PrestigeLevel);
-        pWriter.WriteInt(player.ObjectId);
+        pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(level);
 
         return pWriter;
