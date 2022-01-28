@@ -76,8 +76,9 @@ public class ResponseKeyHandler : CommonPacketHandler
         TimeSyncPacket.SetInitial1();
         TimeSyncPacket.SetInitial2();
         TimeSyncPacket.Request();
-        session.Send(StatPacket.SetStats(player.FieldPlayer));
-        player.ClientTickSyncLoop();
+        session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
+        // session.Send(StatPacket.SetStats(session.Player.FieldPlayer)); // Second packet is meant to send the stats initialized, for now we'll just send the first one
+        session.Player.ClientTickSyncLoop();
         session.Send(DynamicChannelPacket.DynamicChannel(short.Parse(ConstantsMetadataStorage.GetConstant("ChannelCount"))));
         session.Send(ServerEnterPacket.Enter(session));
         // SendUgc f(0x16), SendCash f(0x09), SendContentShutdown f(0x01, 0x04), SendPvp f(0x0C)
