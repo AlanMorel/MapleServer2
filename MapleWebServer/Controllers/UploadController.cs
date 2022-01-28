@@ -5,25 +5,25 @@ using MapleServer2.Database;
 using MapleServer2.Types;
 using MapleWebServer.Enums;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace MapleWebServer.Controllers;
 
-[ApiController]
 public class UploadController : ControllerBase
 {
-    [Route("urq.aspx")]
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    [HttpPost("urq.aspx")]
     public async Task<IActionResult> PostAsync()
     {
         Stream bodyStream = Request.Body;
-        if (bodyStream == null)
+
+        MemoryStream memoryStream = await CopyStream(bodyStream);
+        if (memoryStream.Capacity == 0)
         {
             return BadRequest();
         }
 
-        MemoryStream memoryStream = await CopyStream(bodyStream);
         byte[] array = memoryStream.ToArray();
 
         byte[] flagA = array.Take(4).ToArray();
@@ -49,7 +49,7 @@ public class UploadController : ControllerBase
             PostUGCMode.ProfileAvatar => HandleProfileAvatar(fileBytes, characterId),
             PostUGCMode.Item => HandleItem(fileBytes, itemId, itemUid),
             PostUGCMode.ItemIcon => HandleItemIcon(fileBytes, itemId, itemUid),
-            _ => BadRequest(),
+            _ => HandleUnknownMode(mode),
         };
     }
 
@@ -93,7 +93,7 @@ public class UploadController : ControllerBase
         Directory.CreateDirectory(filePath);
 
         // Adding timestamp to the file name to prevent caching, client doesn't refresh the image if the url is already cached
-        string fileHash = CreateMD5(Encoding.UTF8.GetString(fileBytes) + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        string fileHash = CreateMd5(Encoding.UTF8.GetString(fileBytes) + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
         // Deleting old files in the character folder
         DirectoryInfo di = new(filePath);
@@ -106,6 +106,12 @@ public class UploadController : ControllerBase
         return Ok($"0,data/profiles/avatar/{characterId}/{fileHash}.png");
     }
 
+    private IActionResult HandleUnknownMode(PostUGCMode mode)
+    {
+        Logger.Info($"Unknown mode: {mode}");
+        return BadRequest();
+    }
+
     private static async Task<MemoryStream> CopyStream(Stream input)
     {
         MemoryStream output = new();
@@ -115,24 +121,24 @@ public class UploadController : ControllerBase
         {
             output.Write(buffer, 0, read);
         }
+
         return output;
     }
 
-    private static string CreateMD5(string input)
+    private static string CreateMd5(string input)
     {
         // Use input string to calculate MD5 hash
-        using (MD5 md5 = MD5.Create())
-        {
-            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
+        using MD5 md5 = MD5.Create();
+        byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
 
-            // Convert the byte array to hexadecimal string
-            StringBuilder sb = new();
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-            return sb.ToString();
+        // Convert the byte array to hexadecimal string
+        StringBuilder sb = new();
+        foreach (byte b in hashBytes)
+        {
+            sb.Append(b.ToString("X2"));
         }
+
+        return sb.ToString();
     }
 }
