@@ -671,11 +671,5 @@ public class Stats
         Data[StatId.Int].IncreaseBase(intIncrease);
         Data[StatId.Luk].IncreaseBase(lukIncrease);
         Data[StatId.Hp].IncreaseBase(hpIncrease);
-
-        // Don't know until which level runeblade gains 5 bonus int, if there is one
-        if (player.Job is Job.Runeblade)
-        {
-            Data[StatId.Int].IncreaseBonus(5);
-        }
     }
 }
