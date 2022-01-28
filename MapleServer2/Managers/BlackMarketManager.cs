@@ -15,6 +15,7 @@ public class BlackMarketManager
         List<BlackMarketListing> list = DatabaseManager.BlackMarketListings.FindAll();
         foreach (BlackMarketListing listing in list)
         {
+            listing.Item.SetMetadataValues();
             AddListing(listing);
         }
     }
