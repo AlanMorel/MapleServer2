@@ -52,9 +52,9 @@ public static class StatPacket
         pWriter.WriteInt(player.ObjectId);
         pWriter.WriteByte(); // Unknown (0x00/0x01)
         pWriter.Write(StatsMode.SendStats);
-        foreach (KeyValuePair<StatId, Stat> entry in player.Stats.Data)
+        foreach ((StatId statId, Stat _) in player.Stats.Data)
         {
-            pWriter.WriteStat(player.Stats, entry.Key);
+            pWriter.WriteStat(player.Stats, statId);
         }
 
         return pWriter;
@@ -133,9 +133,9 @@ public static class StatPacket
 
     public static void WriteStats(this PacketWriter pWriter, Stats stats)
     {
-        foreach (KeyValuePair<StatId, Stat> entry in stats.Data)
+        foreach ((StatId statId, Stat _) in stats.Data)
         {
-            pWriter.WriteStat(stats, entry.Key);
+            pWriter.WriteStat(stats, statId);
         }
     }
 
@@ -152,7 +152,6 @@ public static class StatPacket
                 case 1:
                     pWriter.WriteLong(stats[StatId.Hp].Base);
                     break;
-                case 2:
                 default:
                     pWriter.WriteLong(stats[StatId.Hp].Total);
                     break;

@@ -179,7 +179,7 @@ public class Player
         });
         MapId = JobMetadataStorage.GetStartMapId((int) job);
         SavedCoord = MapEntityStorage.GetRandomPlayerSpawn(MapId).Coord.ToFloat();
-        Stats = new(10, 10, 10, 10, 500, 10);
+        Stats = new(job);
         Motto = "Motto";
         ProfileUrl = "";
         CreationTime = TimeInfo.Now();
@@ -213,7 +213,7 @@ public class Player
             90200020,
             90200021
         };
-        StatPointDistribution = new(20);
+        StatPointDistribution = new();
         Inventory = new(true);
         Mailbox = new();
         BuddyList = new();
