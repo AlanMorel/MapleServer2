@@ -24,7 +24,8 @@ public static class MeretMarketPacket
         Initialize = 016,
         Home = 0x65,
         OpenDesignShop = 0x66,
-        LoadCart = 0x6B
+        LoadCart = 0x6B,
+        ModeC9 = 0xC9,
     }
 
     public static PacketWriter LoadPersonalListings(List<UGCMarketItem> items)
@@ -36,7 +37,7 @@ public static class MeretMarketPacket
         foreach (UGCMarketItem item in items)
         {
             pWriter.WriteByte(1);
-            WriteUGCMarketItem(pWriter, item);
+            WriteUgcMarketItem(pWriter, item);
         }
         return pWriter;
     }
@@ -71,7 +72,7 @@ public static class MeretMarketPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.ListItem);
-        WriteUGCMarketItem(pWriter, item);
+        WriteUgcMarketItem(pWriter, item);
         return pWriter;
     }
 
@@ -89,7 +90,7 @@ public static class MeretMarketPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
         pWriter.Write(MeretMarketMode.RelistItem);
-        WriteUGCMarketItem(pWriter, item);
+        WriteUgcMarketItem(pWriter, item);
         return pWriter;
     }
 
@@ -175,7 +176,7 @@ public static class MeretMarketPacket
         foreach (UGCMarketItem item in items)
         {
             pWriter.WriteByte(1);
-            WriteUGCMarketItem(pWriter, item);
+            WriteUgcMarketItem(pWriter, item);
         }
         return pWriter;
     }
@@ -265,12 +266,12 @@ public static class MeretMarketPacket
         foreach (UGCMarketItem item in promoItems)
         {
             pWriter.WriteByte(1);
-            WriteUGCMarketItem(pWriter, item, UGCMarketItemHomeCategory.Promoted);
+            WriteUgcMarketItem(pWriter, item, UGCMarketItemHomeCategory.Promoted);
         }
         foreach (UGCMarketItem item in newItems)
         {
             pWriter.WriteByte(1);
-            WriteUGCMarketItem(pWriter, item, UGCMarketItemHomeCategory.New);
+            WriteUgcMarketItem(pWriter, item, UGCMarketItemHomeCategory.New);
         }
         return pWriter;
     }
@@ -286,7 +287,16 @@ public static class MeretMarketPacket
         return pWriter;
     }
 
-    public static void WriteMeretMarketItem(PacketWriter pWriter, MeretMarketItem item)
+    public static PacketWriter ModeC9()
+    {
+        PacketWriter pWriter = PacketWriter.Of(SendOp.MERET_MARKET);
+        pWriter.Write(MeretMarketMode.ModeC9);
+        pWriter.WriteInt();
+
+        return pWriter;
+    }
+
+    private static void WriteMeretMarketItem(PacketWriter pWriter, MeretMarketItem item)
     {
         pWriter.WriteInt(item.MarketId);
         pWriter.WriteByte(2);
@@ -339,7 +349,7 @@ public static class MeretMarketPacket
         pWriter.WriteInt();
     }
 
-    public static void WriteUGCMarketItem(PacketWriter pWriter, UGCMarketItem item, UGCMarketItemHomeCategory category = UGCMarketItemHomeCategory.None)
+    private static void WriteUgcMarketItem(PacketWriter pWriter, UGCMarketItem item, UGCMarketItemHomeCategory category = UGCMarketItemHomeCategory.None)
     {
         pWriter.WriteByte(1);
         pWriter.WriteInt();

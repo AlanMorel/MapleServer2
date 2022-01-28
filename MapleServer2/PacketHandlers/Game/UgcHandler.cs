@@ -97,7 +97,7 @@ public class UgcHandler : GamePacketHandler
         };
         DatabaseManager.Items.Update(item);
 
-        session.Send(UgcPacket.CreateUGC(true, item.UGC));
+        session.Send(UgcPacket.CreateUgc(true, item.UGC));
     }
 
     private static void HandleAddUgcItem(GameSession session, PacketReader packet)
@@ -125,7 +125,7 @@ public class UgcHandler : GamePacketHandler
         item.SetMetadataValues();
 
         session.Player.Inventory.AddItem(session, item, true);
-        session.Send(UgcPacket.UpdateUGCItem(session.Player.FieldPlayer, item));
+        session.Send(UgcPacket.UpdateUgcItem(session.Player.FieldPlayer, item));
         session.Send(UgcPacket.SetItemUrl(item.UGC));
     }
 
@@ -135,6 +135,6 @@ public class UgcHandler : GamePacketHandler
         session.Player.ProfileUrl = path;
         DatabaseManager.Characters.UpdateProfileUrl(session.Player.CharacterId, path);
 
-        session.FieldManager.BroadcastPacket(UgcPacket.SetProfilePictureURL(session.Player.FieldPlayer.ObjectId, session.Player.CharacterId, path));
+        session.FieldManager.BroadcastPacket(UgcPacket.SetProfilePictureUrl(session.Player.FieldPlayer.ObjectId, session.Player.CharacterId, path));
     }
 }
