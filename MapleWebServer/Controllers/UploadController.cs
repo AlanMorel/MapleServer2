@@ -108,7 +108,7 @@ public class UploadController : ControllerBase
 
     private IActionResult HandleUnknownMode(PostUGCMode mode)
     {
-        Logger.Info($"Unknown mode: {mode}");
+        Logger.Info($"Unknown UGC post mode: {mode}");
         return BadRequest();
     }
 
