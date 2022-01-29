@@ -161,7 +161,7 @@ public class Player
         Name = name;
         Gender = gender;
         Job = job;
-        GameOptions = new();
+        GameOptions = new(job);
         Wallet = new(meso: 0, valorToken: 0, treva: 0, rue: 0, haviFruit: 0, gameSession: null);
         Levels = new(playerLevel: 1, exp: 0, restExp: 0, prestigeLevel: 1, prestigeExp: 0, masteryExp: new()
         {
