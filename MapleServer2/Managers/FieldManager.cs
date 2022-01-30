@@ -540,7 +540,7 @@ public partial class FieldManager
 
         foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
         {
-            sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new(70000018, 1, 0, 1)));
+            sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new(70000018, 1, 0, 1), lookDirection: 0));
         }
 
         foreach (IFieldObject<Instrument> instrument in State.Instruments.Values)

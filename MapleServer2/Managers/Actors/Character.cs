@@ -26,10 +26,12 @@ public partial class FieldManager
             {
                 HpRegenThread = StartRegen(StatId.Hp, StatId.HpRegen, StatId.HpRegenInterval);
             }
+
             if (SpRegenThread == null || SpRegenThread.IsCompleted)
             {
                 SpRegenThread = StartRegen(StatId.Spirit, StatId.SpRegen, StatId.SpRegenInterval);
             }
+
             if (StaRegenThread == null || StaRegenThread.IsCompleted)
             {
                 StaRegenThread = StartRegen(StatId.Stamina, StatId.StaminaRegen, StatId.StaminaRegenInterval);
@@ -41,24 +43,29 @@ public partial class FieldManager
             int spiritCost = skillCast.GetSpCost();
             int staminaCost = skillCast.GetStaCost();
 
-            if (Value.Stats[StatId.Spirit].Total >= spiritCost && Value.Stats[StatId.Stamina].Total >= staminaCost)
+            if (Value.Stats[StatId.Spirit].Total < spiritCost || Value.Stats[StatId.Stamina].Total < staminaCost)
             {
-                SkillCast = skillCast;
-
-                ConsumeSp(spiritCost);
-                ConsumeStamina(staminaCost);
-                Value.Session.SendNotice(skillCast.SkillId.ToString());
-
-                // TODO: Move this and all others combat cases like recover sp to its own class.
-                // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
-                if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
-                {
-                    Status status = new(skillCast, ObjectId, ObjectId, 1);
-                    StatusHandler.Handle(Value.Session, status);
-                }
-
-                StartCombatStance();
+                return;
             }
+
+            SkillCast = skillCast;
+
+            ConsumeSp(spiritCost);
+            ConsumeStamina(staminaCost);
+            Value.Session.SendNotice(skillCast.SkillId.ToString());
+
+            // TODO: Move this and all others combat cases like recover sp to its own class.
+            // Since the cast is always sent by the skill, we have to check buffs even when not doing damage.
+            if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsDebuffToOwner())
+            {
+                Status status = new(skillCast, ObjectId, ObjectId, 1);
+                StatusHandler.Handle(Value.Session, status);
+            }
+
+            Value.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
+            Value.Session.Send(StatPacket.SetStats(this));
+
+            StartCombatStance();
         }
 
         public override void RecoverHp(int amount)

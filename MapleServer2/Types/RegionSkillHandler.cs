@@ -4,11 +4,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
-public class RegionSkillHandler
+public static class RegionSkillHandler
 {
     public static void Handle(GameSession session, int sourceId, CoordF coords, SkillCast skillCast)
     {
-        session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, coords.ToShort(), skillCast));
+        session.FieldManager.BroadcastPacket(RegionSkillPacket.Send(sourceId, coords.ToShort(), skillCast, session.Player.FieldPlayer.LookDirection));
         Remove(session, skillCast, sourceId);
     }
 

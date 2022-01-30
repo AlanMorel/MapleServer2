@@ -14,12 +14,12 @@ public static class RegionSkillPacket
         Remove = 0x1
     }
 
-    public static PacketWriter Send(int sourceObjectId, CoordS effectCoord, SkillCast skill)
+    public static PacketWriter Send(int sourceObjectId, CoordS effectCoord, SkillCast skill, short lookDirection)
     {
+        List<MagicPathMove> skillMoves = skill.ParentSkill?.GetMagicPaths().MagicPathMoves;
+        byte tileCount = (byte) (skillMoves?.Count ?? 0);
+
         PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
-        SkillCast parentSkill = skill.ParentSkill;
-        List<MagicPathMove> skillMoves = parentSkill?.GetMagicPaths().MagicPathMoves ?? null;
-        byte tileCount = (byte) (skillMoves != null ? skillMoves.Count : 1);
 
         pWriter.Write(RegionSkillMode.Add);
         pWriter.WriteInt(sourceObjectId);
@@ -33,15 +33,34 @@ public static class RegionSkillPacket
 
         for (int i = 0; i < tileCount; i++)
         {
-            CoordF currentSkillCoord = skillMoves != null ? skillMoves[i].FireOffsetPosition : CoordF.From(0, 0, 0);
-            CoordF castPosition = Block.ClosestBlock(currentSkillCoord + effectCoord.ToFloat());
+            MagicPathMove magicPathMove = skillMoves?[i];
+            if (magicPathMove is null)
+            {
+                continue;
+            }
 
-            pWriter.Write(castPosition);
+            CoordF offSetCoord = magicPathMove.FireOffsetPosition;
+
+            // If false, rotate the offset based on the look direction.
+            if (!magicPathMove.IgnoreAdjust)
+            {
+                // Rotate the offset coord based on the look direction
+                CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), lookDirection);
+
+                // Add the effect coord to the rotated coord
+                offSetCoord = rotatedOffset + effectCoord.ToFloat();
+            }
+            else
+            {
+                offSetCoord += Block.ClosestBlock(effectCoord.ToFloat());
+            }
+
+            pWriter.Write(offSetCoord);
         }
+
         pWriter.WriteInt(skill.SkillId);
         pWriter.WriteShort(skill.SkillLevel);
         pWriter.WriteLong();
-
 
         return pWriter;
     }

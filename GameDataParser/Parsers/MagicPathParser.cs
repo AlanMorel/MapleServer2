@@ -16,7 +16,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
         List<MagicPathMetadata> magicPathList = new();
         foreach (PackFileEntry entry in Resources.XmlReader.Files)
         {
-            if (!entry.Name.StartsWith("table"))
+            if (!entry.Name.StartsWith("table/magicpath"))
             {
                 continue;
             }
@@ -39,7 +39,7 @@ public class MagicPathParser : Exporter<List<MagicPathMetadata>>
                     CoordF controlValue0 = ParseCoordFromString(pathMove.Attributes["controlValue0"]?.Value ?? "0,0,0");
                     CoordF controlValue1 = ParseCoordFromString(pathMove.Attributes["controlValue1"]?.Value ?? "0,0,0");
 
-                    bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] != null;
+                    bool ignoreAdjust = pathMove.Attributes["ignoreAdjustCubePosition"] is null;
 
                     pathMoves.Add(new(rotation, fireOffsetPosition, direction, controlValue0, controlValue1, ignoreAdjust));
                 }
