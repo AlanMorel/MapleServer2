@@ -101,15 +101,13 @@ public class SkillHandler : GamePacketHandler
             string unkString = packet.ReadUnicodeString();
         }
 
-        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.Player.FieldPlayer.ObjectId, clientTick, attackPoint);
-        session.Player.FieldPlayer.Cast(skillCast);
-
-        // TODO: Move to FieldActor.Cast()
-        if (skillCast != null)
+        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.Player.FieldPlayer.ObjectId, clientTick, attackPoint)
         {
-            session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, position, direction, rotation));
-            session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
-        }
+            Position = position,
+            Direction = direction,
+            Rotation = rotation
+        };
+        session.Player.FieldPlayer.Cast(skillCast);
     }
 
     private static void HandleSyncSkills(GameSession session, PacketReader packet)
