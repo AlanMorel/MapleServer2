@@ -68,10 +68,11 @@ public class JobParser : Exporter<List<JobMetadata>>
                             int skillId = int.Parse(skillNode.Attributes["main"].Value);
                             byte maxLevel = byte.Parse(skillNode.Attributes["maxLevel"]?.Value ?? "1");
                             short subJobCode = short.Parse(skillNode.Attributes["subJobCode"]?.Value ?? "0");
+                            byte quickSlotPriority = byte.Parse(skillNode.Attributes["quickSlotPriority"]?.Value ?? "99");
 
                             List<int> subSkillIds = skillNode.Attributes["sub"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
 
-                            metadata.Skills.Add(new(skillId, subJobCode, maxLevel, subSkillIds));
+                            metadata.Skills.Add(new(skillId, subJobCode, maxLevel, subSkillIds, quickSlotPriority));
                         }
                     }
                     else if (childNode.Name.Equals("learn"))
