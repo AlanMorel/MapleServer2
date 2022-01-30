@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Types;
-using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -14,11 +13,8 @@ public static class RegionSkillPacket
         Remove = 0x1
     }
 
-    public static PacketWriter Send(int sourceObjectId, CoordS effectCoord, SkillCast skill, short lookDirection)
+    public static PacketWriter Send(int sourceObjectId, SkillCast skill, byte tileCount, List<CoordF> effectCoords)
     {
-        List<MagicPathMove> skillMoves = skill.ParentSkill?.GetMagicPaths().MagicPathMoves;
-        byte tileCount = (byte) (skillMoves?.Count ?? 0);
-
         PacketWriter pWriter = PacketWriter.Of(SendOp.REGION_SKILL);
 
         pWriter.Write(RegionSkillMode.Add);
@@ -31,31 +27,9 @@ public static class RegionSkillPacket
             return pWriter;
         }
 
-        for (int i = 0; i < tileCount; i++)
+        foreach (CoordF effectCoord in effectCoords)
         {
-            MagicPathMove magicPathMove = skillMoves?[i];
-            if (magicPathMove is null)
-            {
-                continue;
-            }
-
-            CoordF offSetCoord = magicPathMove.FireOffsetPosition;
-
-            // If false, rotate the offset based on the look direction.
-            if (!magicPathMove.IgnoreAdjust)
-            {
-                // Rotate the offset coord based on the look direction
-                CoordF rotatedOffset = CoordF.From(offSetCoord.Length(), lookDirection);
-
-                // Add the effect coord to the rotated coord
-                offSetCoord = rotatedOffset + effectCoord.ToFloat();
-            }
-            else
-            {
-                offSetCoord += Block.ClosestBlock(effectCoord.ToFloat());
-            }
-
-            pWriter.Write(offSetCoord);
+            pWriter.Write(effectCoord);
         }
 
         pWriter.WriteInt(skill.SkillId);
