@@ -113,7 +113,7 @@ public class UnlockTrophyCommand : InGameCommand
             player.TrophyData[trophyId] = new(player.CharacterId, player.AccountId, trophyId);
         }
 
-        player.TrophyData[trophyId].AddCounter(trigger.Session, amount);
+        player.TrophyData[trophyId].AddCounter(trigger.Session.Player, amount);
 
         player.TrophyData.TryGetValue(trophyId, out Trophy trophy);
 

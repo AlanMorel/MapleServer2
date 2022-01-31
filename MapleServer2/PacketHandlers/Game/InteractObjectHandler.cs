@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -33,13 +34,16 @@ internal class InteractObjectHandler : GamePacketHandler
             case InteractObjectMode.Interact:
                 HandleInteract(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
     }
 
     private static void HandleCast(GameSession session, PacketReader packet)
     {
         string id = packet.ReadString();
-        InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
+        session.FieldManager.State.InteractObjects.TryGetValue(id, out InteractObject interactObject);
         if (interactObject == null)
         {
             return;
@@ -51,7 +55,7 @@ internal class InteractObjectHandler : GamePacketHandler
     private static void HandleInteract(GameSession session, PacketReader packet)
     {
         string id = packet.ReadString();
-        InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
+        session.FieldManager.State.InteractObjects.TryGetValue(id, out InteractObject interactObject);
         if (interactObject == null)
         {
             return;
@@ -87,37 +91,82 @@ internal class InteractObjectHandler : GamePacketHandler
                     }
 
                     QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
-                    session.Send(InteractObjectPacket.QuestUse(interactObject));
-                    session.Send(InteractObjectPacket.Interact(interactObject));
+                }
 
-                    foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+                // Unsure if all interact objects need to be set as disabled.
+                interactObject.State = InteractObjectState.Disable;
+
+                session.Send(InteractObjectPacket.Update(interactObject));
+                session.Send(InteractObjectPacket.Interact(interactObject));
+
+                foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+                {
+                    ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                    if (itemDropMetadataStorage is null)
                     {
-                        ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
-                        if (itemDropMetadataStorage is null)
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                    foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                    {
+                        foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
                         {
-                            foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                            foreach (int itemId in dropGroupContent.ItemIds)
                             {
-                                foreach (int itemId in dropGroupContent.ItemIds)
+                                Item item = new(itemId)
                                 {
-                                    Item item = new(itemId)
-                                    {
-                                        Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
-                                        Rarity = dropGroupContent.Rarity
-                                    };
+                                    Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                    Rarity = dropGroupContent.Rarity
+                                };
 
-                                    session.FieldManager.AddItem(session, item);
-                                }
+                                session.FieldManager.AddItem(session, item);
                             }
                         }
                     }
                 }
 
-                break;
+                foreach (int boxId in metadata.Drop.GlobalDropBoxId)
+                {
+                    ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                    if (itemDropMetadataStorage is null)
+                    {
+                        continue;
+                    }
+
+                    foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                    {
+                        foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                        {
+                            foreach (int itemId in dropGroupContent.ItemIds)
+                            {
+                                Item item = new(itemId)
+                                {
+                                    Amount = RandomProvider.Get().Next((int) dropGroupContent.MinAmount, (int) dropGroupContent.MaxAmount),
+                                    Rarity = dropGroupContent.Rarity
+                                };
+
+                                session.FieldManager.AddItem(session, item);
+                            }
+                        }
+                    }
+                }
+
+                if (interactObject is MapChest)
+                {
+                    // Unsure if setting as activated is specific of map chests
+                    interactObject.State = InteractObjectState.Activated;
+
+                    // Delayed removal of the chest
+                    Task.Run(async () =>
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(10));
+                        session.FieldManager.State.RemoveInteractObject(interactObject.Id);
+
+                        session.FieldManager.BroadcastPacket(InteractObjectPacket.Update(interactObject));
+                        session.FieldManager.BroadcastPacket(InteractObjectPacket.Remove(interactObject));
+                    });
+                }
+                return;
         }
 
         session.Send(InteractObjectPacket.Interact(interactObject));

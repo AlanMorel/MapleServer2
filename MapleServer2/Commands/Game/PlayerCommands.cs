@@ -1,8 +1,8 @@
-﻿using Maple2Storage.Types;
-using MapleServer2.Commands.Core;
+﻿using MapleServer2.Commands.Core;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Types;
 
@@ -196,20 +196,26 @@ public class SkillCommand : InGameCommand
 
     public override void Execute(GameCommandTrigger trigger)
     {
+        GameSession gameSession = trigger.Session;
+        IFieldObject<Player> player = gameSession.Player.FieldPlayer;
+
         int id = trigger.Get<int>("id");
         short level = trigger.Get<short>("level") > 0 ? trigger.Get<short>("level") : (short) 1;
-        if (SkillMetadataStorage.GetSkill(id) == null)
+
+        if (SkillMetadataStorage.GetSkill(id) is null)
         {
-            trigger.Session.SendNotice($"Skill with id: {id} is not defined.");
+            gameSession.SendNotice($"Skill with id: {id} is not defined.");
             return;
         }
 
-        SkillCast skillCast = new(id, level, GuidGenerator.Long(), trigger.Session.ServerTick, trigger.Session.Player.FieldPlayer.ObjectId,
-            trigger.Session.ClientTick);
-        CoordF empty = CoordF.From(0, 0, 0);
-        IFieldObject<Player> player = trigger.Session.Player.FieldPlayer;
+        SkillCast skillCast = new(id, level, GuidGenerator.Long(), gameSession.ServerTick, player.ObjectId, gameSession.ClientTick)
+        {
+            Position = player.Coord,
+            Direction = default,
+            Rotation = default
+        };
 
-        trigger.Session.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast, player.Coord, empty, empty));
+        gameSession.FieldManager.BroadcastPacket(SkillUsePacket.SkillUse(skillCast));
     }
 }
 

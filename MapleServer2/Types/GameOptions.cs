@@ -1,4 +1,5 @@
 ﻿using MapleServer2.Database;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
@@ -9,7 +10,7 @@ public class GameOptions
     public List<Hotbar> Hotbars { get; private set; }
     public short ActiveHotbarId { get; private set; }
 
-    public GameOptions()
+    public GameOptions(Job job)
     {
         KeyBinds = new();
         Id = DatabaseManager.GameOptions.Insert(this);
@@ -19,8 +20,12 @@ public class GameOptions
         // Have 3 hotbars available
         for (int i = 0; i < 3; i++)
         {
-            Hotbar hotbar = new(Id);
-            Hotbars.Add(hotbar);
+            if (i == 0)
+            {
+                Hotbars.Add(new(Id, job));
+                continue;
+            }
+            Hotbars.Add(new(Id));
         }
     }
 
@@ -50,6 +55,7 @@ public class GameOptions
             hotbar = Hotbars[hotbarId];
             return true;
         }
+
         hotbar = null;
         return false;
     }

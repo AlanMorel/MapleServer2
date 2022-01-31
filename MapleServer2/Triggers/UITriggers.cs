@@ -152,7 +152,7 @@ public partial class TriggerContext
                 break;
         }
 
-        if (box == "0" || box == "")
+        if (box is "0" or "")
         {
             Field.BroadcastPacket(MassiveEventPacket.TextBanner(type, script, duration));
             return;

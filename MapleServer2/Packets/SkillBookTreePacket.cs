@@ -30,10 +30,10 @@ public static class SkillBookTreePacket
 
             Dictionary<int, short> skills = skillTab.SkillLevels.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
             pWriter.WriteInt(skills.Count);
-            foreach (KeyValuePair<int, short> p in skills)
+            foreach ((int key, short value) in skills)
             {
-                pWriter.WriteInt(p.Key);
-                pWriter.WriteInt(p.Value);
+                pWriter.WriteInt(key);
+                pWriter.WriteInt(value);
             }
         }
 

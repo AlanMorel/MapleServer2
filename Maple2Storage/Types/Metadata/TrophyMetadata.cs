@@ -31,9 +31,9 @@ public class TrophyGradeMetadata
     [XmlElement(Order = 3)]
     public string ConditionType;
     [XmlElement(Order = 4)]
-    public string[] ConditionCodes;
+    public string ConditionCodes;
     [XmlElement(Order = 5)]
-    public string[] ConditionTargets;
+    public string ConditionTargets;
     [XmlElement(Order = 6)]
     public RewardType RewardType;
     [XmlElement(Order = 7)]

@@ -78,7 +78,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
         Item equip = inventory.Items[itemUid];
-        int equipUnlockedSlotCount = equip.Stats.GemSockets.Where(x => x.IsUnlocked).Count();
+        int equipUnlockedSlotCount = equip.Stats.GemSockets.Count(x => x.IsUnlocked);
 
         foreach (long uid in fodderUids)
         {
@@ -89,16 +89,18 @@ public class ItemSocketSystemHandler : GamePacketHandler
             }
 
             Item fodder = inventory.Items[uid];
-            int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Where(x => x.IsUnlocked).Count();
-            if (equipUnlockedSlotCount != fodderUnlockedSlotCount)
+            int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Count(x => x.IsUnlocked);
+            if (equipUnlockedSlotCount == fodderUnlockedSlotCount)
             {
-                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.CannotBeUsedAsMaterial));
-                return;
+                continue;
             }
+
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.CannotBeUsedAsMaterial));
+            return;
         }
 
         // get socket slot to unlock
-        int slot = equip.Stats.GemSockets.FindIndex(0, equip.Stats.GemSockets.Count, x => x.IsUnlocked != true);
+        int slot = equip.Stats.GemSockets.FindIndex(0, equip.Stats.GemSockets.Count, x => !x.IsUnlocked);
         if (slot < 0)
         {
             return;
@@ -110,7 +112,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         {
             crystalFragmentCost = 400;
         }
-        else if (slot == 1 || slot == 2)
+        else if (slot is 1 or 2)
         {
             crystalFragmentCost = 600;
         }
@@ -124,16 +126,16 @@ public class ItemSocketSystemHandler : GamePacketHandler
             return;
         }
 
-        foreach (KeyValuePair<long, Item> item in crystalFragments)
+        foreach ((long uid, Item item) in crystalFragments)
         {
-            if (item.Value.Amount >= crystalFragmentCost)
+            if (item.Amount >= crystalFragmentCost)
             {
-                inventory.ConsumeItem(session, item.Key, crystalFragmentCost);
+                inventory.ConsumeItem(session, uid, crystalFragmentCost);
                 break;
             }
 
-            crystalFragmentCost -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            crystalFragmentCost -= item.Amount;
+            inventory.ConsumeItem(session, uid, item.Amount);
         }
         foreach (long uid in fodderUids)
         {
@@ -264,8 +266,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         for (int i = 0; i < metadata.IngredientItems.Count; i++)
         {
             int inventoryItemCount = 0;
-            List<KeyValuePair<long, Item>> ingredients = new();
-            ingredients = inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
+            List<KeyValuePair<long, Item>> ingredients = inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
             ingredients.ForEach(x => inventoryItemCount += x.Value.Amount);
 
             if (inventoryItemCount < metadata.IngredientAmounts[i])
@@ -280,19 +281,18 @@ public class ItemSocketSystemHandler : GamePacketHandler
     {
         for (int i = 0; i < metadata.IngredientItems.Count; i++)
         {
-            List<KeyValuePair<long, Item>> ingredients = new();
-            ingredients = session.Player.Inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
+            List<KeyValuePair<long, Item>> ingredients = session.Player.Inventory.Items.Where(x => x.Value.Tag == metadata.IngredientItems[i]).ToList();
 
-            foreach (KeyValuePair<long, Item> item in ingredients)
+            foreach ((long uid, Item item) in ingredients)
             {
-                if (item.Value.Amount >= metadata.IngredientAmounts[i])
+                if (item.Amount >= metadata.IngredientAmounts[i])
                 {
-                    session.Player.Inventory.ConsumeItem(session, item.Key, metadata.IngredientAmounts[i]);
+                    session.Player.Inventory.ConsumeItem(session, uid, metadata.IngredientAmounts[i]);
                     break;
                 }
 
-                metadata.IngredientAmounts[i] -= item.Value.Amount;
-                session.Player.Inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+                metadata.IngredientAmounts[i] -= item.Amount;
+                session.Player.Inventory.ConsumeItem(session, uid, item.Amount);
             }
         }
     }

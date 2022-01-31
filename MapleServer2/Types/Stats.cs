@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
@@ -157,8 +158,9 @@ public class Stats
         };
     }
 
-    public Stats(int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critRateBase)
+    public Stats(Job job)
     {
+        (int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critBase) = GetJobBaseStats(job);
         Data = new()
         {
             {
@@ -186,8 +188,8 @@ public class Stats
                 new(10)
             },
             {
-                StatId.HpRegenInterval, // base (3000ms)
-                new(3000)
+                StatId.HpRegenInterval,
+                new(3000) // base (3000ms)
             },
             {
                 StatId.Spirit,
@@ -198,20 +200,20 @@ public class Stats
                 new(1)
             },
             {
-                StatId.SpRegenInterval, // base (200ms)
-                new(200)
+                StatId.SpRegenInterval,
+                new(200) // base (200ms)
             },
             {
-                StatId.Stamina,         // base 120 (20 = 1 block)
-                new(120)
+                StatId.Stamina,
+                new(120) // base 120 (20 = 1 block)
             }, // Max = 0 on login
             {
-                StatId.StaminaRegen,    // base 10  (10 = 0.5 block)
-                new(10)
+                StatId.StaminaRegen,
+                new(10) // base 10  (10 = 0.5 block)
             },
             {
-                StatId.StaminaRegenInterval,    // base (500ms)
-                new(500)
+                StatId.StaminaRegenInterval,
+                new(500) // base (500ms)
             },
             {
                 StatId.AttackSpeed,
@@ -231,7 +233,7 @@ public class Stats
             }, // changes with job
             {
                 StatId.CritRate,
-                new(critRateBase)
+                new(critBase)
             }, // changes with job
             {
                 StatId.CritDamage,
@@ -298,10 +300,15 @@ public class Stats
                 new(0)
             },
             {
-                StatId.PetBonusAtk, // base 0 (bonuses can be added)
-                new(0)
+                StatId.PetBonusAtk,
+                new(0) // base 0 (bonuses can be added)
             }
         };
+
+        if (job is Job.Runeblade)
+        {
+            Data[StatId.Int].IncreaseBonus(5);
+        }
     }
 
     public Stat this[StatId statIndex]
@@ -323,36 +330,346 @@ public class Stats
 
     public void Allocate(StatId statId)
     {
-        int gainAmount = 1;
-        switch (statId)
+        int gainAmount = statId switch
         {
-            case StatId.Hp:
-                gainAmount = 10;
-                break;
-            case StatId.CritRate:
-                gainAmount = 3;
-                break;
-        }
+            StatId.Hp => 10,
+            StatId.CritRate => 3,
+            _ => 1
+        };
+
         Data[statId].IncreaseBonus(gainAmount);
     }
 
     public void ResetAllocations(StatDistribution statDist)
     {
-        foreach (KeyValuePair<byte, int> entry in statDist.AllocatedStats)
+        foreach ((StatId id, int value) in statDist.AllocatedStats)
         {
-            StatId statId = (StatId) entry.Key;
-            int gainAmount = 1;
-            switch (statId)
+            int gainAmount = id switch
             {
-                case StatId.Hp:
-                    gainAmount = 10;
-                    break;
-                case StatId.CritRate:
-                    gainAmount = 3;
-                    break;
-            }
-            Data[statId].DecreaseBonus(entry.Value * gainAmount);
+                StatId.Hp => 10,
+                StatId.CritRate => 3,
+                _ => 1
+            };
+
+            Data[id].DecreaseBonus(value * gainAmount);
         }
+
         statDist.ResetPoints();
+    }
+
+    private static (int strBase, int dexBase, int intBase, int lukBase, int hpBase, int critBase) GetJobBaseStats(Job job)
+    {
+        int strBase = 0, dexBase = 0, intBase = 0, lukBase = 0, hpBase = 0, critBase = 0;
+        switch (job)
+        {
+            case Job.Beginner:
+                strBase = 7;
+                dexBase = 6;
+                intBase = 2;
+                lukBase = 2;
+                hpBase = 63;
+                critBase = 35;
+                break;
+            case Job.Knight:
+                strBase = 8;
+                dexBase = 6;
+                intBase = 2;
+                lukBase = 1;
+                hpBase = 65;
+                critBase = 51;
+                break;
+            case Job.Berserker:
+                strBase = 8;
+                dexBase = 6;
+                intBase = 1;
+                lukBase = 2;
+                hpBase = 70;
+                critBase = 47;
+                break;
+            case Job.Wizard:
+                strBase = 1;
+                dexBase = 1;
+                intBase = 14;
+                lukBase = 1;
+                hpBase = 61;
+                critBase = 40;
+                break;
+            case Job.Priest:
+                strBase = 1;
+                dexBase = 1;
+                intBase = 14;
+                lukBase = 1;
+                hpBase = 63;
+                critBase = 45;
+                break;
+            case Job.Archer:
+                strBase = 6;
+                dexBase = 8;
+                intBase = 1;
+                lukBase = 2;
+                hpBase = 61;
+                critBase = 55;
+                break;
+            case Job.HeavyGunner:
+                strBase = 2;
+                dexBase = 8;
+                intBase = 1;
+                lukBase = 6;
+                hpBase = 63;
+                critBase = 52;
+                break;
+            case Job.Thief:
+                strBase = 6;
+                dexBase = 2;
+                intBase = 1;
+                lukBase = 8;
+                hpBase = 62;
+                critBase = 50;
+                break;
+            case Job.Assassin:
+                strBase = 2;
+                dexBase = 6;
+                intBase = 1;
+                lukBase = 8;
+                hpBase = 61;
+                critBase = 53;
+                break;
+            case Job.Runeblade:
+                strBase = 8;
+                dexBase = 6;
+                intBase = 2;
+                lukBase = 1;
+                hpBase = 64;
+                critBase = 46;
+                break;
+            case Job.Striker:
+                strBase = 6;
+                dexBase = 8;
+                intBase = 1;
+                lukBase = 2;
+                hpBase = 64;
+                critBase = 48;
+                break;
+            case Job.SoulBinder:
+                strBase = 1;
+                dexBase = 1;
+                intBase = 14;
+                lukBase = 1;
+                hpBase = 62;
+                critBase = 48;
+                break;
+            default:
+            case Job.GameMaster:
+            case Job.None:
+                break;
+        }
+
+        return (strBase, dexBase, intBase, lukBase, hpBase, critBase);
+    }
+
+    private static (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) GetJobStatIncrease(Player player)
+    {
+        Job job = player.Job;
+        int level = player.Levels.Level;
+        Dictionary<StatId, Stat> stats = player.Stats.Data;
+
+        // TODO: Find HP formula
+        int strIncrease = 0, dexIncrease = 0, intIncrease = 0, lukIncrease = 0, hpIncrease = 0;
+        switch (job)
+        {
+            case Job.Beginner:
+                strIncrease = 7;
+                dexIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Knight:
+                strIncrease = 7;
+                dexIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    intIncrease = 1;
+                }
+                else
+                {
+                    lukIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Berserker:
+                strIncrease = 7;
+                dexIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    intIncrease = 1;
+                }
+                else
+                {
+                    lukIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Wizard:
+                intIncrease = 8;
+                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                {
+                    dexIncrease = 1;
+                }
+                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    strIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Priest:
+                intIncrease = 8;
+                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                {
+                    dexIncrease = 1;
+                }
+                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    strIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Archer:
+                dexIncrease = 7;
+                strIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.HeavyGunner:
+                dexIncrease = 7;
+                lukIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    strIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Thief:
+                lukIncrease = 7;
+                strIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    dexIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Assassin:
+                lukIncrease = 7;
+                dexIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    strIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Runeblade:
+                strIncrease = 7;
+                dexIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    intIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.Striker:
+                dexIncrease = 7;
+                strIncrease = 1;
+                if (level % 2 == 0)
+                {
+                    intIncrease = 1;
+                }
+                else
+                {
+                    lukIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            case Job.SoulBinder:
+                intIncrease = 8;
+                if (stats[StatId.Str].Base > stats[StatId.Dex].Base)
+                {
+                    dexIncrease = 1;
+                }
+                else if (stats[StatId.Str].Base > stats[StatId.Luk].Base)
+                {
+                    lukIncrease = 1;
+                }
+                else
+                {
+                    strIncrease = 1;
+                }
+
+                hpIncrease = 0;
+                break;
+            default:
+            case Job.GameMaster:
+            case Job.None:
+                break;
+        }
+
+        return (strIncrease, dexIncrease, intIncrease, lukIncrease, hpIncrease);
+    }
+
+    public void AddBaseStats(Player player)
+    {
+        (int strIncrease, int dexIncrease, int intIncrease, int lukIncrease, int hpIncrease) = GetJobStatIncrease(player);
+        Data[StatId.Str].IncreaseBase(strIncrease);
+        Data[StatId.Dex].IncreaseBase(dexIncrease);
+        Data[StatId.Int].IncreaseBase(intIncrease);
+        Data[StatId.Luk].IncreaseBase(lukIncrease);
+        Data[StatId.Hp].IncreaseBase(hpIncrease);
     }
 }

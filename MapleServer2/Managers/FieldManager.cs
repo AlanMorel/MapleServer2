@@ -47,6 +47,101 @@ public partial class FieldManager
 
         // TOOD: generate navmeshes for all maps
 
+        // Load triggers
+        MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
+        if (mapMetadata != null)
+        {
+            string xBlockName = mapMetadata.XBlockName;
+            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
+            {
+                TriggerContext context = new(this, Logger);
+                TriggerState startState = initializer.Invoke(context);
+                return new TriggerScript(context, startState);
+            }).ToArray();
+        }
+
+        // Add entities to state from MapEntityStorage
+        AddEntitiesToState();
+
+        // Add to state home cubes
+        if (MapId == (int) Map.PrivateResidence)
+        {
+            AddHomeCubes(player);
+            return;
+        }
+
+        // Add to state all plots cubes
+        List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
+        foreach (Home home in homes)
+        {
+            Dictionary<long, Cube> cubes = home.FurnishingInventory;
+            foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
+            {
+                IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+                ugcCube.Coord = cube.CoordF;
+                ugcCube.Rotation = cube.Rotation;
+                State.AddCube(ugcCube);
+            }
+        }
+    }
+
+    private void AddHomeCubes(Player player)
+    {
+        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        if (home is null)
+        {
+            return;
+        }
+
+        // Add cubes to state
+        Dictionary<long, Cube> cubes = home.FurnishingInventory;
+        foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
+        {
+            IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
+            ugcCube.Coord = cube.CoordF;
+            ugcCube.Rotation = cube.Rotation;
+            State.AddCube(ugcCube);
+        }
+
+        // Add portals to state
+        IEnumerable<Cube> cubePortals = cubes.Values.Where(x => x.Item.Id == 50400158);
+        foreach (Cube cubePortal in cubePortals)
+        {
+            Portal portal = new(GuidGenerator.Int())
+            {
+                IsVisible = true,
+                IsEnabled = true,
+                IsMinimapVisible = false,
+                Rotation = cubePortal.Rotation,
+                PortalType = PortalTypes.Home
+            };
+
+            IFieldObject<Portal> fieldPortal = RequestFieldObject(portal);
+            fieldPortal.Coord = cubePortal.CoordF;
+            fieldPortal.Value.UGCPortalMethod = cubePortal.PortalSettings.Method;
+            if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
+            {
+                switch (cubePortal.PortalSettings.Destination)
+                {
+                    case UGCPortalDestination.PortalInHome:
+                        fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
+                        break;
+                    case UGCPortalDestination.SelectedMap:
+                        fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
+                        break;
+                    case UGCPortalDestination.FriendHome:
+                        fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
+                        break;
+                }
+            }
+
+            cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
+            AddPortal(fieldPortal);
+        }
+    }
+
+    private void AddEntitiesToState()
+    {
         // Load default npcs for map from config
         foreach (MapNpc npc in MapEntityStorage.GetNpcs(MapId))
         {
@@ -56,7 +151,7 @@ public partial class FieldManager
         // Spawn map's mobs at the mob spawners
         foreach (MapMobSpawn mobSpawn in MapEntityStorage.GetMobSpawns(MapId))
         {
-            if (mobSpawn.SpawnData == null)
+            if (mobSpawn.SpawnData is null)
             {
                 Debug.WriteLine($"Missing mob spawn data: {mobSpawn}");
                 continue;
@@ -86,207 +181,169 @@ public partial class FieldManager
             AddPortal(fieldPortal);
         }
 
-        MapMetadata mapMetadata = MapMetadataStorage.GetMetadata(MapId);
-        if (mapMetadata != null)
-        {
-            string xBlockName = mapMetadata.XBlockName;
-            Triggers = TriggerLoader.GetTriggers(xBlockName).Select(initializer =>
-            {
-                TriggerContext context = new(this, Logger);
-                TriggerState startState = initializer.Invoke(context);
-                return new TriggerScript(context, startState);
-            }).ToArray();
-        }
-
         foreach (MapTriggerMesh mapTriggerMesh in MapEntityStorage.GetTriggerMeshes(MapId))
         {
-            if (mapTriggerMesh != null)
+            if (mapTriggerMesh is null)
             {
-                TriggerMesh triggerMesh = new(mapTriggerMesh.Id, mapTriggerMesh.IsVisible);
-                State.AddTriggerObject(triggerMesh);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerMesh(mapTriggerMesh.Id, mapTriggerMesh.IsVisible));
         }
 
         foreach (MapTriggerEffect mapTriggerEffect in MapEntityStorage.GetTriggerEffects(MapId))
         {
-            if (mapTriggerEffect != null)
+            if (mapTriggerEffect is null)
             {
-                TriggerEffect triggerEffect = new(mapTriggerEffect.Id, mapTriggerEffect.IsVisible);
-                State.AddTriggerObject(triggerEffect);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerEffect(mapTriggerEffect.Id, mapTriggerEffect.IsVisible));
         }
 
         foreach (MapTriggerActor mapTriggerActor in MapEntityStorage.GetTriggerActors(MapId))
         {
-            if (mapTriggerActor != null)
+            if (mapTriggerActor is null)
             {
-                TriggerActor triggerActor = new(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence);
-                State.AddTriggerObject(triggerActor);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerActor(mapTriggerActor.Id, mapTriggerActor.IsVisible, mapTriggerActor.InitialSequence));
         }
 
         foreach (MapTriggerCamera mapTriggerCamera in MapEntityStorage.GetTriggerCameras(MapId))
         {
-            if (mapTriggerCamera != null)
+            if (mapTriggerCamera is null)
             {
-                TriggerCamera triggerCamera = new(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled);
-                State.AddTriggerObject(triggerCamera);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerCamera(mapTriggerCamera.Id, mapTriggerCamera.IsEnabled));
         }
 
         foreach (MapTriggerCube mapTriggerCube in MapEntityStorage.GetTriggerCubes(MapId))
         {
-            if (mapTriggerCube != null)
+            if (mapTriggerCube is null)
             {
-                TriggerCube triggerCube = new(mapTriggerCube.Id, mapTriggerCube.IsVisible);
-                State.AddTriggerObject(triggerCube);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerCube(mapTriggerCube.Id, mapTriggerCube.IsVisible));
         }
 
         foreach (MapTriggerLadder mapTriggerLadder in MapEntityStorage.GetTriggerLadders(MapId))
         {
-            if (mapTriggerLadder != null)
+            if (mapTriggerLadder is null)
             {
-                TriggerLadder triggerLadder = new(mapTriggerLadder.Id, mapTriggerLadder.IsVisible);
-                State.AddTriggerObject(triggerLadder);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerLadder(mapTriggerLadder.Id, mapTriggerLadder.IsVisible));
         }
 
         foreach (MapTriggerRope mapTriggerRope in MapEntityStorage.GetTriggerRopes(MapId))
         {
-            if (mapTriggerRope != null)
+            if (mapTriggerRope is null)
             {
-                TriggerRope triggerRope = new(mapTriggerRope.Id, mapTriggerRope.IsVisible);
-                State.AddTriggerObject(triggerRope);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerRope(mapTriggerRope.Id, mapTriggerRope.IsVisible));
         }
 
         foreach (MapTriggerSound mapTriggerSound in MapEntityStorage.GetTriggerSounds(MapId))
         {
-            if (mapTriggerSound != null)
+            if (mapTriggerSound is null)
             {
-                TriggerSound triggerSound = new(mapTriggerSound.Id, mapTriggerSound.IsEnabled);
-                State.AddTriggerObject(triggerSound);
+                continue;
             }
+
+            State.AddTriggerObject(new TriggerSound(mapTriggerSound.Id, mapTriggerSound.IsEnabled));
         }
 
         foreach (MapTriggerSkill mapTriggerSkill in MapEntityStorage.GetTriggerSkills(MapId))
         {
-            if (mapTriggerSkill != null)
+            if (mapTriggerSkill is null)
             {
-                TriggerSkill triggerSkill = new(mapTriggerSkill.Id, mapTriggerSkill.SkillId, mapTriggerSkill.SkillLevel, mapTriggerSkill.Count, mapTriggerSkill.Position);
-                IFieldObject<TriggerSkill> fieldTriggerSkill = RequestFieldObject(triggerSkill);
-                fieldTriggerSkill.Coord = fieldTriggerSkill.Value.Position;
-
-                State.AddTriggerSkills(fieldTriggerSkill);
+                continue;
             }
+
+            TriggerSkill triggerSkill = new(mapTriggerSkill.Id,
+                mapTriggerSkill.SkillId,
+                mapTriggerSkill.SkillLevel,
+                mapTriggerSkill.Count,
+                mapTriggerSkill.Position);
+            IFieldObject<TriggerSkill> fieldTriggerSkill = RequestFieldObject(triggerSkill);
+            fieldTriggerSkill.Coord = fieldTriggerSkill.Value.Position;
+
+            State.AddTriggerSkills(fieldTriggerSkill);
         }
 
         // Load breakables
         foreach (MapBreakableActorObject mapActor in MapEntityStorage.GetBreakableActors(MapId))
         {
-            if (mapActor != null)
+            if (mapActor is null)
             {
-                BreakableActorObject actor = new(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration);
-                State.AddBreakable(actor);
+                continue;
             }
+
+            State.AddBreakable(new(mapActor.EntityId, mapActor.IsEnabled, mapActor.HideDuration, mapActor.ResetDuration));
         }
 
         foreach (MapBreakableNifObject mapNif in MapEntityStorage.GetBreakableNifs(MapId))
         {
-            if (mapNif != null)
+            if (mapNif is null)
             {
-                BreakableNifObject nif = new(mapNif.EntityId, mapNif.IsEnabled, mapNif.TriggerId, mapNif.HideDuration, mapNif.ResetDuration);
-                State.AddBreakable(nif);
+                continue;
             }
+
+            State.AddBreakable(new BreakableNifObject(mapNif.EntityId, mapNif.IsEnabled, mapNif.TriggerId, mapNif.HideDuration, mapNif.ResetDuration));
         }
 
         // Load interact objects
         foreach (MapInteractObject mapInteract in MapEntityStorage.GetInteractObjects(MapId))
         {
-            if (mapInteract != null)
+            if (mapInteract is null)
             {
-                InteractObject interactObject = new(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default);
-                State.AddInteractObject(interactObject);
+                continue;
             }
+
+            State.AddInteractObject(new(mapInteract.EntityId, mapInteract.InteractId, mapInteract.Type, InteractObjectState.Default));
         }
 
         foreach (MapLiftableObject liftable in MapEntityStorage.GetLiftablesObjects(MapId))
         {
-            if (liftable != null)
+            if (liftable is null)
             {
-                LiftableObject liftableObject = new(liftable.EntityId, liftable.ItemId, liftable.EffectQuestID, liftable.EffectQuestState);
-                State.AddLiftableObject(liftableObject);
+                continue;
             }
+
+            State.AddLiftableObject(new(liftable.EntityId, liftable.ItemId, liftable.EffectQuestID, liftable.EffectQuestState));
         }
 
-        // Load cubes
-        if (MapId == (int) Map.PrivateResidence)
+        foreach (MapChestMetadata mapChest in MapEntityStorage.GetMapChests(MapId))
         {
-            Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
-            if (home != null)
+            if (mapChest is null)
             {
-                // Add cubes to state
-                Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber == 1))
-                {
-                    IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                    ugcCube.Coord = cube.CoordF;
-                    ugcCube.Rotation = cube.Rotation;
-                    State.AddCube(ugcCube);
-                }
-
-                // Add portals to state
-                IEnumerable<Cube> cubePortals = cubes.Values.Where(x => x.Item.Id == 50400158);
-                foreach (Cube cubePortal in cubePortals)
-                {
-                    Portal portal = new(GuidGenerator.Int())
-                    {
-                        IsVisible = true,
-                        IsEnabled = true,
-                        IsMinimapVisible = false,
-                        Rotation = cubePortal.Rotation,
-                        PortalType = PortalTypes.Home
-                    };
-
-                    IFieldObject<Portal> fieldPortal = RequestFieldObject(portal);
-                    fieldPortal.Coord = cubePortal.CoordF;
-                    fieldPortal.Value.UGCPortalMethod = cubePortal.PortalSettings.Method;
-                    if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
-                    {
-                        switch (cubePortal.PortalSettings.Destination)
-                        {
-                            case UGCPortalDestination.PortalInHome:
-                                fieldPortal.Value.TargetMapId = (int) Map.PrivateResidence;
-                                break;
-                            case UGCPortalDestination.SelectedMap:
-                                fieldPortal.Value.TargetMapId = int.Parse(cubePortal.PortalSettings.DestinationTarget);
-                                break;
-                            case UGCPortalDestination.FriendHome:
-                                fieldPortal.Value.TargetHomeAccountId = long.Parse(cubePortal.PortalSettings.DestinationTarget);
-                                break;
-                        }
-                    }
-
-                    cubePortal.PortalSettings.PortalObjectId = fieldPortal.ObjectId;
-                    AddPortal(fieldPortal);
-                }
+                continue;
             }
-        }
-        else
-        {
-            List<Home> homes = GameServer.HomeManager.GetPlots(MapId);
-            foreach (Home home in homes)
-            {
-                Dictionary<long, Cube> cubes = home.FurnishingInventory;
-                foreach (Cube cube in cubes.Values.Where(x => x.PlotNumber != 1))
+
+            // TODO: Create a chest manager to spawn chests randomly and
+            // TODO: Golden chests ids should always increase by 1 when a new chest is added
+            // For more details about chests, see https://github.com/AlanMorel/MapleServer2/issues/513
+            int chestId = mapChest.IsGolden ? 14000147 : 11000004;
+            State.AddInteractObject(
+                new MapChest($"EventCreate_{GuidGenerator.Int()}", chestId, InteractObjectType.Common, InteractObjectState.Default)
                 {
-                    IFieldObject<Cube> ugcCube = RequestFieldObject(cube);
-                    ugcCube.Coord = cube.CoordF;
-                    ugcCube.Rotation = cube.Rotation;
-                    State.AddCube(ugcCube);
+                    Position = mapChest.Position,
+                    Rotation = mapChest.Rotation,
+                    Model = "MS2InteractActor",
+                    Asset = mapChest.IsGolden ? "interaction_chestA_02" : "interaction_chestA_01", // 01 = wooden, 02 = golden
+                    NormalState = "Opened_A",
+                    Reactable = "Idle_A",
+                    Scale = 1f
                 }
-            }
+            );
         }
 
         foreach (CoordS coord in MapEntityStorage.GetHealingSpot(MapId))
@@ -296,7 +353,7 @@ public partial class FieldManager
     }
 
     // Gets a list of packets to update the state of all field objects for client.
-    public IEnumerable<PacketWriter> GetUpdates()
+    private IEnumerable<PacketWriter> GetUpdates()
     {
         List<PacketWriter> updates = new();
         // Update players locations
@@ -341,36 +398,36 @@ public partial class FieldManager
 
     public IFieldActor<Player> RequestCharacter(Player player)
     {
-        if (player.FieldPlayer != null)
+        if (player.FieldPlayer is null)
         {
-            // Bind existing character to this map.
-            int objectId = Interlocked.Increment(ref Counter);
-            ((FieldActor<Player>) player.FieldPlayer).ObjectId = objectId;
-            return player.FieldPlayer;
+            return WrapPlayer(player);
         }
 
-        return WrapPlayer(player);
+        // Bind existing character to this map.
+        int objectId = Interlocked.Increment(ref Counter);
+        ((FieldActor<Player>) player.FieldPlayer).ObjectId = objectId;
+        return player.FieldPlayer;
     }
 
     public IFieldActor<NpcMetadata> RequestNpc(int npcId, CoordF coord = default, CoordF rotation = default, short animation = default)
     {
         NpcMetadata meta = NpcMetadataStorage.GetNpcMetadata(npcId);
 
-        if (meta.Friendly == 2)
+        if (meta.Friendly != 2)
         {
-            Npc npc = WrapNpc(npcId);
-            npc.Coord = coord;
-            npc.Rotation = rotation;
-            if (animation != default)
-            {
-                npc.Animation = animation;
-            }
-
-            AddNpc(npc);
-            return npc;
+            return RequestMob(npcId, coord, rotation, animation);
         }
 
-        return RequestMob(npcId, coord, rotation, animation);
+        Npc npc = WrapNpc(npcId);
+        npc.Coord = coord;
+        npc.Rotation = rotation;
+        if (animation != default)
+        {
+            npc.Animation = animation;
+        }
+
+        AddNpc(npc);
+        return npc;
     }
 
     public IFieldActor<NpcMetadata> RequestMob(int mobId, CoordF coord = default, CoordF rotation = default, short animation = default)
@@ -387,7 +444,8 @@ public partial class FieldManager
         return mob;
     }
 
-    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default, short animation = default)
+    public IFieldActor<NpcMetadata> RequestMob(int mobId, IFieldObject<MobSpawn> spawnPoint, CoordF coord = default, CoordF rotation = default,
+        short animation = default)
     {
         Mob mob = WrapMob(mobId);
         mob.OriginSpawn = spawnPoint;
@@ -459,8 +517,8 @@ public partial class FieldManager
         if (player.MapId == (int) Map.PrivateResidence && !player.IsInDecorPlanner)
         {
             // Send function cubes
-            List<Cube> functionCubes = State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
-                                                                     && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)
+            List<Cube> functionCubes = State.Cubes.Values
+                .Where(x => x.Value.PlotNumber == 1 && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching)
                 .Select(x => x.Value).ToList();
 
             if (functionCubes.Count > 0)
@@ -482,7 +540,7 @@ public partial class FieldManager
 
         foreach (IFieldObject<HealingSpot> healingSpot in State.HealingSpots.Values)
         {
-            sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, healingSpot.Value.Coord, new(70000018, 1, 0, 1)));
+            sender.Send(RegionSkillPacket.Send(healingSpot.ObjectId, new(70000018, 1, 0, 1), tileCount: 0, default));
         }
 
         foreach (IFieldObject<Instrument> instrument in State.Instruments.Values)
@@ -503,15 +561,16 @@ public partial class FieldManager
         breakables.AddRange(State.BreakableNifs.Values.ToList());
         sender.Send(BreakablePacket.LoadBreakables(breakables));
 
-        List<InteractObject> interactObjects = new();
-        interactObjects.AddRange(State.InteractObjects.Values.Where(t => t is not AdBalloon).ToList());
-        sender.Send(InteractObjectPacket.LoadInteractObject(interactObjects));
+        sender.Send(InteractObjectPacket.LoadObjects(State.InteractObjects.Values.Where(t => t is not AdBalloon && t is not MapChest).ToList()));
 
-        List<AdBalloon> adBalloons = new();
-        adBalloons.AddRange(State.InteractObjects.Values.OfType<AdBalloon>().ToList());
-        foreach (AdBalloon balloon in adBalloons)
+        foreach (MapChest mapChest in State.InteractObjects.Values.OfType<MapChest>())
         {
-            sender.Send(InteractObjectPacket.LoadAdBallon(balloon));
+            sender.Send(InteractObjectPacket.Add(mapChest));
+        }
+
+        foreach (AdBalloon balloon in State.InteractObjects.Values.OfType<AdBalloon>())
+        {
+            sender.Send(InteractObjectPacket.Add(balloon));
         }
 
         List<TriggerObject> triggerObjects = new();

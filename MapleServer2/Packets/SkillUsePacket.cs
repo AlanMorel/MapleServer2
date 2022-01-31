@@ -1,5 +1,4 @@
 ﻿using Maple2Storage.Tools;
-using Maple2Storage.Types;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Types;
@@ -10,7 +9,7 @@ public static class SkillUsePacket
 {
     public static readonly Dictionary<long, SkillCast> SkillCastMap = new();
 
-    public static PacketWriter SkillUse(SkillCast skillCast, CoordF position, CoordF direction, CoordF rotation)
+    public static PacketWriter SkillUse(SkillCast skillCast)
     {
         SkillCastMap[skillCast.SkillSN] = skillCast;
         PacketWriter pWriter = PacketWriter.Of(SendOp.SKILL_USE);
@@ -21,9 +20,9 @@ public static class SkillUsePacket
         pWriter.WriteInt(skillCast.SkillId);
         pWriter.WriteShort(skillCast.SkillLevel);
         pWriter.WriteByte();
-        pWriter.Write(position.ToShort());
-        pWriter.Write(direction);
-        pWriter.Write(rotation); // rotation
+        pWriter.Write(skillCast.Position.ToShort());
+        pWriter.Write(skillCast.Direction);
+        pWriter.Write(skillCast.Rotation);
         pWriter.WriteShort();
         pWriter.WriteByte();
         pWriter.WriteByte();

@@ -43,15 +43,18 @@ public class JobSkillMetadata
     public byte MaxLevel;
     [XmlElement(Order = 4)]
     public List<int> SubSkillIds = new();
+    [XmlElement(Order = 5)]
+    public byte QuickSlotPriority;
 
     public JobSkillMetadata() { }
 
-    public JobSkillMetadata(int skillId, short subJobCode, byte maxLevel, List<int> subSkillIds)
+    public JobSkillMetadata(int skillId, short subJobCode, byte maxLevel, List<int> subSkillIds, byte quickSlotPriority)
     {
         SkillId = skillId;
         SubJobCode = subJobCode;
         MaxLevel = maxLevel;
         SubSkillIds = subSkillIds;
+        QuickSlotPriority = quickSlotPriority;
     }
 }
 

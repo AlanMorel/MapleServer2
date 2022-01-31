@@ -209,15 +209,15 @@ public class LapenshardHandler : GamePacketHandler
         int crystalCost = costs[tier].CrystalsAmount;
 
         // Consume all Crystals
-        foreach (KeyValuePair<long, Item> item in crystals)
+        foreach ((long uid, Item item) in crystals)
         {
-            if (item.Value.Amount >= crystalCost)
+            if (item.Amount >= crystalCost)
             {
-                session.Player.Inventory.ConsumeItem(session, item.Key, crystalCost);
+                session.Player.Inventory.ConsumeItem(session, uid, crystalCost);
                 break;
             }
-            crystalCost -= item.Value.Amount;
-            session.Player.Inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            crystalCost -= item.Amount;
+            session.Player.Inventory.ConsumeItem(session, uid, item.Amount);
         }
 
         // Consume all Lapenshards

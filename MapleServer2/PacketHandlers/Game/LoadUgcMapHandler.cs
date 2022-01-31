@@ -87,6 +87,6 @@ public class LoadUgcMapHandler : GamePacketHandler
         session.Send(SendCubesPacket.LoadAvailablePlots(homes, plots));
         session.Send(SendCubesPacket.Expiration(homes.Where(x => x.PlotNumber != 0).ToList()));
 
-        session.Send("6D 00 12 00 00 00 00 00 00 00 00 00 00 00 00".ToByteArray()); // send ugc
+        session.Send(UgcPacket.Mode12());
     }
 }

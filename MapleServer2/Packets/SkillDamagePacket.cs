@@ -43,8 +43,6 @@ public static class SkillDamagePacket
             pWriter.WriteInt(sourceId[i]);
             pWriter.WriteInt(entityId[i]); // objectId of the Impact
             pWriter.WriteShort(animation[i]);
-            pWriter.WriteByte();
-            pWriter.WriteByte();
         }
 
         return pWriter;

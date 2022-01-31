@@ -1,6 +1,5 @@
 ﻿using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.Types;
 
 namespace MapleServer2.Packets;
 
@@ -22,11 +21,11 @@ public static class ExperiencePacket
         return pWriter;
     }
 
-    public static PacketWriter LevelUp(IFieldObject<Player> fieldPlayer, int level)
+    public static PacketWriter LevelUp(int playerObjectId, int level)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.LEVEL_UP);
 
-        pWriter.WriteInt(fieldPlayer.ObjectId);
+        pWriter.WriteInt(playerObjectId);
         pWriter.WriteInt(level);
 
         return pWriter;

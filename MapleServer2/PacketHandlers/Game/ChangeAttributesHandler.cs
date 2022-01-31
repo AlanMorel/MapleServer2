@@ -188,40 +188,40 @@ public class ChangeAttributesHandler : GamePacketHandler
     private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, List<KeyValuePair<long, Item>> greenCrystals, List<KeyValuePair<long, Item>> metacells, List<KeyValuePair<long, Item>> crystalFragments)
     {
         Inventory inventory = session.Player.Inventory;
-        foreach (KeyValuePair<long, Item> item in greenCrystals)
+        foreach ((long uid, Item item) in greenCrystals)
         {
-            if (item.Value.Amount >= greenCrystalCost)
+            if (item.Amount >= greenCrystalCost)
             {
-                inventory.ConsumeItem(session, item.Key, greenCrystalCost);
+                inventory.ConsumeItem(session, uid, greenCrystalCost);
                 break;
             }
 
-            greenCrystalCost -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            greenCrystalCost -= item.Amount;
+            inventory.ConsumeItem(session, uid, item.Amount);
         }
 
-        foreach (KeyValuePair<long, Item> item in metacells)
+        foreach ((long uid, Item item) in metacells)
         {
-            if (item.Value.Amount >= metacellCosts)
+            if (item.Amount >= metacellCosts)
             {
-                inventory.ConsumeItem(session, item.Key, metacellCosts);
+                inventory.ConsumeItem(session, uid, metacellCosts);
                 break;
             }
 
-            metacellCosts -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            metacellCosts -= item.Amount;
+            inventory.ConsumeItem(session, uid, item.Amount);
         }
 
-        foreach (KeyValuePair<long, Item> item in crystalFragments)
+        foreach ((long uid, Item item) in crystalFragments)
         {
-            if (item.Value.Amount >= crystalFragmentsCosts)
+            if (item.Amount >= crystalFragmentsCosts)
             {
-                inventory.ConsumeItem(session, item.Key, crystalFragmentsCosts);
+                inventory.ConsumeItem(session, uid, crystalFragmentsCosts);
                 break;
             }
 
-            crystalFragmentsCosts -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            crystalFragmentsCosts -= item.Amount;
+            inventory.ConsumeItem(session, uid, item.Amount);
         }
     }
 }

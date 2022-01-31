@@ -6,22 +6,23 @@ namespace MapleServer2.Packets;
 
 public static class UgcPacket
 {
-    public enum UgcMode : byte
+    private enum UgcMode : byte
     {
-        CreateUGC = 0x02,
-        SetItemURL = 0x04,
+        CreateUgc = 0x02,
+        SetItemUrl = 0x04,
         ProfilePicture = 0x0B,
-        UpdateUGC = 0x0D,
+        UpdateUgc = 0x0D,
         SetEndpoint = 0x11,
+        Mode12 = 0x12,
     }
 
-    public static PacketWriter SetEndpoint(string unknownEndpoint, string resourceEndpoint, string locale = "na")
+    public static PacketWriter SetEndpoint(string uploadEndpoint, string resourceEndpoint, string locale = "na")
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.SetEndpoint); // Function
-        pWriter.WriteUnicodeString(unknownEndpoint); // Serves some random irrq.aspx
+        pWriter.WriteUnicodeString(uploadEndpoint); // Serves some random irrq.aspx
         pWriter.WriteUnicodeString(resourceEndpoint); // Serves resources
-        pWriter.WriteUnicodeString(locale); // locale?
+        pWriter.WriteUnicodeString(locale); // locale
         pWriter.WriteByte(2);
 
         return pWriter;
@@ -33,10 +34,10 @@ public static class UgcPacket
         return null;
     }
 
-    public static PacketWriter CreateUGC(bool success, UGC ugc)
+    public static PacketWriter CreateUgc(bool success, UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.CreateUGC);
+        pWriter.Write(UgcMode.CreateUgc);
         pWriter.WriteBool(success);
         if (!success)
         {
@@ -52,7 +53,7 @@ public static class UgcPacket
     public static PacketWriter SetItemUrl(UGC ugc)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.SetItemURL);
+        pWriter.Write(UgcMode.SetItemUrl);
         pWriter.WriteBool(ugc is not null);
         if (ugc is null)
         {
@@ -72,7 +73,7 @@ public static class UgcPacket
         pWriter.WriteLong();
         pWriter.WriteByte(); // condition
         // If byte == 1
-        SharedSubUGC(pWriter);
+        SharedSubUgc(pWriter);
         // EndIf
         // ???
 
@@ -83,7 +84,7 @@ public static class UgcPacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.WriteByte(0x08);
-        SharedSubUGC2(pWriter);
+        SharedSubUgc2(pWriter);
 
         return pWriter;
     }
@@ -102,7 +103,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter SetProfilePictureURL(int objectId, long characterId, string url)
+    public static PacketWriter SetProfilePictureUrl(int objectId, long characterId, string url)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
         pWriter.Write(UgcMode.ProfilePicture);
@@ -114,10 +115,10 @@ public static class UgcPacket
     }
 
     // not sure about the name
-    public static PacketWriter UpdateUGCItem(IFieldObject<Player> fieldPlayer, Item item)
+    public static PacketWriter UpdateUgcItem(IFieldObject<Player> fieldPlayer, Item item)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.Write(UgcMode.UpdateUGC);
+        pWriter.Write(UgcMode.UpdateUgc);
         pWriter.WriteInt(fieldPlayer.ObjectId);
         pWriter.WriteLong(item.Uid);
         pWriter.WriteInt(item.Id);
@@ -178,42 +179,61 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter Unknown18()
+    public static PacketWriter Mode12()
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.UGC);
-        pWriter.WriteByte(0x12);
-        // sub1
-        pWriter.WriteInt();
-        pWriter.WriteByte(); // condition
-        // If condition
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("StrW");
-        // unknown call to invalid memory using packet
-        pWriter.WriteByte();
-        pWriter.WriteInt();
-        pWriter.WriteLong();
-        pWriter.WriteLong();
-        pWriter.WriteUnicodeString("WstrA");
-        // unknown call to invalid memory using packet
-        pWriter.WriteUnicodeString("StrW");
-        // unknown call to invalid memory using packet
-        pWriter.WriteUnicodeString("StrW");
-        // EndIf
+        pWriter.Write(UgcMode.Mode12);
 
-        // One some random condition jump to this block
-        pWriter.WriteInt(); // counter for loop
-        for (int i = 0; i < 0; i++)
+        int counter1 = 0;
+        pWriter.WriteInt(counter1);
+        for (int i = 0; i < counter1; i++)
         {
-            pWriter.WriteLong();
-            pWriter.WriteByte();
-            // If some condition (can't read)
-            SharedSubUGC(pWriter);
-            // EndIf
+            bool flagA = false;
+            pWriter.WriteBool(flagA);
+            if (flagA)
+            {
+                pWriter.WriteLong();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteByte();
+                pWriter.WriteInt();
+                pWriter.WriteLong();
+                pWriter.WriteLong();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteUnicodeString();
+            }
         }
-        pWriter.WriteInt(); // counter for loop
-        for (int i = 0; i < 0; i++)
+
+        int counter2 = 0;
+        pWriter.WriteInt(counter2);
+        for (int i = 0; i < counter2; i++)
         {
-            SharedSubUGC2(pWriter);
+            bool flagB = false;
+            pWriter.WriteLong();
+            pWriter.WriteBool(flagB);
+            if (flagB)
+            {
+                pWriter.WriteByte();
+                pWriter.WriteInt();
+                pWriter.WriteLong();
+                pWriter.WriteLong();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteLong();
+                pWriter.WriteUnicodeString();
+                pWriter.WriteByte();
+                pWriter.WriteByte();
+                pWriter.WriteLong();
+                pWriter.WriteByte();
+                pWriter.WriteUnicodeString();
+            }
+        }
+
+        int counter3 = 0;
+        pWriter.WriteInt(counter3);
+        for (int i = 0; i < counter3; i++)
+        {
+            SharedSubUgc2(pWriter);
         }
 
         return pWriter;
@@ -261,7 +281,7 @@ public static class UgcPacket
         return pWriter;
     }
 
-    public static PacketWriter WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
+    public static void WriteUgcTemplate(this PacketWriter pWriter, UGC ugc)
     {
         pWriter.WriteLong(ugc?.Uid ?? 0);
         pWriter.WriteUnicodeString(ugc?.Guid.ToString() ?? ""); // UUID (filename)
@@ -274,18 +294,16 @@ public static class UgcPacket
         pWriter.WriteLong(ugc?.CreationTime ?? 0); // CreationTime
         pWriter.WriteUnicodeString(ugc?.Url ?? ""); // URL (no domain)
         pWriter.WriteByte();
-
-        return pWriter;
     }
 
-    private static void SharedSubUGC(PacketWriter pWriter)
+    private static void SharedSubUgc(PacketWriter pWriter)
     {
         pWriter.WriteByte();
         pWriter.WriteUnicodeString("WstrA");
         // unknown call to invalid memory using packet
     }
 
-    private static void SharedSubUGC2(PacketWriter pWriter)
+    private static void SharedSubUgc2(PacketWriter pWriter)
     {
         pWriter.WriteLong();
         pWriter.WriteInt(); // counter for loop

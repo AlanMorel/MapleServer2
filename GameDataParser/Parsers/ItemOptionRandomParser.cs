@@ -348,13 +348,13 @@ public class ItemOptionRandomParser : Exporter<List<ItemOptionRandomMetadata>>
                 }
             }
 
-            foreach (KeyValuePair<int, List<ItemOptionRandom>> optionsData in itemOptionsRandom)
+            foreach ((int id, List<ItemOptionRandom> itemOptions) in itemOptionsRandom)
             {
                 ItemOptionRandomMetadata metadata = new()
                 {
-                    Id = optionsData.Key
+                    Id = id,
+                    ItemOptions = itemOptions
                 };
-                metadata.ItemOptions.AddRange(optionsData.Value);
                 items.Add(metadata);
             }
         }

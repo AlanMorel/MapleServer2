@@ -1,15 +1,23 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
 public class InteractObject
 {
-    public string Id;
-    public int InteractId;
+    public readonly string Id;
+    public readonly int InteractId;
     public InteractObjectState State;
-    public InteractObjectType Type;
+    public readonly InteractObjectType Type;
+    public string Model;
+    public string Asset;
+    public string NormalState;
+    public string Reactable;
+    public float Scale;
+    public CoordF Position;
+    public CoordF Rotation;
 
     public InteractObject(string id, int interactId, InteractObjectType type, InteractObjectState state)
     {
@@ -21,29 +29,18 @@ public class InteractObject
         Type = type;
     }
 }
-public enum InteractObjectState : byte
-{
-    Disable = 0,
-    Default = 1,
-    Activated = 2
-}
+
 public class AdBalloon : InteractObject
 {
-    public string Model;
-    public string Asset;
-    public string NormalState;
-    public string Reactable;
-    public float Scale;
-    public Player Owner;
-    public CoordF Position;
-    public CoordF Rotation;
-    public string Title;
-    public string Description;
-    public bool PublicHouse;
-    public long CreationTimestamp;
-    public long ExpirationTimestamp; // TODO: Remove from field if expired
+    public readonly Player Owner;
+    public readonly string Title;
+    public readonly string Description;
+    public readonly bool PublicHouse;
+    public readonly long CreationTimestamp;
+    public readonly long ExpirationTimestamp; // TODO: Remove from field if expired
 
-    public AdBalloon(string id, int interactId, InteractObjectState state, InteractObjectType type, IFieldObject<Player> owner, InstallBillboard metadata, string title, string description, bool publicHouse) : base(id, interactId, type, state)
+    public AdBalloon(string id, int interactId, InteractObjectState state, InteractObjectType type, IFieldObject<Player> owner, InstallBillboard metadata,
+        string title, string description, bool publicHouse) : base(id, interactId, type, state)
     {
         Owner = owner.Value;
         Position = owner.Coord;
@@ -59,4 +56,9 @@ public class AdBalloon : InteractObject
         CreationTimestamp = TimeInfo.Now() + Environment.TickCount;
         ExpirationTimestamp = TimeInfo.Now() + Environment.TickCount + metadata.Duration;
     }
+}
+
+public class MapChest : InteractObject
+{
+    public MapChest(string id, int interactId, InteractObjectType type, InteractObjectState state) : base(id, interactId, type, state) { }
 }

@@ -3,7 +3,7 @@ using Maple2Storage.Types;
 
 namespace MapleWebServer;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
@@ -14,18 +14,17 @@ public class Program
         {
             throw new ArgumentException(".env file not found!");
         }
+
         DotEnv.Load(dotenv);
 
         CreateHostBuilder(args).Build().Run();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
+    private static IHostBuilder CreateHostBuilder(string[] args)
     {
-        return Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>()
-                    .UseUrls(urls: $"http://*:{Environment.GetEnvironmentVariable("WEB_PORT")}");
-            });
+        return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>().UseUrls(urls: $"http://*:{Environment.GetEnvironmentVariable("WEB_PORT")}");
+        });
     }
 }

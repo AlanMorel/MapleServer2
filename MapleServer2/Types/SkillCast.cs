@@ -1,4 +1,5 @@
-﻿using Maple2Storage.Types.Metadata;
+﻿using Maple2Storage.Types;
+using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Extensions;
@@ -32,6 +33,10 @@ public class SkillCast
     public byte MotionPoint { get; private set; }
     public byte AttackPoint { get; private set; }
     public SkillCast ParentSkill { get; private set; }
+
+    public CoordF Position;
+    public CoordF Direction;
+    public CoordF Rotation;
 
     public SkillCast()
     {

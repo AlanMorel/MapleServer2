@@ -88,14 +88,14 @@ public abstract class Session : IDisposable
             return;
         }
 
-        if (this is LoginSession)
+        if (this is LoginSession loginSession)
         {
-            MapleServer.GetLoginServer().RemoveSession(this as LoginSession);
+            MapleServer.GetLoginServer().RemoveSession(loginSession);
         }
 
-        if (this is GameSession)
+        if (this is GameSession gameSession)
         {
-            MapleServer.GetGameServer().RemoveSession(this as GameSession);
+            MapleServer.GetGameServer().RemoveSession(gameSession);
         }
 
         Disposed = true;
@@ -334,7 +334,7 @@ public abstract class Session : IDisposable
             case SendOp.RIDE_SYNC:
             case SendOp.FIELD_OBJECT:
             case SendOp.FIELD_ADD_PLAYER:
-            case SendOp.FIELD_ENTRANCE:
+            case SendOp.DUNGEON_LIST:
             case SendOp.SERVER_ENTER:
             case SendOp.QUEST:
             case SendOp.STORAGE_INVENTORY:

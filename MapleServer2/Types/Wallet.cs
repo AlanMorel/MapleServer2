@@ -1,5 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using MapleServer2.Database;
+using MapleServer2.Servers.Game;
 
 namespace MapleServer2.Types;
 
@@ -13,13 +14,13 @@ public class Wallet
     public Currency Rue { get; private set; }
     public Currency HaviFruit { get; private set; }
 
-    public Wallet(long meso, long valorToken, long treva, long rue, long haviFruit, long id = 0)
+    public Wallet(long meso, long valorToken, long treva, long rue, long haviFruit, GameSession gameSession, long id = 0)
     {
-        Meso = new(CurrencyType.Meso, meso);
-        ValorToken = new(CurrencyType.ValorToken, valorToken);
-        Treva = new(CurrencyType.Treva, treva);
-        Rue = new(CurrencyType.Rue, rue);
-        HaviFruit = new(CurrencyType.HaviFruit, haviFruit);
+        Meso = new(CurrencyType.Meso, meso, gameSession);
+        ValorToken = new(CurrencyType.ValorToken, valorToken, gameSession);
+        Treva = new(CurrencyType.Treva, treva, gameSession);
+        Rue = new(CurrencyType.Rue, rue, gameSession);
+        HaviFruit = new(CurrencyType.HaviFruit, haviFruit, gameSession);
 
         if (id == 0)
         {

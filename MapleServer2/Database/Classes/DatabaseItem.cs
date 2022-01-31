@@ -1,6 +1,5 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
-using MapleServer2.Data.Static;
 using MapleServer2.Enums;
 using MapleServer2.Types;
 using Newtonsoft.Json;
@@ -221,7 +220,6 @@ public class DatabaseItem : DatabaseTable
             PairedCharacterName = data.paired_character_name,
             PetSkinBadgeId = data.pet_skin_badge_id,
             RemainingGlamorForges = data.remaining_glamor_forges,
-            RecommendJobs = ItemMetadataStorage.GetRecommendJobs(data.id),
             RemainingTrades = data.remaining_trades,
             Score = JsonConvert.DeserializeObject<MusicScore>(data.score),
             Slot = data.slot,

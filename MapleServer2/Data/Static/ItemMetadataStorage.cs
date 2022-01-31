@@ -79,10 +79,10 @@ public static class ItemMetadataStorage
         return GetMetadata(itemId).RecommendJobs.ConvertAll(converter);
     }
 
-    public static int GetSellPrice(int itemId)
+    public static long GetSellPrice(int itemId)
     {
         // get random selling price from price points
-        List<int> pricePoints = GetMetadata(itemId)?.SellPrice;
+        List<long> pricePoints = GetMetadata(itemId)?.SellPrice;
         if (pricePoints == null || !pricePoints.Any())
         {
             return 0;
@@ -93,10 +93,10 @@ public static class ItemMetadataStorage
         return pricePoints.ElementAt(rand);
     }
 
-    public static int GetCustomSellPrice(int itemId)
+    public static long GetCustomSellPrice(int itemId)
     {
         // get random selling price from price points
-        List<int> pricePoints = GetMetadata(itemId)?.SellPriceCustom;
+        List<long> pricePoints = GetMetadata(itemId)?.SellPriceCustom;
         if (pricePoints == null || !pricePoints.Any())
         {
             return 0;
@@ -117,7 +117,7 @@ public static class ItemMetadataStorage
 
     public static int GetOptionConstant(int itemId) => GetMetadata(itemId).OptionConstant;
 
-    public static int GetOptionLevelFactor(int itemId) => GetMetadata(itemId)?.OptionLevelFactor ?? 0;
+    public static float GetOptionLevelFactor(int itemId) => GetMetadata(itemId)?.OptionLevelFactor ?? 0;
 
     public static EquipColor GetEquipColor(int itemId)
     {

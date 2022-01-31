@@ -1,4 +1,7 @@
-﻿using MapleServer2.Database;
+﻿using Maple2Storage.Types.Metadata;
+using MapleServer2.Data.Static;
+using MapleServer2.Database;
+using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
@@ -16,6 +19,7 @@ public class Hotbar
         {
             Slots[i] = new();
         }
+
         Id = DatabaseManager.Hotbars.Insert(this, gameOptionsId);
     }
 
@@ -23,6 +27,29 @@ public class Hotbar
     {
         Slots = slots;
         Id = id;
+    }
+
+    public Hotbar(long gameOptionsId, Job job)
+    {
+        Slots = new QuickSlot[MAX_SLOTS];
+
+        for (int i = 0; i < MAX_SLOTS; i++)
+        {
+            Slots[i] = new();
+        }
+
+        // Get default job skills
+        IOrderedEnumerable<JobSkillMetadata> skills = JobMetadataStorage
+            .GetJobskills((int) job).Where(skill => skill.QuickSlotPriority < 4).OrderBy(skill => skill.QuickSlotPriority);
+
+        // Add skills to hotbar
+        int index = 4;
+        foreach (JobSkillMetadata metadata in skills)
+        {
+            Slots[index++] = QuickSlot.From(metadata.SkillId);
+        }
+
+        Id = DatabaseManager.Hotbars.Insert(this, gameOptionsId);
     }
 
     public bool AddToFirstSlot(QuickSlot quickSlot)
@@ -38,15 +65,17 @@ public class Hotbar
             {
                 continue;
             }
+
             Slots[i] = quickSlot;
             return true;
         }
+
         return false;
     }
 
     public void MoveQuickSlot(int targetSlotIndex, QuickSlot quickSlot)
     {
-        if (targetSlotIndex < 0 || targetSlotIndex >= MAX_SLOTS)
+        if (targetSlotIndex is < 0 or >= MAX_SLOTS)
         {
             // This should never occur
             throw new ArgumentException($"Invalid target slot {targetSlotIndex}");
@@ -84,7 +113,7 @@ public class Hotbar
     public bool RemoveQuickSlot(int skillId, long itemUid)
     {
         int targetSlotIndex = FindQuickSlotIndex(skillId, itemUid);
-        if (targetSlotIndex < 0 || targetSlotIndex >= MAX_SLOTS)
+        if (targetSlotIndex is < 0 or >= MAX_SLOTS)
         {
             // TODO - There is either a) hotbar desync or b) something unintended occuring
             return false;
