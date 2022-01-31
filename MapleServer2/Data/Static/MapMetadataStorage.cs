@@ -122,8 +122,8 @@ public static class MapMetadataStorage
             return 99;
         }
 
-        // checking 20 blocks in the same Z axis
-        for (int i = 0; i < 20; i++)
+        // checking 10 blocks in the same Z axis
+        for (int i = 0; i < 10; i++)
         {
             mapMetadata.Blocks.TryGetValue(tempCoord, out block);
             if (block is not null)
