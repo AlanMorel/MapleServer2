@@ -14,7 +14,7 @@ public class RequestGemEquipmentHandler : GamePacketHandler
     {
         EquipItem = 0x00,
         UnequipItem = 0x01,
-        Transprency = 0x03
+        Transparency = 0x03
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -29,7 +29,7 @@ public class RequestGemEquipmentHandler : GamePacketHandler
             case RequestGemEquipmentMode.UnequipItem:
                 HandleUnequipItem(session, packet);
                 break;
-            case RequestGemEquipmentMode.Transprency:
+            case RequestGemEquipmentMode.Transparency:
                 HandleTransparency(session, packet);
                 break;
             default:

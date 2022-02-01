@@ -34,7 +34,7 @@ public class ItemExchangeHandler : GamePacketHandler
 
     public enum ExchangeNotice : short
     {
-        Sucess = 0x0,
+        Success = 0x0,
         Invalid = 0x1,
         CannotFuse = 0x2,
         InsufficientMeso = 0x3,
@@ -83,7 +83,7 @@ public class ItemExchangeHandler : GamePacketHandler
         };
 
         session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
-        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
+        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Success));
 
     }
 

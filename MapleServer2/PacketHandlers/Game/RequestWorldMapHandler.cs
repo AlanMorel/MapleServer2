@@ -9,15 +9,24 @@ public class RequestWorldMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
 
+    private enum WorldMapMode : byte
+    {
+        Open = 0x00,
+    }
+
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte mode = packet.ReadByte();
+        WorldMapMode mode = (WorldMapMode) packet.ReadByte();
         switch (mode)
         {
-            case 0: // open
+            case WorldMapMode.Open: // open
                 HandleOpen(session);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
+
         packet.ReadByte(); // always 0?
         int tab = packet.ReadInt();
     }

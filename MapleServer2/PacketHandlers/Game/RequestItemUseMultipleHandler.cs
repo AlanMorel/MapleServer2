@@ -15,8 +15,8 @@ public class RequestItemUseMultipleHandler : GamePacketHandler
 
     private enum BoxType : byte
     {
-        OPEN = 0x00,
-        SELECT = 0x01
+        Open = 0x00,
+        Select = 0x01
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -39,7 +39,7 @@ public class RequestItemUseMultipleHandler : GamePacketHandler
         }
 
         int index = 0;
-        if (boxType == BoxType.SELECT)
+        if (boxType == BoxType.Select)
         {
             index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
             if (index < 0)

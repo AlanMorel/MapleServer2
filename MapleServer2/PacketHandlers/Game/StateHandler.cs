@@ -26,6 +26,9 @@ public class StateHandler : GamePacketHandler
                 break;
             case StateHandlerMode.Land:
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
     }
 
