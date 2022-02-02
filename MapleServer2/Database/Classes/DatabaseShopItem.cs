@@ -20,6 +20,7 @@ public class DatabaseShopItem : DatabaseTable
         {
             items.Add(ReadShopItem(result));
         }
+
         return items;
     }
 
@@ -37,29 +38,6 @@ public class DatabaseShopItem : DatabaseTable
 
     private static ShopItem ReadShopItem(dynamic data)
     {
-        return new ShopItem(
-            data.uid,
-            data.auto_preview_equip,
-            data.category,
-            data.flag,
-            data.guild_trophy,
-            data.item_id,
-            data.item_rank,
-            data.price,
-            data.quantity,
-            data.required_achievement_grade,
-            data.required_achievement_id,
-            data.required_championship_grade,
-            data.required_championship_join_count,
-            data.required_fame_grade,
-            data.required_guild_merchant_level,
-            data.required_guild_merchant_type,
-            data.required_item_id,
-            data.required_quest_alliance,
-            data.sale_price,
-            data.stock_count,
-            data.stock_purchased,
-            data.template_name,
-            data.token_type);
+        return new ShopItem(data);
     }
 }
