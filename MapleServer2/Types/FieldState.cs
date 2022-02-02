@@ -29,6 +29,7 @@ public class FieldState
     public readonly ConcurrentDictionary<int, IFieldObject<TriggerSkill>> TriggerSkills = new();
     public readonly ConcurrentDictionary<string, InteractObject> InteractObjects = new();
     public readonly ConcurrentDictionary<string, LiftableObject> LiftableObjects = new();
+    public readonly ConcurrentDictionary<long, SkillCast> SkillCasts = new();
 
     public bool TryGetItem(int objectId, out IFieldObject<Item> item)
     {
@@ -205,5 +206,21 @@ public class FieldState
     public void AddLiftableObject(LiftableObject liftableObject)
     {
         LiftableObjects[liftableObject.EntityId] = liftableObject;
+    }
+
+    public void AddSkillCast(SkillCast skillCast)
+    {
+        SkillCasts[skillCast.SkillSn] = skillCast;
+    }
+
+    public SkillCast GetSkillCast(long skillSn)
+    {
+        SkillCasts.TryGetValue(skillSn, out SkillCast skillCast);
+        return skillCast;
+    }
+
+    public bool RemoveSkillCast(long skillSn, out SkillCast skillCast)
+    {
+        return SkillCasts.Remove(skillSn, out skillCast);
     }
 }

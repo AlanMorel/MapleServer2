@@ -44,7 +44,7 @@ public struct CoordF
 
     public static CoordF Parse(string value)
     {
-        string[] coord = value.Split(", ");
+        string[] coord = value.Split(",").Select(x => x.Trim()).ToArray();
         return From(
             float.Parse(coord[0]),
             float.Parse(coord[1]),
@@ -217,7 +217,7 @@ public struct CoordS
 
     public static CoordS Parse(string value)
     {
-        string[] coord = value.Split(", ");
+        string[] coord = value.Split(",").Select(x => x.Trim()).ToArray();
         return From(
             (short) float.Parse(coord[0]),
             (short) float.Parse(coord[1]),
@@ -390,7 +390,7 @@ public struct CoordB
 
     public static CoordB Parse(string value, string separator)
     {
-        string[] coord = value.Split(separator);
+        string[] coord = value.Split(separator).Select(x => x.Trim()).ToArray();
         return From(
             sbyte.Parse(coord[0]),
             sbyte.Parse(coord[1]),

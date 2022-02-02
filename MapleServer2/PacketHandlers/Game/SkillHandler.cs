@@ -4,7 +4,6 @@ using Maple2Storage.Types;
 using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
-using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
@@ -27,13 +26,6 @@ public class SkillHandler : GamePacketHandler
         Cancel = 0x4
     }
 
-    private enum DamagingMode : byte
-    {
-        SyncDamage = 0x0,
-        Damage = 0x1,
-        RegionSkill = 0x2
-    }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
         SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
@@ -52,27 +44,7 @@ public class SkillHandler : GamePacketHandler
                 HandleSyncTick(packet);
                 break;
             case SkillHandlerMode.Cancel:
-                HandleCancelSkill(packet);
-                break;
-            default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
-                break;
-        }
-    }
-
-    private static void HandleDamageMode(GameSession session, PacketReader packet)
-    {
-        DamagingMode mode = (DamagingMode) packet.ReadByte();
-        switch (mode)
-        {
-            case DamagingMode.SyncDamage:
-                HandleSyncDamage(session, packet);
-                break;
-            case DamagingMode.Damage:
-                HandleDamage(session, packet);
-                break;
-            case DamagingMode.RegionSkill:
-                HandleRegionSkills(session, packet);
+                HandleCancelSkill(session, packet);
                 break;
             default:
                 IPacketHandler<GameSession>.LogUnknownMode(mode);
@@ -101,18 +73,36 @@ public class SkillHandler : GamePacketHandler
             string unkString = packet.ReadUnicodeString();
         }
 
-        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.Player.FieldPlayer.ObjectId, clientTick, attackPoint)
+        IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
+        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, fieldPlayer.ObjectId, clientTick, attackPoint)
         {
             Position = position,
             Direction = direction,
             Rotation = rotation
         };
-        session.Player.FieldPlayer.Cast(skillCast);
+
+        /* HOW TO HANDLE ADDITIONAL EFFECTS BY MAYGI:
+            when handling an additional effect:
+            + loop through all SkillMotion items in the skill
+            ++ loop through all SkillAttacks in the attacks in the SkillMotion
+            +++ grab a list of ConditionSkills from each SkillAttack
+            +++ check for a cube magic path id on each SkillAttack and handle it if it exists
+            ++++ if a cube magic path exists, you can grab a ConditionSkill reference from any index of the list, it doesn't matter in this case
+            ++++ handle magic path move processing for square based abilities
+            +++ loop through all ConditionSkills
+            ++++ loop through all SkillData on each ConditionSkill and check the SkillInfo on each Condition Skill ID
+            +++++ check if each SkillInfo has an additional skill
+            ++++++ if an additional skill exists, check the proc and requirements (proc is a chance, requirement is a buff ID), and determine whether or not to proc additional effects for said proc)
+            + also handle Splash Skills which trigger region effects
+         */
+
+        // TODO: Check BeginCondition
+        fieldPlayer.Cast(skillCast);
     }
 
     private static void HandleSyncSkills(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         int skillId = packet.ReadInt();
         short skillLevel = packet.ReadShort();
         byte motionPoint = packet.ReadByte();
@@ -124,7 +114,13 @@ public class SkillHandler : GamePacketHandler
         packet.ReadInt();
         packet.ReadByte();
 
-        session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillSN, session.Player.FieldPlayer, position, rotation, toggle), session);
+        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (skillCast is null)
+        {
+            return;
+        }
+
+        session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillCast, session.Player.FieldPlayer, position, rotation, toggle), session);
     }
 
     private static void HandleSyncTick(PacketReader packet)
@@ -133,14 +129,51 @@ public class SkillHandler : GamePacketHandler
         int serverTick = packet.ReadInt();
     }
 
-    private static void HandleCancelSkill(PacketReader packet)
+    private static void HandleCancelSkill(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
+
+        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (skillCast is null || skillCast.SkillSn != skillSn)
+        {
+            return;
+        }
+
+        session.FieldManager.BroadcastPacket(SkillCancelPacket.SkillCancel(skillSn, session.Player.FieldPlayer.ObjectId), session);
+    }
+
+    #region HandleDamage
+
+    private enum DamagingMode : byte
+    {
+        SyncDamage = 0x0,
+        Damage = 0x1,
+        RegionSkill = 0x2
+    }
+
+    private static void HandleDamageMode(GameSession session, PacketReader packet)
+    {
+        DamagingMode mode = (DamagingMode) packet.ReadByte();
+        switch (mode)
+        {
+            case DamagingMode.SyncDamage:
+                HandleSyncDamage(session, packet);
+                break;
+            case DamagingMode.Damage:
+                HandleDamage(session, packet);
+                break;
+            case DamagingMode.RegionSkill:
+                HandleRegionSkills(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
+        }
     }
 
     private static void HandleSyncDamage(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         byte attackPoint = packet.ReadByte();
         CoordF position = packet.Read<CoordF>();
         CoordF rotation = packet.Read<CoordF>();
@@ -160,12 +193,19 @@ public class SkillHandler : GamePacketHandler
             animation.Add(packet.ReadShort());
         }
 
-        session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillSN, position, rotation, session.Player.FieldPlayer, sourceId, count, atkCount, targetId, animation));
+        SkillCast skillCast = session.Player.FieldPlayer.SkillCast;
+        if (skillCast is null)
+        {
+            return;
+        }
+
+        session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillCast, position, rotation, session.Player.FieldPlayer, sourceId, count, atkCount,
+            targetId, animation));
     }
 
     private static void HandleDamage(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         int attackCounter = packet.ReadInt();
         int playerObjectId = packet.ReadInt();
         CoordF position = packet.Read<CoordF>();
@@ -177,135 +217,107 @@ public class SkillHandler : GamePacketHandler
 
         IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
 
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
-
-        // TODO: Check if skillSN matches server's current skill for the player
-        // TODO: Verify if its the player or an ally
-        if (fieldPlayer.SkillCast.IsHeal())
+        SkillCast skillCast = fieldPlayer.SkillCast;
+        if (skillCast is null || skillCast.SkillSn != skillSn)
         {
-            Status status = new(fieldPlayer.SkillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
+            return;
+        }
+
+        // TODO: Verify if its the player or an ally
+        if (skillCast.IsRecovery())
+        {
+            Status status = new(skillCast, fieldPlayer.ObjectId, fieldPlayer.ObjectId, 1);
             StatusHandler.Handle(session, status);
 
             // TODO: Heal based on stats
-            session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, 50));
-            fieldPlayer.Stats[StatId.Hp].Increase(50);
-            session.Send(StatPacket.UpdateStats(fieldPlayer, StatId.Hp));
+            fieldPlayer.Heal(session, status, 50);
+            return;
         }
-        else
+
+        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
+        List<(int targetId, byte damageType, double damage)> damages = new();
+        for (int i = 0; i < count; i++)
         {
-            List<DamageHandler> damages = new();
-            for (int i = 0; i < count; i++)
+            int entityId = packet.ReadInt();
+            packet.ReadByte();
+
+            if (entityId == playerObjectId)
             {
-                int entityId = packet.ReadInt();
-                packet.ReadByte();
-
-                IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
-                if (mob == null)
-                {
-                    continue;
-                }
-
-                DamageHandler damage = DamageHandler.CalculateDamage(fieldPlayer.SkillCast, fieldPlayer, mob, isCrit);
-
-                mob.Damage(damage);
-                // TODO: Move logic to Damage()
-                session.FieldManager.BroadcastPacket(StatPacket.UpdateMobStats(mob));
-                if (mob.IsDead)
-                {
-                    HandleMobKill(session, mob);
-                }
-
-                damages.Add(damage);
-
-                // TODO: Check if the skill is a debuff for an entity
-                SkillCast skillCast = fieldPlayer.SkillCast;
-                if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
-                {
-                    Status status = new(fieldPlayer.SkillCast, mob.ObjectId, fieldPlayer.ObjectId, 1);
-                    StatusHandler.Handle(session, status);
-                }
+                damages.Add(new(playerObjectId, 0, 0));
+                continue;
             }
 
-            session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillSN, attackCounter, position, rotation, fieldPlayer, damages));
+            IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
+            if (mob == null)
+            {
+                continue;
+            }
+
+            DamageHandler damage = DamageHandler.CalculateDamage(skillCast, fieldPlayer, mob, isCrit);
+
+            mob.Damage(damage, session);
+
+            damages.Add(new(damage.Target.ObjectId, (byte) (isCrit ? 1 : 0), damage.Damage));
+
+            // TODO: Check if the skill is a debuff for an entity
+            if (!skillCast.IsDebuffElement() && !skillCast.IsDebuffToEntity() && !skillCast.IsDebuffElement())
+            {
+                continue;
+            }
+
+            Status status = new(skillCast, mob.ObjectId, fieldPlayer.ObjectId, 1);
+            StatusHandler.Handle(session, status);
         }
+
+        session.FieldManager.BroadcastPacket(SkillDamagePacket.Damage(skillCast, attackCounter, position, rotation, damages));
     }
 
     private static void HandleRegionSkills(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         byte mode = packet.ReadByte();
         int unknown = packet.ReadInt();
         int unknown2 = packet.ReadInt();
         CoordF position = packet.Read<CoordF>();
         CoordF rotation = packet.Read<CoordF>();
+        // What are these values used? Check client vs server?
 
         // TODO: Verify rest of skills to proc correctly.
-        // Send status correctly when Region attacks are proc.
-        SkillCast parentSkill = SkillUsePacket.SkillCastMap[skillSN];
+        // TODO: Send status correctly when Region attacks are proc.
 
-        if (parentSkill.GetConditionSkill() == null)
+        SkillCast parentSkill = session.Player.FieldPlayer.SkillCast;
+
+        if (parentSkill is null || parentSkill.SkillSn != skillSn)
         {
             return;
         }
 
-        foreach (SkillCondition conditionSkill in parentSkill.GetConditionSkill())
+        foreach (SkillMotion skillMotion in parentSkill.GetSkillMotions())
         {
-            if (!conditionSkill.Splash)
+            foreach (SkillAttack skillAttack in skillMotion.SkillAttacks)
             {
-                continue;
+                if (skillAttack.CubeMagicPathId == 0 && skillAttack.MagicPathId == 0)
+                {
+                    continue;
+                }
+
+                SkillCondition skillCondition = skillAttack.SkillConditions.FirstOrDefault(x => x.IsSplash);
+                if (skillCondition is null)
+                {
+                    continue;
+                }
+
+                SkillCast skillCast = new(skillCondition.SkillId, skillCondition.SkillLevel, GuidGenerator.Long(), session.ServerTick, parentSkill)
+                {
+                    CasterObjectId = session.Player.FieldPlayer.ObjectId,
+                    SkillAttack = skillAttack,
+                    Duration = skillCondition.FireCount * 1000,
+                    Interval = skillCondition.Interval
+                };
+                RegionSkillHandler.HandleEffect(session, skillCast);
             }
-
-            SkillCast skillCast = new(conditionSkill.Id, conditionSkill.Level, GuidGenerator.Long(), session.ServerTick, parentSkill);
-            RegionSkillHandler.Handle(session, GuidGenerator.Int(), session.Player.FieldPlayer.Coord, skillCast);
         }
     }
 
-    private static void HandleMobKill(GameSession session, IFieldObject<NpcMetadata> mob)
-    {
-        // TODO: Add trophy + item drops
-        // Drop Money
-        bool dropMeso = Rand.Next(2) == 0;
-        if (dropMeso)
-        {
-            // TODO: Calculate meso drop rate
-            Item meso = new(90000001, Rand.Next(2, 800));
-            session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
-        }
-        // Drop Meret
-        bool dropMeret = Rand.Next(40) == 0;
-        if (dropMeret)
-        {
-            Item meret = new(90000004, 20);
-            session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
-        }
-        // Drop SP
-        bool dropSP = Rand.Next(6) == 0;
-        if (dropSP)
-        {
-            Item spBall = new(90000009, 20);
-            session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
-        }
-        // Drop EP
-        bool dropEP = Rand.Next(10) == 0;
-        if (dropEP)
-        {
-            Item epBall = new(90000010, 20);
-            session.FieldManager.AddResource(epBall, mob, session.Player.FieldPlayer);
-        }
-        // Drop Items
-        // Send achieves (?)
-        // Gain Mob EXP
-        session.Player.Levels.GainExp(mob.Value.Experience);
-        // Send achieves (2)
-
-        string mapId = session.Player.MapId.ToString();
-        // Prepend zero if map id is equal to 7 digits
-        if (mapId.Length == 7)
-        {
-            mapId = $"0{mapId}";
-        }
-
-        // Quest Check
-        QuestHelper.UpdateQuest(session, mob.Value.Id.ToString(), "npc", mapId);
-    }
+    #endregion
 }

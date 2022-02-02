@@ -1,5 +1,7 @@
 ﻿using Maple2Storage.Enums;
 using Maple2Storage.Types;
+using MapleServer2.Packets;
+using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
@@ -47,6 +49,13 @@ public partial class FieldManager
                 Status status = new(skillCast, ObjectId, ObjectId, 1);
                 //StatusHandler.Handle(Value.Session, status);
             }
+        }
+
+        public virtual void Heal(GameSession session, Status status, int amount)
+        {
+            session.FieldManager.BroadcastPacket(SkillDamagePacket.Heal(status, amount));
+            Stats[StatId.Hp].Increase(amount);
+            session.Send(StatPacket.UpdateStats(this, StatId.Hp));
         }
 
         public virtual void RecoverHp(int amount)
@@ -142,7 +151,7 @@ public partial class FieldManager
             }
         }
 
-        public virtual void Damage(DamageHandler damage)
+        public virtual void Damage(DamageHandler damage, GameSession session)
         {
             Stat health = Stats[StatId.Hp];
             health.Decrease((long) damage.Damage);
