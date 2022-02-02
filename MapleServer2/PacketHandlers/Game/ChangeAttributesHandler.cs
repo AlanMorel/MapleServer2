@@ -30,6 +30,9 @@ public class ChangeAttributesHandler : GamePacketHandler
             case ChangeAttributesMode.SelectNewAttributes:
                 HandleSelectNewAttributes(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(function);
+                break;
         }
     }
 

@@ -12,7 +12,6 @@ public class InsigniaHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-
         short insigniaId = packet.ReadShort();
 
         if (insigniaId < 0 && !InsigniaMetadataStorage.IsValid(insigniaId))

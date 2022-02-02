@@ -10,22 +10,33 @@ public class ItemEnchantHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
 
+    private enum ItemEnchantMode : byte
+    {
+        None = 0,
+        BeginEnchant = 0x01,
+        Ophelia = 0x04,
+        Peachy = 0x06,
+    }
+
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte function = packet.ReadByte();
+        ItemEnchantMode mode = (ItemEnchantMode) packet.ReadByte();
 
-        switch (function)
+        switch (mode)
         {
-            case 0: // Sent when opening up enchant ui
+            case ItemEnchantMode.None: // Sent when opening up enchant ui
                 break;
-            case 1:
+            case ItemEnchantMode.BeginEnchant:
                 HandleBeginEnchant(session, packet);
                 break;
-            case 4:
+            case ItemEnchantMode.Ophelia:
                 HandleOpheliaEnchant(session, packet);
                 break;
-            case 6:
+            case ItemEnchantMode.Peachy:
                 HandlePeachyEnchant(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
                 break;
         }
     }
@@ -65,6 +76,7 @@ public class ItemEnchantHandler : GamePacketHandler
                 item.EnchantExp %= 10000;
                 item.Enchants++;
             }
+
             session.Send(ItemEnchantPacket.EnchantResult(item));
             session.Send(ItemEnchantPacket.UpdateCharges(item));
         }
