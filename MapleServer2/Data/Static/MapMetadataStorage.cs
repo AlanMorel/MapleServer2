@@ -29,6 +29,7 @@ public static class MapMetadataStorage
         {
             return false;
         }
+
         mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
         return block != null;
     }
@@ -36,22 +37,37 @@ public static class MapMetadataStorage
     public static bool BlockAboveExists(int mapId, CoordS coord)
     {
         MapMetadata mapMetadata = GetMetadata(mapId);
-        if (mapMetadata == null)
+        if (mapMetadata is null)
         {
             return false;
         }
+
         coord.Z += Block.BLOCK_SIZE;
         mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
-        return block != null;
+        return block is not null;
+    }
+
+    public static bool BlockBelowExists(int mapId, CoordS coord)
+    {
+        MapMetadata mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            return false;
+        }
+
+        coord.Z -= Block.BLOCK_SIZE;
+        mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
+        return block is not null;
     }
 
     public static MapBlock GetMapBlock(int mapId, CoordS coord)
     {
         MapMetadata mapMetadata = GetMetadata(mapId);
-        if (mapMetadata == null)
+        if (mapMetadata is null)
         {
             return null;
         }
+
         mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
         return block;
     }
@@ -63,7 +79,7 @@ public static class MapMetadataStorage
         for (int i = 0; i < 20; i++) // checking 20 blocks in the same Z axis
         {
             mapMetadata.Blocks.TryGetValue(coordS, out MapBlock block);
-            if (block == null)
+            if (block is null)
             {
                 coordS.Z -= Block.BLOCK_SIZE;
                 continue;
@@ -73,8 +89,52 @@ public static class MapMetadataStorage
             {
                 return block.SaleableGroup;
             }
+
             coordS.Z -= Block.BLOCK_SIZE;
         }
+
         return 0;
+    }
+
+    public static bool IsLiquidBlock(int mapId, CoordS coord)
+    {
+        MapBlock block = GetMapBlock(mapId, coord);
+        return block is not null && IsLiquidBlock(block);
+    }
+
+    public static bool IsLiquidBlock(MapBlock block)
+    {
+        if (block.Type == "Ground")
+        {
+            return false;
+        }
+
+        return block.Attribute is "water" or "seawater" or "devilwater" or "lava" or "poison" or "oil" or "emeraldwater";
+    }
+
+    public static int GetDistanceToNextBlockBelow(int mapId, CoordS coord, out MapBlock block)
+    {
+        CoordS tempCoord = coord;
+        MapMetadata mapMetadata = GetMetadata(mapId);
+        if (mapMetadata is null)
+        {
+            block = null;
+            return 99;
+        }
+
+        // checking 10 blocks in the same Z axis
+        for (int i = 0; i < 10; i++)
+        {
+            mapMetadata.Blocks.TryGetValue(tempCoord, out block);
+            if (block is not null)
+            {
+                return coord.Z - block.Coord.Z;
+            }
+
+            tempCoord.Z -= Block.BLOCK_SIZE;
+        }
+
+        block = null;
+        return 99;
     }
 }

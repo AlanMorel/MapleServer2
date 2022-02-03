@@ -32,9 +32,9 @@ public class ItemExchangeHandler : GamePacketHandler
         }
     }
 
-    public enum ExchangeNotice : short
+    private enum ExchangeNotice : short
     {
-        Sucess = 0x0,
+        Success = 0x0,
         Invalid = 0x1,
         CannotFuse = 0x2,
         InsufficientMeso = 0x3,
@@ -83,8 +83,7 @@ public class ItemExchangeHandler : GamePacketHandler
         };
 
         session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
-        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
-
+        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Success));
     }
 
     private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
@@ -105,6 +104,7 @@ public class ItemExchangeHandler : GamePacketHandler
 
             return item.Amount >= exchangeItem.Amount * quantity;
         }
+
         return false;
     }
 
@@ -122,12 +122,12 @@ public class ItemExchangeHandler : GamePacketHandler
                 {
                     continue;
                 }
+
                 session.Player.Inventory.ConsumeItem(session, item.Uid, exchangeItem.Amount * quantity);
             }
         }
 
         session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
-
         return true;
     }
 }

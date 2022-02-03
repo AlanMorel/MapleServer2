@@ -205,16 +205,6 @@ public class FishingHandler : GamePacketHandler
         return blocks;
     }
 
-    private static bool IsLiquidBlock(MapBlock block)
-    {
-        if (block.Type == "Ground")
-        {
-            return false;
-        }
-
-        return block.Attribute is "water" or "seawater" or "devilwater" or "lava" or "poison" or "oil" or "emeraldwater";
-    }
-
     private static MapBlock ScanZAxisForLiquidBlock(CoordF checkBlock, int mapId)
     {
         for (int zAxis = 0; zAxis < 3; zAxis++)
@@ -225,7 +215,7 @@ public class FishingHandler : GamePacketHandler
             }
 
             MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
-            if (block == null || !IsLiquidBlock(block))
+            if (block == null || !MapMetadataStorage.IsLiquidBlock(block))
             {
                 checkBlock.Z -= Block.BLOCK_SIZE;
                 continue;
@@ -315,7 +305,7 @@ public class FishingHandler : GamePacketHandler
         CoordB coord = packet.Read<CoordB>();
         CoordS fishingBlock = coord.ToShort();
         MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, fishingBlock);
-        if (block == null || !IsLiquidBlock(block))
+        if (block == null || MapMetadataStorage.IsLiquidBlock(block))
         {
             return;
         }

@@ -29,6 +29,9 @@ public class ItemEquipHandler : GamePacketHandler
             case ItemEquipMode.Unequip:
                 HandleUnequipItem(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(function);
+                break;
         }
     }
 

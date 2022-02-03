@@ -26,6 +26,9 @@ public class PrestigeHandler : GamePacketHandler
             case PrestigeMode.Reward: // Receive reward
                 HandleReward(session, packet);
                 break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                break;
         }
     }
 

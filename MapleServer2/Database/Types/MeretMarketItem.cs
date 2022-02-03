@@ -5,68 +5,66 @@ namespace MapleServer2.Database.Types;
 
 public class MeretMarketItem
 {
-    public int MarketId;
-    public MeretMarketCategory Category;
-    public string ItemName = "";
-    public int ItemId;
-    public byte Rarity;
-    public int Quantity;
-    public int BonusQuantity;
-    public MeretMarketItemFlag Flag;
-    public MeretMarketCurrencyType TokenType;
-    public long Price;
-    public long SalePrice;
-    public int Duration; // in days
-    public long SellBeginTime;
-    public long SellEndTime;
-    public JobFlag JobRequirement;
-    public short MinLevelRequirement;
-    public short MaxLevelRequirement;
-    public int RequiredAchievementId;
-    public int RequiredAchievementGrade;
-    public bool PCCafe;
-    public bool RestockUnavailable;
-    public int ParentMarketId;
-    public long BannerId;
+    public readonly int MarketId;
+    public readonly MeretMarketCategory Category;
+    public readonly string ItemName = "";
+    public readonly int ItemId;
+    public readonly byte Rarity;
+    public readonly int Quantity;
+    public readonly int BonusQuantity;
+    public readonly MeretMarketItemFlag Flag;
+    public readonly MeretMarketCurrencyType TokenType;
+    public readonly long Price;
+    public readonly long SalePrice;
+    public readonly int Duration; // in days
+    public readonly long SellBeginTime;
+    public readonly long SellEndTime;
+    public readonly JobFlag JobRequirement;
+    public readonly short MinLevelRequirement;
+    public readonly short MaxLevelRequirement;
+    public readonly int RequiredAchievementId;
+    public readonly int RequiredAchievementGrade;
+    public readonly bool PCCafe;
+    public readonly bool RestockUnavailable;
+    public readonly int ParentMarketId;
+    public readonly long BannerId;
     public Banner Banner;
-    public string PromoName = "";
-    public MeretMarketPromoFlag PromoFlag;
-    public bool ShowSaleTime;
-    public long PromoBannerBeginTime; // time when you can buy (buy banner still up)
-    public long PromoBannerEndTime; // time when you can't buy (expiration. banner still up)
-    public List<MeretMarketItem> AdditionalQuantities = new();
+    public readonly string PromoName = "";
+    public readonly MeretMarketPromoFlag PromoFlag;
+    public readonly bool ShowSaleTime;
+    public readonly long PromoBannerBeginTime; // time when you can buy (buy banner still up)
+    public readonly long PromoBannerEndTime; // time when you can't buy (expiration. banner still up)
+    public readonly List<MeretMarketItem> AdditionalQuantities;
 
-    public MeretMarketItem() { }
-
-    public MeretMarketItem(int marketId, long bannerId, int bonusQuantity, int category, int duration, byte flag, int itemId, string itemName, int jobRequirement, short maxLevelRequirement, short minLevelRequirement, bool pcCafe, int parentMarketId, long price, long promoBannerBeginTime, long promoBannerEndTime, int promoFlag, string promoName, int quantity, byte rarity, int requiredAchievementGrade, int requiredAchievementId, bool restockUnavailable, long salePrice, long sellBeginTime, long sellEndTime, bool showSaleTime, byte tokenType)
+    public MeretMarketItem(dynamic data)
     {
-        MarketId = marketId;
-        BannerId = bannerId;
-        BonusQuantity = bonusQuantity;
-        Category = (MeretMarketCategory) category;
-        Duration = duration;
-        Flag = (MeretMarketItemFlag) flag;
-        ItemId = itemId;
-        ItemName = itemName;
-        JobRequirement = (JobFlag) jobRequirement;
-        MaxLevelRequirement = maxLevelRequirement;
-        MinLevelRequirement = minLevelRequirement;
-        PCCafe = pcCafe;
-        ParentMarketId = parentMarketId;
-        Price = price;
-        PromoBannerBeginTime = promoBannerBeginTime;
-        PromoBannerEndTime = promoBannerEndTime;
-        PromoFlag = (MeretMarketPromoFlag) promoFlag;
-        PromoName = promoName;
-        Quantity = quantity;
-        Rarity = rarity;
-        RequiredAchievementGrade = requiredAchievementGrade;
-        RequiredAchievementId = requiredAchievementId;
-        RestockUnavailable = restockUnavailable;
-        SalePrice = salePrice;
-        SellBeginTime = sellBeginTime;
-        SellEndTime = sellEndTime;
-        ShowSaleTime = showSaleTime;
-        TokenType = (MeretMarketCurrencyType) tokenType;
+        MarketId = data.market_id;
+        BannerId = data.banner_id ?? 0;
+        BonusQuantity = data.bonus_quantity;
+        Category = data.category;
+        Duration = data.duration;
+        Flag = (MeretMarketItemFlag) data.flag;
+        ItemId = data.item_id;
+        ItemName = data.item_name;
+        JobRequirement = data.job_requirement;
+        MaxLevelRequirement = data.max_level_requirement;
+        MinLevelRequirement = data.min_level_requirement;
+        PCCafe = data.pc_cafe;
+        ParentMarketId = data.parent_market_id;
+        Price = data.price;
+        PromoBannerBeginTime = data.promo_banner_begin_time;
+        PromoBannerEndTime = data.promo_banner_end_time;
+        PromoFlag = data.promo_flag;
+        PromoName = data.promo_name;
+        Quantity = data.quantity;
+        Rarity = data.rarity;
+        RequiredAchievementGrade = data.required_achievement_grade;
+        RequiredAchievementId = data.required_achievement_id;
+        RestockUnavailable = data.restock_unavailable;
+        SalePrice = data.sale_price;
+        SellBeginTime = data.sell_begin_time;
+        SellEndTime = data.sell_end_time;
+        ShowSaleTime = data.show_sale_time;
+        TokenType = (MeretMarketCurrencyType) data.token_type;
     }
 }
