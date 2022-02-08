@@ -12,7 +12,7 @@ public static class LapenshardPacket
         Equip = 1,
         Unequip = 2,
         Select = 4,
-        Upgrade = 5,
+        Upgrade = 5
     }
 
     public static PacketWriter Load(Item[] items)

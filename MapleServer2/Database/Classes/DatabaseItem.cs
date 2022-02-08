@@ -62,7 +62,7 @@ public class DatabaseItem : DatabaseTable
             transparency_badge_bools = JsonConvert.SerializeObject(item.TransparencyBadgeBools),
             unlock_time = item.UnlockTime,
             category = item.Category,
-            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid,
+            ugc_uid = item.UGC == null ? null : (int?) item.UGC.Uid
         });
     }
 

@@ -37,7 +37,7 @@ public enum StatId : byte
     Pierce = 31,
     MountMovementSpeed = 32,
     BonusAtk = 33,
-    PetBonusAtk = 34,
+    PetBonusAtk = 34
 }
 
 public enum SpecialStatId : short

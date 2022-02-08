@@ -21,7 +21,7 @@ public class BuildModeHandler : GamePacketHandler
     {
         Stop = 0x0,
         House = 0x1,
-        Liftables = 0x2,
+        Liftables = 0x2
     }
 
     public override void Handle(GameSession session, PacketReader packet)
